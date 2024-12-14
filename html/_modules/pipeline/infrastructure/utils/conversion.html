@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.infrastructure.utils.conversion &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.infrastructure.utils.conversion &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -148,7 +148,7 @@
 
 
 <div class="viewcode-block" id="LoggingLRUCache">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.LoggingLRUCache.html#pipeline.infrastructure.utils.utils.LoggingLRUCache">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.LoggingLRUCache.html#pipeline.infrastructure.utils.framework.LoggingLRUCache">[docs]</a>
 <span class="k">class</span> <span class="nc">LoggingLRUCache</span><span class="p">(</span><span class="n">cachetools</span><span class="o">.</span><span class="n">LRUCache</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;&#39;Least recently used&#39; cache that logs when cache entries are evicted.</span>
 
@@ -164,7 +164,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LoggingLRUCache.popitem">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.LoggingLRUCache.html#pipeline.infrastructure.utils.utils.LoggingLRUCache.popitem">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.LoggingLRUCache.html#pipeline.infrastructure.utils.framework.LoggingLRUCache.popitem">[docs]</a>
     <span class="k">def</span> <span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove and return the (key, value) pair least recently used.</span>
 
@@ -187,7 +187,7 @@
 
 
 <div class="viewcode-block" id="commafy">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.commafy.html#pipeline.infrastructure.utils.utils.commafy">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.commafy.html#pipeline.infrastructure.utils.framework.commafy">[docs]</a>
 <span class="k">def</span> <span class="nf">commafy</span><span class="p">(</span><span class="n">l</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">quotes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">multi_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">separator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="p">,</span>
             <span class="n">conjunction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the string list into the textual description.</span>
@@ -245,7 +245,7 @@
 
 
 <div class="viewcode-block" id="flatten">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.flatten.html#pipeline.infrastructure.utils.utils.flatten">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.flatten.html#pipeline.infrastructure.utils.framework.flatten">[docs]</a>
 <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span><span class="n">l</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Flatten a list of lists into a single list without pipelineaq.QAScore.</span>
 
@@ -276,7 +276,7 @@
 
 
 <div class="viewcode-block" id="unix_seconds_to_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.unix_seconds_to_datetime.html#pipeline.infrastructure.utils.utils.unix_seconds_to_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.unix_seconds_to_datetime.html#pipeline.infrastructure.utils.framework.unix_seconds_to_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">unix_seconds_to_datetime</span><span class="p">(</span><span class="n">unix_secs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Number</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">datetime</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">datetime</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert list of UNIX epoch times to a list of equivalent datetime objects.</span>
 
@@ -290,7 +290,7 @@
 
 
 <div class="viewcode-block" id="mjd_seconds_to_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.mjd_seconds_to_datetime.html#pipeline.infrastructure.utils.utils.mjd_seconds_to_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.mjd_seconds_to_datetime.html#pipeline.infrastructure.utils.framework.mjd_seconds_to_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">mjd_seconds_to_datetime</span><span class="p">(</span><span class="n">mjd_secs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Number</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert list of MJD seconds to a list of equivalent datetime objects.</span>
 
@@ -310,7 +310,7 @@
 
 
 <div class="viewcode-block" id="get_epoch_as_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_epoch_as_datetime.html#pipeline.infrastructure.utils.utils.get_epoch_as_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_epoch_as_datetime.html#pipeline.infrastructure.utils.framework.get_epoch_as_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">get_epoch_as_datetime</span><span class="p">(</span><span class="n">epoch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CASA &#39;epoch&#39; measure into a Python datetime.</span>
 
@@ -340,7 +340,7 @@
 
 
 <div class="viewcode-block" id="range_to_list">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.range_to_list.html#pipeline.infrastructure.utils.utils.range_to_list">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.range_to_list.html#pipeline.infrastructure.utils.framework.range_to_list">[docs]</a>
 <span class="k">def</span> <span class="nf">range_to_list</span><span class="p">(</span><span class="n">arg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand a numeric range expressed in CASA syntax to the list of integer.</span>
 
@@ -384,7 +384,7 @@
 
 
 <div class="viewcode-block" id="to_CASA_intent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.to_CASA_intent.html#pipeline.infrastructure.utils.utils.to_CASA_intent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.to_CASA_intent.html#pipeline.infrastructure.utils.framework.to_CASA_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert pipeline intents back to the equivalent intents recorded in the measurement set.</span>
 
@@ -404,7 +404,7 @@
 
 
 <div class="viewcode-block" id="to_pipeline_intent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.to_pipeline_intent.html#pipeline.infrastructure.utils.utils.to_pipeline_intent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.to_pipeline_intent.html#pipeline.infrastructure.utils.framework.to_pipeline_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">to_pipeline_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert CASA intents to pipeline intents.</span>
 
@@ -427,7 +427,7 @@
 
 
 <div class="viewcode-block" id="field_arg_to_id">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.field_arg_to_id.html#pipeline.infrastructure.utils.utils.field_arg_to_id">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.field_arg_to_id.html#pipeline.infrastructure.utils.framework.field_arg_to_id">[docs]</a>
 <span class="k">def</span> <span class="nf">field_arg_to_id</span><span class="p">(</span><span class="n">ms_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field_arg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">all_fields</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a string to the corresponding field IDs.</span>
 
@@ -455,7 +455,7 @@
 
 
 <div class="viewcode-block" id="spw_arg_to_id">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.spw_arg_to_id.html#pipeline.infrastructure.utils.utils.spw_arg_to_id">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.spw_arg_to_id.html#pipeline.infrastructure.utils.framework.spw_arg_to_id">[docs]</a>
 <span class="k">def</span> <span class="nf">spw_arg_to_id</span><span class="p">(</span><span class="n">ms_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw_arg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">all_spws</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a string to spectral window IDs and channels.</span>
 
@@ -485,7 +485,7 @@
 
 
 <div class="viewcode-block" id="ant_arg_to_id">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.ant_arg_to_id.html#pipeline.infrastructure.utils.utils.ant_arg_to_id">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.ant_arg_to_id.html#pipeline.infrastructure.utils.framework.ant_arg_to_id">[docs]</a>
 <span class="k">def</span> <span class="nf">ant_arg_to_id</span><span class="p">(</span><span class="n">ms_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ant_arg</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">all_antennas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a string to the corresponding antenna IDs.</span>
 
@@ -553,7 +553,7 @@
 
 
 <div class="viewcode-block" id="safe_split">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.safe_split.html#pipeline.infrastructure.utils.utils.safe_split">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.safe_split.html#pipeline.infrastructure.utils.framework.safe_split">[docs]</a>
 <span class="k">def</span> <span class="nf">safe_split</span><span class="p">(</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a string containing field names into a list.</span>
 
@@ -570,7 +570,7 @@
 
 
 <div class="viewcode-block" id="dequote">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dequote.html#pipeline.infrastructure.utils.utils.dequote">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dequote.html#pipeline.infrastructure.utils.framework.dequote">[docs]</a>
 <span class="k">def</span> <span class="nf">dequote</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove any kind of quotes from a string to facilitate comparisons.</span>
 
@@ -584,7 +584,7 @@
 
 
 <div class="viewcode-block" id="format_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.format_datetime.html#pipeline.infrastructure.utils.utils.format_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.format_datetime.html#pipeline.infrastructure.utils.framework.format_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">format_datetime</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">dp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a datetime to a formatted string representation.</span>
 
@@ -610,7 +610,7 @@
 
 
 <div class="viewcode-block" id="format_timedelta">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.format_timedelta.html#pipeline.infrastructure.utils.utils.format_timedelta">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.format_timedelta.html#pipeline.infrastructure.utils.framework.format_timedelta">[docs]</a>
 <span class="k">def</span> <span class="nf">format_timedelta</span><span class="p">(</span><span class="n">td</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">dp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a timedelta to a formatted string representation.</span>
 
@@ -856,7 +856,7 @@
 
 
 <div class="viewcode-block" id="record_to_quantity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.record_to_quantity.html#pipeline.infrastructure.utils.utils.record_to_quantity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.record_to_quantity.html#pipeline.infrastructure.utils.framework.record_to_quantity">[docs]</a>
 <span class="k">def</span> <span class="nf">record_to_quantity</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CASA record to an Astropy quantity.</span>
 
@@ -874,7 +874,7 @@
 
 
 <div class="viewcode-block" id="phasecenter_to_skycoord">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.phasecenter_to_skycoord.html#pipeline.infrastructure.utils.utils.phasecenter_to_skycoord">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.phasecenter_to_skycoord.html#pipeline.infrastructure.utils.framework.phasecenter_to_skycoord">[docs]</a>
 <span class="k">def</span> <span class="nf">phasecenter_to_skycoord</span><span class="p">(</span><span class="n">phasecenter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CASA-style coordinate string to an Astropy SkyCoord object.&quot;&quot;&quot;</span>
 
@@ -900,7 +900,7 @@
 
 
 <div class="viewcode-block" id="refcode_to_skyframe">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.refcode_to_skyframe.html#pipeline.infrastructure.utils.utils.refcode_to_skyframe">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.refcode_to_skyframe.html#pipeline.infrastructure.utils.framework.refcode_to_skyframe">[docs]</a>
 <span class="k">def</span> <span class="nf">refcode_to_skyframe</span><span class="p">(</span><span class="n">refcode</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Conver a CASA coordsysy refcode to an Astropy SkyCoord frame name.</span>
 <span class="sd">    </span>

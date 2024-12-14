@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.infrastructure.displays.plotpwv.splrep &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.infrastructure.displays.plotpwv.splrep &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -201,55 +201,54 @@ approximation of degree k on the interval <code class="docutils literal notransl
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>x, y</strong> (<em>array_like</em>) – The data points defining a curve y = f(x).</p></li>
-<li><p><strong>w</strong> (<em>array_like, optional</em>) – Strictly positive rank-1 array of weights the same length as x and y.
+<li><p><strong>x, y</strong> (<em>array_like</em>) – The data points defining a curve <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">f(x)</span></code>.</p></li>
+<li><p><strong>w</strong> (<em>array_like, optional</em>) – Strictly positive rank-1 array of weights the same length as <cite>x</cite> and <cite>y</cite>.
 The weights are used in computing the weighted least-squares spline
-fit. If the errors in the y values have standard-deviation given by the
-vector d, then w should be 1/d. Default is ones(len(x)).</p></li>
-<li><p><strong>xb, xe</strong> (<em>float, optional</em>) – The interval to fit.  If None, these default to x[0] and x[-1]
+fit. If the errors in the <cite>y</cite> values have standard-deviation given by the
+vector <code class="docutils literal notranslate"><span class="pre">d</span></code>, then <cite>w</cite> should be <code class="docutils literal notranslate"><span class="pre">1/d</span></code>. Default is <code class="docutils literal notranslate"><span class="pre">ones(len(x))</span></code>.</p></li>
+<li><p><strong>xb, xe</strong> (<em>float, optional</em>) – The interval to fit.  If None, these default to <code class="docutils literal notranslate"><span class="pre">x[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">x[-1]</span></code>
 respectively.</p></li>
 <li><p><strong>k</strong> (<em>int, optional</em>) – The degree of the spline fit. It is recommended to use cubic splines.
-Even values of k should be avoided especially with small s values.
-1 &lt;= k &lt;= 5</p></li>
-<li><p><strong>task</strong> (<em>{1, 0, -1}, optional</em>) – If task==0 find t and c for a given smoothing factor, s.</p>
-<p>If task==1 find t and c for another value of the smoothing factor, s.
-There must have been a previous call with task=0 or task=1 for the same
-set of data (t will be stored an used internally)</p>
-<p>If task=-1 find the weighted least square spline for a given set of
-knots, t. These should be interior knots as knots on the ends will be
+Even values of <cite>k</cite> should be avoided especially with small <cite>s</cite> values.
+<code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">&lt;=</span> <span class="pre">k</span> <span class="pre">&lt;=</span> <span class="pre">5</span></code>.</p></li>
+<li><p><strong>task</strong> (<em>{1, 0, -1}, optional</em>) – If <code class="docutils literal notranslate"><span class="pre">task==0</span></code>, find <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code> for a given smoothing factor, <cite>s</cite>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">task==1</span></code> find <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">c</span></code> for another value of the smoothing factor,
+<cite>s</cite>. There must have been a previous call with <code class="docutils literal notranslate"><span class="pre">task=0</span></code> or <code class="docutils literal notranslate"><span class="pre">task=1</span></code> for
+the same set of data (<code class="docutils literal notranslate"><span class="pre">t</span></code> will be stored an used internally)</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">task=-1</span></code> find the weighted least square spline for a given set of
+knots, <code class="docutils literal notranslate"><span class="pre">t</span></code>. These should be interior knots as knots on the ends will be
 added automatically.</p>
 </li>
 <li><p><strong>s</strong> (<em>float, optional</em>) – A smoothing condition. The amount of smoothness is determined by
-satisfying the conditions: sum((w * (y - g))**2,axis=0) &lt;= s where g(x)
-is the smoothed interpolation of (x,y). The user can use s to control
-the tradeoff between closeness and smoothness of fit. Larger s means
-more smoothing while smaller values of s indicate less smoothing.
-Recommended values of s depend on the weights, w. If the weights
-represent the inverse of the standard-deviation of y, then a good s
-value should be found in the range (m-sqrt(2*m),m+sqrt(2*m)) where m is
-the number of datapoints in x, y, and w. default : s=m-sqrt(2*m) if
-weights are supplied. s = 0.0 (interpolating) if no weights are
+satisfying the conditions: <code class="docutils literal notranslate"><span class="pre">sum((w</span> <span class="pre">*</span> <span class="pre">(y</span> <span class="pre">-</span> <span class="pre">g))**2,axis=0)</span> <span class="pre">&lt;=</span> <span class="pre">s</span></code> where <code class="docutils literal notranslate"><span class="pre">g(x)</span></code>
+is the smoothed interpolation of <code class="docutils literal notranslate"><span class="pre">(x,y)</span></code>. The user can use <cite>s</cite> to control
+the tradeoff between closeness and smoothness of fit. Larger <cite>s</cite> means
+more smoothing while smaller values of <cite>s</cite> indicate less smoothing.
+Recommended values of <cite>s</cite> depend on the weights, <cite>w</cite>. If the weights
+represent the inverse of the standard-deviation of <cite>y</cite>, then a good <cite>s</cite>
+value should be found in the range <code class="docutils literal notranslate"><span class="pre">(m-sqrt(2*m),m+sqrt(2*m))</span></code> where <code class="docutils literal notranslate"><span class="pre">m</span></code> is
+the number of datapoints in <cite>x</cite>, <cite>y</cite>, and <cite>w</cite>. default : <code class="docutils literal notranslate"><span class="pre">s=m-sqrt(2*m)</span></code> if
+weights are supplied. <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">0.0</span></code> (interpolating) if no weights are
 supplied.</p></li>
-<li><p><strong>t</strong> (<em>array_like, optional</em>) – The knots needed for task=-1. If given then task is automatically set
-to -1.</p></li>
+<li><p><strong>t</strong> (<em>array_like, optional</em>) – The knots needed for <code class="docutils literal notranslate"><span class="pre">task=-1</span></code>. If given then task is automatically set
+to <code class="docutils literal notranslate"><span class="pre">-1</span></code>.</p></li>
 <li><p><strong>full_output</strong> (<em>bool, optional</em>) – If non-zero, then return optional outputs.</p></li>
-<li><p><strong>per</strong> (<em>bool, optional</em>) – If non-zero, data points are considered periodic with period x[m-1] -
-x[0] and a smooth periodic spline approximation is returned. Values of
-y[m-1] and w[m-1] are not used.</p></li>
-<li><p><strong>quiet</strong> (<em>bool, optional</em>) – Non-zero to suppress messages.
-This parameter is deprecated; use standard Python warning filters
-instead.</p></li>
+<li><p><strong>per</strong> (<em>bool, optional</em>) – If non-zero, data points are considered periodic with period <code class="docutils literal notranslate"><span class="pre">x[m-1]</span></code> -
+<code class="docutils literal notranslate"><span class="pre">x[0]</span></code> and a smooth periodic spline approximation is returned. Values of
+<code class="docutils literal notranslate"><span class="pre">y[m-1]</span></code> and <code class="docutils literal notranslate"><span class="pre">w[m-1]</span></code> are not used.
+The default is zero, corresponding to boundary condition ‘not-a-knot’.</p></li>
+<li><p><strong>quiet</strong> (<em>bool, optional</em>) – Non-zero to suppress messages.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>tck</strong> (<em>tuple</em>) – A tuple (t,c,k) containing the vector of knots, the B-spline
+<li><p><strong>tck</strong> (<em>tuple</em>) – A tuple <code class="docutils literal notranslate"><span class="pre">(t,c,k)</span></code> containing the vector of knots, the B-spline
 coefficients, and the degree of the spline.</p></li>
 <li><p><strong>fp</strong> (<em>array, optional</em>) – The weighted sum of squared residuals of the spline approximation.</p></li>
-<li><p><strong>ier</strong> (<em>int, optional</em>) – An integer flag about splrep success. Success is indicated if ier&lt;=0.
-If ier in [1,2,3] an error occurred but was not raised. Otherwise an
+<li><p><strong>ier</strong> (<em>int, optional</em>) – An integer flag about splrep success. Success is indicated if <code class="docutils literal notranslate"><span class="pre">ier&lt;=0</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">ier</span> <span class="pre">in</span> <span class="pre">[1,2,3]</span></code>, an error occurred but was not raised. Otherwise an
 error is raised.</p></li>
-<li><p><strong>msg</strong> (<em>str, optional</em>) – A message corresponding to the integer flag, ier.</p></li>
+<li><p><strong>msg</strong> (<em>str, optional</em>) – A message corresponding to the integer flag, <cite>ier</cite>.</p></li>
 </ul>
 </p>
 </dd>
@@ -270,6 +269,9 @@ i.e., there must be a subset of data points <code class="docutils literal notran
 as the array of knots <code class="docutils literal notranslate"><span class="pre">t</span></code> (the trailing <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">+</span> <span class="pre">1</span></code> coefficients are ignored
 by the evaluation routines, <cite>splev</cite> and <cite>BSpline</cite>.) This is in contrast with
 <cite>splprep</cite>, which does not zero-pad the coefficients.</p>
+<p>The default boundary condition is ‘not-a-knot’, i.e. the first and second
+segment at a curve end are the same polynomial. More boundary conditions are
+available in <cite>CubicSpline</cite>.</p>
 <p class="rubric">References</p>
 <p>Based on algorithms described in <a class="footnote-reference brackets" href="#id5" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id7" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, and <a class="footnote-reference brackets" href="#id8" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a>:</p>
 <aside class="footnote-list brackets">
@@ -300,7 +302,8 @@ Numerical Analysis, Oxford University Press, 1993.</p>
 <p>You can interpolate 1-D points with a B-spline curve.
 Further examples are given in
 <span class="xref std std-ref">in the tutorial</span>.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">splev</span><span class="p">,</span> <span class="n">splrep</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>matplotlib.table &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>matplotlib.table &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -131,6 +131,8 @@
 <span class="sd">Thanks to John Gill for providing the class and table.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_api</span><span class="p">,</span> <span class="n">_docstring</span>
 <span class="kn">from</span> <span class="nn">.artist</span> <span class="kn">import</span> <span class="n">Artist</span><span class="p">,</span> <span class="n">allow_rasterization</span>
 <span class="kn">from</span> <span class="nn">.patches</span> <span class="kn">import</span> <span class="n">Rectangle</span>
@@ -158,14 +160,12 @@
                      <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>     <span class="s1">&#39;RL&#39;</span>
                      <span class="p">}</span>
 
-    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;edgecolor&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">edgecolor</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
                  <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
-                 <span class="n">loc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span>
                  <span class="n">fontproperties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="o">*</span><span class="p">,</span>
                  <span class="n">visible_edges</span><span class="o">=</span><span class="s1">&#39;closed&#39;</span><span class="p">,</span>
                  <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -177,20 +177,21 @@
 <span class="sd">            The cell width.</span>
 <span class="sd">        height : float</span>
 <span class="sd">            The cell height.</span>
-<span class="sd">        edgecolor : color</span>
+<span class="sd">        edgecolor : :mpltype:`color`, default: &#39;k&#39;</span>
 <span class="sd">            The color of the cell border.</span>
-<span class="sd">        facecolor : color</span>
+<span class="sd">        facecolor : :mpltype:`color`, default: &#39;w&#39;</span>
 <span class="sd">            The cell facecolor.</span>
-<span class="sd">        fill : bool</span>
+<span class="sd">        fill : bool, default: True</span>
 <span class="sd">            Whether the cell background is filled.</span>
-<span class="sd">        text : str</span>
+<span class="sd">        text : str, optional</span>
 <span class="sd">            The cell text.</span>
-<span class="sd">        loc : {&#39;left&#39;, &#39;center&#39;, &#39;right&#39;}, default: &#39;right&#39;</span>
+<span class="sd">        loc : {&#39;right&#39;, &#39;center&#39;, &#39;left&#39;}</span>
 <span class="sd">            The alignment of the text within the cell.</span>
-<span class="sd">        fontproperties : dict</span>
+<span class="sd">        fontproperties : dict, optional</span>
 <span class="sd">            A dict defining the font properties of the text. Supported keys and</span>
 <span class="sd">            values are the keyword arguments accepted by `.FontProperties`.</span>
-<span class="sd">        visible_edges : str, default: &#39;closed&#39;</span>
+<span class="sd">        visible_edges : {&#39;closed&#39;, &#39;open&#39;, &#39;horizontal&#39;, &#39;vertical&#39;} or \</span>
+<span class="sd">substring of &#39;BRTL&#39;</span>
 <span class="sd">            The cell edges to be drawn with a line: a substring of &#39;BRTL&#39;</span>
 <span class="sd">            (bottom, right, top, left), or one of &#39;open&#39; (no edges drawn),</span>
 <span class="sd">            &#39;closed&#39; (all edges drawn), &#39;horizontal&#39; (bottom and top),</span>
@@ -204,15 +205,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">visible_edges</span> <span class="o">=</span> <span class="n">visible_edges</span>
 
         <span class="c1"># Create text object</span>
-        <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_loc</span> <span class="o">=</span> <span class="n">loc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                           <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">fontproperties</span><span class="o">=</span><span class="n">fontproperties</span><span class="p">,</span>
                           <span class="n">horizontalalignment</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">set_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_transform</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">rename_parameter</span><span class="p">(</span><span class="s2">&quot;3.8&quot;</span><span class="p">,</span> <span class="s2">&quot;trans&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_transform</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
         <span class="c1"># the text does not get the transform!</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -387,12 +387,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ax : `matplotlib.axes.Axes`</span>
+<span class="sd">        ax : `~matplotlib.axes.Axes`</span>
 <span class="sd">            The `~.axes.Axes` to plot the table into.</span>
-<span class="sd">        loc : str</span>
+<span class="sd">        loc : str, optional</span>
 <span class="sd">            The position of the cell with respect to *ax*. This must be one of</span>
 <span class="sd">            the `~.Table.codes`.</span>
-<span class="sd">        bbox : `.Bbox` or None</span>
+<span class="sd">        bbox : `.Bbox` or [xmin, ymin, width, height], optional</span>
 <span class="sd">            A bounding box to draw the table into. If this is not *None*, this</span>
 <span class="sd">            overrides *loc*.</span>
 
@@ -535,9 +535,8 @@
 
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseevent</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
-        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
         <span class="c1"># TODO: Return index of the cell containing the cursor so that the user</span>
         <span class="c1"># doesn&#39;t have to bind to each one individually.</span>
         <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
@@ -603,14 +602,15 @@
 <span class="sd">        col : int or sequence of ints</span>
 <span class="sd">            The indices of the columns to auto-scale.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># check for col possibility on iteration</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">iter</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_autoColumns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">col</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_autoColumns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">col1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">col1d</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+            <span class="n">_api</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span><span class="s2">&quot;3.8&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;col&quot;</span><span class="p">,</span>
+                                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(name)r</span><span class="s2"> must be an int or sequence of ints. &quot;</span>
+                                 <span class="s2">&quot;Passing other types is deprecated since </span><span class="si">%(since)s</span><span class="s2"> &quot;</span>
+                                 <span class="s2">&quot;and will be removed </span><span class="si">%(removal)s</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">col1d</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_autoColumns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -702,7 +702,10 @@
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Position according to bbox</span>
-            <span class="n">rl</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bbox</span><span class="p">,</span> <span class="n">Bbox</span><span class="p">):</span>
+                <span class="n">rl</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox</span><span class="o">.</span><span class="n">bounds</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rl</span><span class="p">,</span> <span class="n">rb</span><span class="p">,</span> <span class="n">rw</span><span class="p">,</span> <span class="n">rh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">rw</span> <span class="o">/</span> <span class="n">w</span><span class="p">,</span> <span class="n">rh</span> <span class="o">/</span> <span class="n">h</span><span class="p">)</span>
             <span class="n">ox</span> <span class="o">=</span> <span class="n">rl</span> <span class="o">-</span> <span class="n">l</span>
             <span class="n">oy</span> <span class="o">=</span> <span class="n">rb</span> <span class="o">-</span> <span class="n">b</span>
@@ -775,7 +778,7 @@
 <span class="sd">    *colLoc* respectively.</span>
 
 <span class="sd">    For finer grained control over tables, use the `.Table` class and add it to</span>
-<span class="sd">    the axes with `.Axes.add_table`.</span>
+<span class="sd">    the Axes with `.Axes.add_table`.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -785,10 +788,10 @@
 <span class="sd">        *Note*: Line breaks in the strings are currently not accounted for and</span>
 <span class="sd">        will result in the text exceeding the cell boundaries.</span>
 
-<span class="sd">    cellColours : 2D list of colors, optional</span>
+<span class="sd">    cellColours : 2D list of :mpltype:`color`, optional</span>
 <span class="sd">        The background colors of the cells.</span>
 
-<span class="sd">    cellLoc : {&#39;left&#39;, &#39;center&#39;, &#39;right&#39;}, default: &#39;right&#39;</span>
+<span class="sd">    cellLoc : {&#39;right&#39;, &#39;center&#39;, &#39;left&#39;}</span>
 <span class="sd">        The alignment of the text within the cells.</span>
 
 <span class="sd">    colWidths : list of float, optional</span>
@@ -798,30 +801,30 @@
 <span class="sd">    rowLabels : list of str, optional</span>
 <span class="sd">        The text of the row header cells.</span>
 
-<span class="sd">    rowColours : list of colors, optional</span>
+<span class="sd">    rowColours : list of :mpltype:`color`, optional</span>
 <span class="sd">        The colors of the row header cells.</span>
 
-<span class="sd">    rowLoc : {&#39;left&#39;, &#39;center&#39;, &#39;right&#39;}, default: &#39;left&#39;</span>
+<span class="sd">    rowLoc : {&#39;left&#39;, &#39;center&#39;, &#39;right&#39;}</span>
 <span class="sd">        The text alignment of the row header cells.</span>
 
 <span class="sd">    colLabels : list of str, optional</span>
 <span class="sd">        The text of the column header cells.</span>
 
-<span class="sd">    colColours : list of colors, optional</span>
+<span class="sd">    colColours : list of :mpltype:`color`, optional</span>
 <span class="sd">        The colors of the column header cells.</span>
 
-<span class="sd">    colLoc : {&#39;left&#39;, &#39;center&#39;, &#39;right&#39;}, default: &#39;left&#39;</span>
+<span class="sd">    colLoc : {&#39;center&#39;, &#39;left&#39;, &#39;right&#39;}</span>
 <span class="sd">        The text alignment of the column header cells.</span>
 
-<span class="sd">    loc : str, optional</span>
+<span class="sd">    loc : str, default: &#39;bottom&#39;</span>
 <span class="sd">        The position of the cell with respect to *ax*. This must be one of</span>
 <span class="sd">        the `~.Table.codes`.</span>
 
-<span class="sd">    bbox : `.Bbox`, optional</span>
+<span class="sd">    bbox : `.Bbox` or [xmin, ymin, width, height], optional</span>
 <span class="sd">        A bounding box to draw the table into. If this is not *None*, this</span>
 <span class="sd">        overrides *loc*.</span>
 
-<span class="sd">    edges : substring of &#39;BRTL&#39; or {&#39;open&#39;, &#39;closed&#39;, &#39;horizontal&#39;, &#39;vertical&#39;}</span>
+<span class="sd">    edges : {&#39;closed&#39;, &#39;open&#39;, &#39;horizontal&#39;, &#39;vertical&#39;} or substring of &#39;BRTL&#39;</span>
 <span class="sd">        The cell edges to be drawn with a line. See also</span>
 <span class="sd">        `~.Cell.visible_edges`.</span>
 
@@ -853,16 +856,16 @@
     <span class="n">cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cellText</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cellText</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="n">cols</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each row in &#39;cellText&#39; must have </span><span class="si">{}</span><span class="s2"> columns&quot;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cols</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Each row in &#39;cellText&#39; must have </span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="s2">&quot;columns&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">cellColours</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cellColours</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rows</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;cellColours&#39; must have </span><span class="si">{}</span><span class="s2"> rows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;cellColours&#39; must have </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cellColours</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="n">cols</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each row in &#39;cellColours&#39; must have </span><span class="si">{}</span><span class="s2"> &quot;</span>
-                                 <span class="s2">&quot;columns&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cols</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each row in &#39;cellColours&#39; must have &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cols</span><span class="si">}</span><span class="s2"> columns&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">cellColours</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;w&#39;</span> <span class="o">*</span> <span class="n">cols</span><span class="p">]</span> <span class="o">*</span> <span class="n">rows</span>
 
@@ -882,7 +885,7 @@
 
     <span class="k">if</span> <span class="n">rowLabels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rowLabels</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rows</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;rowLabels&#39; must be of length </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rows</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;rowLabels&#39; must be of length </span><span class="si">{</span><span class="n">rows</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># If we have column labels, need to shift</span>
     <span class="c1"># the text and colour arrays down 1 row</span>

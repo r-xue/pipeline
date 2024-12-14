@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.extern.findContinuum.scipy_nanmean &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.extern.findContinuum.scipy_nanmean &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -162,9 +162,6 @@
 the flattened array by default, otherwise over the specified axis.
 <cite>float64</cite> intermediate and return values are used for integer inputs.</p>
 <p>For all-NaN slices, NaN is returned and a <cite>RuntimeWarning</cite> is raised.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">Added in version 1.8.0.</span></p>
-</div>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
@@ -177,8 +174,8 @@ is <cite>float64</cite>; for inexact inputs, it is the same as the input
 dtype.</p></li>
 <li><p><strong>out</strong> (<em>ndarray, optional</em>) – Alternate output array in which to place the result.  The default
 is <code class="docutils literal notranslate"><span class="pre">None</span></code>; if provided, it must have the same shape as the
-expected output, but the type will be cast if necessary. See
-<span class="xref std std-ref">ufuncs-output-type</span> for more details.</p></li>
+expected output, but the type will be cast if necessary.
+See <span class="xref std std-ref">ufuncs-output-type</span> for more details.</p></li>
 <li><p><strong>keepdims</strong> (<em>bool, optional</em>) – If this is set to True, the axes which are reduced are left
 in the result as dimensions with size one. With this option,
 the result will broadcast correctly against the original <cite>a</cite>.</p>
@@ -222,7 +219,8 @@ the results to be inaccurate, especially for <cite>float32</cite>.  Specifying a
 higher-precision accumulator using the <cite>dtype</cite> keyword can alleviate
 this issue.</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="go">2.6666666666666665</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>

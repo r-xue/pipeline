@@ -20,10 +20,7 @@ pipeline.infrastructure.displays.pointing.Locator
       ~Locator.nonsingular
       ~Locator.raise_if_exceeds
       ~Locator.set_axis
-      ~Locator.set_bounds
-      ~Locator.set_data_interval
       ~Locator.set_params
-      ~Locator.set_view_interval
       ~Locator.tick_values
       ~Locator.view_limits
    

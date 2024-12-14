@@ -26,13 +26,12 @@ pipeline.h.tasks.common.displays.sky.HPacker
       ~HPacker.get_agg_filter
       ~HPacker.get_alpha
       ~HPacker.get_animated
+      ~HPacker.get_bbox
       ~HPacker.get_children
       ~HPacker.get_clip_box
       ~HPacker.get_clip_on
       ~HPacker.get_clip_path
       ~HPacker.get_cursor_data
-      ~HPacker.get_extent
-      ~HPacker.get_extent_offsets
       ~HPacker.get_figure
       ~HPacker.get_gid
       ~HPacker.get_in_layout

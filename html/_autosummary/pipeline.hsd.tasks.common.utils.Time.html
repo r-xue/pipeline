@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.hsd.tasks.common.utils.Time &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.hsd.tasks.common.utils.Time &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -246,7 +246,7 @@ transformations to and from the solar-system barycenter.</p></li>
 <td><p>Creates a new object corresponding to the instant in time this method is called.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="pipeline.hsd.tasks.common.utils.Time.ptp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ptp</span></code></a></p></td>
-<td><p>Peak to peak (maximum - minimum) along a given axis.</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ravel" title="pipeline.hsd.tasks.common.utils.Time.ravel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ravel</span></code></a></p></td>
 <td><p>Return an instance with the array collapsed into one dimension.</p></td>
@@ -820,13 +820,19 @@ value between 0 and 9 inclusive).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.ptp">
 <span class="sig-name descname"><span class="pre">ptp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="Link to this definition"></a></dt>
-<dd><p>Peak to peak (maximum - minimum) along a given axis.</p>
-<p>This method is similar to the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ptp()</span></code> function, but
+<dd><div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 6.1: </span>The ptp function is deprecated and may be removed in a future version.
+    Use np.ptp instead.</p>
+</div>
+<p>Peak to peak (maximum - minimum) along a given axis.</p>
+<blockquote>
+<div><p>This method is similar to the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ptp()</span></code> function, but
 adapted to ensure that the full precision given by the two doubles
 <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is used.</p>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
 <cite>~numpy.ptp</cite>; since <cite>Time</cite> instances are immutable, it is not possible
 to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">

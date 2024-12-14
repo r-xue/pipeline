@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.hifv.heuristics.vip_helper_functions.linregress &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.hifv.heuristics.vip_helper_functions.linregress &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -152,17 +152,23 @@
 <h1>pipeline.hifv.heuristics.vip_helper_functions.linregress<a class="headerlink" href="#pipeline-hifv-heuristics-vip-helper-functions-linregress" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifv.heuristics.vip_helper_functions.linregress">
-<span class="sig-name descname"><span class="pre">linregress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/stats/_stats_mstats_common.html#linregress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.heuristics.vip_helper_functions.linregress" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">linregress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alternative</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'two-sided'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scipy/stats/_stats_py.html#linregress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifv.heuristics.vip_helper_functions.linregress" title="Link to this definition"></a></dt>
 <dd><p>Calculate a linear least-squares regression for two sets of measurements.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>x, y</strong> (<em>array_like</em>) – Two sets of measurements.  Both arrays should have the same length.  If
+<li><p><strong>x, y</strong> (<em>array_like</em>) – Two sets of measurements.  Both arrays should have the same length N.  If
 only <cite>x</cite> is given (and <code class="docutils literal notranslate"><span class="pre">y=None</span></code>), then it must be a two-dimensional
 array where one dimension has length 2.  The two sets of measurements
 are then found by splitting the array along the length-2 dimension. In
-the case where <code class="docutils literal notranslate"><span class="pre">y=None</span></code> and <cite>x</cite> is a 2x2 array, <code class="docutils literal notranslate"><span class="pre">linregress(x)</span></code> is
-equivalent to <code class="docutils literal notranslate"><span class="pre">linregress(x[0],</span> <span class="pre">x[1])</span></code>.</p></li>
+the case where <code class="docutils literal notranslate"><span class="pre">y=None</span></code> and <cite>x</cite> is a 2xN array, <code class="docutils literal notranslate"><span class="pre">linregress(x)</span></code> is
+equivalent to <code class="docutils literal notranslate"><span class="pre">linregress(x[0],</span> <span class="pre">x[1])</span></code>.</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 1.14.0: </span>Inference of the two sets of measurements from a single argument <cite>x</cite>
+is deprecated will result in an error in SciPy 1.16.0; the sets
+must be specified separately as <cite>x</cite> and <cite>y</cite>.</p>
+</div>
+</li>
 <li><p><strong>alternative</strong> (<em>{‘two-sided’, ‘less’, ‘greater’}, optional</em>) – Defines the alternative hypothesis. Default is ‘two-sided’.
 The following options are available:</p>
 <ul class="simple">
@@ -214,8 +220,6 @@ of residual normality.</p>
 </dl>
 </div>
 <p class="rubric">Notes</p>
-<p>Missing values are considered pair-wise: if a value is missing in <cite>x</cite>,
-the corresponding value in <cite>y</cite> is masked.</p>
 <p>For compatibility with older versions of SciPy, the return value acts
 like a <code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> of length 5, with fields <code class="docutils literal notranslate"><span class="pre">slope</span></code>, <code class="docutils literal notranslate"><span class="pre">intercept</span></code>,
 <code class="docutils literal notranslate"><span class="pre">rvalue</span></code>, <code class="docutils literal notranslate"><span class="pre">pvalue</span></code> and <code class="docutils literal notranslate"><span class="pre">stderr</span></code>, so one can continue to write:</p>
@@ -231,7 +235,8 @@ with attributes, e.g.:</p>
 </pre></div>
 </div>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">()</span>
 </pre></div>

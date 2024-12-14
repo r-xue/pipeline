@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>matplotlib.text &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>matplotlib.text &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -122,40 +122,12 @@
 <span class="kn">from</span> <span class="nn">.artist</span> <span class="kn">import</span> <span class="n">Artist</span>
 <span class="kn">from</span> <span class="nn">.font_manager</span> <span class="kn">import</span> <span class="n">FontProperties</span>
 <span class="kn">from</span> <span class="nn">.patches</span> <span class="kn">import</span> <span class="n">FancyArrowPatch</span><span class="p">,</span> <span class="n">FancyBboxPatch</span><span class="p">,</span> <span class="n">Rectangle</span>
-<span class="kn">from</span> <span class="nn">.textpath</span> <span class="kn">import</span> <span class="n">TextPath</span>  <span class="c1"># noqa # Unused, but imported by others.</span>
+<span class="kn">from</span> <span class="nn">.textpath</span> <span class="kn">import</span> <span class="n">TextPath</span><span class="p">,</span> <span class="n">TextToPath</span>  <span class="c1"># noqa # Logically located here</span>
 <span class="kn">from</span> <span class="nn">.transforms</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Affine2D</span><span class="p">,</span> <span class="n">Bbox</span><span class="p">,</span> <span class="n">BboxBase</span><span class="p">,</span> <span class="n">BboxTransformTo</span><span class="p">,</span> <span class="n">IdentityTransform</span><span class="p">,</span> <span class="n">Transform</span><span class="p">)</span>
 
 
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
-
-<span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_rotation</span><span class="p">(</span><span class="n">rotation</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return *rotation* normalized to an angle between 0 and 360 degrees.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    rotation : float or {None, &#39;horizontal&#39;, &#39;vertical&#39;}</span>
-<span class="sd">        Rotation angle in degrees. *None* and &#39;horizontal&#39; equal 0,</span>
-<span class="sd">        &#39;vertical&#39; equals 90.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    float</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">rotation</span><span class="p">)</span> <span class="o">%</span> <span class="mi">360</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">cbook</span><span class="o">.</span><span class="n">_str_equal</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="s1">&#39;horizontal&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rotation</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">0.</span>
-        <span class="k">elif</span> <span class="n">cbook</span><span class="o">.</span><span class="n">_str_equal</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="s1">&#39;vertical&#39;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mf">90.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rotation is </span><span class="si">{!r}</span><span class="s2">; expected either &#39;horizontal&#39;, &quot;</span>
-                             <span class="s2">&quot;&#39;vertical&#39;, numeric value, or None&quot;</span>
-                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rotation</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">err</span>
 
 
 <span class="k">def</span> <span class="nf">_get_textbox</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
@@ -215,29 +187,29 @@
 <span class="nd">@_docstring</span><span class="o">.</span><span class="n">interpd</span>
 <span class="nd">@_api</span><span class="o">.</span><span class="n">define_aliases</span><span class="p">({</span>
     <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;fontfamily&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;family&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontproperties&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;font&quot;</span><span class="p">,</span> <span class="s2">&quot;font_properties&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;horizontalalignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ha&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;multialignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ma&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;fontfamily&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;family&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontname&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontstretch&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;stretch&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontstyle&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontvariant&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;variant&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;verticalalignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;va&quot;</span><span class="p">],</span>
     <span class="s2">&quot;fontweight&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;weight&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;horizontalalignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ha&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;verticalalignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;va&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;multialignment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ma&quot;</span><span class="p">],</span>
 <span class="p">})</span>
 <span class="k">class</span> <span class="nc">Text</span><span class="p">(</span><span class="n">Artist</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle storing and drawing of text in window or data coordinates.&quot;&quot;&quot;</span>
 
     <span class="n">zorder</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">_charsize_cache</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;Text(</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">))</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Text(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 
-    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;color&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>           <span class="c1"># defaults to rc params</span>
                  <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;baseline&#39;</span><span class="p">,</span>
                  <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
@@ -249,8 +221,8 @@
                  <span class="n">usetex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>          <span class="c1"># defaults to rcParams[&#39;text.usetex&#39;]</span>
                  <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">transform_rotates_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="o">*</span><span class="p">,</span>
                  <span class="n">parse_math</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>    <span class="c1"># defaults to rcParams[&#39;text.parse_math&#39;]</span>
+                 <span class="n">antialiased</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># defaults to rcParams[&#39;text.antialiased&#39;]</span>
                  <span class="o">**</span><span class="n">kwargs</span>
                  <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -258,7 +230,7 @@
 
 <span class="sd">        The text is aligned relative to the anchor point (*x*, *y*) according</span>
 <span class="sd">        to ``horizontalalignment`` (default: &#39;left&#39;) and ``verticalalignment``</span>
-<span class="sd">        (default: &#39;bottom&#39;). See also</span>
+<span class="sd">        (default: &#39;baseline&#39;). See also</span>
 <span class="sd">        :doc:`/gallery/text_labels_and_annotations/text_alignment`.</span>
 
 <span class="sd">        While Text accepts the &#39;label&#39; keyword argument, by default it is not</span>
@@ -271,13 +243,46 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_visual_defaults</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+            <span class="n">fontproperties</span><span class="o">=</span><span class="n">fontproperties</span><span class="p">,</span>
+            <span class="n">usetex</span><span class="o">=</span><span class="n">usetex</span><span class="p">,</span>
+            <span class="n">parse_math</span><span class="o">=</span><span class="n">parse_math</span><span class="p">,</span>
+            <span class="n">wrap</span><span class="o">=</span><span class="n">wrap</span><span class="p">,</span>
+            <span class="n">verticalalignment</span><span class="o">=</span><span class="n">verticalalignment</span><span class="p">,</span>
+            <span class="n">horizontalalignment</span><span class="o">=</span><span class="n">horizontalalignment</span><span class="p">,</span>
+            <span class="n">multialignment</span><span class="o">=</span><span class="n">multialignment</span><span class="p">,</span>
+            <span class="n">rotation</span><span class="o">=</span><span class="n">rotation</span><span class="p">,</span>
+            <span class="n">transform_rotates_text</span><span class="o">=</span><span class="n">transform_rotates_text</span><span class="p">,</span>
+            <span class="n">linespacing</span><span class="o">=</span><span class="n">linespacing</span><span class="p">,</span>
+            <span class="n">rotation_mode</span><span class="o">=</span><span class="n">rotation_mode</span><span class="p">,</span>
+            <span class="n">antialiased</span><span class="o">=</span><span class="n">antialiased</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reset_visual_defaults</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">text</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">fontproperties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">usetex</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">parse_math</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;baseline&#39;</span><span class="p">,</span>
+        <span class="n">horizontalalignment</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span>
+        <span class="n">multialignment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rotation</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">transform_rotates_text</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">linespacing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rotation_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">antialiased</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span>
-            <span class="n">color</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;text.color&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="s2">&quot;text.color&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_fontproperties</span><span class="p">(</span><span class="n">fontproperties</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_usetex</span><span class="p">(</span><span class="n">usetex</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_parse_math</span><span class="p">(</span><span class="n">parse_math</span> <span class="k">if</span> <span class="n">parse_math</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
-                            <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.parse_math&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parse_math</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">parse_math</span><span class="p">,</span> <span class="s1">&#39;text.parse_math&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_wrap</span><span class="p">(</span><span class="n">wrap</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_verticalalignment</span><span class="p">(</span><span class="n">verticalalignment</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_horizontalalignment</span><span class="p">(</span><span class="n">horizontalalignment</span><span class="p">)</span>
@@ -290,21 +295,24 @@
             <span class="n">linespacing</span> <span class="o">=</span> <span class="mf">1.2</span>  <span class="c1"># Maybe use rcParam later.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_linespacing</span><span class="p">(</span><span class="n">linespacing</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_rotation_mode</span><span class="p">(</span><span class="n">rotation_mode</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_antialiased</span><span class="p">(</span><span class="n">antialiased</span> <span class="k">if</span> <span class="n">antialiased</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                             <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.antialiased&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">cbook</span><span class="o">.</span><span class="n">normalize_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">Text</span><span class="p">)</span>
         <span class="n">sentinel</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>  <span class="c1"># bbox can be None, so use another sentinel.</span>
         <span class="c1"># Update fontproperties first, as it has lowest priority.</span>
         <span class="n">fontproperties</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;fontproperties&quot;</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fontproperties</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">sentinel</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_fontproperties</span><span class="p">(</span><span class="n">fontproperties</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_fontproperties</span><span class="p">(</span><span class="n">fontproperties</span><span class="p">))</span>
         <span class="c1"># Update bbox last, as it depends on font properties.</span>
         <span class="n">bbox</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;bbox&quot;</span><span class="p">,</span> <span class="n">sentinel</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ret</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">bbox</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">sentinel</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_bbox</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">set_bbox</span><span class="p">(</span><span class="n">bbox</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
@@ -317,20 +325,15 @@
 <span class="sd">        Return whether the mouse event occurred inside the axis-aligned</span>
 <span class="sd">        bounding-box of the text.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible</span><span class="p">()</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
-
         <span class="c1"># Explicitly use Text.get_window_extent(self) and not</span>
         <span class="c1"># self.get_window_extent() so that Annotation.contains does not</span>
         <span class="c1"># accidentally cover the entire annotation bounding box.</span>
         <span class="n">bbox</span> <span class="o">=</span> <span class="n">Text</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">inside</span> <span class="o">=</span> <span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">x0</span> <span class="o">&lt;=</span> <span class="n">mouseevent</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">x1</span>
                   <span class="ow">and</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y0</span> <span class="o">&lt;=</span> <span class="n">mouseevent</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y1</span><span class="p">)</span>
-
         <span class="n">cattr</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># if the text has a surrounding patch, also check containment for it,</span>
         <span class="c1"># and merge the results with the results for the text.</span>
@@ -338,7 +341,6 @@
             <span class="n">patch_inside</span><span class="p">,</span> <span class="n">patch_cattr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox_patch</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
             <span class="n">inside</span> <span class="o">=</span> <span class="n">inside</span> <span class="ow">or</span> <span class="n">patch_inside</span>
             <span class="n">cattr</span><span class="p">[</span><span class="s2">&quot;bbox_patch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">patch_cattr</span>
-
         <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">cattr</span>
 
     <span class="k">def</span> <span class="nf">_get_xy_display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -353,6 +355,38 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multialignment</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalalignment</span>
+
+    <span class="k">def</span> <span class="nf">_char_index_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate the index closest to the coordinate x in display space.</span>
+
+<span class="sd">        The position of text[index] is assumed to be the sum of the widths</span>
+<span class="sd">        of all preceding characters text[:index].</span>
+
+<span class="sd">        This works only on single line texts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
+
+        <span class="n">fontproperties</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fontproperties</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fontproperties</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">Text</span><span class="o">.</span><span class="n">_charsize_cache</span><span class="p">:</span>
+            <span class="n">Text</span><span class="o">.</span><span class="n">_charsize_cache</span><span class="p">[</span><span class="n">fontproperties</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">charsize_cache</span> <span class="o">=</span> <span class="n">Text</span><span class="o">.</span><span class="n">_charsize_cache</span><span class="p">[</span><span class="n">fontproperties</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">charsize_cache</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+                <span class="n">bb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">()</span>
+                <span class="n">charsize_cache</span><span class="p">[</span><span class="n">char</span><span class="p">]</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">x1</span> <span class="o">-</span> <span class="n">bb</span><span class="o">.</span><span class="n">x0</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">bb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">()</span>
+
+        <span class="n">size_accum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">charsize_cache</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">text</span><span class="p">])</span>
+        <span class="n">std_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">bb</span><span class="o">.</span><span class="n">x0</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">size_accum</span> <span class="o">-</span> <span class="n">std_x</span><span class="p">))</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_rotation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text angle in degrees between 0 and 360.&quot;&quot;&quot;</span>
@@ -375,17 +409,42 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        m : {None, &#39;default&#39;, &#39;anchor&#39;}</span>
-<span class="sd">            If ``None`` or ``&quot;default&quot;``, the text will be first rotated, then</span>
-<span class="sd">            aligned according to their horizontal and vertical alignments.  If</span>
-<span class="sd">            ``&quot;anchor&quot;``, then alignment occurs before rotation.</span>
+<span class="sd">            If ``&quot;default&quot;``, the text will be first rotated, then aligned according</span>
+<span class="sd">            to their horizontal and vertical alignments.  If ``&quot;anchor&quot;``, then</span>
+<span class="sd">            alignment occurs before rotation. Passing ``None`` will set the rotation</span>
+<span class="sd">            mode to ``&quot;default&quot;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_api</span><span class="o">.</span><span class="n">check_in_list</span><span class="p">([</span><span class="s2">&quot;anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">rotation_mode</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_api</span><span class="o">.</span><span class="n">check_in_list</span><span class="p">((</span><span class="s2">&quot;anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">),</span> <span class="n">rotation_mode</span><span class="o">=</span><span class="n">m</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_mode</span> <span class="o">=</span> <span class="n">m</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">get_rotation_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text rotation mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_mode</span>
+
+    <span class="k">def</span> <span class="nf">set_antialiased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antialiased</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set whether to use antialiased rendering.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        antialiased : bool</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Antialiasing will be determined by :rc:`text.antialiased`</span>
+<span class="sd">        and the parameter *antialiased* will have no effect if the text contains</span>
+<span class="sd">        math expressions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_antialiased</span> <span class="o">=</span> <span class="n">antialiased</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">get_antialiased</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether antialiased rendering is used.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antialiased</span>
 
     <span class="k">def</span> <span class="nf">update_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
@@ -400,6 +459,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_transform_rotates_text</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_transform_rotates_text</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_picker</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_picker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linespacing</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_linespacing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_antialiased</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">_antialiased</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_get_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
@@ -409,7 +469,7 @@
 <span class="sd">        of a rotated text when necessary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">thisx</span><span class="p">,</span> <span class="n">thisy</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Ensures lines is not empty.</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_wrapped_text</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Ensures lines is not empty.</span>
 
         <span class="n">ws</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">hs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -624,10 +684,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_bbox_patch</span><span class="o">.</span><span class="n">set_mutation_scale</span><span class="p">(</span><span class="n">fontsize_in_pixel</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_clip_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">clipprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">clip_box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clipbox</span><span class="p">,</span>
-                         <span class="n">clip_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clippath</span><span class="p">,</span>
-                         <span class="n">clip_on</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clipon</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bbox_patch</span><span class="p">:</span>
+            <span class="n">clipprops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">clip_box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clipbox</span><span class="p">,</span>
+                             <span class="n">clip_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clippath</span><span class="p">,</span>
+                             <span class="n">clip_on</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_clipon</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_bbox_patch</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">clipprops</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_clip_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clipbox</span><span class="p">):</span>
@@ -652,6 +712,9 @@
     <span class="k">def</span> <span class="nf">set_wrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrap</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set whether the text can be wrapped.</span>
+
+<span class="sd">        Wrapping makes sure the text is confined to the (sub)figure box. It</span>
+<span class="sd">        does not take into account any other artists.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -700,16 +763,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">rotation</span> <span class="o">&gt;</span> <span class="mi">270</span><span class="p">:</span>
             <span class="n">quad</span> <span class="o">=</span> <span class="n">rotation</span> <span class="o">-</span> <span class="mi">270</span>
-            <span class="n">h1</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">quad</span><span class="p">))</span>
+            <span class="n">h1</span> <span class="o">=</span> <span class="p">(</span><span class="n">y0</span> <span class="o">-</span> <span class="n">figure_box</span><span class="o">.</span><span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">quad</span><span class="p">))</span>
             <span class="n">h2</span> <span class="o">=</span> <span class="p">(</span><span class="n">figure_box</span><span class="o">.</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">quad</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">rotation</span> <span class="o">&gt;</span> <span class="mi">180</span><span class="p">:</span>
             <span class="n">quad</span> <span class="o">=</span> <span class="n">rotation</span> <span class="o">-</span> <span class="mi">180</span>
-            <span class="n">h1</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">quad</span><span class="p">))</span>
-            <span class="n">h2</span> <span class="o">=</span> <span class="n">y0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">quad</span><span class="p">))</span>
+            <span class="n">h1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">figure_box</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">quad</span><span class="p">))</span>
+            <span class="n">h2</span> <span class="o">=</span> <span class="p">(</span><span class="n">y0</span> <span class="o">-</span> <span class="n">figure_box</span><span class="o">.</span><span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">quad</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">rotation</span> <span class="o">&gt;</span> <span class="mi">90</span><span class="p">:</span>
             <span class="n">quad</span> <span class="o">=</span> <span class="n">rotation</span> <span class="o">-</span> <span class="mi">90</span>
             <span class="n">h1</span> <span class="o">=</span> <span class="p">(</span><span class="n">figure_box</span><span class="o">.</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">quad</span><span class="p">))</span>
-            <span class="n">h2</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">quad</span><span class="p">))</span>
+            <span class="n">h2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">figure_box</span><span class="o">.</span><span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">quad</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">h1</span> <span class="o">=</span> <span class="p">(</span><span class="n">figure_box</span><span class="o">.</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">rotation</span><span class="p">))</span>
             <span class="n">h2</span> <span class="o">=</span> <span class="p">(</span><span class="n">figure_box</span><span class="o">.</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span> <span class="o">-</span> <span class="n">rotation</span><span class="p">))</span>
@@ -720,10 +783,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the width of a given text string, in pixels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="o">.</span><span class="n">get_text_width_height_descent</span><span class="p">(</span>
             <span class="n">text</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">get_fontproperties</span><span class="p">(),</span>
-            <span class="kc">False</span><span class="p">)</span>
+            <span class="n">cbook</span><span class="o">.</span><span class="n">is_math_text</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_wrapped_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -814,6 +878,7 @@
             <span class="n">gc</span><span class="o">.</span><span class="n">set_foreground</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_color</span><span class="p">())</span>
             <span class="n">gc</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_alpha</span><span class="p">())</span>
             <span class="n">gc</span><span class="o">.</span><span class="n">set_url</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">)</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">set_antialiased</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_antialiased</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_set_gc_clip</span><span class="p">(</span><span class="n">gc</span><span class="p">)</span>
 
             <span class="n">angle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rotation</span><span class="p">()</span>
@@ -946,27 +1011,6 @@
         <span class="c1"># specified with &#39;set_x&#39; and &#39;set_y&#39;.</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span>
 
-    <span class="c1"># When removing, also remove the hash(color) check in set_color()</span>
-    <span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.5&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">get_prop_tup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return a hashable tuple of properties.</span>
-
-<span class="sd">        Not intended to be human readable, but useful for backends who</span>
-<span class="sd">        want to cache derived information about text (e.g., layouts) and</span>
-<span class="sd">        need to know if the text has changed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_unitless_position</span><span class="p">()</span>
-        <span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_text</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_verticalalignment</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_horizontalalignment</span><span class="p">,</span>
-                <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fontproperties</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_rotation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation_mode</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_transform_rotates_text</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span><span class="p">,</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">renderer</span><span class="p">),</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_linespacing</span>
-                <span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">get_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text string.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span>
@@ -1031,7 +1075,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        color : color</span>
+<span class="sd">        color : :mpltype:`color`</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
@@ -1051,18 +1095,12 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        color : color</span>
+<span class="sd">        color : :mpltype:`color`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># &quot;auto&quot; is only supported by axisartist, but we can just let it error</span>
         <span class="c1"># out at draw time for simplicity.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cbook</span><span class="o">.</span><span class="n">_str_equal</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">):</span>
             <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">_check_color_like</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
-        <span class="c1"># Make sure it is hashable, or get_prop_tup will fail (remove this once</span>
-        <span class="c1"># get_prop_tup is removed).</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">hash</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="n">color</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">color</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -1112,7 +1150,7 @@
 
     <span class="k">def</span> <span class="nf">set_fontfamily</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fontname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the font family.  May be either a single string, or a list of</span>
+<span class="sd">        Set the font family.  Can be either a single string, or a list of</span>
 <span class="sd">        strings in decreasing priority.  Each string may be either a real font</span>
 <span class="sd">        name or a generic font class name.  If the latter, the specific font</span>
 <span class="sd">        names will be looked up in the corresponding rcParams.</span>
@@ -1172,7 +1210,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        fontsize : float or {&#39;xx-small&#39;, &#39;x-small&#39;, &#39;small&#39;, &#39;medium&#39;, \</span>
 <span class="sd">&#39;large&#39;, &#39;x-large&#39;, &#39;xx-large&#39;}</span>
-<span class="sd">            If float, the fontsize in points. The string values denote sizes</span>
+<span class="sd">            If a float, the fontsize in points. The string values denote sizes</span>
 <span class="sd">            relative to the default font size.</span>
 
 <span class="sd">        See Also</span>
@@ -1207,7 +1245,7 @@
 <span class="sd">            The name of the font family.</span>
 
 <span class="sd">            Available font families are defined in the</span>
-<span class="sd">            :ref:`matplotlibrc.template file</span>
+<span class="sd">            :ref:`default matplotlibrc file</span>
 <span class="sd">            &lt;customizing-with-matplotlibrc-files&gt;`.</span>
 
 <span class="sd">        See Also</span>
@@ -1323,7 +1361,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        align : {&#39;bottom&#39;, &#39;baseline&#39;, &#39;center&#39;, &#39;center_baseline&#39;, &#39;top&#39;}</span>
+<span class="sd">        align : {&#39;baseline&#39;, &#39;bottom&#39;, &#39;center&#39;, &#39;center_baseline&#39;, &#39;top&#39;}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_api</span><span class="o">.</span><span class="n">check_in_list</span><span class="p">(</span>
             <span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="s1">&#39;baseline&#39;</span><span class="p">,</span> <span class="s1">&#39;center_baseline&#39;</span><span class="p">],</span>
@@ -1343,10 +1381,9 @@
 <span class="sd">            Any object gets converted to its `str` representation, except for</span>
 <span class="sd">            ``None`` which is converted to an empty string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">s</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">s</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="nf">_preprocess_math</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -1387,6 +1424,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fontproperties</span> <span class="o">=</span> <span class="n">FontProperties</span><span class="o">.</span><span class="n">_from_any</span><span class="p">(</span><span class="n">fp</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
+    <span class="nd">@_docstring</span><span class="o">.</span><span class="n">kwarg_doc</span><span class="p">(</span><span class="s2">&quot;bool, default: :rc:`text.usetex`&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_usetex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">usetex</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
@@ -1423,7 +1461,7 @@
 
     <span class="k">def</span> <span class="nf">set_fontname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fontname</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Alias for `set_family`.</span>
+<span class="sd">        Alias for `set_fontfamily`.</span>
 
 <span class="sd">        One-way alias only: the getter differs.</span>
 
@@ -1437,7 +1475,7 @@
 <span class="sd">        .font_manager.FontProperties.set_family</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_family</span><span class="p">(</span><span class="n">fontname</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_fontfamily</span><span class="p">(</span><span class="n">fontname</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">OffsetFrom</span><span class="p">:</span>
@@ -1447,7 +1485,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        artist : `.Artist` or `.BboxBase` or `.Transform`</span>
+<span class="sd">        artist : `~matplotlib.artist.Artist` or `.BboxBase` or `.Transform`</span>
 <span class="sd">            The object to compute the offset from.</span>
 
 <span class="sd">        ref_coord : (float, float)</span>
@@ -1462,7 +1500,8 @@
 <span class="sd">            The screen units to use (pixels or points) for the offset input.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_artist</span> <span class="o">=</span> <span class="n">artist</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coord</span> <span class="o">=</span> <span class="n">ref_coord</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">ref_coord</span>  <span class="c1"># Make copy when ref_coord is an array (and check the shape).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coord</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_unit</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
@@ -1479,13 +1518,6 @@
     <span class="k">def</span> <span class="nf">get_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the unit for input to the transform used by ``__call__``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit</span>
-
-    <span class="k">def</span> <span class="nf">_get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-        <span class="n">unit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_unit</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;pixels&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">1.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1515,12 +1547,9 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_artist</span><span class="p">,</span> <span class="n">Transform</span><span class="p">):</span>
             <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_artist</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ref_coord</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;unknown type&quot;</span><span class="p">)</span>
-
-        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_scale</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">tr</span>
+            <span class="n">_api</span><span class="o">.</span><span class="n">check_isinstance</span><span class="p">((</span><span class="n">Artist</span><span class="p">,</span> <span class="n">BboxBase</span><span class="p">,</span> <span class="n">Transform</span><span class="p">),</span> <span class="n">artist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_artist</span><span class="p">)</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit</span> <span class="o">==</span> <span class="s2">&quot;pixels&quot;</span> <span class="k">else</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">_AnnotationBase</span><span class="p">:</span>
@@ -1529,65 +1558,67 @@
                  <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span>
                  <span class="n">annotation_clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">xy</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy</span>  <span class="c1"># Make copy when xy is an array (and check the shape).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xy</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">xycoords</span> <span class="o">=</span> <span class="n">xycoords</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_annotation_clip</span><span class="p">(</span><span class="n">annotation_clip</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_draggable</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_get_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">s</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">s</span><span class="p">,</span> <span class="n">s</span>
-        <span class="k">if</span> <span class="n">s1</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">xy</span>
+        <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span> <span class="o">=</span> <span class="n">coords</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">xcoord</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_xunits</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">s2</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ycoord</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
             <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_yunits</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_get_xy_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_xy_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">coords</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span> <span class="o">=</span> <span class="n">coords</span>
             <span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="kn">import</span> <span class="n">blended_transform_factory</span>
-            <span class="n">tr1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
-            <span class="n">tr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
-            <span class="n">tr</span> <span class="o">=</span> <span class="n">blended_transform_factory</span><span class="p">(</span><span class="n">tr1</span><span class="p">,</span> <span class="n">tr2</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">tr</span>
-        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-            <span class="n">tr</span> <span class="o">=</span> <span class="n">s</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+            <span class="n">tr1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">xcoord</span><span class="p">)</span>
+            <span class="n">tr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy_transform</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">ycoord</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">blended_transform_factory</span><span class="p">(</span><span class="n">tr1</span><span class="p">,</span> <span class="n">tr2</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">coords</span><span class="p">):</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">BboxBase</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">BboxTransformTo</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">Transform</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">tr</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unknown return type&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
-            <span class="n">bbox</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;xycoords callable must return a BboxBase or Transform, not a &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">Artist</span><span class="p">):</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">BboxTransformTo</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">BboxBase</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">BboxTransformTo</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Transform</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">s</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown coordinate type: </span><span class="si">{</span><span class="n">s</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">BboxBase</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">BboxTransformTo</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">Transform</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">coords</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;&#39;xycoords&#39; must be an instance of str, tuple[str, str], Artist, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Transform, or Callable, not a </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">coords</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transData</span>
-        <span class="k">elif</span> <span class="n">s</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">coords</span> <span class="o">==</span> <span class="s1">&#39;polar&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">matplotlib.projections</span> <span class="kn">import</span> <span class="n">PolarAxes</span>
-            <span class="n">tr</span> <span class="o">=</span> <span class="n">PolarAxes</span><span class="o">.</span><span class="n">PolarTransform</span><span class="p">()</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">PolarAxes</span><span class="o">.</span><span class="n">PolarTransform</span><span class="p">(</span><span class="n">apply_theta_transforms</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="n">trans</span> <span class="o">=</span> <span class="n">tr</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transData</span>
             <span class="k">return</span> <span class="n">trans</span>
 
-        <span class="n">s_</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">!r}</span><span class="s2"> is not a recognized coordinate&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bbox_name</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>  <span class="c1"># i.e. len(coords.split()) != 2.</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coords</span><span class="si">!r}</span><span class="s2"> is not a valid coordinate&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="n">bbox0</span><span class="p">,</span> <span class="n">xy0</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
-        <span class="n">bbox_name</span><span class="p">,</span> <span class="n">unit</span> <span class="o">=</span> <span class="n">s_</span>
         <span class="c1"># if unit is offset-like</span>
         <span class="k">if</span> <span class="n">bbox_name</span> <span class="o">==</span> <span class="s2">&quot;figure&quot;</span><span class="p">:</span>
             <span class="n">bbox0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">figbbox</span>
@@ -1595,57 +1626,27 @@
             <span class="n">bbox0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">bbox</span>
         <span class="k">elif</span> <span class="n">bbox_name</span> <span class="o">==</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span>
             <span class="n">bbox0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">bbox</span>
-        <span class="c1"># elif bbox_name == &quot;bbox&quot;:</span>
-        <span class="c1">#     if bbox is None:</span>
-        <span class="c1">#         raise RuntimeError(&quot;bbox is specified as a coordinate but &quot;</span>
-        <span class="c1">#                            &quot;never set&quot;)</span>
-        <span class="c1">#     bbox0 = self._get_bbox(renderer, bbox)</span>
 
+        <span class="c1"># reference x, y in display coordinate</span>
         <span class="k">if</span> <span class="n">bbox0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">xy0</span> <span class="o">=</span> <span class="n">bbox0</span><span class="o">.</span><span class="n">p0</span>
         <span class="k">elif</span> <span class="n">bbox_name</span> <span class="o">==</span> <span class="s2">&quot;offset&quot;</span><span class="p">:</span>
-            <span class="n">xy0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ref_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">xy0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># reference x, y in display coordinate</span>
-            <span class="n">ref_x</span><span class="p">,</span> <span class="n">ref_y</span> <span class="o">=</span> <span class="n">xy0</span>
-            <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;points&quot;</span><span class="p">:</span>
-                <span class="c1"># dots per points</span>
-                <span class="n">dpp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="mi">72</span>
-                <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">dpp</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;pixels&quot;</span><span class="p">:</span>
-                <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span>
-                <span class="n">fontsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
-                <span class="n">dpp</span> <span class="o">=</span> <span class="n">fontsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="mi">72</span>
-                <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">dpp</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;fraction&quot;</span><span class="p">:</span>
-                <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">bbox0</span><span class="o">.</span><span class="n">size</span>
-                <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unit</span><span class="si">!r}</span><span class="s2"> is not a recognized unit&quot;</span><span class="p">)</span>
-
-            <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">ref_x</span><span class="p">,</span> <span class="n">ref_y</span><span class="p">)</span>
-
+            <span class="n">xy0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_position_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">s</span><span class="si">!r}</span><span class="s2"> is not a recognized coordinate&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">coords</span><span class="si">!r}</span><span class="s2"> is not a valid coordinate&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_ref_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return x, y (in display coordinates) that is to be used for a reference</span>
-<span class="sd">        of any offset coordinate.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xycoords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;points&quot;</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="mi">72</span><span class="p">)</span>  <span class="c1"># dpi/72 dots per point</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;pixels&quot;</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi</span> <span class="o">/</span> <span class="mi">72</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">unit</span> <span class="o">==</span> <span class="s2">&quot;fraction&quot;</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">Affine2D</span><span class="p">()</span><span class="o">.</span><span class="n">scale</span><span class="p">(</span><span class="o">*</span><span class="n">bbox0</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">unit</span><span class="si">!r}</span><span class="s2"> is not a recognized unit&quot;</span><span class="p">)</span>
 
-    <span class="c1"># def _get_bbox(self, renderer):</span>
-    <span class="c1">#     if hasattr(bbox, &quot;bounds&quot;):</span>
-    <span class="c1">#         return bbox</span>
-    <span class="c1">#     elif hasattr(bbox, &quot;get_window_extent&quot;):</span>
-    <span class="c1">#         bbox = bbox.get_window_extent()</span>
-    <span class="c1">#         return bbox</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         raise ValueError(&quot;A bbox instance is expected but got %s&quot; %</span>
-    <span class="c1">#                          str(bbox))</span>
+        <span class="k">return</span> <span class="n">tr</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">*</span><span class="n">xy0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_annotation_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -1655,10 +1656,10 @@
 <span class="sd">        ----------</span>
 <span class="sd">        b : bool or None</span>
 <span class="sd">            - True: The annotation will be clipped when ``self.xy`` is</span>
-<span class="sd">              outside the axes.</span>
+<span class="sd">              outside the Axes.</span>
 <span class="sd">            - False: The annotation will always be drawn.</span>
 <span class="sd">            - None: The annotation will be clipped when ``self.xy`` is</span>
-<span class="sd">              outside the axes and ``self.xycoords == &quot;data&quot;``.</span>
+<span class="sd">              outside the Axes and ``self.xycoords == &quot;data&quot;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annotation_clip</span> <span class="o">=</span> <span class="n">b</span>
 
@@ -1672,8 +1673,7 @@
 
     <span class="k">def</span> <span class="nf">_get_position_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the pixel position of the annotated point.&quot;&quot;&quot;</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xycoords</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xycoords</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_check_xy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check whether the annotation at *xy_pixel* should be drawn.&quot;&quot;&quot;</span>
@@ -1681,7 +1681,7 @@
             <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_annotation_clip</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">b</span> <span class="ow">or</span> <span class="p">(</span><span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">xycoords</span> <span class="o">==</span> <span class="s2">&quot;data&quot;</span><span class="p">):</span>
-            <span class="c1"># check if self.xy is inside the axes.</span>
+            <span class="c1"># check if self.xy is inside the Axes.</span>
             <span class="n">xy_pixel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_position_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">xy_pixel</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -1695,6 +1695,9 @@
 <span class="sd">        state : bool or None</span>
 <span class="sd">            - True or False: set the draggability.</span>
 <span class="sd">            - None: toggle the draggability.</span>
+<span class="sd">        use_blit : bool, default: False</span>
+<span class="sd">            Use blitting for faster image composition. For details see</span>
+<span class="sd">            :ref:`func-animation`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1736,7 +1739,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s2">&quot;Annotation(</span><span class="si">%g</span><span class="s2">, </span><span class="si">%g</span><span class="s2">, </span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Annotation(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="si">!r}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span>
                  <span class="n">xytext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1767,8 +1770,8 @@
 <span class="sd">            The position *(x, y)* to place the text at. The coordinate system</span>
 <span class="sd">            is determined by *textcoords*.</span>
 
-<span class="sd">        xycoords : str or `.Artist` or `.Transform` or callable or \</span>
-<span class="sd">(float, float), default: &#39;data&#39;</span>
+<span class="sd">        xycoords : single or two-tuple of str or `.Artist` or `.Transform` or \</span>
+<span class="sd">callable, default: &#39;data&#39;</span>
 
 <span class="sd">            The coordinate system that *xy* is given in. The following types</span>
 <span class="sd">            of values are supported:</span>
@@ -1784,9 +1787,9 @@
 <span class="sd">              &#39;subfigure points&#39;   Points from the lower left of the subfigure</span>
 <span class="sd">              &#39;subfigure pixels&#39;   Pixels from the lower left of the subfigure</span>
 <span class="sd">              &#39;subfigure fraction&#39; Fraction of subfigure from lower left</span>
-<span class="sd">              &#39;axes points&#39;        Points from lower left corner of axes</span>
-<span class="sd">              &#39;axes pixels&#39;        Pixels from lower left corner of axes</span>
-<span class="sd">              &#39;axes fraction&#39;      Fraction of axes from lower left</span>
+<span class="sd">              &#39;axes points&#39;        Points from lower left corner of the Axes</span>
+<span class="sd">              &#39;axes pixels&#39;        Pixels from lower left corner of the Axes</span>
+<span class="sd">              &#39;axes fraction&#39;      Fraction of Axes from lower left</span>
 <span class="sd">              &#39;data&#39;               Use the coordinate system of the object</span>
 <span class="sd">                                   being annotated (default)</span>
 <span class="sd">              &#39;polar&#39;              *(theta, r)* if not native &#39;data&#39;</span>
@@ -1820,19 +1823,19 @@
 
 <span class="sd">            See :ref:`plotting-guide-annotation` for more details.</span>
 
-<span class="sd">        textcoords : str or `.Artist` or `.Transform` or callable or \</span>
-<span class="sd">(float, float), default: value of *xycoords*</span>
+<span class="sd">        textcoords : single or two-tuple of str or `.Artist` or `.Transform` \</span>
+<span class="sd">or callable, default: value of *xycoords*</span>
 <span class="sd">            The coordinate system that *xytext* is given in.</span>
 
-<span class="sd">            All *xycoords* values are valid as well as the following</span>
-<span class="sd">            strings:</span>
+<span class="sd">            All *xycoords* values are valid as well as the following strings:</span>
 
-<span class="sd">            =================   =========================================</span>
+<span class="sd">            =================   =================================================</span>
 <span class="sd">            Value               Description</span>
-<span class="sd">            =================   =========================================</span>
-<span class="sd">            &#39;offset points&#39;     Offset (in points) from the *xy* value</span>
-<span class="sd">            &#39;offset pixels&#39;     Offset (in pixels) from the *xy* value</span>
-<span class="sd">            =================   =========================================</span>
+<span class="sd">            =================   =================================================</span>
+<span class="sd">            &#39;offset points&#39;     Offset, in points, from the *xy* value</span>
+<span class="sd">            &#39;offset pixels&#39;     Offset, in pixels, from the *xy* value</span>
+<span class="sd">            &#39;offset fontsize&#39;   Offset, relative to fontsize, from the *xy* value</span>
+<span class="sd">            =================   =================================================</span>
 
 <span class="sd">        arrowprops : dict, optional</span>
 <span class="sd">            The properties used to draw a `.FancyArrowPatch` arrow between the</span>
@@ -1847,15 +1850,15 @@
 <span class="sd">            If *arrowprops* does not contain the key &#39;arrowstyle&#39; the</span>
 <span class="sd">            allowed keys are:</span>
 
-<span class="sd">            ==========   ======================================================</span>
-<span class="sd">            Key          Description</span>
-<span class="sd">            ==========   ======================================================</span>
-<span class="sd">            width        The width of the arrow in points</span>
-<span class="sd">            headwidth    The width of the base of the arrow head in points</span>
-<span class="sd">            headlength   The length of the arrow head in points</span>
-<span class="sd">            shrink       Fraction of total length to shrink from both ends</span>
-<span class="sd">            ?            Any key to :class:`matplotlib.patches.FancyArrowPatch`</span>
-<span class="sd">            ==========   ======================================================</span>
+<span class="sd">            ==========  =================================================</span>
+<span class="sd">            Key         Description</span>
+<span class="sd">            ==========  =================================================</span>
+<span class="sd">            width       The width of the arrow in points</span>
+<span class="sd">            headwidth   The width of the base of the arrow head in points</span>
+<span class="sd">            headlength  The length of the arrow head in points</span>
+<span class="sd">            shrink      Fraction of total length to shrink from both ends</span>
+<span class="sd">            ?           Any `.FancyArrowPatch` property</span>
+<span class="sd">            ==========  =================================================</span>
 
 <span class="sd">            The arrow is attached to the edge of the text box, the exact</span>
 <span class="sd">            position (corners or centers) depending on where it&#39;s pointing to.</span>
@@ -1864,43 +1867,42 @@
 
 <span class="sd">            This is used if &#39;arrowstyle&#39; is provided in the *arrowprops*.</span>
 
-<span class="sd">            Valid keys are the following `~matplotlib.patches.FancyArrowPatch`</span>
-<span class="sd">            parameters:</span>
+<span class="sd">            Valid keys are the following `.FancyArrowPatch` parameters:</span>
 
-<span class="sd">            ===============  ==================================================</span>
+<span class="sd">            ===============  ===================================</span>
 <span class="sd">            Key              Description</span>
-<span class="sd">            ===============  ==================================================</span>
-<span class="sd">            arrowstyle       the arrow style</span>
-<span class="sd">            connectionstyle  the connection style</span>
-<span class="sd">            relpos           see below; default is (0.5, 0.5)</span>
-<span class="sd">            patchA           default is bounding box of the text</span>
-<span class="sd">            patchB           default is None</span>
-<span class="sd">            shrinkA          default is 2 points</span>
-<span class="sd">            shrinkB          default is 2 points</span>
-<span class="sd">            mutation_scale   default is text size (in points)</span>
-<span class="sd">            mutation_aspect  default is 1.</span>
-<span class="sd">            ?                any key for :class:`matplotlib.patches.PathPatch`</span>
-<span class="sd">            ===============  ==================================================</span>
+<span class="sd">            ===============  ===================================</span>
+<span class="sd">            arrowstyle       The arrow style</span>
+<span class="sd">            connectionstyle  The connection style</span>
+<span class="sd">            relpos           See below; default is (0.5, 0.5)</span>
+<span class="sd">            patchA           Default is bounding box of the text</span>
+<span class="sd">            patchB           Default is None</span>
+<span class="sd">            shrinkA          In points. Default is 2 points</span>
+<span class="sd">            shrinkB          In points. Default is 2 points</span>
+<span class="sd">            mutation_scale   Default is text size (in points)</span>
+<span class="sd">            mutation_aspect  Default is 1</span>
+<span class="sd">            ?                Any `.FancyArrowPatch` property</span>
+<span class="sd">            ===============  ===================================</span>
 
 <span class="sd">            The exact starting point position of the arrow is defined by</span>
 <span class="sd">            *relpos*. It&#39;s a tuple of relative coordinates of the text box,</span>
 <span class="sd">            where (0, 0) is the lower left corner and (1, 1) is the upper</span>
 <span class="sd">            right corner. Values &lt;0 and &gt;1 are supported and specify points</span>
-<span class="sd">            outside the text box. By default (0.5, 0.5) the starting point is</span>
-<span class="sd">            centered in the text box.</span>
+<span class="sd">            outside the text box. By default (0.5, 0.5), so the starting point</span>
+<span class="sd">            is centered in the text box.</span>
 
 <span class="sd">        annotation_clip : bool or None, default: None</span>
 <span class="sd">            Whether to clip (i.e. not draw) the annotation when the annotation</span>
-<span class="sd">            point *xy* is outside the axes area.</span>
+<span class="sd">            point *xy* is outside the Axes area.</span>
 
 <span class="sd">            - If *True*, the annotation will be clipped when *xy* is outside</span>
-<span class="sd">              the axes.</span>
+<span class="sd">              the Axes.</span>
 <span class="sd">            - If *False*, the annotation will always be drawn.</span>
 <span class="sd">            - If *None*, the annotation will be clipped when *xy* is outside</span>
-<span class="sd">              the axes and *xycoords* is &#39;data&#39;.</span>
+<span class="sd">              the Axes and *xycoords* is &#39;data&#39;.</span>
 
 <span class="sd">        **kwargs</span>
-<span class="sd">            Additional kwargs are passed to `~matplotlib.text.Text`.</span>
+<span class="sd">            Additional kwargs are passed to `.Text`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1908,7 +1910,7 @@
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        :ref:`plotting-guide-annotation`</span>
+<span class="sd">        :ref:`annotations`</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_AnnotationBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -1940,9 +1942,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_arrow_relpos</span> <span class="o">=</span> <span class="n">arrowprops</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;relpos&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># modified YAArrow API to be used with FancyArrowPatch</span>
-                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span>
-                        <span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;headwidth&#39;</span><span class="p">,</span> <span class="s1">&#39;headlength&#39;</span><span class="p">,</span> <span class="s1">&#39;shrink&#39;</span><span class="p">,</span> <span class="s1">&#39;frac&#39;</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="s1">&#39;headwidth&#39;</span><span class="p">,</span> <span class="s1">&#39;headlength&#39;</span><span class="p">,</span> <span class="s1">&#39;shrink&#39;</span><span class="p">]:</span>
                     <span class="n">arrowprops</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="s1">&#39;frac&#39;</span> <span class="ow">in</span> <span class="n">arrowprops</span><span class="p">:</span>
+                    <span class="n">_api</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
+                        <span class="s2">&quot;3.8&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;the (unused) &#39;frac&#39; key in &#39;arrowprops&#39;&quot;</span><span class="p">)</span>
+                    <span class="n">arrowprops</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;frac&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span> <span class="o">=</span> <span class="n">FancyArrowPatch</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="o">**</span><span class="n">arrowprops</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1950,13 +1955,13 @@
         <span class="c1"># Must come last, as some kwargs may be propagated to arrow_patch.</span>
         <span class="n">Text</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
-        <span class="n">contains</span><span class="p">,</span> <span class="n">tinfo</span> <span class="o">=</span> <span class="n">Text</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">rename_parameter</span><span class="p">(</span><span class="s2">&quot;3.8&quot;</span><span class="p">,</span> <span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="s2">&quot;mouseevent&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseevent</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">contains</span><span class="p">,</span> <span class="n">tinfo</span> <span class="o">=</span> <span class="n">Text</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseevent</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">in_patch</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="n">in_patch</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
             <span class="n">contains</span> <span class="o">=</span> <span class="n">contains</span> <span class="ow">or</span> <span class="n">in_patch</span>
         <span class="k">return</span> <span class="n">contains</span><span class="p">,</span> <span class="n">tinfo</span>
 
@@ -2035,10 +2040,6 @@
             <span class="n">shrink</span> <span class="o">=</span> <span class="n">arrowprops</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;shrink&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
             <span class="n">width</span> <span class="o">=</span> <span class="n">arrowprops</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
             <span class="n">headwidth</span> <span class="o">=</span> <span class="n">arrowprops</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;headwidth&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
-            <span class="k">if</span> <span class="s1">&#39;frac&#39;</span> <span class="ow">in</span> <span class="n">arrowprops</span><span class="p">:</span>
-                <span class="n">_api</span><span class="o">.</span><span class="n">warn_external</span><span class="p">(</span>
-                    <span class="s2">&quot;&#39;frac&#39; option in &#39;arrowprops&#39; is no longer supported;&quot;</span>
-                    <span class="s2">&quot; use &#39;headlength&#39; to set the head length in points.&quot;</span><span class="p">)</span>
             <span class="n">headlength</span> <span class="o">=</span> <span class="n">arrowprops</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;headlength&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
 
             <span class="c1"># NB: ms is in pts</span>
@@ -2111,7 +2112,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot get window extent w/o renderer&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Cannot get window extent without renderer&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span><span class="p">)</span>
 

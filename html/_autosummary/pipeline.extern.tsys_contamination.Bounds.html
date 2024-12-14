@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.extern.tsys_contamination.Bounds &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.extern.tsys_contamination.Bounds &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -168,7 +168,7 @@ infinite bounds to represent a one-sided constraint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lb, ub</strong> (<em>array_like, optional</em>) – Lower and upper bounds on independent variables. <cite>lb</cite>, <cite>ub</cite>, and
+<li><p><strong>lb, ub</strong> (<em>dense array_like, optional</em>) – Lower and upper bounds on independent variables. <cite>lb</cite>, <cite>ub</cite>, and
 <cite>keep_feasible</cite> must be the same shape or broadcastable.
 Set components of <cite>lb</cite> and <cite>ub</cite> equal
 to fix a variable. Use <code class="docutils literal notranslate"><span class="pre">np.inf</span></code> with an appropriate sign to disable
@@ -176,7 +176,7 @@ bounds on all or some variables. Note that you can mix constraints of
 different types: interval, one-sided or equality, by setting different
 components of <cite>lb</cite> and <cite>ub</cite> as necessary. Defaults to <code class="docutils literal notranslate"><span class="pre">lb</span> <span class="pre">=</span> <span class="pre">-np.inf</span></code>
 and <code class="docutils literal notranslate"><span class="pre">ub</span> <span class="pre">=</span> <span class="pre">np.inf</span></code> (no bounds).</p></li>
-<li><p><strong>keep_feasible</strong> (<em>array_like of bool, optional</em>) – Whether to keep the constraint components feasible throughout
+<li><p><strong>keep_feasible</strong> (<em>dense array_like of bool, optional</em>) – Whether to keep the constraint components feasible throughout
 iterations. Must be broadcastable with <cite>lb</cite> and <cite>ub</cite>.
 Default is False. Has no effect for equality constraints.</p></li>
 </ul>

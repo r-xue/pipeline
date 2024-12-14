@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>importlib.metadata &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>importlib.metadata &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -125,7 +125,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_adapters</span><span class="p">,</span> <span class="n">_meta</span>
 <span class="kn">from</span> <span class="nn">._meta</span> <span class="kn">import</span> <span class="n">PackageMetadata</span>
 <span class="kn">from</span> <span class="nn">._collections</span> <span class="kn">import</span> <span class="n">FreezableDefaultDict</span><span class="p">,</span> <span class="n">Pair</span>
-<span class="kn">from</span> <span class="nn">._functools</span> <span class="kn">import</span> <span class="n">method_cache</span>
+<span class="kn">from</span> <span class="nn">._functools</span> <span class="kn">import</span> <span class="n">method_cache</span><span class="p">,</span> <span class="n">pass_none</span>
 <span class="kn">from</span> <span class="nn">._itertools</span> <span class="kn">import</span> <span class="n">unique_everseen</span>
 <span class="kn">from</span> <span class="nn">._meta</span> <span class="kn">import</span> <span class="n">PackageMetadata</span><span class="p">,</span> <span class="n">SimplePath</span>
 
@@ -1049,13 +1049,25 @@
 <span class="sd">        normalized name from the file system path.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stem</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_from_stem</span><span class="p">(</span><span class="n">stem</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_normalized_name</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">pass_none</span><span class="p">(</span><span class="n">Prepared</span><span class="o">.</span><span class="n">normalize</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name_from_stem</span><span class="p">(</span><span class="n">stem</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_normalized_name</span>
+        <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_name_from_stem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stem</span><span class="p">):</span>
-        <span class="n">name</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">stem</span><span class="p">)</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_name_from_stem</span><span class="p">(</span><span class="n">stem</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; PathDistribution._name_from_stem(&#39;foo-3.0.egg-info&#39;)</span>
+<span class="sd">        &#39;foo&#39;</span>
+<span class="sd">        &gt;&gt;&gt; PathDistribution._name_from_stem(&#39;CherryPy-3.0.dist-info&#39;)</span>
+<span class="sd">        &#39;CherryPy&#39;</span>
+<span class="sd">        &gt;&gt;&gt; PathDistribution._name_from_stem(&#39;face.egg-info&#39;)</span>
+<span class="sd">        &#39;face&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">filename</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">stem</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ext</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;.dist-info&#39;</span><span class="p">,</span> <span class="s1">&#39;.egg-info&#39;</span><span class="p">):</span>
             <span class="k">return</span>
-        <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">stem</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">rest</span> <span class="o">=</span> <span class="n">filename</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">name</span>
 
 

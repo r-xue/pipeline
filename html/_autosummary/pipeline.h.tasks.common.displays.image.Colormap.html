@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.h.tasks.common.displays.image.Colormap &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.h.tasks.common.displays.image.Colormap &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -220,16 +220,16 @@ chain.</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>float or int, ndarray or scalar</em>) – The data value(s) to convert to RGBA.
-For floats, X should be in the interval <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> to
+<li><p><strong>X</strong> (float or int, <cite>~numpy.ndarray</cite> or scalar) – The data value(s) to convert to RGBA.
+For floats, <em>X</em> should be in the interval <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> to
 return the RGBA values <code class="docutils literal notranslate"><span class="pre">X*100</span></code> percent along the Colormap line.
-For integers, X should be in the interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">Colormap.N)</span></code> to
+For integers, <em>X</em> should be in the interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">Colormap.N)</span></code> to
 return RGBA values <em>indexed</em> from the Colormap with index <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p></li>
 <li><p><strong>alpha</strong> (<em>float or array-like or None</em>) – Alpha must be a scalar between 0 and 1, a sequence of such
 floats with shape matching X, or None.</p></li>
 <li><p><strong>bytes</strong> (<em>bool</em>) – If False (default), the returned RGBA values will be floats in the
-interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> otherwise they will be uint8s in the interval
-<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">255]</span></code>.</p></li>
+interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> otherwise they will be <cite>numpy.uint8</cite>s in the
+interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">255]</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

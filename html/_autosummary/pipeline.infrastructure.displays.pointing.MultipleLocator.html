@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.infrastructure.displays.pointing.MultipleLocator &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.infrastructure.displays.pointing.MultipleLocator &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -194,9 +194,9 @@
 <h1>pipeline.infrastructure.displays.pointing.MultipleLocator<a class="headerlink" href="#pipeline-infrastructure-displays-pointing-multiplelocator" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleLocator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#MultipleLocator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MultipleLocator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#MultipleLocator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="pipeline.infrastructure.displays.pointing.Locator.html#pipeline.infrastructure.displays.pointing.Locator" title="matplotlib.ticker.Locator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Locator</span></code></a></p>
-<p>Set a tick on each integer multiple of a base within the view interval.</p>
+<p>Place ticks at every integer multiple of a base plus an offset.</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -212,23 +212,14 @@
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_bounds" title="pipeline.infrastructure.displays.pointing.MultipleLocator.set_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bounds</span></code></a></p></td>
-<td><p>[<em>Deprecated</em>]</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_data_interval" title="pipeline.infrastructure.displays.pointing.MultipleLocator.set_data_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_interval</span></code></a></p></td>
-<td><p>[<em>Deprecated</em>]</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_params" title="pipeline.infrastructure.displays.pointing.MultipleLocator.set_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_params</span></code></a></p></td>
 <td><p>Set parameters within this locator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_view_interval" title="pipeline.infrastructure.displays.pointing.MultipleLocator.set_view_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_view_interval</span></code></a></p></td>
-<td><p>[<em>Deprecated</em>]</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.tick_values" title="pipeline.infrastructure.displays.pointing.MultipleLocator.tick_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_values</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.tick_values" title="pipeline.infrastructure.displays.pointing.MultipleLocator.tick_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tick_values</span></code></a></p></td>
 <td><p>Return the values of the located ticks given <strong>vmin</strong> and <strong>vmax</strong>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits" title="pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">view_limits</span></code></a></p></td>
-<td><p>Set the view limits to the nearest multiples of base that contain the data.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits" title="pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">view_limits</span></code></a></p></td>
+<td><p>Set the view limits to the nearest tick values that contain the data.</p></td>
 </tr>
 </tbody>
 </table>
@@ -254,7 +245,7 @@
 <span class="sig-name descname"><span class="pre">nonsingular</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.nonsingular" title="Link to this definition"></a></dt>
 <dd><p>Adjust a range as needed to avoid singularities.</p>
 <p>This method gets called during autoscaling, with <code class="docutils literal notranslate"><span class="pre">(v0,</span> <span class="pre">v1)</span></code> set to
-the data limits on the axes if the axes contains any data, or
+the data limits on the Axes if the Axes contains any data, or
 <code class="docutils literal notranslate"><span class="pre">(-inf,</span> <span class="pre">+inf)</span></code> if not.</p>
 <ul class="simple">
 <li><p>If <code class="docutils literal notranslate"><span class="pre">v0</span> <span class="pre">==</span> <span class="pre">v1</span></code> (possibly up to some floating point slop), this
@@ -277,39 +268,21 @@ exception instead of emitting a log.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator.set_bounds">
-<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_bounds" title="Link to this definition"></a></dt>
-<dd><p>[<em>Deprecated</em>]</p>
-<p class="rubric">Notes</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_view_interval</cite> and <cite>.Axis.set_data_interval</cite> instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator.set_data_interval">
-<span class="sig-name descname"><span class="pre">set_data_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_data_interval" title="Link to this definition"></a></dt>
-<dd><p>[<em>Deprecated</em>]</p>
-<p class="rubric">Notes</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_data_interval</cite> instead.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator.set_params">
-<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#MultipleLocator.set_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_params" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#MultipleLocator.set_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_params" title="Link to this definition"></a></dt>
 <dd><p>Set parameters within this locator.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator.set_view_interval">
-<span class="sig-name descname"><span class="pre">set_view_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.set_view_interval" title="Link to this definition"></a></dt>
-<dd><p>[<em>Deprecated</em>]</p>
-<p class="rubric">Notes</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_view_interval</cite> instead.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul>
+<li><p><strong>base</strong> (<em>float &gt; 0, optional</em>) – Interval between ticks.</p></li>
+<li><p><strong>offset</strong> (<em>float, optional</em>) – Value added to each multiple of <em>base</em>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.8.</span></p>
 </div>
+</li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -333,8 +306,7 @@ the Locator instance:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits">
 <span class="sig-name descname"><span class="pre">view_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#MultipleLocator.view_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.displays.pointing.MultipleLocator.view_limits" title="Link to this definition"></a></dt>
-<dd><p>Set the view limits to the nearest multiples of base that
-contain the data.</p>
+<dd><p>Set the view limits to the nearest tick values that contain the data.</p>
 </dd></dl>
 
 </dd></dl>

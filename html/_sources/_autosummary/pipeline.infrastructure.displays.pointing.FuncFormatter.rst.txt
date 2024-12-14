@@ -23,11 +23,8 @@ pipeline.infrastructure.displays.pointing.FuncFormatter
       ~FuncFormatter.format_ticks
       ~FuncFormatter.get_offset
       ~FuncFormatter.set_axis
-      ~FuncFormatter.set_bounds
-      ~FuncFormatter.set_data_interval
       ~FuncFormatter.set_locs
       ~FuncFormatter.set_offset_string
-      ~FuncFormatter.set_view_interval
    
    
 

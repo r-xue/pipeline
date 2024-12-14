@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>matplotlib.stackplot &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>matplotlib.stackplot &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -123,10 +123,10 @@
 
 
 <span class="k">def</span> <span class="nf">stackplot</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
-              <span class="n">labels</span><span class="o">=</span><span class="p">(),</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span>
+              <span class="n">labels</span><span class="o">=</span><span class="p">(),</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hatch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="s1">&#39;zero&#39;</span><span class="p">,</span>
               <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Draw a stacked area plot.</span>
+<span class="sd">    Draw a stacked area plot or a streamgraph.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -154,13 +154,25 @@
 <span class="sd">        A sequence of labels to assign to each data series. If unspecified,</span>
 <span class="sd">        then no labels will be applied to artists.</span>
 
-<span class="sd">    colors : list of color, optional</span>
+<span class="sd">    colors : list of :mpltype:`color`, optional</span>
 <span class="sd">        A sequence of colors to be cycled through and used to color the stacked</span>
 <span class="sd">        areas. The sequence need not be exactly the same length as the number</span>
 <span class="sd">        of provided *y*, in which case the colors will repeat from the</span>
 <span class="sd">        beginning.</span>
 
 <span class="sd">        If not specified, the colors from the Axes property cycle will be used.</span>
+
+<span class="sd">    hatch : list of str, default: None</span>
+<span class="sd">        A sequence of hatching styles.  See</span>
+<span class="sd">        :doc:`/gallery/shapes_and_collections/hatch_style_reference`.</span>
+<span class="sd">        The sequence will be cycled through for filling the</span>
+<span class="sd">        stacked areas from bottom to top.</span>
+<span class="sd">        It need not be exactly the same length as the number</span>
+<span class="sd">        of provided *y*, in which case the styles will repeat from the</span>
+<span class="sd">        beginning.</span>
+
+<span class="sd">        .. versionadded:: 3.9</span>
+<span class="sd">           Support for list input</span>
 
 <span class="sd">    data : indexable object, optional</span>
 <span class="sd">        DATA_PARAMETER_PLACEHOLDER</span>
@@ -175,13 +187,18 @@
 <span class="sd">        stacked area plot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">row_stack</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
     <span class="n">labels</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">_get_lines</span><span class="o">.</span><span class="n">get_next_color</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">hatch</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hatch</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">hatch</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">([</span><span class="n">hatch</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">hatch</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">(</span><span class="n">hatch</span><span class="p">)</span>
 
     <span class="c1"># Assume data passed has not been &#39;stacked&#39;, so stack it here.</span>
     <span class="c1"># We&#39;ll need a float buffer for the upcoming calculations.</span>
@@ -220,7 +237,9 @@
 
     <span class="c1"># Color between x = 0 and the first array.</span>
     <span class="n">coll</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">first_line</span><span class="p">,</span> <span class="n">stack</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span>
-                             <span class="n">facecolor</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">colors</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                             <span class="n">facecolor</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">colors</span><span class="p">),</span>
+                             <span class="n">hatch</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">hatch</span><span class="p">),</span>
+                             <span class="n">label</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                              <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">coll</span><span class="o">.</span><span class="n">sticky_edges</span><span class="o">.</span><span class="n">y</span><span class="p">[:]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">coll</span><span class="p">]</span>
@@ -229,6 +248,7 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
         <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axes</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stack</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">stack</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:],</span>
                                    <span class="n">facecolor</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">colors</span><span class="p">),</span>
+                                   <span class="n">hatch</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">hatch</span><span class="p">),</span>
                                    <span class="n">label</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">r</span>

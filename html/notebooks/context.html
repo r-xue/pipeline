@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pipeline Context &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>Pipeline Context &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -5793,8 +5793,8 @@ Graph written to ctx_graph.dot (21 nodes)
 <h2>Limitation<a class="headerlink" href="#Limitation" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p>since the context class and classes of underneath objects (e.g. domain object classes) are loosely defined and not offocial maintained as public APIs, with the on-going development ad underline is changing, the retreive and cross-branche/ interppperatin breaks from time to time. Beause the context mainly serve as runtime/session transiante objects/datapool, this primiarly only cause small inconvienent during the development process.</p></li>
-<li><p>size: you can’t really deserialize back after some time; we also essentially use a pickle file for cross node communication: needs a shared file system; no concurrent write, etc. Overall the current implementation is really for internal use, not really interface/API. this’s probably where Jeff’s ideas came in: put everything into database; Strip out loosely defined class instances/methods, and only record data… But that will likely mean ful-rewrite / partially rewrite of Pipeline task
-(since it relies on “context” objects everywhere), can be large.</p></li>
+<li><p>size: you can’t really deserialize back after some time; we also essentially use a pickle file for cross node communication: needs a shared file system; no concurrent write, etc. Overall the current implementation is really for internal use, not really interface/API. this’s probably where Jeff’s ideas came in: put everything into database; Strip out loosely defined class instances/methods, and only record data… But that will likely mean ful-rewrite / partially rewrite of Pipeline task (since
+it relies on “context” objects everywhere), can be large.</p></li>
 </ul>
 </section>
 <section id="Future">
@@ -5802,8 +5802,7 @@ Graph written to ctx_graph.dot (21 nodes)
 <ul class="simple">
 <li><p>However, with the brpading arsynchonise scope and longer processing gaps, it’s time to consider split the class / custom under pining: standalize the context as database or API with formalized scheme, split the method.. class-method-attribute-property, -&gt; scheme / metedata / version-code -&gt; asynchrnizing acess from multile instances.</p></li>
 <li><p>Interpoleplicate with legacy Pipeline, becauset the exitsnace of historical heurtsics legacy pipeline implemnettion, central, and uncertainty timeline of RADPS imaging and calibration, transition of existancing pipeline heuristics to directly use the new database concept would be a lengthy and also costly process without signifcant benefits. One possible approach addiping into the database transition first without createing the general context-qauivelenth database scheme and start exloring
-options and create a thin / like transplayer to facilitate the still-in-use legacy ppeline task comminucation with the to-be-determined database realization as a transition interium solution: this still take advanateges all of the benefits of database concept but without entirely isolated the legacy pipeline from the initial database design. <strong>or</strong> someone can write an adaptation/translation layer to mick the context object behavior on a live process but at the backside backed by a
-database…</p></li>
+options and create a thin / like transplayer to facilitate the still-in-use legacy ppeline task comminucation with the to-be-determined database realization as a transition interium solution: this still take advanateges all of the benefits of database concept but without entirely isolated the legacy pipeline from the initial database design. <strong>or</strong> someone can write an adaptation/translation layer to mick the context object behavior on a live process but at the backside backed by a database…</p></li>
 </ul>
 </section>
 </section>

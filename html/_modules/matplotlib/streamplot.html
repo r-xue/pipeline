@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>matplotlib.streamplot &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>matplotlib.streamplot &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -146,10 +146,10 @@
 <span class="sd">        For different densities in each direction, use a tuple</span>
 <span class="sd">        (density_x, density_y).</span>
 <span class="sd">    linewidth : float or 2D array</span>
-<span class="sd">        The width of the stream lines. With a 2D array the line width can be</span>
+<span class="sd">        The width of the streamlines. With a 2D array the line width can be</span>
 <span class="sd">        varied across the grid. The array must have the same shape as *u*</span>
 <span class="sd">        and *v*.</span>
-<span class="sd">    color : color or 2D array</span>
+<span class="sd">    color : :mpltype:`color` or 2D array</span>
 <span class="sd">        The streamline color. If given an array, its values are converted to</span>
 <span class="sd">        colors using *cmap* and *norm*.  The array must have the same shape</span>
 <span class="sd">        as *u* and *v*.</span>
@@ -164,11 +164,11 @@
 <span class="sd">        See `~matplotlib.patches.FancyArrowPatch`.</span>
 <span class="sd">    minlength : float</span>
 <span class="sd">        Minimum length of streamline in axes coordinates.</span>
-<span class="sd">    start_points : Nx2 array</span>
+<span class="sd">    start_points : (N, 2) array</span>
 <span class="sd">        Coordinates of starting points for the streamlines in data coordinates</span>
 <span class="sd">        (the same coordinates as the *x* and *y* arrays).</span>
-<span class="sd">    zorder : int</span>
-<span class="sd">        The zorder of the stream lines and arrows.</span>
+<span class="sd">    zorder : float</span>
+<span class="sd">        The zorder of the streamlines and arrows.</span>
 <span class="sd">        Artists with lower zorder values are drawn first.</span>
 <span class="sd">    maxlength : float</span>
 <span class="sd">        Maximum length of streamline in axes coordinates.</span>
@@ -189,7 +189,7 @@
 <span class="sd">        - ``lines``: `.LineCollection` of streamlines</span>
 
 <span class="sd">        - ``arrows``: `.PatchCollection` containing `.FancyArrowPatch`</span>
-<span class="sd">          objects representing the arrows half-way along stream lines.</span>
+<span class="sd">          objects representing the arrows half-way along streamlines.</span>
 
 <span class="sd">        This container will probably change in the future to allow changes</span>
 <span class="sd">        to the colormap, alpha, etc. for both lines and arrows, but these</span>
@@ -269,8 +269,8 @@
         <span class="k">for</span> <span class="n">xs</span><span class="p">,</span> <span class="n">ys</span> <span class="ow">in</span> <span class="n">sp2</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">x_origin</span> <span class="o">&lt;=</span> <span class="n">xs</span> <span class="o">&lt;=</span> <span class="n">grid</span><span class="o">.</span><span class="n">x_origin</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">width</span> <span class="ow">and</span>
                     <span class="n">grid</span><span class="o">.</span><span class="n">y_origin</span> <span class="o">&lt;=</span> <span class="n">ys</span> <span class="o">&lt;=</span> <span class="n">grid</span><span class="o">.</span><span class="n">y_origin</span> <span class="o">+</span> <span class="n">grid</span><span class="o">.</span><span class="n">height</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Starting point (</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">) outside of data &quot;</span>
-                                 <span class="s2">&quot;boundaries&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting point (</span><span class="si">{</span><span class="n">xs</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ys</span><span class="si">}</span><span class="s2">) outside of &quot;</span>
+                                 <span class="s2">&quot;data boundaries&quot;</span><span class="p">)</span>
 
         <span class="c1"># Convert start_points from data to array coords</span>
         <span class="c1"># Shift the seed points from the bottom left of the data so that</span>
@@ -305,10 +305,15 @@
         <span class="n">tx</span> <span class="o">+=</span> <span class="n">grid</span><span class="o">.</span><span class="n">x_origin</span>
         <span class="n">ty</span> <span class="o">+=</span> <span class="n">grid</span><span class="o">.</span><span class="n">y_origin</span>
 
-        <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">streamlines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
+        <span class="c1"># Create multiple tiny segments if varying width or color is given</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">linewidth</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">or</span> <span class="n">use_multicolor_lines</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">streamlines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">([</span><span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">])</span>
+            <span class="n">streamlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
-        <span class="c1"># Add arrows half way along each trajectory.</span>
+        <span class="c1"># Add arrows halfway along each trajectory.</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">tx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ty</span><span class="p">)))</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
         <span class="n">arrow_tail</span> <span class="o">=</span> <span class="p">(</span><span class="n">tx</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">ty</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
@@ -392,8 +397,7 @@
 
     <span class="k">def</span> <span class="nf">grid2mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return nearest space in mask-coords from given grid-coords.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">xi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_grid2mask</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">),</span>
-                <span class="nb">int</span><span class="p">(</span><span class="n">yi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_grid2mask</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">round</span><span class="p">(</span><span class="n">xi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_grid2mask</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">yi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_grid2mask</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">mask2grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xm</span><span class="p">,</span> <span class="n">ym</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">xm</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_mask2grid</span><span class="p">,</span> <span class="n">ym</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_mask2grid</span>
@@ -608,15 +612,6 @@
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">return</span> <span class="n">integrate</span>
-
-
-<span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.5&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">get_integrator</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dmap</span><span class="p">,</span> <span class="n">minlength</span><span class="p">,</span> <span class="n">maxlength</span><span class="p">,</span> <span class="n">integration_direction</span><span class="p">):</span>
-    <span class="n">xy_traj</span> <span class="o">=</span> <span class="n">_get_integrator</span><span class="p">(</span>
-        <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dmap</span><span class="p">,</span> <span class="n">minlength</span><span class="p">,</span> <span class="n">maxlength</span><span class="p">,</span> <span class="n">integration_direction</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">xy_traj</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="k">else</span> <span class="p">([],</span> <span class="p">[])</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">xy_traj</span><span class="p">)</span>
-            <span class="k">else</span> <span class="p">[</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xy_traj</span><span class="p">)])</span>
 
 
 <span class="k">class</span> <span class="nc">OutOfBounds</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">):</span>

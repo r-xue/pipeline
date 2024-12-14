@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.hifv.tasks.flagging.displaycheckflag.griddata &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.hifv.tasks.flagging.displaycheckflag.griddata &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -201,13 +201,33 @@ incommensurable units and differ by many orders of magnitude.</p>
 <dd class="field-odd"><p>ndarray</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearNDInterpolator</span></code></dt><dd><p>Piecewise linear interpolator in N dimensions.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">NearestNDInterpolator</span></code></dt><dd><p>Nearest-neighbor interpolator in N dimensions.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">CloughTocher2DInterpolator</span></code></dt><dd><p>Piecewise cubic, C1 smooth, curvature-minimizing interpolator in 2D.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">interpn</span></code></dt><dd><p>Interpolation on a regular grid or rectilinear grid.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">RegularGridInterpolator</span></code></dt><dd><p>Interpolator on a regular or rectilinear grid in arbitrary dimensions (<cite>interpn</cite> wraps this class).</p>
+</dd>
+</dl>
+</div>
 <p class="rubric">Notes</p>
 <div class="versionadded">
 <p><span class="versionmodified added">Added in version 0.9.</span></p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For data on a regular grid use <cite>interpn</cite> instead.</p>
+</div>
 <p class="rubric">Examples</p>
 <p>Suppose we want to interpolate the 2-D function</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="n">x</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 </pre></div>
 </div>
@@ -249,17 +269,6 @@ cubic interpolant gives the best results:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span><span class="o">.</span><span class="n">set_size_inches</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinearNDInterpolator</span></code></dt><dd><p>Piecewise linear interpolant in N dimensions.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">NearestNDInterpolator</span></code></dt><dd><p>Nearest-neighbor interpolation in N dimensions.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">CloughTocher2DInterpolator</span></code></dt><dd><p>Piecewise cubic, C1 smooth, curvature-minimizing interpolant in 2D.</p>
-</dd>
-</dl>
 </div>
 </dd></dl>
 

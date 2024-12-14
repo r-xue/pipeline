@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pipeline.h.tasks.common.displays.image.Normalize &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>pipeline.h.tasks.common.displays.image.Normalize &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -16,7 +16,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -158,8 +158,22 @@
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.image.Normalize">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/colors.html#Normalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.image.Normalize" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>A class which, when called, linearly normalizes data into the
-<code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> interval.</p>
+<p>A class which, when called, maps values within the interval
+<code class="docutils literal notranslate"><span class="pre">[vmin,</span> <span class="pre">vmax]</span></code> linearly to the interval <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code>. The mapping of
+values outside <code class="docutils literal notranslate"><span class="pre">[vmin,</span> <span class="pre">vmax]</span></code> depends on <em>clip</em>.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [-0.5, 0., 0.5, 1., 1.5]</span>
+<span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># [0., 0., 0.5, 1., 1.]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><span class="xref std std-ref">colormapnorms</span></p>
+</div>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -167,16 +181,16 @@
 <td><p>Set <em>vmin</em>, <em>vmax</em> to min, max of <em>A</em>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.image.Normalize.autoscale_None" title="pipeline.h.tasks.common.displays.image.Normalize.autoscale_None"><code class="xref py py-obj docutils literal notranslate"><span class="pre">autoscale_None</span></code></a></p></td>
-<td><p>If vmin or vmax are not set, use the min/max of <em>A</em> to set them.</p></td>
+<td><p>If <em>vmin</em> or <em>vmax</em> are not set, use the min/max of <em>A</em> to set them.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.image.Normalize.inverse" title="pipeline.h.tasks.common.displays.image.Normalize.inverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inverse</span></code></a></p></td>
+<td><p>Maps the normalized value (i.e., index in the colormap) back to image data value.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.image.Normalize.process_value" title="pipeline.h.tasks.common.displays.image.Normalize.process_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">process_value</span></code></a></p></td>
 <td><p>Homogenize the input <em>value</em> for easy and efficient normalization.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.image.Normalize.scaled" title="pipeline.h.tasks.common.displays.image.Normalize.scaled"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scaled</span></code></a></p></td>
-<td><p>Return whether vmin and vmax are set.</p></td>
+<td><p>Return whether <em>vmin</em> and <em>vmax</em> are both set.</p></td>
 </tr>
 </tbody>
 </table>
@@ -197,14 +211,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.image.Normalize.__call__">
 <span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/colors.html#Normalize.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.image.Normalize.__call__" title="Link to this definition"></a></dt>
-<dd><p>Normalize <em>value</em> data in the <code class="docutils literal notranslate"><span class="pre">[vmin,</span> <span class="pre">vmax]</span></code> interval into the
-<code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> interval and return it.</p>
-<dl class="field-list simple">
+<dd><p>Normalize the data and return the normalized data.</p>
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dd class="field-odd"><ul>
 <li><p><strong>value</strong> – Data to normalize.</p></li>
-<li><p><strong>clip</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to <code class="docutils literal notranslate"><span class="pre">self.clip</span></code> (which defaults to
-<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p></li>
+<li><p><strong>clip</strong> (<em>bool, optional</em>) – See the description of the parameter <em>clip</em> in <cite>.Normalize</cite>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, defaults to <code class="docutils literal notranslate"><span class="pre">self.clip</span></code> (which defaults to
+<code class="docutils literal notranslate"><span class="pre">False</span></code>).</p>
+</li>
 </ul>
 </dd>
 </dl>
@@ -222,7 +237,19 @@ initialized using <code class="docutils literal notranslate"><span class="pre">s
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.image.Normalize.autoscale_None">
 <span class="sig-name descname"><span class="pre">autoscale_None</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/colors.html#Normalize.autoscale_None"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.image.Normalize.autoscale_None" title="Link to this definition"></a></dt>
-<dd><p>If vmin or vmax are not set, use the min/max of <em>A</em> to set them.</p>
+<dd><p>If <em>vmin</em> or <em>vmax</em> are not set, use the min/max of <em>A</em> to set them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.image.Normalize.inverse">
+<span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/colors.html#Normalize.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.image.Normalize.inverse" title="Link to this definition"></a></dt>
+<dd><p>Maps the normalized value (i.e., index in the colormap) back to image
+data value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Normalized value.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -231,8 +258,11 @@ initialized using <code class="docutils literal notranslate"><span class="pre">s
 <dd><p>Homogenize the input <em>value</em> for easy and efficient normalization.</p>
 <p><em>value</em> can be a scalar or sequence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p><ul class="simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – Data to normalize.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><strong>result</strong> (<em>masked array</em>) – Masked array with the same shape as <em>value</em>.</p></li>
 <li><p><strong>is_scalar</strong> (<em>bool</em>) – Whether <em>value</em> is a scalar.</p></li>
 </ul>
@@ -249,7 +279,7 @@ greatly improves speed for large arrays.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.image.Normalize.scaled">
 <span class="sig-name descname"><span class="pre">scaled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/colors.html#Normalize.scaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.image.Normalize.scaled" title="Link to this definition"></a></dt>
-<dd><p>Return whether vmin and vmax are set.</p>
+<dd><p>Return whether <em>vmin</em> and <em>vmax</em> are both set.</p>
 </dd></dl>
 
 </dd></dl>

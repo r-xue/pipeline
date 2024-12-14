@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>scipy.interpolate._fitpack_py &mdash; Pipeline 0.0.dev0 documentation</title>
+  <title>scipy.interpolate._fitpack_py &mdash; Pipeline 2024.2.0.4+148-g793ad1aab-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -15,7 +15,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=51d40e3f"></script>
+      <script src="../../../_static/documentation_options.js?v=1eabddb0"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -108,12 +108,11 @@
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;splrep&#39;</span><span class="p">,</span> <span class="s1">&#39;splprep&#39;</span><span class="p">,</span> <span class="s1">&#39;splev&#39;</span><span class="p">,</span> <span class="s1">&#39;splint&#39;</span><span class="p">,</span> <span class="s1">&#39;sproot&#39;</span><span class="p">,</span> <span class="s1">&#39;spalde&#39;</span><span class="p">,</span>
            <span class="s1">&#39;bisplrep&#39;</span><span class="p">,</span> <span class="s1">&#39;bisplev&#39;</span><span class="p">,</span> <span class="s1">&#39;insert&#39;</span><span class="p">,</span> <span class="s1">&#39;splder&#39;</span><span class="p">,</span> <span class="s1">&#39;splantider&#39;</span><span class="p">]</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># These are in the API for fitpack even if not used in fitpack.py itself.</span>
-<span class="kn">from</span> <span class="nn">._fitpack_impl</span> <span class="kn">import</span> <span class="n">bisplrep</span><span class="p">,</span> <span class="n">bisplev</span><span class="p">,</span> <span class="n">dblint</span>
+<span class="kn">from</span> <span class="nn">._fitpack_impl</span> <span class="kn">import</span> <span class="n">bisplrep</span><span class="p">,</span> <span class="n">bisplev</span><span class="p">,</span> <span class="n">dblint</span>  <span class="c1"># noqa: F401</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_fitpack_impl</span> <span class="k">as</span> <span class="n">_impl</span>
 <span class="kn">from</span> <span class="nn">._bsplines</span> <span class="kn">import</span> <span class="n">BSpline</span>
 
@@ -124,7 +123,7 @@
 <span class="sd">    Find the B-spline representation of an N-D curve.</span>
 
 <span class="sd">    Given a list of N rank-1 arrays, `x`, which represent a curve in</span>
-<span class="sd">    N-D space parametrized by `u`, find a smooth approximating</span>
+<span class="sd">    N-dimensional space parametrized by `u`, find a smooth approximating</span>
 <span class="sd">    spline curve g(`u`). Uses the FORTRAN routine parcur from FITPACK.</span>
 
 <span class="sd">    Parameters</span>
@@ -171,8 +170,9 @@
 <span class="sd">        standard-deviation of y, then a good `s` value should be found in</span>
 <span class="sd">        the range ``(m-sqrt(2*m),m+sqrt(2*m))``, where m is the number of</span>
 <span class="sd">        data points in x, y, and w.</span>
-<span class="sd">    t : int, optional</span>
-<span class="sd">        The knots needed for task=-1.</span>
+<span class="sd">    t : array, optional</span>
+<span class="sd">        The knots needed for ``task=-1``.</span>
+<span class="sd">        There must be at least ``2*k+2`` knots.</span>
 <span class="sd">    full_output : int, optional</span>
 <span class="sd">        If non-zero, then return optional outputs.</span>
 <span class="sd">    nest : int, optional</span>
@@ -185,13 +185,11 @@
 <span class="sd">       returned.  Values of ``y[m-1]`` and ``w[m-1]`` are not used.</span>
 <span class="sd">    quiet : int, optional</span>
 <span class="sd">         Non-zero to suppress messages.</span>
-<span class="sd">         This parameter is deprecated; use standard Python warning filters</span>
-<span class="sd">         instead.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tck : tuple</span>
-<span class="sd">        (t,c,k) a tuple containing the vector of knots, the B-spline</span>
+<span class="sd">        A tuple, ``(t,c,k)`` containing the vector of knots, the B-spline</span>
 <span class="sd">        coefficients, and the degree of the spline.</span>
 <span class="sd">    u : array</span>
 <span class="sd">        An array of the values of the parameter.</span>
@@ -238,6 +236,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    Generate a discretization of a limacon curve in the polar coordinates:</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; phi = np.linspace(0, 2.*np.pi, 40)</span>
 <span class="sd">    &gt;&gt;&gt; r = 0.5 + np.cos(phi)         # polar coords</span>
 <span class="sd">    &gt;&gt;&gt; x, y = r * np.cos(phi), r * np.sin(phi)    # convert to cartesian</span>
@@ -259,6 +258,7 @@
 <span class="sd">    &gt;&gt;&gt; plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">res</span> <span class="o">=</span> <span class="n">_impl</span><span class="o">.</span><span class="n">splprep</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">ue</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">task</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">full_output</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">per</span><span class="p">,</span>
                         <span class="n">quiet</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span>
@@ -277,68 +277,67 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    x, y : array_like</span>
-<span class="sd">        The data points defining a curve y = f(x).</span>
+<span class="sd">        The data points defining a curve ``y = f(x)``.</span>
 <span class="sd">    w : array_like, optional</span>
-<span class="sd">        Strictly positive rank-1 array of weights the same length as x and y.</span>
+<span class="sd">        Strictly positive rank-1 array of weights the same length as `x` and `y`.</span>
 <span class="sd">        The weights are used in computing the weighted least-squares spline</span>
-<span class="sd">        fit. If the errors in the y values have standard-deviation given by the</span>
-<span class="sd">        vector d, then w should be 1/d. Default is ones(len(x)).</span>
+<span class="sd">        fit. If the errors in the `y` values have standard-deviation given by the</span>
+<span class="sd">        vector ``d``, then `w` should be ``1/d``. Default is ``ones(len(x))``.</span>
 <span class="sd">    xb, xe : float, optional</span>
-<span class="sd">        The interval to fit.  If None, these default to x[0] and x[-1]</span>
+<span class="sd">        The interval to fit.  If None, these default to ``x[0]`` and ``x[-1]``</span>
 <span class="sd">        respectively.</span>
 <span class="sd">    k : int, optional</span>
 <span class="sd">        The degree of the spline fit. It is recommended to use cubic splines.</span>
-<span class="sd">        Even values of k should be avoided especially with small s values.</span>
-<span class="sd">        1 &lt;= k &lt;= 5</span>
+<span class="sd">        Even values of `k` should be avoided especially with small `s` values.</span>
+<span class="sd">        ``1 &lt;= k &lt;= 5``.</span>
 <span class="sd">    task : {1, 0, -1}, optional</span>
-<span class="sd">        If task==0 find t and c for a given smoothing factor, s.</span>
+<span class="sd">        If ``task==0``, find ``t`` and ``c`` for a given smoothing factor, `s`.</span>
 
-<span class="sd">        If task==1 find t and c for another value of the smoothing factor, s.</span>
-<span class="sd">        There must have been a previous call with task=0 or task=1 for the same</span>
-<span class="sd">        set of data (t will be stored an used internally)</span>
+<span class="sd">        If ``task==1`` find ``t`` and ``c`` for another value of the smoothing factor,</span>
+<span class="sd">        `s`. There must have been a previous call with ``task=0`` or ``task=1`` for</span>
+<span class="sd">        the same set of data (``t`` will be stored an used internally)</span>
 
-<span class="sd">        If task=-1 find the weighted least square spline for a given set of</span>
-<span class="sd">        knots, t. These should be interior knots as knots on the ends will be</span>
+<span class="sd">        If ``task=-1`` find the weighted least square spline for a given set of</span>
+<span class="sd">        knots, ``t``. These should be interior knots as knots on the ends will be</span>
 <span class="sd">        added automatically.</span>
 <span class="sd">    s : float, optional</span>
 <span class="sd">        A smoothing condition. The amount of smoothness is determined by</span>
-<span class="sd">        satisfying the conditions: sum((w * (y - g))**2,axis=0) &lt;= s where g(x)</span>
-<span class="sd">        is the smoothed interpolation of (x,y). The user can use s to control</span>
-<span class="sd">        the tradeoff between closeness and smoothness of fit. Larger s means</span>
-<span class="sd">        more smoothing while smaller values of s indicate less smoothing.</span>
-<span class="sd">        Recommended values of s depend on the weights, w. If the weights</span>
-<span class="sd">        represent the inverse of the standard-deviation of y, then a good s</span>
-<span class="sd">        value should be found in the range (m-sqrt(2*m),m+sqrt(2*m)) where m is</span>
-<span class="sd">        the number of datapoints in x, y, and w. default : s=m-sqrt(2*m) if</span>
-<span class="sd">        weights are supplied. s = 0.0 (interpolating) if no weights are</span>
+<span class="sd">        satisfying the conditions: ``sum((w * (y - g))**2,axis=0) &lt;= s`` where ``g(x)``</span>
+<span class="sd">        is the smoothed interpolation of ``(x,y)``. The user can use `s` to control</span>
+<span class="sd">        the tradeoff between closeness and smoothness of fit. Larger `s` means</span>
+<span class="sd">        more smoothing while smaller values of `s` indicate less smoothing.</span>
+<span class="sd">        Recommended values of `s` depend on the weights, `w`. If the weights</span>
+<span class="sd">        represent the inverse of the standard-deviation of `y`, then a good `s`</span>
+<span class="sd">        value should be found in the range ``(m-sqrt(2*m),m+sqrt(2*m))`` where ``m`` is</span>
+<span class="sd">        the number of datapoints in `x`, `y`, and `w`. default : ``s=m-sqrt(2*m)`` if</span>
+<span class="sd">        weights are supplied. ``s = 0.0`` (interpolating) if no weights are</span>
 <span class="sd">        supplied.</span>
 <span class="sd">    t : array_like, optional</span>
-<span class="sd">        The knots needed for task=-1. If given then task is automatically set</span>
-<span class="sd">        to -1.</span>
+<span class="sd">        The knots needed for ``task=-1``. If given then task is automatically set</span>
+<span class="sd">        to ``-1``.</span>
 <span class="sd">    full_output : bool, optional</span>
 <span class="sd">        If non-zero, then return optional outputs.</span>
 <span class="sd">    per : bool, optional</span>
-<span class="sd">        If non-zero, data points are considered periodic with period x[m-1] -</span>
-<span class="sd">        x[0] and a smooth periodic spline approximation is returned. Values of</span>
-<span class="sd">        y[m-1] and w[m-1] are not used.</span>
+<span class="sd">        If non-zero, data points are considered periodic with period ``x[m-1]`` -</span>
+<span class="sd">        ``x[0]`` and a smooth periodic spline approximation is returned. Values of</span>
+<span class="sd">        ``y[m-1]`` and ``w[m-1]`` are not used.</span>
+<span class="sd">        The default is zero, corresponding to boundary condition &#39;not-a-knot&#39;.</span>
 <span class="sd">    quiet : bool, optional</span>
 <span class="sd">        Non-zero to suppress messages.</span>
-<span class="sd">        This parameter is deprecated; use standard Python warning filters</span>
-<span class="sd">        instead.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    tck : tuple</span>
-<span class="sd">        A tuple (t,c,k) containing the vector of knots, the B-spline</span>
+<span class="sd">        A tuple ``(t,c,k)`` containing the vector of knots, the B-spline</span>
 <span class="sd">        coefficients, and the degree of the spline.</span>
 <span class="sd">    fp : array, optional</span>
 <span class="sd">        The weighted sum of squared residuals of the spline approximation.</span>
 <span class="sd">    ier : int, optional</span>
-<span class="sd">        An integer flag about splrep success. Success is indicated if ier&lt;=0.</span>
-<span class="sd">        If ier in [1,2,3] an error occurred but was not raised. Otherwise an</span>
+<span class="sd">        An integer flag about splrep success. Success is indicated if ``ier&lt;=0``.</span>
+<span class="sd">        If ``ier in [1,2,3]``, an error occurred but was not raised. Otherwise an</span>
 <span class="sd">        error is raised.</span>
 <span class="sd">    msg : str, optional</span>
-<span class="sd">        A message corresponding to the integer flag, ier.</span>
+<span class="sd">        A message corresponding to the integer flag, `ier`.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -365,6 +364,10 @@
 <span class="sd">    by the evaluation routines, `splev` and `BSpline`.) This is in contrast with</span>
 <span class="sd">    `splprep`, which does not zero-pad the coefficients.</span>
 
+<span class="sd">    The default boundary condition is &#39;not-a-knot&#39;, i.e. the first and second</span>
+<span class="sd">    segment at a curve end are the same polynomial. More boundary conditions are</span>
+<span class="sd">    available in `CubicSpline`.</span>
+
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
 <span class="sd">    Based on algorithms described in [1]_, [2]_, [3]_, and [4]_:</span>
@@ -386,6 +389,7 @@
 <span class="sd">    Further examples are given in</span>
 <span class="sd">    :ref:`in the tutorial &lt;tutorial-interpolate_splXXX&gt;`.</span>
 
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.interpolate import splev, splrep</span>
 <span class="sd">    &gt;&gt;&gt; x = np.linspace(0, 10, 10)</span>
@@ -418,7 +422,7 @@
 <span class="sd">        An array of points at which to return the value of the smoothed</span>
 <span class="sd">        spline or its derivatives. If `tck` was returned from `splprep`,</span>
 <span class="sd">        then the parameter values, u should be given.</span>
-<span class="sd">    tck : 3-tuple or a BSpline object</span>
+<span class="sd">    tck : BSpline instance or tuple</span>
 <span class="sd">        If a tuple, then it should be a sequence of length 3 returned by</span>
 <span class="sd">        `splrep` or `splprep` containing the knots, coefficients, and degree</span>
 <span class="sd">        of the spline. (Also see Notes.)</span>
@@ -443,16 +447,16 @@
 <span class="sd">        the points in `x`.  If `tck` was returned from `splprep`, then this</span>
 <span class="sd">        is a list of arrays representing the curve in an N-D space.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
-<span class="sd">    prefer using `BSpline` objects.</span>
-
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    splprep, splrep, sproot, spalde, splint</span>
 <span class="sd">    bisplrep, bisplev</span>
 <span class="sd">    BSpline</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
+<span class="sd">    prefer using `BSpline` objects.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -466,6 +470,9 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Examples are given :ref:`in the tutorial &lt;tutorial-interpolate_splXXX&gt;`.</span>
+
+<span class="sd">    A comparison between `splev`, `splder` and `spalde` to compute the derivatives of a </span>
+<span class="sd">    B-spline can be found in the `spalde` examples section.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">BSpline</span><span class="p">):</span>
@@ -511,6 +518,12 @@
 <span class="sd">        defined on the set of knots.</span>
 <span class="sd">        (Only returned if `full_output` is non-zero)</span>
 
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    splprep, splrep, sproot, spalde, splev</span>
+<span class="sd">    bisplrep, bisplev</span>
+<span class="sd">    BSpline</span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    `splint` silently assumes that the spline function is zero outside the data</span>
@@ -518,12 +531,6 @@
 
 <span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
 <span class="sd">    prefer using the `BSpline` objects.</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    splprep, splrep, sproot, spalde, splev</span>
-<span class="sd">    bisplrep, bisplev</span>
-<span class="sd">    BSpline</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -575,17 +582,16 @@
 <span class="sd">    zeros : ndarray</span>
 <span class="sd">        An array giving the roots of the spline.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
-<span class="sd">    prefer using the `BSpline` objects.</span>
-
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    splprep, splrep, splint, spalde, splev</span>
 <span class="sd">    bisplrep, bisplev</span>
 <span class="sd">    BSpline</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
+<span class="sd">    prefer using the `BSpline` objects.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -598,7 +604,32 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Examples are given :ref:`in the tutorial &lt;tutorial-interpolate_splXXX&gt;`.</span>
+
+<span class="sd">    For some data, this method may miss a root. This happens when one of</span>
+<span class="sd">    the spline knots (which FITPACK places automatically) happens to</span>
+<span class="sd">    coincide with the true root. A workaround is to convert to `PPoly`,</span>
+<span class="sd">    which uses a different root-finding algorithm.</span>
+
+<span class="sd">    For example,</span>
+
+<span class="sd">    &gt;&gt;&gt; x = [1.96, 1.97, 1.98, 1.99, 2.00, 2.01, 2.02, 2.03, 2.04, 2.05]</span>
+<span class="sd">    &gt;&gt;&gt; y = [-6.365470e-03, -4.790580e-03, -3.204320e-03, -1.607270e-03,</span>
+<span class="sd">    ...      4.440892e-16,  1.616930e-03,  3.243000e-03,  4.877670e-03,</span>
+<span class="sd">    ...      6.520430e-03,  8.170770e-03]</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.interpolate import splrep, sproot, PPoly</span>
+<span class="sd">    &gt;&gt;&gt; tck = splrep(x, y, s=0)</span>
+<span class="sd">    &gt;&gt;&gt; sproot(tck)</span>
+<span class="sd">    array([], dtype=float64)</span>
+
+<span class="sd">    Converting to a PPoly object does find the roots at `x=2`:</span>
+
+<span class="sd">    &gt;&gt;&gt; ppoly = PPoly.from_spline(tck)</span>
+<span class="sd">    &gt;&gt;&gt; ppoly.roots(extrapolate=False)</span>
+<span class="sd">    array([2.])</span>
+
+
+<span class="sd">    Further examples are given :ref:`in the tutorial</span>
+<span class="sd">    &lt;tutorial-interpolate_splXXX&gt;`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">BSpline</span><span class="p">):</span>
@@ -620,10 +651,8 @@
 
 <span class="k">def</span> <span class="nf">spalde</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tck</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Evaluate all derivatives of a B-spline.</span>
-
-<span class="sd">    Given the knots and coefficients of a cubic B-spline compute all</span>
-<span class="sd">    derivatives up to order k at a point (or set of points).</span>
+<span class="sd">    Evaluate a B-spline and all its derivatives at one point (or set of points) up</span>
+<span class="sd">    to order k (the degree of the spline), being 0 the spline itself.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -631,32 +660,80 @@
 <span class="sd">        A point or a set of points at which to evaluate the derivatives.</span>
 <span class="sd">        Note that ``t(k) &lt;= x &lt;= t(n-k+1)`` must hold for each `x`.</span>
 <span class="sd">    tck : tuple</span>
-<span class="sd">        A tuple ``(t, c, k)``, containing the vector of knots, the B-spline</span>
-<span class="sd">        coefficients, and the degree of the spline (see `splev`).</span>
+<span class="sd">        A tuple (t,c,k) containing the vector of knots,</span>
+<span class="sd">        the B-spline coefficients, and the degree of the spline whose </span>
+<span class="sd">        derivatives to compute.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    results : {ndarray, list of ndarrays}</span>
 <span class="sd">        An array (or a list of arrays) containing all derivatives</span>
-<span class="sd">        up to order k inclusive for each point `x`.</span>
+<span class="sd">        up to order k inclusive for each point `x`, being the first element the </span>
+<span class="sd">        spline itself.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    splprep, splrep, splint, sproot, splev, bisplrep, bisplev,</span>
-<span class="sd">    BSpline</span>
+<span class="sd">    UnivariateSpline, BivariateSpline</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
-<span class="sd">    .. [1] C. de Boor: On calculating with b-splines, J. Approximation Theory</span>
+<span class="sd">    .. [1] de Boor C : On calculating with b-splines, J. Approximation Theory</span>
 <span class="sd">       6 (1972) 50-62.</span>
-<span class="sd">    .. [2] M. G. Cox : The numerical evaluation of b-splines, J. Inst. Maths</span>
+<span class="sd">    .. [2] Cox M.G. : The numerical evaluation of b-splines, J. Inst. Maths</span>
 <span class="sd">       applics 10 (1972) 134-149.</span>
-<span class="sd">    .. [3] P. Dierckx : Curve and surface fitting with splines, Monographs on</span>
+<span class="sd">    .. [3] Dierckx P. : Curve and surface fitting with splines, Monographs on</span>
 <span class="sd">       Numerical Analysis, Oxford University Press, 1993.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Examples are given :ref:`in the tutorial &lt;tutorial-interpolate_splXXX&gt;`.</span>
+<span class="sd">    To calculate the derivatives of a B-spline there are several aproaches. </span>
+<span class="sd">    In this example, we will demonstrate that `spalde` is equivalent to</span>
+<span class="sd">    calling `splev` and `splder`.</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.interpolate import BSpline, spalde, splder, splev</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; # Store characteristic parameters of a B-spline</span>
+<span class="sd">    &gt;&gt;&gt; tck = ((-2, -2, -2, -2, -1, 0, 1, 2, 2, 2, 2),  # knots</span>
+<span class="sd">    ...        (0, 0, 0, 6, 0, 0, 0),  # coefficients</span>
+<span class="sd">    ...        3)  # degree (cubic)</span>
+<span class="sd">    &gt;&gt;&gt; # Instance a B-spline object</span>
+<span class="sd">    &gt;&gt;&gt; # `BSpline` objects are prefered, except for spalde()</span>
+<span class="sd">    &gt;&gt;&gt; bspl = BSpline(tck[0], tck[1], tck[2])</span>
+<span class="sd">    &gt;&gt;&gt; # Generate extra points to get a smooth curve</span>
+<span class="sd">    &gt;&gt;&gt; x = np.linspace(min(tck[0]), max(tck[0]), 100)</span>
+<span class="sd">    </span>
+<span class="sd">    Evaluate the curve and all derivatives</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; # The order of derivative must be less or equal to k, the degree of the spline</span>
+<span class="sd">    &gt;&gt;&gt; # Method 1: spalde()</span>
+<span class="sd">    &gt;&gt;&gt; f1_y_bsplin = [spalde(i, tck)[0] for i in x ]  # The B-spline itself</span>
+<span class="sd">    &gt;&gt;&gt; f1_y_deriv1 = [spalde(i, tck)[1] for i in x ]  # 1st derivative</span>
+<span class="sd">    &gt;&gt;&gt; f1_y_deriv2 = [spalde(i, tck)[2] for i in x ]  # 2nd derivative</span>
+<span class="sd">    &gt;&gt;&gt; f1_y_deriv3 = [spalde(i, tck)[3] for i in x ]  # 3rd derivative</span>
+<span class="sd">    &gt;&gt;&gt; # You can reach the same result by using `splev`and `splder`</span>
+<span class="sd">    &gt;&gt;&gt; f2_y_deriv3 = splev(x, bspl, der=3)</span>
+<span class="sd">    &gt;&gt;&gt; f3_y_deriv3 = splder(bspl, n=3)(x)</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; # Generate a figure with three axes for graphic comparison</span>
+<span class="sd">    &gt;&gt;&gt; fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(16, 5))</span>
+<span class="sd">    &gt;&gt;&gt; suptitle = fig.suptitle(f&#39;Evaluate a B-spline and all derivatives&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; # Plot B-spline and all derivatives using the three methods</span>
+<span class="sd">    &gt;&gt;&gt; orders = range(4)</span>
+<span class="sd">    &gt;&gt;&gt; linetypes = [&#39;-&#39;, &#39;--&#39;, &#39;-.&#39;, &#39;:&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; labels = [&#39;B-Spline&#39;, &#39;1st deriv.&#39;, &#39;2nd deriv.&#39;, &#39;3rd deriv.&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; functions = [&#39;splev()&#39;, &#39;splder()&#39;, &#39;spalde()&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; for order, linetype, label in zip(orders, linetypes, labels):</span>
+<span class="sd">    ...     ax1.plot(x, splev(x, bspl, der=order), linetype, label=label)</span>
+<span class="sd">    ...     ax2.plot(x, splder(bspl, n=order)(x), linetype, label=label)</span>
+<span class="sd">    ...     ax3.plot(x, [spalde(i, tck)[order] for i in x], linetype, label=label)</span>
+<span class="sd">    &gt;&gt;&gt; for ax, function in zip((ax1, ax2, ax3), functions):</span>
+<span class="sd">    ...     ax.set_title(function)</span>
+<span class="sd">    ...     ax.legend()</span>
+<span class="sd">    &gt;&gt;&gt; plt.tight_layout()</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">BSpline</span><span class="p">):</span>
@@ -675,8 +752,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x (u) : array_like</span>
-<span class="sd">        A 1-D point at which to insert a new knot(s).  If `tck` was returned</span>
+<span class="sd">    x (u) : float</span>
+<span class="sd">        A knot value at which to insert a new knot.  If `tck` was returned</span>
 <span class="sd">        from ``splprep``, then the parameter values, u should be given.</span>
 <span class="sd">    tck : a `BSpline` instance or a tuple</span>
 <span class="sd">        If tuple, then it is expected to be a tuple (t,c,k) containing</span>
@@ -704,7 +781,12 @@
 <span class="sd">    Based on algorithms from [1]_ and [2]_.</span>
 
 <span class="sd">    Manipulating the tck-tuples directly is not recommended. In new code,</span>
-<span class="sd">    prefer using the `BSpline` objects.</span>
+<span class="sd">    prefer using the `BSpline` objects, in particular `BSpline.insert_knot`</span>
+<span class="sd">    method.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    BSpline.insert_knot</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -718,6 +800,7 @@
 <span class="sd">    You can insert knots into a B-spline.</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.interpolate import splrep, insert</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; x = np.linspace(0, 10, 5)</span>
 <span class="sd">    &gt;&gt;&gt; y = np.sin(x)</span>
 <span class="sd">    &gt;&gt;&gt; tck = splrep(x, y)</span>
@@ -761,8 +844,10 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    tck : BSpline instance or a tuple of (t, c, k)</span>
-<span class="sd">        Spline whose derivative to compute</span>
+<span class="sd">    tck : BSpline instance or tuple</span>
+<span class="sd">        BSpline instance or a tuple (t,c,k) containing the vector of knots,</span>
+<span class="sd">        the B-spline coefficients, and the degree of the spline whose </span>
+<span class="sd">        derivative to compute</span>
 <span class="sd">    n : int, optional</span>
 <span class="sd">        Order of derivative to evaluate. Default: 1</span>
 
@@ -771,24 +856,25 @@
 <span class="sd">    `BSpline` instance or tuple</span>
 <span class="sd">        Spline of order k2=k-n representing the derivative</span>
 <span class="sd">        of the input spline.</span>
-<span class="sd">        A tuple is returned iff the input argument `tck` is a tuple, otherwise</span>
+<span class="sd">        A tuple is returned if the input argument `tck` is a tuple, otherwise</span>
 <span class="sd">        a BSpline object is constructed and returned.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-
-<span class="sd">    .. versionadded:: 0.13.0</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    splantider, splev, spalde</span>
 <span class="sd">    BSpline</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    .. versionadded:: 0.13.0</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    This can be used for finding maxima of a curve:</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.interpolate import splrep, splder, sproot</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; x = np.linspace(0, 10, 70)</span>
 <span class="sd">    &gt;&gt;&gt; y = np.sin(x)</span>
 <span class="sd">    &gt;&gt;&gt; spl = splrep(x, y, k=4)</span>
@@ -803,6 +889,9 @@
 
 <span class="sd">    This agrees well with roots :math:`\\pi/2 + n\\pi` of</span>
 <span class="sd">    :math:`\\cos(x) = \\sin&#39;(x)`.</span>
+
+<span class="sd">    A comparison between `splev`, `splder` and `spalde` to compute the derivatives of a </span>
+<span class="sd">    B-spline can be found in the `spalde` examples section.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">BSpline</span><span class="p">):</span>
@@ -846,6 +935,7 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.interpolate import splrep, splder, splantider, splev</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; x = np.linspace(0, np.pi/2, 70)</span>
 <span class="sd">    &gt;&gt;&gt; y = 1 / np.sqrt(1 - 0.8*np.sin(x)**2)</span>
 <span class="sd">    &gt;&gt;&gt; spl = splrep(x, y)</span>
@@ -874,6 +964,7 @@
         <span class="k">return</span> <span class="n">tck</span><span class="o">.</span><span class="n">antiderivative</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_impl</span><span class="o">.</span><span class="n">splantider</span><span class="p">(</span><span class="n">tck</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
 </pre></div>
 
            </div>

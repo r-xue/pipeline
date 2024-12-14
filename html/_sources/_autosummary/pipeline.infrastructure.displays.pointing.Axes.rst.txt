@@ -61,6 +61,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.drag_pan
       ~Axes.draw
       ~Axes.draw_artist
+      ~Axes.ecdf
       ~Axes.end_pan
       ~Axes.errorbar
       ~Axes.eventplot
@@ -94,8 +95,10 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.get_facecolor
       ~Axes.get_fc
       ~Axes.get_figure
+      ~Axes.get_forward_navigation_events
       ~Axes.get_frame_on
       ~Axes.get_gid
+      ~Axes.get_gridspec
       ~Axes.get_images
       ~Axes.get_in_layout
       ~Axes.get_label
@@ -110,11 +113,11 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.get_position
       ~Axes.get_rasterization_zorder
       ~Axes.get_rasterized
-      ~Axes.get_renderer_cache
       ~Axes.get_shared_x_axes
       ~Axes.get_shared_y_axes
       ~Axes.get_sketch_params
       ~Axes.get_snap
+      ~Axes.get_subplotspec
       ~Axes.get_tightbbox
       ~Axes.get_title
       ~Axes.get_transform
@@ -131,6 +134,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.get_xlabel
       ~Axes.get_xlim
       ~Axes.get_xmajorticklabels
+      ~Axes.get_xmargin
       ~Axes.get_xminorticklabels
       ~Axes.get_xscale
       ~Axes.get_xticklabels
@@ -145,6 +149,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.get_ylabel
       ~Axes.get_ylim
       ~Axes.get_ymajorticklabels
+      ~Axes.get_ymargin
       ~Axes.get_yminorticklabels
       ~Axes.get_yscale
       ~Axes.get_yticklabels
@@ -166,6 +171,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.invert_xaxis
       ~Axes.invert_yaxis
       ~Axes.is_transform_set
+      ~Axes.label_outer
       ~Axes.legend
       ~Axes.locator_params
       ~Axes.loglog
@@ -219,6 +225,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.set_facecolor
       ~Axes.set_fc
       ~Axes.set_figure
+      ~Axes.set_forward_navigation_events
       ~Axes.set_frame_on
       ~Axes.set_gid
       ~Axes.set_in_layout
@@ -234,6 +241,7 @@ pipeline.infrastructure.displays.pointing.Axes
       ~Axes.set_rasterized
       ~Axes.set_sketch_params
       ~Axes.set_snap
+      ~Axes.set_subplotspec
       ~Axes.set_title
       ~Axes.set_transform
       ~Axes.set_url
