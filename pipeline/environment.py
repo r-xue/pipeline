@@ -12,6 +12,7 @@ import platform
 import re
 import resource
 import subprocess
+import shutil
 import sys
 import typing
 from importlib.metadata import PackageNotFoundError, version
@@ -716,10 +717,11 @@ def _pipeline_revision() -> str:
     if os.path.exists(git_path):
         LOG.debug('A Git repo is found at: %s', git_path)
         LOG.debug('Checking the Git history from %s', src_path)
+        gitbin = shutil.which('git')
         try:
             # Silently test if this is a Git repo; if not, a CalledProcessError Exception
             # will be triggered due to a non-zero subprocess exit status.
-            subprocess.check_output(['git', 'rev-parse'], cwd=src_path, stderr=subprocess.DEVNULL)
+            subprocess.check_output([gitbin, 'rev-parse'], cwd=src_path, stderr=subprocess.DEVNULL)
             # If it's a Git repo, continue with fetching the desired Git-derived package version string.
             version_str = get_version_string_from_git(src_path)
             LOG.debug('Pipeline version derived from Git at runtime: %s', version_str)

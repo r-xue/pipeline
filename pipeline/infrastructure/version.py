@@ -1,11 +1,9 @@
 import argparse
 import re
+import shutil
 import subprocess
 import textwrap
-from typing import Tuple, Optional
-import re
-from typing import List
-from typing import Optional, List, Tuple
+from typing import List, Optional, Tuple
 
 __all__ = ['get_version_string_from_git']
 
@@ -40,10 +38,11 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
           * the latest tag is not the latest commit
           * the dirty repo
     """
+    gitbin = shutil.which('git')
 
     try:
         gitbranch = subprocess.check_output(
-            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            [gitbin, 'rev-parse', '--abbrev-ref', 'HEAD'],
             stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # if cwd is not within a Git repo, a CalledProcessError Exception
@@ -52,15 +51,15 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         return ()
 
     gitbranch = subprocess.check_output(
-        ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+        [gitbin, 'rev-parse', '--abbrev-ref', 'HEAD'],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
 
     branch_hashes = subprocess.check_output(
-        ['git', 'log', '--since', '2019-10-01', '--simplify-by-decoration', "--pretty=%H", gitbranch],
+        [gitbin, 'log', '--since', '2019-10-01', '--simplify-by-decoration', "--pretty=%H", gitbranch],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
     refstags = subprocess.check_output(
-        ['git', 'show-ref', '--tags', '-d'],
+        [gitbin, 'show-ref', '--tags', '-d'],
         stderr=subprocess.DEVNULL, cwd=cwd).decode().splitlines()
 
     last_release_tag = _get_last_release_tag(gitbranch, branch_hashes, refstags)
@@ -70,7 +69,7 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
         last_branch_tag = _get_last_branch_tag(gitbranch, branch_hashes, refstags)
 
     output = (last_branch_tag, last_release_tag)
-    dirty_workspace = subprocess.call(['git', 'diff', '--quiet'], cwd=cwd)
+    dirty_workspace = subprocess.call([gitbin, 'diff', '--quiet'], cwd=cwd)
 
     if last_branch_tag == '' or dirty_workspace:
         # No tag at all for branch
@@ -78,10 +77,10 @@ def get_version(cwd: Optional[str] = None) -> Tuple[str, ...]:
     else:
         # Check if the latest tag is the latest commit
         headcommit = subprocess.check_output(
-            ['git', 'rev-parse', 'HEAD'],
+            [gitbin, 'rev-parse', 'HEAD'],
             stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
         tagcommit = subprocess.check_output(
-            ['git', 'rev-list', '-n', '1', last_branch_tag],
+            [gitbin, 'rev-list', '-n', '1', last_branch_tag],
             stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
         if tagcommit != headcommit:
             output += ('dirty',)
@@ -193,16 +192,17 @@ def get_version_string_from_git(cwd: Optional[str] = None, verbose: bool = False
 
     """
 
+    gitbin = shutil.which('git')
     try:
         # Silently test if CWD is inside a Git repo; if not, a CalledProcessError Exception
         # will be triggered due to a non-zero subprocess exit status.
-        subprocess.check_output(['git', 'rev-parse'], cwd=cwd, stderr=subprocess.DEVNULL)
+        subprocess.check_output([gitbin, 'rev-parse'], cwd=cwd, stderr=subprocess.DEVNULL)
     except (FileNotFoundError, subprocess.CalledProcessError):
         return 'unknown'
 
     # retrieve the info about the current branch
     try:
-        git_branch = subprocess.check_output(['git', 'symbolic-ref', '--short', 'HEAD'],
+        git_branch = subprocess.check_output([gitbin, 'symbolic-ref', '--short', 'HEAD'],
                                              stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # https://stackoverflow.com/a/52222248
@@ -232,7 +232,7 @@ def get_version_string_from_git(cwd: Optional[str] = None, verbose: bool = False
     # note:
     #   '--tags': search lightweight (non-annotated) tags rather than the default annotated tags
     #   '--dirty': this flag optionally adds the '-dirty' string if the repo state is dirty
-    cmd = ['git', 'describe', '--always', '--tags', '--long', '--dirty']
+    cmd = [gitbin, 'describe', '--always', '--tags', '--long', '--dirty']
     describe_output = subprocess.check_output(cmd,
                                               stderr=subprocess.DEVNULL, cwd=cwd).decode().strip()
     if verbose:
