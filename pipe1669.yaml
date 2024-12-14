@@ -6,7 +6,6 @@ channels:
 
 dependencies:
     - conda-ecosystem-user-package-isolation
-    - git
     - python=3.10
     - ipython
     - pip
