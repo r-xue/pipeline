@@ -77,6 +77,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#regression-tests">Regression tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-pytest-options">Custom pytest options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#custom-markers">Custom markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#casa-data-and-pipeline-testdata"><code class="docutils literal notranslate"><span class="pre">casa-data</span></code> and <code class="docutils literal notranslate"><span class="pre">pipeline-testdata</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="DataType_Testing.html">DataType Testing</a></li>
@@ -145,7 +146,7 @@ The <code class="docutils literal notranslate"><span class="pre">--nologfile</sp
 </section>
 <section id="regression-tests">
 <h2>Regression tests<a class="headerlink" href="#regression-tests" title="Link to this heading"></a></h2>
-<p>See https://open-confluence.nrao.edu/display/PL/Regression+Testing for details</p>
+<p>See <a class="reference external" href="https://open-confluence.nrao.edu/display/PL/Regression+Testing">https://open-confluence.nrao.edu/display/PL/Regression+Testing</a> for details</p>
 <p>To add the <em>xdist</em> flavor to your local regression run, one can try:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run -d ${casa_dir}/bin/casa --nogui --nologger --agg -c \</span>
 <span class="go">    &quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;--junitxml=regression-results.xml&#39;, &#39;-n&#39;, &#39;4&#39;, &#39;&lt;pipeline_dir&gt;/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
@@ -230,11 +231,60 @@ these results to the reference values. This should be run in a directory which c
 </pre></div>
 </div>
 <p>Markers can also be combined using ‘and’, ‘or’, or ‘not’. The following example demonstrates how to run only fast vla tests:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m vla and fast&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m vla and fast&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
 </pre></div>
 </div>
 <p>And to run everything besides the vlass tests, run the following:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go"> xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m not vlass&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">xvfb-run casa --nogui --nologger --log2term --agg -c&quot;import pytest; pytest.main([&#39;-vv&#39;, &#39;-m not vlass&#39;, &#39;pipeline/pipeline/infrastructure/utils/regression_tester.py&#39;])&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="casa-data-and-pipeline-testdata">
+<h2><code class="docutils literal notranslate"><span class="pre">casa-data</span></code> and <code class="docutils literal notranslate"><span class="pre">pipeline-testdata</span></code><a class="headerlink" href="#casa-data-and-pipeline-testdata" title="Link to this heading"></a></h2>
+<p>Even with the identical software stack, the numerical results from Pipeline tests is still sensitive to various factors: runtime session environments (e.g. serial vs. mpirun, openmp threadings), OS libraries, as well as the version of <a class="reference external" href="https://casadocs.readthedocs.io/en/latest/notebooks/external-data.html"><code class="docutils literal notranslate"><span class="pre">casa-data</span></code></a> (now managed by the <a class="reference external" href="https://casadocs.readthedocs.io/en/latest/api/casaconfig.html"><code class="docutils literal notranslate"><span class="pre">casaconfig</span></code></a> package).</p>
+<p>To streamline two typical uses cases developer needs to handle: 1) daily development and analysis, better use the latest casa-data version 2) benchmarking testing or producing reported issues (better use a specific casa-data version), a recommended code snippet is provided below to customize the casa-data and extra <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline-testdata/browse"><code class="docutils literal notranslate"><span class="pre">pipeline-testadata</span></code></a> path as below.</p>
+<p>In summary, a tester or developer might define a customized all-in-one discovery list suitable for different computing environments (e.g. nmpost vs. cvpost filesystems, NRAO computing nodes vs. work laptop) as a daily setup; however, for testing/benchmarking occasions, one could use an environment variable <code class="docutils literal notranslate"><span class="pre">CASADATA</span></code> to override the default setup from <code class="docutils literal notranslate"><span class="pre">~/.casa/config.py</span></code> and switch to a specific <code class="docutils literal notranslate"><span class="pre">casa-data</span></code> version checked out from the <a class="reference external" href="https://open-bitbucket.nrao.edu/projects/CASA/repos/casa-data/browse"><code class="docutils literal notranslate"><span class="pre">casa-data</span></code></a> repo. Note that <code class="docutils literal notranslate"><span class="pre">casaconfig</span></code> currently doesn’t offer the capability of rollback to a specific casa-data version. To archive this, we are still relying on the git version control of <code class="docutils literal notranslate"><span class="pre">casa-data</span></code> repo.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">###################################################################################################</span>
+<span class="c1"># User customization section</span>
+<span class="c1">###################################################################################################</span>
+
+<span class="c1"># &#39;casa-data&#39; path discovery list in precedence order: first hit will be picked up by casaconfig.</span>
+<span class="c1"># note: if the environment variable `CASADATA` is set, the value will be prepended to the discovery</span>
+<span class="c1"># list.</span>
+<span class="n">measurespath_checklist</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;~/Workspace/nvme/nrao/casa_dist/casarundata&#39;</span><span class="p">,</span>  <span class="c1"># maintained by casaconfig</span>
+    <span class="s1">&#39;~/Workspace/nvme/nrao/casa_dist/casa-data&#39;</span><span class="p">,</span>  <span class="c1"># git-lfs clone</span>
+    <span class="s1">&#39;~/Workspace/local/nrao/casa_dist/casarundata&#39;</span><span class="p">,</span>  <span class="c1"># maintained by casaconfig</span>
+    <span class="s1">&#39;~/Workspace/local/nrao/casa_dist/casa-data&#39;</span><span class="p">,</span>  <span class="c1"># git-lfs clone</span>
+<span class="p">]</span>
+
+<span class="c1"># all user data paths to be appeneded</span>
+<span class="n">datapath_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;~/Workspace/zfs/nrao/tests/pipeline-testdata&#39;</span><span class="p">]</span>
+
+<span class="c1"># note: if measurespath is not maintained by casaconfig (i.e. from git clone), auto_update will not</span>
+<span class="c1"># take effect.</span>
+<span class="n">measures_auto_update</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">data_auto_update</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1">###################################################################################################</span>
+<span class="c1"># Assign rundata/measurespath/datapath for casa6</span>
+<span class="c1">###################################################################################################</span>
+
+<span class="n">measurespath_checklist</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;CASADATA&#39;</span><span class="p">))</span>
+<span class="n">measurespath_checklist</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">measurespath_checklist</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">datapath_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">datapath_list</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span>
+
+<span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">measurespath_checklist</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;geodetic&#39;</span><span class="p">)):</span>
+        <span class="n">rundata</span> <span class="o">=</span> <span class="n">measurespath</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="n">datapath</span> <span class="o">=</span> <span class="p">[</span><span class="n">measurespath</span><span class="p">]</span>
+        <span class="k">break</span>
+
+<span class="n">datapath</span> <span class="o">+=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">datapath_list</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+
+<span class="c1">###################################################################################################</span>
 </pre></div>
 </div>
 </section>
