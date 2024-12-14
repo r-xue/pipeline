@@ -81,7 +81,7 @@ class T2_4MDetailsPolcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # Create XY gain amplitude vs. antenna plots.
         amp_vs_ant, ampratio_vs_ant = self.create_xy_amp_ant_plots(pipeline_context, result)
 
-        # Render real vs. imaginary corrected XX,XY and XY,YX plots for the session.
+        # Render real vs. imaginary corrected XX,YY and XY,YX plots for the session.
         real_vs_imag = self.create_real_imag_plots(pipeline_context, output_dir, result)
 
         # Update the mako context.

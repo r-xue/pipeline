@@ -1,8 +1,11 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import itertools
 import operator
 import os
-from typing import List, Tuple, Union, Optional, TYPE_CHECKING
+from typing import Iterable, TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
@@ -11,11 +14,12 @@ from . import MeasurementSet
 
 if TYPE_CHECKING:
     from datetime import datetime
+    from pipeline.domain.field import Field
 
 LOG = infrastructure.get_logger(__name__)
 
 
-def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
+def sort_measurement_set(ms: MeasurementSet) -> tuple[int, datetime]:
     """Return sort key for measurement set object.
 
     Sort key consists of data priority and observation start time.
@@ -39,13 +43,34 @@ def sort_measurement_set(ms: MeasurementSet) -> Tuple[int, 'datetime']:
 
 
 class ObservingRun(object):
-    def __init__(self):
-        self.measurement_sets = []
-        self.virtual_science_spw_ids = {}
-        self.virtual_science_spw_names = {}
-        self.virtual_science_spw_shortnames = {}
+    """
+    ObservingRun is a logical representation of an observing run.
 
-    def add_measurement_set(self, ms):
+    Attributes:
+        measurement_sets: List of measurementSet objects associated with run.
+        org_directions: Dictionary with Direction objects of the origin (ALMA
+            Single-Dish only).
+        virtual_science_spw_ids: Dictionary mapping each virtual science
+            spectral window ID (key) to corresponding science spectral window
+            name (value) that is shared across all measurement sets in the
+            observing run.
+        virtual_science_spw_names: Dictionary mapping each science spectral
+            window name (key) to corresponding virtual spectral window ID (value).
+        virtual_science_spw_shortnames: Dictionary mapping each science spectral
+            window name (key) to a shortened version of the name (value).
+    """
+    def __init__(self) -> None:
+        """
+        Initialize an ObservingRun object.
+        """
+        self.measurement_sets: list[MeasurementSet] = []
+        self.org_directions = {}
+        self.virtual_science_spw_ids: dict[int, str] = {}  # PIPE-123
+        self.virtual_science_spw_names: dict[str, int] = {}  # PIPE-123
+        self.virtual_science_spw_shortnames: dict[str, str] = {}  # PIPE-123
+
+    def add_measurement_set(self, ms: MeasurementSet) -> None:
+        """Add a MeasurementSet to the ObservingRun."""
         if ms.basename in [m.basename for m in self.measurement_sets]:
             msg = '{0} is already in the pipeline context'.format(ms.name)
             LOG.error(msg)
@@ -78,9 +103,21 @@ class ObservingRun(object):
         self.measurement_sets.append(ms)
         self.measurement_sets.sort(key=sort_measurement_set)
 
-    def get_ms(self, name=None, intent=None):
-        """Returns the first measurement set matching the given identifier.
+    def get_ms(self, name: str = None, intent: str = None) -> MeasurementSet:
+        """
+        Returns the first measurement set matching the given identifier.
+
         Identifier precedence is name then intent.
+
+        Args:
+            name: Name to find matching measurement set for.
+            intent: Intent to find matching measurement set for.
+
+        Returns:
+            MeasurementSet object for first match found.
+
+        Raises:
+            KeyError, if no measurement set is found for given name or intent.
         """
         if name:
             for ms in self.measurement_sets:
@@ -105,9 +142,19 @@ class ObservingRun(object):
                         return ms
             raise KeyError('No measurement set found with intent {0}'.format(intent))
 
-    def get_measurement_sets(self, names=None, intents=None, fields=None):
+    def get_measurement_sets(self, names: str | None = None, intents: Iterable | str | None = None,
+                             fields: Iterable | str | None = None) -> list[MeasurementSet]:
         """
         Returns measurement sets matching the given arguments.
+
+        Args:
+            names: Name(s) to find matching measurement set(s) for.
+            intents: Intent(s) to find matching measurement set(s) for.
+            fields: Field name(s) to find matching measurement set(s) for.
+
+        Returns:
+            List of MeasurementSet objects for measurement sets matching given
+            arguments.
         """
         candidates = self.measurement_sets
 
@@ -132,16 +179,13 @@ class ObservingRun(object):
             fields_to_match = set(fields)
 
             candidates = [ms for ms in candidates
-                          if fields_to_match.isdisjoint({field.name for field in ms.fields})]
+                          if not fields_to_match.isdisjoint({field.name for field in ms.fields})]
 
         return candidates
 
-    def get_measurement_sets_of_type(self, dtypes: List[DataType],
-                                     msonly: bool=True,
-                                     source: Optional[str]=None,
-                                     spw: Optional[str]=None,
-                                     vis: Optional[List[str]]=None) -> Union[List[MeasurementSet],
-                                                                             Tuple[collections.OrderedDict, DataType]]:
+    def get_measurement_sets_of_type(self, dtypes: list[DataType], msonly: bool = True, source: str | None = None,
+                                     spw: str | None = None, vis: list[str] | None = None) \
+            -> list[MeasurementSet] | tuple[collections.OrderedDict, DataType | None]:
         """
         Return a list of MeasurementSet domain object with matching DataType.
 
@@ -204,9 +248,18 @@ class ObservingRun(object):
             else:
                 return collections.OrderedDict(), None
 
-    def get_fields(self, names=None):
+    # TODO: appears unused, remove?
+    def get_fields(self, names: str | None = None) -> list[Field]:
         """
-        Returns fields matching the given arguments from all measurement sets.
+        Returns fields matching the given arguments from all measurement sets in
+        this observing run.
+
+        Args:
+            names: Field name(s) to match. If None, it will match all field(s) found.
+
+        Returns:
+            List of Field objects for fields in all measurements sets in this
+            observing run, filtered by given field names.
         """
         match = [ms.fields for ms in self.measurement_sets]
         # flatten the fields lists to one sequence
@@ -217,18 +270,23 @@ class ObservingRun(object):
                 names = utils.safe_split(names)
             names = set(names)
             match = [f for f in match if f.name in names]
+        else:
+            match = list(match)
 
         return match
 
     @staticmethod
-    def get_real_spw_id_by_name(spw_name, target_ms):
+    def get_real_spw_id_by_name(spw_name: str | None, target_ms: MeasurementSet) -> int | None:
         """
         Translate a (science) spw name to the real spw ID for a given MS.
 
-        :param spw_name: the spw name to convert
-        :type spw_name: string
-        :param target_ms: the MS to map spw_name to
-        :type target_ms: domain.MeasurementSet
+        Args:
+            spw_name: The spectral window name to convert to ID.
+            target_ms: The MS for which to map name to real spectral window ID.
+
+        Returns:
+            Real spectral window ID for given spectral window name in given MS,
+            or None if name was not found in the given MS.
         """
         spw_id = None
         for spw in target_ms.get_spectral_windows(science_windows_only=True):
@@ -236,45 +294,61 @@ class ObservingRun(object):
                 spw_id = spw.id
         return spw_id
 
-    def get_virtual_spw_id_by_name(self, spw_name):
+    def get_virtual_spw_id_by_name(self, spw_name: str) -> int | None:
         """
         Translate a (science) spw name to the virtual spw ID for this pipeline run.
 
-        :param spw_name: the spw name to convert
-        :type spw_name: string
+        Args:
+            spw_name: The spectral window name to convert.
+
+        Returns:
+            Virtual spectral window ID for given name, or None if no virtual
+            spw was found with given name.
         """
         return self.virtual_science_spw_names.get(spw_name, None)
 
-    def virtual2real_spw_id(self, spw_id, target_ms):
+    def virtual2real_spw_id(self, spw_id: int | str, target_ms: MeasurementSet) -> int | None:
         """
         Translate a virtual (science) spw ID to the real one for a given MS.
 
-        :param spw_id: the spw id to convert
-        :type spw_id: integer or str
-        :param target_ms: the MS to map spw_id to
-        :type target_ms: domain.MeasurementSet
+        Args:
+            spw_id: The virtual spectral window ID (as integer or string) to convert.
+            target_ms: The MS for which to map virtual spw ID to real spw ID.
+
+        Returns:
+            Real spectral window ID matching given virtual spectral ID in given
+            MS. Returns None if either the given virtual spw ID does not exist
+            or the given virtual spw ID does not appear in given MS.
         """
         return self.get_real_spw_id_by_name(self.virtual_science_spw_ids.get(int(spw_id), None), target_ms)
 
-    def real2virtual_spw_id(self, spw_id, target_ms):
+    def real2virtual_spw_id(self, spw_id: int | str, target_ms: MeasurementSet) -> int | None:
         """
         Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
 
-        :param spw_id: the spw id to convert
-        :type spw_id: integer or str
-        :param target_ms: the MS to map spw_id to
-        :type target_ms: domain.MeasurementSet
+        Args:
+            spw_id: The real spectral window ID (as integer or string) to convert.
+            target_ms: The MS for which to map its real spw ID to the virtual spw ID.
+
+        Returns:
+            Virtual spectral window ID in the observing run corresponding to the
+            name of the given real spectral window ID in the given MS, or None
+            if the spectral window name was not found.
         """
         return self.get_virtual_spw_id_by_name(target_ms.get_spectral_window(int(spw_id)).name)
 
-    def get_real_spwsel(self, spwsel, vis):
+    def get_real_spwsel(self, spwsel: list[str], vis: list[str]) -> list[str]:
         """
         Translate a virtual (science) spw selection to the real one for a given MS.
 
-        :param spwsel: the list of spw selections to convert
-        :type spwsel: list of strings
-        :param vis: the list of MS names to map spwsel to
-        :type vis: list of MS names
+        Args:
+            spwsel: The list of spw selections to convert.
+            vis: The list of MS names for which to convert the virtual spw
+                selection to a real spw selection.
+
+        Returns:
+            List of real spw selections for given virtual spw selections and
+            MS names.
         """
         real_spwsel = []
         for spwsel_item, ms_name in zip(spwsel, vis):
@@ -291,7 +365,13 @@ class ObservingRun(object):
         return real_spwsel
 
     @property
-    def start_time(self):
+    def start_time(self) -> dict | None:
+        """
+        Return start time of earliest measurement set in this observing run.
+
+        Returns earliest MS start time as a CASA 'epoch' measure dictionary, or
+        None if there are no measurement sets registered in this observing run.
+        """
         if not self.measurement_sets:
             return None
         earliest, _ = min([(ms, utils.get_epoch_as_datetime(ms.start_time)) for ms in self.measurement_sets],
@@ -299,13 +379,25 @@ class ObservingRun(object):
         return earliest.start_time
 
     @property
-    def start_datetime(self):
+    def start_datetime(self) -> datetime | None:
+        """
+        Return start date and time of earliest measurement set in this observing run.
+
+        Returns earliest MS start time as a datetime object, or None if there
+        are no measurement sets registered in this observing run.
+        """
         if not self.start_time:
             return None
         return utils.get_epoch_as_datetime(self.start_time)
 
     @property
-    def end_time(self):
+    def end_time(self) -> dict | None:
+        """
+        Return end time of latest measurement set in this observing run.
+
+        Returns latest MS end time as a CASA 'epoch' measure dictionary, or
+        None if there are no measurement sets registered in this observing run.
+        """
         if not self.measurement_sets:
             return None
         latest, _ = max([(ms, utils.get_epoch_as_datetime(ms.end_time)) for ms in self.measurement_sets],
@@ -313,23 +405,33 @@ class ObservingRun(object):
         return latest.end_time
 
     @property
-    def end_datetime(self):
+    def end_datetime(self) -> datetime | None:
+        """
+        Return end date and time of latest measurement set in this observing run.
+
+        Returns latest MS end time as a datetime object, or None if there
+        are no measurement sets registered in this observing run.
+        """
         if not self.end_time:
             return None
         return utils.get_epoch_as_datetime(self.end_time)
 
     @property
-    def project_ids(self):
+    def project_ids(self) -> set[str]:
+        """Return unique project ID(s) associated with the MSes in this observing run."""
         return {ms.project_id for ms in self.measurement_sets}
 
     @property
-    def schedblock_ids(self):
+    def schedblock_ids(self) -> set[str]:
+        """Return unique scheduling block ID(s) associated with the MSes in this observing run."""
         return {ms.schedblock_id for ms in self.measurement_sets}
 
     @property
-    def execblock_ids(self):
+    def execblock_ids(self) -> set[str]:
+        """Return unique execution block ID(s) associated with the MSes in this observing run."""
         return {ms.execblock_id for ms in self.measurement_sets}
 
     @property
-    def observers(self):
+    def observers(self) -> set[str]:
+        """Return unique observer(s) associated with the MSes in this observing run."""
         return {ms.observer for ms in self.measurement_sets}

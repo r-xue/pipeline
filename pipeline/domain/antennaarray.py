@@ -1,7 +1,7 @@
 import collections
 import itertools
 import math
-from typing import List, Union, Sequence
+from typing import Sequence
 
 import numpy
 from casatasks.private import simutil
@@ -17,7 +17,29 @@ Baseline = collections.namedtuple('Baseline', 'antenna1 antenna2 length')
 
 
 class AntennaArray(object):
-    def __init__(self, name: str, position, antennas: List[Antenna]):
+    """
+    AntennaArray is a logical representation of the antenna array.
+
+    Attributes:
+        antennas: a list of Antenna objects that comprise the array.
+        baseline_lookup: 2D matrix of baseline lengths.
+        baselines_m: 1D array of baseline lengths for unique antenna baselines
+            (excluding auto-correlations).
+        baseline_min: Baseline tuple (antenna1, antenna2, length) for shortest baseline.
+        baseline_max: Baseline tuple (antenna1, antenna2, length) for longest baseline.
+    """
+    def __init__(self, name: str, position: dict, antennas: list[Antenna]) -> None:
+        """
+        Initialize an AntennaArray object.
+
+        Args:
+            name: the name of the observatory/telescope (as per OBSERVATIONS
+                table in the measurement set).
+            position: the position of the observatory/telescope (as per
+                OBSERVATIONS table in the measurement set) as a CASA 'position'
+                measure dictionary.
+            antennas: a list of Antenna objects that comprise the array.
+        """
         self.__name = name
         self.__position = position
 
@@ -83,7 +105,7 @@ class AntennaArray(object):
 
         self._baselines = self.baselines_for_antennas([a.id for a in antennas])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'AntennaArray({0!r}, {1}, {2!r})'.format(
             self.__name,
             self.__position,
@@ -91,29 +113,31 @@ class AntennaArray(object):
         )
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """Return the name of the observatory."""
         return self.__name
 
     @property
-    def position(self):
+    def position(self) -> dict:
+        """Return the position of the observatory as a CASA 'position' measure dictionary."""
         return self.__position
 
     @property
-    def elevation(self):
+    def elevation(self) -> dict:
         """
         Get the array elevation as a CASA quantity.
         """
         return self.__position['m2']
 
     @property
-    def latitude(self):
+    def latitude(self) -> dict:
         """
         Get the array latitude as a CASA quantity.
         """
         return self.__position['m1']
 
     @property
-    def longitude(self):
+    def longitude(self) -> dict:
         """
         Get the array longitude as a CASA quantity.
         """
@@ -121,6 +145,15 @@ class AntennaArray(object):
 
     @property
     def centre(self):
+        """
+        Return the array centre as earth-centered x, y, z.
+
+        If the array position reference frame is "IRTF", this will return the
+        position directly. Otherwise, the array position reference is assumed to
+        be "WGS84" and the array position (geodetic longitude, latitute,
+        elevation) is converted to earth-centered x, y, z, using the private
+        CASA script "simutil".
+        """
         datum = self.__position['refer']
         if datum == 'ITRF':
             return self.__position
@@ -136,7 +169,19 @@ class AntennaArray(object):
                           qa.getvalue(elevation)[0],
                           datum)
 
-    def baselines_for_antennas(self, antenna_ids: Sequence[int]):
+    def baselines_for_antennas(self, antenna_ids: Sequence[int]) -> list[Baseline]:
+        """
+        Return a list of Baseline tuples for input antenna IDs.
+
+        This creates and returns a list of Baseline tuples for combinations
+        of unique IDs in input antenna IDs.
+
+        Args:
+            antenna_ids: IDs of antennas to return baselines for.
+
+        Returns:
+            List of Baseline objects.
+        """
         unique_ids = set(antenna_ids)
         return [
             Baseline(
@@ -147,12 +192,13 @@ class AntennaArray(object):
         ]
 
     @property
-    def baselines(self) -> List[Baseline]:
+    def baselines(self) -> list[Baseline]:
+        """Return a list of Baseline tuples for all antennas in the array."""
         LOG.warning('Deprecated: AntennaArray.baselines is deprecated. Use AntennaArray.baselines_m instead')
         return self._baselines
 
     @staticmethod
-    def _calc_baseline_lookup(antennas: List[Antenna]) -> numpy.ndarray:
+    def _calc_baseline_lookup(antennas: list[Antenna]) -> numpy.ndarray:
         """
         Calculate a 2D matrix of baseline lengths where:
 
@@ -164,6 +210,12 @@ class AntennaArray(object):
         antenna 1 and antenna 2 is the same as between antenna 2 and antenna
         1). A regular non-sparse matrix is used over a sparse triangular
         matrix, valuing simplicity of implementation over efficiency.
+
+        Args:
+            antennas: List of Antenna objects to compute baseline lengths for.
+
+        Returns:
+            2D Numpy array containing baseline lengths.
         """
         # no baselines = zero baseline length
         if len(antennas) < 2:
@@ -195,9 +247,15 @@ class AntennaArray(object):
 
         return baselines
 
-    def get_offset(self, antenna):
+    def get_offset(self, antenna: Antenna) -> tuple[Distance, Distance]:
         """
         Get the offset of the given antenna from the centre of the array.
+
+        Args:
+            antenna: Antenna object to determine offset for.
+
+        Returns:
+            2-tuple containing x- and y-offset to centre of the array.
         """
         dx = antenna.offset['longitude offset']['value']
         dy = antenna.offset['latitude offset']['value']
@@ -207,25 +265,25 @@ class AntennaArray(object):
 
         return x_offset, y_offset
 
-    def get_baseline(
-            self,
-            antenna1: Union[int, str],
-            antenna2: Union[int, str]
-    ) -> Union[Baseline, None]:
+    def get_baseline(self, antenna1: int | str, antenna2: int | str) -> Baseline | None:
         """
         Get the baseline distance between two antennas.
-
-        Return the baseline length in metres between antennass identified by
-        arguments antenna1 and antenna2. If an identifier does not match a
-        known antenna, None will be returned.
 
         Antenna identifiers will be considered first as numeric antenna IDs,
         then as antenna names.
 
+        Args:
+            antenna1: Numerical ID or name of first antenna.
+            antenna2: Numerical ID or name of second antenna.
+
+        Returns:
+             The baseline length in meters between antennass identified by
+             arguments antenna1 and antenna2. If an identifier does not match a
+             known antenna, None will be returned.
+        """
         # FIXME This function signature seems too wide. Do clients really call by
         # antenna name? Do they *really* handle None? Wouldn't it be better to let
         # the IndexError exception bubble up?
-        """
         def get_antenna_by_id_then_name(predicate):
             try:
                 return self.get_antenna(id=int(predicate))
@@ -249,7 +307,22 @@ class AntennaArray(object):
             Distance(self.baseline_lookup[ant1.id][ant2.id], DistanceUnits.METRE)
         )
 
-    def get_antenna(self, id=None, name=None):
+    def get_antenna(self, id: int | None = None, name: str | None = None) -> Antenna:
+        """
+        Return Antenna object for given antenna ID or name.
+
+        If both ID and name are given, the antenna is searched for by ID.
+
+        Args:
+            id: Antenna ID to search for.
+            name: Antenna name to search for.
+
+        Returns:
+            Antenna object for given antenna ID or name.
+
+        Raises:
+            Exception, if no id or name are given.
+        """
         if id is not None:
             l = [ant for ant in self.antennas if ant.id == id]
             if not l:
@@ -265,8 +338,14 @@ class AntennaArray(object):
         raise Exception('No id or name given to get_antenna')
 
     @property
-    def median_direction(self):
-        """The median center direction for the array."""
+    def median_direction(self) -> dict:
+        """
+        Return the median center direction for the array.
+
+        Returns:
+            Median center direction for the array as a CASA 'direction' measure
+            dictionary.
+        """
         # construct lists of the longitude and latitude of each antenna.. 
         qt = casa_tools.quanta
         longs = [qt.getvalue(antenna.longitude) for antenna in self.antennas]
@@ -283,6 +362,6 @@ class AntennaArray(object):
         return mt.direction(v0=qt.quantity(med_lon, 'rad'), 
                             v1=qt.quantity(med_lat, 'rad'))
 
-    def __str__(self):
+    def __str__(self) -> str:
         names = ', '.join([antenna.name for antenna in self.antennas])
         return 'AntennaArray({0})'.format(names)

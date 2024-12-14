@@ -1,5 +1,7 @@
 # Pipeline Recipes
 
+Pipeline recipes are the operational instructions that define data processing workflows.
+
 | Project - Recipe/Template                     | Description                                                                                                                     | [NRAO-JIRA](https://open-jira.nrao.edu) Ticket                                                                    |
 | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | ***ALMA-IF***                                 |                                                                                                                                 |                                                                                                                   |

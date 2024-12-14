@@ -1,17 +1,19 @@
-
-.. toctree::
-   :maxdepth: 2
-   :caption: User Guide
-
-   installation
-
+Pipeline Tasks (from autosummary)
+=================================
 
 .. autosummary::
    :toctree: _autosummary
-   :caption: API Reference
+   :caption: Pipeline Tasks
+   :template: custom-module-template.rst
    :recursive:
    
-   pipeline    
+   pipeline.h.cli
+   pipeline.hif.cli
+   pipeline.hifa.cli
+   pipeline.hifv.cli
+   pipeline.hsd.cli
+   pipeline.hsdn.cli
+
 
 Indices and tables
 ==================

@@ -13,12 +13,15 @@ Past Releases
     - Used in Operation
     - Download
 
-  * - 2024.1.0.78
+  * - 2024.1.0.8
     - 6.6.1-17
     - - ALMA/Cycle-11
       - VLA/2024
-    - 
-    - 
+    - - `ALMA Pipeline Users Guide <https://almascience.nrao.edu/processing/alma_pipeline_user_s_guide_for_release_2024-1.pdf>`_
+      - `ALMA PL2024 known issues <https://casaguides.nrao.edu/index.php/ALMA_Pipeline_Known_Issues#PL2024>`_
+      - VLA `Calibration <https://science.nrao.edu/facilities/vla/data-processing/pipeline/CIPL_661>`_ and `Imaging <https://science.nrao.edu/facilities/vla/data-processing/pipeline/VIPL>`_ Pipeline
+      - `Task Ref. Manual <https://almascience.nrao.edu/processing/reference-manual-2024.pdf>`_
+    - - 2024-10-01    
     - - `casa-6.6.1-17-pipeline-2024.1.0.8-py3.8.el8.tar.xz <https://casa.nrao.edu/download/distro/casa-pipeline/release/linux>`_
    
   * - 2023.1.1.8

@@ -38,10 +38,10 @@ try:
     from pipeline.infrastructure.api import Results
     from pipeline.h.tasks import ImportData
 
-    taskclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Task)]
-    inputsclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
-    resultsclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(Results)]
-    importdataclasses_str = [ret0.__module__+'.'+ret0.__name__ for ret0 in get_all_subclasses(ImportData)]
+    taskclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Task)]
+    inputsclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
+    resultsclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Results)]
+    importdataclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(ImportData)]
 
     # create custom directives to create inheritance diagrams for all Task/Inputs Classes
     #   https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
@@ -56,15 +56,17 @@ try:
             :parts: -1
         .. |importdataclasses_diagram| inheritance-diagram:: {}
             :parts: -1
-        """.format(' '.join(taskclasses_str),
-                   ' '.join(inputsclasses_str),
-                   ' '.join(resultsclasses_str),
-                   ' '.join(importdataclasses_str))
+        """.format(
+        ' '.join(taskclasses_str),
+        ' '.join(inputsclasses_str),
+        ' '.join(resultsclasses_str),
+        ' '.join(importdataclasses_str),
+    )
     rst_epilog = textwrap.dedent(rst_epilog)
 
 except ImportError as error:
     print("Can't import Pipeline, but we will continue to build the docs.")
-    print(error.__class__.__name__ + ": " + error.message)
+    print(error.__class__.__name__ + ': ' + error.message)
     pass
 
 # -- General configuration ---------------------------------------------
@@ -75,30 +77,32 @@ except ImportError as error:
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc',
-              # 'autoapi.extension',
-              'sphinx.ext.autosectionlabel',
-              'sphinx.ext.autosummary',
-              'sphinx.ext.todo',
-              'sphinx_markdown_tables',
-              #              'sphinx.ext.coverage',
-              'sphinx.ext.imgconverter',
-              'sphinx.ext.mathjax',
-              'sphinx.ext.napoleon',
-              'sphinx.ext.coverage',
-              'sphinx.ext.githubpages',
-              'sphinx.ext.intersphinx',
-              'sphinx.ext.inheritance_diagram',
-              'sphinx_automodapi.automodapi',
-              'sphinx_automodapi.smart_resolver',
-              'sphinxcontrib.bibtex',
-              'sphinx_astrorefs',
-              'recommonmark',
-              'sphinx.ext.graphviz',
-              'sphinx.ext.viewcode',
-              'nbsphinx',
-              'IPython.sphinxext.ipython_console_highlighting',
-              'IPython.sphinxext.ipython_directive']
+extensions = [
+    'sphinx.ext.autodoc',
+    # 'autoapi.extension',
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.todo',
+    'sphinx_markdown_tables',
+    'sphinx.ext.coverage',
+    'sphinx.ext.imgconverter',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.coverage',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.inheritance_diagram',
+    'sphinx_automodapi.automodapi',
+    'sphinx_automodapi.smart_resolver',
+    'sphinxcontrib.bibtex',
+    'sphinx_astrorefs',
+    'recommonmark',
+    'sphinx.ext.graphviz',
+    'sphinx.ext.viewcode',
+    'nbsphinx',
+    'IPython.sphinxext.ipython_console_highlighting',
+    'IPython.sphinxext.ipython_directive',
+]
 
 add_module_names = False
 
@@ -117,8 +121,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Pipeline'
-author = "Pipeline Dev. Team"
-copyright = u'2020–{0}, '.format(datetime.utcnow().year) + author
+author = 'Pipeline Dev. Team'
+copyright = '2020–{0}, '.format(datetime.utcnow().year) + author
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -142,10 +146,7 @@ language = 'en'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = [
-    '_build',
-    'Thumbs.db',
-    '.DS_Store']
+exclude_patterns = ['_build', '**.ipynb_checkpoints', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
 # pygments_style = 'sphinx'
@@ -160,19 +161,34 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'  # "furo"
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'logo_only': False,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    'vcs_pageview_mode': '',
+    'style_nav_header_background': 'gray',
+    'flyout_display': 'hidden',
+    'version_selector': True,
+    'language_selector': True,
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False,
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
+html_css_files = ['custom_theme.css']
 
 # -- Options for HTMLHelp output ---------------------------------------
 
@@ -187,14 +203,12 @@ latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
     'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     #
     'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     #
-    'preamble': r'''
+    'preamble': r"""
   \usepackage{hyperref}
   \usepackage{longtable}
   \setcounter{tocdepth}{1}
@@ -212,12 +226,10 @@ latex_elements = {
     \pagenumbering{arabic}% 
     \makeatother
    }
-''',
-
+""",
     # Latex figure (float) alignment
     #
     # 'figure_align': 'htbp',
-
     # remove blank pages (between the title page and the TOC, etc.)
     #
     'classoptions': ',openany,oneside',
@@ -231,9 +243,7 @@ latex_use_modindex = True
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    ('_taskdocs/taskdocs', 'taskdocs.tex',
-     'Pipeline Tasks Reference Manual',
-     'pipeline team', 'manual'),
+    ('latex', 'taskdocs.tex', 'Pipeline Tasks Reference Manual', 'pipeline team', 'manual'),
 ]
 
 
@@ -241,11 +251,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'pipeline',
-     'Pipeline Documentation',
-     [author], 1)
-]
+man_pages = [(master_doc, 'pipeline', 'Pipeline Documentation', [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------
@@ -254,12 +260,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pipeline',
-     'Pipeline @ NRAO Documentation',
-     author,
-     'pipeline',
-     'placeholder',
-     'Miscellaneous'),
+    (master_doc, 'pipeline', 'Pipeline @ NRAO Documentation', author, 'pipeline', 'placeholder', 'Miscellaneous'),
 ]
 
 # -- Sidebars
@@ -281,8 +282,6 @@ napoleon_use_ivar = True
 
 verbatimwrapslines = False
 html_show_sourcelink = True
-# Temporarily disable autosummary so that links to individual pipeline tasks works as expected for the
-# reference manual
 autosummary_generate = True
 autosummary_generate_overwrite = autosummary_generate
 autosummary_imported_members = True
@@ -317,14 +316,9 @@ automodapi_toctreedirnm = '_automodapi'
 # intersphinx_mapping['packagetemplate'] = ('http://docs.astropy.org/projects/package-template/en/latest/', None)
 # intersphinx_mapping['h5py'] = ('http://docs.h5py.org/en/stable/', None)
 
-
-def setup(app):
-    app.add_css_file('custom_theme.css')
-
-
 # sphinxcontrib.bibtex/sphinx-astrorefs
 bibtex_bibfiles = ['references/pipeline-resolved.bib']
-bibtex_encoding = "utf-8"
+bibtex_encoding = 'utf-8'
 astrorefs_resolve_aas_macros = True
 astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
 astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
@@ -345,8 +339,7 @@ inheritance_node_attrs = {
     'shape': 'box',
     'fontsize': 12,
     'height': 0.25,
-    'fontname': '"Vera Sans, DejaVu Sans, Liberation Sans, '
-    'Arial, Helvetica, sans"',
+    'fontname': '"Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans"',
     'style': '"setlinewidth(0.5),filled"',
     'fillcolor': 'white',
 }
