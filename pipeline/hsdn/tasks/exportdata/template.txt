@@ -203,7 +203,7 @@ if Do_MakeImages:
             _prefix = os.path.join(working_directory, '${source}')
             beamimagefiles = ['{}.NRO-BEAM{}.spw{}.I.sd.im'.format(_prefix, a, spwID) for a in antennalist]
             for antenna in antennalist:
-                sdimaging(
+                tsdimaging(
                     infiles=baseline_outputfile,
                     outfile = beamimagefiles[antenna],
                     field='0',
@@ -221,7 +221,8 @@ if Do_MakeImages:
                     stokes='I',
                     overwrite=Overwrite_Products,
                     brightnessunit='K'
-                    )
+                )
+                os.rename(beamimagefiles[antenna] + '.image', beamimagefiles[antenna])
 
             weightimage = '{}.spw{}.I.sd.im.weight'.format(_prefix, spwID)
 
