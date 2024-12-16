@@ -120,7 +120,8 @@ source_suffix = '.rst'
 # The master toctree document.
 master_doc = 'index'
 
-build_version = pipeline.environment.pipeline_revision
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-release
+release = build_version = pipeline.environment.pipeline_revision # used on the PDF cover
 version = build_version.split('+')[0]
 
 # General information about the project.
