@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.extern.tsys_contamination.Rectangle &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -596,30 +596,9 @@ used for removing the callback with <cite>.remove_callback</cite> later.</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.contains">
 <span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouseevent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.contains" title="Link to this definition"></a></dt>
 <dd><p>Test whether the mouse event occurred in the patch.</p>
-<dl class="field-list">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
-<li><p><strong>mouseevent</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>) – Where the user clicked.</p></li>
-<li><p><strong>radius</strong> (<em>float, optional</em>) – Additional margin on the patch in target coordinates of
-<cite>.Patch.get_transform</cite>. See <cite>.Path.contains_point</cite> for further
-details.</p>
-<p>If <cite>None</cite>, the default value depends on the state of the object:</p>
-<ul class="simple">
-<li><p>If <cite>.Artist.get_picker</cite> is a number, the default
-is that value.  This is so that picking works as expected.</p></li>
-<li><p>Otherwise if the edge color has a non-zero alpha, the default
-is half of the linewidth.  This is so that all the colored
-pixels are “in” the patch.</p></li>
-<li><p>Finally, if the edge has 0 alpha, the default is 0.  This is
-so that patches without a stroked edge do not have points
-outside of the filled region report as “in” due to an
-invisible edge.</p></li>
-</ul>
-</li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>(bool, empty dict)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(bool, empty dict)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -628,28 +607,15 @@ invisible edge.</p></li>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.contains_point">
 <span class="sig-name descname"><span class="pre">contains_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.contains_point" title="Link to this definition"></a></dt>
 <dd><p>Return whether the given point is inside the patch.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>point</strong> (<em>(float, float)</em>) – The point (x, y) to check, in target coordinates of
-<code class="docutils literal notranslate"><span class="pre">.Patch.get_transform()</span></code>. These are display coordinates for patches
-that are added to a figure or Axes.</p></li>
-<li><p><strong>radius</strong> (<em>float, optional</em>) – Additional margin on the patch in target coordinates of
-<cite>.Patch.get_transform</cite>. See <cite>.Path.contains_point</cite> for further
-details.</p>
-<p>If <cite>None</cite>, the default value depends on the state of the object:</p>
-<ul class="simple">
-<li><p>If <cite>.Artist.get_picker</cite> is a number, the default
-is that value.  This is so that picking works as expected.</p></li>
-<li><p>Otherwise if the edge color has a non-zero alpha, the default
-is half of the linewidth.  This is so that all the colored
-pixels are “in” the patch.</p></li>
-<li><p>Finally, if the edge has 0 alpha, the default is 0.  This is
-so that patches without a stroked edge do not have points
-outside of the filled region report as “in” due to an
-invisible edge.</p></li>
-</ul>
-</li>
+<code class="docutils literal notranslate"><span class="pre">self.get_transform()</span></code>. These are display coordinates for patches
+that are added to a figure or axes.</p></li>
+<li><p><strong>radius</strong> (<em>float, optional</em>) – Add an additional margin on the patch in target coordinates of
+<code class="docutils literal notranslate"><span class="pre">self.get_transform()</span></code>. See <cite>.Path.contains_point</cite> for further
+details.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -673,10 +639,10 @@ coordinates (e.g. from mouse events) are within the patch. If you want
 to do the above check with data coordinates, you have to properly
 transform them first:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">center</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">transformed_interior_point</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_data_transform</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">transformed_interior_point</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">transformed_center</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">get_transform</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">contains_point</span><span class="p">(</span><span class="n">transformed_center</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -686,28 +652,15 @@ transform them first:</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.contains_points">
 <span class="sig-name descname"><span class="pre">contains_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.contains_points" title="Link to this definition"></a></dt>
 <dd><p>Return whether the given points are inside the patch.</p>
-<dl class="field-list">
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul>
+<dd class="field-odd"><ul class="simple">
 <li><p><strong>points</strong> (<em>(N, 2) array</em>) – The points to check, in target coordinates of
 <code class="docutils literal notranslate"><span class="pre">self.get_transform()</span></code>. These are display coordinates for patches
-that are added to a figure or Axes. Columns contain x and y values.</p></li>
-<li><p><strong>radius</strong> (<em>float, optional</em>) – Additional margin on the patch in target coordinates of
-<cite>.Patch.get_transform</cite>. See <cite>.Path.contains_point</cite> for further
-details.</p>
-<p>If <cite>None</cite>, the default value depends on the state of the object:</p>
-<ul class="simple">
-<li><p>If <cite>.Artist.get_picker</cite> is a number, the default
-is that value.  This is so that picking works as expected.</p></li>
-<li><p>Otherwise if the edge color has a non-zero alpha, the default
-is half of the linewidth.  This is so that all the colored
-pixels are “in” the patch.</p></li>
-<li><p>Finally, if the edge has 0 alpha, the default is 0.  This is
-so that patches without a stroked edge do not have points
-outside of the filled region report as “in” due to an
-invisible edge.</p></li>
-</ul>
-</li>
+that are added to a figure or axes. Columns contain x and y values.</p></li>
+<li><p><strong>radius</strong> (<em>float, optional</em>) – Add an additional margin on the patch in target coordinates of
+<code class="docutils literal notranslate"><span class="pre">self.get_transform()</span></code>. See <cite>.Path.contains_point</cite> for further
+details.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -743,7 +696,7 @@ have units, <em>y</em> itself is returned.</p>
 returns False).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>~matplotlib.backend_bases.RendererBase</cite> subclass.)</p>
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass.)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -909,7 +862,7 @@ the data to a string representation.</p>
 in the status bar of a plot window, while moving the mouse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>event</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>)</p>
+<dd class="field-odd"><p><strong>event</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -990,7 +943,7 @@ physical coordinates.</p>
 <span class="sig-name descname"><span class="pre">get_in_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.get_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout
 calculations.</p>
-<p>E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+<p>E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 </dd></dl>
@@ -1058,10 +1011,10 @@ transform which scales the coordinates (the patch coordinate) by 5.</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.get_picker">
 <span class="sig-name descname"><span class="pre">get_picker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.get_picker" title="Link to this definition"></a></dt>
 <dd><p>Return the picking behavior of the artist.</p>
-<p>The possible values are described in <cite>.Artist.set_picker</cite>.</p>
+<p>The possible values are described in <cite>.set_picker</cite>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.set_picker" title="pipeline.extern.tsys_contamination.Rectangle.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.pickable" title="pipeline.extern.tsys_contamination.Rectangle.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.pick" title="pipeline.extern.tsys_contamination.Rectangle.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1107,15 +1060,14 @@ shrunken or expanded.</p></li>
 <dd><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>~matplotlib.backend_bases.RendererBase</cite> subclass, optional) – renderer that will be used to draw the figures (i.e.
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass) – renderer that will be used to draw the figures (i.e.
 <code class="docutils literal notranslate"><span class="pre">fig.canvas.get_renderer()</span></code>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).
-Returns None if clipping results in no intersection.</p>
+<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>.Bbox</cite> or None</p>
+<dd class="field-odd"><p><cite>.Bbox</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1144,7 +1096,7 @@ transformation.</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.get_verts">
 <span class="sig-name descname"><span class="pre">get_verts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.get_verts" title="Link to this definition"></a></dt>
 <dd><p>Return a copy of the vertices used in this patch.</p>
-<p>If the patch contains Bézier curves, the curves will be interpolated by
+<p>If the patch contains Bezier curves, the curves will be interpolated by
 line segments.  To access the curves as curves, use <cite>get_path</cite>.</p>
 </dd></dl>
 
@@ -1171,7 +1123,7 @@ box at 0, 0.</p>
 <p>Be careful when using this function, the results will not update
 if the artist window extent of the artist changes.  The extent
 can change due to any changes in the transform stack, such as
-changing the Axes limits, the figure size, or the canvas used
+changing the axes limits, the figure size, or the canvas used
 (as is done when saving a figure).  This can lead to unexpected
 behavior where interactive figures will look fine on the screen,
 but will save incorrectly.</p>
@@ -1240,7 +1192,7 @@ when the mouse cursor moves over it.</p>
 the artist and the artist has picker set.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code></p>
+<p><a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.set_picker" title="pipeline.extern.tsys_contamination.Rectangle.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.get_picker" title="pipeline.extern.tsys_contamination.Rectangle.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.pickable" title="pipeline.extern.tsys_contamination.Rectangle.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1250,7 +1202,7 @@ the artist and the artist has picker set.</p>
 <dd><p>Return whether the artist is pickable.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.set_picker" title="pipeline.extern.tsys_contamination.Rectangle.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.get_picker" title="pipeline.extern.tsys_contamination.Rectangle.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.extern.tsys_contamination.Rectangle.pick" title="pipeline.extern.tsys_contamination.Rectangle.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -1266,9 +1218,9 @@ the artist and the artist has picker set.</p>
 <dd><p>Remove the artist from the figure if possible.</p>
 <p>The effect will not be visible until the figure is redrawn, e.g.,
 with <cite>.FigureCanvasBase.draw_idle</cite>.  Call <cite>~.axes.Axes.relim</cite> to
-update the Axes limits if desired.</p>
+update the axes limits if desired.</p>
 <p>Note: <cite>~.axes.Axes.relim</cite> will not see collections even if the
-collection was added to the Axes with <em>autolim</em> = True.</p>
+collection was added to the axes with <em>autolim</em> = True.</p>
 <p>Note: there is no support for removing the artist’s legend entry.</p>
 </dd></dl>
 
@@ -1301,13 +1253,13 @@ animated: bool
 antialiased or aa: bool or None
 bounds: (left, bottom, width, height)
 capstyle: <cite>.CapStyle</cite> or {‘butt’, ‘projecting’, ‘round’}
-clip_box: <cite>~matplotlib.transforms.BboxBase</cite> or None
+clip_box: <cite>.Bbox</cite>
 clip_on: bool
 clip_path: Patch or (Path, Transform) or None
-color: <a href="#id1"><span class="problematic" id="id2">:mpltype:`color`</span></a>
-edgecolor or ec: <a href="#id3"><span class="problematic" id="id4">:mpltype:`color`</span></a> or None
-facecolor or fc: <a href="#id5"><span class="problematic" id="id6">:mpltype:`color`</span></a> or None
-figure: <cite>~matplotlib.figure.Figure</cite>
+color: color
+edgecolor or ec: color or None
+facecolor or fc: color or None
+figure: <cite>.Figure</cite>
 fill: bool
 gid: str
 hatch: {‘/’, ‘\’, ‘|’, ‘-’, ‘+’, ‘x’, ‘o’, ‘O’, ‘.’, ‘*’}
@@ -1318,12 +1270,12 @@ label: object
 linestyle or ls: {‘-’, ‘–’, ‘-.’, ‘:’, ‘’, (offset, on-off-seq), …}
 linewidth or lw: float or None
 mouseover: bool
-path_effects: list of <cite>.AbstractPathEffect</cite>
+path_effects: <cite>.AbstractPathEffect</cite>
 picker: None or bool or float or callable
 rasterized: bool
 sketch_params: (scale: float, length: float, randomness: float)
 snap: bool or None
-transform: <cite>~matplotlib.transforms.Transform</cite>
+transform: <cite>.Transform</cite>
 url: str
 visible: bool
 width: unknown
@@ -1381,7 +1333,7 @@ You have to call <cite>.Figure.draw_artist</cite> / <cite>.Axes.draw_artist</cit
 explicitly on the artist. This approach is used to speed up animations
 using blitting.</p>
 <p>See also <cite>matplotlib.animation</cite> and
-<span class="xref std std-ref">blitting</span>.</p>
+<span class="xref std std-doc">/tutorials/advanced/blitting</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
@@ -1430,9 +1382,7 @@ all other patches.</p>
 <dd><p>Set the artist’s clip <cite>.Bbox</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>clipbox</strong> (<cite>~matplotlib.transforms.BboxBase</cite> or None) – Will typically be created from a <cite>.TransformedBbox</cite>. For instance,
-<code class="docutils literal notranslate"><span class="pre">TransformedBbox(Bbox([[0,</span> <span class="pre">0],</span> <span class="pre">[1,</span> <span class="pre">1]]),</span> <span class="pre">ax.transAxes)</span></code> is the default
-clipping for an artist added to an Axes.</p>
+<dd class="field-odd"><p><strong>clipbox</strong> (<cite>.Bbox</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1441,7 +1391,7 @@ clipping for an artist added to an Axes.</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.set_clip_on">
 <span class="sig-name descname"><span class="pre">set_clip_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.set_clip_on" title="Link to this definition"></a></dt>
 <dd><p>Set whether the artist uses clipping.</p>
-<p>When False, artists will be visible outside the Axes which
+<p>When False artists will be visible outside of the Axes which
 can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1457,7 +1407,7 @@ can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<cite>~matplotlib.patches.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
+<li><p><strong>path</strong> (<cite>.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
 well. If <em>None</em>, a previously set clip path is removed.</p></li>
 <li><p><strong>transform</strong> (<cite>~matplotlib.transforms.Transform</cite>, optional) – Only used if <em>path</em> is a <cite>.Path</cite>, in which case the given <cite>.Path</cite>
 is converted to a <cite>.TransformedPath</cite> using <em>transform</em>.</p></li>
@@ -1479,7 +1429,7 @@ parameter.</p>
 <dd><p>Set both the edgecolor and the facecolor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>c</strong> (<a href="#id7"><span class="problematic" id="id8">:mpltype:`color`</span></a>)</p>
+<dd class="field-odd"><p><strong>c</strong> (<em>color</em>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -1500,7 +1450,7 @@ parameter.</p>
 <dd><p>Set the patch edge color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>color</strong> (<a href="#id9"><span class="problematic" id="id10">:mpltype:`color`</span></a> or None)</p>
+<dd class="field-odd"><p><strong>color</strong> (<em>color or None</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1511,7 +1461,7 @@ parameter.</p>
 <dd><p>Set the patch face color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>color</strong> (<a href="#id11"><span class="problematic" id="id12">:mpltype:`color`</span></a> or None)</p>
+<dd class="field-odd"><p><strong>color</strong> (<em>color or None</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1528,7 +1478,7 @@ parameter.</p>
 <dd><p>Set the <cite>.Figure</cite> instance the artist belongs to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fig</strong> (<cite>~matplotlib.figure.Figure</cite>)</p>
+<dd class="field-odd"><p><strong>fig</strong> (<cite>.Figure</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1575,6 +1525,8 @@ parameter.</p>
 <p>Letters can be combined, in which case all the specified
 hatchings are done.  If same letter repeats, it increases the
 density of hatching of that pattern.</p>
+<p>Hatching is supported in the PostScript, PDF, SVG and Agg
+backends only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>hatch</strong> (<em>{‘/’, ‘\’, ‘|’, ‘-’, ‘+’, ‘x’, ‘o’, ‘O’, ‘.’, ‘</em>’}*)</p>
@@ -1592,7 +1544,7 @@ density of hatching of that pattern.</p>
 <dt class="sig sig-object py" id="pipeline.extern.tsys_contamination.Rectangle.set_in_layout">
 <span class="sig-name descname"><span class="pre">set_in_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.extern.tsys_contamination.Rectangle.set_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Set if artist is to be included in layout calculations,
-E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 <dl class="field-list simple">
@@ -1711,7 +1663,7 @@ the mouse cursor moves over it.</p>
 <dd><p>Set the path effects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path_effects</strong> (list of <cite>.AbstractPathEffect</cite>)</p>
+<dd class="field-odd"><p><strong>path_effects</strong> (<cite>.AbstractPathEffect</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1820,7 +1772,7 @@ segments, round to the nearest pixel center.</p></li>
 <dd><p>Set the artist transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>t</strong> (<cite>~matplotlib.transforms.Transform</cite>)</p>
+<dd class="field-odd"><p><strong>t</strong> (<cite>.Transform</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1955,7 +1907,7 @@ lists can be modified in place as needed.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

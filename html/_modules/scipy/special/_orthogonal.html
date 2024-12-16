@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>scipy.special._orthogonal &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -195,10 +195,10 @@
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">airy</span>
 
 <span class="c1"># Local imports.</span>
-<span class="c1"># There is no .pyi file for _specfun</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_specfun</span>  <span class="c1"># type: ignore</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_ufuncs</span>
 <span class="n">_gam</span> <span class="o">=</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">gamma</span>
+<span class="c1"># There is no .pyi file for _specfun</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_specfun</span>  <span class="c1"># type: ignore</span>
 
 <span class="n">_polyfuns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;legendre&#39;</span><span class="p">,</span> <span class="s1">&#39;chebyt&#39;</span><span class="p">,</span> <span class="s1">&#39;chebyu&#39;</span><span class="p">,</span> <span class="s1">&#39;chebyc&#39;</span><span class="p">,</span> <span class="s1">&#39;chebys&#39;</span><span class="p">,</span>
              <span class="s1">&#39;jacobi&#39;</span><span class="p">,</span> <span class="s1">&#39;laguerre&#39;</span><span class="p">,</span> <span class="s1">&#39;genlaguerre&#39;</span><span class="p">,</span> <span class="s1">&#39;hermite&#39;</span><span class="p">,</span>
@@ -236,8 +236,7 @@
             <span class="n">evf</span> <span class="o">=</span> <span class="n">eval_func</span>
             <span class="k">if</span> <span class="n">evf</span><span class="p">:</span>
                 <span class="n">knn</span> <span class="o">=</span> <span class="n">kn</span>
-                <span class="k">def</span> <span class="nf">eval_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">evf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">knn</span>
+                <span class="n">eval_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">evf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">knn</span>
             <span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">kn</span><span class="p">)</span>
             <span class="n">kn</span> <span class="o">=</span> <span class="mf">1.0</span>
 
@@ -382,27 +381,17 @@
     <span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">beta</span>
     <span class="k">if</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
-                <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>
-                <span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">b</span> <span class="o">-</span> <span class="n">a</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
-            <span class="p">)</span>
+        <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">b</span><span class="o">-</span><span class="n">a</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">),</span>
+                  <span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="mf">2.0</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">+</span><span class="mi">2</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span>
-            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">k</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
-        <span class="p">)</span>
+    <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mf">2.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> \
+              <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="o">*</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">k</span><span class="o">+</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_jacobi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_jacobi</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_jacobi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                       <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_jacobi</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">a</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
 
 
@@ -471,6 +460,8 @@
 <span class="sd">    different values of :math:`\alpha`:</span>
 
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import jacobi</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 1.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
 <span class="sd">    &gt;&gt;&gt; ax.set_ylim(-2.0, 2.0)</span>
@@ -484,8 +475,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be nonnegative.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="n">beta</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">beta</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">orthopoly1d</span><span class="p">([],</span> <span class="p">[],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">wfunc</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">monic</span><span class="p">,</span>
                            <span class="n">eval_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">)</span>
@@ -546,8 +536,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">p1</span><span class="o">-</span><span class="n">q1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">q1</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;(p - q) must be greater than -1, and q must be greater than 0.&quot;</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;(p - q) must be greater than -1, and q must be greater than 0.&quot;</span><span class="p">)</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="n">roots_jacobi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p1</span><span class="o">-</span><span class="n">q1</span><span class="p">,</span> <span class="n">q1</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="n">scale</span> <span class="o">=</span> <span class="mf">2.0</span><span class="o">**</span><span class="n">p1</span>
@@ -598,8 +587,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be nonnegative.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">orthopoly1d</span><span class="p">([],</span> <span class="p">[],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">wfunc</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">monic</span><span class="p">,</span>
                            <span class="n">eval_func</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">)</span>
@@ -673,15 +661,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">w</span>
 
-    <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-                <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="n">x</span>
+    <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                       <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span><span class="o">*</span><span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_genlaguerre</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="n">x</span>
     <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
 
 
@@ -713,11 +697,6 @@
 <span class="sd">    L : orthopoly1d</span>
 <span class="sd">        Generalized Laguerre polynomial.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    laguerre : Laguerre polynomial.</span>
-<span class="sd">    hyp1f1 : confluent hypergeometric function</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For fixed :math:`\alpha`, the polynomials :math:`L_n^{(\alpha)}`</span>
@@ -726,6 +705,11 @@
 
 <span class="sd">    The Laguerre polynomials are the special case where :math:`\alpha</span>
 <span class="sd">    = 0`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    laguerre : Laguerre polynomial.</span>
+<span class="sd">    hyp1f1 : confluent hypergeometric function</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -744,7 +728,6 @@
 <span class="sd">    This can be verified, for example,  for :math:`n = \alpha = 3` over the</span>
 <span class="sd">    interval :math:`[-1, 1]`:</span>
 
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import binom</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import genlaguerre</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import hyp1f1</span>
@@ -756,6 +739,7 @@
 <span class="sd">    :math:`L_3^{(\alpha)}` for some values of :math:`\alpha`:</span>
 
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import genlaguerre</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-4.0, 12.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
 <span class="sd">    &gt;&gt;&gt; ax.set_ylim(-5.0, 10.0)</span>
@@ -776,8 +760,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="n">n</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">roots_genlaguerre</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="n">alpha</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="n">alpha</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="n">hn</span> <span class="o">=</span> <span class="n">_gam</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">_gam</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -854,14 +837,14 @@
 <span class="sd">    L : orthopoly1d</span>
 <span class="sd">        Laguerre Polynomial.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    genlaguerre : Generalized (associated) Laguerre polynomial.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The polynomials :math:`L_n` are orthogonal over :math:`[0,</span>
 <span class="sd">    \infty)` with weight function :math:`e^{-x}`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    genlaguerre : Generalized (associated) Laguerre polynomial.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -876,7 +859,6 @@
 <span class="sd">    :math:`L_n^{(\alpha)}`.</span>
 <span class="sd">    Let&#39;s verify it on the interval :math:`[-1, 1]`:</span>
 
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import genlaguerre</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import laguerre</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 1.0, 0.01)</span>
@@ -890,6 +872,7 @@
 
 <span class="sd">    This can be easily checked on :math:`[0, 1]` for :math:`n = 3`:</span>
 
+<span class="sd">    &gt;&gt;&gt; from scipy.special import laguerre</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(0.0, 1.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(4 * laguerre(4)(x),</span>
 <span class="sd">    ...             (7 - x) * laguerre(3)(x) - 3 * laguerre(2)(x))</span>
@@ -898,6 +881,7 @@
 <span class="sd">    This is the plot of the first few Laguerre polynomials :math:`L_n`:</span>
 
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import laguerre</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 5.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
 <span class="sd">    &gt;&gt;&gt; ax.set_ylim(-5.0, 5.0)</span>
@@ -954,13 +938,6 @@
 <span class="sd">    mu : float</span>
 <span class="sd">        Sum of the weights</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    scipy.integrate.quadrature</span>
-<span class="sd">    scipy.integrate.fixed_quad</span>
-<span class="sd">    numpy.polynomial.hermite.hermgauss</span>
-<span class="sd">    roots_hermitenorm</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For small n up to 150 a modified version of the Golub-Welsch</span>
@@ -972,6 +949,13 @@
 <span class="sd">    which computes nodes and weights in a numerically stable manner.</span>
 <span class="sd">    The algorithm has linear runtime making computation for very</span>
 <span class="sd">    large n (several thousand or more) feasible.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    scipy.integrate.quadrature</span>
+<span class="sd">    scipy.integrate.fixed_quad</span>
+<span class="sd">    numpy.polynomial.hermite.hermgauss</span>
+<span class="sd">    roots_hermitenorm</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -996,13 +980,10 @@
 
     <span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">150</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
-        <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mf">0.0</span><span class="o">*</span><span class="n">k</span>
+        <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermite</span>
-        <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermite</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermite</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nodes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">_roots_hermite_asy</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -1040,10 +1021,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">a</span> <span class="o">=</span> <span class="n">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span>
     <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">floor</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">-</span> <span class="mf">4.0</span><span class="o">*</span><span class="n">k</span> <span class="o">+</span> <span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">floor</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">a</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
-    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">xi</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">pi</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxit</span><span class="p">):</span>
         <span class="n">xi</span> <span class="o">=</span> <span class="n">xi</span> <span class="o">-</span> <span class="n">f</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">/</span><span class="n">df</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
@@ -1116,13 +1095,12 @@
     <span class="c1"># Airy roots by approximation</span>
     <span class="n">ak</span> <span class="o">=</span> <span class="n">_specfun</span><span class="o">.</span><span class="n">airyzo</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># Initial approximation of Hermite roots (square)</span>
-    <span class="n">xksq</span> <span class="o">=</span> <span class="p">(</span><span class="n">nu</span>
-            <span class="o">+</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ak</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span>
-            <span class="o">+</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">5.0</span> <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">4.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span>
-            <span class="o">+</span> <span class="p">(</span><span class="mf">9.0</span><span class="o">/</span><span class="mf">140.0</span> <span class="o">-</span> <span class="mf">12.0</span><span class="o">/</span><span class="mf">175.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
-            <span class="o">+</span> <span class="p">(</span><span class="mf">16.0</span><span class="o">/</span><span class="mf">1575.0</span> <span class="o">*</span> <span class="n">ak</span> <span class="o">+</span> <span class="mf">92.0</span><span class="o">/</span><span class="mf">7875.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span>
-            <span class="o">-</span> <span class="p">(</span><span class="mf">15152.0</span><span class="o">/</span><span class="mf">3031875.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mf">1088.0</span><span class="o">/</span><span class="mf">121275.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-              <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">7.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">))</span>
+    <span class="n">xksq</span> <span class="o">=</span> <span class="p">(</span><span class="n">nu</span> <span class="o">+</span>
+            <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ak</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">+</span>
+            <span class="mf">1.0</span><span class="o">/</span><span class="mf">5.0</span> <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">4.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">+</span>
+            <span class="p">(</span><span class="mf">9.0</span><span class="o">/</span><span class="mf">140.0</span> <span class="o">-</span> <span class="mf">12.0</span><span class="o">/</span><span class="mf">175.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">+</span>
+            <span class="p">(</span><span class="mf">16.0</span><span class="o">/</span><span class="mf">1575.0</span> <span class="o">*</span> <span class="n">ak</span> <span class="o">+</span> <span class="mf">92.0</span><span class="o">/</span><span class="mf">7875.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">-</span>
+            <span class="p">(</span><span class="mf">15152.0</span><span class="o">/</span><span class="mf">3031875.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">5</span> <span class="o">+</span> <span class="mf">1088.0</span><span class="o">/</span><span class="mf">121275.0</span> <span class="o">*</span> <span class="n">ak</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">nu</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">7.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">xksq</span>
 
 
@@ -1230,23 +1208,17 @@
     <span class="n">u0</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">u1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">6.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.0</span>
     <span class="n">u2</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">9.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">249.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">145.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1152.0</span>
-    <span class="n">u3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4042.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">18189.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">28287.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span>
-          <span class="o">-</span> <span class="mf">151995.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">259290.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">414720.0</span>
-    <span class="n">u4</span> <span class="o">=</span> <span class="p">(</span><span class="mf">72756.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">10</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">321339.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">8</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">154982.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">6</span><span class="p">,:]</span>
-          <span class="o">+</span> <span class="mf">50938215.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">122602962.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">12773113.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">39813120.0</span>
-    <span class="n">u5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">82393456.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">15</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">617950920.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">13</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">1994971575.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">11</span><span class="p">,:]</span>
-          <span class="o">-</span> <span class="mf">3630137104.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">4433574213.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">37370295816.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span>
-          <span class="o">-</span> <span class="mf">119582875013.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">34009066266.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">6688604160.0</span>
+    <span class="n">u3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4042.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">18189.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">28287.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">151995.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">259290.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">414720.0</span>
+    <span class="n">u4</span> <span class="o">=</span> <span class="p">(</span><span class="mf">72756.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">10</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">321339.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">8</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">154982.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">6</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">50938215.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">122602962.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">12773113.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">39813120.0</span>
+    <span class="n">u5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">82393456.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">15</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">617950920.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">13</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">1994971575.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">11</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">3630137104.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">4433574213.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span>
+          <span class="o">-</span> <span class="mf">37370295816.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">119582875013.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">34009066266.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">6688604160.0</span>
     <span class="n">v0</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">v1</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">6.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.0</span>
     <span class="n">v2</span> <span class="o">=</span> <span class="p">(</span><span class="mf">15.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">327.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">143.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1152.0</span>
-    <span class="n">v3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4042.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">18189.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">36387.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span> 
-          <span class="o">+</span> <span class="mf">238425.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">259290.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">414720.0</span>
-    <span class="n">v4</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">121260.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">10</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">551733.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">8</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">151958.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">6</span><span class="p">,:]</span>
-          <span class="o">-</span> <span class="mf">57484425.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">132752238.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">-</span> <span class="mi">12118727</span><span class="p">)</span> <span class="o">/</span> <span class="mf">39813120.0</span>
-    <span class="n">v5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">82393456.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">15</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">617950920.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">13</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">2025529095.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">11</span><span class="p">,:]</span>
-          <span class="o">-</span> <span class="mf">3750839308.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">3832454253.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">35213253348.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span>
-          <span class="o">+</span> <span class="mf">130919230435.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">+</span> <span class="mi">34009066266</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">6688604160.0</span>
+    <span class="n">v3</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4042.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">18189.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">36387.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">238425.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">259290.0</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">414720.0</span>
+    <span class="n">v4</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">121260.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">10</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">551733.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">8</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">151958.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">6</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">57484425.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">132752238.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span> <span class="o">-</span> <span class="mi">12118727</span><span class="p">)</span> <span class="o">/</span> <span class="mf">39813120.0</span>
+    <span class="n">v5</span> <span class="o">=</span> <span class="p">(</span><span class="mf">82393456.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">15</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">617950920.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">13</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">2025529095.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">11</span><span class="p">,:]</span> <span class="o">-</span> <span class="mf">3750839308.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">9</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">3832454253.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">7</span><span class="p">,:]</span>
+          <span class="o">+</span> <span class="mf">35213253348.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">5</span><span class="p">,:]</span> <span class="o">+</span> <span class="mf">130919230435.0</span><span class="o">*</span><span class="n">ctp</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span> <span class="o">+</span> <span class="mi">34009066266</span><span class="o">*</span><span class="n">ct</span><span class="p">)</span> <span class="o">/</span> <span class="mf">6688604160.0</span>
     <span class="c1"># Airy Evaluation (Bi and Bip unused)</span>
     <span class="n">Ai</span><span class="p">,</span> <span class="n">Aip</span><span class="p">,</span> <span class="n">Bi</span><span class="p">,</span> <span class="n">Bip</span> <span class="o">=</span> <span class="n">airy</span><span class="p">(</span><span class="n">mu</span><span class="o">**</span><span class="p">(</span><span class="mf">4.0</span><span class="o">/</span><span class="mf">6.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">zeta</span><span class="p">)</span>
     <span class="c1"># Prefactor for U</span>
@@ -1256,12 +1228,10 @@
     <span class="n">phip</span> <span class="o">=</span> <span class="n">phi</span> <span class="o">**</span> <span class="n">arange</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
     <span class="n">A0</span> <span class="o">=</span> <span class="n">b0</span><span class="o">*</span><span class="n">u0</span>
     <span class="n">A1</span> <span class="o">=</span> <span class="p">(</span><span class="n">b2</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">u2</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">3</span>
-    <span class="n">A2</span> <span class="o">=</span> <span class="p">(</span><span class="n">b4</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b3</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b2</span><span class="o">*</span><span class="n">u2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">u3</span>
-          <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">u4</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">6</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="p">(</span><span class="n">b4</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b3</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b2</span><span class="o">*</span><span class="n">u2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">u3</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">u4</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">6</span>
     <span class="n">B0</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">a1</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">u1</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">B1</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">a3</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a2</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">u2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">u3</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">5</span>
-    <span class="n">B2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">a5</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a4</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a3</span><span class="o">*</span><span class="n">u2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">a2</span><span class="o">*</span><span class="n">u3</span>
-           <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">u4</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">u5</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">8</span>
+    <span class="n">B2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">a5</span><span class="o">*</span><span class="n">u0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a4</span><span class="o">*</span><span class="n">u1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a3</span><span class="o">*</span><span class="n">u2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">a2</span><span class="o">*</span><span class="n">u3</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">u4</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">u5</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">8</span>
     <span class="c1"># U</span>
     <span class="c1"># https://dlmf.nist.gov/12.10#E35</span>
     <span class="n">U</span> <span class="o">=</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ai</span> <span class="o">*</span> <span class="p">(</span><span class="n">A0</span> <span class="o">+</span> <span class="n">A1</span><span class="o">/</span><span class="n">mu</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="n">A2</span><span class="o">/</span><span class="n">mu</span><span class="o">**</span><span class="mf">4.0</span><span class="p">)</span> <span class="o">+</span>
@@ -1272,12 +1242,10 @@
     <span class="c1"># https://dlmf.nist.gov/12.10#E46</span>
     <span class="n">C0</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">b1</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">v1</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span>
     <span class="n">C1</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">b3</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b2</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">v2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">v3</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">4</span>
-    <span class="n">C2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">b5</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b4</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b3</span><span class="o">*</span><span class="n">v2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">b2</span><span class="o">*</span><span class="n">v3</span>
-           <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">v4</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">v5</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">7</span>
+    <span class="n">C2</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">b5</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">b4</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">b3</span><span class="o">*</span><span class="n">v2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">b2</span><span class="o">*</span><span class="n">v3</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">b1</span><span class="o">*</span><span class="n">v4</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">4</span><span class="p">,:]</span><span class="o">*</span><span class="n">b0</span><span class="o">*</span><span class="n">v5</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">7</span>
     <span class="n">D0</span> <span class="o">=</span> <span class="n">a0</span><span class="o">*</span><span class="n">v0</span>
     <span class="n">D1</span> <span class="o">=</span> <span class="p">(</span><span class="n">a2</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">v2</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">3</span>
-    <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a4</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a3</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a2</span><span class="o">*</span><span class="n">v2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">v3</span>
-          <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">v4</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">6</span>
+    <span class="n">D2</span> <span class="o">=</span> <span class="p">(</span><span class="n">a4</span><span class="o">*</span><span class="n">v0</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span><span class="o">*</span><span class="n">a3</span><span class="o">*</span><span class="n">v1</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">1</span><span class="p">,:]</span><span class="o">*</span><span class="n">a2</span><span class="o">*</span><span class="n">v2</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">2</span><span class="p">,:]</span><span class="o">*</span><span class="n">a1</span><span class="o">*</span><span class="n">v3</span> <span class="o">+</span> <span class="n">phip</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]</span><span class="o">*</span><span class="n">a0</span><span class="o">*</span><span class="n">v4</span><span class="p">)</span> <span class="o">/</span> <span class="n">zeta</span><span class="o">**</span><span class="mi">6</span>
     <span class="c1"># Derivative of U</span>
     <span class="c1"># https://dlmf.nist.gov/12.10#E36</span>
     <span class="n">Ud</span> <span class="o">=</span> <span class="n">Pd</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ai</span> <span class="o">*</span> <span class="p">(</span><span class="n">C0</span> <span class="o">+</span> <span class="n">C1</span><span class="o">/</span><span class="n">mu</span><span class="o">**</span><span class="mf">2.0</span> <span class="o">+</span> <span class="n">C2</span><span class="o">/</span><span class="n">mu</span><span class="o">**</span><span class="mf">4.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">mu</span><span class="o">**</span><span class="p">(</span><span class="mf">4.0</span><span class="o">/</span><span class="mf">6.0</span><span class="p">)</span> <span class="o">+</span>
@@ -1446,8 +1414,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="n">n</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">roots_hermite</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="n">hn</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">n</span> <span class="o">*</span> <span class="n">_gam</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">pi</span><span class="p">)</span>
@@ -1486,12 +1453,6 @@
 <span class="sd">    mu : float</span>
 <span class="sd">        Sum of the weights</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    scipy.integrate.quadrature</span>
-<span class="sd">    scipy.integrate.fixed_quad</span>
-<span class="sd">    numpy.polynomial.hermite_e.hermegauss</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    For small n up to 150 a modified version of the Golub-Welsch</span>
@@ -1503,6 +1464,12 @@
 <span class="sd">    which computes nodes and weights in a numerical stable manner.</span>
 <span class="sd">    The algorithm has linear runtime making computation for very</span>
 <span class="sd">    large n (several thousand or more) feasible.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    scipy.integrate.quadrature</span>
+<span class="sd">    scipy.integrate.fixed_quad</span>
+<span class="sd">    numpy.polynomial.hermite_e.hermegauss</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -1517,13 +1484,10 @@
 
     <span class="n">mu0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">150</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
-        <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mf">0.0</span><span class="o">*</span><span class="n">k</span>
+        <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermitenorm</span>
-        <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermitenorm</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_hermitenorm</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nodes</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">_roots_hermite_asy</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
@@ -1575,8 +1539,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">n1</span> <span class="o">=</span> <span class="n">n</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">roots_hermitenorm</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
     <span class="n">hn</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">_gam</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -1657,17 +1620,14 @@
         <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)):</span>
             <span class="n">mu0</span> <span class="o">=</span> <span class="n">mu0</span> <span class="o">*</span> <span class="n">inv_alpha</span> <span class="o">+</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
         <span class="n">mu0</span> <span class="o">=</span> <span class="n">mu0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
-    <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="o">-</span><span class="n">n</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-            <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
+    <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="p">((</span><span class="o">-</span><span class="n">n</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="p">((</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">alpha</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                           <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_gegenbauer</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">x</span><span class="p">)))</span>
+                       <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
 
 
@@ -1707,7 +1667,6 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from scipy import special</span>
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
 
@@ -1826,14 +1785,14 @@
 <span class="sd">    T : orthopoly1d</span>
 <span class="sd">        Chebyshev polynomial of the first kind.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    chebyu : Chebyshev polynomial of the second kind.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The polynomials :math:`T_n` are orthogonal over :math:`[-1, 1]`</span>
 <span class="sd">    with weight function :math:`(1 - x^2)^{-1/2}`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    chebyu : Chebyshev polynomial of the second kind.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -1847,9 +1806,8 @@
 <span class="sd">    be obtained as the determinant of specific :math:`n \times n`</span>
 <span class="sd">    matrices. As an example we can check how the points obtained from</span>
 <span class="sd">    the determinant of the following :math:`3 \times 3` matrix</span>
-<span class="sd">    lay exactly on :math:`T_3`:</span>
+<span class="sd">    lay exacty on :math:`T_3`:</span>
 
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.linalg import det</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import chebyt</span>
@@ -1874,6 +1832,7 @@
 <span class="sd">    Let&#39;s verify it for :math:`n = 3`:</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.special import binom</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import chebyt</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import jacobi</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 1.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(jacobi(3, -0.5, -0.5)(x),</span>
@@ -1883,6 +1842,8 @@
 <span class="sd">    We can plot the Chebyshev polynomials :math:`T_n` for some values</span>
 <span class="sd">    of :math:`n`:</span>
 
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import chebyt</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.5, 1.5, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
 <span class="sd">    &gt;&gt;&gt; ax.set_ylim(-4.0, 4.0)</span>
@@ -1896,8 +1857,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be nonnegative.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">orthopoly1d</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">pi</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">wfunc</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">monic</span><span class="p">,</span>
                            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_chebyt</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
@@ -1988,14 +1948,14 @@
 <span class="sd">    U : orthopoly1d</span>
 <span class="sd">        Chebyshev polynomial of the second kind.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    chebyt : Chebyshev polynomial of the first kind.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The polynomials :math:`U_n` are orthogonal over :math:`[-1, 1]`</span>
 <span class="sd">    with weight function :math:`(1 - x^2)^{1/2}`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    chebyt : Chebyshev polynomial of the first kind.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -2009,9 +1969,8 @@
 <span class="sd">    be obtained as the determinant of specific :math:`n \times n`</span>
 <span class="sd">    matrices. As an example we can check how the points obtained from</span>
 <span class="sd">    the determinant of the following :math:`3 \times 3` matrix</span>
-<span class="sd">    lay exactly on :math:`U_3`:</span>
+<span class="sd">    lay exacty on :math:`U_3`:</span>
 
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.linalg import det</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import chebyu</span>
@@ -2036,6 +1995,7 @@
 <span class="sd">    Let&#39;s verify it for :math:`n = 2`:</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.special import chebyt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import chebyu</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 1.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; np.allclose(chebyu(3)(x), 2 * chebyt(2)(x) * chebyu(1)(x))</span>
 <span class="sd">    True</span>
@@ -2043,6 +2003,8 @@
 <span class="sd">    We can plot the Chebyshev polynomials :math:`U_n` for some values</span>
 <span class="sd">    of :math:`n`:</span>
 
+<span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
+<span class="sd">    &gt;&gt;&gt; from scipy.special import chebyu</span>
 <span class="sd">    &gt;&gt;&gt; x = np.arange(-1.0, 1.0, 0.01)</span>
 <span class="sd">    &gt;&gt;&gt; fig, ax = plt.subplots()</span>
 <span class="sd">    &gt;&gt;&gt; ax.set_ylim(-1.5, 1.5)</span>
@@ -2131,14 +2093,14 @@
 <span class="sd">    C : orthopoly1d</span>
 <span class="sd">        Chebyshev polynomial of the first kind on :math:`[-2, 2]`.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    chebyt : Chebyshev polynomial of the first kind.</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The polynomials :math:`C_n(x)` are orthogonal over :math:`[-2, 2]`</span>
 <span class="sd">    with weight function :math:`1/\sqrt{1 - (x/2)^2}`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    chebyt : Chebyshev polynomial of the first kind.</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -2237,14 +2199,14 @@
 <span class="sd">    S : orthopoly1d</span>
 <span class="sd">        Chebyshev polynomial of the second kind on :math:`[-2, 2]`.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    chebyu : Chebyshev polynomial of the second kind</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    The polynomials :math:`S_n(x)` are orthogonal over :math:`[-2, 2]`</span>
 <span class="sd">    with weight function :math:`\sqrt{1 - (x/2)}^2`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    chebyu : Chebyshev polynomial of the second kind</span>
 
 <span class="sd">    References</span>
 <span class="sd">    ----------</span>
@@ -2482,7 +2444,6 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.special import roots_legendre, eval_legendre</span>
 <span class="sd">    &gt;&gt;&gt; roots, weights = roots_legendre(9)</span>
 
@@ -2554,14 +2515,11 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be a positive integer.&quot;</span><span class="p">)</span>
 
     <span class="n">mu0</span> <span class="o">=</span> <span class="mf">2.0</span>
-    <span class="k">def</span> <span class="nf">an_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
-    <span class="k">def</span> <span class="nf">bn_func</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">an_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">k</span>
+    <span class="n">bn_func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_legendre</span>
-    <span class="k">def</span> <span class="nf">df</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">n</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-                <span class="o">+</span> <span class="n">n</span> <span class="o">*</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">n</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                       <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_legendre</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_gen_roots_and_weights</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mu0</span><span class="p">,</span> <span class="n">an_func</span><span class="p">,</span> <span class="n">bn_func</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
 
 
@@ -2701,8 +2659,7 @@
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n must be nonnegative.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">wfunc</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mf">1.0</span>
+    <span class="n">wfunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">0.0</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mf">1.0</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">orthopoly1d</span><span class="p">([],</span> <span class="p">[],</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">wfunc</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">monic</span><span class="p">,</span>
                            <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_ufuncs</span><span class="o">.</span><span class="n">eval_sh_legendre</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
@@ -2728,7 +2685,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

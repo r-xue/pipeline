@@ -23,8 +23,11 @@ pipeline.hsd.tasks.common.display.CustomDateFormatter
       ~CustomDateFormatter.format_ticks
       ~CustomDateFormatter.get_offset
       ~CustomDateFormatter.set_axis
+      ~CustomDateFormatter.set_bounds
+      ~CustomDateFormatter.set_data_interval
       ~CustomDateFormatter.set_locs
       ~CustomDateFormatter.set_tzinfo
+      ~CustomDateFormatter.set_view_interval
    
    
 

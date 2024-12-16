@@ -37,7 +37,6 @@ pipeline.infrastructure.displays.plotmosaic.Circle
       ~Circle.get_clip_box
       ~Circle.get_clip_on
       ~Circle.get_clip_path
-      ~Circle.get_co_vertices
       ~Circle.get_corners
       ~Circle.get_cursor_data
       ~Circle.get_data_transform
@@ -71,7 +70,6 @@ pipeline.infrastructure.displays.plotmosaic.Circle
       ~Circle.get_transform
       ~Circle.get_transformed_clip_path_and_affine
       ~Circle.get_url
-      ~Circle.get_vertices
       ~Circle.get_verts
       ~Circle.get_visible
       ~Circle.get_width

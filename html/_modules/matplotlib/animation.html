@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>matplotlib.animation &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -111,7 +111,27 @@
            <div itemprop="articleBody">
              
   <h1>Source code for matplotlib.animation</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">abc</span>
+<span></span><span class="c1"># TODO:</span>
+<span class="c1"># * Documentation -- this will need a new section of the User&#39;s Guide.</span>
+<span class="c1">#      Both for Animations and just timers.</span>
+<span class="c1">#   - Also need to update</span>
+<span class="c1">#     https://scipy-cookbook.readthedocs.io/items/Matplotlib_Animations.html</span>
+<span class="c1"># * Blit</span>
+<span class="c1">#   * Currently broken with Qt4 for widgets that don&#39;t start on screen</span>
+<span class="c1">#   * Still a few edge cases that aren&#39;t working correctly</span>
+<span class="c1">#   * Can this integrate better with existing matplotlib animation artist flag?</span>
+<span class="c1">#     - If animated removes from default draw(), perhaps we could use this to</span>
+<span class="c1">#       simplify initial draw.</span>
+<span class="c1"># * Example</span>
+<span class="c1">#   * Frameless animation - pure procedural with no loop</span>
+<span class="c1">#   * Need example that uses something like inotify or subprocess</span>
+<span class="c1">#   * Complex syncing examples</span>
+<span class="c1"># * Movies</span>
+<span class="c1">#   * Can blit be enabled for movies?</span>
+<span class="c1"># * Need to consider event sources to allow clicking through multiple figures</span>
+
+
+<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">base64</span>
 <span class="kn">import</span> <span class="nn">contextlib</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span><span class="p">,</span> <span class="n">TextIOWrapper</span>
@@ -132,7 +152,7 @@
 <span class="kn">from</span> <span class="nn">matplotlib._animation_data</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">DISPLAY_TEMPLATE</span><span class="p">,</span> <span class="n">INCLUDED_FRAMES</span><span class="p">,</span> <span class="n">JS_INCLUDE</span><span class="p">,</span> <span class="n">STYLE_INCLUDE</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">_api</span><span class="p">,</span> <span class="n">cbook</span>
-<span class="kn">import</span> <span class="nn">matplotlib.colors</span> <span class="k">as</span> <span class="nn">mcolors</span>
+
 
 <span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -266,8 +286,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">codec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bitrate</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="n">fps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span> <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">codec</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">codec</span><span class="p">,</span> <span class="s1">&#39;animation.codec&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">bitrate</span><span class="p">,</span> <span class="s1">&#39;animation.bitrate&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">codec</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.codec&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">codec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">codec</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.bitrate&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">bitrate</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">bitrate</span><span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -284,8 +306,6 @@
 <span class="sd">            The DPI (or resolution) for the file.  This controls the size</span>
 <span class="sd">            in pixels of the resulting movie file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Check that path is valid</span>
-        <span class="n">Path</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">fig</span>
         <span class="k">if</span> <span class="n">dpi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -304,13 +324,7 @@
 <span class="sd">        Grab the image information from the figure and save as a movie frame.</span>
 
 <span class="sd">        All keyword arguments in *savefig_kwargs* are passed on to the</span>
-<span class="sd">        `~.Figure.savefig` call that saves the figure.  However, several</span>
-<span class="sd">        keyword arguments that are supported by `~.Figure.savefig` may not be</span>
-<span class="sd">        passed as they are controlled by the MovieWriter:</span>
-
-<span class="sd">        - *dpi*, *bbox_inches*:  These may not be passed because each frame of the</span>
-<span class="sd">           animation much be exactly the same size in pixels.</span>
-<span class="sd">        - *format*: This is controlled by the MovieWriter.</span>
+<span class="sd">        `~.Figure.savefig` call that saves the figure.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
@@ -324,18 +338,12 @@
 
 <span class="sd">        ``*args, **kw`` are any parameters that should be passed to `setup`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tight&#39;</span><span class="p">:</span>
-            <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Disabling savefig.bbox = &#39;tight&#39;, as it may cause &quot;</span>
-                      <span class="s2">&quot;frame size to vary, which is inappropriate for &quot;</span>
-                      <span class="s2">&quot;animation.&quot;</span><span class="p">)</span>
-
         <span class="c1"># This particular sequence is what contextlib.contextmanager wants</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rc_context</span><span class="p">({</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="bp">self</span>
-            <span class="k">finally</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">MovieWriter</span><span class="p">(</span><span class="n">AbstractMovieWriter</span><span class="p">):</span>
@@ -352,7 +360,7 @@
 <span class="sd">        The format used in writing frame data, defaults to &#39;rgba&#39;.</span>
 <span class="sd">    fig : `~matplotlib.figure.Figure`</span>
 <span class="sd">        The figure to capture data from.</span>
-<span class="sd">        This must be provided by the subclasses.</span>
+<span class="sd">        This must be provided by the sub-classes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Builtin writer subclasses additionally define the _exec_key and _args_key</span>
@@ -379,10 +387,9 @@
 <span class="sd">            means higher quality movies, but increase the file size.  A value</span>
 <span class="sd">            of -1 lets the underlying movie encoder select the bitrate.</span>
 <span class="sd">        extra_args : list of str or None, optional</span>
-<span class="sd">            Extra command-line arguments passed to the underlying movie encoder. These</span>
-<span class="sd">            arguments are passed last to the encoder, just before the filename. The</span>
-<span class="sd">            default, None, means to use :rc:`animation.[name-of-encoder]_args` for the</span>
-<span class="sd">            builtin writers.</span>
+<span class="sd">            Extra command-line arguments passed to the underlying movie</span>
+<span class="sd">            encoder.  The default, None, means to use</span>
+<span class="sd">            :rc:`animation.[name-of-encoder]_args` for the builtin writers.</span>
 <span class="sd">        metadata : dict[str, str], default: {}</span>
 <span class="sd">            A dictionary of keys and values for metadata to include in the</span>
 <span class="sd">            output file. Some keys that may be of use include:</span>
@@ -455,7 +462,6 @@
 
     <span class="k">def</span> <span class="nf">grab_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">savefig_kwargs</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
-        <span class="n">_validate_grabframe_kwargs</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">)</span>
         <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MovieWriter.grab_frame: Grabbing frame.&#39;</span><span class="p">)</span>
         <span class="c1"># Readjust the figure size in case it has been changed by the user.</span>
         <span class="c1"># All frames must have the same size to save the movie correctly.</span>
@@ -509,11 +515,9 @@
 <span class="sd">        frame_prefix : str, optional</span>
 <span class="sd">            The filename prefix to use for temporary files.  If *None* (the</span>
 <span class="sd">            default), files are written to a temporary directory which is</span>
-<span class="sd">            deleted by `finish`; if not *None*, no temporary files are</span>
+<span class="sd">            deleted by `cleanup`; if not *None*, no temporary files are</span>
 <span class="sd">            deleted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Check that path is valid</span>
-        <span class="n">Path</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">fig</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span> <span class="o">=</span> <span class="n">outfile</span>
         <span class="k">if</span> <span class="n">dpi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -532,7 +536,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fname_format_str</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%%</span><span class="s1">07d.</span><span class="si">%s</span><span class="s1">&#39;</span>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_tmpdir&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 
     <span class="nd">@property</span>
@@ -562,7 +566,6 @@
     <span class="k">def</span> <span class="nf">grab_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">savefig_kwargs</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="c1"># Creates a filename for saving using basename and counter.</span>
-        <span class="n">_validate_grabframe_kwargs</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_base_temp_name</span><span class="p">()</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_counter</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_temp_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>  <span class="c1"># Record the filename for later use.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame_counter</span> <span class="o">+=</span> <span class="mi">1</span>  <span class="c1"># Ensures each created name is unique.</span>
@@ -597,7 +600,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_frames</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">grab_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">savefig_kwargs</span><span class="p">):</span>
-        <span class="n">_validate_grabframe_kwargs</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">)</span>
         <span class="n">buf</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
             <span class="n">buf</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">savefig_kwargs</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;rgba&quot;</span><span class="p">,</span> <span class="s2">&quot;dpi&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">dpi</span><span class="p">})</span>
@@ -634,8 +636,8 @@
                       <span class="k">else</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_args_key</span><span class="p">])</span>
         <span class="c1"># For h264, the default format is yuv444p, which is not compatible</span>
         <span class="c1"># with quicktime (and others). Specifying yuv420p fixes playback on</span>
-        <span class="c1"># iOS, as well as HTML5 video in firefox and safari (on both Windows and</span>
-        <span class="c1"># macOS). Also fixes internet explorer. This is as of 2015/10/29.</span>
+        <span class="c1"># iOS, as well as HTML5 video in firefox and safari (on both Win and</span>
+        <span class="c1"># OSX). Also fixes internet explorer. This is as of 2015/10/29.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">codec</span> <span class="o">==</span> <span class="s1">&#39;h264&#39;</span> <span class="ow">and</span> <span class="s1">&#39;-pix_fmt&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">extra_args</span><span class="p">:</span>
             <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-pix_fmt&#39;</span><span class="p">,</span> <span class="s1">&#39;yuv420p&#39;</span><span class="p">])</span>
         <span class="c1"># For GIF, we&#39;re telling FFMPEG to split the video stream, to generate</span>
@@ -645,9 +647,9 @@
                          <span class="s1">&#39;split [a][b];[a] palettegen [p];[b][p] paletteuse&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">k&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitrate</span><span class="p">])</span>  <span class="c1"># %dk: bitrate in kbps.</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-metadata&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">])</span>
         <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">extra_args</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;-metadata&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)])</span>
 
         <span class="k">return</span> <span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-y&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">]</span>
 
@@ -658,19 +660,15 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pipe-based ffmpeg writer.</span>
 
-<span class="sd">    Frames are streamed directly to ffmpeg via a pipe and written in a single pass.</span>
-
-<span class="sd">    This effectively works as a slideshow input to ffmpeg with the fps passed as</span>
-<span class="sd">    ``-framerate``, so see also `their notes on frame rates`_ for further details.</span>
-
-<span class="sd">    .. _their notes on frame rates: https://trac.ffmpeg.org/wiki/Slideshow#Framerates</span>
+<span class="sd">    Frames are streamed directly to ffmpeg via a pipe and written in a single</span>
+<span class="sd">    pass.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Returns the command line parameters for subprocess to use</span>
         <span class="c1"># ffmpeg to create a movie using a pipe.</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">bin_path</span><span class="p">(),</span> <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;rawvideo&#39;</span><span class="p">,</span> <span class="s1">&#39;-vcodec&#39;</span><span class="p">,</span> <span class="s1">&#39;rawvideo&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_size</span><span class="p">,</span> <span class="s1">&#39;-pix_fmt&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_format</span><span class="p">,</span>
-                <span class="s1">&#39;-framerate&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">)]</span>
+                <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">)]</span>
         <span class="c1"># Logging is quieted because subprocess.PIPE has limited buffer size.</span>
         <span class="c1"># If you have a lot of frames in your animation and set logging to</span>
         <span class="c1"># DEBUG, you will have a buffer overrun.</span>
@@ -686,12 +684,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    File-based ffmpeg writer.</span>
 
-<span class="sd">    Frames are written to temporary files on disk and then stitched together at the end.</span>
-
-<span class="sd">    This effectively works as a slideshow input to ffmpeg with the fps passed as</span>
-<span class="sd">    ``-framerate``, so see also `their notes on frame rates`_ for further details.</span>
-
-<span class="sd">    .. _their notes on frame rates: https://trac.ffmpeg.org/wiki/Slideshow#Framerates</span>
+<span class="sd">    Frames are written to temporary files on disk and then stitched</span>
+<span class="sd">    together at the end.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">supported_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="s1">&#39;jpeg&#39;</span><span class="p">,</span> <span class="s1">&#39;tiff&#39;</span><span class="p">,</span> <span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba&#39;</span><span class="p">]</span>
 
@@ -705,10 +699,10 @@
                 <span class="s1">&#39;-f&#39;</span><span class="p">,</span> <span class="s1">&#39;image2&#39;</span><span class="p">,</span> <span class="s1">&#39;-vcodec&#39;</span><span class="p">,</span> <span class="s1">&#39;rawvideo&#39;</span><span class="p">,</span>
                 <span class="s1">&#39;-video_size&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%d</span><span class="s1">x</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_size</span><span class="p">,</span>
                 <span class="s1">&#39;-pixel_format&#39;</span><span class="p">,</span> <span class="s1">&#39;rgba&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;-framerate&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">),</span>
             <span class="p">]</span>
-        <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;-framerate&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">),</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_temp_name</span><span class="p">()]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="p">:</span>
-            <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;-frames:v&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_counter</span><span class="p">)]</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fps</span><span class="p">),</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_temp_name</span><span class="p">(),</span>
+                 <span class="s1">&#39;-vframes&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_counter</span><span class="p">)]</span>
         <span class="c1"># Logging is quieted because subprocess.PIPE has limited buffer size.</span>
         <span class="c1"># If you have a lot of frames in your animation and set logging to</span>
         <span class="c1"># DEBUG, you will have a buffer overrun.</span>
@@ -729,6 +723,18 @@
 
     <span class="n">_exec_key</span> <span class="o">=</span> <span class="s1">&#39;animation.convert_path&#39;</span>
     <span class="n">_args_key</span> <span class="o">=</span> <span class="s1">&#39;animation.convert_args&#39;</span>
+
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">delay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">100.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">fps</span>
+
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">)</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">extra_args</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extra_args</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                      <span class="k">else</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_args_key</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">[</span><span class="o">*</span><span class="n">extra_args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># ImageMagick does not recognize &quot;raw&quot;.</span>
@@ -796,9 +802,10 @@
 
 <span class="c1"># Taken directly from jakevdp&#39;s JSAnimation package at</span>
 <span class="c1"># http://github.com/jakevdp/JSAnimation</span>
-<span class="k">def</span> <span class="nf">_included_frames</span><span class="p">(</span><span class="n">frame_count</span><span class="p">,</span> <span class="n">frame_format</span><span class="p">,</span> <span class="n">frame_dir</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">INCLUDED_FRAMES</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Nframes</span><span class="o">=</span><span class="n">frame_count</span><span class="p">,</span>
-                                  <span class="n">frame_dir</span><span class="o">=</span><span class="n">frame_dir</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_included_frames</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">frame_format</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;paths should be a list of Paths&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">INCLUDED_FRAMES</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Nframes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">),</span>
+                                  <span class="n">frame_dir</span><span class="o">=</span><span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span>
                                   <span class="n">frame_format</span><span class="o">=</span><span class="n">frame_format</span><span class="p">)</span>
 
 
@@ -836,7 +843,10 @@
                            <span class="n">default_mode</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">default_mode</span><span class="p">)</span>
 
         <span class="c1"># Save embed limit, which is given in MB</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bytes_limit</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">embed_limit</span><span class="p">,</span> <span class="s1">&#39;animation.embed_limit&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">embed_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bytes_limit</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.embed_limit&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_bytes_limit</span> <span class="o">=</span> <span class="n">embed_limit</span>
         <span class="c1"># Convert from MB to bytes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bytes_limit</span> <span class="o">*=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
 
@@ -862,7 +872,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_clear_temp</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="nf">grab_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">savefig_kwargs</span><span class="p">):</span>
-        <span class="n">_validate_grabframe_kwargs</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_frames</span><span class="p">:</span>
             <span class="c1"># Just stop processing if we hit the limit</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hit_limit</span><span class="p">:</span>
@@ -890,13 +899,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">embed_frames</span><span class="p">:</span>
             <span class="n">fill_frames</span> <span class="o">=</span> <span class="n">_embedded_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_frames</span><span class="p">,</span>
                                            <span class="bp">self</span><span class="o">.</span><span class="n">frame_format</span><span class="p">)</span>
-            <span class="n">frame_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_frames</span><span class="p">)</span>
+            <span class="n">Nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_saved_frames</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># temp names is filled by FileMovieWriter</span>
-            <span class="n">frame_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_paths</span><span class="p">)</span>
-            <span class="n">fill_frames</span> <span class="o">=</span> <span class="n">_included_frames</span><span class="p">(</span>
-                <span class="n">frame_count</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_format</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_temp_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+            <span class="n">fill_frames</span> <span class="o">=</span> <span class="n">_included_frames</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_paths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_format</span><span class="p">)</span>
+            <span class="n">Nframes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_paths</span><span class="p">)</span>
         <span class="n">mode_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">once_checked</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                          <span class="n">loop_checked</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                          <span class="n">reflect_checked</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
@@ -907,16 +914,17 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">of</span><span class="p">:</span>
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">JS_INCLUDE</span> <span class="o">+</span> <span class="n">STYLE_INCLUDE</span><span class="p">)</span>
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">DISPLAY_TEMPLATE</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">,</span>
-                                             <span class="n">Nframes</span><span class="o">=</span><span class="n">frame_count</span><span class="p">,</span>
+                                             <span class="n">Nframes</span><span class="o">=</span><span class="n">Nframes</span><span class="p">,</span>
                                              <span class="n">fill_frames</span><span class="o">=</span><span class="n">fill_frames</span><span class="p">,</span>
                                              <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
                                              <span class="o">**</span><span class="n">mode_dict</span><span class="p">))</span>
 
-        <span class="c1"># Duplicate the temporary file clean up logic from</span>
-        <span class="c1"># FileMovieWriter.finish.  We cannot call the inherited version of</span>
-        <span class="c1"># finish because it assumes that there is a subprocess that we either</span>
-        <span class="c1"># need to call to merge many frames together or that there is a</span>
-        <span class="c1"># subprocess call that we need to clean up.</span>
+        <span class="c1"># duplicate the temporary file clean up logic from</span>
+        <span class="c1"># FileMovieWriter.cleanup.  We can not call the inherited</span>
+        <span class="c1"># versions of finish or cleanup because both assume that</span>
+        <span class="c1"># there is a subprocess that we either need to call to merge</span>
+        <span class="c1"># many frames together or that there is a subprocess call that</span>
+        <span class="c1"># we need to clean up.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="p">:</span>
             <span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MovieWriter: clearing temporary path=</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmpdir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
@@ -948,8 +956,7 @@
 <span class="sd">        system notifications.</span>
 
 <span class="sd">    blit : bool, default: False</span>
-<span class="sd">        Whether blitting is used to optimize drawing.  If the backend does not</span>
-<span class="sd">        support blitting, then this parameter has no effect.</span>
+<span class="sd">        Whether blitting is used to optimize drawing.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -1053,10 +1060,9 @@
 <span class="sd">            of -1 lets the underlying movie encoder select the bitrate.</span>
 
 <span class="sd">        extra_args : list of str or None, optional</span>
-<span class="sd">            Extra command-line arguments passed to the underlying movie encoder. These</span>
-<span class="sd">            arguments are passed last to the encoder, just before the output filename.</span>
-<span class="sd">            The default, None, means to use :rc:`animation.[name-of-encoder]_args` for</span>
-<span class="sd">            the builtin writers.</span>
+<span class="sd">            Extra command-line arguments passed to the underlying movie</span>
+<span class="sd">            encoder.  The default, None, means to use</span>
+<span class="sd">            :rc:`animation.[name-of-encoder]_args` for the builtin writers.</span>
 
 <span class="sd">        metadata : dict[str, str], default: {}</span>
 <span class="sd">            Dictionary of keys and values for metadata to include in</span>
@@ -1066,7 +1072,7 @@
 <span class="sd">        extra_anim : list, default: []</span>
 <span class="sd">            Additional `Animation` objects that should be included</span>
 <span class="sd">            in the saved movie file. These need to be from the same</span>
-<span class="sd">            `.Figure` instance. Also, animation frames will</span>
+<span class="sd">            `matplotlib.figure.Figure` instance. Also, animation frames will</span>
 <span class="sd">            just be simply combined, so there should be a 1:1 correspondence</span>
 <span class="sd">            between the frames from the different animations.</span>
 
@@ -1080,14 +1086,15 @@
 
 <span class="sd">                def func(current_frame: int, total_frames: int) -&gt; Any</span>
 
-<span class="sd">            where *current_frame* is the current frame number and *total_frames* is the</span>
-<span class="sd">            total number of frames to be saved. *total_frames* is set to None, if the</span>
-<span class="sd">            total number of frames cannot be determined. Return values may exist but are</span>
-<span class="sd">            ignored.</span>
+<span class="sd">            where *current_frame* is the current frame number and</span>
+<span class="sd">            *total_frames* is the total number of frames to be saved.</span>
+<span class="sd">            *total_frames* is set to None, if the total number of frames can</span>
+<span class="sd">            not be determined. Return values may exist but are ignored.</span>
 
 <span class="sd">            Example code to write the progress to stdout::</span>
 
-<span class="sd">                progress_callback = lambda i, n: print(f&#39;Saving frame {i}/{n}&#39;)</span>
+<span class="sd">                progress_callback =\</span>
+<span class="sd">                    lambda i, n: print(f&#39;Saving frame {i} of {n}&#39;)</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -1096,15 +1103,6 @@
 <span class="sd">        *writer* is a string.  If they are passed as non-*None* and *writer*</span>
 <span class="sd">        is a `.MovieWriter`, a `RuntimeError` will be raised.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">all_anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">extra_anim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">all_anim</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">anim</span> <span class="k">for</span> <span class="n">anim</span> <span class="ow">in</span> <span class="n">extra_anim</span>
-                            <span class="k">if</span> <span class="n">anim</span><span class="o">.</span><span class="n">_fig</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">)</span>
-
-        <span class="c1"># Disable &quot;Animation was deleted without rendering&quot; warning.</span>
-        <span class="k">for</span> <span class="n">anim</span> <span class="ow">in</span> <span class="n">all_anim</span><span class="p">:</span>
-            <span class="n">anim</span><span class="o">.</span><span class="n">_draw_was_started</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">if</span> <span class="n">writer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">writer</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.writer&#39;</span><span class="p">]</span>
@@ -1120,16 +1118,14 @@
 
         <span class="k">if</span> <span class="n">savefig_kwargs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">savefig_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># we are going to mutate this below</span>
-            <span class="n">savefig_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">fps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_interval&#39;</span><span class="p">):</span>
             <span class="c1"># Convert interval in ms to frames per second</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mf">1000.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span>
 
-        <span class="c1"># Reuse the savefig DPI for ours if none is given.</span>
-        <span class="n">dpi</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">dpi</span><span class="p">,</span> <span class="s1">&#39;savefig.dpi&#39;</span><span class="p">)</span>
+        <span class="c1"># Re-use the savefig DPI for ours if none is given</span>
+        <span class="k">if</span> <span class="n">dpi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dpi</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.dpi&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">dpi</span> <span class="o">==</span> <span class="s1">&#39;figure&#39;</span><span class="p">:</span>
             <span class="n">dpi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">dpi</span>
 
@@ -1142,6 +1138,12 @@
             <span class="n">writer_kwargs</span><span class="p">[</span><span class="s1">&#39;extra_args&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_args</span>
         <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">writer_kwargs</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span>
+
+        <span class="n">all_anim</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">extra_anim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">all_anim</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">anim</span>
+                            <span class="k">for</span> <span class="n">anim</span>
+                            <span class="ow">in</span> <span class="n">extra_anim</span> <span class="k">if</span> <span class="n">anim</span><span class="o">.</span><span class="n">_fig</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">)</span>
 
         <span class="c1"># If we have the name of a writer, instantiate an instance of the</span>
         <span class="c1"># registered class.</span>
@@ -1167,29 +1169,23 @@
         <span class="c1"># TODO: Right now, after closing the figure, saving a movie won&#39;t work</span>
         <span class="c1"># since GUI widgets are gone. Either need to remove extra code to</span>
         <span class="c1"># allow for this non-existent use case or find a way to make it work.</span>
-
-        <span class="n">facecolor</span> <span class="o">=</span> <span class="n">savefig_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;facecolor&#39;</span><span class="p">,</span>
-                                       <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.facecolor&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">facecolor</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
-            <span class="n">facecolor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">get_facecolor</span><span class="p">()</span>
-
-        <span class="k">def</span> <span class="nf">_pre_composite_to_white</span><span class="p">(</span><span class="n">color</span><span class="p">):</span>
-            <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">mcolors</span><span class="o">.</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">a</span>
-
-        <span class="n">savefig_kwargs</span><span class="p">[</span><span class="s1">&#39;facecolor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_pre_composite_to_white</span><span class="p">(</span><span class="n">facecolor</span><span class="p">)</span>
-        <span class="n">savefig_kwargs</span><span class="p">[</span><span class="s1">&#39;transparent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># just to be safe!</span>
+        <span class="k">if</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tight&#39;</span><span class="p">:</span>
+            <span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Disabling savefig.bbox = &#39;tight&#39;, as it may cause &quot;</span>
+                      <span class="s2">&quot;frame size to vary, which is inappropriate for &quot;</span>
+                      <span class="s2">&quot;animation.&quot;</span><span class="p">)</span>
         <span class="c1"># canvas._is_saving = True makes the draw_event animation-starting</span>
         <span class="c1"># callback a no-op; canvas.manager = None prevents resizing the GUI</span>
         <span class="c1"># widget (both are likewise done in savefig()).</span>
-        <span class="k">with</span> <span class="n">writer</span><span class="o">.</span><span class="n">saving</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="p">),</span> \
-             <span class="n">cbook</span><span class="o">.</span><span class="n">_setattr_cm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="n">_is_saving</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">manager</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rc_context</span><span class="p">({</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}),</span> \
+             <span class="n">writer</span><span class="o">.</span><span class="n">saving</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dpi</span><span class="p">),</span> \
+             <span class="n">cbook</span><span class="o">.</span><span class="n">_setattr_cm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fig</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span>
+                               <span class="n">_is_saving</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">manager</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">anim</span> <span class="ow">in</span> <span class="n">all_anim</span><span class="p">:</span>
                 <span class="n">anim</span><span class="o">.</span><span class="n">_init_draw</span><span class="p">()</span>  <span class="c1"># Clear the initial frame</span>
             <span class="n">frame_number</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="c1"># TODO: Currently only FuncAnimation has a save_count</span>
             <span class="c1">#       attribute. Can we generalize this to all Animations?</span>
-            <span class="n">save_count_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;_save_count&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">save_count_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;save_count&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">all_anim</span><span class="p">]</span>
             <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">save_count_list</span><span class="p">:</span>
                 <span class="n">total_frames</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1267,7 +1263,7 @@
         <span class="c1"># of the entire figure.</span>
         <span class="n">updated_ax</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">axes</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">artists</span><span class="p">}</span>
         <span class="c1"># Enumerate artists to cache Axes backgrounds. We do not draw</span>
-        <span class="c1"># artists yet to not cache foreground from plots with shared Axes</span>
+        <span class="c1"># artists yet to not cache foreground from plots with shared axes</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">updated_ax</span><span class="p">:</span>
             <span class="c1"># If we haven&#39;t cached the background for the current view of this</span>
             <span class="c1"># Axes object, do so now. This might not always be reliable, but</span>
@@ -1342,7 +1338,7 @@
 <span class="sd">        This saves the animation as an h264 video, encoded in base64</span>
 <span class="sd">        directly into the HTML5 video tag. This respects :rc:`animation.writer`</span>
 <span class="sd">        and :rc:`animation.bitrate`. This also makes use of the</span>
-<span class="sd">        *interval* to control the speed, and uses the *repeat*</span>
+<span class="sd">        ``interval`` to control the speed, and uses the ``repeat``</span>
 <span class="sd">        parameter to decide whether to loop.</span>
 
 <span class="sd">        Parameters</span>
@@ -1367,7 +1363,8 @@
         <span class="c1"># Cache the rendering of the video as HTML</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_base64_video&#39;</span><span class="p">):</span>
             <span class="c1"># Save embed limit, which is given in MB</span>
-            <span class="n">embed_limit</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">embed_limit</span><span class="p">,</span> <span class="s1">&#39;animation.embed_limit&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">embed_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">embed_limit</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;animation.embed_limit&#39;</span><span class="p">]</span>
 
             <span class="c1"># Convert from MB to bytes</span>
             <span class="n">embed_limit</span> <span class="o">*=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
@@ -1404,7 +1401,7 @@
             <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;controls&#39;</span><span class="p">,</span> <span class="s1">&#39;autoplay&#39;</span><span class="p">]</span>
 
             <span class="c1"># If we&#39;re set to repeat, make it loop</span>
-            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_repeat&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;repeat&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">:</span>
                 <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;loop&#39;</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">VIDEO_TAG</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">video</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_base64_video</span><span class="p">,</span>
@@ -1425,24 +1422,17 @@
 <span class="sd">        embed_frames : bool, optional</span>
 <span class="sd">        default_mode : str, optional</span>
 <span class="sd">            What to do when the animation ends. Must be one of ``{&#39;loop&#39;,</span>
-<span class="sd">            &#39;once&#39;, &#39;reflect&#39;}``. Defaults to ``&#39;loop&#39;`` if the *repeat*</span>
-<span class="sd">            parameter is True, otherwise ``&#39;once&#39;``.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        str</span>
-<span class="sd">            An HTML representation of the animation embedded as a js object as</span>
-<span class="sd">            produced with the `.HTMLWriter`.</span>
+<span class="sd">            &#39;once&#39;, &#39;reflect&#39;}``. Defaults to ``&#39;loop&#39;`` if ``self.repeat``</span>
+<span class="sd">            is True, otherwise ``&#39;once&#39;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">fps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_interval&#39;</span><span class="p">):</span>
             <span class="c1"># Convert interval in ms to frames per second</span>
             <span class="n">fps</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span>
 
         <span class="c1"># If we&#39;re not given a default mode, choose one base on the value of</span>
-        <span class="c1"># the _repeat attribute</span>
+        <span class="c1"># the repeat attribute</span>
         <span class="k">if</span> <span class="n">default_mode</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">default_mode</span> <span class="o">=</span> <span class="s1">&#39;loop&#39;</span> <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_repeat&#39;</span><span class="p">,</span>
-                                             <span class="kc">False</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39;once&#39;</span>
+            <span class="n">default_mode</span> <span class="o">=</span> <span class="s1">&#39;loop&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="k">else</span> <span class="s1">&#39;once&#39;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_html_representation&quot;</span><span class="p">):</span>
             <span class="c1"># Can&#39;t open a NamedTemporaryFile twice on Windows, so use a</span>
@@ -1506,12 +1496,13 @@
 <span class="sd">    blit : bool, default: False</span>
 <span class="sd">        Whether blitting is used to optimize drawing.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">repeat_delay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">event_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="n">interval</span>
         <span class="c1"># Undocumented support for repeat_delay = None as backcompat.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_repeat_delay</span> <span class="o">=</span> <span class="n">repeat_delay</span> <span class="k">if</span> <span class="n">repeat_delay</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_repeat</span> <span class="o">=</span> <span class="n">repeat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span> <span class="o">=</span> <span class="n">repeat</span>
         <span class="c1"># If we&#39;re not given an event source, create a new timer. This permits</span>
         <span class="c1"># sharing timers between animation objects for syncing animations.</span>
         <span class="k">if</span> <span class="n">event_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1528,7 +1519,7 @@
         <span class="c1"># back.</span>
         <span class="n">still_going</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">still_going</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_repeat</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeat</span><span class="p">:</span>
                 <span class="c1"># Restart the draw loop</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_init_draw</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">frame_seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_frame_seq</span><span class="p">()</span>
@@ -1706,7 +1697,7 @@
 <span class="sd">        Additional arguments to pass to each call to *func*. Note: the use of</span>
 <span class="sd">        `functools.partial` is preferred over *fargs*. See *func* for details.</span>
 
-<span class="sd">    save_count : int, optional</span>
+<span class="sd">    save_count : int, default: 100</span>
 <span class="sd">        Fallback for the number of values from *frames* to cache. This is</span>
 <span class="sd">        only used if the number of frames cannot be inferred from *frames*,</span>
 <span class="sd">        i.e. when it&#39;s an iterator without length or a generator.</span>
@@ -1731,6 +1722,7 @@
 <span class="sd">        Whether frame data is cached.  Disabling cache might be helpful when</span>
 <span class="sd">        frames contain large objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">save_count</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">cache_frame_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fargs</span><span class="p">:</span>
@@ -1743,7 +1735,7 @@
         <span class="c1"># Amount of framedata to keep around for saving movies. This is only</span>
         <span class="c1"># used if we don&#39;t know how many frames there will be: in the case</span>
         <span class="c1"># of no generator or in the case of a callable.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span> <span class="o">=</span> <span class="n">save_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="o">=</span> <span class="n">save_count</span>
         <span class="c1"># Set up a function that creates a new iterable when needed. If nothing</span>
         <span class="c1"># is passed in for frames, just use itertools.count, which will just</span>
         <span class="c1"># keep counting from 0. A callable passed in for frames is assumed to</span>
@@ -1763,31 +1755,19 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_iter_gen</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">iter</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">save_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">_api</span><span class="o">.</span><span class="n">warn_external</span><span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;You passed in an explicit </span><span class="si">{</span><span class="n">save_count</span><span class="si">=}</span><span class="s2"> &quot;</span>
-                        <span class="s2">&quot;which is being ignored in favor of &quot;</span>
-                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span><span class="si">=}</span><span class="s2">.&quot;</span>
-                    <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iter_gen</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span> <span class="o">=</span> <span class="n">frames</span>
-            <span class="k">if</span> <span class="n">save_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">_api</span><span class="o">.</span><span class="n">warn_external</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;You passed in an explicit </span><span class="si">{</span><span class="n">save_count</span><span class="si">=}</span><span class="s2"> which is being &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;ignored in favor of </span><span class="si">{</span><span class="n">frames</span><span class="si">=}</span><span class="s2">.&quot;</span>
-                <span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">cache_frame_data</span><span class="p">:</span>
-            <span class="n">_api</span><span class="o">.</span><span class="n">warn_external</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">frames</span><span class="si">=!r}</span><span class="s2"> which we can infer the length of, &quot;</span>
-                <span class="s2">&quot;did not pass an explicit *save_count* &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and passed </span><span class="si">{</span><span class="n">cache_frame_data</span><span class="si">=}</span><span class="s2">.  To avoid a possibly &quot;</span>
-                <span class="s2">&quot;unbounded cache, frame data caching has been disabled. &quot;</span>
-                <span class="s2">&quot;To suppress this warning either pass &quot;</span>
-                <span class="s2">&quot;`cache_frame_data=False` or `save_count=MAX_FRAMES`.&quot;</span>
-            <span class="p">)</span>
-            <span class="n">cache_frame_data</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="o">=</span> <span class="n">frames</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If we&#39;re passed in and using the default, set save_count to 100.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># itertools.islice returns an error when passed a numpy int instead</span>
+            <span class="c1"># of a native python int (https://bugs.python.org/issue30537).</span>
+            <span class="c1"># As a workaround, convert save_count to a native python int.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save_count</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_frame_data</span> <span class="o">=</span> <span class="n">cache_frame_data</span>
 
@@ -1819,18 +1799,26 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_old_saved_seq</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_old_saved_seq</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_frame_seq</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">save_count</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">frame_seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_frame_seq</span><span class="p">()</span>
 
                 <span class="k">def</span> <span class="nf">gen</span><span class="p">():</span>
                     <span class="k">try</span><span class="p">:</span>
-                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
                             <span class="k">yield</span> <span class="nb">next</span><span class="p">(</span><span class="n">frame_seq</span><span class="p">)</span>
                     <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
                         <span class="k">pass</span>
-                <span class="k">return</span> <span class="n">gen</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">islice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_frame_seq</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span><span class="p">)</span></div>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_api</span><span class="o">.</span><span class="n">warn_deprecated</span><span class="p">(</span>
+                            <span class="s2">&quot;2.2&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;FuncAnimation.save has truncated &quot;</span>
+                            <span class="s2">&quot;your animation to 100 frames.  In the future, no &quot;</span>
+                            <span class="s2">&quot;such truncation will occur; please pass &quot;</span>
+                            <span class="s2">&quot;&#39;save_count&#39; accordingly.&quot;</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">gen</span><span class="p">()</span></div>
 
 
     <span class="k">def</span> <span class="nf">_init_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1869,7 +1857,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_frame_data</span><span class="p">:</span>
             <span class="c1"># Save the data for potential saving of movies.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">framedata</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_count</span><span class="p">:]</span>
+
+        <span class="c1"># Make sure to respect save_count (keep only the last save_count</span>
+        <span class="c1"># around)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_seq</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">save_count</span><span class="p">:]</span>
 
         <span class="c1"># Call the func with framedata and args. If blitting is desired,</span>
         <span class="c1"># func needs to return a sequence of any artists that were modified.</span>
@@ -1896,19 +1887,6 @@
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drawn_artists</span><span class="p">:</span>
                 <span class="n">a</span><span class="o">.</span><span class="n">set_animated</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_blit</span><span class="p">)</span></div>
 
-
-
-<span class="k">def</span> <span class="nf">_validate_grabframe_kwargs</span><span class="p">(</span><span class="n">savefig_kwargs</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;tight&#39;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;savefig.bbox&#39;</span><span class="p">]</span><span class="si">=}</span><span class="s2"> must not be &#39;tight&#39; as it &quot;</span>
-            <span class="s2">&quot;may cause frame size to vary, which is inappropriate for animation.&quot;</span>
-        <span class="p">)</span>
-    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;dpi&#39;</span><span class="p">,</span> <span class="s1">&#39;bbox_inches&#39;</span><span class="p">,</span> <span class="s1">&#39;format&#39;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">savefig_kwargs</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;grab_frame got an unexpected keyword argument </span><span class="si">{</span><span class="n">k</span><span class="si">!r}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
 </pre></div>
 
            </div>
@@ -1918,7 +1896,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -40,12 +40,15 @@ pipeline.hif.tasks.correctedampflag.correctedampflag.NDArray
       ~NDArray.flatten
       ~NDArray.getfield
       ~NDArray.item
+      ~NDArray.itemset
       ~NDArray.max
       ~NDArray.mean
       ~NDArray.min
+      ~NDArray.newbyteorder
       ~NDArray.nonzero
       ~NDArray.partition
       ~NDArray.prod
+      ~NDArray.ptp
       ~NDArray.put
       ~NDArray.ravel
       ~NDArray.repeat
@@ -61,7 +64,6 @@ pipeline.hif.tasks.correctedampflag.correctedampflag.NDArray
       ~NDArray.sum
       ~NDArray.swapaxes
       ~NDArray.take
-      ~NDArray.to_device
       ~NDArray.tobytes
       ~NDArray.tofile
       ~NDArray.tolist
@@ -83,18 +85,13 @@ pipeline.hif.tasks.correctedampflag.correctedampflag.NDArray
       ~NDArray.base
       ~NDArray.ctypes
       ~NDArray.data
-      ~NDArray.device
       ~NDArray.dtype
       ~NDArray.flags
       ~NDArray.flat
       ~NDArray.imag
-      ~NDArray.itemset
       ~NDArray.itemsize
-      ~NDArray.mT
       ~NDArray.nbytes
       ~NDArray.ndim
-      ~NDArray.newbyteorder
-      ~NDArray.ptp
       ~NDArray.real
       ~NDArray.shape
       ~NDArray.size

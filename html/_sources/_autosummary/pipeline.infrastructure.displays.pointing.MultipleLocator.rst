@@ -20,7 +20,10 @@ pipeline.infrastructure.displays.pointing.MultipleLocator
       ~MultipleLocator.nonsingular
       ~MultipleLocator.raise_if_exceeds
       ~MultipleLocator.set_axis
+      ~MultipleLocator.set_bounds
+      ~MultipleLocator.set_data_interval
       ~MultipleLocator.set_params
+      ~MultipleLocator.set_view_interval
       ~MultipleLocator.tick_values
       ~MultipleLocator.view_limits
    

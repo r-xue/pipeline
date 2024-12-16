@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.eventbus.events &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -162,7 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -218,28 +218,28 @@ event listeners downstream.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.Event.html#pipeline.infrastructure.eventbus.events.Event" title="pipeline.infrastructure.eventbus.events.Event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Event</span></code></a></p></td>
 <td><p>Base class inherited by all pipeline events.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptErrorEvent.html#pipeline.infrastructure.basetask.ResultAcceptErrorEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptErrorEvent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptErrorEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptErrorEvent</span></code></a></p></td>
 <td><p>Emitted when Results acceptance fails due to error.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptedEvent.html#pipeline.infrastructure.basetask.ResultAcceptedEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptedEvent</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.ResultAcceptedEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptedEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptedEvent</span></code></a></p></td>
 <td><p>Emitted when a Result has been successfully incorporated into the Context.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.ResultAcceptingEvent.html#pipeline.infrastructure.basetask.ResultAcceptingEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptingEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptingEvent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.ResultAcceptingEvent.html#pipeline.infrastructure.eventbus.events.ResultAcceptingEvent" title="pipeline.infrastructure.eventbus.events.ResultAcceptingEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultAcceptingEvent</span></code></a></p></td>
 <td><p>Emitted when a Result is accepted into the Context.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent.html#pipeline.infrastructure.eventbus.events.ResultLifecycleEvent" title="pipeline.infrastructure.eventbus.events.ResultLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to the acceptance of a pipeline Result.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskAbnormalExitEvent.html#pipeline.infrastructure.basetask.TaskAbnormalExitEvent" title="pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskAbnormalExitEvent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent.html#pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent" title="pipeline.infrastructure.eventbus.events.TaskAbnormalExitEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskAbnormalExitEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task terminates due to an unexpected error.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskCompleteEvent.html#pipeline.infrastructure.basetask.TaskCompleteEvent" title="pipeline.infrastructure.eventbus.events.TaskCompleteEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskCompleteEvent</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.TaskCompleteEvent.html#pipeline.infrastructure.eventbus.events.TaskCompleteEvent" title="pipeline.infrastructure.eventbus.events.TaskCompleteEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskCompleteEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task completes.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent.html#pipeline.infrastructure.eventbus.events.TaskLifecycleEvent" title="pipeline.infrastructure.eventbus.events.TaskLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskLifecycleEvent</span></code></a></p></td>
 <td><p>Base class for events related to the pipeline task lifecycle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.basetask.TaskStartedEvent.html#pipeline.infrastructure.basetask.TaskStartedEvent" title="pipeline.infrastructure.eventbus.events.TaskStartedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskStartedEvent</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.TaskStartedEvent.html#pipeline.infrastructure.eventbus.events.TaskStartedEvent" title="pipeline.infrastructure.eventbus.events.TaskStartedEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TaskStartedEvent</span></code></a></p></td>
 <td><p>Emitted when a pipeline Task is started.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent.html#pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent" title="pipeline.infrastructure.eventbus.events.WebLogLifecycleEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebLogLifecycleEvent</span></code></a></p></td>
@@ -278,7 +278,7 @@ event listeners downstream.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

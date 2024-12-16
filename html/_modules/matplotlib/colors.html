@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>matplotlib.colors &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -129,12 +129,12 @@
 
 <span class="sd">.. seealso::</span>
 
-<span class="sd">  :ref:`colormap-manipulation` for examples of how to</span>
+<span class="sd">  :doc:`/tutorials/colors/colormap-manipulation` for examples of how to</span>
 <span class="sd">  make colormaps and</span>
 
-<span class="sd">  :ref:`colormaps` for a list of built-in colormaps.</span>
+<span class="sd">  :doc:`/tutorials/colors/colormaps` for a list of built-in colormaps.</span>
 
-<span class="sd">  :ref:`colormapnorms` for more details about data</span>
+<span class="sd">  :doc:`/tutorials/colors/colormapnorms` for more details about data</span>
 <span class="sd">  normalization</span>
 
 <span class="sd">  More colormaps are available at palettable_.</span>
@@ -146,7 +146,7 @@
 <span class="sd">RGBA array (`to_rgba_array`).  Caching is used for efficiency.</span>
 
 <span class="sd">Colors that Matplotlib recognizes are listed at</span>
-<span class="sd">:ref:`colors_def`.</span>
+<span class="sd">:doc:`/tutorials/colors/colors`.</span>
 
 <span class="sd">.. _palettable: https://jiffyclub.github.io/palettable/</span>
 <span class="sd">.. _xkcd color survey: https://xkcd.com/color/rgb/</span>
@@ -159,9 +159,8 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">import</span> <span class="nn">re</span>
-
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">from</span> <span class="nn">PIL.PngImagePlugin</span> <span class="kn">import</span> <span class="n">PngInfo</span>
 
@@ -218,7 +217,7 @@
 <span class="sd">    Read access uses a dict-like interface mapping names to lists of colors::</span>
 
 <span class="sd">        import matplotlib as mpl</span>
-<span class="sd">        colors = mpl.color_sequences[&#39;tab10&#39;]</span>
+<span class="sd">        cmap = mpl.color_sequences[&#39;tab10&#39;]</span>
 
 <span class="sd">    The returned lists are copies, so that their modification does not change</span>
 <span class="sd">    the global definition of the color sequence.</span>
@@ -240,8 +239,8 @@
         <span class="s1">&#39;Accent&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Accent_data</span><span class="p">,</span>
         <span class="s1">&#39;Dark2&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Dark2_data</span><span class="p">,</span>
         <span class="s1">&#39;Set1&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Set1_data</span><span class="p">,</span>
-        <span class="s1">&#39;Set2&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Set2_data</span><span class="p">,</span>
-        <span class="s1">&#39;Set3&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Set3_data</span><span class="p">,</span>
+        <span class="s1">&#39;Set2&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Set1_data</span><span class="p">,</span>
+        <span class="s1">&#39;Set3&#39;</span><span class="p">:</span> <span class="n">_cm</span><span class="o">.</span><span class="n">_Set1_data</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -277,7 +276,7 @@
 <span class="sd">        name : str</span>
 <span class="sd">            The name for the color sequence.</span>
 
-<span class="sd">        color_list : list of :mpltype:`color`</span>
+<span class="sd">        color_list : list of colors</span>
 <span class="sd">            An iterable returning valid Matplotlib colors when iterating over.</span>
 <span class="sd">            Note however that the returned color sequence will always be a</span>
 <span class="sd">            list regardless of the input type.</span>
@@ -323,12 +322,10 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ex</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span>
 
-<span class="n">_nth_color_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\AC[0-9]+\Z&quot;</span><span class="p">)</span>
-
 
 <span class="k">def</span> <span class="nf">_is_nth_color</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether *c* can be interpreted as an item in the color cycle.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_nth_color_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\AC[0-9]+\Z&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">is_color_like</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
@@ -338,7 +335,7 @@
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">to_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
@@ -356,14 +353,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_color_like</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2"> is not a valid value for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: supported inputs are &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(r, g, b) and (r, g, b, a) 0-1 float tuples; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;#rrggbb&#39;, &#39;#rrggbbaa&#39;, &#39;#rgb&#39;, &#39;#rgba&#39; strings; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;named color strings; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;string reprs of 0-1 floats for grayscale values; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;&#39;C0&#39;, &#39;C1&#39;, ... strings for colors of the color cycle; &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;and pairs combining one of the above with an alpha value&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">v</span><span class="si">!r}</span><span class="s2"> is not a valid value for </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">same_color</span><span class="p">(</span><span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">):</span>
@@ -409,11 +399,6 @@
 <span class="sd">        Tuple of floats ``(r, g, b, a)``, where each channel (red, green, blue,</span>
 <span class="sd">        alpha) can assume values between 0 and 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">c</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># Special-case nth color syntax because it should not be cached.</span>
     <span class="k">if</span> <span class="n">_is_nth_color</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
         <span class="n">prop_cycler</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.prop_cycle&#39;</span><span class="p">]</span>
@@ -443,8 +428,6 @@
 <span class="sd">    *alpha* is ignored for the color value ``&quot;none&quot;`` (case-insensitive),</span>
 <span class="sd">    which always maps to ``(0, 0, 0, 0)``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">alpha</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;alpha&#39; must be between 0 and 1, inclusive&quot;</span><span class="p">)</span>
     <span class="n">orig_c</span> <span class="o">=</span> <span class="n">c</span>
     <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
@@ -511,7 +494,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid RGBA argument: </span><span class="si">{</span><span class="n">orig_c</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;RGBA sequence should have length 3 or 4&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">c</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">c</span><span class="p">):</span>
         <span class="c1"># Checks that don&#39;t work: `map(float, ...)`, `np.array(..., float)` and</span>
         <span class="c1"># `np.array(...).astype(float)` would all convert &quot;0.5&quot; to 0.5.</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid RGBA argument: </span><span class="si">{</span><span class="n">orig_c</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -533,8 +516,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    c : Matplotlib color or array of colors</span>
-<span class="sd">        If *c* is a masked array, an `~numpy.ndarray` is returned with a</span>
-<span class="sd">        (0, 0, 0, 0) row for each masked value or row in *c*.</span>
+<span class="sd">        If *c* is a masked array, an ndarray is returned with a (0, 0, 0, 0)</span>
+<span class="sd">        row for each masked value or row in *c*.</span>
 
 <span class="sd">    alpha : float or sequence of floats, optional</span>
 <span class="sd">        If *alpha* is given, force the alpha value of the returned RGBA tuple</span>
@@ -555,11 +538,6 @@
 <span class="sd">        (n, 4) array of RGBA colors,  where each channel (red, green, blue,</span>
 <span class="sd">        alpha) can assume values between 0 and 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Real</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="n">c</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># Special-case inputs that are already arrays, for performance.  (If the</span>
     <span class="c1"># array has the wrong kind or shape, raise the error during one-at-a-time</span>
     <span class="c1"># conversion.)</span>
@@ -599,12 +577,9 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">alpha</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">to_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)],</span> <span class="nb">float</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
         <span class="k">pass</span>
-    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;&#39;alpha&#39; must be between 0 and 1, inclusive&quot;</span><span class="p">,</span> <span class="p">):</span>
-            <span class="c1"># ValueError is from _to_rgba_no_colorcycle().</span>
-            <span class="k">raise</span> <span class="n">e</span>
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">c</span><span class="si">!r}</span><span class="s2"> is not a valid color value.&quot;</span><span class="p">)</span>
 
@@ -626,11 +601,6 @@
 
     <span class="k">if</span> <span class="n">alpha</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">rgba</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">):</span>
-            <span class="c1"># ensure that an explicit alpha does not overwrite full transparency</span>
-            <span class="c1"># for &quot;none&quot;</span>
-            <span class="n">none_mask</span> <span class="o">=</span> <span class="p">[</span><span class="n">cbook</span><span class="o">.</span><span class="n">_str_equal</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="n">c</span><span class="p">]</span>
-            <span class="n">rgba</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">][</span><span class="n">none_mask</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">return</span> <span class="n">rgba</span>
 
 
@@ -645,7 +615,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    c : :ref:`color &lt;colors_def&gt;` or `numpy.ma.masked`</span>
+<span class="sd">    c : :doc:`color &lt;/tutorials/colors/colors&gt;` or `numpy.ma.masked`</span>
 
 <span class="sd">    keep_alpha : bool, default: False</span>
 <span class="sd">      If False, use the ``#rrggbb`` format, otherwise use ``#rrggbbaa``.</span>
@@ -658,7 +628,7 @@
     <span class="n">c</span> <span class="o">=</span> <span class="n">to_rgba</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_alpha</span><span class="p">:</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
-    <span class="k">return</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">format</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span> <span class="o">*</span> <span class="mi">255</span><span class="p">),</span> <span class="s2">&quot;02x&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">val</span> <span class="o">*</span> <span class="mi">255</span><span class="p">)),</span> <span class="s2">&quot;02x&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">c</span><span class="p">)</span>
 
 
 <span class="c1">### Backwards-compatible color-conversion API</span>
@@ -811,7 +781,7 @@
 <span class="sd">        name : str</span>
 <span class="sd">            The name of the colormap.</span>
 <span class="sd">        N : int</span>
-<span class="sd">            The number of RGB quantization levels.</span>
+<span class="sd">            The number of rgb quantization levels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c1"># ensure that N is always int</span>
@@ -831,22 +801,22 @@
 <div class="viewcode-block" id="Colormap.__call__">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Colormap.html#pipeline.h.tasks.common.displays.image.Colormap.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">bytes</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        X : float or int, `~numpy.ndarray` or scalar</span>
+<span class="sd">        X : float or int, ndarray or scalar</span>
 <span class="sd">            The data value(s) to convert to RGBA.</span>
-<span class="sd">            For floats, *X* should be in the interval ``[0.0, 1.0]`` to</span>
+<span class="sd">            For floats, X should be in the interval ``[0.0, 1.0]`` to</span>
 <span class="sd">            return the RGBA values ``X*100`` percent along the Colormap line.</span>
-<span class="sd">            For integers, *X* should be in the interval ``[0, Colormap.N)`` to</span>
+<span class="sd">            For integers, X should be in the interval ``[0, Colormap.N)`` to</span>
 <span class="sd">            return RGBA values *indexed* from the Colormap with index ``X``.</span>
 <span class="sd">        alpha : float or array-like or None</span>
 <span class="sd">            Alpha must be a scalar between 0 and 1, a sequence of such</span>
 <span class="sd">            floats with shape matching X, or None.</span>
 <span class="sd">        bytes : bool</span>
 <span class="sd">            If False (default), the returned RGBA values will be floats in the</span>
-<span class="sd">            interval ``[0, 1]`` otherwise they will be `numpy.uint8`\s in the</span>
-<span class="sd">            interval ``[0, 255]``.</span>
+<span class="sd">            interval ``[0, 1]`` otherwise they will be uint8s in the interval</span>
+<span class="sd">            ``[0, 255]``.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -856,25 +826,29 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isinit</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init</span><span class="p">()</span>
 
+        <span class="c1"># Take the bad mask from a masked array, or in all other cases defer</span>
+        <span class="c1"># np.isnan() to after we have converted to an array.</span>
+        <span class="n">mask_bad</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">mask</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">xa</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mask_bad</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask_bad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">xa</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">xa</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">isnative</span><span class="p">:</span>
-            <span class="c1"># Native byteorder is faster.</span>
-            <span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">xa</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">())</span>
+            <span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span><span class="o">.</span><span class="n">byteswap</span><span class="p">()</span><span class="o">.</span><span class="n">newbyteorder</span><span class="p">()</span>  <span class="c1"># Native byteorder is faster.</span>
         <span class="k">if</span> <span class="n">xa</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span>
-            <span class="n">xa</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
-            <span class="c1"># xa == 1 (== N after multiplication) is not out of range.</span>
-            <span class="n">xa</span><span class="p">[</span><span class="n">xa</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="c1"># Pre-compute the masks before casting to int (which can truncate</span>
-        <span class="c1"># negative values to zero or wrap large floats to negative ints).</span>
-        <span class="n">mask_under</span> <span class="o">=</span> <span class="n">xa</span> <span class="o">&lt;</span> <span class="mi">0</span>
-        <span class="n">mask_over</span> <span class="o">=</span> <span class="n">xa</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
-        <span class="c1"># If input was masked, get the bad mask from it; else mask out nans.</span>
-        <span class="n">mask_bad</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">mask</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">xa</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
-            <span class="c1"># We need this cast for unsigned ints as well as floats</span>
-            <span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">xa</span><span class="p">[</span><span class="n">mask_under</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_under</span>
-        <span class="n">xa</span><span class="p">[</span><span class="n">mask_over</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_over</span>
+            <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
+                <span class="n">xa</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+                <span class="c1"># Negative values are out of range, but astype(int) would</span>
+                <span class="c1"># truncate them towards zero.</span>
+                <span class="n">xa</span><span class="p">[</span><span class="n">xa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="c1"># xa == 1 (== N after multiplication) is not out of range.</span>
+                <span class="n">xa</span><span class="p">[</span><span class="n">xa</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="c1"># Avoid converting large positive values to negative integers.</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">xa</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">xa</span><span class="p">)</span>
+                <span class="n">xa</span> <span class="o">=</span> <span class="n">xa</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="c1"># Set the over-range indices before the under-range;</span>
+        <span class="c1"># otherwise the under-range values get converted to over-range.</span>
+        <span class="n">xa</span><span class="p">[</span><span class="n">xa</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_over</span>
+        <span class="n">xa</span><span class="p">[</span><span class="n">xa</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_under</span>
         <span class="n">xa</span><span class="p">[</span><span class="n">mask_bad</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i_bad</span>
 
         <span class="n">lut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lut</span>
@@ -892,9 +866,13 @@
                     <span class="sa">f</span><span class="s2">&quot;alpha is array-like but its shape </span><span class="si">{</span><span class="n">alpha</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> does &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;not match that of X </span><span class="si">{</span><span class="n">xa</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">rgba</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha</span>
+
             <span class="c1"># If the &quot;bad&quot; color is all zeros, then ignore alpha input.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">lut</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="n">rgba</span><span class="p">[</span><span class="n">mask_bad</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">lut</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask_bad</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">mask_bad</span><span class="p">)</span> <span class="ow">and</span> <span class="n">mask_bad</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">xa</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="n">rgba</span><span class="p">[</span><span class="n">mask_bad</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">rgba</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
             <span class="n">rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rgba</span><span class="p">)</span>
@@ -910,7 +888,7 @@
         <span class="k">return</span> <span class="n">cmapobject</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Colormap</span><span class="p">)</span> <span class="ow">or</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Colormap</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">colorbar_extend</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">colorbar_extend</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="c1"># To compare lookup tables the Colormaps have to be initialized</span>
@@ -1114,7 +1092,6 @@
                 <span class="s1">&#39;&lt;/div&gt;&#39;</span>
                 <span class="s1">&#39;&lt;div style=&quot;float: right;&quot;&gt;&#39;</span>
                 <span class="sa">f</span><span class="s1">&#39;over </span><span class="si">{</span><span class="n">color_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_over</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="s1">&#39;&lt;/div&gt;&#39;</span>
                 <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Colormap.copy">
@@ -1213,14 +1190,14 @@
 <span class="sd">        ----------</span>
 <span class="sd">        name : str</span>
 <span class="sd">            The name of the colormap.</span>
-<span class="sd">        colors : list of :mpltype:`color` or list of (value, color)</span>
+<span class="sd">        colors : array-like of colors or array-like of (value, color)</span>
 <span class="sd">            If only colors are given, they are equidistantly mapped from the</span>
 <span class="sd">            range :math:`[0, 1]`; i.e. 0 maps to ``colors[0]`` and 1 maps to</span>
 <span class="sd">            ``colors[-1]``.</span>
 <span class="sd">            If (value, color) pairs are given, the mapping is from *value*</span>
 <span class="sd">            to *color*. This can be used to divide the range unevenly.</span>
 <span class="sd">        N : int</span>
-<span class="sd">            The number of RGB quantization levels.</span>
+<span class="sd">            The number of rgb quantization levels.</span>
 <span class="sd">        gamma : float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">colors</span><span class="p">):</span>
@@ -1300,8 +1277,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    colors : list, array</span>
-<span class="sd">        Sequence of Matplotlib color specifications (color names or RGB(A)</span>
-<span class="sd">        values).</span>
+<span class="sd">        List of Matplotlib color specifications, or an equivalent Nx3 or Nx4</span>
+<span class="sd">        floating point array (*N* rgb or rgba values).</span>
 <span class="sd">    name : str, optional</span>
 <span class="sd">        String to identify the colormap.</span>
 <span class="sd">    N : int, optional</span>
@@ -1388,24 +1365,8 @@
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize">[docs]</a>
 <span class="k">class</span> <span class="nc">Normalize</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A class which, when called, maps values within the interval</span>
-<span class="sd">    ``[vmin, vmax]`` linearly to the interval ``[0.0, 1.0]``. The mapping of</span>
-<span class="sd">    values outside ``[vmin, vmax]`` depends on *clip*.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    ::</span>
-
-<span class="sd">        x = [-2, -1, 0, 1, 2]</span>
-
-<span class="sd">        norm = mpl.colors.Normalize(vmin=-1, vmax=1, clip=False)</span>
-<span class="sd">        norm(x)  # [-0.5, 0., 0.5, 1., 1.5]</span>
-<span class="sd">        norm = mpl.colors.Normalize(vmin=-1, vmax=1, clip=True)</span>
-<span class="sd">        norm(x)  # [0., 0., 0.5, 1., 1.]</span>
-
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    :ref:`colormapnorms`</span>
+<span class="sd">    A class which, when called, linearly normalizes data into the</span>
+<span class="sd">    ``[0.0, 1.0]`` interval.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1413,28 +1374,22 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        vmin, vmax : float or None</span>
-<span class="sd">            Values within the range ``[vmin, vmax]`` from the input data will be</span>
-<span class="sd">            linearly mapped to ``[0, 1]``. If either *vmin* or *vmax* is not</span>
-<span class="sd">            provided, they default to the minimum and maximum values of the input,</span>
-<span class="sd">            respectively.</span>
+<span class="sd">            If *vmin* and/or *vmax* is not given, they are initialized from the</span>
+<span class="sd">            minimum and maximum value, respectively, of the first input</span>
+<span class="sd">            processed; i.e., ``__call__(A)`` calls ``autoscale_None(A)``.</span>
 
 <span class="sd">        clip : bool, default: False</span>
-<span class="sd">            Determines the behavior for mapping values outside the range</span>
-<span class="sd">            ``[vmin, vmax]``.</span>
+<span class="sd">            If ``True`` values falling outside the range ``[vmin, vmax]``,</span>
+<span class="sd">            are mapped to 0 or 1, whichever is closer, and masked values are</span>
+<span class="sd">            set to 1.  If ``False`` masked values remain masked.</span>
 
-<span class="sd">            If clipping is off, values outside the range ``[vmin, vmax]`` are</span>
-<span class="sd">            also transformed, resulting in values outside ``[0, 1]``.  This</span>
-<span class="sd">            behavior is usually desirable, as colormaps can mark these *under*</span>
-<span class="sd">            and *over* values with specific colors.</span>
-
-<span class="sd">            If clipping is on, values below *vmin* are mapped to 0 and values</span>
-<span class="sd">            above *vmax* are mapped to 1. Such values become indistinguishable</span>
-<span class="sd">            from regular boundary values, which may cause misinterpretation of</span>
-<span class="sd">            the data.</span>
+<span class="sd">            Clipping silently defeats the purpose of setting the over, under,</span>
+<span class="sd">            and masked colors in a colormap, so it is likely to lead to</span>
+<span class="sd">            surprises; therefore the default is ``clip=False``.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        If ``vmin == vmax``, input data will be mapped to 0.</span>
+<span class="sd">        Returns 0 if ``vmin == vmax``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span> <span class="o">=</span> <span class="n">_sanitize_extrema</span><span class="p">(</span><span class="n">vmin</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span> <span class="o">=</span> <span class="n">_sanitize_extrema</span><span class="p">(</span><span class="n">vmax</span><span class="p">)</span>
@@ -1490,11 +1445,6 @@
 
 <span class="sd">        *value* can be a scalar or sequence.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        value</span>
-<span class="sd">            Data to normalize.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        result : masked array</span>
@@ -1528,15 +1478,14 @@
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Normalize the data and return the normalized data.</span>
+<span class="sd">        Normalize *value* data in the ``[vmin, vmax]`` interval into the</span>
+<span class="sd">        ``[0.0, 1.0]`` interval and return it.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        value</span>
 <span class="sd">            Data to normalize.</span>
-<span class="sd">        clip : bool, optional</span>
-<span class="sd">            See the description of the parameter *clip* in `.Normalize`.</span>
-
+<span class="sd">        clip : bool</span>
 <span class="sd">            If ``None``, defaults to ``self.clip`` (which defaults to</span>
 <span class="sd">            ``False``).</span>
 
@@ -1574,18 +1523,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="Normalize.inverse">
-<a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize.inverse">[docs]</a>
     <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Maps the normalized value (i.e., index in the colormap) back to image</span>
-<span class="sd">        data value.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        value</span>
-<span class="sd">            Normalized value.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not invertible until both vmin and vmax are set&quot;</span><span class="p">)</span>
         <span class="p">(</span><span class="n">vmin</span><span class="p">,),</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">)</span>
@@ -1595,32 +1533,22 @@
             <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">vmin</span> <span class="o">+</span> <span class="n">val</span> <span class="o">*</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">vmin</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span></div>
-
+            <span class="k">return</span> <span class="n">vmin</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Normalize.autoscale">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize.autoscale">[docs]</a>
     <span class="k">def</span> <span class="nf">autoscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set *vmin*, *vmax* to min, max of *A*.&quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">blocked</span><span class="p">():</span>
-            <span class="c1"># Pause callbacks while we are updating so we only get</span>
-            <span class="c1"># a single update signal at the end</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">autoscale_None</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span></div>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">max</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Normalize.autoscale_None">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize.autoscale_None">[docs]</a>
     <span class="k">def</span> <span class="nf">autoscale_None</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;If *vmin* or *vmax* are not set, use the min/max of *A* to set them.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If vmin or vmax are not set, use the min/max of *A* to set them.&quot;&quot;&quot;</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">MaskedArray</span><span class="p">):</span>
-            <span class="c1"># we need to make the distinction between an array, False, np.bool_(False)</span>
-            <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">mask</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">A</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-                <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">data</span>
-
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
@@ -1630,7 +1558,7 @@
 <div class="viewcode-block" id="Normalize.scaled">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.image.Normalize.html#pipeline.h.tasks.common.displays.image.Normalize.scaled">[docs]</a>
     <span class="k">def</span> <span class="nf">scaled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether *vmin* and *vmax* are both set.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether vmin and vmax are set.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 </div>
 
@@ -1663,7 +1591,7 @@
 
 <span class="sd">            &gt;&gt;&gt; import matplotlib.colors as mcolors</span>
 <span class="sd">            &gt;&gt;&gt; offset = mcolors.TwoSlopeNorm(vmin=-4000.,</span>
-<span class="sd">            ...                               vcenter=0., vmax=10000)</span>
+<span class="sd">                                              vcenter=0., vmax=10000)</span>
 <span class="sd">            &gt;&gt;&gt; data = [-4000., -2000., 0., 2500., 5000., 7500., 10000.]</span>
 <span class="sd">            &gt;&gt;&gt; offset(data)</span>
 <span class="sd">            array([0., 0.25, 0.5, 0.625, 0.75, 0.875, 1.0])</span>
@@ -1690,21 +1618,17 @@
 
     <span class="k">def</span> <span class="nf">autoscale_None</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get vmin and vmax.</span>
-
-<span class="sd">        If vcenter isn&#39;t in the range [vmin, vmax], either vmin or vmax</span>
-<span class="sd">        is expanded so that vcenter lies in the middle of the modified range</span>
-<span class="sd">        [vmin, vmax].</span>
+<span class="sd">        Get vmin and vmax, and then clip at vcenter</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">autoscale_None</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Map value to the interval [0, 1]. The *clip* argument is unused.</span>
+<span class="sd">        Map value to the interval [0, 1]. The clip argument is unused.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">is_scalar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">autoscale_None</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># sets self.vmin, self.vmax if None</span>
@@ -1753,19 +1677,6 @@
 <span class="sd">            *vcenter* + *halfrange* is ``1.0`` in the normalization.</span>
 <span class="sd">            Defaults to the largest absolute difference to *vcenter* for</span>
 <span class="sd">            the values in the dataset.</span>
-<span class="sd">        clip : bool, default: False</span>
-<span class="sd">            Determines the behavior for mapping values outside the range</span>
-<span class="sd">            ``[vmin, vmax]``.</span>
-
-<span class="sd">            If clipping is off, values outside the range ``[vmin, vmax]`` are</span>
-<span class="sd">            also transformed, resulting in values outside ``[0, 1]``.  This</span>
-<span class="sd">            behavior is usually desirable, as colormaps can mark these *under*</span>
-<span class="sd">            and *over* values with specific colors.</span>
-
-<span class="sd">            If clipping is on, values below *vmin* are mapped to 0 and values</span>
-<span class="sd">            above *vmax* are mapped to 1. Such values become indistinguishable</span>
-<span class="sd">            from regular boundary values, which may cause misinterpretation of</span>
-<span class="sd">            the data.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1783,43 +1694,27 @@
         <span class="c1"># calling the halfrange setter to set vmin and vmax</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">halfrange</span> <span class="o">=</span> <span class="n">halfrange</span>
 
+    <span class="k">def</span> <span class="nf">_set_vmin_vmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set *vmin* and *vmax* based on *vcenter* and *halfrange*.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span>
+
     <span class="k">def</span> <span class="nf">autoscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set *halfrange* to ``max(abs(A-vcenter))``, then set *vmin* and *vmax*.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">halfrange</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
-                             <span class="n">A</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="o">-</span><span class="n">A</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                              <span class="n">A</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_vmin_vmax</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">autoscale_None</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set *vmin* and *vmax*.&quot;&quot;&quot;</span>
         <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfrange</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">A</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span>
-
-    <span class="nd">@vmin</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">vmin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">_sanitize_extrema</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">-</span> <span class="n">value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span>
-
-    <span class="nd">@vmax</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">vmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="n">_sanitize_extrema</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vmax</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_vmin</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">-</span> <span class="n">value</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">vcenter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1829,24 +1724,32 @@
     <span class="k">def</span> <span class="nf">vcenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vcenter</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">vcenter</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span> <span class="o">=</span> <span class="n">vcenter</span>
-            <span class="c1"># Trigger an update of the vmin/vmax values through the setter</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">halfrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">halfrange</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># recompute halfrange assuming vmin and vmax represent</span>
+            <span class="c1"># min and max of data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_vcenter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_vmin_vmax</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">halfrange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span>
 
     <span class="nd">@halfrange</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">halfrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">halfrange</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">halfrange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">halfrange</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vcenter</span> <span class="o">+</span> <span class="nb">abs</span><span class="p">(</span><span class="n">halfrange</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">halfrange</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_halfrange</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># enforce symmetry, reset vmin and vmax</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_vmin_vmax</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="n">clip</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">make_norm_from_scale</span><span class="p">(</span><span class="n">scale_cls</span><span class="p">,</span> <span class="n">base_norm_cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1898,7 +1801,7 @@
         <span class="n">base_norm_cls</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">init</span><span class="p">))</span>
 
 
-<span class="nd">@functools</span><span class="o">.</span><span class="n">cache</span>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">_make_norm_from_scale</span><span class="p">(</span>
     <span class="n">scale_cls</span><span class="p">,</span> <span class="n">scale_args</span><span class="p">,</span> <span class="n">scale_kwargs_items</span><span class="p">,</span>
     <span class="n">base_norm_cls</span><span class="p">,</span> <span class="n">bound_init_signature</span><span class="p">,</span>
@@ -1988,8 +1891,14 @@
                      <span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
             <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">is_scalar</span> <span class="k">else</span> <span class="n">value</span>
 
-        <span class="k">def</span> <span class="nf">autoscale_None</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">autoscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
             <span class="c1"># i.e. A[np.isfinite(...)], but also for non-array A&#39;s</span>
+            <span class="n">in_trf_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">A</span><span class="p">)),</span> <span class="n">A</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">in_trf_domain</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">in_trf_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="n">in_trf_domain</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">autoscale_None</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">):</span>
             <span class="n">in_trf_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_trf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">A</span><span class="p">)),</span> <span class="n">A</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">in_trf_domain</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">in_trf_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked</span>
@@ -2038,17 +1947,13 @@
 <span class="sd">        processed; i.e., ``__call__(A)`` calls ``autoscale_None(A)``.</span>
 
 <span class="sd">    clip : bool, default: False</span>
-<span class="sd">        Determines the behavior for mapping values outside the range</span>
-<span class="sd">        ``[vmin, vmax]``.</span>
+<span class="sd">        If ``True`` values falling outside the range ``[vmin, vmax]``,</span>
+<span class="sd">        are mapped to 0 or 1, whichever is closer, and masked values are</span>
+<span class="sd">        set to 1.  If ``False`` masked values remain masked.</span>
 
-<span class="sd">        If clipping is off, values outside the range ``[vmin, vmax]`` are also</span>
-<span class="sd">        transformed by the function, resulting in values outside ``[0, 1]``.</span>
-<span class="sd">        This behavior is usually desirable, as colormaps can mark these *under*</span>
-<span class="sd">        and *over* values with specific colors.</span>
-
-<span class="sd">        If clipping is on, values below *vmin* are mapped to 0 and values above</span>
-<span class="sd">        *vmax* are mapped to 1. Such values become indistinguishable from</span>
-<span class="sd">        regular boundary values, which may cause misinterpretation of the data.</span>
+<span class="sd">        Clipping silently defeats the purpose of setting the over, under,</span>
+<span class="sd">        and masked colors in a colormap, so it is likely to lead to</span>
+<span class="sd">        surprises; therefore the default is ``clip=False``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
@@ -2129,40 +2034,9 @@
 
 
 <span class="k">class</span> <span class="nc">PowerNorm</span><span class="p">(</span><span class="n">Normalize</span><span class="p">):</span>
-<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Linearly map a given value to the 0-1 range and then apply</span>
 <span class="sd">    a power-law normalization over that range.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    gamma : float</span>
-<span class="sd">        Power law exponent.</span>
-<span class="sd">    vmin, vmax : float or None</span>
-<span class="sd">        If *vmin* and/or *vmax* is not given, they are initialized from the</span>
-<span class="sd">        minimum and maximum value, respectively, of the first input</span>
-<span class="sd">        processed; i.e., ``__call__(A)`` calls ``autoscale_None(A)``.</span>
-<span class="sd">    clip : bool, default: False</span>
-<span class="sd">        Determines the behavior for mapping values outside the range</span>
-<span class="sd">        ``[vmin, vmax]``.</span>
-
-<span class="sd">        If clipping is off, values above *vmax* are transformed by the power</span>
-<span class="sd">        function, resulting in values above 1, and values below *vmin* are linearly</span>
-<span class="sd">        transformed resulting in values below 0. This behavior is usually desirable, as</span>
-<span class="sd">        colormaps can mark these *under* and *over* values with specific colors.</span>
-
-<span class="sd">        If clipping is on, values below *vmin* are mapped to 0 and values above</span>
-<span class="sd">        *vmax* are mapped to 1. Such values become indistinguishable from</span>
-<span class="sd">        regular boundary values, which may cause misinterpretation of the data.</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    The normalization formula is</span>
-
-<span class="sd">    .. math::</span>
-
-<span class="sd">        \left ( \frac{x - v_{min}}{v_{max}  - v_{min}} \right )^{\gamma}</span>
-
-<span class="sd">    For input values below *vmin*, gamma is set to one.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">,</span> <span class="n">clip</span><span class="p">)</span>
@@ -2188,8 +2062,9 @@
                                      <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
             <span class="n">resdat</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span>
             <span class="n">resdat</span> <span class="o">-=</span> <span class="n">vmin</span>
-            <span class="n">resdat</span> <span class="o">/=</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span>
-            <span class="n">resdat</span><span class="p">[</span><span class="n">resdat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">resdat</span><span class="p">[</span><span class="n">resdat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> <span class="n">gamma</span><span class="p">)</span>
+            <span class="n">resdat</span><span class="p">[</span><span class="n">resdat</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">resdat</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">resdat</span><span class="p">)</span>
+            <span class="n">resdat</span> <span class="o">/=</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">**</span> <span class="n">gamma</span>
 
             <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resdat</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">is_scalar</span><span class="p">:</span>
@@ -2199,21 +2074,14 @@
     <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaled</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not invertible until scaled&quot;</span><span class="p">)</span>
-
-        <span class="n">result</span><span class="p">,</span> <span class="n">is_scalar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
         <span class="n">gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span>
         <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span>
 
-        <span class="n">resdat</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">resdat</span><span class="p">[</span><span class="n">resdat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">resdat</span><span class="p">[</span><span class="n">resdat</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">],</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">)</span>
-        <span class="n">resdat</span> <span class="o">*=</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span>
-        <span class="n">resdat</span> <span class="o">+=</span> <span class="n">vmin</span>
-
-        <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resdat</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">is_scalar</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">result</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">vmin</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">pow</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">vmax</span> <span class="o">-</span> <span class="n">vmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">vmin</span>
 
 
 <span class="k">class</span> <span class="nc">BoundaryNorm</span><span class="p">(</span><span class="n">Normalize</span><span class="p">):</span>
@@ -2350,19 +2218,16 @@
 <span class="sd">    indices directly in a `~matplotlib.cm.ScalarMappable`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
 
 <span class="k">def</span> <span class="nf">rgb_to_hsv</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert an array of float RGB values (in the range [0, 1]) to HSV values.</span>
+<span class="sd">    Convert float rgb values (in the range [0, 1]), in a numpy array to hsv</span>
+<span class="sd">    values.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2371,15 +2236,15 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    (..., 3) `~numpy.ndarray`</span>
-<span class="sd">       Colors converted to HSV values in range [0, 1]</span>
+<span class="sd">    (..., 3) ndarray</span>
+<span class="sd">       Colors converted to hsv values in range [0, 1]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
 
     <span class="c1"># check length of the last dimension, should be _some_ sort of rgb</span>
     <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Last dimension of input array must be 3; &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;shape </span><span class="si">{</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> was found.&quot;</span><span class="p">)</span>
+                         <span class="s2">&quot;shape </span><span class="si">{}</span><span class="s2"> was found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
     <span class="n">in_shape</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -2390,7 +2255,7 @@
     <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
     <span class="n">arr_max</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">ipos</span> <span class="o">=</span> <span class="n">arr_max</span> <span class="o">&gt;</span> <span class="mi">0</span>
-    <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
     <span class="n">s</span><span class="p">[</span><span class="n">ipos</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span><span class="p">[</span><span class="n">ipos</span><span class="p">]</span> <span class="o">/</span> <span class="n">arr_max</span><span class="p">[</span><span class="n">ipos</span><span class="p">]</span>
     <span class="n">ipos</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">&gt;</span> <span class="mi">0</span>
@@ -2413,7 +2278,7 @@
 
 <span class="k">def</span> <span class="nf">hsv_to_rgb</span><span class="p">(</span><span class="n">hsv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert HSV values to RGB.</span>
+<span class="sd">    Convert hsv values to rgb.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2422,7 +2287,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    (..., 3) `~numpy.ndarray`</span>
+<span class="sd">    (..., 3) ndarray</span>
 <span class="sd">       Colors converted to RGB values in range [0, 1]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hsv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">hsv</span><span class="p">)</span>
@@ -2430,7 +2295,7 @@
     <span class="c1"># check length of the last dimension, should be _some_ sort of rgb</span>
     <span class="k">if</span> <span class="n">hsv</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Last dimension of input array must be 3; &quot;</span>
-                         <span class="sa">f</span><span class="s2">&quot;shape </span><span class="si">{</span><span class="n">hsv</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2"> was found.&quot;</span><span class="p">)</span>
+                         <span class="s2">&quot;shape </span><span class="si">{shp}</span><span class="s2"> was found.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">shp</span><span class="o">=</span><span class="n">hsv</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
 
     <span class="n">in_shape</span> <span class="o">=</span> <span class="n">hsv</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">hsv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -2509,8 +2374,8 @@
 <span class="sd">    Angles are in degrees, with the azimuth measured</span>
 <span class="sd">    clockwise from north and elevation up from the zero plane of the surface.</span>
 
-<span class="sd">    `shade` is used to produce &quot;shaded&quot; RGB values for a data array.</span>
-<span class="sd">    `shade_rgb` can be used to combine an RGB image with an elevation map.</span>
+<span class="sd">    `shade` is used to produce &quot;shaded&quot; rgb values for a data array.</span>
+<span class="sd">    `shade_rgb` can be used to combine an rgb image with an elevation map.</span>
 <span class="sd">    `hillshade` produces an illumination map of a surface.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2529,18 +2394,6 @@
 <span class="sd">        altdeg : float, default: 45 degrees</span>
 <span class="sd">            The altitude (0-90, degrees up from horizontal) of the light</span>
 <span class="sd">            source.</span>
-<span class="sd">        hsv_min_val : number, default: 0</span>
-<span class="sd">            The minimum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift the</span>
-<span class="sd">            output image to.</span>
-<span class="sd">        hsv_max_val : number, default: 1</span>
-<span class="sd">            The maximum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift the</span>
-<span class="sd">            output image to.</span>
-<span class="sd">        hsv_min_sat : number, default: 1</span>
-<span class="sd">            The minimum saturation value that the *intensity* map can shift the output</span>
-<span class="sd">            image to.</span>
-<span class="sd">        hsv_max_sat : number, default: 0</span>
-<span class="sd">            The maximum saturation value that the *intensity* map can shift the output</span>
-<span class="sd">            image to.</span>
 
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
@@ -2601,7 +2454,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
+<span class="sd">        ndarray</span>
 <span class="sd">            A 2D array of illumination values between 0-1, where 0 is</span>
 <span class="sd">            completely in shadow and 1 is completely illuminated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2644,7 +2497,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
+<span class="sd">        ndarray</span>
 <span class="sd">            A 2D array of illumination values between 0-1, where 0 is</span>
 <span class="sd">            completely in shadow and 1 is completely illuminated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -2693,8 +2546,8 @@
 <span class="sd">            &quot;overlay&quot;.  Note that for most topographic surfaces,</span>
 <span class="sd">            &quot;overlay&quot; or &quot;soft&quot; appear more visually realistic. If a</span>
 <span class="sd">            user-defined function is supplied, it is expected to</span>
-<span class="sd">            combine an (M, N, 3) RGB array of floats (ranging 0 to 1) with</span>
-<span class="sd">            an (M, N, 1) hillshade array (also 0 to 1).  (Call signature</span>
+<span class="sd">            combine an MxNx3 RGB array of floats (ranging 0 to 1) with</span>
+<span class="sd">            an MxNx1 hillshade array (also 0 to 1).  (Call signature</span>
 <span class="sd">            ``func(rgb, illum, **kwargs)``) Additional kwargs supplied</span>
 <span class="sd">            to this function will be passed on to the *blend_mode*</span>
 <span class="sd">            function.</span>
@@ -2722,13 +2575,12 @@
 <span class="sd">            full illumination or shadow (and clipping any values that move</span>
 <span class="sd">            beyond 0 or 1). Note that this is not visually or mathematically</span>
 <span class="sd">            the same as vertical exaggeration.</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional kwargs are passed on to the *blend_mode* function.</span>
+<span class="sd">        Additional kwargs are passed on to the *blend_mode* function.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 4) array of floats ranging between 0-1.</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            An MxNx4 array of floats ranging between 0-1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">vmin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">vmin</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
@@ -2769,8 +2621,8 @@
 <span class="sd">            defaults to &quot;hsv&quot;. Note that for most topographic surfaces,</span>
 <span class="sd">            &quot;overlay&quot; or &quot;soft&quot; appear more visually realistic. If a</span>
 <span class="sd">            user-defined function is supplied, it is expected to combine an</span>
-<span class="sd">            (M, N, 3) RGB array of floats (ranging 0 to 1) with an (M, N, 1)</span>
-<span class="sd">            hillshade array (also 0 to 1).  (Call signature</span>
+<span class="sd">            MxNx3 RGB array of floats (ranging 0 to 1) with an MxNx1 hillshade</span>
+<span class="sd">            array (also 0 to 1).  (Call signature</span>
 <span class="sd">            ``func(rgb, illum, **kwargs)``)</span>
 <span class="sd">            Additional kwargs supplied to this function will be passed on to</span>
 <span class="sd">            the *blend_mode* function.</span>
@@ -2784,12 +2636,11 @@
 <span class="sd">            The x-spacing (columns) of the input *elevation* grid.</span>
 <span class="sd">        dy : number, optional</span>
 <span class="sd">            The y-spacing (rows) of the input *elevation* grid.</span>
-<span class="sd">        **kwargs</span>
-<span class="sd">            Additional kwargs are passed on to the *blend_mode* function.</span>
+<span class="sd">        Additional kwargs are passed on to the *blend_mode* function.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
+<span class="sd">        ndarray</span>
 <span class="sd">            An (m, n, 3) array of floats ranging between 0-1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Calculate the &quot;hillshade&quot; intensity.</span>
@@ -2808,8 +2659,8 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">blend</span> <span class="o">=</span> <span class="n">blend_mode</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span> <span class="n">intensity</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;blend_mode&quot; must be callable or one of &#39;</span>
-                                 <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">lookup</span><span class="o">.</span><span class="n">keys</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">err</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;blend_mode&quot; must be callable or one of </span><span class="si">{}</span><span class="s1">&#39;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lookup</span><span class="o">.</span><span class="n">keys</span><span class="p">))</span> <span class="kn">from</span> <span class="nn">err</span>
 
         <span class="c1"># Only apply result where hillshade intensity isn&#39;t masked</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">intensity</span><span class="p">):</span>
@@ -2828,7 +2679,7 @@
 <span class="sd">        which can then be used to plot the shaded image with imshow.</span>
 
 <span class="sd">        The color of the resulting image will be darkened by moving the (s, v)</span>
-<span class="sd">        values (in HSV colorspace) toward (hsv_min_sat, hsv_min_val) in the</span>
+<span class="sd">        values (in hsv colorspace) toward (hsv_min_sat, hsv_min_val) in the</span>
 <span class="sd">        shaded regions, or lightened by sliding (s, v) toward (hsv_max_sat,</span>
 <span class="sd">        hsv_max_val) in regions that are illuminated.  The default extremes are</span>
 <span class="sd">        chose so that completely shaded points are nearly black (s = 1, v = 0)</span>
@@ -2836,29 +2687,27 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rgb : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 3) RGB array of floats ranging from 0 to 1 (color image).</span>
-<span class="sd">        intensity : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 1) array of floats ranging from 0 to 1 (grayscale image).</span>
-<span class="sd">        hsv_max_sat : number, optional</span>
-<span class="sd">            The maximum saturation value that the *intensity* map can shift the output</span>
-<span class="sd">            image to. If not provided, use the value provided upon initialization.</span>
+<span class="sd">        rgb : ndarray</span>
+<span class="sd">            An MxNx3 RGB array of floats ranging from 0 to 1 (color image).</span>
+<span class="sd">        intensity : ndarray</span>
+<span class="sd">            An MxNx1 array of floats ranging from 0 to 1 (grayscale image).</span>
+<span class="sd">        hsv_max_sat : number, default: 1</span>
+<span class="sd">            The maximum saturation value that the *intensity* map can shift the</span>
+<span class="sd">            output image to.</span>
 <span class="sd">        hsv_min_sat : number, optional</span>
-<span class="sd">            The minimum saturation value that the *intensity* map can shift the output</span>
-<span class="sd">            image to. If not provided, use the value provided upon initialization.</span>
+<span class="sd">            The minimum saturation value that the *intensity* map can shift the</span>
+<span class="sd">            output image to. Defaults to 0.</span>
 <span class="sd">        hsv_max_val : number, optional</span>
-<span class="sd">            The maximum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift the</span>
-<span class="sd">            output image to. If not provided, use the value provided upon</span>
-<span class="sd">            initialization.</span>
+<span class="sd">            The maximum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift</span>
+<span class="sd">            the output image to. Defaults to 1.</span>
 <span class="sd">        hsv_min_val : number, optional</span>
-<span class="sd">            The minimum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift the</span>
-<span class="sd">            output image to. If not provided, use the value provided upon</span>
-<span class="sd">            initialization.</span>
+<span class="sd">            The minimum value (&quot;v&quot; in &quot;hsv&quot;) that the *intensity* map can shift</span>
+<span class="sd">            the output image to. Defaults to 0.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 3) RGB array representing the combined images.</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            An MxNx3 RGB array representing the combined images.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Backward compatibility...</span>
         <span class="k">if</span> <span class="n">hsv_max_sat</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -2895,38 +2744,38 @@
 
     <span class="k">def</span> <span class="nf">blend_soft_light</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rgb</span><span class="p">,</span> <span class="n">intensity</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Combine an RGB image with an intensity map using &quot;soft light&quot; blending,</span>
+<span class="sd">        Combine an rgb image with an intensity map using &quot;soft light&quot; blending,</span>
 <span class="sd">        using the &quot;pegtop&quot; formula.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rgb : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 3) RGB array of floats ranging from 0 to 1 (color image).</span>
-<span class="sd">        intensity : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 1) array of floats ranging from 0 to 1 (grayscale image).</span>
+<span class="sd">        rgb : ndarray</span>
+<span class="sd">            An MxNx3 RGB array of floats ranging from 0 to 1 (color image).</span>
+<span class="sd">        intensity : ndarray</span>
+<span class="sd">            An MxNx1 array of floats ranging from 0 to 1 (grayscale image).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 3) RGB array representing the combined images.</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            An MxNx3 RGB array representing the combined images.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">intensity</span> <span class="o">*</span> <span class="n">rgb</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">intensity</span><span class="p">)</span> <span class="o">*</span> <span class="n">rgb</span><span class="o">**</span><span class="mi">2</span>
 
     <span class="k">def</span> <span class="nf">blend_overlay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rgb</span><span class="p">,</span> <span class="n">intensity</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Combine an RGB image with an intensity map using &quot;overlay&quot; blending.</span>
+<span class="sd">        Combine an rgb image with an intensity map using &quot;overlay&quot; blending.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        rgb : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 3) RGB array of floats ranging from 0 to 1 (color image).</span>
-<span class="sd">        intensity : `~numpy.ndarray`</span>
-<span class="sd">            An (M, N, 1) array of floats ranging from 0 to 1 (grayscale image).</span>
+<span class="sd">        rgb : ndarray</span>
+<span class="sd">            An MxNx3 RGB array of floats ranging from 0 to 1 (color image).</span>
+<span class="sd">        intensity : ndarray</span>
+<span class="sd">            An MxNx1 array of floats ranging from 0 to 1 (grayscale image).</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ndarray</span>
-<span class="sd">            An (M, N, 3) RGB array representing the combined images.</span>
+<span class="sd">            An MxNx3 RGB array representing the combined images.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">low</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">intensity</span> <span class="o">*</span> <span class="n">rgb</span>
         <span class="n">high</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">intensity</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">rgb</span><span class="p">)</span>
@@ -2953,8 +2802,8 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    cmap : `~matplotlib.colors.Colormap`</span>
-<span class="sd">    norm : `~matplotlib.colors.Normalize`</span>
+<span class="sd">    cmap : `~matplotlib.colors.Normalize`</span>
+<span class="sd">    norm : `~matplotlib.colors.Colormap`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">slice_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;both&#39;</span><span class="p">:</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
@@ -2997,7 +2846,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

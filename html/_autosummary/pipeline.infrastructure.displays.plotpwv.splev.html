@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.displays.plotpwv.splev &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -162,7 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -211,7 +211,7 @@ wrapper around the FORTRAN routines splev and splder of FITPACK.</p>
 <li><p><strong>x</strong> (<em>array_like</em>) – An array of points at which to return the value of the smoothed
 spline or its derivatives. If <cite>tck</cite> was returned from <cite>splprep</cite>,
 then the parameter values, u should be given.</p></li>
-<li><p><strong>tck</strong> (<em>BSpline instance or tuple</em>) – If a tuple, then it should be a sequence of length 3 returned by
+<li><p><strong>tck</strong> (<em>3-tuple or a BSpline object</em>) – If a tuple, then it should be a sequence of length 3 returned by
 <cite>splrep</cite> or <cite>splprep</cite> containing the knots, coefficients, and degree
 of the spline. (Also see Notes.)</p></li>
 <li><p><strong>der</strong> (<em>int, optional</em>) – The order of derivative of the spline to compute (must be less than
@@ -237,13 +237,13 @@ is a list of arrays representing the curve in an N-D space.</p>
 <dd class="field-odd"><p>ndarray or list of ndarrays</p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>Manipulating the tck-tuples directly is not recommended. In new code,
+prefer using <cite>BSpline</cite> objects.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><code class="xref py py-obj docutils literal notranslate"><span class="pre">splprep</span></code>, <a class="reference internal" href="pipeline.infrastructure.displays.plotpwv.splrep.html#pipeline.infrastructure.displays.plotpwv.splrep" title="pipeline.infrastructure.displays.plotpwv.splrep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">splrep</span></code></a>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">sproot</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">spalde</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">splint</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bisplrep</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">bisplev</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">BSpline</span></code></p>
 </div>
-<p class="rubric">Notes</p>
-<p>Manipulating the tck-tuples directly is not recommended. In new code,
-prefer using <cite>BSpline</cite> objects.</p>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="id1" role="doc-footnote">
@@ -264,8 +264,6 @@ on Numerical Analysis, Oxford University Press, 1993.</p>
 </aside>
 <p class="rubric">Examples</p>
 <p>Examples are given <span class="xref std std-ref">in the tutorial</span>.</p>
-<p>A comparison between <cite>splev</cite>, <cite>splder</cite> and <cite>spalde</cite> to compute the derivatives of a
-B-spline can be found in the <cite>spalde</cite> examples section.</p>
 </dd></dl>
 
 </section>
@@ -281,7 +279,7 @@ B-spline can be found in the <cite>spalde</cite> examples section.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

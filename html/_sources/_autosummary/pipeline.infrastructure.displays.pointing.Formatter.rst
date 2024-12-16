@@ -23,7 +23,10 @@ pipeline.infrastructure.displays.pointing.Formatter
       ~Formatter.format_ticks
       ~Formatter.get_offset
       ~Formatter.set_axis
+      ~Formatter.set_bounds
+      ~Formatter.set_data_interval
       ~Formatter.set_locs
+      ~Formatter.set_view_interval
    
    
 

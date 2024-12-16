@@ -22,8 +22,11 @@ pipeline.hsd.tasks.common.display.MinuteLocator
       ~MinuteLocator.nonsingular
       ~MinuteLocator.raise_if_exceeds
       ~MinuteLocator.set_axis
+      ~MinuteLocator.set_bounds
+      ~MinuteLocator.set_data_interval
       ~MinuteLocator.set_params
       ~MinuteLocator.set_tzinfo
+      ~MinuteLocator.set_view_interval
       ~MinuteLocator.tick_values
       ~MinuteLocator.view_limits
       ~MinuteLocator.viewlim_to_dt

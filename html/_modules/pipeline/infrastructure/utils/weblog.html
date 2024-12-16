@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.weblog &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -140,7 +140,7 @@
 
 
 <div class="viewcode-block" id="OrderedDefaultdict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.OrderedDefaultdict.html#pipeline.infrastructure.utils.OrderedDefaultdict">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.OrderedDefaultdict.html#pipeline.infrastructure.utils.weblog.OrderedDefaultdict">[docs]</a>
 <span class="k">class</span> <span class="nc">OrderedDefaultdict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This class behaves as defaultdict from the collections module but maintaining the order of insertion.</span>
 
@@ -181,7 +181,7 @@
 
 
 <div class="viewcode-block" id="merge_td_columns">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.merge_td_columns.html#pipeline.infrastructure.utils.merge_td_columns">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.merge_td_columns.html#pipeline.infrastructure.utils.weblog.merge_td_columns">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_td_columns</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">num_to_merge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vertical_align</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge HTML TD columns with identical values using rowspan.</span>
@@ -232,7 +232,7 @@
 
 
 <div class="viewcode-block" id="merge_td_rows">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.merge_td_rows.html#pipeline.infrastructure.utils.merge_td_rows">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.merge_td_rows.html#pipeline.infrastructure.utils.weblog.merge_td_rows">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_td_rows</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Merge HTML TD rows with identical values using colspan.</span>
@@ -270,7 +270,7 @@
 
 
 <div class="viewcode-block" id="get_vis_from_plots">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_vis_from_plots.html#pipeline.infrastructure.utils.get_vis_from_plots">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.get_vis_from_plots.html#pipeline.infrastructure.utils.weblog.get_vis_from_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">get_vis_from_plots</span><span class="p">(</span><span class="n">plots</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the name to be used for the MS from the given plots.</span>
@@ -285,7 +285,7 @@
 
 
 <div class="viewcode-block" id="total_time_on_target_on_source">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.total_time_on_target_on_source.html#pipeline.infrastructure.utils.total_time_on_target_on_source">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.total_time_on_target_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_target_on_source">[docs]</a>
 <span class="k">def</span> <span class="nf">total_time_on_target_on_source</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">autocorr_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the nominal total time on target source for the given MeasurementSet</span>
@@ -329,7 +329,7 @@
 
 
 <div class="viewcode-block" id="total_time_on_source">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.total_time_on_source.html#pipeline.infrastructure.utils.total_time_on_source">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.total_time_on_source.html#pipeline.infrastructure.utils.weblog.total_time_on_source">[docs]</a>
 <span class="k">def</span> <span class="nf">total_time_on_source</span><span class="p">(</span><span class="n">scans</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the total time on source for the given Scans.</span>
@@ -348,7 +348,7 @@
 
 
 <div class="viewcode-block" id="get_logrecords">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_logrecords.html#pipeline.infrastructure.utils.get_logrecords">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.get_logrecords.html#pipeline.infrastructure.utils.weblog.get_logrecords">[docs]</a>
 <span class="k">def</span> <span class="nf">get_logrecords</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the logrecords for the result, removing any duplicates</span>
@@ -389,7 +389,7 @@
 
 
 <div class="viewcode-block" id="get_intervals">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_intervals.html#pipeline.infrastructure.utils.get_intervals">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.get_intervals.html#pipeline.infrastructure.utils.weblog.get_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">get_intervals</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">calapp</span><span class="p">,</span> <span class="n">spw_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the integration intervals for scans processed by a calibration.</span>
@@ -464,7 +464,7 @@
 
 
 <div class="viewcode-block" id="table_to_html">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.table_to_html.html#pipeline.infrastructure.utils.table_to_html">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.table_to_html.html#pipeline.infrastructure.utils.weblog.table_to_html">[docs]</a>
 <span class="k">def</span> <span class="nf">table_to_html</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">tableclass</span><span class="o">=</span><span class="s1">&#39;table table-bordered table-striped table-condensed&#39;</span><span class="p">,</span> <span class="n">rotate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a astropy.table.Table object to an HTML table snippet.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">rotate</span><span class="p">:</span>
@@ -481,7 +481,7 @@
 
 
 <div class="viewcode-block" id="plots_to_html">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.plots_to_html.html#pipeline.infrastructure.utils.plots_to_html">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.plots_to_html.html#pipeline.infrastructure.utils.weblog.plots_to_html">[docs]</a>
 <span class="k">def</span> <span class="nf">plots_to_html</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">alt</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">align</span><span class="o">=</span><span class="s1">&#39;middle&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">report_dir</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a list of plots to HTML snippets.</span>
@@ -545,7 +545,7 @@
 
 
 <div class="viewcode-block" id="scale_uv_range">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.scale_uv_range.html#pipeline.infrastructure.utils.scale_uv_range">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.weblog.scale_uv_range.html#pipeline.infrastructure.utils.weblog.scale_uv_range">[docs]</a>
 <span class="k">def</span> <span class="nf">scale_uv_range</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="s1">&#39;Distance&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the UV range that captures the inner half of the data.</span>
@@ -577,7 +577,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

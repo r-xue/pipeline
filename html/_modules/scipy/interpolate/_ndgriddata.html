@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>scipy.interpolate._ndgriddata &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -133,7 +133,7 @@
 <span class="k">class</span> <span class="nc">NearestNDInterpolator</span><span class="p">(</span><span class="n">NDInterpolatorBase</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NearestNDInterpolator(x, y).</span>
 
-<span class="sd">    Nearest-neighbor interpolator in N &gt; 1 dimensions.</span>
+<span class="sd">    Nearest-neighbor interpolation in N &gt; 1 dimensions.</span>
 
 <span class="sd">    .. versionadded:: 0.9</span>
 
@@ -143,9 +143,9 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x : (npoints, ndims) 2-D ndarray of floats</span>
+<span class="sd">    x : (Npoints, Ndims) ndarray of floats</span>
 <span class="sd">        Data point coordinates.</span>
-<span class="sd">    y : (npoints, ) 1-D ndarray of float or complex</span>
+<span class="sd">    y : (Npoints,) ndarray of float or complex</span>
 <span class="sd">        Data values.</span>
 <span class="sd">    rescale : boolean, optional</span>
 <span class="sd">        Rescale points to unit cube before performing interpolation.</span>
@@ -158,31 +158,16 @@
 
 <span class="sd">        .. versionadded:: 0.17.0</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    griddata :</span>
-<span class="sd">        Interpolate unstructured D-D data.</span>
-<span class="sd">    LinearNDInterpolator :</span>
-<span class="sd">        Piecewise linear interpolator in N dimensions.</span>
-<span class="sd">    CloughTocher2DInterpolator :</span>
-<span class="sd">        Piecewise cubic, C1 smooth, curvature-minimizing interpolator in 2D.</span>
-<span class="sd">    interpn : Interpolation on a regular grid or rectilinear grid.</span>
-<span class="sd">    RegularGridInterpolator : Interpolator on a regular or rectilinear grid</span>
-<span class="sd">                              in arbitrary dimensions (`interpn` wraps this</span>
-<span class="sd">                              class).</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    Uses ``scipy.spatial.cKDTree``</span>
-
-<span class="sd">    .. note:: For data on a regular grid use `interpn` instead.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    We can interpolate values on a 2D plane:</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.interpolate import NearestNDInterpolator</span>
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; import matplotlib.pyplot as plt</span>
 <span class="sd">    &gt;&gt;&gt; rng = np.random.default_rng()</span>
 <span class="sd">    &gt;&gt;&gt; x = rng.random(10) - 0.5</span>
@@ -200,6 +185,15 @@
 <span class="sd">    &gt;&gt;&gt; plt.axis(&quot;equal&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; plt.show()</span>
 
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    griddata :</span>
+<span class="sd">        Interpolate unstructured D-D data.</span>
+<span class="sd">    LinearNDInterpolator :</span>
+<span class="sd">        Piecewise linear interpolant in N dimensions.</span>
+<span class="sd">    CloughTocher2DInterpolator :</span>
+<span class="sd">        Piecewise cubic, C1 smooth, curvature-minimizing interpolant in 2D.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rescale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tree_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -211,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">cKDTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">,</span> <span class="o">**</span><span class="n">tree_options</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">query_options</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluate interpolator at given points.</span>
 
@@ -221,68 +215,18 @@
 <span class="sd">            Points where to interpolate data at.</span>
 <span class="sd">            x1, x2, ... xn can be array-like of float with broadcastable shape.</span>
 <span class="sd">            or x1 can be array-like of float with shape ``(..., ndim)``</span>
-<span class="sd">        **query_options</span>
-<span class="sd">            This allows ``eps``, ``p``, ``distance_upper_bound``, and ``workers``</span>
-<span class="sd">            being passed to the cKDTree&#39;s query function to be explicitly set.</span>
-<span class="sd">            See `scipy.spatial.cKDTree.query` for an overview of the different options.</span>
-
-<span class="sd">            .. versionadded:: 1.12.0</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># For the sake of enabling subclassing, NDInterpolatorBase._set_xi performs</span>
-        <span class="c1"># some operations which are not required by NearestNDInterpolator.__call__, </span>
-        <span class="c1"># hence here we operate on xi directly, without calling a parent class function.</span>
         <span class="n">xi</span> <span class="o">=</span> <span class="n">_ndim_coords_from_arrays</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ndim</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">xi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_call_shape</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
         <span class="n">xi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_x</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
-
-        <span class="c1"># We need to handle two important cases:</span>
-        <span class="c1"># (1) the case where xi has trailing dimensions (..., ndim), and</span>
-        <span class="c1"># (2) the case where y has trailing dimensions</span>
-        <span class="c1"># We will first flatten xi to deal with case (1),</span>
-        <span class="c1"># do the computation in flattened array while retaining y&#39;s dimensionality,</span>
-        <span class="c1"># and then reshape the interpolated values back to match xi&#39;s shape.</span>
-
-        <span class="c1"># Flatten xi for the query</span>
-        <span class="n">xi_flat</span> <span class="o">=</span> <span class="n">xi</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">xi</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">original_shape</span> <span class="o">=</span> <span class="n">xi</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">flattened_shape</span> <span class="o">=</span> <span class="n">xi_flat</span><span class="o">.</span><span class="n">shape</span>
-
-        <span class="c1"># if distance_upper_bound is set to not be infinite,</span>
-        <span class="c1"># then we need to consider the case where cKDtree</span>
-        <span class="c1"># does not find any points within distance_upper_bound to return.</span>
-        <span class="c1"># It marks those points as having infinte distance, which is what will be used</span>
-        <span class="c1"># below to mask the array and return only the points that were deemed</span>
-        <span class="c1"># to have a close enough neighbor to return something useful.</span>
-        <span class="n">dist</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">xi_flat</span><span class="p">,</span> <span class="o">**</span><span class="n">query_options</span><span class="p">)</span>
-        <span class="n">valid_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
-
-        <span class="c1"># create a holder interp_values array and fill with nans.</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">interp_shape</span> <span class="o">=</span> <span class="n">flattened_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">interp_shape</span> <span class="o">=</span> <span class="n">flattened_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complexfloating</span><span class="p">):</span>
-            <span class="n">interp_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">interp_shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">interp_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">interp_shape</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-
-        <span class="n">interp_values</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="n">valid_mask</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">new_shape</span> <span class="o">=</span> <span class="n">original_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">new_shape</span> <span class="o">=</span> <span class="n">original_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">interp_values</span> <span class="o">=</span> <span class="n">interp_values</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">new_shape</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">interp_values</span>
+        <span class="n">dist</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 
 <span class="c1">#------------------------------------------------------------------------------</span>
 <span class="c1"># Convenience interface function</span>
 <span class="c1">#------------------------------------------------------------------------------</span>
-
 
 <div class="viewcode-block" id="griddata">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.hifv.tasks.flagging.displaycheckflag.griddata.html#pipeline.hifv.tasks.flagging.displaycheckflag.griddata">[docs]</a>
@@ -338,32 +282,16 @@
 <span class="sd">    ndarray</span>
 <span class="sd">        Array of interpolated values.</span>
 
-<span class="sd">    See Also</span>
-<span class="sd">    --------</span>
-<span class="sd">    LinearNDInterpolator :</span>
-<span class="sd">        Piecewise linear interpolator in N dimensions.</span>
-<span class="sd">    NearestNDInterpolator :</span>
-<span class="sd">        Nearest-neighbor interpolator in N dimensions.</span>
-<span class="sd">    CloughTocher2DInterpolator :</span>
-<span class="sd">        Piecewise cubic, C1 smooth, curvature-minimizing interpolator in 2D.</span>
-<span class="sd">    interpn : Interpolation on a regular grid or rectilinear grid.</span>
-<span class="sd">    RegularGridInterpolator : Interpolator on a regular or rectilinear grid</span>
-<span class="sd">                              in arbitrary dimensions (`interpn` wraps this</span>
-<span class="sd">                              class).</span>
-
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 
 <span class="sd">    .. versionadded:: 0.9</span>
-
-<span class="sd">    .. note:: For data on a regular grid use `interpn` instead.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 
 <span class="sd">    Suppose we want to interpolate the 2-D function</span>
 
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; def func(x, y):</span>
 <span class="sd">    ...     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2</span>
 
@@ -406,7 +334,16 @@
 <span class="sd">    &gt;&gt;&gt; plt.gcf().set_size_inches(6, 6)</span>
 <span class="sd">    &gt;&gt;&gt; plt.show()</span>
 
-<span class="sd">    &quot;&quot;&quot;</span> <span class="c1"># numpy/numpydoc#87  # noqa: E501</span>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    LinearNDInterpolator :</span>
+<span class="sd">        Piecewise linear interpolant in N dimensions.</span>
+<span class="sd">    NearestNDInterpolator :</span>
+<span class="sd">        Nearest-neighbor interpolation in N dimensions.</span>
+<span class="sd">    CloughTocher2DInterpolator :</span>
+<span class="sd">        Piecewise cubic, C1 smooth, curvature-minimizing interpolant in 2D.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">points</span> <span class="o">=</span> <span class="n">_ndim_coords_from_arrays</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
@@ -455,7 +392,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

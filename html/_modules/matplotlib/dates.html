@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>matplotlib.dates &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -119,7 +119,7 @@
 <span class="sd">`~matplotlib.units` to convert `datetime.datetime`, and `numpy.datetime64`</span>
 <span class="sd">objects when plotted on an x- or y-axis. The user does not</span>
 <span class="sd">need to do anything for dates to be formatted, but dates often have strict</span>
-<span class="sd">formatting needs, so this module provides many tick locators and formatters.</span>
+<span class="sd">formatting needs, so this module provides many axis locators and formatters.</span>
 <span class="sd">A basic example using `numpy.datetime64` is::</span>
 
 <span class="sd">    import numpy as np</span>
@@ -195,12 +195,12 @@
 <span class="sd">     In [1]: date(2006, 4, 1).toordinal() - date(1, 1, 1).toordinal()</span>
 <span class="sd">     Out[1]: 732401</span>
 
-<span class="sd">All the Matplotlib date converters, locators and formatters are timezone aware.</span>
+<span class="sd">All the Matplotlib date converters, tickers and formatters are timezone aware.</span>
 <span class="sd">If no explicit timezone is provided, :rc:`timezone` is assumed, provided as a</span>
 <span class="sd">string.  If you want to use a different timezone, pass the *tz* keyword</span>
-<span class="sd">argument of `num2date` to any date tick locators or formatters you create. This</span>
-<span class="sd">can be either a `datetime.tzinfo` instance or a string with the timezone name</span>
-<span class="sd">that can be parsed by `~dateutil.tz.gettz`.</span>
+<span class="sd">argument of `num2date` to any date tickers or locators you create.  This can</span>
+<span class="sd">be either a `datetime.tzinfo` instance or a string with the timezone name that</span>
+<span class="sd">can be parsed by `~dateutil.tz.gettz`.</span>
 
 <span class="sd">A wide range of specific and general purpose date tick locators and</span>
 <span class="sd">formatters are provided in this module.  See</span>
@@ -212,25 +212,23 @@
 
 <span class="sd">.. _dateutil: https://dateutil.readthedocs.io</span>
 
-<span class="sd">.. _date-locators:</span>
+<span class="sd">Date tickers</span>
+<span class="sd">------------</span>
 
-<span class="sd">Date tick locators</span>
-<span class="sd">------------------</span>
-
-<span class="sd">Most of the date tick locators can locate single or multiple ticks. For example::</span>
+<span class="sd">Most of the date tickers can locate single or multiple values.  For example::</span>
 
 <span class="sd">    # import constants for the days of the week</span>
 <span class="sd">    from matplotlib.dates import MO, TU, WE, TH, FR, SA, SU</span>
 
-<span class="sd">    # tick on Mondays every week</span>
+<span class="sd">    # tick on mondays every week</span>
 <span class="sd">    loc = WeekdayLocator(byweekday=MO, tz=tz)</span>
 
-<span class="sd">    # tick on Mondays and Saturdays</span>
+<span class="sd">    # tick on mondays and saturdays</span>
 <span class="sd">    loc = WeekdayLocator(byweekday=(MO, SA))</span>
 
 <span class="sd">In addition, most of the constructors take an interval argument::</span>
 
-<span class="sd">    # tick on Mondays every second week</span>
+<span class="sd">    # tick on mondays every second week</span>
 <span class="sd">    loc = WeekdayLocator(byweekday=MO, interval=2)</span>
 
 <span class="sd">The rrule locator allows completely general date ticking::</span>
@@ -239,7 +237,7 @@
 <span class="sd">    rule = rrulewrapper(YEARLY, byeaster=1, interval=5)</span>
 <span class="sd">    loc = RRuleLocator(rule)</span>
 
-<span class="sd">The available date tick locators are:</span>
+<span class="sd">The available date tickers are:</span>
 
 <span class="sd">* `MicrosecondLocator`: Locate microseconds.</span>
 
@@ -265,11 +263,9 @@
 <span class="sd">* `AutoDateLocator`: On autoscale, this class picks the best `DateLocator`</span>
 <span class="sd">  (e.g., `RRuleLocator`) to set the view limits and the tick locations.  If</span>
 <span class="sd">  called with ``interval_multiples=True`` it will make ticks line up with</span>
-<span class="sd">  sensible multiples of the tick intervals.  For example, if the interval is</span>
-<span class="sd">  4 hours, it will pick hours 0, 4, 8, etc. as ticks.  This behaviour is not</span>
-<span class="sd">  guaranteed by default.</span>
-
-<span class="sd">.. _date-formatters:</span>
+<span class="sd">  sensible multiples of the tick intervals.  E.g. if the interval is 4 hours,</span>
+<span class="sd">  it will pick hours 0, 4, 8, etc as ticks.  This behaviour is not guaranteed</span>
+<span class="sd">  by default.</span>
 
 <span class="sd">Date formatters</span>
 <span class="sd">---------------</span>
@@ -289,6 +285,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">from</span> <span class="nn">dateutil.rrule</span> <span class="kn">import</span> <span class="p">(</span><span class="n">rrule</span><span class="p">,</span> <span class="n">MO</span><span class="p">,</span> <span class="n">TU</span><span class="p">,</span> <span class="n">WE</span><span class="p">,</span> <span class="n">TH</span><span class="p">,</span> <span class="n">FR</span><span class="p">,</span> <span class="n">SA</span><span class="p">,</span> <span class="n">SU</span><span class="p">,</span> <span class="n">YEARLY</span><span class="p">,</span>
@@ -303,9 +300,10 @@
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">_api</span><span class="p">,</span> <span class="n">cbook</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">units</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;datestr2num&#39;</span><span class="p">,</span> <span class="s1">&#39;date2num&#39;</span><span class="p">,</span> <span class="s1">&#39;num2date&#39;</span><span class="p">,</span> <span class="s1">&#39;num2timedelta&#39;</span><span class="p">,</span> <span class="s1">&#39;drange&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;set_epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;get_epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;DateFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;ConciseDateFormatter&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;AutoDateFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;DateLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;RRuleLocator&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;AutoDateLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;YearLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;MonthLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;WeekdayLocator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;epoch2num&#39;</span><span class="p">,</span> <span class="s1">&#39;num2epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;set_epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;get_epoch&#39;</span><span class="p">,</span> <span class="s1">&#39;DateFormatter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ConciseDateFormatter&#39;</span><span class="p">,</span> <span class="s1">&#39;AutoDateFormatter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DateLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;RRuleLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;AutoDateLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;YearLocator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MonthLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;WeekdayLocator&#39;</span><span class="p">,</span>
            <span class="s1">&#39;DayLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;HourLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;MinuteLocator&#39;</span><span class="p">,</span>
            <span class="s1">&#39;SecondLocator&#39;</span><span class="p">,</span> <span class="s1">&#39;MicrosecondLocator&#39;</span><span class="p">,</span>
            <span class="s1">&#39;rrule&#39;</span><span class="p">,</span> <span class="s1">&#39;MO&#39;</span><span class="p">,</span> <span class="s1">&#39;TU&#39;</span><span class="p">,</span> <span class="s1">&#39;WE&#39;</span><span class="p">,</span> <span class="s1">&#39;TH&#39;</span><span class="p">,</span> <span class="s1">&#39;FR&#39;</span><span class="p">,</span> <span class="s1">&#39;SA&#39;</span><span class="p">,</span> <span class="s1">&#39;SU&#39;</span><span class="p">,</span>
@@ -320,12 +318,13 @@
 
 <span class="k">def</span> <span class="nf">_get_tzinfo</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generate `~datetime.tzinfo` from a string or return `~datetime.tzinfo`.</span>
-<span class="sd">    If None, retrieve the preferred timezone from the rcParams dictionary.</span>
+<span class="sd">    Generate tzinfo from a string or return tzinfo. If None,</span>
+<span class="sd">    retrieve the preferred timezone from the rcParams dictionary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">tz</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">tz</span><span class="p">,</span> <span class="s1">&#39;timezone&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">tz</span> <span class="o">==</span> <span class="s1">&#39;UTC&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">UTC</span>
+    <span class="k">if</span> <span class="n">tz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tz</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;timezone&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">tz</span> <span class="o">==</span> <span class="s1">&#39;UTC&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UTC</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tz</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">tzinfo</span> <span class="o">=</span> <span class="n">dateutil</span><span class="o">.</span><span class="n">tz</span><span class="o">.</span><span class="n">gettz</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -334,12 +333,18 @@
         <span class="k">return</span> <span class="n">tzinfo</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tz</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">tzinfo</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">tz</span>
-    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;tz must be string or tzinfo subclass, not </span><span class="si">{</span><span class="n">tz</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;tz must be string or tzinfo subclass.&quot;</span><span class="p">)</span>
 
 
 <span class="c1"># Time-related constants.</span>
 <span class="n">EPOCH_OFFSET</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">toordinal</span><span class="p">())</span>
 <span class="c1"># EPOCH_OFFSET is not used by matplotlib</span>
+<span class="n">JULIAN_OFFSET</span> <span class="o">=</span> <span class="mf">1721424.5</span>  <span class="c1"># Julian date at 0000-12-31</span>
+<span class="c1"># note that the Julian day epoch is achievable w/</span>
+<span class="c1"># np.datetime64(&#39;-4713-11-24T12:00:00&#39;); datetime64 is proleptic</span>
+<span class="c1"># Gregorian and BC has a one-year offset.  So</span>
+<span class="c1"># np.datetime64(&#39;0000-12-31&#39;) - np.datetime64(&#39;-4713-11-24T12:00&#39;) = 1721424.5</span>
+<span class="c1"># Ref: https://en.wikipedia.org/wiki/Julian_day</span>
 <span class="n">MICROSECONDLY</span> <span class="o">=</span> <span class="n">SECONDLY</span> <span class="o">+</span> <span class="mi">1</span>
 <span class="n">HOURS_PER_DAY</span> <span class="o">=</span> <span class="mf">24.</span>
 <span class="n">MIN_PER_HOUR</span> <span class="o">=</span> <span class="mf">60.</span>
@@ -416,16 +421,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_epoch</span>
 
-    <span class="n">_epoch</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">_epoch</span><span class="p">,</span> <span class="s1">&#39;date.epoch&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_epoch</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;date.epoch&#39;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">_epoch</span>
 
 
 <span class="k">def</span> <span class="nf">_dt64_to_ordinalf</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert `numpy.datetime64` or an `numpy.ndarray` of those types to</span>
-<span class="sd">    Gregorian date as UTC float relative to the epoch (see `.get_epoch`).</span>
-<span class="sd">    Roundoff is float64 precision.  Practically: microseconds for dates</span>
-<span class="sd">    between 290301 BC, 294241 AD, milliseconds for larger dates</span>
+<span class="sd">    Convert `numpy.datetime64` or an ndarray of those types to Gregorian</span>
+<span class="sd">    date as UTC float relative to the epoch (see `.get_epoch`).  Roundoff</span>
+<span class="sd">    is float64 precision.  Practically: microseconds for dates between</span>
+<span class="sd">    290301 BC, 294241 AD, milliseconds for larger dates</span>
 <span class="sd">    (see `numpy.datetime64`).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -485,6 +491,8 @@
 
 <span class="c1"># a version of _from_ordinalf that can operate on numpy arrays</span>
 <span class="n">_from_ordinalf_np_vectorized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">_from_ordinalf</span><span class="p">,</span> <span class="n">otypes</span><span class="o">=</span><span class="s2">&quot;O&quot;</span><span class="p">)</span>
+
+
 <span class="c1"># a version of dateutil.parser.parse that can operate on numpy arrays</span>
 <span class="n">_dateutil_parser_parse_np_vectorized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">dateutil</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">)</span>
 
@@ -546,10 +554,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">iterable</span><span class="p">:</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">]</span>
 
-    <span class="n">masked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">is_masked</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmask</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-
     <span class="c1"># convert to datetime64 arrays, if not already:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">):</span>
         <span class="c1"># datetime arrays</span>
@@ -563,11 +568,55 @@
             <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;datetime64[us]&#39;</span><span class="p">)</span>
 
-    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_array</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span> <span class="k">if</span> <span class="n">masked</span> <span class="k">else</span> <span class="n">d</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">_dt64_to_ordinalf</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">d</span> <span class="k">if</span> <span class="n">iterable</span> <span class="k">else</span> <span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
+
+
+<span class="k">def</span> <span class="nf">julian2num</span><span class="p">(</span><span class="n">j</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a Julian date (or sequence) to a Matplotlib date (or sequence).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    j : float or sequence of floats</span>
+<span class="sd">        Julian dates (days relative to 4713 BC Jan 1, 12:00:00 Julian</span>
+<span class="sd">        calendar or 4714 BC Nov 24, 12:00:00, proleptic Gregorian calendar).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or sequence of floats</span>
+<span class="sd">        Matplotlib dates (days relative to `.get_epoch`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">get_epoch</span><span class="p">(),</span> <span class="s1">&#39;h&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.</span>
+    <span class="n">ep0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;0000-12-31T00:00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.</span>
+    <span class="c1"># Julian offset defined above is relative to 0000-12-31, but we need</span>
+    <span class="c1"># relative to our current epoch:</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">JULIAN_OFFSET</span> <span class="o">-</span> <span class="n">ep0</span> <span class="o">+</span> <span class="n">ep</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>  <span class="c1"># Handles both scalar &amp; nonscalar j.</span>
+
+
+<span class="k">def</span> <span class="nf">num2julian</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a Matplotlib date (or sequence) to a Julian date (or sequence).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n : float or sequence of floats</span>
+<span class="sd">        Matplotlib dates (days relative to `.get_epoch`).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float or sequence of floats</span>
+<span class="sd">        Julian dates (days relative to 4713 BC Jan 1, 12:00:00).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">get_epoch</span><span class="p">(),</span> <span class="s1">&#39;h&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.</span>
+    <span class="n">ep0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;0000-12-31T00:00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="mf">24.</span>
+    <span class="c1"># Julian offset defined above is relative to 0000-12-31, but we need</span>
+    <span class="c1"># relative to our current epoch:</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">JULIAN_OFFSET</span> <span class="o">-</span> <span class="n">ep0</span> <span class="o">+</span> <span class="n">ep</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>  <span class="c1"># Handles both scalar &amp; nonscalar j.</span>
 
 
 <span class="k">def</span> <span class="nf">num2date</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -677,7 +726,7 @@
     <span class="k">return</span> <span class="n">ret_text</span>
 
 
-<span class="c1">## date tick locators and formatters ###</span>
+<span class="c1">## date tickers and formatters ###</span>
 
 
 <div class="viewcode-block" id="DateFormatter">
@@ -702,7 +751,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tz</span> <span class="o">=</span> <span class="n">_get_tzinfo</span><span class="p">(</span><span class="n">tz</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span> <span class="o">=</span> <span class="n">fmt</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">usetex</span><span class="p">,</span> <span class="s1">&#39;text.usetex&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="DateFormatter.__call__">
 <a class="viewcode-back" href="../../_autosummary/pipeline.hsd.tasks.common.display.DateFormatter.html#pipeline.hsd.tasks.common.display.DateFormatter.__call__">[docs]</a>
@@ -843,7 +893,8 @@
                                    <span class="s1">&#39;%Y-%b-</span><span class="si">%d</span><span class="s1"> %H:%M&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show_offset</span> <span class="o">=</span> <span class="n">show_offset</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">usetex</span><span class="p">,</span> <span class="s1">&#39;text.usetex&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">formatter</span> <span class="o">=</span> <span class="n">DateFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tz</span><span class="p">,</span>
@@ -1020,7 +1071,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span> <span class="o">=</span> <span class="n">defaultfmt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">DateFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaultfmt</span><span class="p">,</span> <span class="n">tz</span><span class="p">)</span>
         <span class="n">rcParams</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">_val_or_rc</span><span class="p">(</span><span class="n">usetex</span><span class="p">,</span> <span class="s1">&#39;text.usetex&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_usetex</span> <span class="o">=</span> <span class="p">(</span><span class="n">usetex</span> <span class="k">if</span> <span class="n">usetex</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span>
+                        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;text.usetex&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scaled</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">DAYS_PER_YEAR</span><span class="p">:</span> <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;date.autoformatter.year&#39;</span><span class="p">],</span>
             <span class="n">DAYS_PER_MONTH</span><span class="p">:</span> <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;date.autoformatter.month&#39;</span><span class="p">],</span>
@@ -1050,7 +1102,7 @@
         <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{</span><span class="bp">self</span><span class="si">!r}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Unexpected type passed to </span><span class="si">{0!r}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">result</span>
 
@@ -1493,7 +1545,7 @@
 
         <span class="c1"># Loop over all the frequencies and try to find one that gives at</span>
         <span class="c1"># least a minticks tick positions.  Once this is found, look for</span>
-        <span class="c1"># an interval from a list specific to that frequency that gives no</span>
+        <span class="c1"># an interval from an list specific to that frequency that gives no</span>
         <span class="c1"># more than maxticks tick positions. Also, set up some ranges</span>
         <span class="c1"># (bymonth, etc.) as appropriate to be passed to rrulewrapper.</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_freqs</span><span class="p">,</span> <span class="n">nums</span><span class="p">)):</span>
@@ -1729,7 +1781,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        byminute : int or list of int, default: all minutes</span>
-<span class="sd">            Ticks will be placed on every minute in *byminute*. Default is</span>
+<span class="sd">            Ticks will be placed on every minutes in *byminutes*. Default is</span>
 <span class="sd">            ``byminute=range(60)``, i.e., every minute.</span>
 <span class="sd">        interval : int, default: 1</span>
 <span class="sd">            The interval between each iteration. For example, if</span>
@@ -1810,6 +1862,16 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_locator</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
 
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;`.Axis.set_view_interval`&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_view_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_locator</span><span class="o">.</span><span class="n">set_view_interval</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_view_interval</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;`.Axis.set_data_interval`&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">set_data_interval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wrapped_locator</span><span class="o">.</span><span class="n">set_data_interval</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_data_interval</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># if no data have been set, this will tank with a ValueError</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1841,12 +1903,102 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span>
 
 
+<span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span>
+    <span class="s2">&quot;3.5&quot;</span><span class="p">,</span>
+    <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;``[date2num(datetime.utcfromtimestamp(t)) for t in e]`` or &quot;</span>
+                <span class="s2">&quot;numpy.datetime64 types&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">epoch2num</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert UNIX time to days since Matplotlib epoch.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e : list of floats</span>
+<span class="sd">        Time in seconds since 1970-01-01.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `numpy.array`</span>
+<span class="sd">        Time in days since Matplotlib epoch (see `~.dates.get_epoch()`).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;1970-01-01T00:00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-</span>
+          <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">get_epoch</span><span class="p">(),</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">dt</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="o">/</span> <span class="n">SEC_PER_DAY</span>
+
+
+<span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.5&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;`num2date(e).timestamp()&lt;.num2date&gt;`&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">num2epoch</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert days since Matplotlib epoch to UNIX time.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    d : list of floats</span>
+<span class="sd">        Time in days since Matplotlib epoch (see `~.dates.get_epoch()`).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    `numpy.array`</span>
+<span class="sd">        Time in seconds since 1970-01-01.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="s1">&#39;1970-01-01T00:00:00&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="o">-</span>
+          <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">get_epoch</span><span class="p">(),</span> <span class="s1">&#39;s&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="n">SEC_PER_DAY</span> <span class="o">-</span> <span class="n">dt</span>
+
+
+<span class="nd">@_api</span><span class="o">.</span><span class="n">deprecated</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">alternative</span><span class="o">=</span><span class="s2">&quot;`AutoDateLocator` and `AutoDateFormatter`&quot;</span>
+                 <span class="s2">&quot; or vendor the code&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">date_ticker_factory</span><span class="p">(</span><span class="n">span</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numticks</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a date locator with *numticks* (approx) and a date formatter</span>
+<span class="sd">    for *span* in days.  Return value is (locator, formatter).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">span</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">span</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">HOURS_PER_DAY</span>
+
+    <span class="n">mins</span> <span class="o">=</span> <span class="n">span</span> <span class="o">*</span> <span class="n">MINUTES_PER_DAY</span>
+    <span class="n">hrs</span> <span class="o">=</span> <span class="n">span</span> <span class="o">*</span> <span class="n">HOURS_PER_DAY</span>
+    <span class="n">days</span> <span class="o">=</span> <span class="n">span</span>
+    <span class="n">wks</span> <span class="o">=</span> <span class="n">span</span> <span class="o">/</span> <span class="n">DAYS_PER_WEEK</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="n">span</span> <span class="o">/</span> <span class="n">DAYS_PER_MONTH</span>      <span class="c1"># Approx</span>
+    <span class="n">years</span> <span class="o">=</span> <span class="n">span</span> <span class="o">/</span> <span class="n">DAYS_PER_YEAR</span>        <span class="c1"># Approx</span>
+
+    <span class="k">if</span> <span class="n">years</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">YearLocator</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">years</span> <span class="o">/</span> <span class="n">numticks</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>  <span class="c1"># define</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%Y&#39;</span>
+    <span class="k">elif</span> <span class="n">months</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">MonthLocator</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%b %Y&#39;</span>
+    <span class="k">elif</span> <span class="n">wks</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">WeekdayLocator</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%a</span><span class="s1">, %b </span><span class="si">%d</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">days</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">DayLocator</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">days</span> <span class="o">/</span> <span class="n">numticks</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%b </span><span class="si">%d</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">hrs</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">HourLocator</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">hrs</span> <span class="o">/</span> <span class="n">numticks</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%H:%M</span><span class="se">\n</span><span class="s1">%b </span><span class="si">%d</span><span class="s1">&#39;</span>
+    <span class="k">elif</span> <span class="n">mins</span> <span class="o">&gt;</span> <span class="n">numticks</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">MinuteLocator</span><span class="p">(</span><span class="n">interval</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">mins</span> <span class="o">/</span> <span class="n">numticks</span><span class="p">),</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%H:%M:%S&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">MinuteLocator</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s1">&#39;%H:%M:%S&#39;</span>
+
+    <span class="n">formatter</span> <span class="o">=</span> <span class="n">DateFormatter</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">tz</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">locator</span><span class="p">,</span> <span class="n">formatter</span>
+
+
 <span class="k">class</span> <span class="nc">DateConverter</span><span class="p">(</span><span class="n">units</span><span class="o">.</span><span class="n">ConversionInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converter for `datetime.date` and `datetime.datetime` data, or for</span>
 <span class="sd">    date/time data represented as it would be converted by `date2num`.</span>
 
-<span class="sd">    The &#39;unit&#39; tag for such data is None or a `~datetime.tzinfo` instance.</span>
+<span class="sd">    The &#39;unit&#39; tag for such data is None or a tzinfo instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">interval_multiples</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -1857,7 +2009,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the `~matplotlib.units.AxisInfo` for *unit*.</span>
 
-<span class="sd">        *unit* is a `~datetime.tzinfo` instance or None.</span>
+<span class="sd">        *unit* is a tzinfo instance or None.</span>
 <span class="sd">        The *axis* argument is required but not used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tz</span> <span class="o">=</span> <span class="n">unit</span>
@@ -1884,8 +2036,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">default_units</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the `~datetime.tzinfo` instance of *x* or of its first element,</span>
-<span class="sd">        or None</span>
+<span class="sd">        Return the tzinfo instance of *x* or of its first element, or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
@@ -1967,7 +2118,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

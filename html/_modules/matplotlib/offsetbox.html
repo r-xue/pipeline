@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>matplotlib.offsetbox &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -135,8 +135,6 @@
 <span class="sd">    Contains a single `.Text` instance.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">functools</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
@@ -155,37 +153,21 @@
 <span class="n">DEBUG</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="k">def</span> <span class="nf">_compat_get_offset</span><span class="p">(</span><span class="n">meth</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Decorator for the get_offset method of OffsetBox and subclasses, that</span>
-<span class="sd">    allows supporting both the new signature (self, bbox, renderer) and the old</span>
-<span class="sd">    signature (self, width, height, xdescent, ydescent, renderer).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">sigs</span> <span class="o">=</span> <span class="p">[</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">:</span> <span class="nb">locals</span><span class="p">(),</span>
-            <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">:</span> <span class="nb">locals</span><span class="p">()]</span>
-
-    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">meth</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="n">_api</span><span class="o">.</span><span class="n">select_matching_signature</span><span class="p">(</span><span class="n">sigs</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;bbox&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;bbox&quot;</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">else</span>
-                <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="o">-</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;xdescent&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;ydescent&quot;</span><span class="p">],</span>
-                                 <span class="n">params</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">meth</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">],</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;renderer&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">get_offset</span>
-
-
 <span class="c1"># for debugging use</span>
-<span class="k">def</span> <span class="nf">_bbox_artist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">bbox_artist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">DEBUG</span><span class="p">:</span>
         <span class="n">mbbox_artist</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_get_packed_offsets</span><span class="p">(</span><span class="n">widths</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;fixed&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_packed_offsets</span><span class="p">(</span><span class="n">wd_list</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;fixed&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Pack boxes specified by their *widths*.</span>
+<span class="sd">    Pack boxes specified by their ``(width, xdescent)`` pair.</span>
 
 <span class="sd">    For simplicity of the description, the terminology used here assumes a</span>
 <span class="sd">    horizontal layout, but the function works equally for a vertical layout.</span>
+
+<span class="sd">    *xdescent* is analogous to the usual descent, but along the x-direction; it</span>
+<span class="sd">    is currently ignored.</span>
 
 <span class="sd">    There are three packing *mode*\s:</span>
 
@@ -210,11 +192,11 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    widths : list of float</span>
-<span class="sd">        Widths of boxes to be packed.</span>
+<span class="sd">    wd_list : list of (float, float)</span>
+<span class="sd">        (width, xdescent) of boxes to be packed.</span>
 <span class="sd">    total : float or None</span>
 <span class="sd">        Intended total length. *None* if not used.</span>
-<span class="sd">    sep : float or None</span>
+<span class="sd">    sep : float</span>
 <span class="sd">        Spacing between boxes.</span>
 <span class="sd">    mode : {&#39;fixed&#39;, &#39;expand&#39;, &#39;equal&#39;}</span>
 <span class="sd">        The packing mode.</span>
@@ -226,10 +208,11 @@
 <span class="sd">    offsets : array of float</span>
 <span class="sd">        The left offsets of the boxes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">w_list</span><span class="p">,</span> <span class="n">d_list</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">wd_list</span><span class="p">)</span>  <span class="c1"># d_list is currently not used.</span>
     <span class="n">_api</span><span class="o">.</span><span class="n">check_in_list</span><span class="p">([</span><span class="s2">&quot;fixed&quot;</span><span class="p">,</span> <span class="s2">&quot;expand&quot;</span><span class="p">,</span> <span class="s2">&quot;equal&quot;</span><span class="p">],</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;fixed&quot;</span><span class="p">:</span>
-        <span class="n">offsets_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">w</span> <span class="o">+</span> <span class="n">sep</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">])</span>
+        <span class="n">offsets_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">w</span> <span class="o">+</span> <span class="n">sep</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_list</span><span class="p">])</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="n">offsets_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">total</span> <span class="o">=</span> <span class="n">offsets_</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">sep</span>
@@ -240,30 +223,30 @@
         <span class="c1"># is None and used in conjugation with tight layout.</span>
         <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">total</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">sep</span> <span class="o">=</span> <span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">widths</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">sep</span> <span class="o">=</span> <span class="p">(</span><span class="n">total</span> <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">w_list</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sep</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">offsets_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">w</span> <span class="o">+</span> <span class="n">sep</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">widths</span><span class="p">])</span>
+        <span class="n">offsets_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">w</span> <span class="o">+</span> <span class="n">sep</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">w_list</span><span class="p">])</span>
         <span class="n">offsets</span> <span class="o">=</span> <span class="n">offsets_</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">total</span><span class="p">,</span> <span class="n">offsets</span>
 
     <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;equal&quot;</span><span class="p">:</span>
-        <span class="n">maxh</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span>
+        <span class="n">maxh</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">w_list</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sep</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;total and sep cannot both be None when &quot;</span>
                                  <span class="s2">&quot;using layout mode &#39;equal&#39;&quot;</span><span class="p">)</span>
-            <span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxh</span> <span class="o">+</span> <span class="n">sep</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxh</span> <span class="o">+</span> <span class="n">sep</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">sep</span> <span class="o">=</span> <span class="n">total</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">)</span> <span class="o">-</span> <span class="n">maxh</span>
-        <span class="n">offsets</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxh</span> <span class="o">+</span> <span class="n">sep</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">widths</span><span class="p">))</span>
+            <span class="n">sep</span> <span class="o">=</span> <span class="n">total</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">)</span> <span class="o">-</span> <span class="n">maxh</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">(</span><span class="n">maxh</span> <span class="o">+</span> <span class="n">sep</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">w_list</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">total</span><span class="p">,</span> <span class="n">offsets</span>
 
 
-<span class="k">def</span> <span class="nf">_get_aligned_offsets</span><span class="p">(</span><span class="n">yspans</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;baseline&quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_get_aligned_offsets</span><span class="p">(</span><span class="n">hd_list</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;baseline&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Align boxes each specified by their ``(y0, y1)`` spans.</span>
+<span class="sd">    Align boxes each specified by their ``(height, descent)`` pair.</span>
 
 <span class="sd">    For simplicity of the description, the terminology used here assumes a</span>
 <span class="sd">    horizontal layout (i.e., vertical alignment), but the function works</span>
@@ -271,45 +254,46 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    yspans</span>
-<span class="sd">        List of (y0, y1) spans of boxes to be aligned.</span>
+<span class="sd">    hd_list</span>
+<span class="sd">        List of (height, xdescent) of boxes to be aligned.</span>
 <span class="sd">    height : float or None</span>
-<span class="sd">        Intended total height. If None, the maximum of the heights</span>
-<span class="sd">        (``y1 - y0``) in *yspans* is used.</span>
+<span class="sd">        Intended total height. If None, the maximum of the heights in *hd_list*</span>
+<span class="sd">        is used.</span>
 <span class="sd">    align : {&#39;baseline&#39;, &#39;left&#39;, &#39;top&#39;, &#39;right&#39;, &#39;bottom&#39;, &#39;center&#39;}</span>
 <span class="sd">        The alignment anchor of the boxes.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    (y0, y1)</span>
-<span class="sd">        y range spanned by the packing.  If a *height* was originally passed</span>
-<span class="sd">        in, then for all alignments other than &quot;baseline&quot;, a span of ``(0,</span>
-<span class="sd">        height)`` is used without checking that it is actually large enough).</span>
+<span class="sd">    height</span>
+<span class="sd">        The total height of the packing (if a value was originally passed in,</span>
+<span class="sd">        it is returned without checking that it is actually large enough).</span>
 <span class="sd">    descent</span>
 <span class="sd">        The descent of the packing.</span>
 <span class="sd">    offsets</span>
 <span class="sd">        The bottom offsets of the boxes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">)</span>
     <span class="n">_api</span><span class="o">.</span><span class="n">check_in_list</span><span class="p">(</span>
         <span class="p">[</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="n">align</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">align</span> <span class="o">==</span> <span class="s2">&quot;baseline&quot;</span><span class="p">:</span>
-        <span class="n">yspan</span> <span class="o">=</span> <span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">y0</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y1</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">))</span>
-        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">yspans</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">align</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">]:</span>
-        <span class="n">yspan</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
-        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">y0</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">]</span>
-    <span class="k">elif</span> <span class="n">align</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">]:</span>
-        <span class="n">yspan</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
-        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">height</span> <span class="o">-</span> <span class="n">y1</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">]</span>
+        <span class="n">height_descent</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">d</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">)</span>
+        <span class="n">descent</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">d</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">)</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="n">height_descent</span> <span class="o">+</span> <span class="n">descent</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">align</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">]:</span>
+        <span class="n">descent</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">align</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="s2">&quot;bottom&quot;</span><span class="p">]:</span>
+        <span class="n">descent</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[</span><span class="n">height</span> <span class="o">-</span> <span class="n">h</span> <span class="o">+</span> <span class="n">d</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">align</span> <span class="o">==</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span>
-        <span class="n">yspan</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
-        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">))</span> <span class="o">*</span> <span class="mf">.5</span> <span class="o">-</span> <span class="n">y0</span> <span class="k">for</span> <span class="n">y0</span><span class="p">,</span> <span class="n">y1</span> <span class="ow">in</span> <span class="n">yspans</span><span class="p">]</span>
+        <span class="n">descent</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">offsets</span> <span class="o">=</span> <span class="p">[(</span><span class="n">height</span> <span class="o">-</span> <span class="n">h</span><span class="p">)</span> <span class="o">*</span> <span class="mf">.5</span> <span class="o">+</span> <span class="n">d</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">hd_list</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">yspan</span><span class="p">,</span> <span class="n">offsets</span>
+    <span class="k">return</span> <span class="n">height</span><span class="p">,</span> <span class="n">descent</span><span class="p">,</span> <span class="n">offsets</span>
 
 
 <span class="k">class</span> <span class="nc">OffsetBox</span><span class="p">(</span><span class="n">martist</span><span class="o">.</span><span class="n">Artist</span><span class="p">):</span>
@@ -360,7 +344,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        mouseevent : `~matplotlib.backend_bases.MouseEvent`</span>
+<span class="sd">        mouseevent : `matplotlib.backend_bases.MouseEvent`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -375,8 +359,9 @@
 <span class="sd">        --------</span>
 <span class="sd">        .Artist.contains</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_children</span><span class="p">():</span>
             <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
@@ -401,8 +386,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">xy</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="nd">@_compat_get_offset</span>
-    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the offset as a tuple (x, y).</span>
 
@@ -412,13 +396,14 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        bbox : `.Bbox`</span>
+<span class="sd">        width, height, xdescent, ydescent</span>
+<span class="sd">            Extent parameters.</span>
 <span class="sd">        renderer : `.RendererBase` subclass</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="o">-</span><span class="n">bbox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="o">-</span><span class="n">bbox</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span>
-            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">set_width</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -450,11 +435,9 @@
 <span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return a list of the child `.Artist`\s.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span>
 
-    <span class="k">def</span> <span class="nf">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_extent_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the bbox of the offsetbox and the child offsets.</span>
-
-<span class="sd">        The bbox should satisfy ``x0 &lt;= x1 and y0 &lt;= y1``.</span>
+<span class="sd">        Update offset of the children and return the extent of the box.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -462,52 +445,52 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        bbox</span>
+<span class="sd">        width</span>
+<span class="sd">        height</span>
+<span class="sd">        xdescent</span>
+<span class="sd">        ydescent</span>
 <span class="sd">        list of (xoffset, yoffset) pairs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;get_bbox_and_offsets must be overridden in derived classes&quot;</span><span class="p">)</span>
+            <span class="s2">&quot;get_extent_offsets must be overridden in derived classes.&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the bbox of the offsetbox, ignoring parent offsets.&quot;&quot;&quot;</span>
-        <span class="n">bbox</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bbox</span>
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a tuple ``width, height, xdescent, ydescent`` of the box.&quot;&quot;&quot;</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span>
 
     <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>  <span class="c1"># Some subclasses redefine get_offset to take no args.</span>
-            <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-            <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">bbox</span><span class="o">.</span><span class="n">translated</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">px</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">py</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Update the location of children if necessary and draw them</span>
 <span class="sd">        to the given *renderer*.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bbox</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">(),</span> <span class="n">offsets</span><span class="p">):</span>
             <span class="n">c</span><span class="o">.</span><span class="n">set_offset</span><span class="p">((</span><span class="n">px</span> <span class="o">+</span> <span class="n">ox</span><span class="p">,</span> <span class="n">py</span> <span class="o">+</span> <span class="n">oy</span><span class="p">))</span>
             <span class="n">c</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">_bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
+        <span class="n">bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="k">class</span> <span class="nc">PackerBase</span><span class="p">(</span><span class="n">OffsetBox</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">align</span><span class="o">=</span><span class="s2">&quot;baseline&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;fixed&quot;</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pad : float, default: 0.0</span>
+<span class="sd">        pad : float, optional</span>
 <span class="sd">            The boundary padding in points.</span>
 
-<span class="sd">        sep : float, default: 0.0</span>
+<span class="sd">        sep : float, optional</span>
 <span class="sd">            The spacing between items in points.</span>
 
 <span class="sd">        width, height : float, optional</span>
@@ -551,7 +534,7 @@
 <span class="sd">    relative positions at draw time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_extent_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="n">dpicor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span> <span class="o">*</span> <span class="n">dpicor</span>
@@ -562,19 +545,28 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">PackerBase</span><span class="p">)</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;expand&quot;</span><span class="p">:</span>
                     <span class="n">c</span><span class="o">.</span><span class="n">set_width</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
 
-        <span class="n">bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">()]</span>
-        <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">),</span> <span class="n">xoffsets</span> <span class="o">=</span> <span class="n">_get_aligned_offsets</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">intervalx</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">)</span>
-        <span class="n">height</span><span class="p">,</span> <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">_get_packed_offsets</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">height</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="n">whd_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">()]</span>
+        <span class="n">whd_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="n">yd</span><span class="p">))</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
 
-        <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="p">(</span><span class="n">yoffsets</span> <span class="o">+</span> <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">y1</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">])</span>
-        <span class="n">ydescent</span> <span class="o">=</span> <span class="n">yoffsets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">wd_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">w</span><span class="p">,</span> <span class="n">xd</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">xoffsets</span> <span class="o">=</span> <span class="n">_get_aligned_offsets</span><span class="p">(</span><span class="n">wd_list</span><span class="p">,</span>
+                                                         <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                                         <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">)</span>
+
+        <span class="n">pack_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">yd</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">yoffsets_</span> <span class="o">=</span> <span class="n">_get_packed_offsets</span><span class="p">(</span><span class="n">pack_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                                                <span class="n">sep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+        <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">yoffsets_</span> <span class="o">+</span> <span class="p">[</span><span class="n">yd</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+        <span class="n">ydescent</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="n">yoffsets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">height</span> <span class="o">-</span> <span class="n">yoffsets</span>
+
         <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">yoffsets</span> <span class="o">-</span> <span class="n">ydescent</span>
 
-        <span class="k">return</span> <span class="p">(</span>
-            <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="o">-</span><span class="n">ydescent</span><span class="p">,</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span><span class="o">.</span><span class="n">padded</span><span class="p">(</span><span class="n">pad</span><span class="p">),</span>
-            <span class="p">[</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">xoffsets</span><span class="p">,</span> <span class="n">yoffsets</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span>
+                <span class="n">xdescent</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="n">ydescent</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span>
+                <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xoffsets</span><span class="p">,</span> <span class="n">yoffsets</span><span class="p">)))</span>
 
 
 <div class="viewcode-block" id="HPacker">
@@ -585,26 +577,39 @@
 <span class="sd">    relative positions at draw time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+<div class="viewcode-block" id="HPacker.get_extent_offsets">
+<a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.HPacker.html#pipeline.h.tasks.common.displays.sky.HPacker.get_extent_offsets">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_extent_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="n">dpicor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span> <span class="o">*</span> <span class="n">dpicor</span>
         <span class="n">sep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sep</span> <span class="o">*</span> <span class="n">dpicor</span>
 
-        <span class="n">bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">()]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">bboxes</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">padded</span><span class="p">(</span><span class="n">pad</span><span class="p">),</span> <span class="p">[]</span>
+        <span class="n">whd_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">()]</span>
 
-        <span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">y1</span><span class="p">),</span> <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">_get_aligned_offsets</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">intervaly</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">)</span>
-        <span class="n">width</span><span class="p">,</span> <span class="n">xoffsets</span> <span class="o">=</span> <span class="n">_get_packed_offsets</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">whd_list</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="n">pad</span><span class="p">,</span> <span class="p">[]</span>
 
-        <span class="n">x0</span> <span class="o">=</span> <span class="n">bboxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x0</span>
-        <span class="n">xoffsets</span> <span class="o">-=</span> <span class="p">([</span><span class="n">bbox</span><span class="o">.</span><span class="n">x0</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">bboxes</span><span class="p">]</span> <span class="o">-</span> <span class="n">x0</span><span class="p">)</span>
+        <span class="n">hd_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">yd</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+        <span class="n">height</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">yoffsets</span> <span class="o">=</span> <span class="n">_get_aligned_offsets</span><span class="p">(</span><span class="n">hd_list</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">,</span>
+                                                          <span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span><span class="o">.</span><span class="n">padded</span><span class="p">(</span><span class="n">pad</span><span class="p">),</span>
-                <span class="p">[</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">xoffsets</span><span class="p">,</span> <span class="n">yoffsets</span><span class="p">)])</span></div>
+        <span class="n">pack_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">w</span><span class="p">,</span> <span class="n">xd</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+
+        <span class="n">width</span><span class="p">,</span> <span class="n">xoffsets_</span> <span class="o">=</span> <span class="n">_get_packed_offsets</span><span class="p">(</span><span class="n">pack_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                               <span class="n">sep</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span>
+
+        <span class="n">xoffsets</span> <span class="o">=</span> <span class="n">xoffsets_</span> <span class="o">+</span> <span class="p">[</span><span class="n">xd</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="ow">in</span> <span class="n">whd_list</span><span class="p">]</span>
+
+        <span class="n">xdescent</span> <span class="o">=</span> <span class="n">whd_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">xoffsets</span> <span class="o">=</span> <span class="n">xoffsets</span> <span class="o">-</span> <span class="n">xdescent</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span>
+                <span class="n">xdescent</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="n">ydescent</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span>
+                <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xoffsets</span><span class="p">,</span> <span class="n">yoffsets</span><span class="p">)))</span></div>
+</div>
 
 
 
@@ -616,15 +621,16 @@
 <span class="sd">    it when rendering.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">draw_frame</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">patch_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;draw_frame&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">draw_frame</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">patch_attrs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        child : `~matplotlib.artist.Artist`</span>
 <span class="sd">            The contained `.Artist`.</span>
-<span class="sd">        pad : float, default: 0.0</span>
+<span class="sd">        pad : float</span>
 <span class="sd">            The padding in points. This will be scaled with the renderer dpi.</span>
-<span class="sd">            In contrast, *width* and *height* are in *pixels* and thus not</span>
+<span class="sd">            In contrast *width* and *height* are in *pixels* and thus not</span>
 <span class="sd">            scaled.</span>
 <span class="sd">        draw_frame : bool</span>
 <span class="sd">            Whether to draw the contained `.FancyBboxPatch`.</span>
@@ -645,15 +651,18 @@
         <span class="k">if</span> <span class="n">patch_attrs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">patch_attrs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_extent_offsets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited.</span>
-        <span class="n">pad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span> <span class="o">*</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span><span class="o">.</span><span class="n">padded</span><span class="p">(</span><span class="n">pad</span><span class="p">),</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+        <span class="n">dpicor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span> <span class="o">*</span> <span class="n">dpicor</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">w</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">xd</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="n">yd</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span>
+                <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
 
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
-        <span class="n">bbox</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_bbox_and_child_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent_offsets</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="p">(</span><span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_visible_children</span><span class="p">(),</span> <span class="n">offsets</span><span class="p">):</span>
             <span class="n">c</span><span class="o">.</span><span class="n">set_offset</span><span class="p">((</span><span class="n">px</span> <span class="o">+</span> <span class="n">ox</span><span class="p">,</span> <span class="n">py</span> <span class="o">+</span> <span class="n">oy</span><span class="p">))</span>
 
@@ -746,12 +755,20 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return offset of the container.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
 
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>  <span class="c1"># w, h, xd, yd)</span>
+
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return width, height, xdescent, ydescent of box.&quot;&quot;&quot;</span>
         <span class="n">dpi_cor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span>
-            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">xdescent</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ydescent</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">xdescent</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydescent</span> <span class="o">*</span> <span class="n">dpi_cor</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">add_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an `.Artist` to the container box.&quot;&quot;&quot;</span>
@@ -784,7 +801,7 @@
                 <span class="n">c</span><span class="o">.</span><span class="n">set_clip_path</span><span class="p">(</span><span class="n">tpath</span><span class="p">)</span>
             <span class="n">c</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
 
-        <span class="n">_bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
+        <span class="n">bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span>
 
 
@@ -799,8 +816,8 @@
 <span class="sd">    child text.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;textprops&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span>
-                 <span class="o">*</span><span class="p">,</span>
                  <span class="n">textprops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">multilinebaseline</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="p">):</span>
@@ -898,9 +915,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span></div>
 
 
-<div class="viewcode-block" id="TextArea.get_bbox">
-<a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.TextArea.html#pipeline.h.tasks.common.displays.sky.TextArea.get_bbox">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+<div class="viewcode-block" id="TextArea.get_window_extent">
+<a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.TextArea.html#pipeline.h.tasks.common.displays.sky.TextArea.get_window_extent">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextArea.get_extent">
+<a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.TextArea.html#pipeline.h.tasks.common.displays.sky.TextArea.get_extent">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">h_</span><span class="p">,</span> <span class="n">d_</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">get_text_width_height_descent</span><span class="p">(</span>
             <span class="s2">&quot;lp&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">_fontproperties</span><span class="p">,</span>
             <span class="n">ismath</span><span class="o">=</span><span class="s2">&quot;TeX&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">get_usetex</span><span class="p">()</span> <span class="k">else</span> <span class="kc">False</span><span class="p">)</span>
@@ -919,9 +947,14 @@
             <span class="n">h</span> <span class="o">=</span> <span class="n">h_d</span> <span class="o">+</span> <span class="n">yd</span>
 
         <span class="n">ha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">get_horizontalalignment</span><span class="p">()</span>
-        <span class="n">x0</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;left&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span> <span class="o">-</span><span class="n">w</span><span class="p">}[</span><span class="n">ha</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ha</span> <span class="o">==</span> <span class="s1">&#39;left&#39;</span><span class="p">:</span>
+            <span class="n">xd</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">ha</span> <span class="o">==</span> <span class="s1">&#39;center&#39;</span><span class="p">:</span>
+            <span class="n">xd</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">ha</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">:</span>
+            <span class="n">xd</span> <span class="o">=</span> <span class="n">w</span>
 
-        <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="o">-</span><span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span></div>
 
 
 <div class="viewcode-block" id="TextArea.draw">
@@ -929,7 +962,7 @@
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">_bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
+        <span class="n">bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span></div>
 </div>
 
@@ -995,25 +1028,34 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return offset of the container.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span>
 
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>  <span class="c1"># w, h, xd, yd)</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># clear the offset transforms</span>
         <span class="n">_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset_transform</span><span class="o">.</span><span class="n">get_matrix</span><span class="p">()</span>  <span class="c1"># to be restored later</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_offset_transform</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset_transform</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="c1"># calculate the extent</span>
         <span class="n">bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">]</span>
-        <span class="n">ub</span> <span class="o">=</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">bboxes</span><span class="p">)</span>
+        <span class="n">ub</span> <span class="o">=</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">bboxes</span><span class="p">)</span>
         <span class="c1"># adjust ref_offset_transform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_offset_transform</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="o">-</span><span class="n">ub</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="o">-</span><span class="n">ub</span><span class="o">.</span><span class="n">y0</span><span class="p">)</span>
         <span class="c1"># restore offset transform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offset_transform</span><span class="o">.</span><span class="n">set_matrix</span><span class="p">(</span><span class="n">_off</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">ub</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ub</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">ub</span><span class="o">.</span><span class="n">height</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span>
 
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">:</span>
             <span class="n">c</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">_bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
+        <span class="n">bbox_artist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pad</span><span class="o">=</span><span class="mf">0.</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span>
 
 
@@ -1023,7 +1065,7 @@
 
 <span class="sd">    AnchoredOffsetbox has a single child.  When multiple children are needed,</span>
 <span class="sd">    use an extra OffsetBox to enclose them.  By default, the offset box is</span>
-<span class="sd">    anchored against its parent Axes. You may explicitly specify the</span>
+<span class="sd">    anchored against its parent axes. You may explicitly specify the</span>
 <span class="sd">    *bbox_to_anchor*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">zorder</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># zorder of the legend</span>
@@ -1041,7 +1083,8 @@
              <span class="s1">&#39;center&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
              <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span>
                  <span class="n">pad</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                  <span class="n">child</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1054,7 +1097,7 @@
 <span class="sd">            The box location.  Valid locations are</span>
 <span class="sd">            &#39;upper left&#39;, &#39;upper center&#39;, &#39;upper right&#39;,</span>
 <span class="sd">            &#39;center left&#39;, &#39;center&#39;, &#39;center right&#39;,</span>
-<span class="sd">            &#39;lower left&#39;, &#39;lower center&#39;, &#39;lower right&#39;.</span>
+<span class="sd">            &#39;lower left&#39;, &#39;lower center, &#39;lower right&#39;.</span>
 <span class="sd">            For backward compatibility, numeric values are accepted as well.</span>
 <span class="sd">            See the parameter *loc* of `.Legend` for details.</span>
 <span class="sd">        pad : float, default: 0.4</span>
@@ -1122,11 +1165,17 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the list of children.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_child</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-        <span class="c1"># docstring inherited</span>
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the extent of the box as (width, height, x, y).</span>
+
+<span class="sd">        This is the extent of the child plus the padding.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="n">fontsize</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size_in_points</span><span class="p">())</span>
         <span class="n">pad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad</span> <span class="o">*</span> <span class="n">fontsize</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span><span class="o">.</span><span class="n">padded</span><span class="p">(</span><span class="n">pad</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">w</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pad</span><span class="p">,</span> <span class="n">xd</span> <span class="o">+</span> <span class="n">pad</span><span class="p">,</span> <span class="n">yd</span> <span class="o">+</span> <span class="n">pad</span>
 
     <span class="k">def</span> <span class="nf">get_bbox_to_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the bbox that the box is anchored to.&quot;&quot;&quot;</span>
@@ -1164,16 +1213,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_bbox_to_anchor_transform</span> <span class="o">=</span> <span class="n">transform</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="nd">@_compat_get_offset</span>
-    <span class="k">def</span> <span class="nf">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
-        <span class="n">pad</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">borderpad</span>
-               <span class="o">*</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size_in_points</span><span class="p">()))</span>
-        <span class="n">bbox_to_anchor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bbox_to_anchor</span><span class="p">()</span>
-        <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">_get_anchored_bbox</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
-            <span class="n">bbox_to_anchor</span><span class="p">,</span> <span class="n">pad</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y0</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_offset_func</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update_offset_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the offset func which depends on the dpi of the</span>
+<span class="sd">        renderer (because of the padding).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fontsize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fontsize</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size_in_points</span><span class="p">())</span>
+
+        <span class="k">def</span> <span class="nf">_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+            <span class="n">bbox</span> <span class="o">=</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+            <span class="n">borderpad</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">borderpad</span> <span class="o">*</span> <span class="n">fontsize</span>
+            <span class="n">bbox_to_anchor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bbox_to_anchor</span><span class="p">()</span>
+            <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">_get_anchored_bbox</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">loc</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">bbox_to_anchor</span><span class="p">,</span> <span class="n">borderpad</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">xd</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">yd</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span><span class="n">_offset</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">update_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
@@ -1185,13 +1252,18 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible</span><span class="p">():</span>
             <span class="k">return</span>
 
+        <span class="n">fontsize</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size_in_points</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_offset_func</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">fontsize</span><span class="p">)</span>
+
         <span class="c1"># update the location and size of the legend</span>
         <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">fontsize</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_size_in_points</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_frame</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">fontsize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
 
-        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">),</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+
+        <span class="n">px</span><span class="p">,</span> <span class="n">py</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">xdescent</span><span class="p">,</span> <span class="n">ydescent</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">set_offset</span><span class="p">((</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">get_child</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span>
@@ -1214,7 +1286,8 @@
 <span class="sd">    AnchoredOffsetbox with Text.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;pad&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">borderpad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1254,7 +1327,8 @@
 
 <span class="k">class</span> <span class="nc">OffsetImage</span><span class="p">(</span><span class="n">OffsetBox</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arr</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;zoom&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arr</span><span class="p">,</span>
                  <span class="n">zoom</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">norm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1308,13 +1382,26 @@
     <span class="k">def</span> <span class="nf">get_children</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">get_bbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-        <span class="n">dpi_cor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dpi_cor</span> <span class="k">else</span> <span class="mf">1.</span>
+    <span class="k">def</span> <span class="nf">get_window_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># docstring inherited</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_offset</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">mtransforms</span><span class="o">.</span><span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_extent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dpi_cor</span><span class="p">:</span>  <span class="c1"># True, do correction</span>
+            <span class="n">dpi_cor</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">points_to_pixels</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dpi_cor</span> <span class="o">=</span> <span class="mf">1.</span>
+
         <span class="n">zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_zoom</span><span class="p">()</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
         <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">dpi_cor</span> <span class="o">*</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">dpi_cor</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">*</span> <span class="n">zoom</span>
-        <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">from_bounds</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
@@ -1337,10 +1424,14 @@
     <span class="n">zorder</span> <span class="o">=</span> <span class="mi">3</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AnnotationBbox(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;AnnotationBbox(</span><span class="si">%g</span><span class="s2">,</span><span class="si">%g</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="nd">@_docstring</span><span class="o">.</span><span class="n">dedent_interpd</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsetbox</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">xybox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="n">boxcoords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;xycoords&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offsetbox</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span>
+                 <span class="n">xybox</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">xycoords</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">,</span>
+                 <span class="n">boxcoords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>  <span class="c1"># FancyBboxPatch boxstyle.</span>
                  <span class="n">annotation_clip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">box_alignment</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
@@ -1361,13 +1452,13 @@
 <span class="sd">            The position *(x, y)* to place the text at. The coordinate system</span>
 <span class="sd">            is determined by *boxcoords*.</span>
 
-<span class="sd">        xycoords : single or two-tuple of str or `.Artist` or `.Transform` or \</span>
-<span class="sd">callable, default: &#39;data&#39;</span>
+<span class="sd">        xycoords : str or `.Artist` or `.Transform` or callable or \</span>
+<span class="sd">(float, float), default: &#39;data&#39;</span>
 <span class="sd">            The coordinate system that *xy* is given in. See the parameter</span>
 <span class="sd">            *xycoords* in `.Annotation` for a detailed description.</span>
 
-<span class="sd">        boxcoords : single or two-tuple of str or `.Artist` or `.Transform` \</span>
-<span class="sd">or callable, default: value of *xycoords*</span>
+<span class="sd">        boxcoords : str or `.Artist` or `.Transform` or callable or \</span>
+<span class="sd">(float, float), default: value of *xycoords*</span>
 <span class="sd">            The coordinate system that *xybox* is given in. See the parameter</span>
 <span class="sd">            *textcoords* in `.Annotation` for a detailed description.</span>
 
@@ -1375,16 +1466,6 @@
 <span class="sd">            By default, the text is surrounded by a white `.FancyBboxPatch`</span>
 <span class="sd">            (accessible as the ``patch`` attribute of the `.AnnotationBbox`).</span>
 <span class="sd">            If *frameon* is set to False, this patch is made invisible.</span>
-
-<span class="sd">        annotation_clip: bool or None, default: None</span>
-<span class="sd">            Whether to clip (i.e. not draw) the annotation when the annotation</span>
-<span class="sd">            point *xy* is outside the Axes area.</span>
-
-<span class="sd">            - If *True*, the annotation will be clipped when *xy* is outside</span>
-<span class="sd">              the Axes.</span>
-<span class="sd">            - If *False*, the annotation will always be drawn.</span>
-<span class="sd">            - If *None*, the annotation will be clipped when *xy* is outside</span>
-<span class="sd">              the Axes and *xycoords* is &#39;data&#39;.</span>
 
 <span class="sd">        pad : float, default: 0.4</span>
 <span class="sd">            Padding around the offsetbox.</span>
@@ -1394,25 +1475,8 @@
 <span class="sd">            the offset box w.r.t. the *boxcoords*.</span>
 <span class="sd">            The lower-left corner is (0, 0) and upper-right corner is (1, 1).</span>
 
-<span class="sd">        bboxprops : dict, optional</span>
-<span class="sd">            A dictionary of properties to set for the annotation bounding box,</span>
-<span class="sd">            for example *boxstyle* and *alpha*.  See `.FancyBboxPatch` for</span>
-<span class="sd">            details.</span>
-
-<span class="sd">        arrowprops: dict, optional</span>
-<span class="sd">            Arrow properties, see `.Annotation` for description.</span>
-
-<span class="sd">        fontsize: float or str, optional</span>
-<span class="sd">            Translated to points and passed as *mutation_scale* into</span>
-<span class="sd">            `.FancyBboxPatch` to scale attributes of the box style (e.g. pad</span>
-<span class="sd">            or rounding_size).  The name is chosen in analogy to `.Text` where</span>
-<span class="sd">            *fontsize* defines the mutation scale as well.  If not given,</span>
-<span class="sd">            :rc:`legend.fontsize` is used.  See `.Text.set_fontsize` for valid</span>
-<span class="sd">            values.</span>
-
 <span class="sd">        **kwargs</span>
-<span class="sd">            Other `AnnotationBbox` properties.  See `.AnnotationBbox.set` for</span>
-<span class="sd">            a list.</span>
+<span class="sd">            Other parameters are identical to `.Annotation`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">martist</span><span class="o">.</span><span class="n">Artist</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1468,8 +1532,9 @@
 <div class="viewcode-block" id="AnnotationBbox.contains">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.AnnotationBbox.html#pipeline.h.tasks.common.displays.sky.AnnotationBbox.contains">[docs]</a>
     <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mouseevent</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_xy</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span></div>
@@ -1522,7 +1587,6 @@
         <span class="c1"># docstring inherited</span>
         <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
                            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_children</span><span class="p">()])</span></div>
 
@@ -1531,9 +1595,6 @@
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.AnnotationBbox.html#pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_tightbbox">[docs]</a>
     <span class="k">def</span> <span class="nf">get_tightbbox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
-        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Bbox</span><span class="o">.</span><span class="n">union</span><span class="p">([</span><span class="n">child</span><span class="o">.</span><span class="n">get_tightbbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
                            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_children</span><span class="p">()])</span></div>
 
@@ -1541,13 +1602,22 @@
 <div class="viewcode-block" id="AnnotationBbox.update_positions">
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.AnnotationBbox.html#pipeline.h.tasks.common.displays.sky.AnnotationBbox.update_positions">[docs]</a>
     <span class="k">def</span> <span class="nf">update_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update pixel positions for the annotated point, the text, and the arrow.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update pixel positions for the annotated point, the text and the arrow.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ox0</span><span class="p">,</span> <span class="n">oy0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">xybox</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxcoords</span><span class="p">)</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xybox</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">boxcoords</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxcoords</span>
+            <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">xcoord</span><span class="p">)</span>
+            <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">ycoord</span><span class="p">)</span>
+            <span class="n">ox0</span><span class="p">,</span> <span class="n">oy0</span> <span class="o">=</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ox0</span><span class="p">,</span> <span class="n">oy0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxcoords</span><span class="p">)</span>
+
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="n">fw</span><span class="p">,</span> <span class="n">fh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_box_alignment</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">ox0</span> <span class="o">-</span> <span class="n">fw</span><span class="o">*</span><span class="n">bbox</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">oy0</span> <span class="o">-</span> <span class="n">fh</span><span class="o">*</span><span class="n">bbox</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">set_offset</span><span class="p">((</span><span class="n">ox0</span> <span class="o">-</span> <span class="n">fw</span> <span class="o">*</span> <span class="n">w</span> <span class="o">+</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy0</span> <span class="o">-</span> <span class="n">fh</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="n">yd</span><span class="p">))</span>
 
         <span class="n">bbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_bounds</span><span class="p">(</span><span class="n">bbox</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
@@ -1581,9 +1651,10 @@
 <a class="viewcode-back" href="../../_autosummary/pipeline.h.tasks.common.displays.sky.AnnotationBbox.html#pipeline.h.tasks.common.displays.sky.AnnotationBbox.draw">[docs]</a>
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="c1"># docstring inherited</span>
+        <span class="k">if</span> <span class="n">renderer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_renderer</span> <span class="o">=</span> <span class="n">renderer</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_visible</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_xy</span><span class="p">(</span><span class="n">renderer</span><span class="p">):</span>
             <span class="k">return</span>
-        <span class="n">renderer</span><span class="o">.</span><span class="n">open_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">gid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_gid</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span><span class="o">.</span><span class="n">figure</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1591,7 +1662,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">arrow_patch</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">renderer</span><span class="o">.</span><span class="n">close_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">False</span></div>
 </div>
 
@@ -1631,22 +1701,14 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ref_artist</span><span class="o">.</span><span class="n">pickable</span><span class="p">():</span>
             <span class="n">ref_artist</span><span class="o">.</span><span class="n">set_picker</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_use_blit</span> <span class="o">=</span> <span class="n">use_blit</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">supports_blit</span>
-        <span class="n">callbacks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">callbacks</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_disconnectors</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
-                <span class="n">callbacks</span><span class="o">.</span><span class="n">disconnect</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">.</span><span class="n">_connect_picklable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">))</span>
-            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="p">[</span>
-                <span class="p">(</span><span class="s2">&quot;pick_event&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_pick</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;button_release_event&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_release</span><span class="p">),</span>
-                <span class="p">(</span><span class="s2">&quot;motion_notify_event&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_motion</span><span class="p">),</span>
-            <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cids</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">_connect_picklable</span><span class="p">(</span>
+                <span class="s1">&#39;pick_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_pick</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">_connect_picklable</span><span class="p">(</span>
+                <span class="s1">&#39;button_release_event&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_release</span><span class="p">),</span>
         <span class="p">]</span>
-
-    <span class="c1"># A property, not an attribute, to maintain picklability.</span>
-    <span class="n">canvas</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="p">)</span>
-    <span class="n">cids</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="p">[</span>
-        <span class="n">disconnect</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">disconnect</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disconnectors</span><span class="p">[:</span><span class="mi">2</span><span class="p">]])</span>
 
     <span class="k">def</span> <span class="nf">on_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_still_parented</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span><span class="p">:</span>
@@ -1662,13 +1724,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">on_pick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evt</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_still_parented</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">evt</span><span class="o">.</span><span class="n">artist</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">mouse_x</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">x</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">mouse_y</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">y</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save_offset</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_blit</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_still_parented</span><span class="p">()</span> <span class="ow">and</span> <span class="n">evt</span><span class="o">.</span><span class="n">artist</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_x</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">x</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mouse_y</span> <span class="o">=</span> <span class="n">evt</span><span class="o">.</span><span class="n">mouseevent</span><span class="o">.</span><span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_blit</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">set_animated</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> \
@@ -1676,15 +1736,17 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">blit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">callbacks</span><span class="o">.</span><span class="n">_connect_picklable</span><span class="p">(</span>
+                <span class="s2">&quot;motion_notify_event&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_motion</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_offset</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">on_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_still_parented</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">finalize_offset</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">got_artist</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_c1</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_blit</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">restore_region</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">background</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">())</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">blit</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">ref_artist</span><span class="o">.</span><span class="n">set_animated</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_check_still_parented</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1696,8 +1758,14 @@
 
     <span class="k">def</span> <span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect the callbacks.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">disconnector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_disconnectors</span><span class="p">:</span>
-            <span class="n">disconnector</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">cid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_disconnect</span><span class="p">(</span><span class="n">cid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c1</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mpl_disconnect</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
@@ -1717,7 +1785,8 @@
     <span class="k">def</span> <span class="nf">save_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">offsetbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span>
         <span class="n">renderer</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
-        <span class="n">offset</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">),</span> <span class="n">renderer</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">get_offset</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span><span class="p">,</span> <span class="n">renderer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox_y</span> <span class="o">=</span> <span class="n">offset</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span><span class="o">.</span><span class="n">set_offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
 
@@ -1728,9 +1797,9 @@
     <span class="k">def</span> <span class="nf">get_loc_in_canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">offsetbox</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">offsetbox</span>
         <span class="n">renderer</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">_get_renderer</span><span class="p">()</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">get_bbox</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">xd</span><span class="p">,</span> <span class="n">yd</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
         <span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">=</span> <span class="n">offsetbox</span><span class="o">.</span><span class="n">_offset</span>
-        <span class="n">loc_in_canvas</span> <span class="o">=</span> <span class="p">(</span><span class="n">ox</span> <span class="o">+</span> <span class="n">bbox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">oy</span> <span class="o">+</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y0</span><span class="p">)</span>
+        <span class="n">loc_in_canvas</span> <span class="o">=</span> <span class="p">(</span><span class="n">ox</span> <span class="o">-</span> <span class="n">xd</span><span class="p">,</span> <span class="n">oy</span> <span class="o">-</span> <span class="n">yd</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loc_in_canvas</span>
 
 
@@ -1756,7 +1825,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

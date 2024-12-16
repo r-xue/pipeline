@@ -26,12 +26,15 @@ pipeline.hifv.tasks.analyzestokescubes.display.ScalarFormatter
       ~ScalarFormatter.get_useMathText
       ~ScalarFormatter.get_useOffset
       ~ScalarFormatter.set_axis
+      ~ScalarFormatter.set_bounds
+      ~ScalarFormatter.set_data_interval
       ~ScalarFormatter.set_locs
       ~ScalarFormatter.set_powerlimits
       ~ScalarFormatter.set_scientific
       ~ScalarFormatter.set_useLocale
       ~ScalarFormatter.set_useMathText
       ~ScalarFormatter.set_useOffset
+      ~ScalarFormatter.set_view_interval
    
    
 

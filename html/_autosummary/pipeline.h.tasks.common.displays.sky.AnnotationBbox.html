@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.common.displays.sky.AnnotationBbox &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -162,7 +162,7 @@
 <h1>pipeline.h.tasks.common.displays.sky.AnnotationBbox<a class="headerlink" href="#pipeline-h-tasks-common-displays-sky-annotationbbox" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.AnnotationBbox">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AnnotationBbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsetbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xybox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xycoords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxcoords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_alignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#AnnotationBbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AnnotationBbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offsetbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xybox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xycoords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boxcoords</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frameon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_clip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_alignment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bboxprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrowprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#AnnotationBbox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Artist</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_AnnotationBase</span></code></p>
 <p>Container for an <cite>OffsetBox</cite> referring to a specific position <em>xy</em>.</p>
 <p>Optionally an arrow pointing from the offsetbox to <em>xy</em> can be drawn.</p>
@@ -375,7 +375,7 @@
 <td><p>Copy properties from <em>other</em> to <em>self</em>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.update_positions" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.update_positions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_positions</span></code></a></p></td>
-<td><p>Update pixel positions for the annotated point, the text, and the arrow.</p></td>
+<td><p>Update pixel positions for the annotated point, the text and the arrow.</p></td>
 </tr>
 </tbody>
 </table>
@@ -446,7 +446,7 @@ used for removing the callback with <cite>.remove_callback</cite> later.</p>
 <dd><p>Test whether the artist contains the mouse event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mouseevent</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>)</p>
+<dd class="field-odd"><p><strong>mouseevent</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -482,15 +482,10 @@ have units, <em>y</em> itself is returned.</p>
 <dd><p>Set whether the annotation is draggable with the mouse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>state</strong> (<em>bool or None</em>) –</p>
-<ul>
+<dd class="field-odd"><p><strong>state</strong> (<em>bool or None</em>) –</p>
+<ul class="simple">
 <li><p>True or False: set the draggability.</p></li>
 <li><p>None: toggle the draggability.</p></li>
-</ul>
-</li>
-<li><p><strong>use_blit</strong> (<em>bool, default: False</em>) – Use blitting for faster image composition. For details see
-<span class="xref std std-ref">func-animation</span>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -511,7 +506,7 @@ have units, <em>y</em> itself is returned.</p>
 returns False).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>~matplotlib.backend_bases.RendererBase</cite> subclass.)</p>
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass.)</p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -635,7 +630,7 @@ the data to a string representation.</p>
 in the status bar of a plot window, while moving the mouse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>event</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>)</p>
+<dd class="field-odd"><p><strong>event</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -667,7 +662,7 @@ in the status bar of a plot window, while moving the mouse.</p>
 <span class="sig-name descname"><span class="pre">get_in_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout
 calculations.</p>
-<p>E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+<p>E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 </dd></dl>
@@ -689,10 +684,10 @@ when the mouse cursor moves over it.</p>
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker">
 <span class="sig-name descname"><span class="pre">get_picker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker" title="Link to this definition"></a></dt>
 <dd><p>Return the picking behavior of the artist.</p>
-<p>The possible values are described in <cite>.Artist.set_picker</cite>.</p>
+<p>The possible values are described in <cite>.set_picker</cite>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.pickable" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.pick" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -738,15 +733,14 @@ shrunken or expanded.</p></li>
 <dd><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>~matplotlib.backend_bases.RendererBase</cite> subclass, optional) – renderer that will be used to draw the figures (i.e.
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass) – renderer that will be used to draw the figures (i.e.
 <code class="docutils literal notranslate"><span class="pre">fig.canvas.get_renderer()</span></code>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).
-Returns None if clipping results in no intersection.</p>
+<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>.Bbox</cite> or None</p>
+<dd class="field-odd"><p><cite>.Bbox</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -788,7 +782,7 @@ box at 0, 0.</p>
 <p>Be careful when using this function, the results will not update
 if the artist window extent of the artist changes.  The extent
 can change due to any changes in the transform stack, such as
-changing the Axes limits, the figure size, or the canvas used
+changing the axes limits, the figure size, or the canvas used
 (as is done when saving a figure).  This can lead to unexpected
 behavior where interactive figures will look fine on the screen,
 but will save incorrectly.</p>
@@ -839,7 +833,7 @@ when the mouse cursor moves over it.</p>
 the artist and the artist has picker set.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.pickable" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -849,7 +843,7 @@ the artist and the artist has picker set.</p>
 <dd><p>Return whether the artist is pickable.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.pick" title="pipeline.h.tasks.common.displays.sky.AnnotationBbox.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -865,9 +859,9 @@ the artist and the artist has picker set.</p>
 <dd><p>Remove the artist from the figure if possible.</p>
 <p>The effect will not be visible until the figure is redrawn, e.g.,
 with <cite>.FigureCanvasBase.draw_idle</cite>.  Call <cite>~.axes.Axes.relim</cite> to
-update the Axes limits if desired.</p>
+update the axes limits if desired.</p>
 <p>Note: <cite>~.axes.Axes.relim</cite> will not see collections even if the
-collection was added to the Axes with <em>autolim</em> = True.</p>
+collection was added to the axes with <em>autolim</em> = True.</p>
 <p>Note: there is no support for removing the artist’s legend entry.</p>
 </dd></dl>
 
@@ -891,7 +885,7 @@ collection was added to the Axes with <em>autolim</em> = True.</p>
 alpha: scalar or None
 animated: bool
 annotation_clip: bool or None
-clip_box: <cite>~matplotlib.transforms.BboxBase</cite> or None
+clip_box: <cite>.Bbox</cite>
 clip_on: bool
 clip_path: Patch or (Path, Transform) or None
 figure: unknown
@@ -900,12 +894,12 @@ gid: str
 in_layout: bool
 label: object
 mouseover: bool
-path_effects: list of <cite>.AbstractPathEffect</cite>
+path_effects: <cite>.AbstractPathEffect</cite>
 picker: None or bool or float or callable
 rasterized: bool
 sketch_params: (scale: float, length: float, randomness: float)
 snap: bool or None
-transform: <cite>~matplotlib.transforms.Transform</cite>
+transform: <cite>.Transform</cite>
 url: str
 visible: bool
 zorder: float</p>
@@ -946,7 +940,7 @@ You have to call <cite>.Figure.draw_artist</cite> / <cite>.Axes.draw_artist</cit
 explicitly on the artist. This approach is used to speed up animations
 using blitting.</p>
 <p>See also <cite>matplotlib.animation</cite> and
-<span class="xref std std-ref">blitting</span>.</p>
+<span class="xref std std-doc">/tutorials/advanced/blitting</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
@@ -963,10 +957,10 @@ using blitting.</p>
 <dd class="field-odd"><p><strong>b</strong> (<em>bool or None</em>) –</p>
 <ul class="simple">
 <li><p>True: The annotation will be clipped when <code class="docutils literal notranslate"><span class="pre">self.xy</span></code> is
-outside the Axes.</p></li>
+outside the axes.</p></li>
 <li><p>False: The annotation will always be drawn.</p></li>
 <li><p>None: The annotation will be clipped when <code class="docutils literal notranslate"><span class="pre">self.xy</span></code> is
-outside the Axes and <code class="docutils literal notranslate"><span class="pre">self.xycoords</span> <span class="pre">==</span> <span class="pre">&quot;data&quot;</span></code>.</p></li>
+outside the axes and <code class="docutils literal notranslate"><span class="pre">self.xycoords</span> <span class="pre">==</span> <span class="pre">&quot;data&quot;</span></code>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -978,9 +972,7 @@ outside the Axes and <code class="docutils literal notranslate"><span class="pre
 <dd><p>Set the artist’s clip <cite>.Bbox</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>clipbox</strong> (<cite>~matplotlib.transforms.BboxBase</cite> or None) – Will typically be created from a <cite>.TransformedBbox</cite>. For instance,
-<code class="docutils literal notranslate"><span class="pre">TransformedBbox(Bbox([[0,</span> <span class="pre">0],</span> <span class="pre">[1,</span> <span class="pre">1]]),</span> <span class="pre">ax.transAxes)</span></code> is the default
-clipping for an artist added to an Axes.</p>
+<dd class="field-odd"><p><strong>clipbox</strong> (<cite>.Bbox</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -989,7 +981,7 @@ clipping for an artist added to an Axes.</p>
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_clip_on">
 <span class="sig-name descname"><span class="pre">set_clip_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_clip_on" title="Link to this definition"></a></dt>
 <dd><p>Set whether the artist uses clipping.</p>
-<p>When False, artists will be visible outside the Axes which
+<p>When False artists will be visible outside of the Axes which
 can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1005,7 +997,7 @@ can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<cite>~matplotlib.patches.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
+<li><p><strong>path</strong> (<cite>.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
 well. If <em>None</em>, a previously set clip path is removed.</p></li>
 <li><p><strong>transform</strong> (<cite>~matplotlib.transforms.Transform</cite>, optional) – Only used if <em>path</em> is a <cite>.Path</cite>, in which case the given <cite>.Path</cite>
 is converted to a <cite>.TransformedPath</cite> using <em>transform</em>.</p></li>
@@ -1027,7 +1019,7 @@ parameter.</p>
 <dd><p>Set the <cite>.Figure</cite> instance the artist belongs to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>fig</strong> (<cite>~matplotlib.figure.Figure</cite>)</p>
+<dd class="field-odd"><p><strong>fig</strong> (<cite>.Figure</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1054,7 +1046,7 @@ parameter.</p>
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_in_layout">
 <span class="sig-name descname"><span class="pre">set_in_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.set_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Set if artist is to be included in layout calculations,
-E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 <dl class="field-list simple">
@@ -1097,7 +1089,7 @@ the mouse cursor moves over it.</p>
 <dd><p>Set the path effects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path_effects</strong> (list of <cite>.AbstractPathEffect</cite>)</p>
+<dd class="field-odd"><p><strong>path_effects</strong> (<cite>.AbstractPathEffect</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1206,7 +1198,7 @@ segments, round to the nearest pixel center.</p></li>
 <dd><p>Set the artist transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>t</strong> (<cite>~matplotlib.transforms.Transform</cite>)</p>
+<dd class="field-odd"><p><strong>t</strong> (<cite>.Transform</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1294,7 +1286,7 @@ lists can be modified in place as needed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.AnnotationBbox.update_positions">
 <span class="sig-name descname"><span class="pre">update_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#AnnotationBbox.update_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.AnnotationBbox.update_positions" title="Link to this definition"></a></dt>
-<dd><p>Update pixel positions for the annotated point, the text, and the arrow.</p>
+<dd><p>Update pixel positions for the annotated point, the text and the arrow.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1312,7 +1304,7 @@ lists can be modified in place as needed.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -51,15 +51,18 @@ pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation
       ~EarthLocation.gravitational_redshift
       ~EarthLocation.insert
       ~EarthLocation.item
+      ~EarthLocation.itemset
       ~EarthLocation.max
       ~EarthLocation.mean
       ~EarthLocation.min
       ~EarthLocation.nansum
+      ~EarthLocation.newbyteorder
       ~EarthLocation.nonzero
       ~EarthLocation.of_address
       ~EarthLocation.of_site
       ~EarthLocation.partition
       ~EarthLocation.prod
+      ~EarthLocation.ptp
       ~EarthLocation.put
       ~EarthLocation.ravel
       ~EarthLocation.repeat
@@ -76,7 +79,6 @@ pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation
       ~EarthLocation.swapaxes
       ~EarthLocation.take
       ~EarthLocation.to
-      ~EarthLocation.to_device
       ~EarthLocation.to_geocentric
       ~EarthLocation.to_geodetic
       ~EarthLocation.to_string
@@ -103,7 +105,6 @@ pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation
       ~EarthLocation.cgs
       ~EarthLocation.ctypes
       ~EarthLocation.data
-      ~EarthLocation.device
       ~EarthLocation.dtype
       ~EarthLocation.ellipsoid
       ~EarthLocation.equivalencies
@@ -115,16 +116,12 @@ pipeline.hifa.tasks.flagging.flagdeteralma.EarthLocation
       ~EarthLocation.imag
       ~EarthLocation.info
       ~EarthLocation.isscalar
-      ~EarthLocation.itemset
       ~EarthLocation.itemsize
       ~EarthLocation.itrs
       ~EarthLocation.lat
       ~EarthLocation.lon
-      ~EarthLocation.mT
       ~EarthLocation.nbytes
       ~EarthLocation.ndim
-      ~EarthLocation.newbyteorder
-      ~EarthLocation.ptp
       ~EarthLocation.real
       ~EarthLocation.shape
       ~EarthLocation.si

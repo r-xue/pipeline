@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -224,6 +224,12 @@ the different formatting. Note the labels at the right edge of the x axis.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_axis</span></code></p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_bounds" title="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bounds</span></code></a></p></td>
+<td><p>[<em>Deprecated</em>]</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_data_interval" title="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_data_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_interval</span></code></a></p></td>
+<td><p>[<em>Deprecated</em>]</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_locs" title="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_locs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_locs</span></code></a></p></td>
 <td><p>Set the locations of the ticks.</p></td>
 </tr>
@@ -241,6 +247,9 @@ the different formatting. Note the labels at the right edge of the x axis.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_useOffset" title="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_useOffset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_useOffset</span></code></a></p></td>
 <td><p>Set whether to use offset notation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_view_interval" title="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_view_interval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_view_interval</span></code></a></p></td>
+<td><p>[<em>Deprecated</em>]</p></td>
 </tr>
 </tbody>
 </table>
@@ -341,6 +350,26 @@ explicit offset was set, e.g. <code class="docutils literal notranslate"><span c
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_bounds">
+<span class="sig-name descname"><span class="pre">set_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_bounds" title="Link to this definition"></a></dt>
+<dd><p>[<em>Deprecated</em>]</p>
+<p class="rubric">Notes</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_view_interval</cite> and <cite>.Axis.set_data_interval</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_data_interval">
+<span class="sig-name descname"><span class="pre">set_data_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_data_interval" title="Link to this definition"></a></dt>
+<dd><p>[<em>Deprecated</em>]</p>
+<p class="rubric">Notes</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_data_interval</cite> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_locs">
 <span class="sig-name descname"><span class="pre">set_locs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/ticker.html#ScalarFormatter.set_locs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_locs" title="Link to this definition"></a></dt>
 <dd><p>Set the locations of the ticks.</p>
@@ -436,6 +465,16 @@ is controlled by <a href="#id17"><span class="problematic" id="id18">:rc:`axes.f
 is written to the edge of the axis.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_view_interval">
+<span class="sig-name descname"><span class="pre">set_view_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vmax</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.set_view_interval" title="Link to this definition"></a></dt>
+<dd><p>[<em>Deprecated</em>]</p>
+<p class="rubric">Notes</p>
+<div class="deprecated">
+<p><span class="versionmodified deprecated">Deprecated since version 3.5: </span>Use <cite>.Axis.set_view_interval</cite> instead.</p>
+</div>
+</dd></dl>
+
 <dl class="py property">
 <dt class="sig sig-object py" id="pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.useLocale">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">useLocale</span></span><a class="headerlink" href="#pipeline.hif.tasks.tclean.plot_beams_vlasscube.ScalarFormatter.useLocale" title="Link to this definition"></a></dt>
@@ -483,7 +522,7 @@ explicit offset was set, e.g. <code class="docutils literal notranslate"><span c
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

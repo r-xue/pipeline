@@ -5,8 +5,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>matplotlib.tri._tricontour &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+  <title>matplotlib.tri.tricontour &mdash; Pipeline 
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -101,7 +101,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">matplotlib.tri._tricontour</li>
+      <li class="breadcrumb-item active">matplotlib.tri.tricontour</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -110,12 +110,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for matplotlib.tri._tricontour</h1><div class="highlight"><pre>
+  <h1>Source code for matplotlib.tri.tricontour</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">_docstring</span>
 <span class="kn">from</span> <span class="nn">matplotlib.contour</span> <span class="kn">import</span> <span class="n">ContourSet</span>
-<span class="kn">from</span> <span class="nn">matplotlib.tri._triangulation</span> <span class="kn">import</span> <span class="n">Triangulation</span>
+<span class="kn">from</span> <span class="nn">matplotlib.tri.triangulation</span> <span class="kn">import</span> <span class="n">Triangulation</span>
 
 
 <span class="nd">@_docstring</span><span class="o">.</span><span class="n">dedent_interpd</span>
@@ -166,8 +166,7 @@
     <span class="k">def</span> <span class="nf">_contour_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="n">tri</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">Triangulation</span><span class="o">.</span><span class="n">get_from_args_and_kwargs</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span>
                                                                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">tri</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z array must have same length as triangulation x&#39;</span>
                              <span class="s1">&#39; and y arrays&#39;</span><span class="p">)</span>
@@ -188,7 +187,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logscale</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">func</span> <span class="o">=</span> <span class="s1">&#39;contourf&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">filled</span> <span class="k">else</span> <span class="s1">&#39;contour&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Cannot </span><span class="si">{</span><span class="n">func</span><span class="si">}</span><span class="s1"> log of negative values.&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_process_contour_level_args</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_process_contour_level_args</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">tri</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
 
@@ -223,10 +222,6 @@
 <span class="s2">    The height values over which the contour is drawn.  Color-mapping is</span>
 <span class="s2">    controlled by *cmap*, *norm*, *vmin*, and *vmax*.</span>
 
-<span class="s2">    .. note::</span>
-<span class="s2">        All values in *z* must be finite. Hence, nan and inf values must</span>
-<span class="s2">        either be removed or `~.Triangulation.set_mask` be used.</span>
-
 <span class="s2">levels : int or array-like, optional</span>
 <span class="s2">    Determines the number and positions of the contour lines / regions.</span>
 
@@ -243,7 +238,7 @@
 
 <span class="s2">Other Parameters</span>
 <span class="s2">----------------</span>
-<span class="s2">colors : :mpltype:`color` or list of :mpltype:`color`, optional</span>
+<span class="s2">colors : color string or sequence of colors, optional</span>
 <span class="s2">    The colors of the levels, i.e., the contour </span><span class="si">%%</span><span class="s2">(type)s.</span>
 
 <span class="s2">    The sequence is cycled for the levels in ascending order. If the sequence</span>
@@ -366,8 +361,10 @@
 <span class="sd">    %(_tricontour_doc)s</span>
 
 <span class="sd">    hatches : list[str], optional</span>
-<span class="sd">        A list of crosshatch patterns to use on the filled areas.</span>
+<span class="sd">        A list of cross hatch patterns to use on the filled areas.</span>
 <span class="sd">        If None, no hatching will be added to the contour.</span>
+<span class="sd">        Hatching is supported in the PostScript, PDF, SVG and Agg</span>
+<span class="sd">        backends only.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -390,7 +387,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

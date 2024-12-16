@@ -61,7 +61,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.drag_pan
       ~MplAxes.draw
       ~MplAxes.draw_artist
-      ~MplAxes.ecdf
       ~MplAxes.end_pan
       ~MplAxes.errorbar
       ~MplAxes.eventplot
@@ -95,10 +94,8 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.get_facecolor
       ~MplAxes.get_fc
       ~MplAxes.get_figure
-      ~MplAxes.get_forward_navigation_events
       ~MplAxes.get_frame_on
       ~MplAxes.get_gid
-      ~MplAxes.get_gridspec
       ~MplAxes.get_images
       ~MplAxes.get_in_layout
       ~MplAxes.get_label
@@ -113,11 +110,11 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.get_position
       ~MplAxes.get_rasterization_zorder
       ~MplAxes.get_rasterized
+      ~MplAxes.get_renderer_cache
       ~MplAxes.get_shared_x_axes
       ~MplAxes.get_shared_y_axes
       ~MplAxes.get_sketch_params
       ~MplAxes.get_snap
-      ~MplAxes.get_subplotspec
       ~MplAxes.get_tightbbox
       ~MplAxes.get_title
       ~MplAxes.get_transform
@@ -134,7 +131,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.get_xlabel
       ~MplAxes.get_xlim
       ~MplAxes.get_xmajorticklabels
-      ~MplAxes.get_xmargin
       ~MplAxes.get_xminorticklabels
       ~MplAxes.get_xscale
       ~MplAxes.get_xticklabels
@@ -149,7 +145,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.get_ylabel
       ~MplAxes.get_ylim
       ~MplAxes.get_ymajorticklabels
-      ~MplAxes.get_ymargin
       ~MplAxes.get_yminorticklabels
       ~MplAxes.get_yscale
       ~MplAxes.get_yticklabels
@@ -171,7 +166,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.invert_xaxis
       ~MplAxes.invert_yaxis
       ~MplAxes.is_transform_set
-      ~MplAxes.label_outer
       ~MplAxes.legend
       ~MplAxes.locator_params
       ~MplAxes.loglog
@@ -225,7 +219,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.set_facecolor
       ~MplAxes.set_fc
       ~MplAxes.set_figure
-      ~MplAxes.set_forward_navigation_events
       ~MplAxes.set_frame_on
       ~MplAxes.set_gid
       ~MplAxes.set_in_layout
@@ -241,7 +234,6 @@ pipeline.hsd.tasks.baselineflag.SDFlagPlotter.MplAxes
       ~MplAxes.set_rasterized
       ~MplAxes.set_sketch_params
       ~MplAxes.set_snap
-      ~MplAxes.set_subplotspec
       ~MplAxes.set_title
       ~MplAxes.set_transform
       ~MplAxes.set_url

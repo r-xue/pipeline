@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>matplotlib.lines &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -155,7 +155,7 @@
     <span class="c1"># dashed styles</span>
     <span class="k">elif</span> <span class="n">style</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span> <span class="s1">&#39;dashdot&#39;</span><span class="p">,</span> <span class="s1">&#39;dotted&#39;</span><span class="p">]:</span>
         <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">dashes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;lines.</span><span class="si">{</span><span class="n">style</span><span class="si">}</span><span class="s1">_pattern&#39;</span><span class="p">])</span>
+        <span class="n">dashes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;lines.</span><span class="si">{}</span><span class="s1">_pattern&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">style</span><span class="p">)])</span>
     <span class="c1">#</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">style</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="n">offset</span><span class="p">,</span> <span class="n">dashes</span> <span class="o">=</span> <span class="n">style</span>
@@ -171,18 +171,6 @@
             <span class="n">offset</span> <span class="o">%=</span> <span class="n">dsum</span>
 
     <span class="k">return</span> <span class="n">offset</span><span class="p">,</span> <span class="n">dashes</span>
-
-
-<span class="k">def</span> <span class="nf">_get_inverse_dash_pattern</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">dashes</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the inverse of the given dash pattern, for filling the gaps.&quot;&quot;&quot;</span>
-    <span class="c1"># Define the inverse pattern by moving the last gap to the start of the</span>
-    <span class="c1"># sequence.</span>
-    <span class="n">gaps</span> <span class="o">=</span> <span class="n">dashes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">dashes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1"># Set the offset so that this new first segment is skipped</span>
-    <span class="c1"># (see backend_bases.GraphicsContextBase.set_dashes for offset definition).</span>
-    <span class="n">offset_gaps</span> <span class="o">=</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">dashes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">offset_gaps</span><span class="p">,</span> <span class="n">gaps</span>
 
 
 <span class="k">def</span> <span class="nf">_scale_dashes</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">dashes</span><span class="p">,</span> <span class="n">lw</span><span class="p">):</span>
@@ -258,7 +246,7 @@
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">markevery</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">markevery</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`markevery` is a tuple but its len is not 2; &#39;</span>
-                             <span class="sa">f</span><span class="s1">&#39;markevery=</span><span class="si">{</span><span class="n">markevery</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                             <span class="s1">&#39;markevery=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">markevery</span><span class="p">))</span>
         <span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">markevery</span>
         <span class="c1"># if step is an int, old behavior</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
@@ -266,8 +254,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s1">&#39;`markevery` is a tuple with len 2 and second element is &#39;</span>
-                    <span class="s1">&#39;an int, but the first element is not an int; &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;markevery=</span><span class="si">{</span><span class="n">markevery</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="s1">&#39;an int, but the first element is not an int; markevery=</span><span class="si">{}</span><span class="s1">&#39;</span>
+                    <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">markevery</span><span class="p">))</span>
             <span class="c1"># just return, we are done here</span>
 
             <span class="k">return</span> <span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="p">)],</span>
@@ -278,10 +266,10 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="s1">&#39;`markevery` is a tuple with len 2 and second element is &#39;</span>
                     <span class="s1">&#39;a float, but the first element is not a float or an int; &#39;</span>
-                    <span class="sa">f</span><span class="s1">&#39;markevery=</span><span class="si">{</span><span class="n">markevery</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="s1">&#39;markevery=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">markevery</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;markevery is specified relative to the Axes size, but &quot;</span>
+                    <span class="s2">&quot;markevery is specified relative to the axes size, but &quot;</span>
                     <span class="s2">&quot;the line does not have a Axes as parent&quot;</span><span class="p">)</span>
 
             <span class="c1"># calc cumulative distance along path (in display coords):</span>
@@ -293,7 +281,7 @@
             <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">disp_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">disp_coords</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
             <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="o">*</span><span class="n">delta</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
-            <span class="c1"># calc distance between markers along path based on the Axes</span>
+            <span class="c1"># calc distance between markers along path based on the axes</span>
             <span class="c1"># bounding box diagonal being a distance of unity:</span>
             <span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="o">.</span><span class="n">transform</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
             <span class="n">scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span><span class="p">)</span>
@@ -383,23 +371,21 @@
 
     <span class="n">zorder</span> <span class="o">=</span> <span class="mi">2</span>
 
-    <span class="n">_subslice_optim_min_size</span> <span class="o">=</span> <span class="mi">1000</span>
-
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_label</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Line2D(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="si">}</span><span class="s2">)&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Line2D()&quot;</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;Line2D((</span><span class="si">{:g}</span><span class="s2">,</span><span class="si">{:g}</span><span class="s2">),(</span><span class="si">{:g}</span><span class="s2">,</span><span class="si">{:g}</span><span class="s2">),...,(</span><span class="si">{:g}</span><span class="s2">,</span><span class="si">{:g}</span><span class="s2">))&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="s2">&quot;Line2D((</span><span class="si">%g</span><span class="s2">,</span><span class="si">%g</span><span class="s2">),(</span><span class="si">%g</span><span class="s2">,</span><span class="si">%g</span><span class="s2">),...,(</span><span class="si">%g</span><span class="s2">,</span><span class="si">%g</span><span class="s2">))&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;Line2D(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="nb">map</span><span class="p">(</span><span class="s2">&quot;(</span><span class="si">{:g}</span><span class="s2">,</span><span class="si">{:g}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">make_keyword_only</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;linewidth&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span>
                  <span class="n">linewidth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># all Nones default to rc</span>
                  <span class="n">linestyle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -520,7 +506,7 @@
         <span class="c1"># update kwargs before updating data to give the caller a</span>
         <span class="c1"># chance to init axes (and hence unit support)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_internal_update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pickradius</span> <span class="o">=</span> <span class="n">pickradius</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pickradius</span> <span class="o">=</span> <span class="n">pickradius</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ind_offset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_picker</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">and</span>
                 <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_picker</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)):</span>
@@ -553,7 +539,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        mouseevent : `~matplotlib.backend_bases.MouseEvent`</span>
+<span class="sd">        mouseevent : `matplotlib.backend_bases.MouseEvent`</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -566,8 +552,9 @@
 
 <span class="sd">            TODO: sort returned indices by distance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_different_canvas</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{}</span>
+        <span class="n">inside</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_contains</span><span class="p">(</span><span class="n">mouseevent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inside</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">inside</span><span class="p">,</span> <span class="n">info</span>
 
         <span class="c1"># Make sure we have data to plot</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalidy</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalidx</span><span class="p">:</span>
@@ -625,6 +612,7 @@
 
 <div class="viewcode-block" id="Line2D.set_pickradius">
 <a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.plotmosaic.Line2D.html#pipeline.infrastructure.displays.plotmosaic.Line2D.set_pickradius">[docs]</a>
+    <span class="nd">@_api</span><span class="o">.</span><span class="n">rename_parameter</span><span class="p">(</span><span class="s2">&quot;3.6&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;pickradius&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">set_pickradius</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pickradius</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the pick radius used for containment tests.</span>
@@ -636,7 +624,7 @@
 <span class="sd">        pickradius : float</span>
 <span class="sd">            Pick radius, in points.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pickradius</span><span class="p">,</span> <span class="n">Real</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pickradius</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pickradius</span><span class="p">,</span> <span class="n">Number</span><span class="p">)</span> <span class="ow">or</span> <span class="n">pickradius</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pick radius should be a distance&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pickradius</span> <span class="o">=</span> <span class="n">pickradius</span></div>
 
@@ -707,7 +695,7 @@
 <span class="sd">            - ``every=0.1``, (i.e. a float): markers will be spaced at</span>
 <span class="sd">              approximately equal visual distances along the line; the distance</span>
 <span class="sd">              along the line between markers is determined by multiplying the</span>
-<span class="sd">              display-coordinate distance of the Axes bounding-box diagonal</span>
+<span class="sd">              display-coordinate distance of the axes bounding-box diagonal</span>
 <span class="sd">              by the value of *every*.</span>
 <span class="sd">            - ``every=(0.5, 0.1)`` (i.e. a length-2 tuple of float): similar</span>
 <span class="sd">              to ``every=0.1`` but the first marker will be offset along the</span>
@@ -761,7 +749,9 @@
 <span class="sd">        p : float or callable[[Artist, Event], tuple[bool, dict]]</span>
 <span class="sd">            If a float, it is used as the pick radius in points.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_contains</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_pickradius</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_picker</span> <span class="o">=</span> <span class="n">p</span></div>
 
@@ -798,11 +788,6 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        *args : (2, N) array or two 1D arrays</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        set_xdata</span>
-<span class="sd">        set_ydata</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="o">=</span> <span class="n">args</span>
@@ -832,14 +817,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># views</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_subslice</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span>
-                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subslice_optim_min_size</span>
-                <span class="ow">and</span> <span class="n">_path</span><span class="o">.</span><span class="n">is_sorted_and_has_non_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;rectilinear&#39;</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_xscale</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_markevery</span> <span class="ow">is</span> <span class="kc">None</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clip_on</span><span class="p">()</span>
-                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_transform</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transData</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_sorted</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;rectilinear&#39;</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_xscale</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;linear&#39;</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_markevery</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_clip_on</span><span class="p">()</span> <span class="ow">and</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_transform</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">transData</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_subslice</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="n">nanmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">nanmask</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
@@ -890,6 +873,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_invalidy</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">set_transform</span><span class="p">(</span><span class="n">t</span><span class="p">)</span></div>
 
+
+    <span class="k">def</span> <span class="nf">_is_sorted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether x is sorted in ascending order.&quot;&quot;&quot;</span>
+        <span class="c1"># We don&#39;t handle the monotonically decreasing case.</span>
+        <span class="k">return</span> <span class="n">_path</span><span class="o">.</span><span class="n">is_sorted</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Line2D.draw">
 <a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.plotmosaic.Line2D.html#pipeline.infrastructure.displays.plotmosaic.Line2D.draw">[docs]</a>
@@ -946,8 +934,14 @@
                     <span class="n">lc_rgba</span> <span class="o">=</span> <span class="n">mcolors</span><span class="o">.</span><span class="n">to_rgba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gapcolor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="p">)</span>
                     <span class="n">gc</span><span class="o">.</span><span class="n">set_foreground</span><span class="p">(</span><span class="n">lc_rgba</span><span class="p">,</span> <span class="n">isRGBA</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-                    <span class="n">offset_gaps</span><span class="p">,</span> <span class="n">gaps</span> <span class="o">=</span> <span class="n">_get_inverse_dash_pattern</span><span class="p">(</span>
-                        <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_dash_pattern</span><span class="p">)</span>
+                    <span class="c1"># Define the inverse pattern by moving the last gap to the</span>
+                    <span class="c1"># start of the sequence.</span>
+                    <span class="n">dashes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dash_pattern</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">gaps</span> <span class="o">=</span> <span class="n">dashes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">dashes</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="c1"># Set the offset so that this new first segment is skipped</span>
+                    <span class="c1"># (see backend_bases.GraphicsContextBase.set_dashes for</span>
+                    <span class="c1"># offset definition).</span>
+                    <span class="n">offset_gaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dash_pattern</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dashes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
                     <span class="n">gc</span><span class="o">.</span><span class="n">set_dashes</span><span class="p">(</span><span class="n">offset_gaps</span><span class="p">,</span> <span class="n">gaps</span><span class="p">)</span>
                     <span class="n">renderer</span><span class="o">.</span><span class="n">draw_path</span><span class="p">(</span><span class="n">gc</span><span class="p">,</span> <span class="n">tpath</span><span class="p">,</span> <span class="n">affine</span><span class="o">.</span><span class="n">frozen</span><span class="p">())</span>
@@ -1242,7 +1236,9 @@
 <div class="viewcode-block" id="Line2D.get_xydata">
 <a class="viewcode-back" href="../../_autosummary/pipeline.infrastructure.displays.plotmosaic.Line2D.html#pipeline.infrastructure.displays.plotmosaic.Line2D.get_xydata">[docs]</a>
     <span class="k">def</span> <span class="nf">get_xydata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the *xy* data as a (N, 2) array.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the *xy* data as a Nx2 numpy array.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalidy</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_invalidx</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">recache</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy</span></div>
@@ -1271,7 +1267,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        color : :mpltype:`color`</span>
+<span class="sd">        color : color</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mcolors</span><span class="o">.</span><span class="n">_check_color_like</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">color</span>
@@ -1332,7 +1328,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        gapcolor : :mpltype:`color` or None</span>
+<span class="sd">        gapcolor : color or None</span>
 <span class="sd">            The color with which to fill the gaps. If None, the gaps are</span>
 <span class="sd">            unfilled.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1447,7 +1443,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ec : :mpltype:`color`</span>
+<span class="sd">        ec : color</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_markercolor</span><span class="p">(</span><span class="s2">&quot;markeredgecolor&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ec</span><span class="p">)</span></div>
 
@@ -1460,7 +1456,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        fc : :mpltype:`color`</span>
+<span class="sd">        fc : color</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_markercolor</span><span class="p">(</span><span class="s2">&quot;markerfacecolor&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">fc</span><span class="p">)</span></div>
 
@@ -1473,7 +1469,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        fc : :mpltype:`color`</span>
+<span class="sd">        fc : color</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_markercolor</span><span class="p">(</span><span class="s2">&quot;markerfacecoloralt&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fc</span><span class="p">)</span></div>
 
@@ -1522,14 +1518,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x : 1D array</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        set_data</span>
-<span class="sd">        set_ydata</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;x must be a sequence&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xorig</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_invalidx</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -1544,14 +1533,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        y : 1D array</span>
-
-<span class="sd">        See Also</span>
-<span class="sd">        --------</span>
-<span class="sd">        set_data</span>
-<span class="sd">        set_xdata</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;y must be a sequence&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yorig</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_invalidy</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stale</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -1746,25 +1728,13 @@
 
 
 
-<span class="k">class</span> <span class="nc">AxLine</span><span class="p">(</span><span class="n">Line2D</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_AxLine</span><span class="p">(</span><span class="n">Line2D</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A helper class that implements `~.Axes.axline`, by recomputing the artist</span>
 <span class="sd">    transform at draw time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy1</span><span class="p">,</span> <span class="n">xy2</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        xy1 : (float, float)</span>
-<span class="sd">            The first set of (x, y) coordinates for the line to pass through.</span>
-<span class="sd">        xy2 : (float, float) or None</span>
-<span class="sd">            The second set of (x, y) coordinates for the line to pass through.</span>
-<span class="sd">            Both *xy2* and *slope* must be passed, but one of them must be None.</span>
-<span class="sd">        slope : float or None</span>
-<span class="sd">            The slope of the line. Both *xy2* and *slope* must be passed, but one of</span>
-<span class="sd">            them must be None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="n">xy2</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">slope</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
@@ -1786,8 +1756,8 @@
                 <span class="n">points_transform</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_xy1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy2</span><span class="p">])</span>
             <span class="n">dx</span> <span class="o">=</span> <span class="n">x2</span> <span class="o">-</span> <span class="n">x1</span>
             <span class="n">dy</span> <span class="o">=</span> <span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span>
-            <span class="k">if</span> <span class="n">dx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">dy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                         <span class="sa">f</span><span class="s2">&quot;Cannot draw a line through two identical points &quot;</span>
                         <span class="sa">f</span><span class="s2">&quot;(x=</span><span class="si">{</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="w"> </span><span class="n">x2</span><span class="p">)</span><span class="si">}</span><span class="s2">, y=</span><span class="si">{</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span><span class="w"> </span><span class="n">y2</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
@@ -1801,7 +1771,7 @@
         <span class="p">(</span><span class="n">vxlo</span><span class="p">,</span> <span class="n">vylo</span><span class="p">),</span> <span class="p">(</span><span class="n">vxhi</span><span class="p">,</span> <span class="n">vyhi</span><span class="p">)</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">transScale</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ax</span><span class="o">.</span><span class="n">viewLim</span><span class="p">)</span>
         <span class="c1"># General case: find intersections with view limits in either</span>
         <span class="c1"># direction, and draw between the middle two points.</span>
-        <span class="k">if</span> <span class="n">slope</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">vxlo</span><span class="p">,</span> <span class="n">y1</span>
             <span class="n">stop</span> <span class="o">=</span> <span class="n">vxhi</span><span class="p">,</span> <span class="n">y1</span>
         <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">slope</span><span class="p">):</span>
@@ -1820,65 +1790,6 @@
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">renderer</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_transformed_path</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Force regen.</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">renderer</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">get_xy1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the *xy1* value of the line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy1</span>
-
-    <span class="k">def</span> <span class="nf">get_xy2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the *xy2* value of the line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy2</span>
-
-    <span class="k">def</span> <span class="nf">get_slope</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the *slope* value of the line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slope</span>
-
-    <span class="k">def</span> <span class="nf">set_xy1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the *xy1* value of the line.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x, y : float</span>
-<span class="sd">            Points for the line to pass through.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xy1</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
-
-    <span class="k">def</span> <span class="nf">set_xy2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the *xy2* value of the line.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x, y : float</span>
-<span class="sd">            Points for the line to pass through.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slope</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_xy2</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot set an &#39;xy2&#39; value while &#39;slope&#39; is set;&quot;</span>
-                             <span class="s2">&quot; they differ but their functionalities overlap&quot;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">set_slope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slope</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set the *slope* value of the line.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        slope : float</span>
-<span class="sd">            The slope of the line.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xy2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_slope</span> <span class="o">=</span> <span class="n">slope</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot set a &#39;slope&#39; value while &#39;xy2&#39; is set;&quot;</span>
-                             <span class="s2">&quot; they differ but their functionalities overlap&quot;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">VertexSelector</span><span class="p">:</span>
@@ -1914,7 +1825,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        line : `~matplotlib.lines.Line2D`</span>
+<span class="sd">        line : `.Line2D`</span>
 <span class="sd">            The line must already have been added to an `~.axes.Axes` and must</span>
 <span class="sd">            have its picker property set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1967,7 +1878,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

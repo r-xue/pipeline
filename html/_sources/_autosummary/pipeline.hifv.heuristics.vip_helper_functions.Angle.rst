@@ -45,13 +45,16 @@ pipeline.hifv.heuristics.vip\_helper\_functions.Angle
       ~Angle.insert
       ~Angle.is_within_bounds
       ~Angle.item
+      ~Angle.itemset
       ~Angle.max
       ~Angle.mean
       ~Angle.min
       ~Angle.nansum
+      ~Angle.newbyteorder
       ~Angle.nonzero
       ~Angle.partition
       ~Angle.prod
+      ~Angle.ptp
       ~Angle.put
       ~Angle.ravel
       ~Angle.repeat
@@ -68,7 +71,6 @@ pipeline.hifv.heuristics.vip\_helper\_functions.Angle
       ~Angle.swapaxes
       ~Angle.take
       ~Angle.to
-      ~Angle.to_device
       ~Angle.to_string
       ~Angle.to_value
       ~Angle.tobytes
@@ -94,7 +96,6 @@ pipeline.hifv.heuristics.vip\_helper\_functions.Angle
       ~Angle.cgs
       ~Angle.ctypes
       ~Angle.data
-      ~Angle.device
       ~Angle.dms
       ~Angle.dtype
       ~Angle.equivalencies
@@ -105,13 +106,9 @@ pipeline.hifv.heuristics.vip\_helper\_functions.Angle
       ~Angle.imag
       ~Angle.info
       ~Angle.isscalar
-      ~Angle.itemset
       ~Angle.itemsize
-      ~Angle.mT
       ~Angle.nbytes
       ~Angle.ndim
-      ~Angle.newbyteorder
-      ~Angle.ptp
       ~Angle.real
       ~Angle.shape
       ~Angle.si

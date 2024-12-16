@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.extern.tsys_contamination.minimize &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -192,14 +192,14 @@ derivatives (<cite>fun</cite>, <cite>jac</cite> and <cite>hess</cite> functions)
 <li><p>‘L-BFGS-B’    <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘TNC’         <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘COBYLA’      <span class="xref std std-ref">(see here)</span></p></li>
-<li><p>‘COBYQA’      <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘SLSQP’       <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘trust-constr’<span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘dogleg’      <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘trust-ncg’   <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘trust-exact’ <span class="xref std std-ref">(see here)</span></p></li>
 <li><p>‘trust-krylov’ <span class="xref std std-ref">(see here)</span></p></li>
-<li><p>custom - a callable object, see below for description.</p></li>
+<li><p>custom - a callable object (added in version 0.14.0),
+see below for description.</p></li>
 </ul>
 </div></blockquote>
 <p>If not given, chosen to be one of <code class="docutils literal notranslate"><span class="pre">BFGS</span></code>, <code class="docutils literal notranslate"><span class="pre">L-BFGS-B</span></code>, <code class="docutils literal notranslate"><span class="pre">SLSQP</span></code>,
@@ -261,9 +261,8 @@ Hessian times an arbitrary vector:</p>
 dimension (n,) and <code class="docutils literal notranslate"><span class="pre">args</span></code> is a tuple with the fixed
 parameters.</p>
 </li>
-<li><p><strong>bounds</strong> (sequence or <cite>Bounds</cite>, optional) – Bounds on variables for Nelder-Mead, L-BFGS-B, TNC, SLSQP, Powell,
-trust-constr, COBYLA, and COBYQA methods. There are two ways to specify
-the bounds:</p>
+<li><p><strong>bounds</strong> (sequence or <cite>Bounds</cite>, optional) – Bounds on variables for Nelder-Mead, L-BFGS-B, TNC, SLSQP, Powell, and
+trust-constr methods. There are two ways to specify the bounds:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Instance of <cite>Bounds</cite> class.</p></li>
@@ -272,9 +271,9 @@ is used to specify no bound.</p></li>
 </ol>
 </div></blockquote>
 </li>
-<li><p><strong>constraints</strong> (<em>{Constraint, dict} or List of {Constraint, dict}, optional</em>) – Constraints definition. Only for COBYLA, COBYQA, SLSQP and trust-constr.</p>
-<p>Constraints for ‘trust-constr’ and ‘cobyqa’ are defined as a single object
-or a list of objects specifying constraints to the optimization problem.
+<li><p><strong>constraints</strong> (<em>{Constraint, dict} or List of {Constraint, dict}, optional</em>) – Constraints definition. Only for COBYLA, SLSQP and trust-constr.</p>
+<p>Constraints for ‘trust-constr’ are defined as a single object or a
+list of objects specifying constraints to the optimization problem.
 Available constraints are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -304,13 +303,12 @@ Note that COBYLA only supports inequality constraints.</p>
 minimization algorithm sets some relevant solver-specific tolerance(s)
 equal to <cite>tol</cite>. For detailed control, use solver-specific
 options.</p></li>
-<li><p><strong>options</strong> (<em>dict, optional</em>) – A dictionary of solver options. All methods except <cite>TNC</cite> accept the
-following generic options:</p>
+<li><p><strong>options</strong> (<em>dict, optional</em>) – A dictionary of solver options. All methods accept the following
+generic options:</p>
 <blockquote>
-<div><dl>
+<div><dl class="simple">
 <dt>maxiter<span class="classifier">int</span></dt><dd><p>Maximum number of iterations to perform. Depending on the
 method each iteration may use several function evaluations.</p>
-<p>For <cite>TNC</cite> use <cite>maxfun</cite> instead of <cite>maxiter</cite>.</p>
 </dd>
 <dt>disp<span class="classifier">bool</span></dt><dd><p>Set to True to print convergence messages.</p>
 </dd>
@@ -318,25 +316,20 @@ method each iteration may use several function evaluations.</p>
 </div></blockquote>
 <p>For method-specific options, see <code class="xref py py-func docutils literal notranslate"><span class="pre">show_options()</span></code>.</p>
 </li>
-<li><p><strong>callback</strong> (<em>callable, optional</em>) – A callable called after each iteration.</p>
-<p>All methods except TNC, SLSQP, and COBYLA support a callable with
+<li><p><strong>callback</strong> (<em>callable, optional</em>) – Called after each iteration. For ‘trust-constr’ it is a callable with
 the signature:</p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">callback(intermediate_result:</span> <span class="pre">OptimizeResult)</span></code></p>
+<div><p><code class="docutils literal notranslate"><span class="pre">callback(xk,</span> <span class="pre">OptimizeResult</span> <span class="pre">state)</span> <span class="pre">-&gt;</span> <span class="pre">bool</span></code></p>
 </div></blockquote>
-<p>where <code class="docutils literal notranslate"><span class="pre">intermediate_result</span></code> is a keyword parameter containing an
-<cite>OptimizeResult</cite> with attributes <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">fun</span></code>, the present values
-of the parameter vector and objective function. Note that the name
-of the parameter must be <code class="docutils literal notranslate"><span class="pre">intermediate_result</span></code> for the callback
-to be passed an <cite>OptimizeResult</cite>. These methods will also terminate if
-the callback raises <code class="docutils literal notranslate"><span class="pre">StopIteration</span></code>.</p>
-<p>All methods except trust-constr (also) support a signature like:</p>
+<p>where <code class="docutils literal notranslate"><span class="pre">xk</span></code> is the current parameter vector. and <code class="docutils literal notranslate"><span class="pre">state</span></code>
+is an <cite>OptimizeResult</cite> object, with the same fields
+as the ones from the return. If callback returns True
+the algorithm execution is terminated.
+For all the other methods, the signature is:</p>
 <blockquote>
 <div><p><code class="docutils literal notranslate"><span class="pre">callback(xk)</span></code></p>
 </div></blockquote>
 <p>where <code class="docutils literal notranslate"><span class="pre">xk</span></code> is the current parameter vector.</p>
-<p>Introspection is used to determine which of the signatures above to
-invoke.</p>
 </li>
 </ul>
 </dd>
@@ -366,31 +359,31 @@ Boolean flag indicating if the optimizer exited successfully and
 <p><strong>Unconstrained minimization</strong></p>
 <p>Method <span class="xref std std-ref">CG</span> uses a nonlinear conjugate
 gradient algorithm by Polak and Ribiere, a variant of the
-Fletcher-Reeves method described in <a class="footnote-reference brackets" href="#id29" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> pp.120-122. Only the
+Fletcher-Reeves method described in <a class="footnote-reference brackets" href="#id28" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> pp.120-122. Only the
 first derivatives are used.</p>
 <p>Method <span class="xref std std-ref">BFGS</span> uses the quasi-Newton
-method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS) <a class="footnote-reference brackets" href="#id29" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>
+method of Broyden, Fletcher, Goldfarb, and Shanno (BFGS) <a class="footnote-reference brackets" href="#id28" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>
 pp. 136. It uses the first derivatives only. BFGS has proven good
 performance even for non-smooth optimizations. This method also
 returns an approximation of the Hessian inverse, stored as
 <cite>hess_inv</cite> in the OptimizeResult object.</p>
 <p>Method <span class="xref std std-ref">Newton-CG</span> uses a
-Newton-CG algorithm <a class="footnote-reference brackets" href="#id29" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> pp. 168 (also known as the truncated
+Newton-CG algorithm <a class="footnote-reference brackets" href="#id28" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> pp. 168 (also known as the truncated
 Newton method). It uses a CG method to the compute the search
 direction. See also <em>TNC</em> method for a box-constrained
 minimization with a similar algorithm. Suitable for large-scale
 problems.</p>
 <p>Method <span class="xref std std-ref">dogleg</span> uses the dog-leg
-trust-region algorithm <a class="footnote-reference brackets" href="#id29" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for unconstrained minimization. This
+trust-region algorithm <a class="footnote-reference brackets" href="#id28" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for unconstrained minimization. This
 algorithm requires the gradient and Hessian; furthermore the
 Hessian is required to be positive definite.</p>
 <p>Method <span class="xref std std-ref">trust-ncg</span> uses the
-Newton conjugate gradient trust-region algorithm <a class="footnote-reference brackets" href="#id29" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for
+Newton conjugate gradient trust-region algorithm <a class="footnote-reference brackets" href="#id28" id="id5" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a> for
 unconstrained minimization. This algorithm requires the gradient
 and either the Hessian or a function that computes the product of
 the Hessian with a given vector. Suitable for large-scale problems.</p>
 <p>Method <span class="xref std std-ref">trust-krylov</span> uses
-the Newton GLTR trust-region algorithm <a class="footnote-reference brackets" href="#id38" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id41" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a> for unconstrained
+the Newton GLTR trust-region algorithm <a class="footnote-reference brackets" href="#id37" id="id6" role="doc-noteref"><span class="fn-bracket">[</span>14<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id40" id="id7" role="doc-noteref"><span class="fn-bracket">[</span>15<span class="fn-bracket">]</span></a> for unconstrained
 minimization. This algorithm requires the gradient
 and either the Hessian or a function that computes the product of
 the Hessian with a given vector. Suitable for large-scale problems.
@@ -398,22 +391,22 @@ On indefinite problems it requires usually less iterations than the
 <cite>trust-ncg</cite> method and is recommended for medium and large-scale problems.</p>
 <p>Method <span class="xref std std-ref">trust-exact</span>
 is a trust-region method for unconstrained minimization in which
-quadratic subproblems are solved almost exactly <a class="footnote-reference brackets" href="#id37" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>. This
+quadratic subproblems are solved almost exactly <a class="footnote-reference brackets" href="#id36" id="id8" role="doc-noteref"><span class="fn-bracket">[</span>13<span class="fn-bracket">]</span></a>. This
 algorithm requires the gradient and the Hessian (which is
 <em>not</em> required to be positive definite). It is, in many
 situations, the Newton method to converge in fewer iterations
 and the most recommended for small and medium-size problems.</p>
 <p><strong>Bound-Constrained minimization</strong></p>
 <p>Method <span class="xref std std-ref">Nelder-Mead</span> uses the
-Simplex algorithm <a class="footnote-reference brackets" href="#id25" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id26" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. This algorithm is robust in many
+Simplex algorithm <a class="footnote-reference brackets" href="#id24" id="id9" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id25" id="id10" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>. This algorithm is robust in many
 applications. However, if numerical computation of derivative can be
 trusted, other algorithms using the first and/or second derivatives
 information might be preferred for their better performance in
 general.</p>
 <p>Method <span class="xref std std-ref">L-BFGS-B</span> uses the L-BFGS-B
-algorithm <a class="footnote-reference brackets" href="#id30" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id31" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> for bound constrained minimization.</p>
+algorithm <a class="footnote-reference brackets" href="#id29" id="id11" role="doc-noteref"><span class="fn-bracket">[</span>6<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id30" id="id12" role="doc-noteref"><span class="fn-bracket">[</span>7<span class="fn-bracket">]</span></a> for bound constrained minimization.</p>
 <p>Method <span class="xref std std-ref">Powell</span> is a modification
-of Powell’s method <a class="footnote-reference brackets" href="#id27" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id28" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> which is a conjugate direction
+of Powell’s method <a class="footnote-reference brackets" href="#id26" id="id13" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id27" id="id14" role="doc-noteref"><span class="fn-bracket">[</span>4<span class="fn-bracket">]</span></a> which is a conjugate direction
 method. It performs sequential one-dimensional minimizations along
 each vector of the directions set (<cite>direc</cite> field in <cite>options</cite> and
 <cite>info</cite>), which is updated at each iteration of the main
@@ -430,7 +423,7 @@ iteration will be within the bounds. If <cite>direc</cite> is not full rank,
 then some parameters may not be optimized and the solution is not
 guaranteed to be within the bounds.</p>
 <p>Method <span class="xref std std-ref">TNC</span> uses a truncated Newton
-algorithm <a class="footnote-reference brackets" href="#id29" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id32" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a> to minimize a function with variables subject
+algorithm <a class="footnote-reference brackets" href="#id28" id="id15" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id31" id="id16" role="doc-noteref"><span class="fn-bracket">[</span>8<span class="fn-bracket">]</span></a> to minimize a function with variables subject
 to bounds. This algorithm uses gradient information; it is also
 called Newton Conjugate-Gradient. It differs from the <em>Newton-CG</em>
 method described above as it wraps a C implementation and allows
@@ -438,33 +431,27 @@ each variable to be given upper and lower bounds.</p>
 <p><strong>Constrained Minimization</strong></p>
 <p>Method <span class="xref std std-ref">COBYLA</span> uses the
 Constrained Optimization BY Linear Approximation (COBYLA) method
-<a class="footnote-reference brackets" href="#id33" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id34" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id35" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>. The algorithm is based on linear
+<a class="footnote-reference brackets" href="#id32" id="id17" role="doc-noteref"><span class="fn-bracket">[</span>9<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id33" id="id18" role="doc-noteref"><span class="fn-bracket">[</span>10<span class="fn-bracket">]</span></a>, <a class="footnote-reference brackets" href="#id34" id="id19" role="doc-noteref"><span class="fn-bracket">[</span>11<span class="fn-bracket">]</span></a>. The algorithm is based on linear
 approximations to the objective function and each constraint. The
 method wraps a FORTRAN implementation of the algorithm. The
 constraints functions ‘fun’ may return either a single number
 or an array or list of numbers.</p>
-<p>Method <span class="xref std std-ref">COBYQA</span> uses the Constrained
-Optimization BY Quadratic Approximations (COBYQA) method <a class="footnote-reference brackets" href="#id44" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>18<span class="fn-bracket">]</span></a>. The
-algorithm is a derivative-free trust-region SQP method based on quadratic
-approximations to the objective function and each nonlinear constraint. The
-bounds are treated as unrelaxable constraints, in the sense that the
-algorithm always respects them throughout the optimization process.</p>
 <p>Method <span class="xref std std-ref">SLSQP</span> uses Sequential
 Least SQuares Programming to minimize a function of several
 variables with any combination of bounds, equality and inequality
 constraints. The method wraps the SLSQP Optimization subroutine
-originally implemented by Dieter Kraft <a class="footnote-reference brackets" href="#id36" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>. Note that the
+originally implemented by Dieter Kraft <a class="footnote-reference brackets" href="#id35" id="id20" role="doc-noteref"><span class="fn-bracket">[</span>12<span class="fn-bracket">]</span></a>. Note that the
 wrapper handles infinite values in bounds by converting them into
 large floating values.</p>
 <p>Method <span class="xref std std-ref">trust-constr</span> is a
-trust-region algorithm for constrained optimization. It switches
+trust-region algorithm for constrained optimization. It swiches
 between two implementations depending on the problem definition.
 It is the most versatile constrained minimization algorithm
 implemented in SciPy and the most appropriate for large-scale problems.
 For equality constrained problems it is an implementation of Byrd-Omojokun
-Trust-Region SQP method described in <a class="footnote-reference brackets" href="#id43" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>17<span class="fn-bracket">]</span></a> and in <a class="footnote-reference brackets" href="#id29" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, p. 549. When
-inequality constraints are imposed as well, it switches to the trust-region
-interior point method described in <a class="footnote-reference brackets" href="#id42" id="id24" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>. This interior point algorithm,
+Trust-Region SQP method described in <a class="footnote-reference brackets" href="#id42" id="id21" role="doc-noteref"><span class="fn-bracket">[</span>17<span class="fn-bracket">]</span></a> and in <a class="footnote-reference brackets" href="#id28" id="id22" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>, p. 549. When
+inequality constraints are imposed as well, it swiches to the trust-region
+interior point method described in <a class="footnote-reference brackets" href="#id41" id="id23" role="doc-noteref"><span class="fn-bracket">[</span>16<span class="fn-bracket">]</span></a>. This interior point algorithm,
 in turn, solves inequality constraints by introducing slack variables
 and solving a sequence of equality-constrained barrier problems
 for progressively smaller values of the barrier parameter.
@@ -551,14 +538,17 @@ object.</p>
 arbitrary parameters; the set of parameters accepted by <cite>minimize</cite> may
 expand in future versions and then these parameters will be passed to
 the method.  You can find an example in the scipy.optimize tutorial.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 0.11.0.</span></p>
+</div>
 <p class="rubric">References</p>
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id25" role="doc-footnote">
+<aside class="footnote brackets" id="id24" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id9">1</a><span class="fn-bracket">]</span></span>
 <p>Nelder, J A, and R Mead. 1965. A Simplex Method for Function
 Minimization. The Computer Journal 7: 308-13.</p>
 </aside>
-<aside class="footnote brackets" id="id26" role="doc-footnote">
+<aside class="footnote brackets" id="id25" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id10">2</a><span class="fn-bracket">]</span></span>
 <p>Wright M H. 1996. Direct search methods: Once scorned, now
 respectable, in Numerical Analysis 1995: Proceedings of the 1995
@@ -566,100 +556,93 @@ Dundee Biennial Conference in Numerical Analysis (Eds. D F
 Griffiths and G A Watson). Addison Wesley Longman, Harlow, UK.
 191-208.</p>
 </aside>
-<aside class="footnote brackets" id="id27" role="doc-footnote">
+<aside class="footnote brackets" id="id26" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id13">3</a><span class="fn-bracket">]</span></span>
 <p>Powell, M J D. 1964. An efficient method for finding the minimum of
 a function of several variables without calculating derivatives. The
 Computer Journal 7: 155-162.</p>
 </aside>
-<aside class="footnote brackets" id="id28" role="doc-footnote">
+<aside class="footnote brackets" id="id27" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id14">4</a><span class="fn-bracket">]</span></span>
 <p>Press W, S A Teukolsky, W T Vetterling and B P Flannery.
 Numerical Recipes (any edition), Cambridge University Press.</p>
 </aside>
-<aside class="footnote brackets" id="id29" role="doc-footnote">
+<aside class="footnote brackets" id="id28" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id15">6</a>,<a role="doc-backlink" href="#id23">7</a>,<a role="doc-backlink" href="#id45">8</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id3">3</a>,<a role="doc-backlink" href="#id4">4</a>,<a role="doc-backlink" href="#id5">5</a>,<a role="doc-backlink" href="#id15">6</a>,<a role="doc-backlink" href="#id22">7</a>,<a role="doc-backlink" href="#id43">8</a>)</span>
 <p>Nocedal, J, and S J Wright. 2006. Numerical Optimization.
 Springer New York.</p>
 </aside>
-<aside class="footnote brackets" id="id30" role="doc-footnote">
+<aside class="footnote brackets" id="id29" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id11">6</a><span class="fn-bracket">]</span></span>
 <p>Byrd, R H and P Lu and J. Nocedal. 1995. A Limited Memory
 Algorithm for Bound Constrained Optimization. SIAM Journal on
 Scientific and Statistical Computing 16 (5): 1190-1208.</p>
 </aside>
-<aside class="footnote brackets" id="id31" role="doc-footnote">
+<aside class="footnote brackets" id="id30" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id12">7</a><span class="fn-bracket">]</span></span>
 <p>Zhu, C and R H Byrd and J Nocedal. 1997. L-BFGS-B: Algorithm
 778: L-BFGS-B, FORTRAN routines for large scale bound constrained
 optimization. ACM Transactions on Mathematical Software 23 (4):
 550-560.</p>
 </aside>
-<aside class="footnote brackets" id="id32" role="doc-footnote">
+<aside class="footnote brackets" id="id31" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id16">8</a><span class="fn-bracket">]</span></span>
 <p>Nash, S G. Newton-Type Minimization Via the Lanczos Method.
 1984. SIAM Journal of Numerical Analysis 21: 770-778.</p>
 </aside>
-<aside class="footnote brackets" id="id33" role="doc-footnote">
+<aside class="footnote brackets" id="id32" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id17">9</a><span class="fn-bracket">]</span></span>
 <p>Powell, M J D. A direct search optimization method that models
 the objective and constraint functions by linear interpolation.
 1994. Advances in Optimization and Numerical Analysis, eds. S. Gomez
 and J-P Hennart, Kluwer Academic (Dordrecht), 51-67.</p>
 </aside>
-<aside class="footnote brackets" id="id34" role="doc-footnote">
+<aside class="footnote brackets" id="id33" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id18">10</a><span class="fn-bracket">]</span></span>
 <p>Powell M J D. Direct search algorithms for optimization
 calculations. 1998. Acta Numerica 7: 287-336.</p>
 </aside>
-<aside class="footnote brackets" id="id35" role="doc-footnote">
+<aside class="footnote brackets" id="id34" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id19">11</a><span class="fn-bracket">]</span></span>
 <p>Powell M J D. A view of algorithms for optimization without
 derivatives. 2007.Cambridge University Technical Report DAMTP
 2007/NA03</p>
 </aside>
-<aside class="footnote brackets" id="id36" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">12</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id35" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">12</a><span class="fn-bracket">]</span></span>
 <p>Kraft, D. A software package for sequential quadratic
 programming. 1988. Tech. Rep. DFVLR-FB 88-28, DLR German Aerospace
 Center – Institute for Flight Mechanics, Koln, Germany.</p>
 </aside>
-<aside class="footnote brackets" id="id37" role="doc-footnote">
+<aside class="footnote brackets" id="id36" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id8">13</a><span class="fn-bracket">]</span></span>
 <p>Conn, A. R., Gould, N. I., and Toint, P. L.
 Trust region methods. 2000. Siam. pp. 169-200.</p>
 </aside>
-<aside class="footnote brackets" id="id38" role="doc-footnote">
+<aside class="footnote brackets" id="id37" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id6">14</a><span class="fn-bracket">]</span></span>
 <p>F. Lenders, C. Kirches, A. Potschka: “trlib: A vector-free
 implementation of the GLTR method for iterative solution of
-the trust region problem”, <a href="#id39"><span class="problematic" id="id40">:arxiv:`1611.04718`</span></a></p>
+the trust region problem”, <a href="#id38"><span class="problematic" id="id39">:arxiv:`1611.04718`</span></a></p>
 </aside>
-<aside class="footnote brackets" id="id41" role="doc-footnote">
+<aside class="footnote brackets" id="id40" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">15</a><span class="fn-bracket">]</span></span>
 <p>N. Gould, S. Lucidi, M. Roma, P. Toint: “Solving the
 Trust-Region Subproblem using the Lanczos Method”,
 SIAM J. Optim., 9(2), 504–525, (1999).</p>
 </aside>
-<aside class="footnote brackets" id="id42" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id24">16</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id41" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id23">16</a><span class="fn-bracket">]</span></span>
 <p>Byrd, Richard H., Mary E. Hribar, and Jorge Nocedal. 1999.
 An interior point algorithm for large-scale nonlinear  programming.
 SIAM Journal on Optimization 9.4: 877-900.</p>
 </aside>
-<aside class="footnote brackets" id="id43" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id22">17</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id42" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id21">17</a><span class="fn-bracket">]</span></span>
 <p>Lalee, Marucha, Jorge Nocedal, and Todd Plantega. 1998. On the
 implementation of an algorithm for large-scale equality constrained
 optimization. SIAM Journal on Optimization 8.3: 682-706.</p>
-</aside>
-<aside class="footnote brackets" id="id44" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id20">18</a><span class="fn-bracket">]</span></span>
-<p>Ragonneau, T. M. <em>Model-Based Derivative-Free Optimization Methods
-and Software</em>. PhD thesis, Department of Applied Mathematics, The Hong
-Kong Polytechnic University, Hong Kong, China, 2022. URL:
-<a class="reference external" href="https://theses.lib.polyu.edu.hk/handle/200/12294">https://theses.lib.polyu.edu.hk/handle/200/12294</a>.</p>
 </aside>
 </aside>
 <p class="rubric">Examples</p>
@@ -690,17 +673,15 @@ options:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 <span class="go">Optimization terminated successfully.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">res</span><span class="o">.</span><span class="n">hess_inv</span>
-<span class="go">array([</span>
-<span class="go">    [ 0.00749589,  0.01255155,  0.02396251,  0.04750988,  0.09495377],  # may vary</span>
-<span class="go">    [ 0.01255155,  0.02510441,  0.04794055,  0.09502834,  0.18996269],</span>
-<span class="go">    [ 0.02396251,  0.04794055,  0.09631614,  0.19092151,  0.38165151],</span>
-<span class="go">    [ 0.04750988,  0.09502834,  0.19092151,  0.38341252,  0.7664427 ],</span>
-<span class="go">    [ 0.09495377,  0.18996269,  0.38165151,  0.7664427,   1.53713523]</span>
-<span class="go">])</span>
+<span class="go">array([[ 0.00749589,  0.01255155,  0.02396251,  0.04750988,  0.09495377],  # may vary</span>
+<span class="go">       [ 0.01255155,  0.02510441,  0.04794055,  0.09502834,  0.18996269],</span>
+<span class="go">       [ 0.02396251,  0.04794055,  0.09631614,  0.19092151,  0.38165151],</span>
+<span class="go">       [ 0.04750988,  0.09502834,  0.19092151,  0.38341252,  0.7664427 ],</span>
+<span class="go">       [ 0.09495377,  0.18996269,  0.38165151,  0.7664427,   1.53713523]])</span>
 </pre></div>
 </div>
 <p>Next, consider a minimization problem with several constraints (namely
-Example 16.4 from <a class="footnote-reference brackets" href="#id29" id="id45" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>). The objective function is:</p>
+Example 16.4 from <a class="footnote-reference brackets" href="#id28" id="id43" role="doc-noteref"><span class="fn-bracket">[</span>5<span class="fn-bracket">]</span></a>). The objective function is:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mf">2.5</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 </pre></div>
 </div>
@@ -735,7 +716,7 @@ Example 16.4 from <a class="footnote-reference brackets" href="#id29" id="id45" 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

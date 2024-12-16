@@ -50,9 +50,12 @@ pipeline.hsd.tasks.baseline.plotter.MaskedArray
       ~MaskedArray.ids
       ~MaskedArray.iscontiguous
       ~MaskedArray.item
+      ~MaskedArray.itemset
       ~MaskedArray.max
       ~MaskedArray.mean
       ~MaskedArray.min
+      ~MaskedArray.mini
+      ~MaskedArray.newbyteorder
       ~MaskedArray.nonzero
       ~MaskedArray.partition
       ~MaskedArray.prod
@@ -76,7 +79,6 @@ pipeline.hsd.tasks.baseline.plotter.MaskedArray
       ~MaskedArray.sum
       ~MaskedArray.swapaxes
       ~MaskedArray.take
-      ~MaskedArray.to_device
       ~MaskedArray.tobytes
       ~MaskedArray.tofile
       ~MaskedArray.toflex
@@ -102,20 +104,16 @@ pipeline.hsd.tasks.baseline.plotter.MaskedArray
       ~MaskedArray.baseclass
       ~MaskedArray.ctypes
       ~MaskedArray.data
-      ~MaskedArray.device
       ~MaskedArray.dtype
       ~MaskedArray.fill_value
       ~MaskedArray.flags
       ~MaskedArray.flat
       ~MaskedArray.hardmask
       ~MaskedArray.imag
-      ~MaskedArray.itemset
       ~MaskedArray.itemsize
-      ~MaskedArray.mT
       ~MaskedArray.mask
       ~MaskedArray.nbytes
       ~MaskedArray.ndim
-      ~MaskedArray.newbyteorder
       ~MaskedArray.real
       ~MaskedArray.recordmask
       ~MaskedArray.shape

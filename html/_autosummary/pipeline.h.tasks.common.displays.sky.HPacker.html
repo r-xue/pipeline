@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.common.displays.sky.HPacker &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -162,7 +162,7 @@
 <h1>pipeline.h.tasks.common.displays.sky.HPacker<a class="headerlink" href="#pipeline-h-tasks-common-displays-sky-hpacker" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HPacker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'baseline'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fixed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#HPacker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">HPacker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'baseline'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fixed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">children</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#HPacker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PackerBase</span></code></p>
 <p>HPacker packs its children horizontally, automatically adjusting their
 relative positions at draw time.</p>
@@ -199,181 +199,184 @@ relative positions at draw time.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_animated" title="pipeline.h.tasks.common.displays.sky.HPacker.get_animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_animated</span></code></a></p></td>
 <td><p>Return whether the artist is animated.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_bbox" title="pipeline.h.tasks.common.displays.sky.HPacker.get_bbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bbox</span></code></a></p></td>
-<td><p>Return the bbox of the offsetbox, ignoring parent offsets.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_children" title="pipeline.h.tasks.common.displays.sky.HPacker.get_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_children</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_children" title="pipeline.h.tasks.common.displays.sky.HPacker.get_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_children</span></code></a></p></td>
 <td><p>Return a list of the child <cite>.Artist</cite>s.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_box" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_box</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_box" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_box</span></code></a></p></td>
 <td><p>Return the clipbox.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_on" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_on</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_on" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_on</span></code></a></p></td>
 <td><p>Return whether the artist uses clipping.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_path" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_path</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_clip_path" title="pipeline.h.tasks.common.displays.sky.HPacker.get_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_clip_path</span></code></a></p></td>
 <td><p>Return the clip path.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_cursor_data" title="pipeline.h.tasks.common.displays.sky.HPacker.get_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_cursor_data" title="pipeline.h.tasks.common.displays.sky.HPacker.get_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cursor_data</span></code></a></p></td>
 <td><p>Return the cursor data for a given event.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_figure" title="pipeline.h.tasks.common.displays.sky.HPacker.get_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_extent" title="pipeline.h.tasks.common.displays.sky.HPacker.get_extent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_extent</span></code></a></p></td>
+<td><p>Return a tuple <code class="docutils literal notranslate"><span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">xdescent,</span> <span class="pre">ydescent</span></code> of the box.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_extent_offsets" title="pipeline.h.tasks.common.displays.sky.HPacker.get_extent_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_extent_offsets</span></code></a></p></td>
+<td><p>Update offset of the children and return the extent of the box.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_figure" title="pipeline.h.tasks.common.displays.sky.HPacker.get_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_figure</span></code></a></p></td>
 <td><p>Return the <cite>.Figure</cite> instance the artist belongs to.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_gid" title="pipeline.h.tasks.common.displays.sky.HPacker.get_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gid</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_gid" title="pipeline.h.tasks.common.displays.sky.HPacker.get_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_gid</span></code></a></p></td>
 <td><p>Return the group id.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_in_layout" title="pipeline.h.tasks.common.displays.sky.HPacker.get_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_in_layout</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_in_layout" title="pipeline.h.tasks.common.displays.sky.HPacker.get_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_in_layout</span></code></a></p></td>
 <td><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout calculations.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_label" title="pipeline.h.tasks.common.displays.sky.HPacker.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_label" title="pipeline.h.tasks.common.displays.sky.HPacker.get_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_label</span></code></a></p></td>
 <td><p>Return the label used for this artist in the legend.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_mouseover" title="pipeline.h.tasks.common.displays.sky.HPacker.get_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mouseover</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_mouseover" title="pipeline.h.tasks.common.displays.sky.HPacker.get_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_mouseover</span></code></a></p></td>
 <td><p>Return whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_offset" title="pipeline.h.tasks.common.displays.sky.HPacker.get_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_offset" title="pipeline.h.tasks.common.displays.sky.HPacker.get_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_offset</span></code></a></p></td>
 <td><p>Return the offset as a tuple (x, y).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_path_effects</span></code></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a></p></td>
 <td><p>Return the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_rasterized" title="pipeline.h.tasks.common.displays.sky.HPacker.get_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_rasterized" title="pipeline.h.tasks.common.displays.sky.HPacker.get_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_rasterized</span></code></a></p></td>
 <td><p>Return whether the artist is to be rasterized.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_sketch_params" title="pipeline.h.tasks.common.displays.sky.HPacker.get_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_sketch_params" title="pipeline.h.tasks.common.displays.sky.HPacker.get_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sketch_params</span></code></a></p></td>
 <td><p>Return the sketch parameters for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_snap" title="pipeline.h.tasks.common.displays.sky.HPacker.get_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_snap" title="pipeline.h.tasks.common.displays.sky.HPacker.get_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_snap</span></code></a></p></td>
 <td><p>Return the snap setting.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_tightbbox" title="pipeline.h.tasks.common.displays.sky.HPacker.get_tightbbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_tightbbox" title="pipeline.h.tasks.common.displays.sky.HPacker.get_tightbbox"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_tightbbox</span></code></a></p></td>
 <td><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_transform" title="pipeline.h.tasks.common.displays.sky.HPacker.get_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_transform" title="pipeline.h.tasks.common.displays.sky.HPacker.get_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transform</span></code></a></p></td>
 <td><p>Return the <cite>.Transform</cite> instance used by this artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_transformed_clip_path_and_affine" title="pipeline.h.tasks.common.displays.sky.HPacker.get_transformed_clip_path_and_affine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transformed_clip_path_and_affine</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_transformed_clip_path_and_affine" title="pipeline.h.tasks.common.displays.sky.HPacker.get_transformed_clip_path_and_affine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_transformed_clip_path_and_affine</span></code></a></p></td>
 <td><p>Return the clip path with the non-affine part of its transformation applied, and the remaining affine part of its transformation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_url" title="pipeline.h.tasks.common.displays.sky.HPacker.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_url" title="pipeline.h.tasks.common.displays.sky.HPacker.get_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_url</span></code></a></p></td>
 <td><p>Return the url.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_visible" title="pipeline.h.tasks.common.displays.sky.HPacker.get_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_visible" title="pipeline.h.tasks.common.displays.sky.HPacker.get_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible</span></code></a></p></td>
 <td><p>Return the visibility.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_visible_children" title="pipeline.h.tasks.common.displays.sky.HPacker.get_visible_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible_children</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_visible_children" title="pipeline.h.tasks.common.displays.sky.HPacker.get_visible_children"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_visible_children</span></code></a></p></td>
 <td><p>Return a list of the visible child <cite>.Artist</cite>s.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_window_extent" title="pipeline.h.tasks.common.displays.sky.HPacker.get_window_extent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_window_extent" title="pipeline.h.tasks.common.displays.sky.HPacker.get_window_extent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_window_extent</span></code></a></p></td>
 <td><p>Get the artist's bounding box in display space.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_zorder" title="pipeline.h.tasks.common.displays.sky.HPacker.get_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zorder</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_zorder" title="pipeline.h.tasks.common.displays.sky.HPacker.get_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_zorder</span></code></a></p></td>
 <td><p>Return the artist's zorder.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.have_units" title="pipeline.h.tasks.common.displays.sky.HPacker.have_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">have_units</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.have_units" title="pipeline.h.tasks.common.displays.sky.HPacker.have_units"><code class="xref py py-obj docutils literal notranslate"><span class="pre">have_units</span></code></a></p></td>
 <td><p>Return whether units are set on any axis.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.is_transform_set" title="pipeline.h.tasks.common.displays.sky.HPacker.is_transform_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transform_set</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.is_transform_set" title="pipeline.h.tasks.common.displays.sky.HPacker.is_transform_set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_transform_set</span></code></a></p></td>
 <td><p>Return whether the Artist has an explicitly set transform.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pchanged" title="pipeline.h.tasks.common.displays.sky.HPacker.pchanged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pchanged</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pchanged" title="pipeline.h.tasks.common.displays.sky.HPacker.pchanged"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pchanged</span></code></a></p></td>
 <td><p>Call all of the registered callbacks.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pick" title="pipeline.h.tasks.common.displays.sky.HPacker.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pick" title="pipeline.h.tasks.common.displays.sky.HPacker.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p></td>
 <td><p>Process a pick event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pickable" title="pipeline.h.tasks.common.displays.sky.HPacker.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pickable" title="pipeline.h.tasks.common.displays.sky.HPacker.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p></td>
 <td><p>Return whether the artist is pickable.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.properties" title="pipeline.h.tasks.common.displays.sky.HPacker.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.properties" title="pipeline.h.tasks.common.displays.sky.HPacker.properties"><code class="xref py py-obj docutils literal notranslate"><span class="pre">properties</span></code></a></p></td>
 <td><p>Return a dictionary of all the properties of the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.remove" title="pipeline.h.tasks.common.displays.sky.HPacker.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.remove" title="pipeline.h.tasks.common.displays.sky.HPacker.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></p></td>
 <td><p>Remove the artist from the figure if possible.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.remove_callback" title="pipeline.h.tasks.common.displays.sky.HPacker.remove_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.remove_callback" title="pipeline.h.tasks.common.displays.sky.HPacker.remove_callback"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_callback</span></code></a></p></td>
 <td><p>Remove a callback based on its observer id.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set" title="pipeline.h.tasks.common.displays.sky.HPacker.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set" title="pipeline.h.tasks.common.displays.sky.HPacker.set"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set</span></code></a></p></td>
 <td><p>Set multiple properties at once.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_agg_filter" title="pipeline.h.tasks.common.displays.sky.HPacker.set_agg_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_agg_filter</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_agg_filter" title="pipeline.h.tasks.common.displays.sky.HPacker.set_agg_filter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_agg_filter</span></code></a></p></td>
 <td><p>Set the agg filter.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_alpha" title="pipeline.h.tasks.common.displays.sky.HPacker.set_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alpha</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_alpha" title="pipeline.h.tasks.common.displays.sky.HPacker.set_alpha"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_alpha</span></code></a></p></td>
 <td><p>Set the alpha value used for blending - not supported on all backends.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_animated" title="pipeline.h.tasks.common.displays.sky.HPacker.set_animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_animated</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_animated" title="pipeline.h.tasks.common.displays.sky.HPacker.set_animated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_animated</span></code></a></p></td>
 <td><p>Set whether the artist is intended to be used in an animation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_box" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_box</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_box" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_box"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_box</span></code></a></p></td>
 <td><p>Set the artist's clip <cite>.Bbox</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_on</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_on</span></code></a></p></td>
 <td><p>Set whether the artist uses clipping.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_path" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_path</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_path" title="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_clip_path</span></code></a></p></td>
 <td><p>Set the artist's clip path.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_figure" title="pipeline.h.tasks.common.displays.sky.HPacker.set_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_figure</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_figure" title="pipeline.h.tasks.common.displays.sky.HPacker.set_figure"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_figure</span></code></a></p></td>
 <td><p>Set the <cite>.Figure</cite> for the <cite>.OffsetBox</cite> and all its children.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_gid" title="pipeline.h.tasks.common.displays.sky.HPacker.set_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gid</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_gid" title="pipeline.h.tasks.common.displays.sky.HPacker.set_gid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gid</span></code></a></p></td>
 <td><p>Set the (group) id for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_height" title="pipeline.h.tasks.common.displays.sky.HPacker.set_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_height</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_height" title="pipeline.h.tasks.common.displays.sky.HPacker.set_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_height</span></code></a></p></td>
 <td><p>Set the height of the box.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout" title="pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_in_layout</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout" title="pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_in_layout</span></code></a></p></td>
 <td><p>Set if artist is to be included in layout calculations, E.g.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_label" title="pipeline.h.tasks.common.displays.sky.HPacker.set_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_label</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_label" title="pipeline.h.tasks.common.displays.sky.HPacker.set_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_label</span></code></a></p></td>
 <td><p>Set a label that will be displayed in the legend.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_mouseover" title="pipeline.h.tasks.common.displays.sky.HPacker.set_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mouseover</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_mouseover" title="pipeline.h.tasks.common.displays.sky.HPacker.set_mouseover"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_mouseover</span></code></a></p></td>
 <td><p>Set whether this artist is queried for custom context information when the mouse cursor moves over it.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_offset" title="pipeline.h.tasks.common.displays.sky.HPacker.set_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_offset" title="pipeline.h.tasks.common.displays.sky.HPacker.set_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_offset</span></code></a></p></td>
 <td><p>Set the offset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_path_effects" title="pipeline.h.tasks.common.displays.sky.HPacker.set_path_effects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_path_effects" title="pipeline.h.tasks.common.displays.sky.HPacker.set_path_effects"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_path_effects</span></code></a></p></td>
 <td><p>Set the path effects.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a></p></td>
 <td><p>Define the picking behavior of the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_rasterized" title="pipeline.h.tasks.common.displays.sky.HPacker.set_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_rasterized" title="pipeline.h.tasks.common.displays.sky.HPacker.set_rasterized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_rasterized</span></code></a></p></td>
 <td><p>Force rasterized (bitmap) drawing for vector graphics output.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_sketch_params" title="pipeline.h.tasks.common.displays.sky.HPacker.set_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_sketch_params" title="pipeline.h.tasks.common.displays.sky.HPacker.set_sketch_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sketch_params</span></code></a></p></td>
 <td><p>Set the sketch parameters.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_snap" title="pipeline.h.tasks.common.displays.sky.HPacker.set_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_snap" title="pipeline.h.tasks.common.displays.sky.HPacker.set_snap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_snap</span></code></a></p></td>
 <td><p>Set the snapping behavior.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_transform" title="pipeline.h.tasks.common.displays.sky.HPacker.set_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_transform" title="pipeline.h.tasks.common.displays.sky.HPacker.set_transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_transform</span></code></a></p></td>
 <td><p>Set the artist transform.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_url" title="pipeline.h.tasks.common.displays.sky.HPacker.set_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_url</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_url" title="pipeline.h.tasks.common.displays.sky.HPacker.set_url"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_url</span></code></a></p></td>
 <td><p>Set the url for the artist.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_visible" title="pipeline.h.tasks.common.displays.sky.HPacker.set_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_visible</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_visible" title="pipeline.h.tasks.common.displays.sky.HPacker.set_visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_visible</span></code></a></p></td>
 <td><p>Set the artist's visibility.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_width" title="pipeline.h.tasks.common.displays.sky.HPacker.set_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_width</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_width" title="pipeline.h.tasks.common.displays.sky.HPacker.set_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_width</span></code></a></p></td>
 <td><p>Set the width of the box.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_zorder" title="pipeline.h.tasks.common.displays.sky.HPacker.set_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_zorder" title="pipeline.h.tasks.common.displays.sky.HPacker.set_zorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_zorder</span></code></a></p></td>
 <td><p>Set the zorder for the artist.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.update" title="pipeline.h.tasks.common.displays.sky.HPacker.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.update" title="pipeline.h.tasks.common.displays.sky.HPacker.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a></p></td>
 <td><p>Update this artist's properties from the dict <em>props</em>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.update_from" title="pipeline.h.tasks.common.displays.sky.HPacker.update_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.update_from" title="pipeline.h.tasks.common.displays.sky.HPacker.update_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_from</span></code></a></p></td>
 <td><p>Copy properties from <em>other</em> to <em>self</em>.</p></td>
 </tr>
 </tbody>
@@ -441,7 +444,7 @@ used for removing the callback with <cite>.remove_callback</cite> later.</p>
 mouseevents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mouseevent</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>)</p>
+<dd class="field-odd"><p><strong>mouseevent</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
@@ -549,12 +552,6 @@ backends.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_bbox">
-<span class="sig-name descname"><span class="pre">get_bbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_bbox" title="Link to this definition"></a></dt>
-<dd><p>Return the bbox of the offsetbox, ignoring parent offsets.</p>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_children">
 <span class="sig-name descname"><span class="pre">get_children</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_children" title="Link to this definition"></a></dt>
 <dd><p>Return a list of the child <cite>.Artist</cite>s.</p>
@@ -598,13 +595,40 @@ the data to a string representation.</p>
 in the status bar of a plot window, while moving the mouse.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>event</strong> (<cite>~matplotlib.backend_bases.MouseEvent</cite>)</p>
+<dd class="field-odd"><p><strong>event</strong> (<cite>matplotlib.backend_bases.MouseEvent</cite>)</p>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.format_cursor_data" title="pipeline.h.tasks.common.displays.sky.HPacker.format_cursor_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">format_cursor_data</span></code></a></p>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_extent">
+<span class="sig-name descname"><span class="pre">get_extent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_extent" title="Link to this definition"></a></dt>
+<dd><p>Return a tuple <code class="docutils literal notranslate"><span class="pre">width,</span> <span class="pre">height,</span> <span class="pre">xdescent,</span> <span class="pre">ydescent</span></code> of the box.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_extent_offsets">
+<span class="sig-name descname"><span class="pre">get_extent_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/matplotlib/offsetbox.html#HPacker.get_extent_offsets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_extent_offsets" title="Link to this definition"></a></dt>
+<dd><p>Update offset of the children and return the extent of the box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>width</em></p></li>
+<li><p><em>height</em></p></li>
+<li><p><em>xdescent</em></p></li>
+<li><p><em>ydescent</em></p></li>
+<li><p><em>list of (xoffset, yoffset) pairs</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -624,7 +648,7 @@ in the status bar of a plot window, while moving the mouse.</p>
 <span class="sig-name descname"><span class="pre">get_in_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Return boolean flag, <code class="docutils literal notranslate"><span class="pre">True</span></code> if artist is included in layout
 calculations.</p>
-<p>E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+<p>E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 </dd></dl>
@@ -644,7 +668,7 @@ when the mouse cursor moves over it.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_offset">
-<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bbox</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_offset" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdescent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydescent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">renderer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_offset" title="Link to this definition"></a></dt>
 <dd><p>Return the offset as a tuple (x, y).</p>
 <p>The extent parameters have to be provided to handle the case where the
 offset is dynamically determined by a callable (see
@@ -652,7 +676,7 @@ offset is dynamically determined by a callable (see
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bbox</strong> (<cite>.Bbox</cite>)</p></li>
+<li><p><strong>width, height, xdescent, ydescent</strong> – Extent parameters.</p></li>
 <li><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass)</p></li>
 </ul>
 </dd>
@@ -663,10 +687,10 @@ offset is dynamically determined by a callable (see
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.get_picker">
 <span class="sig-name descname"><span class="pre">get_picker</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_picker" title="Link to this definition"></a></dt>
 <dd><p>Return the picking behavior of the artist.</p>
-<p>The possible values are described in <cite>.Artist.set_picker</cite>.</p>
+<p>The possible values are described in <cite>.set_picker</cite>.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pickable" title="pipeline.h.tasks.common.displays.sky.HPacker.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pick" title="pipeline.h.tasks.common.displays.sky.HPacker.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -712,15 +736,14 @@ shrunken or expanded.</p></li>
 <dd><p>Like <cite>.Artist.get_window_extent</cite>, but includes any clipping.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>~matplotlib.backend_bases.RendererBase</cite> subclass, optional) – renderer that will be used to draw the figures (i.e.
+<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass) – renderer that will be used to draw the figures (i.e.
 <code class="docutils literal notranslate"><span class="pre">fig.canvas.get_renderer()</span></code>)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).
-Returns None if clipping results in no intersection.</p>
+<dd class="field-even"><p>The enclosing bounding box (in figure pixel coordinates).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>.Bbox</cite> or None</p>
+<dd class="field-odd"><p><cite>.Bbox</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -768,7 +791,7 @@ box at 0, 0.</p>
 <p>Be careful when using this function, the results will not update
 if the artist window extent of the artist changes.  The extent
 can change due to any changes in the transform stack, such as
-changing the Axes limits, the figure size, or the canvas used
+changing the axes limits, the figure size, or the canvas used
 (as is done when saving a figure).  This can lead to unexpected
 behavior where interactive figures will look fine on the screen,
 but will save incorrectly.</p>
@@ -819,7 +842,7 @@ when the mouse cursor moves over it.</p>
 the artist and the artist has picker set.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pickable</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pickable" title="pipeline.h.tasks.common.displays.sky.HPacker.pickable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickable</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -829,7 +852,7 @@ the artist and the artist has picker set.</p>
 <dd><p>Return whether the artist is pickable.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.set_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.get_picker</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">Artist.pick</span></code></p>
+<p><a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.set_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.get_picker" title="pipeline.h.tasks.common.displays.sky.HPacker.get_picker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_picker</span></code></a>, <a class="reference internal" href="#pipeline.h.tasks.common.displays.sky.HPacker.pick" title="pipeline.h.tasks.common.displays.sky.HPacker.pick"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pick</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -845,9 +868,9 @@ the artist and the artist has picker set.</p>
 <dd><p>Remove the artist from the figure if possible.</p>
 <p>The effect will not be visible until the figure is redrawn, e.g.,
 with <cite>.FigureCanvasBase.draw_idle</cite>.  Call <cite>~.axes.Axes.relim</cite> to
-update the Axes limits if desired.</p>
+update the axes limits if desired.</p>
 <p>Note: <cite>~.axes.Axes.relim</cite> will not see collections even if the
-collection was added to the Axes with <em>autolim</em> = True.</p>
+collection was added to the axes with <em>autolim</em> = True.</p>
 <p>Note: there is no support for removing the artist’s legend entry.</p>
 </dd></dl>
 
@@ -870,7 +893,7 @@ collection was added to the Axes with <em>autolim</em> = True.</p>
 <dt>Properties:</dt><dd><p>agg_filter: a filter function, which takes a (m, n, 3) float array and a dpi value, and returns a (m, n, 3) array and two offsets from the bottom left corner of the image
 alpha: scalar or None
 animated: bool
-clip_box: <cite>~matplotlib.transforms.BboxBase</cite> or None
+clip_box: <cite>.Bbox</cite>
 clip_on: bool
 clip_path: Patch or (Path, Transform) or None
 figure: <cite>~matplotlib.figure.Figure</cite>
@@ -880,12 +903,12 @@ in_layout: bool
 label: object
 mouseover: bool
 offset: (float, float) or callable
-path_effects: list of <cite>.AbstractPathEffect</cite>
+path_effects: <cite>.AbstractPathEffect</cite>
 picker: None or bool or float or callable
 rasterized: bool
 sketch_params: (scale: float, length: float, randomness: float)
 snap: bool or None
-transform: <cite>~matplotlib.transforms.Transform</cite>
+transform: <cite>.Transform</cite>
 url: str
 visible: bool
 width: float
@@ -927,7 +950,7 @@ You have to call <cite>.Figure.draw_artist</cite> / <cite>.Axes.draw_artist</cit
 explicitly on the artist. This approach is used to speed up animations
 using blitting.</p>
 <p>See also <cite>matplotlib.animation</cite> and
-<span class="xref std std-ref">blitting</span>.</p>
+<span class="xref std std-doc">/tutorials/advanced/blitting</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>b</strong> (<em>bool</em>)</p>
@@ -941,9 +964,7 @@ using blitting.</p>
 <dd><p>Set the artist’s clip <cite>.Bbox</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>clipbox</strong> (<cite>~matplotlib.transforms.BboxBase</cite> or None) – Will typically be created from a <cite>.TransformedBbox</cite>. For instance,
-<code class="docutils literal notranslate"><span class="pre">TransformedBbox(Bbox([[0,</span> <span class="pre">0],</span> <span class="pre">[1,</span> <span class="pre">1]]),</span> <span class="pre">ax.transAxes)</span></code> is the default
-clipping for an artist added to an Axes.</p>
+<dd class="field-odd"><p><strong>clipbox</strong> (<cite>.Bbox</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -952,7 +973,7 @@ clipping for an artist added to an Axes.</p>
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on">
 <span class="sig-name descname"><span class="pre">set_clip_on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_clip_on" title="Link to this definition"></a></dt>
 <dd><p>Set whether the artist uses clipping.</p>
-<p>When False, artists will be visible outside the Axes which
+<p>When False artists will be visible outside of the Axes which
 can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -968,7 +989,7 @@ can lead to unexpected results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<cite>~matplotlib.patches.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
+<li><p><strong>path</strong> (<cite>.Patch</cite> or <cite>.Path</cite> or <cite>.TransformedPath</cite> or None) – The clip path. If given a <cite>.Path</cite>, <em>transform</em> must be provided as
 well. If <em>None</em>, a previously set clip path is removed.</p></li>
 <li><p><strong>transform</strong> (<cite>~matplotlib.transforms.Transform</cite>, optional) – Only used if <em>path</em> is a <cite>.Path</cite>, in which case the given <cite>.Path</cite>
 is converted to a <cite>.TransformedPath</cite> using <em>transform</em>.</p></li>
@@ -1021,7 +1042,7 @@ parameter.</p>
 <dt class="sig sig-object py" id="pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout">
 <span class="sig-name descname"><span class="pre">set_in_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_layout</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.h.tasks.common.displays.sky.HPacker.set_in_layout" title="Link to this definition"></a></dt>
 <dd><p>Set if artist is to be included in layout calculations,
-E.g. <span class="xref std std-ref">constrainedlayout_guide</span>,
+E.g. <span class="xref std std-doc">/tutorials/intermediate/constrainedlayout_guide</span>,
 <cite>.Figure.tight_layout()</cite>, and
 <code class="docutils literal notranslate"><span class="pre">fig.savefig(fname,</span> <span class="pre">bbox_inches='tight')</span></code>.</p>
 <dl class="field-list simple">
@@ -1081,7 +1102,7 @@ must have the signature:</p>
 <dd><p>Set the path effects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path_effects</strong> (list of <cite>.AbstractPathEffect</cite>)</p>
+<dd class="field-odd"><p><strong>path_effects</strong> (<cite>.AbstractPathEffect</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1190,7 +1211,7 @@ segments, round to the nearest pixel center.</p></li>
 <dd><p>Set the artist transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>t</strong> (<cite>~matplotlib.transforms.Transform</cite>)</p>
+<dd class="field-odd"><p><strong>t</strong> (<cite>.Transform</cite>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1301,7 +1322,7 @@ lists can be modified in place as needed.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

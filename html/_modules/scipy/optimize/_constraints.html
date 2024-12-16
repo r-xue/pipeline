@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>scipy.optimize._constraints &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../../../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -81,7 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -117,7 +117,8 @@
 <span class="kn">from</span> <span class="nn">._differentiable_functions</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">VectorFunction</span><span class="p">,</span> <span class="n">LinearVectorFunction</span><span class="p">,</span> <span class="n">IdentityVectorFunction</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">._optimize</span> <span class="kn">import</span> <span class="n">OptimizeWarning</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">catch_warnings</span><span class="p">,</span> <span class="n">simplefilter</span><span class="p">,</span> <span class="n">filterwarnings</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">catch_warnings</span><span class="p">,</span> <span class="n">simplefilter</span>
+<span class="kn">from</span> <span class="nn">numpy.testing</span> <span class="kn">import</span> <span class="n">suppress_warnings</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">issparse</span>
 
 
@@ -211,7 +212,6 @@
 <span class="sd">    Constrain ``x[0] &lt; sin(x[1]) + 1.9``</span>
 
 <span class="sd">    &gt;&gt;&gt; from scipy.optimize import NonlinearConstraint</span>
-<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
 <span class="sd">    &gt;&gt;&gt; con = lambda x: x[0] - np.sin(x[1])</span>
 <span class="sd">    &gt;&gt;&gt; nlc = NonlinearConstraint(con, -np.inf, 1.9)</span>
 
@@ -246,7 +246,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    A : {array_like, sparse matrix}, shape (m, n)</span>
 <span class="sd">        Matrix defining the constraint.</span>
-<span class="sd">    lb, ub : dense array_like, optional</span>
+<span class="sd">    lb, ub : array_like, optional</span>
 <span class="sd">        Lower and upper limits on the constraint. Each array must have the</span>
 <span class="sd">        shape (m,) or be a scalar, in the latter case a bound will be the same</span>
 <span class="sd">        for all components of the constraint. Use ``np.inf`` with an</span>
@@ -256,7 +256,7 @@
 <span class="sd">        interval, one-sided or equality, by setting different components of</span>
 <span class="sd">        `lb` and `ub` as  necessary. Defaults to ``lb = -np.inf``</span>
 <span class="sd">        and ``ub = np.inf`` (no limits).</span>
-<span class="sd">    keep_feasible : dense array_like of bool, optional</span>
+<span class="sd">    keep_feasible : array_like of bool, optional</span>
 <span class="sd">        Whether to keep the constraint components feasible throughout</span>
 <span class="sd">        iterations. A single value set this property for all components.</span>
 <span class="sd">        Default is False. Has no effect for equality constraints.</span>
@@ -288,13 +288,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span>
-        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span> <span class="ow">or</span> <span class="n">issparse</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Constraint limits must be dense arrays.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">ub</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">keep_feasible</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`keep_feasible` must be a dense array.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_feasible</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">keep_feasible</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_validation</span><span class="p">()</span>
 
@@ -343,7 +338,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    lb, ub : dense array_like, optional</span>
+<span class="sd">    lb, ub : array_like, optional</span>
 <span class="sd">        Lower and upper bounds on independent variables. `lb`, `ub`, and</span>
 <span class="sd">        `keep_feasible` must be the same shape or broadcastable.</span>
 <span class="sd">        Set components of `lb` and `ub` equal</span>
@@ -352,7 +347,7 @@
 <span class="sd">        different types: interval, one-sided or equality, by setting different</span>
 <span class="sd">        components of `lb` and `ub` as necessary. Defaults to ``lb = -np.inf``</span>
 <span class="sd">        and ``ub = np.inf`` (no bounds).</span>
-<span class="sd">    keep_feasible : dense array_like of bool, optional</span>
+<span class="sd">    keep_feasible : array_like of bool, optional</span>
 <span class="sd">        Whether to keep the constraint components feasible throughout</span>
 <span class="sd">        iterations. Must be broadcastable with `lb` and `ub`.</span>
 <span class="sd">        Default is False. Has no effect for equality constraints.</span>
@@ -366,13 +361,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lb</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">keep_feasible</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span> <span class="ow">or</span> <span class="n">issparse</span><span class="p">(</span><span class="n">ub</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lower and upper bounds must be dense arrays.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">lb</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">ub</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">keep_feasible</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`keep_feasible` must be a dense array.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keep_feasible</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">keep_feasible</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_validation</span><span class="p">()</span>
 
@@ -504,12 +494,8 @@
 <span class="sd">            How much the constraint is exceeded by, for each of the</span>
 <span class="sd">            constraints specified by `PreparedConstraint.fun`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">catch_warnings</span><span class="p">():</span>
-            <span class="c1"># Ignore the following warning, it&#39;s not important when</span>
-            <span class="c1"># figuring out total violation</span>
-            <span class="c1"># UserWarning: delta_grad == 0.0. Check if the approximated</span>
-            <span class="c1"># function is linear</span>
-            <span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="s2">&quot;delta_grad&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">suppress_warnings</span><span class="p">()</span> <span class="k">as</span> <span class="n">sup</span><span class="p">:</span>
+            <span class="n">sup</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">)</span>
             <span class="n">ev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fun</span><span class="o">.</span><span class="n">fun</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
         <span class="n">excess_lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">ev</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -578,8 +564,7 @@
                 <span class="n">con</span><span class="o">.</span><span class="n">keep_feasible</span><span class="p">):</span>
             <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Constraint options `finite_diff_jac_sparsity`, &quot;</span>
                  <span class="s2">&quot;`finite_diff_rel_step`, `keep_feasible`, and `hess`&quot;</span>
-                 <span class="s2">&quot;are ignored by this method.&quot;</span><span class="p">,</span>
-                 <span class="n">OptimizeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                 <span class="s2">&quot;are ignored by this method.&quot;</span><span class="p">,</span> <span class="n">OptimizeWarning</span><span class="p">)</span>
 
         <span class="n">fun</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">fun</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">con</span><span class="o">.</span><span class="n">jac</span><span class="p">):</span>
@@ -589,16 +574,14 @@
 
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># LinearConstraint</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">con</span><span class="o">.</span><span class="n">keep_feasible</span><span class="p">):</span>
-            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Constraint option `keep_feasible` is ignored by this method.&quot;</span><span class="p">,</span>
-                 <span class="n">OptimizeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Constraint option `keep_feasible` is ignored by this &quot;</span>
+                 <span class="s2">&quot;method.&quot;</span><span class="p">,</span> <span class="n">OptimizeWarning</span><span class="p">)</span>
 
         <span class="n">A</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">A</span>
         <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
             <span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
-        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">A</span>
+        <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">jac</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">A</span>
 
     <span class="c1"># FIXME: when bugs in VectorFunction/LinearVectorFunction are worked out,</span>
     <span class="c1"># use pcon.fun.fun and pcon.fun.jac. Until then, get fun/jac above.</span>
@@ -612,8 +595,7 @@
 
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">i_unbounded</span><span class="p">):</span>
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;At least one constraint is unbounded above and below. Such &quot;</span>
-             <span class="s2">&quot;constraints are ignored.&quot;</span><span class="p">,</span>
-             <span class="n">OptimizeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+             <span class="s2">&quot;constraints are ignored.&quot;</span><span class="p">,</span> <span class="n">OptimizeWarning</span><span class="p">)</span>
 
     <span class="n">ceq</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">i_eq</span><span class="p">):</span>
@@ -661,8 +643,7 @@
         <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Equality and inequality constraints are specified in the same &quot;</span>
              <span class="s2">&quot;element of the constraint list. For efficient use with this &quot;</span>
              <span class="s2">&quot;method, equality and inequality constraints should be specified &quot;</span>
-             <span class="s2">&quot;in separate elements of the constraint list. &quot;</span><span class="p">,</span>
-             <span class="n">OptimizeWarning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+             <span class="s2">&quot;in separate elements of the constraint list. &quot;</span><span class="p">,</span> <span class="n">OptimizeWarning</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">old_constraints</span>
 
 
@@ -696,11 +677,9 @@
     <span class="n">jac</span> <span class="o">=</span> <span class="s1">&#39;2-point&#39;</span>
     <span class="k">if</span> <span class="s1">&#39;args&#39;</span> <span class="ow">in</span> <span class="n">con</span><span class="p">:</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">con</span><span class="p">[</span><span class="s1">&#39;args&#39;</span><span class="p">]</span>
-        <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">con</span><span class="p">[</span><span class="s2">&quot;fun&quot;</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">fun</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">con</span><span class="p">[</span><span class="s1">&#39;fun&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;jac&#39;</span> <span class="ow">in</span> <span class="n">con</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">jac</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">con</span><span class="p">[</span><span class="s2">&quot;jac&quot;</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">jac</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">con</span><span class="p">[</span><span class="s1">&#39;jac&#39;</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">fun</span> <span class="o">=</span> <span class="n">con</span><span class="p">[</span><span class="s1">&#39;fun&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s1">&#39;jac&#39;</span> <span class="ow">in</span> <span class="n">con</span><span class="p">:</span>
@@ -716,7 +695,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

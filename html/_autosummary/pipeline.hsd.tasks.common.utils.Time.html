@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.common.utils.Time &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -252,7 +252,7 @@ transformations to and from the solar-system barycenter.</p></li>
 <td><p>Creates a new object corresponding to the instant in time this method is called.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="pipeline.hsd.tasks.common.utils.Time.ptp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ptp</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Peak to peak (maximum - minimum) along a given axis.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.common.utils.Time.ravel" title="pipeline.hsd.tasks.common.utils.Time.ravel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ravel</span></code></a></p></td>
 <td><p>Return an instance with the array collapsed into one dimension.</p></td>
@@ -826,19 +826,13 @@ value between 0 and 9 inclusive).</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.common.utils.Time.ptp">
 <span class="sig-name descname"><span class="pre">ptp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pipeline.hsd.tasks.common.utils.Time.ptp" title="Link to this definition"></a></dt>
-<dd><div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version 6.1: </span>The ptp function is deprecated and may be removed in a future version.
-    Use np.ptp instead.</p>
-</div>
-<p>Peak to peak (maximum - minimum) along a given axis.</p>
-<blockquote>
-<div><p>This method is similar to the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ptp()</span></code> function, but
+<dd><p>Peak to peak (maximum - minimum) along a given axis.</p>
+<p>This method is similar to the <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ptp()</span></code> function, but
 adapted to ensure that the full precision given by the two doubles
 <code class="docutils literal notranslate"><span class="pre">jd1</span></code> and <code class="docutils literal notranslate"><span class="pre">jd2</span></code> is used.</p>
 <p>Note that the <code class="docutils literal notranslate"><span class="pre">out</span></code> argument is present only for compatibility with
 <cite>~numpy.ptp</cite>; since <cite>Time</cite> instances are immutable, it is not possible
 to have an actual <code class="docutils literal notranslate"><span class="pre">out</span></code> to store the result in.</p>
-</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
@@ -1190,7 +1184,7 @@ data are views of the data of the original.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

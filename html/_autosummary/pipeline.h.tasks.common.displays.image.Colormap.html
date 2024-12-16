@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.common.displays.image.Colormap &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -226,16 +226,16 @@ chain.</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (float or int, <cite>~numpy.ndarray</cite> or scalar) – The data value(s) to convert to RGBA.
-For floats, <em>X</em> should be in the interval <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> to
+<li><p><strong>X</strong> (<em>float or int, ndarray or scalar</em>) – The data value(s) to convert to RGBA.
+For floats, X should be in the interval <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></code> to
 return the RGBA values <code class="docutils literal notranslate"><span class="pre">X*100</span></code> percent along the Colormap line.
-For integers, <em>X</em> should be in the interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">Colormap.N)</span></code> to
+For integers, X should be in the interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">Colormap.N)</span></code> to
 return RGBA values <em>indexed</em> from the Colormap with index <code class="docutils literal notranslate"><span class="pre">X</span></code>.</p></li>
 <li><p><strong>alpha</strong> (<em>float or array-like or None</em>) – Alpha must be a scalar between 0 and 1, a sequence of such
 floats with shape matching X, or None.</p></li>
 <li><p><strong>bytes</strong> (<em>bool</em>) – If False (default), the returned RGBA values will be floats in the
-interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> otherwise they will be <cite>numpy.uint8</cite>s in the
-interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">255]</span></code>.</p></li>
+interval <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> otherwise they will be uint8s in the interval
+<code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">255]</span></code>.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -361,7 +361,7 @@ out-of-range values, have been set accordingly.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

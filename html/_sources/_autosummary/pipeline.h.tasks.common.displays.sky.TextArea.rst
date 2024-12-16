@@ -26,12 +26,13 @@ pipeline.h.tasks.common.displays.sky.TextArea
       ~TextArea.get_agg_filter
       ~TextArea.get_alpha
       ~TextArea.get_animated
-      ~TextArea.get_bbox
       ~TextArea.get_children
       ~TextArea.get_clip_box
       ~TextArea.get_clip_on
       ~TextArea.get_clip_path
       ~TextArea.get_cursor_data
+      ~TextArea.get_extent
+      ~TextArea.get_extent_offsets
       ~TextArea.get_figure
       ~TextArea.get_gid
       ~TextArea.get_in_layout

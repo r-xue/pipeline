@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.common.rasterutil.FuncAnimation &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -227,7 +227,7 @@ value is unused if <code class="docutils literal notranslate"><span class="pre">
 </li>
 <li><p><strong>fargs</strong> (<em>tuple or None, optional</em>) – Additional arguments to pass to each call to <em>func</em>. Note: the use of
 <cite>functools.partial</cite> is preferred over <em>fargs</em>. See <em>func</em> for details.</p></li>
-<li><p><strong>save_count</strong> (<em>int, optional</em>) – Fallback for the number of values from <em>frames</em> to cache. This is
+<li><p><strong>save_count</strong> (<em>int, default: 100</em>) – Fallback for the number of values from <em>frames</em> to cache. This is
 only used if the number of frames cannot be inferred from <em>frames</em>,
 i.e. when it’s an iterator without length or a generator.</p></li>
 <li><p><strong>interval</strong> (<em>int, default: 200</em>) – Delay between frames in milliseconds.</p></li>
@@ -312,16 +312,15 @@ the figure’s size in inches, this controls the size of the movie.</p></li>
 <li><p><strong>bitrate</strong> (int, default: <a href="#id7"><span class="problematic" id="id8">:rc:`animation.bitrate`</span></a>) – The bitrate of the movie, in kilobits per second.  Higher values
 means higher quality movies, but increase the file size.  A value
 of -1 lets the underlying movie encoder select the bitrate.</p></li>
-<li><p><strong>extra_args</strong> (<em>list of str or None, optional</em>) – Extra command-line arguments passed to the underlying movie encoder. These
-arguments are passed last to the encoder, just before the output filename.
-The default, None, means to use <a href="#id9"><span class="problematic" id="id10">:rc:`animation.[name-of-encoder]_args`</span></a> for
-the builtin writers.</p></li>
+<li><p><strong>extra_args</strong> (<em>list of str or None, optional</em>) – Extra command-line arguments passed to the underlying movie
+encoder.  The default, None, means to use
+<a href="#id9"><span class="problematic" id="id10">:rc:`animation.[name-of-encoder]_args`</span></a> for the builtin writers.</p></li>
 <li><p><strong>metadata</strong> (<em>dict[str, str], default: {}</em>) – Dictionary of keys and values for metadata to include in
 the output file. Some keys that may be of use include:
 title, artist, genre, subject, copyright, srcform, comment.</p></li>
 <li><p><strong>extra_anim</strong> (<em>list, default: []</em>) – Additional <cite>Animation</cite> objects that should be included
 in the saved movie file. These need to be from the same
-<cite>.Figure</cite> instance. Also, animation frames will
+<cite>matplotlib.figure.Figure</cite> instance. Also, animation frames will
 just be simply combined, so there should be a 1:1 correspondence
 between the frames from the different animations.</p></li>
 <li><p><strong>savefig_kwargs</strong> (<em>dict, default: {}</em>) – Keyword arguments passed to each <cite>~.Figure.savefig</cite> call used to
@@ -331,12 +330,12 @@ the saving progress. It must have the signature</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">current_frame</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">total_frames</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
 </pre></div>
 </div>
-<p>where <em>current_frame</em> is the current frame number and <em>total_frames</em> is the
-total number of frames to be saved. <em>total_frames</em> is set to None, if the
-total number of frames cannot be determined. Return values may exist but are
-ignored.</p>
+<p>where <em>current_frame</em> is the current frame number and
+<em>total_frames</em> is the total number of frames to be saved.
+<em>total_frames</em> is set to None, if the total number of frames can
+not be determined. Return values may exist but are ignored.</p>
 <p>Example code to write the progress to stdout:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">progress_callback</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Saving frame </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">progress_callback</span> <span class="o">=</span>                    <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Saving frame </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1"> of </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
@@ -357,7 +356,7 @@ is a <cite>.MovieWriter</cite>, a <cite>RuntimeError</cite> will be raised.</p>
 <p>This saves the animation as an h264 video, encoded in base64
 directly into the HTML5 video tag. This respects <a href="#id11"><span class="problematic" id="id12">:rc:`animation.writer`</span></a>
 and <a href="#id13"><span class="problematic" id="id14">:rc:`animation.bitrate`</span></a>. This also makes use of the
-<em>interval</em> to control the speed, and uses the <em>repeat</em>
+<code class="docutils literal notranslate"><span class="pre">interval</span></code> to control the speed, and uses the <code class="docutils literal notranslate"><span class="pre">repeat</span></code>
 parameter to decide whether to loop.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -388,16 +387,9 @@ If the <em>embed_limit</em> is exceeded, this returns the string
 the animation’s frame interval.</p></li>
 <li><p><strong>embed_frames</strong> (<em>bool, optional</em>)</p></li>
 <li><p><strong>default_mode</strong> (<em>str, optional</em>) – What to do when the animation ends. Must be one of <code class="docutils literal notranslate"><span class="pre">{'loop',</span>
-<span class="pre">'once',</span> <span class="pre">'reflect'}</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">'loop'</span></code> if the <em>repeat</em>
-parameter is True, otherwise <code class="docutils literal notranslate"><span class="pre">'once'</span></code>.</p></li>
+<span class="pre">'once',</span> <span class="pre">'reflect'}</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">'loop'</span></code> if <code class="docutils literal notranslate"><span class="pre">self.repeat</span></code>
+is True, otherwise <code class="docutils literal notranslate"><span class="pre">'once'</span></code>.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>An HTML representation of the animation embedded as a js object as
-produced with the <cite>.HTMLWriter</cite>.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -417,7 +409,7 @@ produced with the <cite>.HTMLWriter</cite>.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

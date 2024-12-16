@@ -31,8 +31,10 @@ pipeline.hsd.tasks.common.rasterutil.ImageMagickWriter
 
    .. autosummary::
    
+      ~ImageMagickWriter.delay
       ~ImageMagickWriter.frame_size
       ~ImageMagickWriter.input_names
+      ~ImageMagickWriter.output_args
       ~ImageMagickWriter.supported_formats
    
    

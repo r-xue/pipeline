@@ -20,7 +20,10 @@ pipeline.infrastructure.displays.pointing.AutoLocator
       ~AutoLocator.nonsingular
       ~AutoLocator.raise_if_exceeds
       ~AutoLocator.set_axis
+      ~AutoLocator.set_bounds
+      ~AutoLocator.set_data_interval
       ~AutoLocator.set_params
+      ~AutoLocator.set_view_interval
       ~AutoLocator.tick_values
       ~AutoLocator.view_limits
    

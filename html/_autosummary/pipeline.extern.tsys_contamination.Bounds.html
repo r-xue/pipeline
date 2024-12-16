@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.extern.tsys_contamination.Bounds &mdash; Pipeline 
- (2024.2.0.4)  documentation</title>
+ (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+      <script src="../_static/documentation_options.js?v=ef25e892"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -125,7 +125,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../develdocmd/python3_conversion_notes.html">Python 3 conversion notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/field_parameter.html">Field parameter</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../heuristics/FlaggingTasks.html">Pipeline Flagging Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/context.html">Pipeline Context and Domain Objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../notebooks/tier0dask.html">“Tier0” Parallelization with Dask/Futures</a></li>
 </ul>
 
@@ -174,7 +174,7 @@ infinite bounds to represent a one-sided constraint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lb, ub</strong> (<em>dense array_like, optional</em>) – Lower and upper bounds on independent variables. <cite>lb</cite>, <cite>ub</cite>, and
+<li><p><strong>lb, ub</strong> (<em>array_like, optional</em>) – Lower and upper bounds on independent variables. <cite>lb</cite>, <cite>ub</cite>, and
 <cite>keep_feasible</cite> must be the same shape or broadcastable.
 Set components of <cite>lb</cite> and <cite>ub</cite> equal
 to fix a variable. Use <code class="docutils literal notranslate"><span class="pre">np.inf</span></code> with an appropriate sign to disable
@@ -182,7 +182,7 @@ bounds on all or some variables. Note that you can mix constraints of
 different types: interval, one-sided or equality, by setting different
 components of <cite>lb</cite> and <cite>ub</cite> as necessary. Defaults to <code class="docutils literal notranslate"><span class="pre">lb</span> <span class="pre">=</span> <span class="pre">-np.inf</span></code>
 and <code class="docutils literal notranslate"><span class="pre">ub</span> <span class="pre">=</span> <span class="pre">np.inf</span></code> (no bounds).</p></li>
-<li><p><strong>keep_feasible</strong> (<em>dense array_like of bool, optional</em>) – Whether to keep the constraint components feasible throughout
+<li><p><strong>keep_feasible</strong> (<em>array_like of bool, optional</em>) – Whether to keep the constraint components feasible throughout
 iterations. Must be broadcastable with <cite>lb</cite> and <cite>ub</cite>.
 Default is False. Has no effect for equality constraints.</p></li>
 </ul>
@@ -240,7 +240,7 @@ indicates that the corresponding element of <code class="docutils literal notran
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+149-gc67ed7416-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
