@@ -262,6 +262,7 @@ class SDATMCorrectionInputs(vdp.StandardInputs):
 
         return ','.join(pols)
 
+    # docstring and type hints: supplements hsd_atmcor
     def __init__(self,
                  context: Context,
                  atmtype: Optional[Union[int, str, List[int], List[str]]] = None,
