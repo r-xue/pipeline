@@ -377,7 +377,19 @@ class Checkflag(basetask.StandardTaskTemplate):
                     if not mssel_valid(self.inputs.vis, field=fieldselect, spw=spwselect, correlation=polselect,
                                        scan=scanselect, intent=intentselect):
                         continue
-                if datacolumn == 'residual':
+                # PIPE-1274: If the model column is filled with something other than 1Jy, source
+                # at the phasecenter then flag on the 'residual' data column else flag on 'corrected' data column.
+                if self.inputs.checkflagmode == "allcals-vla":
+                    if self._is_model_setjy():
+                        LOG.info("MODEL_DATA is present and model(s) from selected data is not a 1Jy point source.")
+                        LOG.info("Setting datacolumn to 'residual'")
+                        datacolumn = 'residual'
+                    else:
+                        LOG.info("MODEL_DATA not found or model(s) from selected data is a 1Jy point source.")
+                        LOG.info("Setting datacolumn to 'corrected'")
+                        datacolumn = 'corrected'
+
+                if datacolumn == 'residual' and self.inputs.checkflagmode != "allcals-vla":
                     # PIPE-1256: determine if we can use the 'RESIDUAL' column in the 'bpd-vlass/vla' mode.
                     #   The usage of 'RESIDUAL' is only valid if the model of bpd source(s) is properly filled *AND*
                     #   the first-order gain/passband calibration has been applied in 'CORRECTED'.
