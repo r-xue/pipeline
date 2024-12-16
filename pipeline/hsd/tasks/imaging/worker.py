@@ -352,7 +352,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
     def prepare(self):
-        """Execute imaging process of sdimaging task.
+        """Execute imaging process of tsdimaging task.
 
         Returns:
             SDImagingResultItem instance
@@ -636,7 +636,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
         image_args['spw'] = spwsel_list
         image_args['field'] = fieldsel_list
         image_args['antenna'] = antsel_list
-        LOG.debug('Executing sdimaging task: args=%s' % (image_args))
+        LOG.debug('Executing tsdimaging task: args=%s' % (image_args))
 
         # execute job
         image_args['specmode'] = specmode
@@ -654,7 +654,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             return False
 
         # check for valid pixels (non-zero weight)
-        # Task sdimaging does not fail even if no data is gridded to image.
+        # Task tsdimaging does not fail even if no data is gridded to image.
         # In that case, image is not masked, no restoring beam is set to
         # image, and all pixels in corresponding weight image is zero.
         with casa_tools.ImageReader(weightname) as ia:

@@ -145,10 +145,10 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                 ia.maskhandler('delete', nan_mask)
 
             # PIPE-313 re-evaluate image mask based on the combined weight image
-            # according to sdimaging code, image pixels will be masked if
+            # according to tsdimaging code, image pixels will be masked if
             # weight is less than (minweight * median(weight image)) where
             # minweight is task parameter whose default is 0.1. Here, we use
-            # dedault value to align with the parameter setting for sdimaging
+            # default value to align with the parameter setting for tsdimaging
             # (see worker.py).
             minweight = 0.1
             with casa_tools.ImageReader(outweight) as ia:
