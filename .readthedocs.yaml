@@ -1,0 +1,38 @@
+version: 2
+
+# Build tools and environment setup
+build:
+  os: ubuntu-24.04
+  tools:
+    python: miniconda-latest # miniforge3-latest before miniforge because available
+  apt_packages:
+    - git 
+    - xvfb 
+    - imagemagick 
+    - poppler-utils 
+    - latexmk 
+    - texlive-latex-recommended 
+    - texlive-latex-extra 
+    - texlive-fonts-recommended
+  # Build commands for HTML and PDF
+  commands:
+  
+    - conda env update --file=pipe1669.yaml
+    - conda run -n pipe1669 python -m pip install .[docs]
+    - mkdir -p ~/.casa/data
+
+    - cd docs && conda run -n pipe1669 make html_docs
+    - cd docs && conda run -n pipe1669 make latexpdf
+    - mkdir --parents _readthedocs/html/ _readthedocs/pdf/
+    - cp --recursive docs/build/html/* _readthedocs/html/ 
+    - cp --recursive docs/build/latex/*.pdf _readthedocs/pdf/ 
+
+conda:
+  environment: pipe1669.yml
+ 
+# Sphinx configuration
+sphinx:
+  configuration: docs/conf.py        
+
+
+
