@@ -14,6 +14,11 @@ build:
     - texlive-latex-recommended 
     - texlive-latex-extra 
     - texlive-fonts-recommended
+  # Build commands for HTML and PDF
+  commands:
+    - mkdir -p ~/.casa/data
+    - cd docs && make html_docs
+    - cd docs && make latexpdf      
 
 conda:
   environment: pipe1669.yml
@@ -24,14 +29,9 @@ python:
     - method: pip
       path: .[docs]
         
-
 # Sphinx configuration
 sphinx:
   configuration: docs/conf.py        
 
 
-# Build commands for HTML and PDF
-commands:
-  - mkdir -p ~/.casa/data
-  - cd docs && make html_docs
-  - cd docs && make latexpdf  
+
