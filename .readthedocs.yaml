@@ -16,7 +16,7 @@ build:
     - texlive-fonts-recommended
   # Build commands for HTML and PDF
   commands:
-    - conda env update --file pipe1669.yml -y
+    - conda env update --file=pipe1669.yml
     - python -m pip install .[docs] && mkdir -p ~/.casa/data
     - mkdir -p ~/.casa/data
     - cd docs && make html_docs
