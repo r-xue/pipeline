@@ -132,9 +132,9 @@ class MeasurementSet(object):
 
         # Attributes expected to be populated during import of MS (see
         # infrastructure.tablereader.MeasurementSetReader.get_measurement_set).
-        self.antenna_array: AntennaArray | None = None
         self.acs_software_build_version: str | None = None  # PIPE-132
         self.acs_software_version: str | None = None  # PIPE-132
+        self.antenna_array: AntennaArray | None = None
         self.array_name: str = ''
         self.correlator_name: str | None = None
         self.data_column: dict = {}  # PIPE-1062
@@ -699,7 +699,7 @@ class MeasurementSet(object):
         """
         spws = self.get_all_spectral_windows(task_arg, with_channels)
 
-        # if requested, filter spws by number of channels
+        # If requested, filter spws by number of channels.
         if num_channels:
             spws = [w for w in spws if w.num_channels in num_channels]
 
@@ -707,7 +707,7 @@ class MeasurementSet(object):
         if spectralspecs is not None:
             spws = [w for w in spws if w.spectralspec in spectralspecs]
 
-        # If requested, filter spws by intent.
+        # If requested, filter spws by intent(s).
         if intent is not None:
             spws = [w for w in spws if not set(intent.split(',')).isdisjoint(w.intents)]
 
