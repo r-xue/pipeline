@@ -16,6 +16,7 @@ build:
     - texlive-fonts-recommended
   # Build commands for HTML and PDF
   commands:
+    - python -m pip install .[docs] && mkdir -p ~/.casa/data
     - mkdir -p ~/.casa/data
     - cd docs && make html_docs
     - cd docs && make latexpdf      
@@ -23,12 +24,6 @@ build:
 conda:
   environment: pipe1669.yml
  
-
-python:
-  install:
-    - method: pip
-      path: .[docs]
-        
 # Sphinx configuration
 sphinx:
   configuration: docs/conf.py        
