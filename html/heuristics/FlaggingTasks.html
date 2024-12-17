@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pipeline Flagging Tasks &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -123,7 +123,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pipeline-flagging-tasks">
+  <section class="tex2jax_ignore mathjax_ignore" id="pipeline-flagging-tasks">
 <h1>Pipeline Flagging Tasks<a class="headerlink" href="#pipeline-flagging-tasks" title="Link to this heading"></a></h1>
 <p>The Pipeline contains a number of tasks that flag bad data, based on e.g. online flags or user-provided flags. A
 sub-set of the pipeline flagging tasks will flag data based on evaluation of their own flagging heuristics, and a
@@ -154,7 +154,7 @@ common flagging framework, and an in-depth explanation of individual flagging ta
 <section id="general-overview-of-a-flagging-task-within-framework">
 <h2>General overview of a flagging task within framework<a class="headerlink" href="#general-overview-of-a-flagging-task-within-framework" title="Link to this heading"></a></h2>
 <p>The main flagging pipeline tasks are done in two steps:</p>
-<ol>
+<ol class="arabic">
 <li><p>Generate a “flagging view”</p>
 <p>Some quantity of interest is taken from the MS or a caltable, depending on the flagging task, and this quantity is represented in a 1D or 2D matrix called the “flagging view”. Flagging views are typically generated separately for each spw, often also separately for each polarisation. Typical examples of flagging views include:</p>
 <ul class="simple">
@@ -183,7 +183,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 </ul>
 <p><strong>View flagging</strong></p>
 <p>The views are evaluated against the following two flagging rules:</p>
-<ol>
+<ol class="arabic">
 <li><p>“bad quadrant” matrix flagging rule</p>
 <p>This starts with the “baseline” vs. “channel” flagging view. In this view, some data points may already be flagged, e.g. due to an earlier pipeline stage.</p>
 <p>First, outliers are identified as those data points in the flagging view whose value deviates from the median value of all non-flagged data points by a threshold-factor * the median absolute deviation of the values of all non-flagged data points, where the threshold is ‘fbq_hilo_limit’ (default: 8.0).</p>
@@ -224,7 +224,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 <p>A separate view is created for spw. Each view is a matrix with axes “scan” vs. “antenna”. Each point in the matrix is the absolute gain amplitude for that antenna/scan.</p>
 <p><strong>View flagging</strong></p>
 <p>The views are evaluated against the “nmedian” matrix flagging rule, where data points are identified as outliers if:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>their value is smaller than a threshold-factor * median of all non-flagged data points, where the threshold is ‘fnm_lo_limit’, or,</p></li>
 <li><p>their value is larger than a threshold-factor * median of all non-flagged data points, where the threshold is ‘fnm_hi_limit’.</p></li>
 </ol>
@@ -276,7 +276,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 “channel-by-channel median of Tsys spectra for antenna within spw” - “channel-by-channel median of Tsys spectra for all antennas within spw”.</p>
 <p><strong>View flagging</strong></p>
 <p>The views are evaluated against the “sharps” vector flagging rule, which flags each view in two passes:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>flag all channels whose absolute difference in value to the following channel exceeds a threshold “fb_sharps_limit” (default: 0.15)</p></li>
 <li><p>around each newly flagged channel, flag neighbouring channels until their channel-to-channel difference falls below 2 times the median channel-to-channel difference (this is intended to flag the wings of sharp features)</p></li>
 </ol>
@@ -287,7 +287,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
 <p>A separate view is generated for each polarisation and each spw. Each view is a matrix with axes “time” vs. “antenna”. Each point in the matrix is the median value of the Tsys spectrum for that antenna/time. (This is the same as for “nmedian” metric).</p>
 <p><strong>View flagging</strong></p>
 <p>The views are evaluated against two separate flagging rules:</p>
-<ol>
+<ol class="arabic">
 <li><p>“tmf” (too many flags)</p>
 <p>This evaluates each timestamp one-by-one, flagging an entire timestamp when the fraction of flagged antennas within this timestamp exceeds the threshold “tmf1_limit” (default: 0.666).</p>
 <p>Flagging commands are generated per timestamp.</p>
@@ -314,7 +314,7 @@ The flagging view is evaluated against a series of 1 or more flagging rules. Eac
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

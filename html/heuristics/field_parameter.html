@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Field parameter &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -134,7 +134,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="field-parameter">
+  <section class="tex2jax_ignore mathjax_ignore" id="field-parameter">
 <h1>Field parameter<a class="headerlink" href="#field-parameter" title="Link to this heading"></a></h1>
 <p>This note aims to document how Pipeline currently handles the “field” input,
 prompted by discussions on “fields”, “mosaics”, and future “group processing” at
@@ -142,13 +142,13 @@ the 2022 and 2023 F2F meetings, see also the tickets PIPE-1666 and PIPE-1887.</p
 <section id="background-info-on-usage-of-field-in-alma-and-casa">
 <h2>Background info on usage of ‘field’ in ALMA and CASA<a class="headerlink" href="#background-info-on-usage-of-field-in-alma-and-casa" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>The MeasurementSet v2 definition from January 2020: https://casa.nrao.edu/Memos/229.html
+<li><p>The MeasurementSet v2 definition from January 2020: <a class="reference external" href="https://casa.nrao.edu/Memos/229.html">https://casa.nrao.edu/Memos/229.html</a>
 specifies the following: fields are stored in the MeasurementSet in the FIELD table.
 The field ID is implicitly set by the row number, while field name is an explicit
 column NAME, with value specified by the PI. The table also supports a SOURCE_ID
 column to point each field to an entry in the optional SOURCE subtable.</p></li>
 <li><p>In the MS v3 definition, the field ID is proposed to become an explicit FIELD_ID
-column, see beta MS v3 from July 2019: https://casacore.github.io/casacore-notes/264.html</p></li>
+column, see beta MS v3 from July 2019: <a class="reference external" href="https://casacore.github.io/casacore-notes/264.html">https://casacore.github.io/casacore-notes/264.html</a></p></li>
 <li><p>“field” is one of the key data selection parameters in CASA tasks, alongside spw.</p></li>
 <li><p>In ALMA datasets, field names are not guaranteed to be unique, i.e. there
 can be multiple fields (with different field IDs) present that share the same field
@@ -160,11 +160,11 @@ certain special characters should not be part of a field name.</p>
 <ul>
 <li><p>As a consequence of accepting field IDs, CASA cannot accept a field name
 that’s purely numerical. For reference, see the note at the bottom of “field”
-section at https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter.</p></li>
+section at <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter">https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter</a>.</p></li>
 </ul>
 </li>
 <li><p>In the ALMA Observing Tool (OT), a mosaic can be defined in two ways:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>for a given source, one can set target type = “rectangular field”, resulting
 in OT generating a series of pointings representing a rectangular mosaic of
 spatially contiguous pointings around the source; or</p></li>
@@ -278,11 +278,11 @@ behaviour in a way that is undesired.</p>
 use in Pipeline:</p>
 <section id="intent-to-field-pattern-1">
 <h3>Intent-to-field pattern 1:<a class="headerlink" href="#intent-to-field-pattern-1" title="Link to this heading"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">field_finder</span> <span class="o">=</span> <span class="n">IntentFieldnames</span><span class="p">()</span>
-<span class="n">intent_fields</span> <span class="o">=</span> <span class="n">field_finder</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
-<span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="n">fields</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">intent_fields</span><span class="p">))</span>
-<span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>field_finder = IntentFieldnames()
+intent_fields = field_finder.calculate(self.ms, self.intent)
+fields = set()
+fields.update(utils.safe_split(intent_fields))
+return &#39;,&#39;.join(fields) 
 </pre></div>
 </div>
 <p>Used by:</p>
@@ -294,15 +294,15 @@ use in Pipeline:</p>
 </ul>
 <p>This uses a “common” field finder heuristic from module
 h.heuristics.fieldnames.IntentFieldnames, with the key selection happening in:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>      <span class="n">identifiers</span> <span class="o">=</span> <span class="p">[]</span>
-      <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="n">with_intent</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">],</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
-        <span class="n">any_intent</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">with_intent</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">any_intent</span><span class="p">):</span>
-            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">identifiers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
-    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">identifiers</span><span class="p">)</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>      identifiers = []
+      for field in fields:
+        with_intent = ms.get_fields(name=[field.name], intent=intent)
+        any_intent = ms.get_fields(name=[field.name])
+        if len(with_intent) == len(any_intent):
+            identifiers.append(field.name)
+        else:
+            identifiers.append(str(field.id))
+    return &#39;,&#39;.join(identifiers) 
 </pre></div>
 </div>
 <p>This common heuristic will first identify a list of fields based on the scans in
@@ -324,21 +324,21 @@ Because IntentFieldnames() currently returns all field identifiers as a comma
 separated string of string values (regardless of whether the original value was
 a field name or ID), the current step that consolidates the identifiers into a
 unique set could do the wrong thing: If one of the field names is a short integer,
-e.g. field.id=0, field.name=”1”, and one of the other fields was added by ID,
-say field.id=1, field.name=”non-unique-name”, then these would show up as “1,1”,
+e.g. field.id=0, field.name=“1”, and one of the other fields was added by ID,
+say field.id=1, field.name=“non-unique-name”, then these would show up as “1,1”,
 and be consolidated to just “1”, thus unintentionally dropping field ID 0 in a
 typical CASA task call (without double-quotes around the integer, it would
 interpret “1” as field ID 1).</p>
 </section>
 <section id="intent-to-field-pattern-2">
 <h3>Intent-to-field pattern 2:<a class="headerlink" href="#intent-to-field-pattern-2" title="Link to this heading"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
-    <span class="n">unique_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
-    <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">])</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    fields = self.ms.get_fields(intent=self.intent)
+    unique_field_names = {f.name for f in fields}
+    field_ids = {f.id for f in fields}
+    if len(unique_field_names) == len(field_ids):
+        return &#39;,&#39;.join(unique_field_names)
+    else:
+        return &#39;,&#39;.join([str(i) for i in field_ids]) 
 </pre></div>
 </div>
 <p>Used by:</p>
@@ -357,9 +357,9 @@ treat each field (pointing) separately, even if some share name.</p>
 </section>
 <section id="intent-to-field-pattern-3">
 <h3>Intent-to-field pattern 3:<a class="headerlink" href="#intent-to-field-pattern-3" title="Link to this heading"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
-    <span class="n">field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
-    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field_names</span><span class="p">)</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    fields = self.ms.get_fields(intent=self.intent)
+    field_names = {f.name for f in fields}
+    return &#39;,&#39;.join(field_names) 
 </pre></div>
 </div>
 <p>Used by:</p>
@@ -376,8 +376,8 @@ the same kind of string of unique field names.</p>
 </section>
 <section id="intent-to-field-pattern-4">
 <h3>Intent-to-field pattern 4:<a class="headerlink" href="#intent-to-field-pattern-4" title="Link to this heading"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    fieldids = [field.name for field in self.ms.get_fields(intent=self.intent)]
+    return &#39;,&#39;.join(fieldids) 
 </pre></div>
 </div>
 <p>Used by:</p>
@@ -393,25 +393,25 @@ performs further explicit data selection by restricting to both field and intent
 </section>
 <section id="intent-to-field-pattern-5">
 <h3>Intent-to-field pattern 5:<a class="headerlink" href="#intent-to-field-pattern-5" title="Link to this heading"></a></h3>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
-        <span class="n">fields_by_id</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">))</span>
-        <span class="n">last_field</span> <span class="o">=</span> <span class="n">fields_by_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    fields = self.ms.get_fields(intent=self.intent)
+    if fields:
+        fields_by_id = sorted(fields, key=operator.attrgetter(&#39;id&#39;))
+        last_field = fields_by_id[-1]
 
-        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">last_field</span><span class="p">,</span> <span class="s1">&#39;source&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">last_field</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">requested_spws</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">last_field</span><span class="o">.</span><span class="n">valid_spws</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">requested_spws</span><span class="p">):</span>
-                <span class="n">fields</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">last_field</span><span class="p">)</span>
+        if getattr(last_field, &#39;source&#39;, None) is None:
+            fields.remove(last_field)
+        else:
+            requested_spws = set(self.ms.get_spectral_windows(self.spw))
+            if last_field.valid_spws.isdisjoint(requested_spws):
+                fields.remove(last_field)
 
-    <span class="n">unique_field_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
-    <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+    unique_field_names = {f.name for f in fields}
+    field_ids = {f.id for f in fields}
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">field_ids</span><span class="p">])</span>
+    if len(unique_field_names) == len(field_ids):
+        return &#39;,&#39;.join(unique_field_names)
+    else:
+        return &#39;,&#39;.join([str(i) for i in field_ids])
 </pre></div>
 </div>
 <p>Used by:</p>
@@ -434,7 +434,7 @@ each intent, and within those if/for blocks, there are typically separate local
 definitions for identifying which fields belong to current given intent.</p>
 <p>Examples are found in hifa_gfluxscaleflag, hifa_spwphaseup, and hifa_timegaincal,
 that use e.g.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">):</span> 
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>    for field in inputs.ms.get_fields(intent=intent): 
 </pre></div>
 </div>
 <p>or some variation, and subsequently may use field.name inside the loop.
@@ -453,10 +453,10 @@ operates on are now hard-coded inside the task, with no way for users to overrid
 <section id="future-development-ideas">
 <h2>Future development ideas<a class="headerlink" href="#future-development-ideas" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Is there scope to consolidate the ‘intent’-to-’field’ conversion into fewer variations?</p></li>
+<li><p>Is there scope to consolidate the ‘intent’-to-‘field’ conversion into fewer variations?</p></li>
 <li><p>Consider renaming “field” parameter in Pipeline tasks to “hm_field” and
 “intent” to “hm_intent”, to distinguish clearly from CASA.</p></li>
-<li><p>Enforce type of parameters? E.g. field=1 means field ID 1, while field=’1’
+<li><p>Enforce type of parameters? E.g. field=1 means field ID 1, while field=‘1’
 means field name “1”.</p></li>
 <li><p>Consider converting field.name during setter instead of getter.</p></li>
 </ul>
@@ -474,7 +474,7 @@ means field name “1”.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

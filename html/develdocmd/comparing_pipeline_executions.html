@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Comparing pipeline executions &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -124,7 +124,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="comparing-pipeline-executions">
+  <section class="tex2jax_ignore mathjax_ignore" id="comparing-pipeline-executions">
 <h1>Comparing pipeline executions<a class="headerlink" href="#comparing-pipeline-executions" title="Link to this heading"></a></h1>
 <p>When refactoring pipeline code, it is common to want to restructure and
 modify the code but leave the overall behaviour unchanged. The pipeline does
@@ -132,7 +132,7 @@ not have automated unit tests or regression tests, so it falls to the
 developer to manually verify that the pipeline behaviour has not changed.</p>
 <p>There are three general ways to compare pipeline executions and determine
 whether pipeline behaviour has changed:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>Check whether the same CASA tasks are called in the same sequence and with
 the same arguments;</p></li>
 <li><p>In addition to the above, check whether the same sequence of CASA tool
@@ -208,7 +208,7 @@ call, e.g.,</p>
 <h2>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h2>
 <p>Scenario: two branches have different code but should result in identical CASA
 calls. This can be tested by running an execution for both branches, keeping the:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>same CASA version</p></li>
 <li><p>same data</p></li>
 <li><p>same pipeline recipe</p></li>
@@ -259,7 +259,7 @@ using your usual procedure.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

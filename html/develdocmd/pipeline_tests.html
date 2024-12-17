@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pipeline testing &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="pipeline-testing">
+  <section class="tex2jax_ignore mathjax_ignore" id="pipeline-testing">
 <h1>Pipeline testing<a class="headerlink" href="#pipeline-testing" title="Link to this heading"></a></h1>
 <section id="unit-tests">
 <h2>Unit tests<a class="headerlink" href="#unit-tests" title="Link to this heading"></a></h2>
@@ -144,8 +144,8 @@ The <code class="docutils literal notranslate"><span class="pre">--nologfile</sp
 </pre></div>
 </div>
 <p>On a multi-core system, <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code> can speed things up significantly, when the parallelization doesn’t create a memory/io-bound situation. This is usually true for a light-weight test collection (e.g. unit tests), e.g.,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">walltime</span>   <span class="mi">0</span><span class="n">m21</span><span class="mf">.744</span><span class="n">s</span> <span class="c1"># with pytest-xdist</span>
-<span class="n">walltime</span>   <span class="mi">2</span><span class="n">m13</span><span class="mf">.076</span><span class="n">s</span> <span class="c1"># without pytest-xdist</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>walltime   0m21.744s # with pytest-xdist
+walltime   2m13.076s # without pytest-xdist
 </pre></div>
 </div>
 <p>A summary of various test frameworks and tools is available in <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-806">PIPE-806</a>.</p>
@@ -307,7 +307,7 @@ these results to the reference values. This should be run in a directory which c
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

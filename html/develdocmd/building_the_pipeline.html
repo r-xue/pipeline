@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Building the pipeline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -124,7 +124,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="building-the-pipeline">
+  <section class="tex2jax_ignore mathjax_ignore" id="building-the-pipeline">
 <h1>Building the pipeline<a class="headerlink" href="#building-the-pipeline" title="Link to this heading"></a></h1>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
@@ -137,9 +137,9 @@ duration of the installation procedure.</p>
 </section>
 <section id="dependency-requirements">
 <h3>Dependency Requirements<a class="headerlink" href="#dependency-requirements" title="Link to this heading"></a></h3>
-<p>Following the change from <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-1699">PIPE-1699</a>, Pipeline now specifies the required standard Python dependencies in a <a class="reference external" href="../requirements.txt">requirements.txt</a> file, and recommends using <code class="docutils literal notranslate"><span class="pre">pip</span></code> to install them directly from the Python Package Index (<a class="reference external" href="https://pypi.org/">PyPI</a>).
-The <a class="reference external" href="../pipeline/extern"><code class="docutils literal notranslate"><span class="pre">pipeline/extern</span></code></a> directory now only contains the non-standard Python packages/modules contributed by the developers and heuristics development team.</p>
-<p>Note that this file is currently <em>not</em> used by <a class="reference external" href="../setup.py"><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></a> to auto-install dependencies, and only serves as a reference for development and packaging purposes.
+<p>Following the change from <a class="reference external" href="https://open-jira.nrao.edu/browse/PIPE-1699">PIPE-1699</a>, Pipeline now specifies the required standard Python dependencies in a <a class="reference internal" href="#../requirements.txt"><span class="xref myst">requirements.txt</span></a> file, and recommends using <code class="docutils literal notranslate"><span class="pre">pip</span></code> to install them directly from the Python Package Index (<a class="reference external" href="https://pypi.org/">PyPI</a>).
+The <a class="reference internal" href="#../pipeline/extern"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">pipeline/extern</span></code></span></a> directory now only contains the non-standard Python packages/modules contributed by the developers and heuristics development team.</p>
+<p>Note that this file is currently <em>not</em> used by <a class="reference internal" href="#../setup.py"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">setup.py</span></code></span></a> to auto-install dependencies, and only serves as a reference for development and packaging purposes.
 In addition, the list only includes dependencies that are <em>not</em> bundled in the monolith CASA release designated for the next Pipeline release, and their version specifications are continuously examined against potential compatibility issues with other Python packages already shipped in CASA.
 The developer team will maintain the file to reflect the current state of the dependency requirements across the development cycle.</p>
 <p>To use this file manually, you can type the following command:</p>
@@ -247,7 +247,7 @@ On the other hand, the “local_label” string is joined by several mandate or 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

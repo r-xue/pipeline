@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VLASS-SE-CONT imaging workflow &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -123,12 +123,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="vlass-se-cont-imaging-workflow">
+  <section class="tex2jax_ignore mathjax_ignore" id="vlass-se-cont-imaging-workflow">
 <h1>VLASS-SE-CONT imaging workflow<a class="headerlink" href="#vlass-se-cont-imaging-workflow" title="Link to this heading"></a></h1>
 <p>This document describes the implementation of the workflow presented in VLASS Memo 15 as a
-CASA script (”VIP script”) to the pipeline codebase. The relevant recipe is found in the pipeline repository at <code class="docutils literal notranslate"><span class="pre">pipeline/recipes/procedure_vlassSEIP.xml</span></code>.</p>
+CASA script (“VIP script”) to the pipeline codebase. The relevant recipe is found in the pipeline repository at <code class="docutils literal notranslate"><span class="pre">pipeline/recipes/procedure_vlassSEIP.xml</span></code>.</p>
 <p>The major peculiarities in the workflow are:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>special masking procedure based on the pyBDSF blob finding algorithm,</p></li>
 <li><p>widefield projection (awproject gridder) is used by default, additional step is required to compute PSFs without frequency dependent A-terms,</p></li>
 <li><p>self calibration is used,</p></li>
@@ -151,21 +151,21 @@ CASA script (”VIP script”) to the pipeline codebase. The relevant recipe is 
 used for self-calibration, 2) image self calibrated (corrected) data column and use the result for creating the Tier-2 mask, and 3)
 compute the final image using self-calibrated (corrected) data column, Tier-1 mask and combined Tier-1 and Tier-2 masks.</p>
 <p>The pipeline parameters are controlled via a parameter file, which is interpreted by the <code class="docutils literal notranslate"><span class="pre">hif_editimlist</span></code> task. An example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># SEIP_parameter.list</span>
-<span class="c1">#</span>
-<span class="c1"># Necessary parameters:</span>
-<span class="c1">#    </span>
-<span class="n">imagename</span><span class="o">=</span><span class="s1">&#39;VLASS1.2.se.Txxxx.J133335+164400.v1&#39;</span>
-<span class="n">phasecenter</span><span class="o">=</span><span class="s1">&#39;J2000 13:33:35.814 +16.44.04.255&#39;</span>
-<span class="n">imaging_mode</span><span class="o">=</span><span class="s1">&#39;VLASS-SE-CONT&#39;</span>
-<span class="c1"># Important: first with frequency dependent A-terms, second without </span>
-<span class="n">cfcache</span><span class="o">=</span><span class="s1">&#39;/mnt/scratch/cfcache/cfcache_spw2-17_smaller_imsize1024_cell2.0arcsec_w32_conjT.cf, /mnt/scratch/cfcache/cfcache_spw2-17_smaller_imsize1024_cell2.0arcsec_w32_conjT_psf_wbawp_False.cf&#39;</span>
-<span class="c1">#</span>
-<span class="c1"># Parameters for speeding up computation</span>
-<span class="c1">#</span>
-<span class="n">imsize</span><span class="o">=</span><span class="p">[</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">1024</span><span class="p">]</span>
-<span class="n">cell</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;2.0arcsec&#39;</span><span class="p">]</span>
-<span class="n">niter</span><span class="o">=</span><span class="mi">50</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># SEIP_parameter.list
+#
+# Necessary parameters:
+#    
+imagename=&#39;VLASS1.2.se.Txxxx.J133335+164400.v1&#39;
+phasecenter=&#39;J2000 13:33:35.814 +16.44.04.255&#39;
+imaging_mode=&#39;VLASS-SE-CONT&#39;
+# Important: first with frequency dependent A-terms, second without 
+cfcache=&#39;/mnt/scratch/cfcache/cfcache_spw2-17_smaller_imsize1024_cell2.0arcsec_w32_conjT.cf, /mnt/scratch/cfcache/cfcache_spw2-17_smaller_imsize1024_cell2.0arcsec_w32_conjT_psf_wbawp_False.cf&#39;
+#
+# Parameters for speeding up computation
+#
+imsize=[1024, 1024]
+cell=[&#39;2.0arcsec&#39;]
+niter=50
 </pre></div>
 </div>
 <p>The strictly necessary parameters are <code class="docutils literal notranslate"><span class="pre">imaging_mode</span></code>, <code class="docutils literal notranslate"><span class="pre">imagename</span></code>, <code class="docutils literal notranslate"><span class="pre">phasecenter</span></code> and <code class="docutils literal notranslate"><span class="pre">cfcache</span></code>. Cfcaches must be computed with exactly the same imsize and cell size as used for imaging. Reducing the image size, resolution and iteration number speeds up computation and used during testing, but it is not expected to produce science ready data quality. The other parameters (if not set in parameter file) are determined by heuristics.</p>
@@ -173,28 +173,28 @@ compute the final image using self-calibrated (corrected) data column, Tier-1 ma
 and blocked file access. To circumvent the issue, CFCaches are provided from local disk storage on the NMPOST
 cluster (<code class="docutils literal notranslate"><span class="pre">/mnt/scratch/cfcache/</span></code>). Cfcaches copied to <code class="docutils literal notranslate"><span class="pre">/lustre/aoc/projects/vlass/cfcache</span></code> are periodically synced to the local partitions.</p>
 <p>The imaging cycle (stages) include a <code class="docutils literal notranslate"><span class="pre">hif_editimlist</span></code>, an optional <code class="docutils literal notranslate"><span class="pre">hifv_vlassmasking</span></code> and a <code class="docutils literal notranslate"><span class="pre">hif_makeimages</span></code> task call:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># First imaging step</span>
-<span class="n">hif_editimlist</span><span class="p">(</span><span class="n">parameter_file</span><span class="o">=</span><span class="s1">&#39;SEIP_parameter.list&#39;</span><span class="p">)</span>
-<span class="n">hifv_vlassmasking</span><span class="p">(</span><span class="n">maskingmode</span><span class="o">=</span><span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">)</span>
-<span class="n">hif_makeimages</span><span class="p">(</span> <span class="n">hm_masking</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># First imaging step
+hif_editimlist(parameter_file=&#39;SEIP_parameter.list&#39;)
+hifv_vlassmasking(maskingmode=&#39;vlass-se-tier-1&#39;)
+hif_makeimages( hm_masking=&#39;manual&#39;)
 
-<span class="c1"># Self calibration steps</span>
+# Self calibration steps
 
-<span class="c1"># Second imaging cycle (after self-cal)</span>
-<span class="n">hif_editimlist</span><span class="p">(</span><span class="n">parameter_file</span><span class="o">=</span><span class="s1">&#39;SEIP_parameter.list&#39;</span><span class="p">)</span>
-<span class="n">hif_makeimages</span><span class="p">(</span> <span class="n">hm_masking</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">)</span>
+# Second imaging cycle (after self-cal)
+hif_editimlist(parameter_file=&#39;SEIP_parameter.list&#39;)
+hif_makeimages( hm_masking=&#39;manual&#39;)
 
-<span class="c1"># Final imaging step</span>
-<span class="n">hif_editimlist</span><span class="p">(</span><span class="n">parameter_file</span><span class="o">=</span><span class="s1">&#39;SEIP_parameter.list&#39;</span><span class="p">)</span>
-<span class="n">hifv_vlassmasking</span><span class="p">(</span><span class="n">maskingmode</span><span class="o">=</span><span class="s1">&#39;vlass-se-tier-2&#39;</span><span class="p">)</span>
-<span class="n">hif_makeimages</span><span class="p">(</span> <span class="n">hm_masking</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">)</span>
+# Final imaging step
+hif_editimlist(parameter_file=&#39;SEIP_parameter.list&#39;)
+hifv_vlassmasking(maskingmode=&#39;vlass-se-tier-2&#39;)
+hif_makeimages( hm_masking=&#39;manual&#39;)
 </pre></div>
 </div>
 <section id="hif-editimlist">
 <h3>hif_editimlist()<a class="headerlink" href="#hif-editimlist" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">context.clean_list_pending</span></code> list is filled with a single imaging target (<code class="docutils literal notranslate"><span class="pre">imlist_entry</span></code>). The following changes occur compared to the
 normal task operation:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;sSTAGENUMBER&quot;</span></code> string is prepended to imagename parameter value, this will be replaced by stage numbers</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage</span></code> attribute of the heuristics object (ImageParamsHeuristicsVlassSeCont) is counted by method <code class="docutils literal notranslate"><span class="pre">utils.get_task_result_count()</span></code>. This counts and returns the MakeImagesResult instances in <code class="docutils literal notranslate"><span class="pre">context.result</span></code> list. The imaging heuristics return values are determined by <code class="docutils literal notranslate"><span class="pre">vlass_stage</span></code> attribute together with the <code class="docutils literal notranslate"><span class="pre">iteration</span></code> number (method argument).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">imlist_entry['cfcache_nowb']</span></code> key is added in addition to the normal <code class="docutils literal notranslate"><span class="pre">imlist_entry['cfcache']</span></code> key. The heuristics method <code class="docutils literal notranslate"><span class="pre">get_cfcaches()</span></code> is used to parse the string provided in the parameter file to these two keys. Modes other than VLASS-CONT-SE(-AWP-0??) and VLASS-CONT-SE-MOSAIC always set<code class="docutils literal notranslate"><span class="pre">cfcache_nowb=None</span></code>.</p></li>
@@ -215,7 +215,7 @@ normal task operation:</p>
 <code class="docutils literal notranslate"><span class="pre">/home/vlass/packages/VLASS1Q.fits</span></code> is used (can be found on NMPOST machines).</p>
 <p>The details of how the constructed mask is added to <code class="docutils literal notranslate"><span class="pre">context.clean_list_pending['mask']</span></code> depends on the imaging mode and
 whether cleaning without mask (i.e. pbmask only) is used:</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">maskingmode='vlass-se-tier-1'</span></code> and no cleaning without mask is requested, then <code class="docutils literal notranslate"><span class="pre">context.clean_list_pending['mask']</span></code>
 is overwritten by the new mask name.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">maskingmode='vlass-se-tier-1'</span></code> and cleaning without mask is requested, then <code class="docutils literal notranslate"><span class="pre">context.clean_list_pending['mask']</span></code>
@@ -239,8 +239,8 @@ If <code class="docutils literal notranslate"><span class="pre">clean_no_mask_se
 <li><p>New Tclean._do_iterative_vlass_se_imaging() method implements the VLASS-SE-CONT imaging sequence in awproject and mosaic
 modes. This method is invoked only if image_heuristics.imaging_mode starts with the ‘VLASS-SE-CONT’ string. The sequence incorporates the following steps:</p></li>
 </ul>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=1</span></code>, using datacolumn=’data’</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=1</span></code>, using datacolumn=‘data’</p>
 <ul class="simple">
 <li><p>(awproject only) compute PSF without frequency dependent A-terms, i.e. <code class="docutils literal notranslate"><span class="pre">cfcache=cfcache_noawbp</span></code> and <code class="docutils literal notranslate"><span class="pre">wbawp=False</span></code> tclean parameters</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">iter0</span></code>: initialize clean using normal CFCache (<code class="docutils literal notranslate"><span class="pre">niter=0</span></code>, <code class="docutils literal notranslate"><span class="pre">calcpsf=True</span></code>, <code class="docutils literal notranslate"><span class="pre">calcres=True</span></code>)</p></li>
@@ -250,7 +250,7 @@ modes. This method is invoked only if image_heuristics.imaging_mode starts with 
 <li><p>save model to <code class="docutils literal notranslate"><span class="pre">modelcolumn</span></code>, always in single threaded mode</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=2</span></code>, using datacolumn=’corrected’</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=2</span></code>, using datacolumn=‘corrected’</p>
 <ul class="simple">
 <li><p>(awproject only) compute PSF without frequency dependent A-terms, i.e. <code class="docutils literal notranslate"><span class="pre">cfcache=cfcache_noawbp</span></code> and <code class="docutils literal notranslate"><span class="pre">wbawp=False</span></code> tclean parameters</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">iter0</span></code>: initialize clean using normal CFCache (<code class="docutils literal notranslate"><span class="pre">niter=0</span></code>, <code class="docutils literal notranslate"><span class="pre">calcpsf=True</span></code>, <code class="docutils literal notranslate"><span class="pre">calcres=True</span></code>)</p></li>
@@ -258,7 +258,7 @@ modes. This method is invoked only if image_heuristics.imaging_mode starts with 
 <li><p><code class="docutils literal notranslate"><span class="pre">iter1</span></code>: continue, clean with Tier-1 mask</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=3</span></code>, using datacolumn=’corrected’</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">vlass_stage=3</span></code>, using datacolumn=‘corrected’</p>
 <ul class="simple">
 <li><p>(awproject only) compute PSF without frequency dependent A-terms, i.e. <code class="docutils literal notranslate"><span class="pre">cfcache=cfcache_noawbp</span></code> and <code class="docutils literal notranslate"><span class="pre">wbawp=False</span></code> tclean parameters</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">iter0</span></code>: initialize clean using normal CFCache (<code class="docutils literal notranslate"><span class="pre">niter=0</span></code>, <code class="docutils literal notranslate"><span class="pre">calcpsf=True</span></code>, <code class="docutils literal notranslate"><span class="pre">calcres=True</span></code>)</p></li>
@@ -277,7 +277,7 @@ modes. This method is invoked only if image_heuristics.imaging_mode starts with 
 <section id="casa-6-1-specific-workaround">
 <h2>CASA 6.1 specific workaround<a class="headerlink" href="#casa-6-1-specific-workaround" title="Link to this heading"></a></h2>
 <p>This section lists CASA issues that the pipeline needs to work around as of the release of 2021.1.1 (based on the CASA 6.1 series). With future CASA version these issues are expected to be fixed.</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>CAS-13338: Tclean phasecenter parameter conversion has limited precision (in parallel mode)</p>
 <ul class="simple">
 <li><p>ImageParamsHeuristicsVlassSeCont.get_parallel_cont_synthesis_imager_csys() heuristic method (see docstring) works around this issue</p></li>
@@ -299,7 +299,7 @@ modes. This method is invoked only if image_heuristics.imaging_mode starts with 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

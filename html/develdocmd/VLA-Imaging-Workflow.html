@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VLA interferometry imaging workflow &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=ef25e892"></script>
+      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,7 +113,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="vla-interferometry-imaging-workflow">
+  <section class="tex2jax_ignore mathjax_ignore" id="vla-interferometry-imaging-workflow">
 <h1>VLA interferometry imaging workflow<a class="headerlink" href="#vla-interferometry-imaging-workflow" title="Link to this heading"></a></h1>
 <p>List of differences compared to the ALMA interferometry imaging workflow (ALMA-Imaging-Workflow.md)</p>
 <p>Related recipes and template: procedure_hifv_contimage, procedure_hifv_calimage, template_hifv_contimage
@@ -143,12 +143,12 @@ then truncate image. Mitigation parameters for different targets and bands are i
 <ul>
 <li><p>heuristics instance</p></li>
 <li><p>field</p></li>
-<li><p>spw (for specmode=’cont’ remove spws without data )</p></li>
+<li><p>spw (for specmode=‘cont’ remove spws without data )</p></li>
 <li><p>cell (determine it independently for targets and bands)</p></li>
 <li><p>imsize (determine it independently for targets and bands, PB response of 0.294 for K-band and higher frequencies, 0.016 for Ku band and  lower)</p></li>
-<li><p>specmode (’cont’)</p></li>
+<li><p>specmode (‘cont’)</p></li>
 <li><p>nbin (not used)</p></li>
-<li><p>gridder (’standard’)</p></li>
+<li><p>gridder (‘standard’)</p></li>
 <li><p>uvrange (per target and band, omit first 5% of baselines if emission is extended)</p></li>
 </ul>
 </li>
@@ -158,7 +158,7 @@ then truncate image. Mitigation parameters for different targets and bands are i
 <ul>
 <li><p>set additional parameters via task interface:</p>
 <ul>
-<li><p>hm_masking (’none’)</p></li>
+<li><p>hm_masking (‘none’)</p></li>
 <li><p>hm_cyclefactor (3)</p></li>
 </ul>
 </li>
@@ -168,7 +168,7 @@ then truncate image. Mitigation parameters for different targets and bands are i
 <li><p>hif_tclean</p>
 <ul>
 <li><p>pblimit=-0.1 to not clip images</p></li>
-<li><p>determine deconvolver (’mtmfs’ for ‘cont’)</p></li>
+<li><p>determine deconvolver (‘mtmfs’ for ‘cont’)</p></li>
 <li><p>determine nterms (2 if fractional bandwidth &gt; 10% else 1)</p></li>
 <li><p>default to robust = 0.5</p></li>
 <li><p>calculate sensitivity</p>
@@ -197,7 +197,7 @@ then truncate image. Mitigation parameters for different targets and bands are i
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+150-gad7c61df5-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
