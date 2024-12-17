@@ -4,7 +4,7 @@ version: 2
 build:
   os: ubuntu-24.04
   tools:
-    python: "mambaforge-22.9"
+    python: "mambaforge-*" # miniconda-latest before miniforge because available
   apt_packages:
     - git 
     - xvfb 
@@ -16,6 +16,7 @@ build:
     - texlive-fonts-recommended
   # Build commands for HTML and PDF
   commands:
+    - conda env update --file pipe1669.yml -y
     - python -m pip install .[docs] && mkdir -p ~/.casa/data
     - mkdir -p ~/.casa/data
     - cd docs && make html_docs
