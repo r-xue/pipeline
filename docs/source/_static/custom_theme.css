@@ -36,3 +36,15 @@ ul {
         overflow: visible !important;
     }
 }
+
+
+/* nboutput area scollbar */
+div.nboutput.container div.output_area {
+    max-height: 500px;
+}
+
+/* no prompt * /
+.nbinput .prompt,
+.nboutput .prompt {
+    display: none;
+}
