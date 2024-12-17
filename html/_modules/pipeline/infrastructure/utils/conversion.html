@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.conversion &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=1b8874fd"></script>
+      <script src="../../../../_static/documentation_options.js?v=96081ba7"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -296,7 +296,7 @@
 
 
 <div class="viewcode-block" id="mjd_seconds_to_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.mjd_seconds_to_datetime.html#pipeline.infrastructure.utils.utils.mjd_seconds_to_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.mjd_seconds_to_datetime.html#pipeline.infrastructure.utils.utils.mjd_seconds_to_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">mjd_seconds_to_datetime</span><span class="p">(</span><span class="n">mjd_secs</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Number</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">datetime</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert list of MJD seconds to a list of equivalent datetime objects.</span>
 
@@ -316,7 +316,7 @@
 
 
 <div class="viewcode-block" id="get_epoch_as_datetime">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.get_epoch_as_datetime.html#pipeline.infrastructure.utils.utils.get_epoch_as_datetime">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_epoch_as_datetime.html#pipeline.infrastructure.utils.utils.get_epoch_as_datetime">[docs]</a>
 <span class="k">def</span> <span class="nf">get_epoch_as_datetime</span><span class="p">(</span><span class="n">epoch</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CASA &#39;epoch&#39; measure into a Python datetime.</span>
 
@@ -390,7 +390,7 @@
 
 
 <div class="viewcode-block" id="to_CASA_intent">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.to_CASA_intent.html#pipeline.infrastructure.utils.utils.to_CASA_intent">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.to_CASA_intent.html#pipeline.infrastructure.utils.utils.to_CASA_intent">[docs]</a>
 <span class="k">def</span> <span class="nf">to_CASA_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert pipeline intents back to the equivalent intents recorded in the measurement set.</span>
 
@@ -559,7 +559,7 @@
 
 
 <div class="viewcode-block" id="safe_split">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.safe_split.html#pipeline.infrastructure.utils.utils.safe_split">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.safe_split.html#pipeline.infrastructure.utils.utils.safe_split">[docs]</a>
 <span class="k">def</span> <span class="nf">safe_split</span><span class="p">(</span><span class="n">fields</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a string containing field names into a list.</span>
 
@@ -576,7 +576,7 @@
 
 
 <div class="viewcode-block" id="dequote">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.dequote.html#pipeline.infrastructure.utils.utils.dequote">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dequote.html#pipeline.infrastructure.utils.utils.dequote">[docs]</a>
 <span class="k">def</span> <span class="nf">dequote</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove any kind of quotes from a string to facilitate comparisons.</span>
 
@@ -862,7 +862,7 @@
 
 
 <div class="viewcode-block" id="record_to_quantity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.conversion.record_to_quantity.html#pipeline.infrastructure.utils.utils.record_to_quantity">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.record_to_quantity.html#pipeline.infrastructure.utils.utils.record_to_quantity">[docs]</a>
 <span class="k">def</span> <span class="nf">record_to_quantity</span><span class="p">(</span><span class="n">record</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">Quantity</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CASA record to an Astropy quantity.</span>
 
@@ -940,7 +940,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

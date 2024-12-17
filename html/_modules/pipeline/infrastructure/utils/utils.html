@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.utils &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=1b8874fd"></script>
+      <script src="../../../../_static/documentation_options.js?v=96081ba7"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -156,7 +156,7 @@
 
 
 <div class="viewcode-block" id="find_ranges">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.find_ranges.html#pipeline.domain.datatable.find_ranges">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.find_ranges.html#pipeline.domain.datatable.find_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">find_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify numeric ranges in string or list.</span>
 
@@ -196,7 +196,7 @@
 
 
 <div class="viewcode-block" id="dict_merge">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.dict_merge.html#pipeline.domain.datatable.dict_merge">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.dict_merge.html#pipeline.domain.datatable.dict_merge">[docs]</a>
 <span class="k">def</span> <span class="nf">dict_merge</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively merge dictionaries.</span>
 
@@ -222,7 +222,7 @@
 
 
 <div class="viewcode-block" id="are_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.are_equal.html#pipeline.domain.datatable.are_equal">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.are_equal.html#pipeline.domain.datatable.are_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">are_equal</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the contents of the given arrays are equal.</span>
 
@@ -241,7 +241,7 @@
 
 
 <div class="viewcode-block" id="approx_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.approx_equal.html#pipeline.domain.datatable.approx_equal">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.approx_equal.html#pipeline.domain.datatable.approx_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">approx_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-15</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two numbers are equal within the given tolerance.</span>
 
@@ -320,7 +320,7 @@
 
 
 <div class="viewcode-block" id="fieldname_for_casa">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.fieldname_for_casa.html#pipeline.domain.datatable.fieldname_for_casa">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_for_casa.html#pipeline.domain.datatable.fieldname_for_casa">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare field string to be used as CASA argument.</span>
 
@@ -795,7 +795,7 @@
 
 
 <div class="viewcode-block" id="deduplicate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.deduplicate.html#pipeline.domain.datatable.deduplicate">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.deduplicate.html#pipeline.domain.datatable.deduplicate">[docs]</a>
 <span class="k">def</span> <span class="nf">deduplicate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove duplicate entries from a list, but preserve the order.</span>
 
@@ -1013,7 +1013,7 @@
 
 
 <div class="viewcode-block" id="ensure_products_dir_exists">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.ensure_products_dir_exists.html#pipeline.domain.datatable.ensure_products_dir_exists">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.ensure_products_dir_exists.html#pipeline.domain.datatable.ensure_products_dir_exists">[docs]</a>
 <span class="k">def</span> <span class="nf">ensure_products_dir_exists</span><span class="p">(</span><span class="n">products_dir</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating products directory: </span><span class="si">{</span><span class="n">products_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1025,7 +1025,7 @@
 
 
 <div class="viewcode-block" id="export_weblog_as_tar">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.export_weblog_as_tar.html#pipeline.domain.datatable.export_weblog_as_tar">[docs]</a>
+<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.export_weblog_as_tar.html#pipeline.domain.datatable.export_weblog_as_tar">[docs]</a>
 <span class="k">def</span> <span class="nf">export_weblog_as_tar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">name_builder</span><span class="p">):</span>
     <span class="c1"># Construct filename prefix from oussid and recipe name if available.</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
@@ -1155,7 +1155,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

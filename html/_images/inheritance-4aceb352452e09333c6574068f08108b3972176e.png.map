@@ -16,7 +16,7 @@
 <area shape="rect" id="node24" href="_autosummary/pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages" target="_top" title="MakeImages" alt="" coords="400,681,524,709"/>
 <area shape="rect" id="node25" href="_autosummary/pipeline.hif.tasks.Makecutoutimages.html#pipeline.hif.tasks.Makecutoutimages" target="_top" title="Makecutoutimages" alt="" coords="375,733,549,761"/>
 <area shape="rect" id="node26" href="_autosummary/pipeline.hif.tasks.Makermsimages.html#pipeline.hif.tasks.Makermsimages" target="_top" title="Makermsimages" alt="" coords="385,785,539,813"/>
-<area shape="rect" id="node28" href="_autosummary/pipeline.h.tasks.mstransform.mssplit.MsSplit.html#pipeline.h.tasks.mstransform.mssplit.MsSplit" target="_top" title="MsSplit" alt="" coords="423,837,501,865"/>
+<area shape="rect" id="node28" href="_autosummary/pipeline.h.tasks.MsSplit.html#pipeline.h.tasks.MsSplit" target="_top" title="MsSplit" alt="" coords="423,837,501,865"/>
 <area shape="rect" id="node29" href="_autosummary/pipeline.hif.tasks.Mstransform.html#pipeline.hif.tasks.Mstransform" target="_top" title="Mstransform" alt="" coords="401,889,523,917"/>
 <area shape="rect" id="node31" href="_autosummary/pipeline.hif.tasks.Polarization.html#pipeline.hif.tasks.Polarization" target="_top" title="Polarization" alt="" coords="405,941,519,969"/>
 <area shape="rect" id="node32" href="_autosummary/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker" target="_top" title="PolcalWorker" alt="" coords="399,993,525,1021"/>

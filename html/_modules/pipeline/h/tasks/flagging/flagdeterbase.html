@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.flagging.flagdeterbase &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=1b8874fd"></script>
+      <script src="../../../../../_static/documentation_options.js?v=96081ba7"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -163,7 +163,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseInputs">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBaseInputs manages the inputs for the FlagDeterBase task.</span>
@@ -372,7 +372,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mintransrepspw</span> <span class="o">=</span> <span class="n">mintransrepspw</span>
 
 <div class="viewcode-block" id="FlagDeterBaseInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseInputs.to_casa_args">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseInputs.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the input parameters of this class to task parameters</span>
@@ -393,7 +393,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBaseResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseResults">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBaseResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summaries</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterBaseResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -404,7 +404,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flagcmds</span>
 
 <div class="viewcode-block" id="FlagDeterBaseResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.regression.FlagDeterBaseResults.merge_with_context">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBaseResults.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBaseResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># nothing to do</span>
         <span class="k">pass</span></div>
@@ -434,7 +434,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterBase</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterBase is the base class for deterministic flagging. It can perform</span>
@@ -455,7 +455,7 @@
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterBaseInputs</span>
 
 <div class="viewcode-block" id="FlagDeterBase.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.prepare">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and execute a flagdata flagging job appropriate to the</span>
@@ -503,7 +503,7 @@
 
 
 <div class="viewcode-block" id="FlagDeterBase.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.analyse">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyse the results of the flagging operation.</span>
@@ -650,7 +650,7 @@
         <span class="k">return</span> <span class="s2">&quot;mode=&#39;manual&#39; autocorr=True&quot;</span>
 
 <div class="viewcode-block" id="FlagDeterBase.verify_spw">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.regression.FlagDeterBase.verify_spw">[docs]</a>
+<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.flagging.flagdeterbase.FlagDeterBase.html#pipeline.infrastructure.renderer.stats_extractor.FlagDeterBase.verify_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Verify that the given spw should be flagged, raising a ValueError if</span>
@@ -782,7 +782,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+159-gbafafa6bc-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+166-ga97fc6e53-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
