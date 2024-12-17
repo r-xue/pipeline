@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measurementset &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+156-g22c082e68-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -17,7 +17,7 @@
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=391ab4d9"></script>
+      <script src="../../../_static/documentation_options.js?v=890367b5"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -248,9 +248,9 @@
 
         <span class="c1"># Attributes expected to be populated during import of MS (see</span>
         <span class="c1"># infrastructure.tablereader.MeasurementSetReader.get_measurement_set).</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="p">:</span> <span class="n">AntennaArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acs_software_build_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># PIPE-132</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">acs_software_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># PIPE-132</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">antenna_array</span><span class="p">:</span> <span class="n">AntennaArray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">correlator_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_column</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># PIPE-1062</span>
@@ -838,7 +838,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="p">,</span> <span class="n">with_channels</span><span class="p">)</span>
 
-        <span class="c1"># if requested, filter spws by number of channels</span>
+        <span class="c1"># If requested, filter spws by number of channels.</span>
         <span class="k">if</span> <span class="n">num_channels</span><span class="p">:</span>
             <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spws</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">in</span> <span class="n">num_channels</span><span class="p">]</span>
 
@@ -846,7 +846,7 @@
         <span class="k">if</span> <span class="n">spectralspecs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spws</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">spectralspec</span> <span class="ow">in</span> <span class="n">spectralspecs</span><span class="p">]</span>
 
-        <span class="c1"># If requested, filter spws by intent.</span>
+        <span class="c1"># If requested, filter spws by intent(s).</span>
         <span class="k">if</span> <span class="n">intent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spws</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">spws</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">intents</span><span class="p">)]</span>
 
@@ -1903,7 +1903,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+156-g22c082e68-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

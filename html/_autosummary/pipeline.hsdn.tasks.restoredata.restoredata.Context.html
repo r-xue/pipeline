@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.restoredata.restoredata.Context &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+156-g22c082e68-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -18,7 +18,7 @@
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=391ab4d9"></script>
+      <script src="../_static/documentation_options.js?v=890367b5"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -169,113 +169,66 @@ small number of internal pipeline variables and objects.</p>
 pipeline state is attached. Keeping all state in one object makes it easy
 to persist this one object, and thus all state, to disk as a Python pickle,
 allowing pipeline sessions to be interrupted and resumed.</p>
-<p>… py:attribute:: project_summary</p>
-<blockquote>
-<div><p>project summary information.</p>
-</div></blockquote>
-<p>… py:attribute:: project_structure</p>
-<blockquote>
-<div><p>ALMA project structure information.</p>
-</div></blockquote>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.observing_run">
-<span class="sig-name descname"><span class="pre">observing_run</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.observing_run" title="Link to this definition"></a></dt>
-<dd><p>the top-level (<a class="reference internal" href="pipeline.hif.heuristics.auto_selfcal.auto_selfcal.ObservingRun.html#pipeline.hif.heuristics.auto_selfcal.auto_selfcal.ObservingRun" title="pipeline.domain.observingrun.ObservingRun"><code class="xref py py-class docutils literal notranslate"><span class="pre">ObservingRun</span></code></a>)
-through which all other pipeline.domain objects can be accessed</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.callibrary">
-<span class="sig-name descname"><span class="pre">callibrary</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.callibrary" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="pipeline.infrastructure.callibrary.CalLibrary.html#pipeline.infrastructure.callibrary.CalLibrary" title="pipeline.infrastructure.callibrary.CalLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalLibrary</span></code></a>) object
-holding the calibration state for registered measurement sets</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.calimlist">
-<span class="sig-name descname"><span class="pre">calimlist</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.calimlist" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
-object holding final images of calibrators</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.sciimlist">
-<span class="sig-name descname"><span class="pre">sciimlist</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.sciimlist" title="Link to this definition"></a></dt>
-<dd><p>the (<a class="reference internal" href="pipeline.infrastructure.imagelibrary.ImageLibrary.html#pipeline.infrastructure.imagelibrary.ImageLibrary" title="pipeline.infrastructure.imagelibrary.ImageLibrary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageLibrary</span></code></a>)
-object holding final images of science targets</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.results">
-<span class="sig-name descname"><span class="pre">results</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.results" title="Link to this definition"></a></dt>
-<dd><p>the list of (<code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code>) objects
-holding summaries of the pipeline run, one
-(<code class="xref py py-class docutils literal notranslate"><span class="pre">Result</span></code>) for each task.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.output_dir">
-<span class="sig-name descname"><span class="pre">output_dir</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.output_dir" title="Link to this definition"></a></dt>
-<dd><p>the directory to which pipeline data should be sent</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.raw_dir">
-<span class="sig-name descname"><span class="pre">raw_dir</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.raw_dir" title="Link to this definition"></a></dt>
-<dd><p>the directory holding the raw ASDMs or measurement sets (not used)</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.report_dir">
-<span class="sig-name descname"><span class="pre">report_dir</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.report_dir" title="Link to this definition"></a></dt>
-<dd><p>the directory where pipeline HTML reports should be sent</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.task_counter">
-<span class="sig-name descname"><span class="pre">task_counter</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.task_counter" title="Link to this definition"></a></dt>
-<dd><p>integer holding the index of the last task to complete</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.subtask_counter">
-<span class="sig-name descname"><span class="pre">subtask_counter</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.subtask_counter" title="Link to this definition"></a></dt>
-<dd><p>integer holding the index of the last subtask to complete</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.name" title="Link to this definition"></a></dt>
-<dd><p>name of the context; also forms the root of the filename used for the
-pickled state</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.imaging_mode">
-<span class="sig-name descname"><span class="pre">imaging_mode</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.imaging_mode" title="Link to this definition"></a></dt>
-<dd><p>imaging mode string; may be used to switch between imaging parameter
-heuristics; currently only used for deciding what products to export</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.selfcal_targets">
-<span class="sig-name descname"><span class="pre">selfcal_targets</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.selfcal_targets" title="Link to this definition"></a></dt>
-<dd><p>list of targets for which self-calibration is performed</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.selfcal_resources">
-<span class="sig-name descname"><span class="pre">selfcal_resources</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.selfcal_resources" title="Link to this definition"></a></dt>
-<dd><p>list of files/tables required for the self-calibration restoration</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging">
-<span class="sig-name descname"><span class="pre">vla_skip_mfs_and_cube_imaging</span></span><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging" title="Link to this definition"></a></dt>
-<dd><p>skips the following stages for VLA: hif_makeimlist (mfs, cube),
-hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)</p>
-</dd></dl>
-
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name of the context; also forms the root of the filename used for
+the pickled state.</p></li>
+<li><p><strong>output_dir</strong> – The working directory where pipeline output data should be saved.</p></li>
+<li><p><strong>products_dir</strong> – The directory where pipeline products should be exported to.</p></li>
+<li><p><strong>report_dir</strong> – The directory where pipeline HTML reports should be saved.</p></li>
+<li><p><strong>logs</strong> – Dictionary containing the filenames to use for standard output
+files (CASA commands log, AQUA report, pipeline script, restore script).</p></li>
+<li><p><strong>results</strong> – The list of task result (proxy) objects containing summaries
+of each executed task in the pipeline run.</p></li>
+<li><p><strong>task_counter</strong> – Index of the last task to complete.</p></li>
+<li><p><strong>subtask_counter</strong> – Index of the last subtask to complete.</p></li>
+<li><p><strong>observing_run</strong> – The top-level ObservingRun object through which all other
+pipeline.domain objects can be accessed.</p></li>
+<li><p><strong>project_performance_parameters</strong> – ALMA OUS project performance information.</p></li>
+<li><p><strong>project_structure</strong> – ALMA project structure information.</p></li>
+<li><p><strong>project_summary</strong> – Project summary information.</p></li>
+<li><p><strong>calimlist</strong> – The ImageLibrary object holding final images of calibrators.</p></li>
+<li><p><strong>callibrary</strong> – The CalLibrary object holding the calibration state for
+registered measurement sets.</p></li>
+<li><p><strong>clean_list_info</strong> – Dictionary to store information about the target image
+to-be-cleaned list; typically populated by hif_makeimlist.</p></li>
+<li><p><strong>clean_list_pending</strong> – List of hif.tasks.makeimlist.cleantarget.CleanTarget
+objects representing what target images are to be cleaned; typically
+populated by hif_makeimlist, or edited by hif_editimlist.</p></li>
+<li><p><strong>contfile</strong> – Name of file with frequency ranges to use for continuum
+images; typically populated by hif_makeimlist.</p></li>
+<li><p><strong>imaging_mode</strong> – Imaging mode string; may be used to switch between imaging
+parameter heuristics; currently only used for deciding what products
+to export.</p></li>
+<li><p><strong>imaging_parameters</strong> – Dictionary containing computed values to use for
+certain parameters during imaging; typically populated by
+hifa_imageprecheck.</p></li>
+<li><p><strong>linesfile</strong> – Name of file with line frequency ranges to exclude for
+continuum images; typically populated by hif_makeimlist.</p></li>
+<li><p><strong>per_spw_cont_sensitivities_all_chan</strong> – Dictionary containing some imaging
+parameters as well as sensitivity information; typically populated
+by hifa_imageprecheck, and potentially updated by hif_makeimages or
+hif_tclean.</p></li>
+<li><p><strong>rmsimlist</strong> – The ImageLibrary object holding RMS uncertainty images of the
+science targets.</p></li>
+<li><p><strong>sciimlist</strong> – The ImageLibrary object holding final images of science targets.</p></li>
+<li><p><strong>selfcal_resources</strong> – List of files/tables required for the
+self-calibration restoration.</p></li>
+<li><p><strong>selfcal_targets</strong> – List of targets for which self-calibration is performed.</p></li>
+<li><p><strong>sensitivities</strong> – TODO: introduced for CAS-10146, but appears unused.</p></li>
+<li><p><strong>size_mitigation_parameters</strong> – Dictionary containing imaging product size
+mitigation parameters; typically populated by hif_checkproductsize,
+and used by hif_makeimlist.</p></li>
+<li><p><strong>subimlist</strong> – The ImageLibrary object holding cut-out images of the science
+targets.</p></li>
+<li><p><strong>synthesized_beams</strong> – Dictionary containing some imaging parameters as well
+computed synthesized beam information; typically populated/updated
+by hifa_imageprecheck, hif_checkproductsize, hif_makeimlist,
+hif_makeimages, and hif_tclean.</p></li>
+</ul>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -285,8 +238,8 @@ hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.get_recipe_name" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.get_recipe_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_recipe_name</span></code></a></p></td>
 <td><p>Get the recipe name from project structure.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.save" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a></p></td>
+<td><p>Save a pickle of the Context to a file with given filename.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.set_state" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.set_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_state</span></code></a></p></td>
 <td><p>Set a context property using the class name, property name and property value.</p></td>
@@ -296,35 +249,54 @@ hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)</p>
 <p class="rubric">Attributes</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">products_dir</span></code></p></td>
-<td><p></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.products_dir" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.products_dir"><code class="xref py py-obj docutils literal notranslate"><span class="pre">products_dir</span></code></a></p></td>
+<td><p>Return path to the products directory.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.stage" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stage</span></code></a></p></td>
+<td><p>Return task and sub-task stage number.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#id0" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_skip_mfs_and_cube_imaging</span></code></a></p></td>
-<td><p>Check the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging" title="pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_skip_mfs_and_cube_imaging</span></code></a></p></td>
+<td><p>Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.get_oussid">
-<span class="sig-name descname"><span class="pre">get_oussid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.get_oussid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.get_oussid" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_oussid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.get_oussid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.get_oussid" title="Link to this definition"></a></dt>
 <dd><p>Get the parent OUS ‘ousstatus’ name. This is the sanitized OUS
 status UID.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.get_recipe_name">
-<span class="sig-name descname"><span class="pre">get_recipe_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.get_recipe_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.get_recipe_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_recipe_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.get_recipe_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.get_recipe_name" title="Link to this definition"></a></dt>
 <dd><p>Get the recipe name from project structure.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.products_dir">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">products_dir</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.products_dir" title="Link to this definition"></a></dt>
+<dd><p>Return path to the products directory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.save" title="Link to this definition"></a></dt>
+<dd><p>Save a pickle of the Context to a file with given filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> – Name of the context file. If None, this will be set to
+&lt;context name&gt;.context.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.set_state">
-<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.set_state" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/launcher.html#Context.set_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.set_state" title="Link to this definition"></a></dt>
 <dd><p>Set a context property using the class name, property name and property
-value. The class name should be one of:</p>
+value.</p>
+<p>The class name should be one of:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>‘ProjectSummary’</p></li>
@@ -337,21 +309,29 @@ intent.xml to setter functions in casa_pipescript.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cls</strong> – class identifier</p></li>
-<li><p><strong>name</strong> – property to set</p></li>
-<li><p><strong>value</strong> – value to set</p></li>
+<li><p><strong>cls</strong> – Class identifier.</p></li>
+<li><p><strong>name</strong> – Property to set.</p></li>
+<li><p><strong>value</strong> – Value to set.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id0">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vla_skip_mfs_and_cube_imaging</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
-<dd><p>Check the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p>
+<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.stage">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stage</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.stage" title="Link to this definition"></a></dt>
+<dd><p>Return task and sub-task stage number.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vla_skip_mfs_and_cube_imaging</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pipeline.hsdn.tasks.restoredata.restoredata.Context.vla_skip_mfs_and_cube_imaging" title="Link to this definition"></a></dt>
+<dd><p>Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</p>
+<p>This is currently used to skip the following stages for VLA:
+- hif_makeimlist (mfs, cube)
+- hif_findcont
+- hif_uvcontsub
+- hif_makeimages(mfs, cube)</p>
 </dd></dl>
 
 </dd></dl>
@@ -369,7 +349,7 @@ intent.xml to setter functions in casa_pipescript.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+151-gfb83fc346-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+156-g22c082e68-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
