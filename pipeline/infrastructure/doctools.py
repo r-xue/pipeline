@@ -39,7 +39,7 @@ def inherit_annotations(task_class: basetask.StandardTaskTemplate, cli_task: Cal
     """Inherit function annotations from Task implementation class.
 
     Type hints for parameters are inherited from task_class.Inputs.__init__.
-    On the other hand, type hint for return value refers to either task_class.prepare
+    On the other hand, type hint for return value refers to either task_class.analyse
     or task_class.execute. In addition, return type can be ResultsList depending
     on the value of task_class.is_multi_vis_task attribute.
 
@@ -55,10 +55,10 @@ def inherit_annotations(task_class: basetask.StandardTaskTemplate, cli_task: Cal
         parent_func = task_class.execute
         is_multi_vis = task_class.is_multi_vis_task
     elif issubclass(task_class, sessionutils.ParallelTemplate):
-        parent_func = task_class.Task.prepare
+        parent_func = task_class.Task.analyse
         is_multi_vis = task_class.Task.is_multi_vis_task
     else:
-        parent_func = task_class.prepare
+        parent_func = task_class.analyse
         is_multi_vis = task_class.is_multi_vis_task
 
     # use generic Results type if there is no type information on return value
