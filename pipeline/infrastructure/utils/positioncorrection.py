@@ -85,7 +85,11 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
             # Compute correction
             zd, pa = calc_zd_pa(ra_head, dec_head, obs_long, obs_lat, date_time)
-            offset_pa = list(rtq(calc_wide_field_pos_cor(zd=zd, pa=pa, offset_pa=True)))
+            # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
+            amp = np.deg2rad(0.25 / 3600.0)
+            deltatot = amp * np.tan(zd)
+            offset_pa = list(rtq(({'value': deltatot, 'unit': 'rad'},
+                                  {'value': pa, 'unit': 'rad'})))
 
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
@@ -119,41 +123,6 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
         LOG.warning(f'Image {fitsname} does not exist. No position correction was done.')
 
     return
-
-
-def calc_wide_field_pos_cor(zd, pa, offset_pa: bool = False) -> Tuple[Dict, Dict]:
-    """Computes the wide field position correction.
-
-    Args:
-        zd: zenith distance in radians
-        pa: parallactic angle in radians
-        offset_pa: Return the angular offset and parallactic angle instead of offset along RA and Dec.
-
-    Returns:
-        A tuple containing RA and Dec offsets with units (in radians).
-
-    Examples:
-    >>> zd, pa = 0.2981984027696312, 1.4473222298324353
-    >>> offset = calc_wide_field_pos_cor(zd=zd, pa=pa)
-    >>> '{}{}'.format(offset[0]['value'], offset[0]['unit']), '{}{}'.format(offset[1]['value'], offset[1]['unit'])
-    ('3.696987011896662e-07rad', '4.588161874447812e-08rad')
-    """
-
-    # Compute correction
-    # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
-    amp = np.deg2rad(0.25 / 3600.0)
-    offset = np.zeros(2)
-    deltatot = amp * np.tan(zd)
-
-    # Offset values
-    if offset_pa:
-        return ({'value': deltatot, 'unit': 'rad'},
-                {'value': pa, 'unit': 'rad'})
-
-    offset[0] = deltatot * np.sin(pa)
-    offset[1] = deltatot * np.cos(pa)
-    return ({'value': offset[0], 'unit': 'rad'},
-            {'value': offset[1], 'unit': 'rad'})
 
 
 def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict):

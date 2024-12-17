@@ -6,7 +6,7 @@ import astropy.io.fits as apfits
 import pytest
 
 from .. import casa_tools
-from .positioncorrection import do_wide_field_pos_cor, calc_wide_field_pos_cor
+from .positioncorrection import do_wide_field_pos_cor, calc_zd_pa
 
 test_params_fits = [(casa_tools.utils.resolve('pl-unittest/VLASS1.1.ql.T19t20.J155950+333000.fits'),
                      {'unit': 'deg', 'value': -107.6183},
@@ -21,15 +21,21 @@ test_params_fits = [(casa_tools.utils.resolve('pl-unittest/VLASS1.1.ql.T19t20.J1
                       {'unit': 'deg', 'value': 24.49997953261358})
                      )]  # VLASS 1.2
 
-test_params_func = [(0.2981984027696312,
-                     1.4473222298324353,
-                     ({'unit': 'deg', 'value': 2.1182175269636022e-05},
-                      {'unit': 'deg', 'value': 2.6288231112869233e-06})
+test_params_func = [({'unit': 'deg', 'value': 239.9617912649343},
+                     {'unit': 'deg', 'value': 33.49999737118265},
+                     {'unit': 'deg', 'value': -107.6183},
+                     {'unit': 'deg', 'value': 33.90049},
+                     {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'},
+                    (0.2981984027696312,
+                     1.4473222298324353)
                      ),
+                    ({'unit': 'deg', 'value': 64.45982059345977},
+                     {'unit': 'deg', 'value': 24.49997953261358},
+                     {'unit': 'deg', 'value': -107.6183},
+                     {'unit': 'deg', 'value': 33.90049},
+                     {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'},
                     (0.6200683050479314,
-                     -1.1411500788434417,
-                     ({'unit': 'deg', 'value': -4.507762670427747e-05},
-                      {'unit': 'deg', 'value': 2.065425008498102e-05})
+                     -1.1411500788434417)
                      )]
 
 
@@ -78,26 +84,18 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     assert abs(delta_ra) < epsilon and abs(delta_dec) < epsilon
 
 
-@pytest.mark.parametrize('zd, pa, offset_expected', test_params_func)
-def test_calc_wide_field_pos_cor(zd: float, pa: float, offset_expected: Tuple[Dict, Dict],
-                                 epsilon: float = 1.0e-9):
-    """Test calc_wide_field_pos_cor()
+@pytest.mark.parametrize('ra, dec, obs_log, obs_lat, date_time', test_params_func)
+def test_calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict,
+                    expected: Tuple[float, float], epsilon: float = 1.0e-9):
+    """Test calc_zd_pa()
 
-    This utility function tests the mathematical correctness of wide field
-    correction function with edge cases. The tested quantity are the RA and Dec
-    offsets.
+    This utility function tests the mathematical correctness of the zenith distance and parallactic
+    angle calculation function.
     """
     # Compute correction
-    offset = calc_wide_field_pos_cor(zd=zd, pa=pa)
+    zd, pa = calc_zd_pa(ra=ra, dec=dec, obs_long=obs_long, obs_lat=obs_lat, date_time=date_time)
 
-    # Compute relative error
-    ra_offset = casa_tools.quanta.convert(offset[0], 'deg')['value']
-    dec_offset = casa_tools.quanta.convert(offset[1], 'deg')['value']
+    delta_zd = (zd - expected[0]) / expected[0]
+    delta_pa = (pa - expected[1]) / expected[1]
 
-    ra_offset_expected = casa_tools.quanta.convert(offset_expected[0], 'deg')['value']
-    dec_offset_expected = casa_tools.quanta.convert(offset_expected[1], 'deg')['value']
-
-    delta_ra = (ra_offset - ra_offset_expected) / ra_offset_expected
-    delta_dec = (dec_offset - dec_offset_expected) / dec_offset_expected
-
-    assert abs(delta_ra) < epsilon and abs(delta_dec) < epsilon
+    assert abs(delta_zd) < epsilon and abs(delta_pa) < epsilon
