@@ -5,7 +5,7 @@ import math
 from math import ceil, floor
 import os
 import time
-from typing import Callable, Generator, List, Optional, Union
+from typing import Callable, Generator, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -890,9 +890,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_freq_chan_reversed_image = False
+        is_lsb = False
         if isinstance(self.inputs.result, SDImagingResultItem):
-            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
+            is_lsb = self.inputs.result.frequency_channel_reversed
 
         # retrieve line list from reduction group
         # key is antenna and spw id
@@ -947,77 +947,46 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        def _digitize(num):
-            if isinstance(num, float):
-                return self.nchan - 1 - floor(num + 0.5) if is_freq_chan_reversed_image else floor(num + 0.5)
-            elif isinstance(num, list):
-                if is_freq_chan_reversed_image:
-                    return sorted([self.nchan - 1 - floor(f + 0.5) for f in num])
-                return sorted([floor(f + 0.5) for f in num])
-            else:
-                raise ValueError
-                
         for line_window in line_list:
-            (line_center, line_width) = (line_window[0] - self.edge[0], line_window[1])
+            (f_line_center, f_line_width) = (line_window[0] - self.edge[0], line_window[1])
 
-            # calculate slice width (float)
-            slice_width = self._calc_slice_width(line_width, line_center)
+            # calculate slice width
+            slice_width = self._calc_slice_width(f_line_width, f_line_center)
             if slice_width == .0:
                 continue
 
             # eliminate indice of out of channel range
-            half_line_width = slice_width * self.NUM_CHANNELMAP / 2.0
-            _vertline_indice = [j for j in [line_center - half_line_width + i * slice_width for i in range(self.NUM_CHANNELMAP)] if .5 <= j < self.nchan - 1.5]
-            if len(_vertline_indice) < 2:
+            f_leftside = f_line_center - slice_width * self.NUM_CHANNELMAP * 0.5
+            f_idx_vertlines = [j for j in
+                                  [f_leftside + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
+                              if -0.5 <= j < self.nchan - 1.5]
+            if len(f_idx_vertlines) < 2:
                 continue
 
-            # put a side line; from left side if reversed image, or right side
-            _vertline_indice.append(_vertline_indice[0] - slice_width
-                                   if is_freq_chan_reversed_image
-                                   else _vertline_indice[-1] + slice_width)
-            # digitize, and invert if needed
-            idx_line_center, vertline_indice = list(map(lambda x: _digitize(x), [line_center, _vertline_indice]))
-            
-            # calculate the velicity value at the line center
-            velocity_line_center = self._calc_velocity_line_center(self.nchan - 1 - line_center
-                                                                   if is_freq_chan_reversed_image
-                                                                   else line_center)
-            LOG.debug(f'center velocity[{idx_line_center}]: {velocity_line_center}')
-
-            if idx_line_center > 0:
-                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center - 1])
-            else:
-                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center + 1])
-
-            LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
-
-            chan0 = max(vertline_indice[0] - 1, 0)
-            chan1 = min(vertline_indice[-1], self.nchan - 1)
-            V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
-            V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
-            LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
-                      f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
+            # digitize, and invert if needed, then get several values to plot
+            (idx_line_center, idx_vertlines, velocity_line_center, velocity_per_channel,
+             chan0, chan1, V0, V1) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
 
             vertical_lines = []
 
             # vertical lines for integrated spectrum #1
             vertical_lines.append(
-                axes_integsp1.axvline(x=self.frequency[vertline_indice[0]], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[idx_vertlines[0]], linewidth=0.3, color='r')
             )
             vertical_lines.append(
-                axes_integsp1.axvline(x=self.frequency[vertline_indice[-1]], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[idx_vertlines[-1]], linewidth=0.3, color='r')
             )
 
             # Drawing red vertical lines for integrated spectrum #2
             # For detail, see the MEMO below.
-            _y_vel = self.velocity[vertline_indice]
-            chan2vel = interpolate.interp1d(vertline_indice, _y_vel, bounds_error=False, fill_value='extrapolate')
+            _y_vel = self.velocity[idx_vertlines]
+            chan2vel = interpolate.interp1d(idx_vertlines, _y_vel, bounds_error=False, fill_value='extrapolate')
 
             # calculate relative velocities for red vertical lines
-            _diff_len = self.NUM_CHANNELMAP + 1 - len(vertline_indice)
-            _diff_arr = [vertline_indice[-1] + (i + 1) * floor(slice_width + 0.5) for i in range(_diff_len)]
-            vertline_indice.extend(_diff_arr)
-            vertlines = chan2vel(numpy.array(vertline_indice)-0.5) - velocity_line_center
+            _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
+            _diff_arr = [idx_vertlines[-1] + (i + 1) * slice_width for i in range(_diff_len)]
+            idx_vertlines.extend(_diff_arr)
+            vertlines = chan2vel(numpy.array(idx_vertlines)-0.5) - velocity_line_center
             
             vertical_lines.extend(
                 (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
@@ -1049,7 +1018,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 t0 = time.time()
 
                 # Draw Total Intensity Map
-                total = masked_data.sum(axis=2) * ChanVelWidth
+                total = masked_data.sum(axis=2) * velocity_per_channel
                 total = numpy.flipud(total.transpose())
 
                 # 2008/9/20 DEC Effect
@@ -1117,15 +1086,15 @@ class SDChannelMapDisplay(SDImageDisplay):
                 Vmax0 = Vmin0 = 0
                 Title = []
                 for i in range(self.NUM_CHANNELMAP-1, -1, -1):
-                    if len(vertline_indice) - 2 < i:
+                    if len(idx_vertlines) - 2 < i:
                         continue
-                    C0 = vertline_indice[i]
-                    C1 = vertline_indice[i+1]
+                    C0 = idx_vertlines[i]
+                    C1 = idx_vertlines[i+1]
                     velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
-                    _mask = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
+                    _mask = masked_data[:, :, C0:C1].sum(axis=2) * velocity_per_channel
                     Map[self.NUM_CHANNELMAP-1-i] = numpy.flipud(_mask.transpose())
                 del masked_data
                 Vmax0 = Map.max()
@@ -1197,28 +1166,92 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
-    def _calc_slice_width(self, line_width, line_center):
+    def _digitize(self, line_center:float, idx_vertlines: float, is_lsb:bool) -> \
+            Tuple[int, List[int], float, float, int, int, float, float]:
+        """
+        Digitize values and calculate related values.
         
-        slice_width = max(line_width / self.NUM_CHANNELMAP, 1.0)
-        
-        # adjust index of both side within channel
-        if line_center - line_width / 2 - .5 < 0:
-            slice_width = abs(line_center * 2.0 / self.NUM_CHANNELMAP)
-            if slice_width < .5:
-                return .0
-        elif line_center + line_width / 2 > self.nchan - 1.5:
-            slice_width = abs((self.nchan - 1 - line_center) * 2.0 / self.NUM_CHANNELMAP)
-            if slice_width < .5:
-                return .0
+        This function digitizes the center of the feature line and indices of
+        vertical red lines on a plot first, and invert it if the processing
+        casaimage was from an lower side band, note that self.velocity and
+        self.frequency are already inverted. Then, it calculates some values
+        to use for plotting images of a weblog.
 
-        return slice_width
-    
-    def _calc_velocity_line_center(self, line_center):
-        num = floor(line_center+0.5)
-        if float(num) == line_center:
-            return self.velocity[num]
+        Args:
+            line_center (float): center index (but float) of feature line
+            idx_vertlines (float): indice (but float) of vertical red lines
+                                   on velocity plot.
+            is_lsb (bool): the flag wheather the casaimage was LSB or not.
+
+        Returns: Tuple of them (in order):
+            int: center index of a feature line detected by previous logics
+            List[int]: indice of vertical red lines on velocity plot
+            float: velocity value at the center of feature line
+            float: velocity value per a channel
+            int, int: indice of the both edges of the red lines
+            float, float: velocity values of the both edges of the red lines
+        """
+        LOG.info(f'line center: {line_center}, indice vertical lines: {idx_vertlines}, nchan: {self.nchan}')
+
+        # digitize
+        i_line_center = floor(line_center + 0.5)
+        i_idx_vertlines = sorted([floor(f + 0.5) for f in idx_vertlines])
+        LOG.info(f'digitized line center: {i_line_center}, indice vertical lines: {i_idx_vertlines}')
+
+        # invert if LSB
+        if is_lsb:
+            i_line_center = self.nchan - 1 - i_line_center
+            i_idx_vertlines = sorted([self.nchan - 1 - f for f in i_idx_vertlines])
+            LOG.info(f'reverted line center: {i_line_center}, indice vertical lines: {i_idx_vertlines}')
+
+        # calculate the velocity value at the center of the feature line
+        if float(i_line_center) == line_center:
+            velocity_line_center = self.velocity[i_line_center]
         else:
-            return 0.5 * (self.velocity[num] + self.velocity[num - 1])
+            _rightside = [pos for pos, idx in enumerate(i_idx_vertlines) if idx > i_line_center]
+            _pos = i_idx_vertlines[-1] if len(_rightside) == 0 else _rightside[0]
+            velocity_line_center = (self.velocity[i_idx_vertlines[_pos-1]] +
+                                    self.velocity[i_idx_vertlines[_pos] - 1]) * 0.5
+
+        # caluculate the velocity value per a channel
+        if i_line_center > 0:
+            velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[i_line_center - 1])
+        else:
+            velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[i_line_center + 1])
+
+        # caluculate values of the both edges of vertical red lines for plotting
+        chan0 = max(i_idx_vertlines[0] - 1, 0)
+        chan1 = min(i_idx_vertlines[-1], self.nchan - 1)
+        V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+        V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+        
+        LOG.info(f'center velocity[{i_line_center}]: {velocity_line_center}')
+        LOG.info(f"center frequency[{i_line_center}]: {self.frequency[i_line_center]}")
+        LOG.info('chan0, chan1, V0, V1, velocity_line_center : '
+                    f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
+        return (i_line_center, i_idx_vertlines, velocity_line_center, velocity_per_channel,
+                chan0, chan1, V0, V1)
+
+    def _calc_slice_width(self, line_width: float, line_center: float) -> int:
+        """Calculate width of a slice.
+
+        Args:
+            line_width (float): width of the feature line
+            line_center (float): the center index of the feature line
+
+        Returns:
+            int: width of a slice
+        """
+        # adjust index of both side within channel
+        # width of the channels at left side of the center was narrower than a half width of the feature line
+        if line_center - line_width / 2 - .5 < 0:
+            return floor(abs(line_center * 2.0 / self.NUM_CHANNELMAP))
+        # width of the channels at right side of the center was narrower than a half width of the feature line
+        elif line_center + line_width / 2 > self.nchan - 1.5:
+            return floor(abs((self.nchan - 1 - line_center) * 2.0 / self.NUM_CHANNELMAP))
+        
+        # otherwise, return width to cover the feature line
+        return ceil(max(line_width / self.NUM_CHANNELMAP, 1.0))
         
 
 class SDRmsMapDisplay(SDImageDisplay):
