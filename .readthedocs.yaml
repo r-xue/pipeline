@@ -22,7 +22,10 @@ build:
     - python -m pip install .[docs] && mkdir -p ~/.casa/data
     - mkdir -p ~/.casa/data
     - cd docs && make html_docs
-    - cd docs && make latexpdf      
+    - cd docs && make latexpdf
+    - mkdir --parents _readthedocs/html/ _readthedocs/pdf/
+    - cp --recursive docs/build/html/* _readthedocs/html/ 
+    - cp --recursive docs/build/latex/*.pdf _readthedocs/pdf/ 
 
 conda:
   environment: pipe1669.yml
