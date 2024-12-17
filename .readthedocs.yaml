@@ -4,7 +4,7 @@ version: 2
 build:
   os: ubuntu-24.04
   tools:
-    python: "mambaforge-*" # miniconda-latest before miniforge because available
+    python: miniconda-latest # miniforge3-latest before miniforge because available
   apt_packages:
     - git 
     - xvfb 
