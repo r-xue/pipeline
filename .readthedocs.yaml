@@ -35,8 +35,3 @@ commands:
   - mkdir -p ~/.casa/data
   - cd docs && make html_docs
   - cd docs && make latexpdf  
-
-# Build output formats
-formats:
-  - html
-  - pdf  
