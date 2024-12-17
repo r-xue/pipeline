@@ -78,6 +78,14 @@ except ImportError as error:
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    # --------
+    # https://docs.readthedocs.io/en/stable/guides/jupyter.html#using-notebooks-in-other-formats
+    # option 1 # better integration with intersphinx
+    # "myst_nb",
+    # option 2 # https://github.com/executablebooks/MyST-NB/issues/421
+    'myst_parser',
+    'nbsphinx',
+    # ---------
     'sphinx.ext.autodoc',
     # 'autoapi.extension',
     'sphinx.ext.autosectionlabel',
@@ -90,16 +98,14 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.coverage',
     'sphinx.ext.githubpages',
-    'sphinx.ext.intersphinx',
+    # 'sphinx.ext.intersphinx',
     'sphinx.ext.inheritance_diagram',
     'sphinx_automodapi.automodapi',
     'sphinx_automodapi.smart_resolver',
     'sphinxcontrib.bibtex',
     'sphinx_astrorefs',
-    'recommonmark',
     'sphinx.ext.graphviz',
     'sphinx.ext.viewcode',
-    'nbsphinx',
     'sphinx_copybutton',
     'IPython.sphinxext.ipython_console_highlighting',
     'IPython.sphinxext.ipython_directive',
@@ -112,16 +118,27 @@ templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-#
 
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+# source_suffix = {
+#    '.rst': 'restructuredtext',
+#    '.md': 'markdown',
+# }
+
+# for nbsphinx/notebook-markdown: handle markdown using jupytext
+# nbsphinx_custom_formats = {
+#     ".md": ["jupytext.reads", {"fmt": "mystnb"}],
+# }
+
+# for myst-nb/notebook-markdown: handle markdown using jupytext
+# nb_custom_formats = {
+#     ".md": ["jupytext.reads", {"fmt": "mystnb"}],
+# }
 
 # The master toctree document.
 master_doc = 'index'
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-release
-release = build_version = pipeline.environment.pipeline_revision # used on the PDF cover
+release = build_version = pipeline.environment.pipeline_revision  # used on the PDF cover
 version = build_version.split('+')[0]
 
 # General information about the project.
@@ -151,13 +168,13 @@ language = 'en'
 exclude_patterns = ['_build', '**.ipynb_checkpoints', 'Thumbs.db', '.DS_Store']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'default' # 'sphinx', 'github-dark', ' default'
+pygments_style = 'default'  # 'sphinx', 'github-dark', ' default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # sphinx-copybutton
-copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_text = r'>>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: '
 copybutton_prompt_is_regexp = True
 copybutton_remove_prompts = True
 copybutton_copy_empty_lines = False
@@ -183,7 +200,7 @@ html_theme_options = {
     'flyout_display': 'attached',
     'version_selector': True,
     'language_selector': True,
-    'display_version': True,
+    # 'display_version': True, # deprecated
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
@@ -309,20 +326,18 @@ automodapi_toctreedirnm = '_automodapi'
 # -- intersphinx
 
 # intersphinx_mapping = {
-#     'python': ('https://docs.python.org/3', None),
-#     'astropy':  ('http://docs.astropy.org/en/stable', None),
+#     'python': ('https://docs.python.org/3',(None, 'python-inv.txt')),
+#     'astropy': ('http://docs.astropy.org/en/latest/', None),
+#     'pyerfa': ('https://pyerfa.readthedocs.io/en/stable/', None),
+#     'pytest': ('https://pytest.readthedocs.io/en/stable/', None),
+#     'ipython': ('https://ipython.readthedocs.io/en/stable/', None),
+#     'pandas': ('https://pandas.pydata.org/pandas-docs/stable/', None),
+#     'sphinx_automodapi': ('https://sphinx-automodapi.readthedocs.io/en/stable/', None),
+#     'packagetemplate': ('http://docs.astropy.org/projects/package-template/en/latest/', None),
+#     'h5py': ('http://docs.h5py.org/en/stable/', None),
+#     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 # }
-
-
-# intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
-# intersphinx_mapping['astropy'] = ('http://docs.astropy.org/en/latest/', None)
-# intersphinx_mapping['pyerfa'] = ('https://pyerfa.readthedocs.io/en/stable/', None)
-# intersphinx_mapping['pytest'] = ('https://pytest.readthedocs.io/en/stable/', None)
-# intersphinx_mapping['ipython'] = ('https://ipython.readthedocs.io/en/stable/', None)
-# intersphinx_mapping['pandas'] = ('https://pandas.pydata.org/pandas-docs/stable/', None)
-# intersphinx_mapping['sphinx_automodapi'] = ('https://sphinx-automodapi.readthedocs.io/en/stable/', None)
-# intersphinx_mapping['packagetemplate'] = ('http://docs.astropy.org/projects/package-template/en/latest/', None)
-# intersphinx_mapping['h5py'] = ('http://docs.h5py.org/en/stable/', None)
+# intersphinx_disabled_reftypes = ["*"]
 
 # sphinxcontrib.bibtex/sphinx-astrorefs
 bibtex_bibfiles = ['references/pipeline-resolved.bib']
@@ -395,3 +410,29 @@ nbsphinx_prolog = r"""
     \texttt{\strut{}{{ docname }}}:}
 ----
 """
+
+
+# myst-parser
+
+myst_enable_extensions = [
+    'amsmath',
+    'attrs_inline',
+    'colon_fence',
+    'deflist',
+    'dollarmath',
+    'fieldlist',
+    'html_admonition',
+    'html_image',
+    'linkify',
+    'replacements',
+    'smartquotes',
+    'strikethrough',
+    'substitution',
+    'tasklist',
+]
+myst_linkify_fuzzy_links = False
+
+
+# myst-NB
+
+nb_execution_mode = 'off'

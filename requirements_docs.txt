@@ -3,11 +3,11 @@
 
 future
 urllib3
-commonmark
-recommonmark
+myst-parser
+linkify-it-py
+jupytext
 nbsphinx         # nbsphinx requires 'pandoc' (e.g. from macports/apt/conda-forge, not 'pandoc' from PyPI) to work properly.
 sphinx_rtd_theme # furo
-
 sphinxcontrib-bibtex
 sphinx-astrorefs # https://github.com/jobovy/sphinx-astrorefs
 sphinx-copybutton
