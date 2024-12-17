@@ -18,7 +18,7 @@
 <area shape="rect" id="node21" href="_autosummary/pipeline.hifv.tasks.Pbcor.html#pipeline.hifv.tasks.Pbcor" target="_top" title="Pbcor" alt="" coords="430,785,502,813"/>
 <area shape="rect" id="node22" href="_autosummary/pipeline.hifv.tasks.PlotSummary.html#pipeline.hifv.tasks.PlotSummary" target="_top" title="PlotSummary" alt="" coords="401,837,531,865"/>
 <area shape="rect" id="node23" href="_autosummary/pipeline.hifv.tasks.Priorcals.html#pipeline.hifv.tasks.Priorcals" target="_top" title="Class for the Priorcals pipeline task. &#160;Used on VLA measurement sets." alt="" coords="421,889,511,917"/>
-<area shape="rect" id="node24" href="_autosummary/pipeline.h.tasks.RestoreData.html#pipeline.h.tasks.RestoreData" target="_top" title="RestoreData is the base class for restoring flagged and calibrated" alt="" coords="406,941,526,969"/>
+<area shape="rect" id="node24" href="_autosummary/pipeline.h.tasks.restoredata.restoredata.RestoreData.html#pipeline.h.tasks.restoredata.restoredata.RestoreData" target="_top" title="RestoreData is the base class for restoring flagged and calibrated" alt="" coords="406,941,526,969"/>
 <area shape="rect" id="node25" href="_autosummary/pipeline.hifv.tasks.Restorepims.html#pipeline.hifv.tasks.Restorepims" target="_top" title="Restorepims" alt="" coords="406,993,526,1021"/>
 <area shape="rect" id="node26" href="_autosummary/pipeline.hifv.tasks.Rqcal.html#pipeline.hifv.tasks.Rqcal" target="_top" title="Rqcal" alt="" coords="430,1045,502,1073"/>
 <area shape="rect" id="node27" href="_autosummary/pipeline.hifv.tasks.Selfcal.html#pipeline.hifv.tasks.Selfcal" target="_top" title="Selfcal" alt="" coords="429,1097,503,1125"/>
