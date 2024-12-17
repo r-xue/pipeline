@@ -17,6 +17,7 @@ build:
   # Build commands for HTML and PDF
   commands:
     - conda env update --file=pipe1669.yaml
+    - conda activate pipe1669
     - python -m pip install .[docs] && mkdir -p ~/.casa/data
     - mkdir -p ~/.casa/data
     - cd docs && make html_docs
