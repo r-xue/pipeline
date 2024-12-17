@@ -6,10 +6,9 @@ import datetime
 import os
 import pickle
 import pprint
-from typing import Dict, Optional
+from typing import Any
 
 from pipeline import domain, environment
-
 from . import (callibrary, casa_tools, eventbus, imagelibrary, logging,
                project, utils)
 from .eventbus import ContextCreatedEvent, ContextResumedEvent
@@ -34,85 +33,75 @@ class Context(object):
     to persist this one object, and thus all state, to disk as a Python pickle,
     allowing pipeline sessions to be interrupted and resumed.
 
-    ... py:attribute:: project_summary
+    Attributes:
+        name: Name of the context; also forms the root of the filename used for
+            the pickled state.
 
-        project summary information.
+        output_dir: The working directory where pipeline output data should be saved.
+        products_dir: The directory where pipeline products should be exported to.
+        report_dir: The directory where pipeline HTML reports should be saved.
 
-    ... py:attribute:: project_structure
+        logs: Dictionary containing the filenames to use for standard output
+            files (CASA commands log, AQUA report, pipeline script, restore script).
 
-        ALMA project structure information.
+        results: The list of task result (proxy) objects containing summaries
+            of each executed task in the pipeline run.
+        task_counter: Index of the last task to complete.
+        subtask_counter: Index of the last subtask to complete.
 
-    .. py:attribute:: observing_run
+        observing_run: The top-level ObservingRun object through which all other
+            pipeline.domain objects can be accessed.
 
-        the top-level (:class:`~pipeline.domain.observingrun.ObservingRun`)
-        through which all other pipeline.domain objects can be accessed
+        project_performance_parameters: ALMA OUS project performance information.
+        project_structure: ALMA project structure information.
+        project_summary: Project summary information.
 
-    .. py:attribute:: callibrary
-
-        the (:class:`~pipeline.infrastructure.callibrary.CalLibrary`) object
-        holding the calibration state for registered measurement sets
-
-    .. py:attribute:: calimlist
-
-        the (:class:`~pipeline.infrastructure.imagelibrary.ImageLibrary`)
-        object holding final images of calibrators
-
-    .. py:attribute:: sciimlist
-
-        the (:class:`~pipeline.infrastructure.imagelibrary.ImageLibrary`)
-        object holding final images of science targets
-
-    .. py:attribute:: results
-
-        the list of (:class:`~pipeline.infrastructure.api.Result`) objects
-        holding summaries of the pipeline run, one 
-        (:class:`~pipeline.infrastructure.api.Result`) for each task.
-
-    .. py:attribute:: output_dir
-
-        the directory to which pipeline data should be sent
-
-    .. py:attribute:: raw_dir
-
-        the directory holding the raw ASDMs or measurement sets (not used)
-
-    .. py:attribute:: report_dir
-
-        the directory where pipeline HTML reports should be sent
-
-    .. py:attribute:: task_counter
-
-        integer holding the index of the last task to complete
-
-    .. py:attribute:: subtask_counter
-
-        integer holding the index of the last subtask to complete
-
-    .. py:attribute:: name
-
-        name of the context; also forms the root of the filename used for the
-        pickled state
-
-    .. py:attribute:: imaging_mode
-
-        imaging mode string; may be used to switch between imaging parameter
-        heuristics; currently only used for deciding what products to export
-
-    .. py:attribute:: selfcal_targets
-
-        list of targets for which self-calibration is performed
-
-    .. py:attribute:: selfcal_resources
-
-        list of files/tables required for the self-calibration restoration
-    
-    .. py:attribute:: vla_skip_mfs_and_cube_imaging
-
-        skips the following stages for VLA: hif_makeimlist (mfs, cube),
-        hif_findcont, hif_uvcontsub, hif_makeimages(mfs, cube)
+        calimlist: The ImageLibrary object holding final images of calibrators.
+        callibrary: The CalLibrary object holding the calibration state for
+            registered measurement sets.
+        clean_list_info: Dictionary to store information about the target image
+            to-be-cleaned list; typically populated by hif_makeimlist.
+        clean_list_pending: List of hif.tasks.makeimlist.cleantarget.CleanTarget
+            objects representing what target images are to be cleaned; typically
+            populated by hif_makeimlist, or edited by hif_editimlist.
+        contfile: Name of file with frequency ranges to use for continuum
+            images; typically populated by hif_makeimlist.
+        imaging_mode: Imaging mode string; may be used to switch between imaging
+            parameter heuristics; currently only used for deciding what products
+            to export.
+        imaging_parameters: Dictionary containing computed values to use for
+            certain parameters during imaging; typically populated by
+            hifa_imageprecheck.
+        linesfile: Name of file with line frequency ranges to exclude for
+            continuum images; typically populated by hif_makeimlist.
+        per_spw_cont_sensitivities_all_chan: Dictionary containing some imaging
+            parameters as well as sensitivity information; typically populated
+            by hifa_imageprecheck, and potentially updated by hif_makeimages or
+            hif_tclean.
+        rmsimlist: The ImageLibrary object holding RMS uncertainty images of the
+            science targets.
+        sciimlist: The ImageLibrary object holding final images of science targets.
+        selfcal_resources: List of files/tables required for the
+            self-calibration restoration.
+        selfcal_targets: List of targets for which self-calibration is performed.
+        sensitivities: TODO: introduced for CAS-10146, but appears unused.
+        size_mitigation_parameters: Dictionary containing imaging product size
+            mitigation parameters; typically populated by hif_checkproductsize,
+            and used by hif_makeimlist.
+        subimlist: The ImageLibrary object holding cut-out images of the science
+            targets.
+        synthesized_beams: Dictionary containing some imaging parameters as well
+            computed synthesized beam information; typically populated/updated
+            by hifa_imageprecheck, hif_checkproductsize, hif_makeimlist,
+            hif_makeimages, and hif_tclean.
     """
+    def __init__(self, name: str | None = None) -> None:
+        """
+        Initialize a Context object.
 
-    def __init__(self, name: Optional[str] = None):
+        Args:
+            name: Name of the context.
+        """
         if name is None:
             # initialise the context name with something reasonable: a current
             # timestamp
@@ -120,67 +109,83 @@ class Context(object):
             name = now.strftime('pipeline-%Y%m%dT%H%M%S')
         self.name = name
 
-        self.observing_run = domain.ObservingRun()
-
-        self.callibrary = callibrary.CalLibrary(self)
-        self.calimlist = imagelibrary.ImageLibrary()
-        self.sciimlist = imagelibrary.ImageLibrary()
-        self.rmsimlist = imagelibrary.ImageLibrary()
-        self.subimlist = imagelibrary.ImageLibrary()
-
-        self.project_summary = project.ProjectSummary()
-        self.project_structure = project.ProjectStructure()
-        self.project_performance_parameters = project.PerformanceParameters()
-
+        # Define default file paths for working output, weblog, export products.
         self.output_dir = ''
-        self.report_dir = os.path.join(self.output_dir, self.name, 'html')
         self.products_dir = None
-
-        self.task_counter = 0
-        self.subtask_counter = 0
-        self.results = []
-        self.contfile = None
-        self.linesfile = None
-        self.size_mitigation_parameters = {}
-        self.imaging_parameters = {}
-        self.clean_list_pending = []
-        self.clean_list_info = {}
-        self.sensitivities = []
-        self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}
-        self.synthesized_beams = {'robust': None, 'uvtaper': None}
-        self.imaging_mode = None
-        self.selfcal_targets = []
-        self.selfcal_resources = []
-
+        LOG.trace('Setting products directory: %s', self.products_dir)
+        self.report_dir = os.path.join(self.output_dir, self.name, 'html')
         LOG.trace('Creating report directory: %s', self.report_dir)
         utils.mkdir_p(self.report_dir)
 
-        LOG.trace('Setting products directory: %s', self.products_dir)
-
-        LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
-        LOG.todo('Add OUS registration task. Hard-coding log type to MOUS')
-        self.logtype = 'MOUS'
-
-        self.logs: Dict[str, str] = dict(
+        # Define default filenames for output logs, scripts, AQUA report.
+        self.logs: dict[str, str | list] = dict(
             casa_commands='casa_commands.log',
             pipeline_script='casa_pipescript.py',
             pipeline_restore_script='casa_piperestorescript.py',
             aqua_report='pipeline_aquareport.xml'
         )
 
+        # Define list of task results and task counters.
+        self.results = []
+        self.task_counter = 0
+        self.subtask_counter = 0
+        LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
+
+        # TODO: Appears effectively unused, remove?
+        self.logtype = 'MOUS'
+        LOG.todo('Add OUS registration task. Hard-coding log type to MOUS')
+
+        # Define observing run.
+        self.observing_run = domain.ObservingRun()
+
+        # Define project information.
+        self.project_performance_parameters = project.PerformanceParameters()
+        self.project_structure = project.ProjectStructure()
+        self.project_summary = project.ProjectSummary()
+
+        # Initialize task inputs that are populated after init / importdata.
+        self.calimlist = imagelibrary.ImageLibrary()
+        self.callibrary = callibrary.CalLibrary(self)
+        self.clean_list_info = {}  # CAS-9456
+        self.clean_list_pending = []  # CAS-10146
+        self.contfile: str | None = None
+        self.imaging_mode: str | None = None  # PIPE-592
+        self.imaging_parameters = {}  # CAS-10146
+        self.linesfile: str | None = None
+        self.per_spw_cont_sensitivities_all_chan = {'robust': None, 'uvtaper': None}  # CAS-11211
+        self.rmsimlist = imagelibrary.ImageLibrary()  # CAS-9632
+        self.sciimlist = imagelibrary.ImageLibrary()
+        self.selfcal_resources: list[str] = []  # PIPE-1802
+        self.selfcal_targets = []  # PIPE-1802
+        self.sensitivities = []  # CAS-10146
+        self.size_mitigation_parameters = {}  # CAS-9255
+        self.subimlist = imagelibrary.ImageLibrary()  # CAS-10345
+        self.synthesized_beams = {'robust': None, 'uvtaper': None}
+
+        # Log context creation event.
         event = ContextCreatedEvent(context_name=self.name, output_dir=self.output_dir)
         eventbus.send_message(event)
 
     @property
-    def stage(self):
+    def stage(self) -> str:
+        """Return task and sub-task stage number."""
         return f'{self.task_counter}_{self.subtask_counter}'
 
     @property
-    def products_dir(self):
+    def products_dir(self) -> str:
+        """Return path to the products directory."""
         return self._products_dir
 
     @products_dir.setter
-    def products_dir(self, value):
+    def products_dir(self, value: str | None) -> None:
+        """
+        Set path to the products directory.
+
+        Args:
+            value: path to use for products directory; if None, it will default
+                to using the path ../products, relative to the output_dir (aka
+                working directory).
+        """
         if value is None:
             value = os.path.join('../', 'products')
 
@@ -188,7 +193,14 @@ class Context(object):
         LOG.trace('Setting products_dir: %s', value)
         self._products_dir = value
 
-    def save(self, filename=None):
+    def save(self, filename: str | None = None) -> None:
+        """
+        Save a pickle of the Context to a file with given filename.
+
+        Args:
+            filename: Name of the context file. If None, this will be set to
+                <context name>.context.
+        """
         if filename in ('', None):
             filename = f'{self.name}.context'
 
@@ -196,7 +208,7 @@ class Context(object):
             LOG.info('Saving context: %s', filename)
             pickle.dump(self, context_file, protocol=-1)
 
-    def __str__(self):
+    def __str__(self) -> str:
         ms_names = [ms.name
                     for ms in self.observing_run.measurement_sets]
         return ('Context(name=\'{0}\', output_dir=\'{1}\')\n'
@@ -204,13 +216,15 @@ class Context(object):
                 ''.format(self.name, self.output_dir,
                           pprint.pformat(ms_names)))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Context(name='{self.name}')>"
 
-    def set_state(self, cls, name, value):
+    def set_state(self, cls: str, name: str, value: Any) -> None:
         """
         Set a context property using the class name, property name and property
-        value. The class name should be one of:
+        value.
+
+        The class name should be one of:
 
          1. 'ProjectSummary'
          2. 'ProjectStructure'
@@ -219,10 +233,10 @@ class Context(object):
         Background: see CAS-9497 - add infrastructure to translate values from
         intent.xml to setter functions in casa_pipescript.
 
-        :param cls: class identifier
-        :param name: property to set
-        :param value: value to set
-        :return:
+        Args:
+            cls: Class identifier.
+            name: Property to set.
+            value: Value to set.
         """
         m = {
             'ProjectSummary': self.project_summary,
@@ -232,7 +246,7 @@ class Context(object):
         instance = m[cls]
         setattr(instance, name, value)
 
-    def get_oussid(self):
+    def get_oussid(self) -> str:
         """
         Get the parent OUS 'ousstatus' name. This is the sanitized OUS
         status UID.
@@ -243,10 +257,8 @@ class Context(object):
         else:
             return ps.ousstatus_entity_id.translate(str.maketrans(':/', '__'))
 
-    def get_recipe_name(self):
-        """
-        Get the recipe name from project structure.
-        """
+    def get_recipe_name(self) -> str:
+        """Get the recipe name from project structure."""
         ps = self.project_structure
         if ps is None or ps.recipe_name == 'Undefined':
             return ''
@@ -255,8 +267,14 @@ class Context(object):
 
     @property
     def vla_skip_mfs_and_cube_imaging(self) -> bool:
-        """Check the stage skipping condition for the VLA specmode=mfs/cube imaging workflow."""
+        """Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.
 
+        This is currently used to skip the following stages for VLA:
+        - hif_makeimlist (mfs, cube)
+        - hif_findcont
+        - hif_uvcontsub
+        - hif_makeimages(mfs, cube)
+        """
         ms_list = self.observing_run.get_measurement_sets_of_type([domain.datatype.DataType.REGCAL_CONTLINE_SCIENCE], msonly=True)
         telescope = self.project_summary.telescope
 
@@ -266,35 +284,30 @@ class Context(object):
 class Pipeline(object):
     """
     Pipeline is the entry point for initialising the pipeline. It is
-    responsible for the creation of new ~Context objects and for loading 
+    responsible for the creation of new Context objects and for loading
     saved Contexts from disk.
 
-    TODO replace this class with a static factory method on Context? 
+    Attributes:
+        context: Context object containing the Pipeline state information.
     """
-
-    def __init__(self, context=None, loglevel='info',
-                 casa_version_check=True, name=None, plotlevel='default',
-                 path_overrides={}):
+    def __init__(self, context: str | None = None, loglevel: str = 'info', casa_version_check: bool = True,
+                 name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None):
         """
-        Initialise the pipeline, creating a new ~Context or loading a saved
-        ~Context from disk.
+        Initialise the pipeline, creating a new Context or loading a saved
+        Context from disk.
 
-        :param context: filename of the pickled Context to load from disk.
-            Specifying 'last' loads the last-saved Context, while passing None
-            creates a new Context.
-        :type context: string
-        :param loglevel: pipeline log level
-        :type loglevel: string
-        :param casa_version_check: enable (True) or bypass (False) the CASA
-            version check. Default is True.
-        :param name: if not "None", this overrides the name of the Pipeline
-            Context if a new context needs to be created.
-        :type name: string
-        :param plotlevel: Pipeline plots level
-        :type plotlevel: string
-        :param path_overrides: dictionary containing context properties to be
-             redefined when loading existing context (e.g. "name").
-        :type path_overrides: dict
+        Args:
+            context: Filename of the pickled Context to load from disk.
+                Specifying 'last' loads the last-saved Context, while passing
+                None creates a new Context.
+            loglevel: Pipeline log level.
+            casa_version_check: enable (True) or bypass (False) the CASA version
+                check. Default is True.
+            name: If not "None", this overrides the name of the Pipeline Context
+                if a new context needs to be created.
+            plotlevel: Pipeline plots level.
+            path_overrides: Optional dictionary containing context properties to
+                be redefined when loading existing context (e.g. "name").
         """
         # configure logging with the preferred log level
         logging.set_logging_level(level=loglevel)
@@ -332,8 +345,10 @@ class Pipeline(object):
                 event = ContextResumedEvent(context_name=last_context.name, output_dir=last_context.output_dir)
                 eventbus.send_message(event)
 
-            for k, v in path_overrides.items():
-                setattr(self.context, k, v)
+            # If requested, redefine context properties with given overrides.
+            if path_overrides is not None:
+                for k, v in path_overrides.items():
+                    setattr(self.context, k, v)
 
         self._link_casa_log(self.context)
 
@@ -343,7 +358,14 @@ class Pipeline(object):
         import pipeline.infrastructure as infrastructure
         infrastructure.set_plot_level(plotlevel)
 
-    def _link_casa_log(self, context):
+    def _link_casa_log(self, context: Context) -> None:
+        """
+        Create a hard-link to the current CASA log in the report directory,
+        and add path to current CASA log to given Context.
+
+        Args:
+            context: Pipeline Context to update with path to current CASA log.
+        """
         report_dir = context.report_dir
 
         # create a hard-link to the current CASA log in the report directory
@@ -368,7 +390,20 @@ class Pipeline(object):
         if src not in context.logs['casalogs']:
             context.logs['casalogs'].append(os.path.basename(dst))
 
-    def _find_most_recent_session(self, directory='./'):
+    @staticmethod
+    def _find_most_recent_session(directory: str = './') -> str:
+        """
+        Return filename for the most recently saved Pipeline Context in given directory.
+
+        Args:
+            directory: Path where to search for context files.
+
+        Returns:
+            Filename of most recently saved Pipeline Context file.
+
+        Raises:
+            FileNotFoundError if no Pipeline context files are found in given directory.
+        """
         # list all the files in the directory..
         files = [f for f in os.listdir(directory) if f.endswith('.context')]
 
@@ -383,12 +418,13 @@ class Pipeline(object):
         # .. then return the file with the most recent timestamp
         return max(name_n_timestamp, key=name_n_timestamp.get)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         ms_names = [ms.name
                     for ms in self.context.observing_run.measurement_sets]
         return 'Pipeline({0})'.format(ms_names)
 
-    def close(self):
+    def close(self) -> None:
+        """Save a pickle of the Pipeline Context to a file."""
         filename = self.context.name
         with open(filename, 'r+b') as session:
             pickle.dump(self.context, session, protocol=-1)
