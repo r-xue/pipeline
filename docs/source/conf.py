@@ -21,13 +21,13 @@ import os
 import sys
 import textwrap
 
-pipeline_src = os.getenv('pipeline_src')
+pipeline_src = os.getenv("pipeline_src")
 if pipeline_src is not None:
     # Use the env variable "pipeline_src" to look for Pipeline if it's specified.
     sys.path.insert(0, os.path.abspath(pipeline_src))
 else:
     # Use the ancestry path if "pipeline_src" is not set.
-    sys.path.insert(0, os.path.abspath('../../'))
+    sys.path.insert(0, os.path.abspath("../../"))
 
 try:
     import pipeline
@@ -38,10 +38,10 @@ try:
     from pipeline.infrastructure.api import Results
     from pipeline.h.tasks import ImportData
 
-    taskclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Task)]
-    inputsclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
-    resultsclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Results)]
-    importdataclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(ImportData)]
+    taskclasses_str = [ret0.__module__ + "." + ret0.__name__ for ret0 in get_all_subclasses(Task)]
+    inputsclasses_str = [ret0.__module__ + "." + ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
+    resultsclasses_str = [ret0.__module__ + "." + ret0.__name__ for ret0 in get_all_subclasses(Results)]
+    importdataclasses_str = [ret0.__module__ + "." + ret0.__name__ for ret0 in get_all_subclasses(ImportData)]
 
     # create custom directives to create inheritance diagrams for all Task/Inputs Classes
     #   https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions
@@ -57,16 +57,16 @@ try:
         .. |importdataclasses_diagram| inheritance-diagram:: {}
             :parts: -1
         """.format(
-        ' '.join(taskclasses_str),
-        ' '.join(inputsclasses_str),
-        ' '.join(resultsclasses_str),
-        ' '.join(importdataclasses_str),
+        " ".join(taskclasses_str),
+        " ".join(inputsclasses_str),
+        " ".join(resultsclasses_str),
+        " ".join(importdataclasses_str),
     )
     rst_epilog = textwrap.dedent(rst_epilog)
 
 except ImportError as error:
     print("Can't import Pipeline, but we will continue to build the docs.")
-    print(error.__class__.__name__ + ': ' + error.message)
+    print(error.__class__.__name__ + ": " + error.message)
     pass
 
 # -- General configuration ---------------------------------------------
@@ -81,40 +81,40 @@ extensions = [
     # --------
     # https://docs.readthedocs.io/en/stable/guides/jupyter.html#using-notebooks-in-other-formats
     # option 1 # better integration with intersphinx
-    # "myst_nb",
+    "myst_nb",
     # option 2 # https://github.com/executablebooks/MyST-NB/issues/421
-    'myst_parser',
-    'nbsphinx',
+    # 'myst_parser',
+    # 'nbsphinx',
     # ---------
-    'sphinx.ext.autodoc',
+    "sphinx.ext.autodoc",
     # 'autoapi.extension',
-    'sphinx.ext.autosectionlabel',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.todo',
-    'sphinx_markdown_tables',
-    'sphinx.ext.coverage',
-    'sphinx.ext.imgconverter',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.coverage',
-    'sphinx.ext.githubpages',
+    "sphinx.ext.autosectionlabel",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.todo",
+    "sphinx_markdown_tables",
+    "sphinx.ext.coverage",
+    "sphinx.ext.imgconverter",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.coverage",
+    "sphinx.ext.githubpages",
     # 'sphinx.ext.intersphinx',
-    'sphinx.ext.inheritance_diagram',
-    'sphinx_automodapi.automodapi',
-    'sphinx_automodapi.smart_resolver',
-    'sphinxcontrib.bibtex',
-    'sphinx_astrorefs',
-    'sphinx.ext.graphviz',
-    'sphinx.ext.viewcode',
-    'sphinx_copybutton',
-    'IPython.sphinxext.ipython_console_highlighting',
-    'IPython.sphinxext.ipython_directive',
+    "sphinx.ext.inheritance_diagram",
+    "sphinx_automodapi.automodapi",
+    "sphinx_automodapi.smart_resolver",
+    "sphinxcontrib.bibtex",
+    "sphinx_astrorefs",
+    "sphinx.ext.graphviz",
+    "sphinx.ext.viewcode",
+    "sphinx_copybutton",
+    "IPython.sphinxext.ipython_console_highlighting",
+    "IPython.sphinxext.ipython_directive",
 ]
 
 add_module_names = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -135,16 +135,16 @@ templates_path = ['_templates']
 # }
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-release
 release = build_version = pipeline.environment.pipeline_revision  # used on the PDF cover
-version = build_version.split('+')[0]
+version = build_version.split("+")[0]
 
 # General information about the project.
-project = f'Pipeline \n ({version})'
-author = 'Pipeline Dev. Team'
-copyright = '2020–{0}, '.format(datetime.utcnow().year) + author + f', build: {build_version}'
+project = f"Pipeline \n ({version})"
+author = "Pipeline Dev. Team"
+copyright = "2020–{0}, ".format(datetime.utcnow().year) + author + f", build: {build_version}"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -160,21 +160,21 @@ copyright = '2020–{0}, '.format(datetime.utcnow().year) + author + f', build: 
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = 'en'
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', '**.ipynb_checkpoints', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ["_build", "**.ipynb_checkpoints", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'default'  # 'sphinx', 'github-dark', ' default'
+pygments_style = "default"  # 'sphinx', 'github-dark', ' default'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
 # sphinx-copybutton
-copybutton_prompt_text = r'>>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: '
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
 copybutton_prompt_is_regexp = True
 copybutton_remove_prompts = True
 copybutton_copy_empty_lines = False
@@ -185,55 +185,55 @@ copybutton_only_copy_prompt_lines = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
 # documentation.
 #
 html_theme_options = {
-    'logo_only': False,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': False,
-    'vcs_pageview_mode': '',
-    'style_nav_header_background': 'gray',
-    'flyout_display': 'attached',
-    'version_selector': True,
-    'language_selector': True,
+    "logo_only": False,
+    "prev_next_buttons_location": "bottom",
+    "style_external_links": False,
+    "vcs_pageview_mode": "",
+    "style_nav_header_background": "gray",
+    "flyout_display": "attached",
+    "version_selector": True,
+    "language_selector": True,
     # 'display_version': True, # deprecated
     # Toc options
-    'collapse_navigation': True,
-    'sticky_navigation': True,
-    'navigation_depth': 4,
-    'includehidden': True,
-    'titles_only': False,
+    "collapse_navigation": True,
+    "sticky_navigation": True,
+    "navigation_depth": 4,
+    "includehidden": True,
+    "titles_only": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
-html_css_files = ['custom_theme.css']
+html_static_path = ["_static"]
+html_css_files = ["custom_theme.css"]
 
 # -- Options for HTMLHelp output ---------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'pipeline_doc'
+htmlhelp_basename = "pipeline_doc"
 
-html_baseurl = ''
+html_baseurl = ""
 
 # -- Options for LaTeX output ------------------------------------------
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     #
-    'papersize': 'letterpaper',
+    "papersize": "letterpaper",
     # The font size ('10pt', '11pt' or '12pt').
     #
-    'pointsize': '10pt',
+    "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
     #
-    'preamble': r"""
+    "preamble": r"""
   \usepackage{hyperref}
   \usepackage{longtable}
   \setcounter{tocdepth}{1}
@@ -257,8 +257,8 @@ latex_elements = {
     # 'figure_align': 'htbp',
     # remove blank pages (between the title page and the TOC, etc.)
     #
-    'classoptions': ',openany,oneside',
-    'babel': '\\usepackage[english]{babel}',
+    "classoptions": ",openany,oneside",
+    "babel": "\\usepackage[english]{babel}",
 }
 
 # If false, no module index is generated.
@@ -268,7 +268,7 @@ latex_use_modindex = True
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    ('latex', 'taskdocs.tex', 'Pipeline Tasks Reference Manual', 'pipeline team', 'manual'),
+    ("latex", "taskdocs.tex", "Pipeline Tasks Reference Manual", "pipeline team", "manual"),
 ]
 
 
@@ -276,7 +276,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'pipeline', 'Pipeline Documentation', [author], 1)]
+man_pages = [(master_doc, "pipeline", "Pipeline Documentation", [author], 1)]
 
 
 # -- Options for Texinfo output ----------------------------------------
@@ -285,16 +285,16 @@ man_pages = [(master_doc, 'pipeline', 'Pipeline Documentation', [author], 1)]
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'pipeline', 'Pipeline @ NRAO Documentation', author, 'pipeline', 'placeholder', 'Miscellaneous'),
+    (master_doc, "pipeline", "Pipeline @ NRAO Documentation", author, "pipeline", "placeholder", "Miscellaneous"),
 ]
 
 # -- Sidebars
 
 html_sidebars = {
-    '**': ['localtoc.html'],  # not allowed if using the 'furo' theme
-    'search': [],
-    'genindex': [],
-    'py-modindex': [],
+    "**": ["localtoc.html"],  # not allowed if using the 'furo' theme
+    "search": [],
+    "genindex": [],
+    "py-modindex": [],
 }
 
 # -- napoleon
@@ -309,19 +309,22 @@ verbatimwrapslines = False
 html_show_sourcelink = True
 autosummary_generate = True
 autosummary_generate_overwrite = autosummary_generate
+
+# https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html#confval-autosummary_ignore_module_all
 autosummary_imported_members = True
 autosummary_ignore_module_all = True
+
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']
 
 autodoc_default_options = {
     # other options
-    'show-inheritance': True
+    "show-inheritance": True
 }
 
 # sphinx-automodapi: https://sphinx-automodapi.readthedocs.io
 numpydoc_show_class_members = False
-automodapi_toctreedirnm = '_automodapi'
+automodapi_toctreedirnm = "_automodapi"
 
 # -- intersphinx
 
@@ -340,44 +343,44 @@ automodapi_toctreedirnm = '_automodapi'
 # intersphinx_disabled_reftypes = ["*"]
 
 # sphinxcontrib.bibtex/sphinx-astrorefs
-bibtex_bibfiles = ['references/pipeline-resolved.bib']
-bibtex_encoding = 'utf-8'
+bibtex_bibfiles = ["references/pipeline-resolved.bib"]
+bibtex_encoding = "utf-8"
 astrorefs_resolve_aas_macros = True
-astrorefs_resolve_aas_macros_infile = 'references/pipeline.bib'
-astrorefs_resolve_aas_macros_outfile = 'references/pipeline-resolved.bib'
+astrorefs_resolve_aas_macros_infile = "references/pipeline.bib"
+astrorefs_resolve_aas_macros_outfile = "references/pipeline-resolved.bib"
 
+# autoapi
+
+autoapi_dirs = ["../../pipeline"]
 
 # inheritance_graph_attrs = dict(rankdir="TB", size='""')
 
-
-autoapi_dirs = ['../../pipeline']
-
 inheritance_graph_attrs = {
-    'rankdir': 'LR',
-    'size': '"25.0, 50.0"',
-    'bgcolor': 'whitesmoke',
+    "rankdir": "LR",
+    "size": '"25.0, 50.0"',
+    "bgcolor": "whitesmoke",
 }
 
 inheritance_node_attrs = {
-    'shape': 'box',
-    'fontsize': 12,
-    'height': 0.25,
-    'fontname': '"Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans"',
-    'style': '"setlinewidth(0.5),filled"',
-    'fillcolor': 'white',
+    "shape": "box",
+    "fontsize": 12,
+    "height": 0.25,
+    "fontname": '"Vera Sans, DejaVu Sans, Liberation Sans, Arial, Helvetica, sans"',
+    "style": '"setlinewidth(0.5),filled"',
+    "fillcolor": "white",
 }
 
 inheritance__edge_attrs = {
-    'arrowsize': 0.5,
-    'style': '"setlinewidth(0.5)"',
+    "arrowsize": 0.5,
+    "style": '"setlinewidth(0.5)"',
 }
 
 
 # nbsphinx
-html_sourcelink_suffix = ''
+html_sourcelink_suffix = ""
 nbsphinx_allow_errors = True
-nbsphinx_execute = 'never'
-nbsphinx_codecell_lexer = 'python3'
+nbsphinx_execute = "never"
+nbsphinx_codecell_lexer = "python3"
 # nbsphinx_input_prompt='[%s]: '
 # nbsphinx_output_prompt='[%s]: '
 
@@ -415,24 +418,24 @@ nbsphinx_prolog = r"""
 # myst-parser
 
 myst_enable_extensions = [
-    'amsmath',
-    'attrs_inline',
-    'colon_fence',
-    'deflist',
-    'dollarmath',
-    'fieldlist',
-    'html_admonition',
-    'html_image',
-    'linkify',
-    'replacements',
-    'smartquotes',
-    'strikethrough',
-    'substitution',
-    'tasklist',
+    "amsmath",
+    "attrs_inline",
+    "colon_fence",
+    "deflist",
+    "dollarmath",
+    "fieldlist",
+    "html_admonition",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "strikethrough",
+    "substitution",
+    "tasklist",
 ]
 myst_linkify_fuzzy_links = False
 
 
 # myst-NB
 
-nb_execution_mode = 'off'
+nb_execution_mode = "off"

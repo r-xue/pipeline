@@ -5,7 +5,6 @@ Pipeline Tasks (from autosummary)
    :toctree: _autosummary
    :caption: Pipeline Tasks
    :template: custom-module-template.rst
-   :recursive:
    
    pipeline.h.cli
    pipeline.hif.cli

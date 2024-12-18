@@ -37,13 +37,18 @@ ul {
     }
 }
 
+/* myst-nb: scrollbar */
+.cell_output {
+    max-height: 20em;
+    overflow-y: scroll;
+}
 
-/* nboutput area scollbar */
+/* nbsphinx: nboutput area scollbar */
 div.nboutput.container div.output_area {
     max-height: 500px;
 }
 
-/* no prompt * /
+/* nbsphinx: no prompt * /
 .nbinput .prompt,
 .nboutput .prompt {
     display: none;
