@@ -6,31 +6,28 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hif_analyzealpha(vis=None, image=None, alphafile=None, alphaerrorfile=None):
 
-    """
-    hif_analyzealpha ---- Extract spectral index from intensity peak in VLA/VLASS images
-
-    Extract spectral index from intensity peak in VLA/VLASS images
+    """Extract spectral index from intensity peak in VLA/VLASS images
 
     The results object for the pipeline task is returned.
 
-    --------- parameter descriptions ---------------------------------------------
+    Args:
+        vis: List of visisbility  data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
+            converted  to MS format.
+            example: vis=['X227.ms', 'asdms.tar.gz']
 
-    vis            List of visisbility  data files. These may be ASDMs, tar files of ASDMs,
-                   MSs, or tar files of MSs, If ASDM files are specified, they will be
-                   converted  to MS format.
-                   example: vis=['X227.ms', 'asdms.tar.gz']
-    image          Restored subimage
-    alphafile      Input spectral index map
-    alphaerrorfile Input spectral index error map
+        image: Restored subimage
 
-    --------- examples -----------------------------------------------------------
+        alphafile: Input spectral index map
 
+        alphaerrorfile: Input spectral index error map
 
+    Returns:
+        The results object for the pipeline task is returned.
 
-    1. Basic analyzealpha task
+    Examples:
+        1. Basic analyzealpha task
 
-    >>> hif_analyzealpha()
-
+        >>> hif_analyzealpha()
 
     """
 

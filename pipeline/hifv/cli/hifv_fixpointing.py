@@ -6,27 +6,18 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_fixpointing(vis=None):
 
-    """
-    hifv_fixpointing ---- Base fixpointing task
+    """Base fixpointing task
 
-    The hifv_fixpointing task
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    Output:
+    Returns:
+        The results object for the pipeline task is returned.
 
-    results -- The results object for the pipeline task is returned.
+    Examples:
+        1. Basic fixpointing task:
 
-    --------- parameter descriptions ---------------------------------------------
-
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-
-    --------- examples -----------------------------------------------------------
-
-
-    1. Basic fixpointing task
-
-    >>> hifv_fixpointing()
-
+        >>> hifv_fixpointing()
 
     """
 

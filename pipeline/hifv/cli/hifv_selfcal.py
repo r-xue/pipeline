@@ -7,44 +7,38 @@ import pipeline.h.cli.utils as utils
 def hifv_selfcal(vis=None, refantignore=None,
                  combine=None, selfcalmode=None, refantmode=None, overwrite_modelcol=None):
 
-    """
-    hifv_selfcal ---- Perform phase-only self-calibration, per scan row, on VLASS SE images
+    """Perform phase-only self-calibration, per scan row, on VLASS SE images.
 
-    Perform phase-only self-calibration, per scan row, on VLASS SE images
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    Output:
-    results -- The results object for the pipeline task is returned.
+        refantignore: String list of antennas to ignore.
 
-    --------- parameter descriptions ---------------------------------------------
+        combine: Data axes which to combine for solve.
+            Options: '','obs','scan','spw',field', or any
+            comma-separated combination in a single string
+            Example: combine='scan,spw' - Extend solutions
+            over scan boundaries (up to the solint), and
+            combine spws for solving.
+            In selfcalmode='VLASS-SE' use the default value.
 
-    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                       specified in the h_init or hifv_importdata task.
-    refantignore       String list of antennas to ignore
-    combine            Data axes which to combine for solve
-                       Options: '','obs','scan','spw',field', or any
-                       comma-separated combination in a single string
+        selfcalmode: Heuristics mode selection. Known modes are 'VLASS' and 'VLASS-SE'. Default value is 'VLASS'.
 
-                       Example: combine='scan,spw' - Extend solutions
-                       over scan boundaries (up to the solint), and
-                       combine spws for solving.
+        refantmode: Reference antenna mode.
 
-                       In selfcalmode='VLASS-SE' use the default value.
-    selfcalmode        Heuristics mode selection. Known modes are 'VLASS' and 'VLASS-SE'.
-                       Default value is 'VLASS'.
-    refantmode         Reference antenna mode
-    overwrite_modelcol Always write the model column, even if it already exists
+        overwrite_modelcol: Always write the model column, even if it already exists.
 
-    --------- examples -----------------------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
+    Examples:
+        1. Basic selfcal task:
 
-    1. Basic selfcal task
+        >>> hifv_selfcal()
 
-    >>> hifv_selfcal()
+        2. VLASS-SE selfcal usage:
 
-    2. VLASS-SE selfcal usage
-
-    >>> hifv_selfcal(selfcalmode='VLASS-SE', combine='field,spw')
-
+        >>> hifv_selfcal(selfcalmode='VLASS-SE', combine='field, spw')
 
     """
 

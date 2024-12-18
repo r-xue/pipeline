@@ -233,7 +233,7 @@ class MeasurementSet(object):
 
         if scan_id is not None:
             # encase raw numbers in a tuple
-            if not isinstance(scan_id, collections.Sequence):
+            if not isinstance(scan_id, collections.abc.Sequence):
                 scan_id = (scan_id,)
             pool = [s for s in pool if s.id in scan_id]
 
@@ -251,7 +251,7 @@ class MeasurementSet(object):
             pool = [s for s in pool if not fields_with_name.isdisjoint(s.fields)]
 
         if spw is not None:
-            if not isinstance(spw, collections.Sequence):
+            if not isinstance(spw, collections.abc.Sequence):
                 spw = (spw,)
             if isinstance(spw, str):
                 if spw in ('', '*'):
@@ -535,7 +535,7 @@ class MeasurementSet(object):
 
         if field_id is not None:
             # encase raw numbers in a tuple
-            if not isinstance(field_id, collections.Sequence):
+            if not isinstance(field_id, collections.abc.Sequence):
                 field_id = (field_id,)
             pool = [f for f in pool if f.id in field_id]
 
@@ -1190,7 +1190,7 @@ class MeasurementSet(object):
             state_ids = [-1]
 
         with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (state_ids, field_ids)
+            taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (utils.list_to_str(state_ids), utils.list_to_str(field_ids))
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
@@ -1245,7 +1245,7 @@ class MeasurementSet(object):
         science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
         with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (science_state_ids, science_field_ids, science_spw_dd_ids)
+            taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (utils.list_to_str(science_state_ids), utils.list_to_str(science_field_ids), utils.list_to_str(science_spw_dd_ids))
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
             return np.median(integration)
@@ -1267,7 +1267,7 @@ class MeasurementSet(object):
         times_on_source_per_field_id = dict()
         for field_id in field_ids:
             with casa_tools.TableReader(self.name) as table:
-                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in [%s] AND ANTENNA1=%s AND ANTENNA2=%s)' % (state_ids, field_id, first_science_spw_dd_id, scan_ids, ant1, ant2)
+                taql = '(STATE_ID IN %s AND FIELD_ID IN [%s] AND DATA_DESC_ID in [%s] AND SCAN_NUMBER in %s AND ANTENNA1=%s AND ANTENNA2=%s)' % (utils.list_to_str(state_ids), field_id, first_science_spw_dd_id, utils.list_to_str(scan_ids), ant1, ant2)
                 with contextlib.closing(table.query(taql)) as subtable:
                     integration = subtable.getcol('INTERVAL')
                 times_on_source_per_field_id[field_id] = np.sum(integration)

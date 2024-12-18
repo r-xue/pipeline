@@ -6,38 +6,28 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=None):
 
-    """
-    hifv_solint ---- Determines different solution intervals
-
+    """Determines different solution intervals.
 
     The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
     the minimum solution interval corresponds to one integration.
 
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    Output:
+        limit_short_solint: Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
+            Can be set to a string value of 'int'.
 
-    results -- The results object for the pipeline task is returned.
+        refantignore: String list of antennas to ignore Example:  refantignore='ea02, ea03'
 
+        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
 
-    --------- parameter descriptions ---------------------------------------------
+    Returns:
+        The results object for the pipeline task is returned.
 
-    vis                The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                       specified in the h_init or hifv_importdata task.
-    limit_short_solint Keyword argument in units of seconds to limit the short solution interval.
-                       Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
-                       Can be set to a string value of 'int'.
-    refantignore       String list of antennas to ignore
-                       Example:  refantignore='ea02,ea03'
-    refant             A csv string of reference antenna(s). When used, disables ``refantignore``.
-                       Example: refant = 'ea01, ea02'
+    Examples:
+        1. Determines different solution intervals:
 
-    --------- examples -----------------------------------------------------------
-
-
-    1. Determines different solution intervals:
-
-    >>> hifv_solint()
-
+        >>> hifv_solint()
 
     """
 

@@ -6,31 +6,24 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_finalcals(vis=None, weakbp=None, refantignore=None, refant=None):
 
-    """
-    hifv_finalcals ---- Compute final gain calibration tables
+    """Compute final gain calibration tables.
 
-    Compute final gain calibration tables
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    Output:
+        weakbp: Activate weak bandpass heuristics
 
-    results -- The results object for the pipeline task is returned.
+        refantignore: String list of antennas to ignore.
 
-    --------- parameter descriptions ---------------------------------------------
+        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    weakbp        Activate weak bandpass heuristics
-    refantignore  String list of antennas to ignore
-    refant        A csv string of reference antenna(s). When used, disables ``refantignore``.
-                  Example: refant = 'ea01, ea02'
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Create the final calibration tables to be applied to the data in the VLA CASA pipeline:
 
-
-    1. Create the final calibration tables to be applied to the data in the VLA CASA pipeline.
-
-    >>> hifv_finalcals()
-
+        >>> hifv_finalcals()
 
     """
 
