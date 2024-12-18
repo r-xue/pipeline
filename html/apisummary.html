@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Full APIs (autosummary) &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -17,9 +17,10 @@
       <link rel="stylesheet" type="text/css" href="_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="_static/favicon-16x16.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="_static/documentation_options.js?v=75464681"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -192,6 +193,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#id4">Variables</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.CYCLE_0_END_DATE.html">CYCLE_0_END_DATE</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.LOG.html">LOG</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.TYPE_CHECKING.html">TYPE_CHECKING</a></li>
+<li class="toctree-l4"><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.annotations.html">annotations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.tsd_accessor.html">tsd_accessor</a></li>
 </ul>
 </li>
@@ -763,7 +766,7 @@ from a saved context state.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalApplication</span></code></a>(calto, calfrom[, origin])</p></td>
-<td><p>CalApplication maps calibration tables and their application arguments to</p></td>
+<td><p>CalApplication maps calibration tables and their application arguments to a target data selection, encapsulated as CalFrom and CalTo objects respectively.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalFrom</span></code></a>([gaintable, gainfield, interp, ...])</p></td>
 <td><p>CalFrom represents a calibration table and the CASA arguments that should be used when applying that calibration table.</p></td>
@@ -781,7 +784,7 @@ from a saved context state.</p>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter" title="pipeline.infrastructure.callibrary.CalToIdAdapter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalToIdAdapter</span></code></a>(context, calto)</p></td>
-<td><p></p></td>
+<td><p>CalToIdAdapter is an adapter class for CalTo that return some of its attributes as lists of IDs/names, instead of as the CASA-style string argument.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.CalToIntervalAdapter.html#pipeline.infrastructure.callibrary.CalToIntervalAdapter" title="pipeline.infrastructure.callibrary.CalToIntervalAdapter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CalToIntervalAdapter</span></code></a>(context, calto)</p></td>
 <td><p></p></td>
@@ -817,16 +820,13 @@ from a saved context state.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.LOG.html#pipeline.infrastructure.callibrary.LOG" title="pipeline.infrastructure.callibrary.LOG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOG</span></code></a></p></td>
 <td><p>Instances of the Logger class represent a single logging channel.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code></p></td>
-<td><p>A generic version of list.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.TYPE_CHECKING.html#pipeline.infrastructure.callibrary.TYPE_CHECKING" title="pipeline.infrastructure.callibrary.TYPE_CHECKING"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TYPE_CHECKING</span></code></a></p></td>
+<td><p>bool(x) -&gt; bool</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Set</span></code></p></td>
-<td><p>A generic version of set.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.annotations.html#pipeline.infrastructure.callibrary.annotations" title="pipeline.infrastructure.callibrary.annotations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">annotations</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tuple</span></code></p></td>
-<td><p>Tuple type; Tuple[X, Y] is the cross-product type of X and Y.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.tsd_accessor.html#pipeline.infrastructure.callibrary.tsd_accessor" title="pipeline.infrastructure.callibrary.tsd_accessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsd_accessor</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="_automodapi/pipeline.infrastructure.callibrary.tsd_accessor.html#pipeline.infrastructure.callibrary.tsd_accessor" title="pipeline.infrastructure.callibrary.tsd_accessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tsd_accessor</span></code></a></p></td>
 <td><p>attrgetter(attr, ...) --&gt; attrgetter object</p></td>
 </tr>
 </tbody>
@@ -1697,7 +1697,7 @@ return int(user_input)</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

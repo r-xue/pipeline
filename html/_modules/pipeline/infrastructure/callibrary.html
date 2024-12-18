@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.callibrary &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -16,9 +16,10 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="../../../_static/documentation_options.js?v=75464681"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -112,7 +113,10 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.infrastructure.callibrary</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
+<span></span><span class="c1"># Do not evaluate type annotations at definition time.</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -121,13 +125,15 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="kn">import</span> <span class="nn">cachetools</span>
 <span class="kn">import</span> <span class="nn">intervaltree</span>
 <span class="kn">from</span> <span class="nn">casatasks.private.callibrary</span> <span class="kn">import</span> <span class="n">applycaltocallib</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">launcher</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span> <span class="n">utils</span>
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">SpectralWindow</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -145,28 +151,29 @@
 <span class="k">class</span> <span class="nc">CalApplication</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CalApplication maps calibration tables and their application arguments to</span>
-<span class="sd">    a target data selection, encapsulated as |CalFrom| and |CalTo| objects </span>
+<span class="sd">    a target data selection, encapsulated as CalFrom and CalTo objects</span>
 <span class="sd">    respectively.</span>
 
-<span class="sd">    .. py:attribute:: calto</span>
-
-<span class="sd">        the |CalTo| representing the data selection to which the calibration</span>
-<span class="sd">        should apply.</span>
-
-<span class="sd">    .. py:attribute:: calfrom</span>
-
-<span class="sd">        the |CalFrom| representing the calibration and application parameters</span>
-
-<span class="sd">    .. py:attribute:: origin</span>
-
-<span class="sd">        the |CalAppOrigin| marking how this calibration was created</span>
-
-<span class="sd">.. |CalTo| replace:: :class:`CalTo`</span>
-<span class="sd">.. |CalFrom| replace:: :class:`CalFrom`</span>
-<span class="sd">.. |CalAppOrigin| replace:: :class:`CalAppOrigin`</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        calto: The CalTo representing the data selection to which the</span>
+<span class="sd">            calibration should apply.</span>
+<span class="sd">        calfrom: The CalFrom representing the calibration and application</span>
+<span class="sd">            parameters.</span>
+<span class="sd">        origin: The CalAppOrigin marking how this calibration was created.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">:</span> <span class="n">CalTo</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">CalTo</span><span class="p">],</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">CalFrom</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">],</span>
+                 <span class="n">origin</span><span class="p">:</span> <span class="n">CalAppOrigin</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">CalAppOrigin</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a CalApplication object.</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="sd">        Args:</span>
+<span class="sd">            calto: CalTo object, or list thereof, representing the data</span>
+<span class="sd">                selection(s) to which the calibration should apply.</span>
+<span class="sd">            calfrom: CalFrom object, or list thereof, representing the</span>
+<span class="sd">                calibration and application parameters.</span>
+<span class="sd">            origin: CalOrigin object, or list thereof, marking how this</span>
+<span class="sd">                calibration was created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calto</span> <span class="o">=</span> <span class="n">calto</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">calfrom</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -180,11 +187,15 @@
 <div class="viewcode-block" id="CalApplication.from_export">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.from_export">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_export</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_export</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalApplication</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unmarshal a CalApplication from a string.</span>
 
-<span class="sd">        :rtype: the unmarshalled :class:`CalApplication` object</span>
+<span class="sd">        Args:</span>
+<span class="sd">            s: String representation of a CalApplication as a CASA applycal call.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CalApplication object generated from given string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;applycal(&#39;</span><span class="p">,</span> <span class="s1">&#39;dict(&#39;</span><span class="p">))</span>
         <span class="n">calto</span> <span class="o">=</span> <span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">],</span> <span class="n">field</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">],</span> <span class="n">spw</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">],</span>
@@ -244,11 +255,12 @@
 
 <div class="viewcode-block" id="CalApplication.as_applycal">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.as_applycal">[docs]</a>
-    <span class="k">def</span> <span class="nf">as_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">as_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a representation of this object as a CASA applycal call.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representation of CalApplication as a CASA applycal call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
@@ -275,32 +287,37 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The antennas to which the calibrations apply.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representing the antennas (comma-separated) antennas to which</span>
+<span class="sd">            the calibrations apply.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">antenna</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">calwt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">calwt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The calwt parameters to be used when applying these calibrations.</span>
+<span class="sd">        The calwt parameter to be used when applying these calibrations.</span>
 
-<span class="sd">        :rtype: a scalar string if representing 1 calibration, otherwise a</span>
-<span class="sd">                list of strings</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean representing what to use for calwt for this calibration.</span>
+<span class="sd">            If there are multiple CalFrom objects to apply, this returns a list</span>
+<span class="sd">            of booleans, one per CalFrom.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span><span class="o">.</span><span class="n">calwt</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
 <div class="viewcode-block" id="CalApplication.exists">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalApplication.html#pipeline.infrastructure.callibrary.CalApplication.exists">[docs]</a>
-    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">exists</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test whether all calibration tables referred to by this application exist.</span>
 
-<span class="sd">        :rtype: boolean</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            True if all calibration tables exist in the file system.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">gaintable</span><span class="p">):</span>
@@ -309,90 +326,105 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The fields to which the calibrations apply.</span>
+<span class="sd">        The field(s) to which the calibrations apply.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representing the field(s) (comma-separated) to apply the</span>
+<span class="sd">            calibrations to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">field</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">gainfield</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gainfield</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The gainfield parameters to be used when applying these calibrations.</span>
 
-<span class="sd">        :rtype: a scalar string if representing 1 calibration, otherwise a</span>
-<span class="sd">                list of strings</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Value for the gainfield parameter to be used when applying these</span>
+<span class="sd">            calibrations; returns a scalar string if representing 1 calibration,</span>
+<span class="sd">            otherwise a list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span><span class="o">.</span><span class="n">gainfield</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">gaintable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gaintable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The gaintable parameters to be used when applying these calibrations.</span>
 
-<span class="sd">        :rtype: a scalar string if representing 1 calibration, otherwise a</span>
-<span class="sd">                list of strings</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Value for the gaintable parameter to be used when applying these</span>
+<span class="sd">            calibrations; returns a scalar string if representing 1 calibration,</span>
+<span class="sd">            otherwise a list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span><span class="o">.</span><span class="n">gaintable</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The observing intents to which the calibrations apply.</span>
+<span class="sd">        The observing intent(s) to which the calibrations apply.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representing the intent(s) (comma-separated) to apply the</span>
+<span class="sd">            calibrations to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">intent</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The interp parameters to be used when applying these calibrations.</span>
 
-<span class="sd">        :rtype: a scalar string if representing 1 calibration, otherwise a</span>
-<span class="sd">                list of strings</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Value for the interp parameter to be used when applying these</span>
+<span class="sd">            calibrations; returns a scalar string if representing 1 calibration,</span>
+<span class="sd">            otherwise a list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span><span class="o">.</span><span class="n">interp</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The spectral windows to which the calibrations apply.</span>
+<span class="sd">        Spectral window(s) to which the calibrations apply.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            String representing the spectral window id(s) (comma-separated) to</span>
+<span class="sd">            apply the calibrations to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">spw</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The spwmap parameters to be used when applying these calibrations.</span>
 
-<span class="sd">        :rtype: a scalar string if representing 1 calibration, otherwise a</span>
-<span class="sd">                list of strings</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Value for the spwmap parameter to be used when applying these</span>
+<span class="sd">            calibrations; returns a scalar string if representing 1 calibration,</span>
+<span class="sd">            otherwise a list of strings.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># convert tuples back into lists for the CASA argument</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cf</span><span class="o">.</span><span class="n">spwmap</span><span class="p">)</span> <span class="k">for</span> <span class="n">cf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">l</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The name of the measurement set to which the calibrations apply.</span>
+<span class="sd">        Name of the measurement set to which the calibrations apply.</span>
 
-<span class="sd">        :rtype: string</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            The name of the measurement set to which the calibrations apply.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="o">.</span><span class="n">vis</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_applycal</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;CalApplication(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
 
 
@@ -404,25 +436,47 @@
 <span class="sd">    CalTo represents a target data selection to which a calibration can be</span>
 <span class="sd">    applied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_antenna&#39;</span><span class="p">,</span> <span class="s1">&#39;_intent&#39;</span><span class="p">,</span> <span class="s1">&#39;_field&#39;</span><span class="p">,</span> <span class="s1">&#39;_spw&#39;</span><span class="p">,</span> <span class="s1">&#39;_vis&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define what to pickle as a class instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define how to unpickle a class instance.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="o">=</span> <span class="n">state</span>
 
 <div class="viewcode-block" id="CalTo.from_caltoargs">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo.from_caltoargs">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_caltoargs</span><span class="p">(</span><span class="n">cta</span><span class="p">:</span> <span class="n">CalToArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;CalTo&quot;</span><span class="p">:</span>
-        <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_caltoargs</span><span class="p">(</span><span class="n">cta</span><span class="p">:</span> <span class="n">CalToArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalTo</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a CalTo object for given arguments ``cta``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cta: CalToArgs object representing the arguments for the new CalTo object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CalTo object initialized with given arguments ``cta``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="nb">str</span><span class="p">(</span><span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">s</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">field</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="n">antenna</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">antenna</span><span class="p">),</span> <span class="n">intent</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">field</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">field</span><span class="p">),</span> <span class="n">spw</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">spw</span><span class="p">),</span> <span class="n">antenna</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">antenna</span><span class="p">),</span>
+                     <span class="n">intent</span><span class="o">=</span><span class="n">join</span><span class="p">(</span><span class="n">cta</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>\
+            <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a CalTo object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            vis: Name of the measurement set to which the calibrations apply.</span>
+<span class="sd">            field: The field(s) to which the calibrations apply.</span>
+<span class="sd">            spw: The spectral window(s) to which the calibrations apply.</span>
+<span class="sd">            antenna: The antennas to which the calibrations apply.</span>
+<span class="sd">            intent: The observing intent(s) to which the calibrations apply.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
@@ -430,54 +484,96 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the antennas to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span>
 
     <span class="nd">@antenna</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the antennas to which the calibrations apply to given value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: String of comma-separated antenna IDs to which the</span>
+<span class="sd">                calibrations apply. If None, this is set to an empty string.</span>
+<span class="sd">                Contiguous ID ranges are represented as a CASA range, e.g. 1~5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_antenna</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the field(s) to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_field</span>
 
     <span class="nd">@field</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the field(s) to which the calibrations apply to given value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: String of comma-separated fields to which the calibrations</span>
+<span class="sd">                apply. If None, this is set to an empty string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_field</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the observing intent(s) to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span>
 
     <span class="nd">@intent</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the observing intent(s) to which the calibrations apply to given</span>
+<span class="sd">        value.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: String of comma-separated intents to which the calibrations</span>
+<span class="sd">                apply. If None, this is set to an empty string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_intent</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the spectral window(s) to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span>
 
     <span class="nd">@spw</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the spectral window(s) to which the calibrations apply.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: String of comma-separated spectral window IDs to which the</span>
+<span class="sd">                calibrations apply. If None, this is set to an empty string.</span>
+<span class="sd">                Contiguous ID ranges are represented as a CASA range, e.g. 1~5.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spw</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the measurement set to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span>
 
     <span class="nd">@vis</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the name of the measurement set to which the calibrations apply.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            value: Name of the measurement set to which the calibrations apply.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;CalTo(vis=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, field=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, spw=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, antenna=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">,&#39;</span>
                 <span class="s1">&#39;intent=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">,</span>
                                     <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span></div>
@@ -491,21 +587,13 @@
 <span class="sd">    CalFrom represents a calibration table and the CASA arguments that should</span>
 <span class="sd">    be used when applying that calibration table.</span>
 
-<span class="sd">    .. py:attribute:: CALTYPES</span>
-
-<span class="sd">        an enumeration of calibration table types identified by this code.</span>
-
-<span class="sd">    .. py:attribute:: CALTYPE_TO_VISCAL</span>
-
-<span class="sd">        mapping of calibration type to caltable identifier as store in the table</span>
-<span class="sd">        header</span>
-
-<span class="sd">    .. py:attribute:: VISCAL</span>
-
-<span class="sd">        mapping of calibration table header information to a description of</span>
-<span class="sd">        that table type</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        CALTYPES: an enumeration of calibration table types identified by this code.</span>
+<span class="sd">        CALTYPE_TO_VISCAL: mapping of calibration type to caltable identifier as</span>
+<span class="sd">            store in the table header.</span>
+<span class="sd">        VISCAL: mapping of calibration table header information to a description</span>
+<span class="sd">            of that table type.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">CALTYPES</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;unknown&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
         <span class="s1">&#39;gaincal&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -573,11 +661,19 @@
     <span class="n">_CalFromPool</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakValueDictionary</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_calc_hash</span><span class="p">(</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">calwt</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_calc_hash</span><span class="p">(</span><span class="n">gaintable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">calwt</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a hash code unique to the given arguments.</span>
 
-<span class="sd">        :rtype: integer</span>
+<span class="sd">        Args:</span>
+<span class="sd">            gaintable: Filename of calibration table.</span>
+<span class="sd">            gainfield: Field(s) to select from calibration table to use.</span>
+<span class="sd">            interp: Value to use for interp when applying these calibrations.</span>
+<span class="sd">            spwmap: Value to use for spwmap when applying these calibrations.</span>
+<span class="sd">            calwt: Value to use for calwt when applying these calibrations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Integer representing hash code for given arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="mi">17</span>
         <span class="n">result</span> <span class="o">=</span> <span class="mi">37</span> <span class="o">*</span> <span class="n">result</span> <span class="o">+</span> <span class="nb">hash</span><span class="p">(</span><span class="n">gaintable</span><span class="p">)</span>
@@ -587,8 +683,42 @@
         <span class="n">result</span> <span class="o">=</span> <span class="mi">37</span> <span class="o">*</span> <span class="n">result</span> <span class="o">+</span> <span class="nb">hash</span><span class="p">(</span><span class="n">calwt</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gaintable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gainfield</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="s1">&#39;linear,linear&#39;</span><span class="p">,</span>
-                <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltype</span><span class="o">=</span><span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gaintable</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">interp</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear,linear&#39;</span><span class="p">,</span>
+                <span class="n">spwmap</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">caltype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">calwt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalFrom</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a new instance of the CalFrom class.</span>
+
+<span class="sd">        This override is to implement the Flyweight Pattern for the CalFrom</span>
+<span class="sd">        class, to save memory given that hundreds of the same CalFrom objects</span>
+<span class="sd">        could be created and stored in the context.</span>
+
+<span class="sd">        Upon creating a new instance of CalFrom, the combination of input</span>
+<span class="sd">        arguments are first hashed. If this is the first occurence of this hash,</span>
+<span class="sd">        then the corresponding CalFrom object is created and a reference to this</span>
+<span class="sd">        object is stored in the module-level _CalFromPool, as well as returned.</span>
+<span class="sd">        If the hash of the input arguments already exists in the _CalFromPool,</span>
+<span class="sd">        then a reference to the corresponding (previously created) CalFrom is</span>
+<span class="sd">        returned instead.</span>
+
+<span class="sd">        In this implementation, the entire state of the CalFrom object is</span>
+<span class="sd">        immutable, and any required modification to a CalFrom should be achieved</span>
+<span class="sd">        through creating a new CalFrom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gaintable: Filename of calibration table.</span>
+<span class="sd">            gainfield: Field(s) to select from calibration table to use.</span>
+<span class="sd">            interp: Value to use for interp when applying these calibrations.</span>
+<span class="sd">            spwmap: Value to use for spwmap when applying these calibrations.</span>
+<span class="sd">            caltype: String declaring type of calibration table, e.g. &#39;tsys&#39;.</span>
+<span class="sd">            calwt: Value to use for calwt when applying these calibrations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new instance of the CalFrom class.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError if gaintable is None, gainfield is not a string,</span>
+<span class="sd">            interp is not a string, or spwmap is not a list, tuple, or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">spwmap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spwmap</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -644,11 +774,13 @@
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;__caltype&#39;</span><span class="p">,</span> <span class="s1">&#39;__calwt&#39;</span><span class="p">,</span> <span class="s1">&#39;__gainfield&#39;</span><span class="p">,</span> <span class="s1">&#39;__gaintable&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;__interp&#39;</span><span class="p">,</span> <span class="s1">&#39;__spwmap&#39;</span><span class="p">,</span> <span class="s1">&#39;__weakref__&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define what to pickle as a class instance.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__caltype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calwt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gainfield</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__gaintable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__spwmap</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define how to unpickle a class instance.&quot;&quot;&quot;</span>
         <span class="c1"># a misguided attempt to clear stale CalFroms when loading from a</span>
         <span class="c1"># pickle. I don&#39;t think this should be done here.</span>
         <span class="c1">#         # prevent exception with pickle format #1 by calling hash on properties</span>
@@ -661,33 +793,50 @@
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__caltype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calwt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gainfield</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gaintable</span><span class="p">,</span>
          <span class="bp">self</span><span class="o">.</span><span class="n">__interp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__spwmap</span><span class="p">)</span> <span class="o">=</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Define the tuple of input arguments to pass to __new__ during unpickling.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gainfield</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">caltype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calwt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a CalFrom instance.&quot;&quot;&quot;</span>
         <span class="k">pass</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">caltype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">caltype</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of calibration table.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__caltype</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">calwt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">calwt</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value to use for calwt when applying these calibrations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calwt</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">gainfield</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gainfield</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return which field(s) in the calibration table to apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gainfield</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">gaintable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">gaintable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the filename of the calibration table.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gaintable</span>
 
 <div class="viewcode-block" id="CalFrom.get_caltype_for_viscal">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom.get_caltype_for_viscal">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_caltype_for_viscal</span><span class="p">(</span><span class="n">viscal</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_caltype_for_viscal</span><span class="p">(</span><span class="n">viscal</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the calibration table type for given VISCAL identifier.</span>
+
+<span class="sd">        VISCAL identifiers are the caltable identifier as stored in the table</span>
+<span class="sd">        header.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            viscal: VISCAL table identifier to convert to calibration table type.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Type of calibration table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">viscal</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">caltype</span><span class="p">,</span> <span class="n">viscals</span> <span class="ow">in</span> <span class="n">CalFrom</span><span class="o">.</span><span class="n">CALTYPE_TO_VISCAL</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">viscals</span><span class="p">:</span>
@@ -696,25 +845,20 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">interp</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Value to use for interp when applying these calibrations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__interp</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Value to use for spwmap when applying these calibrations.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__spwmap</span>
 
-    <span class="c1">#     def __eq__(self, other):</span>
-    <span class="c1">#         return (self.gaintable == other.gaintable and</span>
-    <span class="c1">#                 self.gainfield == other.gainfield and</span>
-    <span class="c1">#                 self.interp    == other.interp    and</span>
-    <span class="c1">#                 self.spwmap    == other.spwmap    and</span>
-    <span class="c1">#                 self.calwt     == other.calwt)</span>
-
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">CalFrom</span><span class="o">.</span><span class="n">_calc_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gainfield</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">,</span>
                                   <span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">calwt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;CalFrom(</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, gainfield=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, interp=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, spwmap=</span><span class="si">%s</span><span class="s1">, &#39;</span>
                 <span class="s1">&#39;caltype=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, calwt=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span>
                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gainfield</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">interp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwmap</span><span class="p">,</span>
@@ -725,16 +869,23 @@
 <div class="viewcode-block" id="CalToIdAdapter">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter">[docs]</a>
 <span class="k">class</span> <span class="nc">CalToIdAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">calto</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CalToIdAdapter is an adapter class for CalTo that return some of its</span>
+<span class="sd">    attributes as lists of IDs/names, instead of as the CASA-style string argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span> <span class="n">calto</span><span class="p">:</span> <span class="n">CalTo</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a CalToIdAdapter instance.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calto</span> <span class="o">=</span> <span class="n">calto</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return IDs of antennas to which the calibrations apply as a list of integers.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_antenna</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">antenna</span><span class="p">)]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return fields to which the calibrations apply as a list of names or integer IDs.&quot;&quot;&quot;</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">field</span><span class="p">)]</span>
         <span class="c1"># if the field names are unique, we can return field names. Otherwise,</span>
         <span class="c1"># we fall back to field IDs.</span>
@@ -747,13 +898,15 @@
             <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># return the intents present in the CalTo</span>
+    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the intents to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">intent</span>
 
 <div class="viewcode-block" id="CalToIdAdapter.get_field_intents">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.CalToIdAdapter.html#pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_field_intents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_field_intents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return set of intents that are common to CalTo, given field(s), and</span>
+<span class="sd">        given spectral window(s).&quot;&quot;&quot;</span>
         <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_field</span><span class="p">(</span><span class="n">field_id</span><span class="p">)</span>
         <span class="n">field_intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span>
 
@@ -768,15 +921,18 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MeasurementSet</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the MeasurementSet object (from context) that the CalTo applies to.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return spectral windows IDs to which the calibrations apply.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_calto</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">_get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Field</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the Field object (from context/MS) for given field ID/name.&quot;&quot;&quot;</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">field_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Illegal field ID </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> for vis </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field_id</span><span class="p">,</span>
@@ -785,7 +941,8 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SpectralWindow</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the SpectralWindow object (from context/MS) for given ID.&quot;&quot;&quot;</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">spw_id</span><span class="p">,</span>
                                             <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spws</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -795,7 +952,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">spws</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;CalToIdAdapter(ms=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, field=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, intent=</span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1">, &#39;</span>
                 <span class="s1">&#39;spw=</span><span class="si">%s</span><span class="s1">, antenna=</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
                                          <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span><span class="p">))</span></div>
@@ -1628,7 +1785,7 @@
 
 <div class="viewcode-block" id="expand_calstate_to_calapps">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.expand_calstate_to_calapps.html#pipeline.infrastructure.callibrary.expand_calstate_to_calapps">[docs]</a>
-<span class="k">def</span> <span class="nf">expand_calstate_to_calapps</span><span class="p">(</span><span class="n">calstate</span><span class="p">:</span> <span class="s2">&quot;IntervalCalState&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CalTo</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">]]]:</span>
+<span class="k">def</span> <span class="nf">expand_calstate_to_calapps</span><span class="p">(</span><span class="n">calstate</span><span class="p">:</span> <span class="n">IntervalCalState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">CalTo</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert an IntervalCalState into a list of (CalTo, [CalFrom..]) tuples.</span>
 
@@ -1640,7 +1797,7 @@
     <span class="n">id_to_field_fn</span> <span class="o">=</span> <span class="n">get_id_to_field_fn</span><span class="p">(</span><span class="n">calstate</span><span class="o">.</span><span class="n">id_to_field</span><span class="p">)</span>
     <span class="n">id_to_intent_fn</span> <span class="o">=</span> <span class="n">get_id_to_intent_fn</span><span class="p">(</span><span class="n">calstate</span><span class="o">.</span><span class="n">id_to_intent</span><span class="p">)</span>
 
-    <span class="n">calapps</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">CalTo</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">calapps</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">CalTo</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">CalFrom</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">calstate</span><span class="p">:</span>
         <span class="c1"># Set the vis argument for the CalToArgs constructor through partial</span>
@@ -2156,7 +2313,7 @@
 
 <div class="viewcode-block" id="IntervalCalState.get_caltable">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.callibrary.IntervalCalState.html#pipeline.infrastructure.callibrary.IntervalCalState.get_caltable">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">get_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the names of all caltables registered with this CalState.</span>
 
@@ -3079,7 +3236,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

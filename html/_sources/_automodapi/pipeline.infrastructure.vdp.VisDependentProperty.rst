@@ -17,7 +17,6 @@ VisDependentProperty
 
    .. autosummary::
 
-      ~VisDependentProperty.__call__
       ~VisDependentProperty.convert
       ~VisDependentProperty.default
       ~VisDependentProperty.fget
@@ -31,7 +30,6 @@ VisDependentProperty
 
    .. rubric:: Methods Documentation
 
-   .. automethod:: __call__
    .. automethod:: convert
    .. automethod:: default
    .. automethod:: fget

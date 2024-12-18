@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.vdp &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -16,9 +16,10 @@
       <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="../../../_static/documentation_options.js?v=75464681"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -408,15 +409,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">null</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="n">null_input</span><span class="p">)</span>
 
-<div class="viewcode-block" id="VisDependentProperty.__call__">
-<a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># __call__ is executed when a function definition is called with</span>
         <span class="c1"># arguments</span>
         <span class="c1"># LOG.info(&#39;In __call__ for %s&#39; % fget.func_name)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fdefault</span> <span class="o">=</span> <span class="n">fdefault</span>
-        <span class="k">return</span> <span class="bp">self</span></div>
-
+        <span class="k">return</span> <span class="bp">self</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="c1"># Return the VisDependentProperty itself when called directly</span>
@@ -1251,7 +1249,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

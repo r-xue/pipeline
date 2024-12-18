@@ -1,5 +1,5 @@
 const DOCUMENTATION_OPTIONS = {
-    VERSION: '2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6',
+    VERSION: '2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6',
     LANGUAGE: 'en',
     COLLAPSE_INDEX: false,
     BUILDER: 'html',

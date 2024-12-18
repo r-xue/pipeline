@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CalTo &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -17,9 +17,10 @@
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="../_static/documentation_options.js?v=75464681"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -147,7 +148,7 @@
 <h1>CalTo<a class="headerlink" href="#calto" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalTo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalTo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalTo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">antenna</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalTo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>CalTo represents a target data selection to which a calibration can be
 applied.</p>
@@ -155,19 +156,19 @@ applied.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.antenna" title="pipeline.infrastructure.callibrary.CalTo.antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antenna</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the antennas to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.field" title="pipeline.infrastructure.callibrary.CalTo.field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the field(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.intent" title="pipeline.infrastructure.callibrary.CalTo.intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intent</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the observing intent(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.spw" title="pipeline.infrastructure.callibrary.CalTo.spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the spectral window(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.vis" title="pipeline.infrastructure.callibrary.CalTo.vis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vis</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the name of the measurement set to which the calibrations apply.</p></td>
 </tr>
 </tbody>
 </table>
@@ -175,7 +176,7 @@ applied.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo.from_caltoargs" title="pipeline.infrastructure.callibrary.CalTo.from_caltoargs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_caltoargs</span></code></a>(cta)</p></td>
-<td><p></p></td>
+<td><p>Returns a CalTo object for given arguments <code class="docutils literal notranslate"><span class="pre">cta</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -183,33 +184,47 @@ applied.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.antenna">
 <span class="sig-name descname"><span class="pre">antenna</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.antenna" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the antennas to which the calibrations apply.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.field">
 <span class="sig-name descname"><span class="pre">field</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.field" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the field(s) to which the calibrations apply.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.intent">
 <span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.intent" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the observing intent(s) to which the calibrations apply.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.spw">
 <span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.spw" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the spectral window(s) to which the calibrations apply.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.vis">
 <span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.vis" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the name of the measurement set to which the calibrations apply.</p>
+</dd></dl>
 
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalTo.from_caltoargs">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_caltoargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToArgs.html#pipeline.infrastructure.callibrary.CalToArgs" title="pipeline.infrastructure.callibrary.CalToArgs"><span class="pre">CalToArgs</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><span class="pre">CalTo</span></a></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalTo.from_caltoargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalTo.from_caltoargs" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Returns a CalTo object for given arguments <code class="docutils literal notranslate"><span class="pre">cta</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cta</strong> – CalToArgs object representing the arguments for the new CalTo object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>CalTo object initialized with given arguments <code class="docutils literal notranslate"><span class="pre">cta</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -226,7 +241,7 @@ applied.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

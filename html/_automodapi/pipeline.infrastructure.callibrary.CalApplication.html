@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CalApplication &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -17,9 +17,10 @@
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="../_static/documentation_options.js?v=75464681"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -147,32 +148,22 @@
 <h1>CalApplication<a class="headerlink" href="#calapplication" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calto</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calfrom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalApplication</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calto</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><span class="pre">CalTo</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><span class="pre">CalTo</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calfrom</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><span class="pre">CalFrom</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><span class="pre">CalFrom</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalAppOrigin.html#pipeline.infrastructure.callibrary.CalAppOrigin" title="pipeline.infrastructure.callibrary.CalAppOrigin"><span class="pre">CalAppOrigin</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="pipeline.infrastructure.callibrary.CalAppOrigin.html#pipeline.infrastructure.callibrary.CalAppOrigin" title="pipeline.infrastructure.callibrary.CalAppOrigin"><span class="pre">CalAppOrigin</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<blockquote>
-<div><p>CalApplication maps calibration tables and their application arguments to
-a target data selection, encapsulated as <a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalFrom</span></code></a> and <a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalTo</span></code></a> objects
+<p>CalApplication maps calibration tables and their application arguments to
+a target data selection, encapsulated as CalFrom and CalTo objects
 respectively.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.calto">
-<span class="sig-name descname"><span class="pre">calto</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.calto" title="Link to this definition"></a></dt>
-<dd><p>the <a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalTo</span></code></a> representing the data selection to which the calibration
-should apply.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.calfrom">
-<span class="sig-name descname"><span class="pre">calfrom</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.calfrom" title="Link to this definition"></a></dt>
-<dd><p>the <a class="reference internal" href="pipeline.infrastructure.callibrary.CalFrom.html#pipeline.infrastructure.callibrary.CalFrom" title="pipeline.infrastructure.callibrary.CalFrom"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalFrom</span></code></a> representing the calibration and application parameters</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.origin">
-<span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.origin" title="Link to this definition"></a></dt>
-<dd><p>the <a class="reference internal" href="pipeline.infrastructure.callibrary.CalAppOrigin.html#pipeline.infrastructure.callibrary.CalAppOrigin" title="pipeline.infrastructure.callibrary.CalAppOrigin"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalAppOrigin</span></code></a> marking how this calibration was created</p>
-</dd></dl>
-
-</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calto</strong> – The CalTo representing the data selection to which the
+calibration should apply.</p></li>
+<li><p><strong>calfrom</strong> – The CalFrom representing the calibration and application
+parameters.</p></li>
+<li><p><strong>origin</strong> – The CalAppOrigin marking how this calibration was created.</p></li>
+</ul>
+</dd>
+</dl>
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
@@ -180,10 +171,10 @@ should apply.</p>
 <td><p>The antennas to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.calwt" title="pipeline.infrastructure.callibrary.CalApplication.calwt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calwt</span></code></a></p></td>
-<td><p>The calwt parameters to be used when applying these calibrations.</p></td>
+<td><p>The calwt parameter to be used when applying these calibrations.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.field" title="pipeline.infrastructure.callibrary.CalApplication.field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></a></p></td>
-<td><p>The fields to which the calibrations apply.</p></td>
+<td><p>The field(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.gainfield" title="pipeline.infrastructure.callibrary.CalApplication.gainfield"><code class="xref py py-obj docutils literal notranslate"><span class="pre">gainfield</span></code></a></p></td>
 <td><p>The gainfield parameters to be used when applying these calibrations.</p></td>
@@ -192,19 +183,19 @@ should apply.</p>
 <td><p>The gaintable parameters to be used when applying these calibrations.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.intent" title="pipeline.infrastructure.callibrary.CalApplication.intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intent</span></code></a></p></td>
-<td><p>The observing intents to which the calibrations apply.</p></td>
+<td><p>The observing intent(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.interp" title="pipeline.infrastructure.callibrary.CalApplication.interp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interp</span></code></a></p></td>
 <td><p>The interp parameters to be used when applying these calibrations.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.spw" title="pipeline.infrastructure.callibrary.CalApplication.spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw</span></code></a></p></td>
-<td><p>The spectral windows to which the calibrations apply.</p></td>
+<td><p>Spectral window(s) to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.spwmap" title="pipeline.infrastructure.callibrary.CalApplication.spwmap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spwmap</span></code></a></p></td>
 <td><p>The spwmap parameters to be used when applying these calibrations.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication.vis" title="pipeline.infrastructure.callibrary.CalApplication.vis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vis</span></code></a></p></td>
-<td><p>The name of the measurement set to which the calibrations apply.</p></td>
+<td><p>Name of the measurement set to which the calibrations apply.</p></td>
 </tr>
 </tbody>
 </table>
@@ -228,8 +219,9 @@ should apply.</p>
 <span class="sig-name descname"><span class="pre">antenna</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.antenna" title="Link to this definition"></a></dt>
 <dd><p>The antennas to which the calibrations apply.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String representing the antennas (comma-separated) antennas to which
+the calibrations apply.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -237,11 +229,12 @@ should apply.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.calwt">
 <span class="sig-name descname"><span class="pre">calwt</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.calwt" title="Link to this definition"></a></dt>
-<dd><p>The calwt parameters to be used when applying these calibrations.</p>
+<dd><p>The calwt parameter to be used when applying these calibrations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a scalar string if representing 1 calibration, otherwise a
-list of strings</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Boolean representing what to use for calwt for this calibration.
+If there are multiple CalFrom objects to apply, this returns a list
+of booleans, one per CalFrom.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -249,10 +242,11 @@ list of strings</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.field">
 <span class="sig-name descname"><span class="pre">field</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.field" title="Link to this definition"></a></dt>
-<dd><p>The fields to which the calibrations apply.</p>
+<dd><p>The field(s) to which the calibrations apply.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String representing the field(s) (comma-separated) to apply the
+calibrations to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,9 +256,10 @@ list of strings</p>
 <span class="sig-name descname"><span class="pre">gainfield</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.gainfield" title="Link to this definition"></a></dt>
 <dd><p>The gainfield parameters to be used when applying these calibrations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a scalar string if representing 1 calibration, otherwise a
-list of strings</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value for the gainfield parameter to be used when applying these
+calibrations; returns a scalar string if representing 1 calibration,
+otherwise a list of strings.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,9 +269,10 @@ list of strings</p>
 <span class="sig-name descname"><span class="pre">gaintable</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.gaintable" title="Link to this definition"></a></dt>
 <dd><p>The gaintable parameters to be used when applying these calibrations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a scalar string if representing 1 calibration, otherwise a
-list of strings</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value for the gaintable parameter to be used when applying these
+calibrations; returns a scalar string if representing 1 calibration,
+otherwise a list of strings.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -284,10 +280,11 @@ list of strings</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.intent">
 <span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.intent" title="Link to this definition"></a></dt>
-<dd><p>The observing intents to which the calibrations apply.</p>
+<dd><p>The observing intent(s) to which the calibrations apply.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String representing the intent(s) (comma-separated) to apply the
+calibrations to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -297,9 +294,10 @@ list of strings</p>
 <span class="sig-name descname"><span class="pre">interp</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.interp" title="Link to this definition"></a></dt>
 <dd><p>The interp parameters to be used when applying these calibrations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a scalar string if representing 1 calibration, otherwise a
-list of strings</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value for the interp parameter to be used when applying these
+calibrations; returns a scalar string if representing 1 calibration,
+otherwise a list of strings.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -307,10 +305,11 @@ list of strings</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.spw">
 <span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.spw" title="Link to this definition"></a></dt>
-<dd><p>The spectral windows to which the calibrations apply.</p>
+<dd><p>Spectral window(s) to which the calibrations apply.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String representing the spectral window id(s) (comma-separated) to
+apply the calibrations to.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -320,9 +319,10 @@ list of strings</p>
 <span class="sig-name descname"><span class="pre">spwmap</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.spwmap" title="Link to this definition"></a></dt>
 <dd><p>The spwmap parameters to be used when applying these calibrations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>a scalar string if representing 1 calibration, otherwise a
-list of strings</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value for the spwmap parameter to be used when applying these
+calibrations; returns a scalar string if representing 1 calibration,
+otherwise a list of strings.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -330,10 +330,10 @@ list of strings</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.vis">
 <span class="sig-name descname"><span class="pre">vis</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.vis" title="Link to this definition"></a></dt>
-<dd><p>The name of the measurement set to which the calibrations apply.</p>
+<dd><p>Name of the measurement set to which the calibrations apply.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The name of the measurement set to which the calibrations apply.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -341,33 +341,36 @@ list of strings</p>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.as_applycal">
-<span class="sig-name descname"><span class="pre">as_applycal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.as_applycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.as_applycal" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">as_applycal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.as_applycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.as_applycal" title="Link to this definition"></a></dt>
 <dd><p>Get a representation of this object as a CASA applycal call.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>string</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String representation of CalApplication as a CASA applycal call.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.exists">
-<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.exists" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">exists</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.exists" title="Link to this definition"></a></dt>
 <dd><p>Test whether all calibration tables referred to by this application exist.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>boolean</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if all calibration tables exist in the file system.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalApplication.from_export">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.from_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.from_export" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><span class="pre">CalApplication</span></a></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalApplication.from_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalApplication.from_export" title="Link to this definition"></a></dt>
 <dd><p>Unmarshal a CalApplication from a string.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the unmarshalled <a class="reference internal" href="#pipeline.infrastructure.callibrary.CalApplication" title="pipeline.infrastructure.callibrary.CalApplication"><code class="xref py py-class docutils literal notranslate"><span class="pre">CalApplication</span></code></a> object</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – String representation of a CalApplication as a CASA applycal call.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>CalApplication object generated from given string.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -387,7 +390,7 @@ list of strings</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

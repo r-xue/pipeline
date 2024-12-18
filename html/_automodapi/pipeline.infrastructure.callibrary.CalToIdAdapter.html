@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CalToIdAdapter &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -17,9 +17,10 @@
       <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
 
   
+    <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=98fb7efc"></script>
+      <script src="../_static/documentation_options.js?v=75464681"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -147,25 +148,27 @@
 <h1>CalToIdAdapter<a class="headerlink" href="#caltoidadapter" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalToIdAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calto</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalToIdAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CalToIdAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">calto</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalTo.html#pipeline.infrastructure.callibrary.CalTo" title="pipeline.infrastructure.callibrary.CalTo"><span class="pre">CalTo</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalToIdAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>CalToIdAdapter is an adapter class for CalTo that return some of its
+attributes as lists of IDs/names, instead of as the CASA-style string argument.</p>
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.antenna" title="pipeline.infrastructure.callibrary.CalToIdAdapter.antenna"><code class="xref py py-obj docutils literal notranslate"><span class="pre">antenna</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return IDs of antennas to which the calibrations apply as a list of integers.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.field" title="pipeline.infrastructure.callibrary.CalToIdAdapter.field"><code class="xref py py-obj docutils literal notranslate"><span class="pre">field</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return fields to which the calibrations apply as a list of names or integer IDs.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.intent" title="pipeline.infrastructure.callibrary.CalToIdAdapter.intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">intent</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the intents to which the calibrations apply.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.ms" title="pipeline.infrastructure.callibrary.CalToIdAdapter.ms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ms</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return the MeasurementSet object (from context) that the CalTo applies to.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.spw" title="pipeline.infrastructure.callibrary.CalToIdAdapter.spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spw</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Return spectral windows IDs to which the calibrations apply.</p></td>
 </tr>
 </tbody>
 </table>
@@ -173,7 +176,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents" title="pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_field_intents</span></code></a>(field_id, spw_id)</p></td>
-<td><p></p></td>
+<td><p>Return set of intents that are common to CalTo, given field(s), and given spectral window(s).</p></td>
 </tr>
 </tbody>
 </table>
@@ -181,33 +184,40 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.antenna">
 <span class="sig-name descname"><span class="pre">antenna</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.antenna" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return IDs of antennas to which the calibrations apply as a list of integers.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.field">
 <span class="sig-name descname"><span class="pre">field</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.field" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return fields to which the calibrations apply as a list of names or integer IDs.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.intent">
 <span class="sig-name descname"><span class="pre">intent</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.intent" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the intents to which the calibrations apply.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.ms">
 <span class="sig-name descname"><span class="pre">ms</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.ms" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the MeasurementSet object (from context) that the CalTo applies to.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.spw">
 <span class="sig-name descname"><span class="pre">spw</span></span><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.spw" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return spectral windows IDs to which the calibrations apply.</p>
+</dd></dl>
 
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents">
-<span class="sig-name descname"><span class="pre">get_field_intents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalToIdAdapter.get_field_intents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_field_intents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#CalToIdAdapter.get_field_intents"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.CalToIdAdapter.get_field_intents" title="Link to this definition"></a></dt>
+<dd><p>Return set of intents that are common to CalTo, given field(s), and
+given spectral window(s).</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -224,7 +234,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+174-gebdb84e1a9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+181-g96fab09f74-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
