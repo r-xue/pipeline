@@ -582,7 +582,7 @@ class CleanTaskFactory(object):
             task_args['cyclefactor'] = inputs.hm_cyclefactor
 
         if inputs.hm_nmajor not in (None, -999.0):
-            task_args['nmajor'] = inputs.hm_major        
+            task_args['nmajor'] = inputs.hm_nmajor        
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction
