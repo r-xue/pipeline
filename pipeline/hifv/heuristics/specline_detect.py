@@ -1,7 +1,6 @@
 """
 Heuristic for identifying and/or defining the SPW designation, either as a continuum window or for spectral line analysis
 """
-import collections
 from typing import Type
 
 import pipeline.infrastructure.logging as logging
@@ -23,18 +22,13 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
     """
 
     spw2band = mset.get_vla_spw2band()
-    science_spw2band = collections.defaultdict(str)
     spwobjlist = mset.get_spectral_windows(science_windows_only=True)
-    listspws = [spw.id for spw in spwobjlist]
-    for spw, band in spw2band.items():
-        if spw in listspws:  # Science intents only
-            science_spw2band[str(spw)] = band
     spec_windows = list()
     if specline_spws == 'auto':
         LOG.info("Spectral line detection set to auto. "
                  "The pipeline will determine which science spws will be used for spectral line analysis.")
         for spw in spwobjlist:
-            _auto_detector(spw, science_spw2band[str(spw.id)])
+            _auto_detector(spw, spw2band[spw.id])
     elif specline_spws == 'none':
         LOG.info("Spectral line assignment is turned off. All science spws will be regarded as continuum.")
     elif specline_spws == 'all':
