@@ -136,7 +136,7 @@ class ExportDataInputs(vdp.StandardInputs):
     def exportcalprods(self):
         return not (self.imaging_products_only or self.exportmses)
 
-    # docstring and type hints: supplements hsd_exportdata
+    # docstring and type hints: supplements hsd_exportdata, hsdn_exportdata
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None,
                  products_dir=None, imaging_products_only=None):
