@@ -23,18 +23,18 @@ def detect_spectral_lines(mset: Type[MeasurementSet], specline_spws: str='auto')
     """
 
     spw2band = mset.get_vla_spw2band()
-    band2spw = collections.defaultdict(list)
+    science_spw2band = collections.defaultdict(str)
     spwobjlist = mset.get_spectral_windows(science_windows_only=True)
     listspws = [spw.id for spw in spwobjlist]
     for spw, band in spw2band.items():
         if spw in listspws:  # Science intents only
-            band2spw[band].append(str(spw))
+            science_spw2band[str(spw)] = band
     spec_windows = list()
     if specline_spws == 'auto':
         LOG.info("Spectral line detection set to auto. "
                  "The pipeline will determine which science spws will be used for spectral line analysis.")
         for spw in spwobjlist:
-            _auto_detector(spw, band2spw[str(spw.id)])
+            _auto_detector(spw, science_spw2band[str(spw.id)])
     elif specline_spws == 'none':
         LOG.info("Spectral line assignment is turned off. All science spws will be regarded as continuum.")
     elif specline_spws == 'all':
