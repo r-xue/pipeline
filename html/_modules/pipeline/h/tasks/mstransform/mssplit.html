@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.mstransform.mssplit &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -139,8 +139,6 @@
 <span class="c1"># If replace is True replace the parameter MS with the transformed</span>
 <span class="c1"># one on disk and in the context</span>
 
-<div class="viewcode-block" id="MsSplitInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.html#pipeline.h.tasks.MsSplitInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">MsSplitInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">chanbin</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">datacolumn</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
@@ -172,8 +170,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">timebin</span> <span class="o">=</span> <span class="n">timebin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">replace</span> <span class="o">=</span> <span class="n">replace</span>
 
-<div class="viewcode-block" id="MsSplitInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.mstransform.mssplit.MsSplitInputs.html#pipeline.h.tasks.MsSplitInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MsSplitInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
 
@@ -185,9 +181,7 @@
         <span class="c1"># Filter out unwanted parameters</span>
         <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;replace&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">d</span></div>
-</div>
-
+        <span class="k">return</span> <span class="n">d</span>
 
 
 <div class="viewcode-block" id="MsSplit">
@@ -294,8 +288,6 @@
         <span class="n">msobj</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">data_type</span><span class="p">,</span> <span class="n">out_column</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MsSplitResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.mstransform.mssplit.MsSplitResults.html#pipeline.h.tasks.MsSplitResults">[docs]</a>
 <span class="k">class</span> <span class="nc">MsSplitResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MsSplitResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -303,8 +295,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span> <span class="o">=</span> <span class="n">outputvis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="MsSplitResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.mstransform.mssplit.MsSplitResults.html#pipeline.h.tasks.MsSplitResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Check for an output vis</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">:</span>
@@ -328,8 +318,7 @@
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-                <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span></div>
-
+                <span class="n">target</span><span class="o">.</span><span class="n">add_measurement_set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Format the MsSplit results.</span>
@@ -341,8 +330,7 @@
         <span class="k">return</span> <span class="n">s</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;MsSplitResults(</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span><span class="p">))</span></div>
-
+        <span class="k">return</span> <span class="s1">&#39;MsSplitResults(</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span><span class="p">))</span>
 </pre></div>
 
            </div>
@@ -352,7 +340,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

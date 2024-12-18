@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.flagging.flagdeteralma &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -138,15 +138,10 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FlagDeterALMAResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.stats_extractor.FlagDeterALMAResults.html#pipeline.hifa.tasks.FlagDeterALMAResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterALMAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+    <span class="k">pass</span>
 
 
-
-<div class="viewcode-block" id="FlagDeterALMAInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs.html#pipeline.hifa.tasks.FlagDeterALMAInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterALMAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterALMAInputs defines the inputs for the FlagDeterALMA pipeline task.</span>
@@ -184,8 +179,7 @@
 
         <span class="c1"># solution parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">qa0</span> <span class="o">=</span> <span class="n">qa0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">qa2</span> <span class="o">=</span> <span class="n">qa2</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">qa2</span> <span class="o">=</span> <span class="n">qa2</span>
 
 
 <div class="viewcode-block" id="FlagDeterALMA">
@@ -471,8 +465,6 @@
 
 
 
-<div class="viewcode-block" id="load_partialpols_alma">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.load_partialpols_alma.html#pipeline.hifa.tasks.load_partialpols_alma">[docs]</a>
 <span class="k">def</span> <span class="nf">load_partialpols_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the relevant data to extend partial polarization flagging to all the polarizations (see PIPE-1028).</span>
 <span class="sd">    It returns the list of flagging commands required to flag the partial polarization.</span>
@@ -555,12 +547,9 @@
             <span class="n">table_sel</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="n">commands</span> <span class="o">=</span> <span class="n">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">commands</span></div>
+    <span class="k">return</span> <span class="n">commands</span>
 
 
-
-<div class="viewcode-block" id="get_partialpol_spws">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.get_partialpol_spws.html#pipeline.hifa.tasks.get_partialpol_spws">[docs]</a>
 <span class="k">def</span> <span class="nf">get_partialpol_spws</span><span class="p">(</span><span class="n">ms_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.</span>
 <span class="sd">    According to the comments in PIPE-1028 they are all non-WVR/non-SQLD spws with an intent that</span>
@@ -582,12 +571,9 @@
         <span class="n">spws_calibrate_phase</span> <span class="o">=</span> <span class="n">msmd</span><span class="o">.</span><span class="n">spwsforintent</span><span class="p">(</span><span class="s1">&#39;CALIBRATE_PHASE*&#39;</span><span class="p">)</span>
         <span class="n">spws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">spws_observe_target</span><span class="p">,</span> <span class="n">spws_calibrate_phase</span><span class="p">),</span> <span class="n">spws_fdm_tdm</span><span class="p">)</span>
         <span class="n">datadescids</span> <span class="o">=</span> <span class="p">[</span><span class="n">msmd</span><span class="o">.</span><span class="n">datadescids</span><span class="p">(</span><span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">]</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="n">datadescids</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="n">datadescids</span>
 
 
-
-<div class="viewcode-block" id="get_partialpol_flag_cmd_params">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.get_partialpol_flag_cmd_params.html#pipeline.hifa.tasks.get_partialpol_flag_cmd_params">[docs]</a>
 <span class="k">def</span> <span class="nf">get_partialpol_flag_cmd_params</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the parameters that identify points where partial polarizations need to be flagged.</span>
 <span class="sd">    This function should be called only if the data presents more than one polarization.</span>
@@ -631,12 +617,9 @@
             <span class="s2">&quot;interval&quot;</span><span class="p">:</span> <span class="n">interval</span><span class="p">[</span><span class="n">param_set_idx</span><span class="p">],</span>
             <span class="s2">&quot;channels&quot;</span><span class="p">:</span> <span class="n">channel_sel</span>
         <span class="p">})</span>
-    <span class="k">return</span> <span class="n">params</span></div>
+    <span class="k">return</span> <span class="n">params</span>
 
 
-
-<div class="viewcode-block" id="convert_params_to_commands">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.convert_params_to_commands.html#pipeline.hifa.tasks.convert_params_to_commands">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">ant_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the identified partial polarization parameters to flagging commands.</span>
 
@@ -665,12 +648,9 @@
         <span class="c1"># Combine</span>
         <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot;antenna=&#39;</span><span class="si">{}</span><span class="s2">&#39; spw=&#39;</span><span class="si">{}</span><span class="s2">&#39; timerange=&#39;</span><span class="si">{}</span><span class="s2">&#39; reason=&#39;partialpol&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">antenna_str</span><span class="p">,</span> <span class="n">ch_str</span><span class="p">,</span> <span class="n">time_str</span><span class="p">)</span>
         <span class="n">commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">commands</span></div>
+    <span class="k">return</span> <span class="n">commands</span>
 
 
-
-<div class="viewcode-block" id="lowtrans_alma">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.lowtrans_alma.html#pipeline.hifa.tasks.lowtrans_alma">[docs]</a>
 <span class="k">def</span> <span class="nf">lowtrans_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                   <span class="n">max_frac_low_trans</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -764,12 +744,9 @@
                 <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">frac_below_thresh</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">; this is below the max fraction of </span><span class="si">{</span><span class="n">max_frac_low_trans</span><span class="si">}</span><span class="s2">, therefore&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot; therefore this SpW will not be flagged.&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">commands</span></div>
+    <span class="k">return</span> <span class="n">commands</span>
 
 
-
-<div class="viewcode-block" id="get_elevation_for_alma_scan">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.get_elevation_for_alma_scan.html#pipeline.hifa.tasks.get_elevation_for_alma_scan">[docs]</a>
 <span class="k">def</span> <span class="nf">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the elevation for the beginning or the end of an ALMA scan.</span>
 
@@ -794,12 +771,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;The parameter edge should be either &quot;start&quot; or &quot;end&quot;.&#39;</span><span class="p">)</span>
     <span class="n">coords_altaz</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">transform_to</span><span class="p">(</span><span class="n">AltAz</span><span class="p">(</span><span class="n">obstime</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">alma_site</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">coords_altaz</span><span class="o">.</span><span class="n">alt</span></div>
+    <span class="k">return</span> <span class="n">coords_altaz</span><span class="o">.</span><span class="n">alt</span>
 
 
-
-<div class="viewcode-block" id="get_airmass_for_alma_scan">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.flagging.flagdeteralma.get_airmass_for_alma_scan.html#pipeline.hifa.tasks.get_airmass_for_alma_scan">[docs]</a>
 <span class="k">def</span> <span class="nf">get_airmass_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the airmass corresponding to an ALMA observation scan.</span>
 
@@ -813,8 +787,7 @@
     <span class="n">end_elevation</span> <span class="o">=</span> <span class="n">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span>
     <span class="n">start_airmass</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">calc_airmass</span><span class="p">(</span><span class="n">start_elevation</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
     <span class="n">end_airmass</span> <span class="o">=</span> <span class="n">atmutil</span><span class="o">.</span><span class="n">calc_airmass</span><span class="p">(</span><span class="n">end_elevation</span><span class="o">.</span><span class="n">deg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">start_airmass</span> <span class="o">+</span> <span class="n">end_airmass</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span></div>
-
+    <span class="k">return</span> <span class="p">(</span><span class="n">start_airmass</span> <span class="o">+</span> <span class="n">end_airmass</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
 </pre></div>
 
            </div>
@@ -824,7 +797,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

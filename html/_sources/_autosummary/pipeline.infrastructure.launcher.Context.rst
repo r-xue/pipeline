@@ -1,36 +1,33 @@
-pipeline.infrastructure.launcher.Context
+﻿pipeline.infrastructure.launcher.Context
 ========================================
 
-.. currentmodule:: pipeline.infrastructure.launcher
-
-.. autoclass:: Context
-   :members:
-   :show-inheritance:
-   :inherited-members:
-   :special-members: __call__, __add__, __mul__
+.. automodule:: pipeline.infrastructure.launcher.Context
 
    
    
-   .. rubric:: Methods
+   .. rubric:: Module attributes
 
    .. autosummary::
-      :nosignatures:
+      :toctree:
    
-      ~Context.get_oussid
-      ~Context.get_recipe_name
-      ~Context.save
-      ~Context.set_state
+      products_dir
+      stage
+      vla_skip_mfs_and_cube_imaging
    
    
 
    
    
-   .. rubric:: Attributes
-
-   .. autosummary::
    
-      ~Context.products_dir
-      ~Context.stage
-      ~Context.vla_skip_mfs_and_cube_imaging
+
+   
+   
+   
+
+   
+   
+   
+
+   
    
    

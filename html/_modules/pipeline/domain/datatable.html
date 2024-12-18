@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.datatable &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -238,7 +238,7 @@
 
 
 <div class="viewcode-block" id="create_table">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.create_table.html#pipeline.domain.create_table">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.create_table.html#pipeline.domain.datatable.create_table">[docs]</a>
 <span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">memtype</span><span class="o">=</span><span class="n">memtype</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">ret</span> <span class="o">==</span> <span class="kc">True</span>
@@ -256,7 +256,7 @@
 
 
 <div class="viewcode-block" id="timetable_key">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.timetable_key.html#pipeline.domain.timetable_key">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.timetable_key.html#pipeline.domain.datatable.timetable_key">[docs]</a>
 <span class="k">def</span> <span class="nf">timetable_key</span><span class="p">(</span><span class="n">table_type</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;TIMETABLE_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">table_type</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -271,7 +271,7 @@
 
 
 <div class="viewcode-block" id="DataTableIndexer">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.DataTableIndexer">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer">[docs]</a>
 <span class="k">class</span> <span class="nc">DataTableIndexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map between serial indices and per-MS row indices.</span>
@@ -307,7 +307,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">num_mses</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow_per_ms</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataTableIndexer.serial2perms">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.DataTableIndexer.serial2perms">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer.serial2perms">[docs]</a>
     <span class="k">def</span> <span class="nf">serial2perms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return basename of origin MS and per-MS row id of a given serial index.</span>
@@ -330,7 +330,7 @@
 
 
 <div class="viewcode-block" id="DataTableIndexer.perms2serial">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.DataTableIndexer.perms2serial">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer.perms2serial">[docs]</a>
     <span class="k">def</span> <span class="nf">perms2serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return serial index.</span>
@@ -363,7 +363,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl">[docs]</a>
 <span class="k">class</span> <span class="nc">DataTableImpl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DataTable is an object to hold meta data of scantable on memory.</span>
@@ -519,7 +519,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataTableImpl.putcell">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.putcell">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.putcell">[docs]</a>
     <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- column name</span>
@@ -548,7 +548,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">columnname</span><span class="p">,</span> <span class="n">keyword</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataTableImpl.putkeyword">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.putkeyword">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.putkeyword">[docs]</a>
     <span class="k">def</span> <span class="nf">putkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- keyword name</span>
@@ -562,7 +562,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.getkeyword">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.getkeyword">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.getkeyword">[docs]</a>
     <span class="k">def</span> <span class="nf">getkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- keyword name</span>
@@ -573,7 +573,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.keywordnames">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.keywordnames">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.keywordnames">[docs]</a>
     <span class="k">def</span> <span class="nf">keywordnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return table keyword names</span>
@@ -582,7 +582,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.importdata">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.importdata">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.importdata">[docs]</a>
     <span class="k">def</span> <span class="nf">importdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of DataTable to be imported</span>
@@ -596,7 +596,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.importdata2">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.importdata2">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.importdata2">[docs]</a>
     <span class="k">def</span> <span class="nf">importdata2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of DataTable to be imported</span>
@@ -610,7 +610,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.sync">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.sync">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.sync">[docs]</a>
     <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sync with DataTable on disk.</span>
@@ -619,7 +619,7 @@
 
 
 <div class="viewcode-block" id="DataTableImpl.exportdata">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.exportdata">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.exportdata">[docs]</a>
     <span class="k">def</span> <span class="nf">exportdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of exported DataTable</span>
@@ -663,7 +663,7 @@
 
     <span class="c1"># FIXME: this unused method contains bugs to fix.</span>
 <div class="viewcode-block" id="DataTableImpl.export_rwtable_exclusive">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.DataTableImpl.export_rwtable_exclusive">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.export_rwtable_exclusive">[docs]</a>
     <span class="k">def</span> <span class="nf">export_rwtable_exclusive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirty_rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export &quot;on-memory&quot; RW table to the one on disk.</span>
@@ -1115,7 +1115,7 @@
 
 
 <div class="viewcode-block" id="RODataTableColumn">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RODataTableColumn.html#pipeline.domain.RODataTableColumn">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RODataTableColumn.html#pipeline.domain.datatable.RODataTableColumn">[docs]</a>
 <span class="k">class</span> <span class="nc">RODataTableColumn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">table</span>
@@ -1155,7 +1155,7 @@
 
 
 <div class="viewcode-block" id="RWDataTableColumn">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RWDataTableColumn.html#pipeline.domain.RWDataTableColumn">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RWDataTableColumn.html#pipeline.domain.datatable.RWDataTableColumn">[docs]</a>
 <span class="k">class</span> <span class="nc">RWDataTableColumn</span><span class="p">(</span><span class="n">RODataTableColumn</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
@@ -1179,7 +1179,7 @@
 
 
 <div class="viewcode-block" id="DataTableColumnNoChange">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnNoChange.html#pipeline.domain.DataTableColumnNoChange">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnNoChange.html#pipeline.domain.datatable.DataTableColumnNoChange">[docs]</a>
 <span class="k">class</span> <span class="nc">DataTableColumnNoChange</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;NOCHANGE&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
@@ -1194,7 +1194,7 @@
 
 
 <div class="viewcode-block" id="DataTableColumnMaskList">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.DataTableColumnMaskList">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList">[docs]</a>
 <span class="k">class</span> <span class="nc">DataTableColumnMaskList</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
     <span class="n">NoMask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># [[-1,-1]]</span>
 
@@ -1209,7 +1209,7 @@
             <span class="k">return</span> <span class="n">v</span>
 
 <div class="viewcode-block" id="DataTableColumnMaskList.getcol">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.DataTableColumnMaskList.getcol">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList.getcol">[docs]</a>
     <span class="k">def</span> <span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Note: returned array has shape (nrow,nmask), in</span>
@@ -1237,7 +1237,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
 <div class="viewcode-block" id="DataTableColumnMaskList.putcol">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.DataTableColumnMaskList.putcol">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList.putcol">[docs]</a>
     <span class="k">def</span> <span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Note: input array should have shape (nrow,nmask), in</span>
@@ -1271,7 +1271,7 @@
 
 
 <div class="viewcode-block" id="construct_timegroup">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.construct_timegroup.html#pipeline.domain.construct_timegroup">[docs]</a>
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.construct_timegroup.html#pipeline.domain.datatable.construct_timegroup">[docs]</a>
 <span class="k">def</span> <span class="nf">construct_timegroup</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">group_id_list</span><span class="p">,</span> <span class="n">group_association_list</span><span class="p">):</span>
     <span class="n">timetable_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="p">[[],</span> <span class="p">[]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">group_id_list</span><span class="p">}</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">group_association_list</span><span class="p">):</span>
@@ -1290,7 +1290,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

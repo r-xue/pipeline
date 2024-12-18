@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.applycal.applycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -140,8 +140,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ApplycalInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalInputs defines the inputs for the Applycal pipeline task.</span>
@@ -213,20 +211,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-<div class="viewcode-block" id="ApplycalInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.ApplycalInputs.html#pipeline.h.tasks.ApplycalInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;flagsum&#39;</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;flagdetailedsum&#39;</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">casa_args</span></div>
-</div>
+        <span class="k">return</span> <span class="n">casa_args</span>
 
 
-
-<div class="viewcode-block" id="ApplycalResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalResults.html#pipeline.h.tasks.ApplycalResults">[docs]</a>
 <span class="k">class</span> <span class="nc">ApplycalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalResults is the results class for the pipeline Applycal task.</span>
@@ -254,8 +246,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">callib_map</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_type</span> <span class="o">=</span> <span class="n">data_type</span>
 
-<div class="viewcode-block" id="ApplycalResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.infrastructure.renderer.regression.ApplycalResults.html#pipeline.h.tasks.ApplycalResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Merges these results with the given context by examining the context</span>
@@ -277,8 +267,7 @@
             <span class="n">colname</span> <span class="o">=</span> <span class="s1">&#39;CORRECTED_DATA&#39;</span>
             <span class="c1"># Temporal workaround: restoredata merges context twice</span>
             <span class="k">if</span> <span class="n">msobj</span><span class="o">.</span><span class="n">get_data_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">)</span> <span class="o">!=</span> <span class="n">colname</span><span class="p">:</span>
-                <span class="n">msobj</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span></div>
-
+                <span class="n">msobj</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">colname</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;ApplycalResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -292,12 +281,9 @@
                 <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="si">{name}</span><span class="s1"> applied to </span><span class="si">{vis}</span><span class="s1"> spw #</span><span class="si">{spw}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">name</span><span class="o">=</span><span class="n">caltable</span><span class="o">.</span><span class="n">gaintable</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">caltable</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span>
                     <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable</span><span class="o">.</span><span class="n">vis</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">s</span></div>
+        <span class="k">return</span> <span class="n">s</span>
 
 
-
-<div class="viewcode-block" id="SerialApplycal">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialApplycal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applycal executes CASA applycal tasks for the current active context</span>
@@ -325,8 +311,6 @@
     <span class="k">def</span> <span class="nf">_tweak_flagkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">template</span>
 
-<div class="viewcode-block" id="SerialApplycal.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -412,17 +396,11 @@
                 <span class="n">processed_flagsummary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_flagsummary</span><span class="p">(</span><span class="n">reshaped_flagsummary</span><span class="p">)</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">flagsummary</span> <span class="o">=</span> <span class="n">processed_flagsummary</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="SerialApplycal.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="SerialApplycal.process_flagsummary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.applycal.applycal.SerialApplycal.html#pipeline.h.tasks.SerialApplycal.process_flagsummary">[docs]</a>
     <span class="k">def</span> <span class="nf">process_flagsummary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flagsummary</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Template entry point for processing flagdata summary dicts. Override</span>
@@ -432,13 +410,9 @@
 <span class="sd">        :param flagsummary: the unfiltered, unprocessed flagsummary dict</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">flagsummary</span></div>
-</div>
+        <span class="k">return</span> <span class="n">flagsummary</span>
 
 
-
-<div class="viewcode-block" id="reshape_flagdata_summary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baselineflag.baselineflag.reshape_flagdata_summary.html#pipeline.h.tasks.reshape_flagdata_summary">[docs]</a>
 <span class="k">def</span> <span class="nf">reshape_flagdata_summary</span><span class="p">(</span><span class="n">flagdata_result</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reshape a flagdata result so that results are grouped by field.</span>
@@ -462,8 +436,7 @@
             <span class="n">flagsummary</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">report_level</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{!s}</span><span class="s1">Field_</span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
             <span class="n">flagsummary</span><span class="p">[</span><span class="n">field_name</span><span class="p">][</span><span class="n">report_level</span><span class="p">][</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_type</span>
 
-    <span class="k">return</span> <span class="n">flagsummary</span></div>
-
+    <span class="k">return</span> <span class="n">flagsummary</span>
 
 
 <span class="c1"># def limit_fields(flagsummary, ms):</span>
@@ -488,8 +461,6 @@
 
 
 
-<div class="viewcode-block" id="jobs_without_calapply">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.jobs_without_calapply.html#pipeline.h.tasks.jobs_without_calapply">[docs]</a>
 <span class="k">def</span> <span class="nf">jobs_without_calapply</span><span class="p">(</span><span class="n">merged</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">mod_fn</span><span class="p">):</span>
     <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># sort for a stable applycal order, to make diffs easier to parse</span>
@@ -522,12 +493,9 @@
 
         <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">jobs</span></div>
+    <span class="k">return</span> <span class="n">jobs</span>
 
 
-
-<div class="viewcode-block" id="jobs_with_calapply">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.jobs_with_calapply.html#pipeline.h.tasks.jobs_with_calapply">[docs]</a>
 <span class="k">def</span> <span class="nf">jobs_with_calapply</span><span class="p">(</span><span class="n">calstate</span><span class="p">:</span> <span class="n">IntervalCalState</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">ApplycalInputs</span><span class="p">,</span> <span class="n">mod_fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">):</span>
     <span class="n">callibrary_file</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.s</span><span class="si">{}</span><span class="s1">.</span><span class="si">{}</span><span class="s1">.callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
                                                     <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">task_counter</span><span class="p">,</span>
@@ -563,15 +531,11 @@
 
     <span class="n">mod_fn</span><span class="p">(</span><span class="n">task_args</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">[</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">casa_tasks</span><span class="o">.</span><span class="n">applycal</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)]</span>
 
 
-
-<div class="viewcode-block" id="contains_uvcont_table">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.h.tasks.applycal.applycal.contains_uvcont_table.html#pipeline.h.tasks.contains_uvcont_table">[docs]</a>
 <span class="k">def</span> <span class="nf">contains_uvcont_table</span><span class="p">(</span><span class="n">merged</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39;uvcont&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span> <span class="k">for</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">calfrom</span> <span class="ow">in</span> <span class="n">calfroms</span><span class="p">]</span></div>
-
+    <span class="k">return</span> <span class="s1">&#39;uvcont&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">calfrom</span><span class="o">.</span><span class="n">caltype</span> <span class="k">for</span> <span class="n">calfroms</span> <span class="ow">in</span> <span class="n">merged</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">calfrom</span> <span class="ow">in</span> <span class="n">calfroms</span><span class="p">]</span>
 </pre></div>
 
            </div>
@@ -581,7 +545,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

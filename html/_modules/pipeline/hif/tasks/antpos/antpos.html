@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.antpos.antpos &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -133,8 +133,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="AntposResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.antpos.antpos.AntposResults.html#pipeline.hif.tasks.AntposResults">[docs]</a>
 <span class="k">class</span> <span class="nc">AntposResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="p">[],</span> <span class="n">pool</span><span class="o">=</span><span class="p">[],</span> <span class="n">preceding</span><span class="o">=</span><span class="p">[],</span> <span class="n">antenna</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">offsets</span><span class="o">=</span><span class="p">[]):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AntposResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -145,8 +143,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">antenna</span> <span class="o">=</span> <span class="n">antenna</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offsets</span> <span class="o">=</span> <span class="n">offsets</span>
 
-<div class="viewcode-block" id="AntposResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.antpos.antpos.AntposResults.html#pipeline.hif.tasks.AntposResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.api.Results.merge_with_context`</span>
@@ -158,8 +154,7 @@
         <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="s1">&#39;</span>
                       <span class="s1">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">))</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span></div>
-
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;AntposResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -167,12 +162,9 @@
             <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Best caltable for spw #</span><span class="si">{spw}</span><span class="s1"> in </span><span class="si">{vis}</span><span class="s1"> is </span><span class="si">{name}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">spw</span><span class="o">=</span><span class="n">calapplication</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapplication</span><span class="o">.</span><span class="n">vis</span><span class="p">),</span>
                 <span class="n">name</span><span class="o">=</span><span class="n">calapplication</span><span class="o">.</span><span class="n">gaintable</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">s</span></div>
+        <span class="k">return</span> <span class="n">s</span>
 
 
-
-<div class="viewcode-block" id="AntposInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.antpos.antpos.AntposInputs.html#pipeline.hif.tasks.AntposInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">AntposInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    AntposInputs defines the inputs for the Antpos pipeline task.</span>
@@ -216,8 +208,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">=</span> <span class="n">hm_antpos</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">offsets</span> <span class="o">=</span> <span class="n">offsets</span>
 
-<div class="viewcode-block" id="AntposInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.antpos.antpos.AntposInputs.html#pipeline.hif.tasks.AntposInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Get the antenna and offset lists.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_antpos</span> <span class="o">==</span> <span class="s1">&#39;manual&#39;</span><span class="p">:</span>
@@ -234,8 +224,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
                 <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span><span class="p">,</span>
                 <span class="s1">&#39;antenna&#39;</span><span class="p">:</span> <span class="n">antenna</span><span class="p">,</span>
-                <span class="s1">&#39;parameter&#39;</span><span class="p">:</span> <span class="n">offsets</span><span class="p">}</span></div>
-
+                <span class="s1">&#39;parameter&#39;</span><span class="p">:</span> <span class="n">offsets</span><span class="p">}</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_antpos_csvfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">msbasename</span><span class="p">):</span>
@@ -279,8 +268,7 @@
                     <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">xoffset</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">yoffset</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">zoffset</span><span class="p">)])</span>
 
         <span class="c1"># Convert the list to a string since CASA wants it that way?</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">antennas</span><span class="p">),</span> <span class="n">parameters</span></div>
-
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">antennas</span><span class="p">),</span> <span class="n">parameters</span>
 
 
 <div class="viewcode-block" id="Antpos">
@@ -345,7 +333,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

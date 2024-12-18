@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -136,8 +136,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="WvrgcalflagInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagInputs.html#pipeline.hifa.tasks.WvrgcalflagInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagInputs</span><span class="p">(</span><span class="n">wvrgcal</span><span class="o">.</span><span class="n">WvrgcalInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    WvrgcalflagInputs defines the inputs for the Wvrgcalflag pipeline task.</span>
@@ -192,8 +190,7 @@
         <span class="c1"># flagging parameters</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flag_hi</span> <span class="o">=</span> <span class="n">flag_hi</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fhi_limit</span> <span class="o">=</span> <span class="n">fhi_limit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fhi_minsample</span> <span class="o">=</span> <span class="n">fhi_minsample</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">fhi_minsample</span> <span class="o">=</span> <span class="n">fhi_minsample</span>
 
 
 <div class="viewcode-block" id="Wvrgcalflag">
@@ -406,8 +403,6 @@
 
 
 
-<div class="viewcode-block" id="WvrgcalflagDataInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagDataInputs.html#pipeline.hifa.tasks.WvrgcalflagDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -460,12 +455,9 @@
         <span class="n">skip</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;context&#39;</span><span class="p">,</span> <span class="s1">&#39;ms&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">dd_name</span><span class="p">:</span> <span class="n">dd</span>
                 <span class="k">for</span> <span class="n">dd_name</span><span class="p">,</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">:</span> <span class="ow">not</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isroutine</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dd_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dd_name</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">)}</span></div>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dd_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">dd_name</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">)}</span>
 
 
-
-<div class="viewcode-block" id="WvrgcalflagData">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagData.html#pipeline.hifa.tasks.WvrgcalflagData">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalflagDataInputs</span>
 
@@ -480,8 +472,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">qa_spw</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-<div class="viewcode-block" id="WvrgcalflagData.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagData.html#pipeline.hifa.tasks.WvrgcalflagData.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -522,19 +512,12 @@
         <span class="c1"># renderer.</span>
         <span class="n">result</span><span class="o">.</span><span class="n">nowvr_result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">qa_wvr</span><span class="o">.</span><span class="n">nowvr_result</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="WvrgcalflagData.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagData.html#pipeline.hifa.tasks.WvrgcalflagData.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-</div>
+        <span class="k">return</span> <span class="n">result</span>
 
 
-
-<div class="viewcode-block" id="WvrgcalflagView">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagView.html#pipeline.hifa.tasks.WvrgcalflagView">[docs]</a>
 <span class="k">class</span> <span class="nc">WvrgcalflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flag_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -543,8 +526,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">flag_intent</span> <span class="o">=</span> <span class="n">flag_intent</span>
 
-<div class="viewcode-block" id="WvrgcalflagView.__call__">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.wvrgcalflag.wvrgcalflag.WvrgcalflagView.html#pipeline.hifa.tasks.WvrgcalflagView.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataresult</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When called, the WvrgcalflagView object calculates flagging views</span>
@@ -607,9 +588,7 @@
                     <span class="c1"># Add updated view to result.</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="n">image</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
-</div>
-
+        <span class="k">return</span> <span class="n">result</span>
 </pre></div>
 
            </div>
@@ -619,7 +598,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -7,23 +7,23 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SDImaging &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -145,7 +145,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.SDImaging">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SDImaging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../_autosummary/pipeline.infrastructure.basetask.StandardTaskTemplate.html#pipeline.infrastructure.basetask.StandardTaskTemplate" title="pipeline.infrastructure.basetask.StandardTaskTemplate"><code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">StandardTaskTemplate</span></code></p>
 <p>SDImaging processing class.</p>
 <p class="rubric">Attributes Summary</p>
 <table class="autosummary longtable docutils align-default">
@@ -164,19 +164,19 @@
 <p class="rubric">Methods Summary</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.analyse" title="pipeline.hsd.tasks.SDImaging.analyse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse</span></code></a>(result)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.SDImaging.analyse" title="pipeline.hsd.tasks.SDImaging.analyse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">analyse</span></code></a>(result)</p></td>
 <td><p>Override method of basetask.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms" title="pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_theoretical_image_rms</span></code></a>(_cp, _rgp, _pp)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms" title="pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_theoretical_image_rms</span></code></a>(_cp, _rgp, _pp)</p></td>
 <td><p>Calculate theoretical RMS of an image (PIPE-657).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.get_imagename" title="pipeline.hsd.tasks.SDImaging.get_imagename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_imagename</span></code></a>(source, spwids[, antenna, ...])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.SDImaging.get_imagename" title="pipeline.hsd.tasks.SDImaging.get_imagename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_imagename</span></code></a>(source, spwids[, antenna, ...])</p></td>
 <td><p>Generate a filename of the image.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.get_raster_info_list" title="pipeline.hsd.tasks.SDImaging.get_raster_info_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_raster_info_list</span></code></a>(_cp, _rgp)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.SDImaging.get_raster_info_list" title="pipeline.hsd.tasks.SDImaging.get_raster_info_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_raster_info_list</span></code></a>(_cp, _rgp)</p></td>
 <td><p>Retrun a list of raster information.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.SDImaging.html#pipeline.hsd.tasks.SDImaging.prepare" title="pipeline.hsd.tasks.SDImaging.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.hsd.tasks.SDImaging.prepare" title="pipeline.hsd.tasks.SDImaging.prepare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare</span></code></a>()</p></td>
 <td><p>Execute imaging process.</p></td>
 </tr>
 </tbody>
@@ -200,7 +200,7 @@
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.SDImaging.analyse">
-<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingResults.html#pipeline.infrastructure.renderer.regression.SDImagingResults" title="pipeline.infrastructure.renderer.regression.SDImagingResults"><span class="pre">SDImagingResults</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_autosummary/pipeline.infrastructure.renderer.regression.SDImagingResults.html#pipeline.infrastructure.renderer.regression.SDImagingResults" title="pipeline.infrastructure.renderer.regression.SDImagingResults"><span class="pre">SDImagingResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.analyse" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">analyse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SDImagingResults</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SDImagingResults</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.analyse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.analyse" title="Link to this definition"></a></dt>
 <dd><p>Override method of basetask.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -214,7 +214,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms">
-<span class="sig-name descname"><span class="pre">calculate_theoretical_image_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging_params.CommonParameters.html#pipeline.hsd.tasks.imaging.imaging_params.CommonParameters" title="pipeline.hsd.tasks.imaging.imaging_params.CommonParameters"><span class="pre">CommonParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">_rgp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters"><span class="pre">ReductionGroupParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">_pp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters.html#pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters" title="pipeline.hsd.tasks.imaging.imaging_params.PostProcessParameters"><span class="pre">PostProcessParameters</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.calculate_theoretical_image_rms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">calculate_theoretical_image_rms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommonParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_rgp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ReductionGroupParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_pp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">PostProcessParameters</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.calculate_theoretical_image_rms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.calculate_theoretical_image_rms" title="Link to this definition"></a></dt>
 <dd><p>Calculate theoretical RMS of an image (PIPE-657).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -263,7 +263,7 @@ The value of quantity will be negative when calculation is aborted, i.e., -1.0 J
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.SDImaging.get_raster_info_list">
-<span class="sig-name descname"><span class="pre">get_raster_info_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging_params.CommonParameters.html#pipeline.hsd.tasks.imaging.imaging_params.CommonParameters" title="pipeline.hsd.tasks.imaging.imaging_params.CommonParameters"><span class="pre">CommonParameters</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">_rgp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters.html#pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters" title="pipeline.hsd.tasks.imaging.imaging_params.ReductionGroupParameters"><span class="pre">ReductionGroupParameters</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.imaging.RasterInfo.html#pipeline.hsd.tasks.imaging.imaging.RasterInfo" title="pipeline.hsd.tasks.imaging.imaging.RasterInfo"><span class="pre">RasterInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.get_raster_info_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.get_raster_info_list" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_raster_info_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_cp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CommonParameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_rgp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ReductionGroupParameters</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">RasterInfo</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.get_raster_info_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.get_raster_info_list" title="Link to this definition"></a></dt>
 <dd><p>Retrun a list of raster information.</p>
 <p>Each raster infromation is analyzed for element wise combination of
 infile, antenna, field, and SpW IDs in input parameter lists.</p>
@@ -283,7 +283,7 @@ the corresponding elements in the list will be None.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.hsd.tasks.SDImaging.prepare">
-<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="../_autosummary/pipeline.hsd.tasks.imaging.resultobjects.SDImagingResults.html#pipeline.hsd.tasks.imaging.resultobjects.SDImagingResults" title="pipeline.hsd.tasks.imaging.resultobjects.SDImagingResults"><span class="pre">SDImagingResults</span></a></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.prepare" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">prepare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SDImagingResults</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/tasks/imaging/imaging.html#SDImaging.prepare"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.tasks.SDImaging.prepare" title="Link to this definition"></a></dt>
 <dd><p>Execute imaging process. This is the main method of imaging.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -307,7 +307,7 @@ the corresponding elements in the list will be None.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

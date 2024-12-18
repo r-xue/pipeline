@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.flagging.flagdeteralmasd &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -136,8 +136,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FlagDeterALMASingleDishInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishInputs.html#pipeline.hsd.tasks.FlagDeterALMASingleDishInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterALMASingleDishInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterALMASingleDishInputs defines the inputs for the FlagDeterALMASingleDish pipeline task.</span>
@@ -292,25 +290,17 @@
         <span class="c1"># Tier-0 parallelization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-<div class="viewcode-block" id="FlagDeterALMASingleDishInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishInputs.html#pipeline.hsd.tasks.FlagDeterALMASingleDishInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Initialize the arguments from the inherited</span>
         <span class="c1"># FlagDeterBaseInputs() class</span>
         <span class="n">task_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
 
         <span class="c1"># Return the tflagdata task arguments</span>
-        <span class="k">return</span> <span class="n">task_args</span></div>
-</div>
+        <span class="k">return</span> <span class="n">task_args</span>
 
 
-
-<div class="viewcode-block" id="FlagDeterALMASingleDishResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishResults.html#pipeline.hsd.tasks.FlagDeterALMASingleDishResults">[docs]</a>
 <span class="k">class</span> <span class="nc">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
 
-<div class="viewcode-block" id="FlagDeterALMASingleDishResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishResults.html#pipeline.hsd.tasks.FlagDeterALMASingleDishResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># call parent&#39;s method</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
@@ -338,13 +328,9 @@
                         <span class="n">plotres</span> <span class="o">=</span> <span class="n">task</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">revise_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="n">antenna</span><span class="p">,</span> <span class="n">target_field_id</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
                                             <span class="n">reference_field_id</span><span class="o">=</span><span class="n">reference</span><span class="p">,</span> <span class="n">target_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ofs_coord</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">plotres</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">offset_pointings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotres</span><span class="p">)</span></div>
-</div>
+                            <span class="n">offset_pointings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotres</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="update_flag_pointing">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.update_flag_pointing.html#pipeline.hsd.tasks.update_flag_pointing">[docs]</a>
 <span class="k">def</span> <span class="nf">update_flag_pointing</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">flag_incomplete_raster</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Disable &quot;uniform_image_rms&quot; flag commands if necessary.</span>
 
@@ -381,12 +367,9 @@
 
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">):</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span></div>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmpfile</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="SerialFlagDeterALMASingleDish">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.html#pipeline.hsd.tasks.SerialFlagDeterALMASingleDish">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialFlagDeterALMASingleDish</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
 
     <span class="c1"># Make the member functions of the FlagDeterALMASingleDishInputs() class member</span>
@@ -403,8 +386,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.875e9</span>  <span class="c1"># 1.875GHz</span>
 
-<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.html#pipeline.hsd.tasks.SerialFlagDeterALMASingleDish.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
 
@@ -417,8 +398,7 @@
         <span class="n">datatable</span><span class="o">.</span><span class="n">_update_flag</span><span class="p">(</span><span class="n">msobj</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">datatable</span><span class="o">.</span><span class="n">exportdata</span><span class="p">(</span><span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">())</span></div>
-
+        <span class="k">return</span> <span class="n">FlagDeterALMASingleDishResults</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">summaries</span><span class="p">,</span> <span class="n">results</span><span class="o">.</span><span class="n">flagcmds</span><span class="p">())</span>
 
     <span class="k">def</span> <span class="nf">_yield_edge_spw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield flag commands to flag edge channels.</span>
@@ -514,8 +494,6 @@
 
         <span class="k">return</span> <span class="n">to_flag</span>
 
-<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.get_fracspw">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.html#pipeline.hsd.tasks.SerialFlagDeterALMASingleDish.get_fracspw">[docs]</a>
     <span class="k">def</span> <span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get fraction of total number of spw channels that are to be flagged on each side of the spw.</span>
 
@@ -538,11 +516,8 @@
             <span class="n">bandwidth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
             <span class="n">fracspw</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bandwidth</span> <span class="o">-</span> <span class="n">bandwidth_limit</span><span class="p">)</span> <span class="o">/</span> <span class="n">bandwidth</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;fraction is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">fracspw</span><span class="p">)</span>
-            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">fracspw</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">fracspw</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="SerialFlagDeterALMASingleDish.verify_spw">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.flagging.flagdeteralmasd.SerialFlagDeterALMASingleDish.html#pipeline.hsd.tasks.SerialFlagDeterALMASingleDish.verify_spw">[docs]</a>
     <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="s1">&#39;SpectralWindow&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if given spw needs to be processed by edgespw flagging.</span>
 
@@ -565,8 +540,7 @@
         <span class="c1"># Skip if edge channel flagging is based on bandwidth limit, and</span>
         <span class="c1"># bandwidth is less than bandwidth limit</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">fracspw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spw</span><span class="o">.</span><span class="n">bandwidth</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bandwidth_limit</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Skipping edge flagging for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
-
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Skipping edge flagging for spw </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_flag_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -598,8 +572,7 @@
             <span class="k">if</span> <span class="n">flag_cmds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;mode=&#39;summary&#39;&quot;</span><span class="p">):</span>
                 <span class="n">flag_cmds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="s2">&quot; intent=&#39;OBSERVE_TARGET#ON_SOURCE&#39;&quot;</span>
 
-        <span class="k">return</span> <span class="n">flag_cmds</span></div>
-
+        <span class="k">return</span> <span class="n">flag_cmds</span>
 
 
 <div class="viewcode-block" id="FlagDeterALMASingleDish">
@@ -621,7 +594,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

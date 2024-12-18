@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.baseline.baseline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -146,8 +146,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SDBaselineInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.SDBaselineInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBaselineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for baseline subtraction task.&quot;&quot;&quot;</span>
 
@@ -278,8 +276,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-<div class="viewcode-block" id="SDBaselineInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineInputs.html#pipeline.hsd.tasks.SDBaselineInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance into task execution parameter.</span>
 
@@ -294,13 +290,9 @@
 
         <span class="k">if</span> <span class="s1">&#39;antenna&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="n">args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">args</span></div>
-</div>
+        <span class="k">return</span> <span class="n">args</span>
 
 
-
-<div class="viewcode-block" id="SDBaselineResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.SDBaselineResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDBaselineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction task.&quot;&quot;&quot;</span>
 
@@ -319,8 +311,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># @utils.profiler</span>
-<div class="viewcode-block" id="SDBaselineResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.SDBaselineResults.html#pipeline.hsd.tasks.SDBaselineResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
@@ -392,8 +382,7 @@
                             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">masks</span><span class="p">:</span>
                                 <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">masks</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="n">out_ms</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;vis_map&#39;</span><span class="p">][</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
-                <span class="n">out_ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span></div>
-
+                <span class="n">out_ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span>
 
     <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string summarizing the outcome.</span>
@@ -402,8 +391,7 @@
 <span class="sd">            summary of the outcome.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;Reduction Group </span><span class="si">{0}</span><span class="s1">: member </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;group_id&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;members&#39;</span><span class="p">])</span>
-                          <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baselined&#39;</span><span class="p">]])</span></div>
-
+                          <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;baselined&#39;</span><span class="p">]])</span>
 
 
 <div class="viewcode-block" id="SDBaseline">
@@ -698,8 +686,6 @@
 </div>
 
 
-<div class="viewcode-block" id="HeuristicsTask">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask">[docs]</a>
 <span class="k">class</span> <span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor for heuristics class. It is an adaptor to mpihelper framework.&quot;&quot;&quot;</span>
 
@@ -715,8 +701,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="c1"># print(self.args, self.kwargs)</span>
 
-<div class="viewcode-block" id="HeuristicsTask.execute">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Heuristics and return its result.</span>
 
@@ -724,24 +708,17 @@
 <span class="sd">            Heuristics result. Actual contents of return value</span>
 <span class="sd">            depends on the Heuristics class.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="HeuristicsTask.get_executable">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.HeuristicsTask.html#pipeline.hsd.tasks.HeuristicsTask.get_executable">[docs]</a>
     <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return function that runs execute method.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Function to run execute method</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span></div>
-</div>
+        <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 
-
-<div class="viewcode-block" id="DeviationMaskHeuristicsTask">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.DeviationMaskHeuristicsTask">[docs]</a>
 <span class="k">class</span> <span class="nc">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">HeuristicsTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor class specialized to MaskDeviationHeuristic.&quot;&quot;&quot;</span>
 
@@ -773,8 +750,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span> <span class="o">=</span> <span class="n">antenna_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span> <span class="o">=</span> <span class="n">spw_list</span>
 
-<div class="viewcode-block" id="DeviationMaskHeuristicsTask.execute">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.DeviationMaskHeuristicsTask.html#pipeline.hsd.tasks.DeviationMaskHeuristicsTask.execute">[docs]</a>
     <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute heuristics.</span>
 
@@ -787,13 +762,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;field_id&#39;</span><span class="p">:</span> <span class="n">field_id</span><span class="p">,</span> <span class="s1">&#39;antenna_id&#39;</span><span class="p">:</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="s1">&#39;spw_id&#39;</span><span class="p">:</span> <span class="n">spw_id</span><span class="p">})</span>
             <span class="n">mask_list</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">DeviationMaskHeuristicsTask</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">result</span></div>
-</div>
+        <span class="k">return</span> <span class="n">result</span>
 
 
-
-<div class="viewcode-block" id="deviation_mask_heuristic">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.deviation_mask_heuristic.html#pipeline.hsd.tasks.deviation_mask_heuristic">[docs]</a>
 <span class="k">def</span> <span class="nf">deviation_mask_heuristic</span><span class="p">(</span>
         <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -824,12 +795,9 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Deviation Mask Heuristic always runs in serial mode.&#39;</span><span class="p">)</span>
         <span class="n">task</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">mytask</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task</span></div>
+    <span class="k">return</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task</span>
 
 
-
-<div class="viewcode-block" id="test_deviation_mask_heuristic">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.baseline.baseline.test_deviation_mask_heuristic.html#pipeline.hsd.tasks.test_deviation_mask_heuristic">[docs]</a>
 <span class="k">def</span> <span class="nf">test_deviation_mask_heuristic</span><span class="p">(</span><span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test deviation mask heuristic.</span>
 
@@ -865,8 +833,7 @@
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vis &quot;</span><span class="si">{0}</span><span class="s1">&quot;, field </span><span class="si">{1}</span><span class="s1"> antenna </span><span class="si">{2}</span><span class="s1"> spw </span><span class="si">{3}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">spw_id</span><span class="p">))</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;     serial mask: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smask</span><span class="p">))</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   parallel mask: </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pmask</span><span class="p">))</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smask</span> <span class="o">==</span> <span class="n">pmask</span><span class="p">))</span></div>
-
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smask</span> <span class="o">==</span> <span class="n">pmask</span><span class="p">))</span>
 </pre></div>
 
            </div>
@@ -876,7 +843,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

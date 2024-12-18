@@ -42,28 +42,6 @@
    
    
 
-
-
-.. autosummary::
-   :toctree:
-   :template: custom-module-template.rst
-   :recursive:
-
-   cli
-   config
-   domain
-   environment
-   extern
-   h
-   hif
-   hifa
-   hifv
-   hsd
-   hsdn
-   infrastructure
-   qa
-   recipereducer
-   recipes
-   runpipeline
-   runvlapipeline
-
+   
+   
+   

@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.polcalflag.polcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -133,8 +133,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="PolcalflagResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults.html#pipeline.hifa.tasks.PolcalflagResults">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PolcalflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -155,8 +153,6 @@
         <span class="c1"># records callibrary files used in applycal calls</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="PolcalflagResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagResults.html#pipeline.hifa.tasks.PolcalflagResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
@@ -165,16 +161,12 @@
         <span class="c1"># Update reference antennas for MS.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
         <span class="n">ms</span><span class="o">.</span><span class="n">update_reference_antennas</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="p">,</span>
-                                     <span class="n">ants_to_remove</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">)</span></div>
-
+                                     <span class="n">ants_to_remove</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;PolcalflagResults&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;PolcalflagResults&#39;</span>
 
 
-
-<div class="viewcode-block" id="PolcalflagInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.PolcalflagInputs.html#pipeline.hifa.tasks.PolcalflagInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">PolcalflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">minsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
@@ -190,8 +182,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
 
 
 <div class="viewcode-block" id="Polcalflag">
@@ -513,8 +504,6 @@
 
 
 
-<div class="viewcode-block" id="create_plots">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.create_plots.html#pipeline.hifa.tasks.create_plots">[docs]</a>
 <span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return amplitude vs time plots for the given data column.</span>
@@ -542,12 +531,9 @@
     <span class="k">for</span> <span class="n">spw</span><span class="p">,</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">spw_field_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Fields flagged for </span><span class="si">{</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1"> spw </span><span class="si">{</span><span class="n">spw</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">amp_time_plots</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">amp_uvdist_plots</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">amp_time_plots</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">amp_uvdist_plots</span><span class="p">}</span>
 
 
-
-<div class="viewcode-block" id="AmpVsXChart">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.polcalflag.polcalflag.AmpVsXChart.html#pipeline.hifa.tasks.AmpVsXChart">[docs]</a>
 <span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plotting class that creates an amplitude vs X plot for each spw, where X</span>
@@ -567,8 +553,7 @@
         <span class="n">plot_args</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">overrides</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">AmpVsXChart</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">xaxis</span><span class="o">=</span><span class="n">xaxis</span><span class="p">,</span> <span class="n">yaxis</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span>
-                                          <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span></div>
-
+                                          <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">plot_args</span><span class="p">)</span>
 </pre></div>
 
            </div>
@@ -578,7 +563,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

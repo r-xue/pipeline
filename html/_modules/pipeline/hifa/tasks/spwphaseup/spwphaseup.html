@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.spwphaseup.spwphaseup &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -150,8 +150,6 @@
 <span class="n">SpwMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;SpwMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;combine spwmap low_combinedsnr_spws snr_info&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SpwPhaseupInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupInputs.html#pipeline.hifa.tasks.SpwPhaseupInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwPhaseupInputs</span><span class="p">(</span><span class="n">gtypegaincal</span><span class="o">.</span><span class="n">GTypeGaincalInputs</span><span class="p">):</span>
     <span class="c1"># Spw mapping mode heuristics, options are:</span>
     <span class="c1">#  &#39;auto&#39;: apply SNR-based heuristics to determine which type of spw</span>
@@ -226,8 +224,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">maxnarrowbw</span> <span class="o">=</span> <span class="n">maxnarrowbw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">minfracmaxbw</span> <span class="o">=</span> <span class="n">minfracmaxbw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">samebb</span> <span class="o">=</span> <span class="n">samebb</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">unregister_existing</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_existing</span> <span class="o">=</span> <span class="n">unregister_existing</span>
 
 
 <div class="viewcode-block" id="SpwPhaseup">
@@ -1004,8 +1001,6 @@
 
 
 
-<div class="viewcode-block" id="SpwPhaseupResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults.html#pipeline.hifa.tasks.SpwPhaseupResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SpwPhaseupResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phasecal_mapping</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">phaseup_result</span><span class="p">:</span> <span class="n">GaincalResults</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">snr_info</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unregister_existing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1032,8 +1027,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_results</span> <span class="o">=</span> <span class="n">phaserms_results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phaserms_antout</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">phaserms_antout</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SpwPhaseupResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hifa.tasks.spwphaseup.spwphaseup.SpwPhaseupResults.html#pipeline.hifa.tasks.SpwPhaseupResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
@@ -1070,8 +1063,7 @@
             <span class="n">ms</span><span class="o">.</span><span class="n">spwmaps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwmaps</span>
 
             <span class="c1"># Merge the phase calibrator mapping.</span>
-            <span class="n">ms</span><span class="o">.</span><span class="n">phasecal_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phasecal_mapping</span></div>
-
+            <span class="n">ms</span><span class="o">.</span><span class="n">phasecal_mapping</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">phasecal_mapping</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">phaseup_result</span><span class="p">:</span>
@@ -1085,8 +1077,7 @@
                 <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Spwmap = </span><span class="si">{</span><span class="n">spwmapping</span><span class="o">.</span><span class="n">spwmap</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
                 <span class="k">if</span> <span class="n">spwmapping</span><span class="o">.</span><span class="n">combine</span><span class="p">:</span>
                     <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Low combined phase SNR spws = </span><span class="si">{</span><span class="n">spwmapping</span><span class="o">.</span><span class="n">low_combinedsnr_spws</span><span class="si">}</span><span class="s1">&#39;</span>
-            <span class="k">return</span> <span class="n">s</span></div>
-
+            <span class="k">return</span> <span class="n">s</span>
 </pre></div>
 
            </div>
@@ -1096,7 +1087,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

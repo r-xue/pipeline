@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.atmcor.atmcor &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -147,8 +147,6 @@
 <span class="n">DEFAULT_ATMTYPE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="SDATMCorrectionInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.html#pipeline.hsd.tasks.SDATMCorrectionInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDATMCorrectionInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDATMCorrection task.&quot;&quot;&quot;</span>
     <span class="c1"># Search order of input vis</span>
@@ -450,8 +448,6 @@
 
         <span class="k">return</span> <span class="n">datacolumn</span>
 
-<div class="viewcode-block" id="SDATMCorrectionInputs.get_caltable_from_callibrary">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.html#pipeline.hsd.tasks.SDATMCorrectionInputs.get_caltable_from_callibrary">[docs]</a>
     <span class="k">def</span> <span class="nf">get_caltable_from_callibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal caltable name from callibrary.</span>
 
@@ -468,11 +464,8 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">caltables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">k2jycal_caltable</span> <span class="o">=</span> <span class="n">caltables</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">k2jycal_caltable</span></div>
+        <span class="k">return</span> <span class="n">k2jycal_caltable</span>
 
-
-<div class="viewcode-block" id="SDATMCorrectionInputs.get_gainfactor">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.html#pipeline.hsd.tasks.SDATMCorrectionInputs.get_gainfactor">[docs]</a>
     <span class="k">def</span> <span class="nf">get_gainfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal table from callibrary.</span>
 
@@ -483,11 +476,8 @@
         <span class="n">gainfactor</span> <span class="o">=</span> <span class="mf">1.0</span>
         <span class="k">if</span> <span class="n">k2jycal_caltable</span><span class="p">:</span>
             <span class="n">gainfactor</span> <span class="o">=</span> <span class="n">k2jycal_caltable</span>
-        <span class="k">return</span> <span class="n">gainfactor</span></div>
+        <span class="k">return</span> <span class="n">gainfactor</span>
 
-
-<div class="viewcode-block" id="SDATMCorrectionInputs.to_casa_args">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.html#pipeline.hsd.tasks.SDATMCorrectionInputs.to_casa_args">[docs]</a>
     <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return task arguments for sdatmcor.</span>
 
@@ -545,11 +535,8 @@
         <span class="c1"># remove parallel</span>
         <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">args</span></div>
+        <span class="k">return</span> <span class="n">args</span>
 
-
-<div class="viewcode-block" id="SDATMCorrectionInputs.require_atm_heuristics">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionInputs.html#pipeline.hsd.tasks.SDATMCorrectionInputs.require_atm_heuristics">[docs]</a>
     <span class="k">def</span> <span class="nf">require_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if ATM heuristics is required.</span>
 
@@ -566,13 +553,9 @@
         <span class="n">check_atmtype</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">atmtype</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span>
         <span class="n">check_dtem_dh</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtem_dh</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
         <span class="n">check_h0</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">h0</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">check_atmtype</span> <span class="ow">or</span> <span class="n">check_dtem_dh</span> <span class="ow">or</span> <span class="n">check_h0</span></div>
-</div>
+        <span class="k">return</span> <span class="n">check_atmtype</span> <span class="ow">or</span> <span class="n">check_dtem_dh</span> <span class="ow">or</span> <span class="n">check_h0</span>
 
 
-
-<div class="viewcode-block" id="SDATMCorrectionResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionResults.html#pipeline.hsd.tasks.SDATMCorrectionResults">[docs]</a>
 <span class="k">class</span> <span class="nc">SDATMCorrectionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results instance for hsd_atmcor.&quot;&quot;&quot;</span>
 
@@ -606,8 +589,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;model_list&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="SDATMCorrectionResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.SDATMCorrectionResults.html#pipeline.hsd.tasks.SDATMCorrectionResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge execution result of atmcor stage into pipeline context.</span>
 
@@ -638,8 +619,7 @@
             <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span>
             <span class="c1"># register output MS to processing group</span>
             <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">inspect_reduction_group</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
-            <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span></div>
-
+            <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return representative string for the outcome.</span>
@@ -650,8 +630,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            output MS name for sdatmcor</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atmcor_ms_name</span><span class="p">)</span></div>
-
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atmcor_ms_name</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SerialSDATMCorrection">
@@ -824,14 +803,11 @@
 
 
 
-<div class="viewcode-block" id="HpcSDATMCorrection">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.atmcor.atmcor.HpcSDATMCorrection.html#pipeline.hsd.tasks.HpcSDATMCorrection">[docs]</a>
 <span class="k">class</span> <span class="nc">HpcSDATMCorrection</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parallel implementation of offline ATM correction task.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDATMCorrectionInputs</span>
-    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDATMCorrection</span></div>
-
+    <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDATMCorrection</span>
 </pre></div>
 
            </div>
@@ -841,7 +817,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

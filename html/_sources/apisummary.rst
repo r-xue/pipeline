@@ -6,7 +6,6 @@ Full APIs (autosummary)
    :caption: APIs (autosummary)
 
    :template: custom-module-template.rst
-   :recursive:
 
    pipeline
 

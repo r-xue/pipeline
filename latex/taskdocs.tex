@@ -48,7 +48,6 @@
 \fvset{fontsize=auto}
 \usepackage{geometry}
 
-\usepackage{nbsphinx}
 
 % Include hyperref last.
 \usepackage{hyperref}
@@ -105,8 +104,8 @@
         
 
 \title{Pipeline Tasks Reference Manual}
-\date{Dec 17, 2024}
-\release{2024.2.0.4+170\sphinxhyphen{}g8885d22c9\sphinxhyphen{}PIPE\sphinxhyphen{}1669\sphinxhyphen{}run\sphinxhyphen{}dev\sphinxhyphen{}pipeline\sphinxhyphen{}with\sphinxhyphen{}modular\sphinxhyphen{}casa6}
+\date{Dec 18, 2024}
+\release{2024.2.0.4+173\sphinxhyphen{}g56b3235306\sphinxhyphen{}PIPE\sphinxhyphen{}1669\sphinxhyphen{}run\sphinxhyphen{}dev\sphinxhyphen{}pipeline\sphinxhyphen{}with\sphinxhyphen{}modular\sphinxhyphen{}casa6}
 \author{pipeline team}
 \newcommand{\sphinxlogo}{\vbox{}}
 \renewcommand{\releasename}{Release}
@@ -1407,241 +1406,6 @@ Open pipeline weblog in a browser:
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
 \PYG{g+gp}{\PYGZgt{}\PYGZgt{}\PYGZgt{} }\PYG{n}{h\PYGZus{}weblog}\PYG{p}{(}\PYG{p}{)}
 \end{sphinxVerbatim}
-
-\end{fulllineitems}
-
-
-
-\begin{savenotes}\sphinxattablestart
-\sphinxthistablewithglobalstyle
-\sphinxthistablewithnovlinesstyle
-\centering
-\begin{tabulary}{\linewidth}[t]{\X{1}{2}\X{1}{2}}
-\sphinxtoprule
-\sphinxtableatstartofbodyhook
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.cli:module-pipeline.h.cli.cli}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{cli}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils:module-pipeline.h.cli.utils}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{utils}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxbottomrule
-\end{tabulary}
-\sphinxtableafterendhook\par
-\sphinxattableend\end{savenotes}
-
-\sphinxstepscope
-
-
-\section{pipeline.h.cli.cli}
-\label{\detokenize{_autosummary/pipeline.h.cli.cli:module-pipeline.h.cli.cli}}\label{\detokenize{_autosummary/pipeline.h.cli.cli:pipeline-h-cli-cli}}\label{\detokenize{_autosummary/pipeline.h.cli.cli::doc}}\index{module@\spxentry{module}!pipeline.h.cli.cli@\spxentry{pipeline.h.cli.cli}}\index{pipeline.h.cli.cli@\spxentry{pipeline.h.cli.cli}!module@\spxentry{module}}
-\sphinxstepscope
-
-
-\section{pipeline.h.cli.utils}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils:module-pipeline.h.cli.utils}}\label{\detokenize{_autosummary/pipeline.h.cli.utils:pipeline-h-cli-utils}}\label{\detokenize{_autosummary/pipeline.h.cli.utils::doc}}\index{module@\spxentry{module}!pipeline.h.cli.utils@\spxentry{pipeline.h.cli.utils}}\index{pipeline.h.cli.utils@\spxentry{pipeline.h.cli.utils}!module@\spxentry{module}}\subsubsection*{Functions}
-
-
-\begin{savenotes}\sphinxattablestart
-\sphinxthistablewithglobalstyle
-\sphinxthistablewithnovlinesstyle
-\centering
-\begin{tabulary}{\linewidth}[t]{\X{1}{2}\X{1}{2}}
-\sphinxtoprule
-\sphinxtableatstartofbodyhook
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.cli_wrapper:pipeline.h.cli.utils.cli_wrapper}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{cli\_wrapper}}}}}
-&
-\sphinxAtStartPar
-Wrap pipeline task CLI functions to handle the extra \textquotesingle{}pipelinemode\textquotesingle{} argument.
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.execute_task:pipeline.h.cli.utils.execute_task}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{execute\_task}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.get_context:pipeline.h.cli.utils.get_context}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_context}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.get_heuristic:pipeline.h.cli.utils.get_heuristic}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_heuristic}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.get_ms:pipeline.h.cli.utils.get_ms}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_ms}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.get_output_dir:pipeline.h.cli.utils.get_output_dir}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{get\_output\_dir}}}}}
-&
-\sphinxAtStartPar
-
-\\
-\sphinxhline
-\sphinxAtStartPar
-{\hyperref[\detokenize{_autosummary/pipeline.h.cli.utils.wraps:pipeline.h.cli.utils.wraps}]{\sphinxcrossref{\sphinxcode{\sphinxupquote{wraps}}}}}
-&
-\sphinxAtStartPar
-Decorator factory to apply update\_wrapper() to a wrapper function
-\\
-\sphinxbottomrule
-\end{tabulary}
-\sphinxtableafterendhook\par
-\sphinxattableend\end{savenotes}
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.cli\_wrapper}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.cli_wrapper:pipeline-h-cli-utils-cli-wrapper}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.cli_wrapper::doc}}\index{cli\_wrapper() (in module pipeline.h.cli.utils)@\spxentry{cli\_wrapper()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.cli_wrapper:pipeline.h.cli.utils.cli_wrapper}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{cli\_wrapper}}}
-{\sphinxparam{\DUrole{n}{func}\DUrole{p}{:}\DUrole{w}{ }\DUrole{n}{Callable}}}
-{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Wrap pipeline task CLI functions to handle the extra ‘pipelinemode’ argument.
-
-\sphinxAtStartPar
-PIPE\sphinxhyphen{}1884: this decorator function removes the “pipelinemode” argument from pipeline CLI task
-calls, which commonly exists in archival casa\_pipescript.py/casa\_pipestorescript.py scripts generated
-by old pipeline versions before PIPE\sphinxhyphen{}1686.
-
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.execute\_task}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.execute_task:pipeline-h-cli-utils-execute-task}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.execute_task::doc}}\index{execute\_task() (in module pipeline.h.cli.utils)@\spxentry{execute\_task()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.execute_task:pipeline.h.cli.utils.execute_task}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{execute\_task}}}
-{\sphinxparam{\DUrole{n}{context}}\sphinxparamcomma \sphinxparam{\DUrole{n}{casa\_task}}\sphinxparamcomma \sphinxparam{\DUrole{n}{casa\_args}}}
-{}
-\pysigstopsignatures
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.get\_context}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_context:pipeline-h-cli-utils-get-context}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_context::doc}}\index{get\_context() (in module pipeline.h.cli.utils)@\spxentry{get\_context()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_context:pipeline.h.cli.utils.get_context}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{get\_context}}}
-{}
-{}
-\pysigstopsignatures
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.get\_heuristic}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_heuristic:pipeline-h-cli-utils-get-heuristic}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_heuristic::doc}}\index{get\_heuristic() (in module pipeline.h.cli.utils)@\spxentry{get\_heuristic()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_heuristic:pipeline.h.cli.utils.get_heuristic}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{get\_heuristic}}}
-{\sphinxparam{\DUrole{n}{arg}}}
-{}
-\pysigstopsignatures
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.get\_ms}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_ms:pipeline-h-cli-utils-get-ms}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_ms::doc}}\index{get\_ms() (in module pipeline.h.cli.utils)@\spxentry{get\_ms()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_ms:pipeline.h.cli.utils.get_ms}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{get\_ms}}}
-{\sphinxparam{\DUrole{n}{vis}}}
-{}
-\pysigstopsignatures
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.get\_output\_dir}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_output_dir:pipeline-h-cli-utils-get-output-dir}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_output_dir::doc}}\index{get\_output\_dir() (in module pipeline.h.cli.utils)@\spxentry{get\_output\_dir()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.get_output_dir:pipeline.h.cli.utils.get_output_dir}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{get\_output\_dir}}}
-{}
-{}
-\pysigstopsignatures
-\end{fulllineitems}
-
-
-\sphinxstepscope
-
-
-\subsection{pipeline.h.cli.utils.wraps}
-\label{\detokenize{_autosummary/pipeline.h.cli.utils.wraps:pipeline-h-cli-utils-wraps}}\label{\detokenize{_autosummary/pipeline.h.cli.utils.wraps::doc}}\index{wraps() (in module pipeline.h.cli.utils)@\spxentry{wraps()}\spxextra{in module pipeline.h.cli.utils}}
-
-\begin{fulllineitems}
-\phantomsection\label{\detokenize{_autosummary/pipeline.h.cli.utils.wraps:pipeline.h.cli.utils.wraps}}
-\pysigstartsignatures
-\pysiglinewithargsret
-{\sphinxbfcode{\sphinxupquote{wraps}}}
-{\sphinxparam{\DUrole{n}{wrapped}}\sphinxparamcomma \sphinxparam{\DUrole{n}{assigned}\DUrole{o}{=}\DUrole{default_value}{(\textquotesingle{}\_\_module\_\_\textquotesingle{}, \textquotesingle{}\_\_name\_\_\textquotesingle{}, \textquotesingle{}\_\_qualname\_\_\textquotesingle{}, \textquotesingle{}\_\_doc\_\_\textquotesingle{}, \textquotesingle{}\_\_annotations\_\_\textquotesingle{})}}\sphinxparamcomma \sphinxparam{\DUrole{n}{updated}\DUrole{o}{=}\DUrole{default_value}{(\textquotesingle{}\_\_dict\_\_\textquotesingle{},)}}}
-{}
-\pysigstopsignatures
-\sphinxAtStartPar
-Decorator factory to apply update\_wrapper() to a wrapper function
-
-\sphinxAtStartPar
-Returns a decorator that invokes update\_wrapper() with the decorated
-function as the wrapper argument and the arguments to wraps() as the
-remaining arguments. Default arguments are as for update\_wrapper().
-This is a convenience function to simplify applying partial() to
-update\_wrapper().
 
 \end{fulllineitems}
 
@@ -14191,8 +13955,6 @@ Restore the pipeline results for a single ASDM in a single session
 \let\bigletter\sphinxstyleindexlettergroup
 \bigletter{p}
 \item\relax\sphinxstyleindexentry{pipeline.h.cli}\sphinxstyleindexpageref{_autosummary/pipeline.h.cli:\detokenize{module-pipeline.h.cli}}
-\item\relax\sphinxstyleindexentry{pipeline.h.cli.cli}\sphinxstyleindexpageref{_autosummary/pipeline.h.cli.cli:\detokenize{module-pipeline.h.cli.cli}}
-\item\relax\sphinxstyleindexentry{pipeline.h.cli.utils}\sphinxstyleindexpageref{_autosummary/pipeline.h.cli.utils:\detokenize{module-pipeline.h.cli.utils}}
 \item\relax\sphinxstyleindexentry{pipeline.hif.cli}\sphinxstyleindexpageref{_autosummary/pipeline.hif.cli:\detokenize{module-pipeline.hif.cli}}
 \item\relax\sphinxstyleindexentry{pipeline.hifa.cli}\sphinxstyleindexpageref{_autosummary/pipeline.hifa.cli:\detokenize{module-pipeline.hifa.cli}}
 \item\relax\sphinxstyleindexentry{pipeline.hifv.cli}\sphinxstyleindexpageref{_autosummary/pipeline.hifv.cli:\detokenize{module-pipeline.hifv.cli}}

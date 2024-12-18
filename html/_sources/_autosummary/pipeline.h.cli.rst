@@ -1,4 +1,4 @@
-pipeline.h.cli
+﻿pipeline.h.cli
 ==============
 
 .. automodule:: pipeline.h.cli
@@ -39,13 +39,6 @@ pipeline.h.cli
    
    
 
-
-
-.. autosummary::
-   :toctree:
-   :template: custom-module-template.rst
-   :recursive:
-
-   cli
-   utils
-
+   
+   
+   

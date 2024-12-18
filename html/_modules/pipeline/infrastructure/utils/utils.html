@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.utils &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -102,7 +102,6 @@
       <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../../pipeline.html">pipeline</a></li>
-          <li class="breadcrumb-item"><a href="../../infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.utils.utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -155,8 +154,6 @@
            <span class="s1">&#39;open_with_lock&#39;</span><span class="p">,</span> <span class="s1">&#39;nested_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;string_to_val&#39;</span><span class="p">,</span> <span class="s1">&#39;remove_trailing_string&#39;</span><span class="p">,</span> <span class="s1">&#39;list_to_str&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="find_ranges">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.find_ranges.html#pipeline.domain.datatable.find_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">find_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Identify numeric ranges in string or list.</span>
 
@@ -191,12 +188,9 @@
             <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">~</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rng</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="dict_merge">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.dict_merge.html#pipeline.domain.datatable.dict_merge">[docs]</a>
 <span class="k">def</span> <span class="nf">dict_merge</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="nb">any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively merge dictionaries.</span>
 
@@ -217,12 +211,9 @@
             <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">dict_merge</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">return</span> <span class="n">result</span>
 
 
-
-<div class="viewcode-block" id="are_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.are_equal.html#pipeline.domain.datatable.are_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">are_equal</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the contents of the given arrays are equal.</span>
 
@@ -236,12 +227,9 @@
 <span class="sd">    &gt;&gt;&gt; are_equal([1, 2, 3], [1, 2, 3, 4])</span>
 <span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">])</span>
 
 
-
-<div class="viewcode-block" id="approx_equal">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.approx_equal.html#pipeline.domain.datatable.approx_equal">[docs]</a>
 <span class="k">def</span> <span class="nf">approx_equal</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-15</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if two numbers are equal within the given tolerance.</span>
 
@@ -256,12 +244,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lo</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
     <span class="n">hi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="p">(</span><span class="n">lo</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tol</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="get_num_caltable_polarizations">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_num_caltable_polarizations.html#pipeline.domain.datatable.get_num_caltable_polarizations">[docs]</a>
 <span class="k">def</span> <span class="nf">get_num_caltable_polarizations</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain number of polarisations from calibration table.</span>
 
@@ -286,12 +271,9 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_pols</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Got </span><span class="si">%s</span><span class="s1"> polarisations from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">col_pols</span><span class="p">),</span> <span class="n">col_shapes</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col_pols</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span></div>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">col_pols</span><span class="o">.</span><span class="n">pop</span><span class="p">())</span>
 
 
-
-<div class="viewcode-block" id="flagged_intervals">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.flagged_intervals.html#pipeline.domain.datatable.flagged_intervals">[docs]</a>
 <span class="k">def</span> <span class="nf">flagged_intervals</span><span class="p">(</span><span class="n">vec</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Idendity isnads of ones in input array or list.</span>
 
@@ -315,12 +297,9 @@
     <span class="k">if</span> <span class="n">vec</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">edge_vec</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">vec</span><span class="p">)])</span>
     <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">edge_vec</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">edges</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">edges</span><span class="p">[::</span><span class="mi">2</span><span class="p">],</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
 
 
-
-<div class="viewcode-block" id="fieldname_for_casa">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.fieldname_for_casa.html#pipeline.domain.datatable.fieldname_for_casa">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Prepare field string to be used as CASA argument.</span>
 
@@ -335,12 +314,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="ow">or</span> <span class="n">field</span> <span class="o">!=</span> <span class="n">fieldname_clean</span><span class="p">(</span><span class="n">field</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">field</span></div>
+    <span class="k">return</span> <span class="n">field</span>
 
 
-
-<div class="viewcode-block" id="fieldname_clean">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.fieldname_clean.html#pipeline.domain.datatable.fieldname_clean">[docs]</a>
 <span class="k">def</span> <span class="nf">fieldname_clean</span><span class="p">(</span><span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicate if the fieldname is allowed as-is.</span>
 
@@ -354,12 +330,9 @@
 <span class="sd">    &#39;helm_30&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">allowed</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span> <span class="o">+</span> <span class="s1">&#39;+-&#39;</span>
-    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">allowed</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">field</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">c</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">allowed</span> <span class="k">else</span> <span class="s1">&#39;_&#39;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">field</span><span class="p">])</span>
 
 
-
-<div class="viewcode-block" id="get_field_accessor">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.get_field_accessor.html#pipeline.domain.datatable.get_field_accessor">[docs]</a>
 <span class="k">def</span> <span class="nf">get_field_accessor</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns accessor to field name or field ID, if field name is ambiguous.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -369,12 +342,9 @@
 
     <span class="k">def</span> <span class="nf">accessor</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)(</span><span class="n">x</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">accessor</span></div>
+    <span class="k">return</span> <span class="n">accessor</span>
 
 
-
-<div class="viewcode-block" id="get_field_identifiers">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_field_identifiers.html#pipeline.domain.datatable.get_field_identifiers">[docs]</a>
 <span class="k">def</span> <span class="nf">get_field_identifiers</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps numeric field IDs to field names.</span>
 
@@ -383,12 +353,9 @@
 <span class="sd">    name is duplicated, for instance in mosaic pointings.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">field_name_accessors</span> <span class="o">=</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">get_field_accessor</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
-    <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">field_name_accessors</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">](</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">field_name_accessors</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">](</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
 
 
-
-<div class="viewcode-block" id="get_receiver_type_for_spws">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_receiver_type_for_spws.html#pipeline.domain.datatable.get_receiver_type_for_spws">[docs]</a>
 <span class="k">def</span> <span class="nf">get_receiver_type_for_spws</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">spwids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return dictionary of receiver types for requested spectral window IDs.</span>
 
@@ -409,12 +376,9 @@
             <span class="n">rxmap</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;N/A&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rxmap</span><span class="p">[</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">receiver</span>
-    <span class="k">return</span> <span class="n">rxmap</span></div>
+    <span class="k">return</span> <span class="n">rxmap</span>
 
 
-
-<div class="viewcode-block" id="get_spectralspec_to_spwid_map">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_spectralspec_to_spwid_map.html#pipeline.domain.datatable.get_spectralspec_to_spwid_map">[docs]</a>
 <span class="k">def</span> <span class="nf">get_spectralspec_to_spwid_map</span><span class="p">(</span><span class="n">spws</span><span class="p">:</span> <span class="n">Collection</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a dictionary of spectral specs mapped to corresponding spectral</span>
@@ -427,12 +391,9 @@
     <span class="n">spwmap</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spws</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">id</span><span class="p">):</span>
         <span class="n">spwmap</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">spectralspec</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">spwmap</span></div>
+    <span class="k">return</span> <span class="n">spwmap</span>
 
 
-
-<div class="viewcode-block" id="imstat_items">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.imstat_items.html#pipeline.domain.datatable.imstat_items">[docs]</a>
 <span class="k">def</span> <span class="nf">imstat_items</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">items</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">],</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract desired stats properties (per Stokes) using ia.statistics().</span>
 
@@ -469,12 +430,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">stats</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">imstats</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 
-    <span class="k">return</span> <span class="n">stats</span></div>
+    <span class="k">return</span> <span class="n">stats</span>
 
 
-
-<div class="viewcode-block" id="get_stokes">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_stokes.html#pipeline.domain.datatable.get_stokes">[docs]</a>
 <span class="k">def</span> <span class="nf">get_stokes</span><span class="p">(</span><span class="n">imagename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the labels of all stokes planes present in a CASA image.&quot;&quot;&quot;</span>
 
@@ -484,12 +442,9 @@
         <span class="n">stokes_present</span> <span class="o">=</span> <span class="p">[</span><span class="n">stokes_labels</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">()[</span><span class="mi">2</span><span class="p">])]</span>
         <span class="n">cs</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">stokes_present</span></div>
+    <span class="k">return</span> <span class="n">stokes_present</span>
 
 
-
-<div class="viewcode-block" id="get_casa_quantity">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_casa_quantity.html#pipeline.domain.datatable.get_casa_quantity">[docs]</a>
 <span class="k">def</span> <span class="nf">get_casa_quantity</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper around quanta.quantity() that handles None input.</span>
 
@@ -509,12 +464,9 @@
     <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">quanta</span><span class="o">.</span><span class="n">quantity</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="get_si_prefix">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_si_prefix.html#pipeline.domain.datatable.get_si_prefix">[docs]</a>
 <span class="k">def</span> <span class="nf">get_si_prefix</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">select</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;mu&#39;</span><span class="p">,</span> <span class="n">lztol</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the best SI unit prefix option for a numeric value.</span>
 
@@ -563,8 +515,7 @@
         <span class="n">idx</span> <span class="o">=</span> <span class="n">bisect</span><span class="o">.</span><span class="n">bisect</span><span class="p">(</span><span class="n">sp_pow</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="o">+</span><span class="n">lztol</span><span class="p">)</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">sp_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="mf">10.</span><span class="o">**</span><span class="n">sp_pow</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span></div>
-
+        <span class="k">return</span> <span class="n">sp_list</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="mf">10.</span><span class="o">**</span><span class="n">sp_pow</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="absolute_path">
@@ -575,8 +526,6 @@
 
 
 
-<div class="viewcode-block" id="relative_path">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.relative_path.html#pipeline.domain.datatable.relative_path">[docs]</a>
 <span class="k">def</span> <span class="nf">relative_path</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Retun a relative path of a given file with respect a given origin.</span>
@@ -594,12 +543,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">start</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">absolute_path</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">start</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">absolute_path</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="n">start</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="get_task_result_count">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_task_result_count.html#pipeline.domain.datatable.get_task_result_count">[docs]</a>
 <span class="k">def</span> <span class="nf">get_task_result_count</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">taskname</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;hif_makeimages&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Count occurrences of a task result in the context.results list.</span>
 
@@ -622,12 +568,9 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">taskname</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">pipeline_casa_task</span><span class="p">:</span>
                 <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">count</span></div>
+    <span class="k">return</span> <span class="n">count</span>
 
 
-
-<div class="viewcode-block" id="place_repr_source_first">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.place_repr_source_first.html#pipeline.domain.datatable.place_repr_source_first">[docs]</a>
 <span class="k">def</span> <span class="nf">place_repr_source_first</span><span class="p">(</span><span class="n">itemlist</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]],</span> <span class="n">repr_source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Place representative source first in a list of source names</span>
@@ -646,12 +589,9 @@
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Could not reorder field list to place representative source first&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">itemlist</span></div>
+    <span class="k">return</span> <span class="n">itemlist</span>
 
 
-
-<div class="viewcode-block" id="shutdown_plotms">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.shutdown_plotms.html#pipeline.domain.datatable.shutdown_plotms">[docs]</a>
 <span class="k">def</span> <span class="nf">shutdown_plotms</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Shutdown the existing plotms process in the current CASA session.</span>
 
@@ -673,12 +613,9 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
         <span class="n">plotmstool</span><span class="o">.</span><span class="n">__proc</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">plotmstool</span><span class="o">.</span><span class="n">__stub</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__uri</span> <span class="o">=</span> <span class="kc">None</span></div>
+        <span class="n">plotmstool</span><span class="o">.</span><span class="n">__uri</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-
-<div class="viewcode-block" id="get_casa_session_details">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_casa_session_details.html#pipeline.domain.datatable.get_casa_session_details">[docs]</a>
 <span class="k">def</span> <span class="nf">get_casa_session_details</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the current CASA session details.</span>
 
@@ -700,12 +637,9 @@
     <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;numa_cpu&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_session_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cpus&#39;</span><span class="p">)</span>
     <span class="n">casa_session_details</span><span class="p">[</span><span class="s1">&#39;numa_mem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">casa_session_details</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;memory&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">casa_session_details</span></div>
+    <span class="k">return</span> <span class="n">casa_session_details</span>
 
 
-
-<div class="viewcode-block" id="get_taskhistory_fromimage">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_taskhistory_fromimage.html#pipeline.domain.datatable.get_taskhistory_fromimage">[docs]</a>
 <span class="k">def</span> <span class="nf">get_taskhistory_fromimage</span><span class="p">(</span><span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve past CASA/tclean() call parameters from the image history.</span>
 
@@ -738,12 +672,9 @@
 
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">taskhistory_list</span><span class="p">)</span><span class="si">}</span><span class="s1"> task history entry/entries from </span><span class="si">{</span><span class="n">imagename</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">taskhistory_list</span></div>
+    <span class="k">return</span> <span class="n">taskhistory_list</span>
 
 
-
-<div class="viewcode-block" id="get_obj_size">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_obj_size.html#pipeline.domain.datatable.get_obj_size">[docs]</a>
 <span class="k">def</span> <span class="nf">get_obj_size</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">serialize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Estimate the size of a Python object.</span>
 
@@ -769,12 +700,9 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Import error: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;Pympler/asizeof is not installed, which is required to run get_obj_size(obj, serialize=False).&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">asizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">asizeof</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="glob_ordered">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.glob_ordered.html#pipeline.domain.datatable.glob_ordered">[docs]</a>
 <span class="k">def</span> <span class="nf">glob_ordered</span><span class="p">(</span><span class="n">pattern</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a sorted list of paths matching a pathname pattern.&quot;&quot;&quot;</span>
 
@@ -790,12 +718,9 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;We will use the default alphabetically/numerically ascending order (order=None) instead.&quot;</span><span class="p">)</span>
         <span class="n">path_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">path_list</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">path_list</span></div>
+    <span class="k">return</span> <span class="n">path_list</span>
 
 
-
-<div class="viewcode-block" id="deduplicate">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.deduplicate.html#pipeline.domain.datatable.deduplicate">[docs]</a>
 <span class="k">def</span> <span class="nf">deduplicate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove duplicate entries from a list, but preserve the order.</span>
 
@@ -807,12 +732,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">deduplicated_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">items</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">deduplicated_items</span></div>
+    <span class="k">return</span> <span class="n">deduplicated_items</span>
 
 
-
-<div class="viewcode-block" id="ignore_pointing">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.ignore_pointing.html#pipeline.domain.datatable.ignore_pointing">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">ignore_pointing</span><span class="p">(</span><span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager to ignore pointing tables of MSes during I/O operations.</span>
@@ -871,12 +793,9 @@
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING&#39;</span><span class="p">):</span>
                     <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING&#39;</span><span class="p">)</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;restore the pointing table for </span><span class="si">{</span><span class="n">ms</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING_ORIGIN&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING&#39;</span><span class="p">)</span></div>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING_ORIGIN&#39;</span><span class="p">,</span> <span class="n">ms</span><span class="o">+</span><span class="s1">&#39;/POINTING&#39;</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="request_omp_threading">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.request_omp_threading.html#pipeline.domain.datatable.request_omp_threading">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">request_omp_threading</span><span class="p">(</span><span class="n">num_threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A context manager to override the session-wise OMP threading setting on CASA MPI client.</span>
@@ -950,12 +869,9 @@
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">context_num_threads</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">casa_tools</span><span class="o">.</span><span class="n">casalog</span><span class="o">.</span><span class="n">ompSetNumThreads</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">)</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;restore openmp threads to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">))</span></div>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;restore openmp threads to </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">session_num_threads</span><span class="p">))</span>
 
 
-
-<div class="viewcode-block" id="open_with_lock">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.open_with_lock.html#pipeline.domain.datatable.open_with_lock">[docs]</a>
 <span class="nd">@contextlib</span><span class="o">.</span><span class="n">contextmanager</span>
 <span class="k">def</span> <span class="nf">open_with_lock</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Open file with a lock.</span>
@@ -1009,23 +925,17 @@
         <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;failed to acquire file lock due to the filesystem limitation,&#39;</span>
                         <span class="s1">&#39;which might cause racing conditions if multiple processes access </span><span class="si">%s</span><span class="s1"> simultaneously.&#39;</span><span class="p">,</span>
-                        <span class="n">filename</span><span class="p">)</span></div>
+                        <span class="n">filename</span><span class="p">)</span>
 
-
-<div class="viewcode-block" id="ensure_products_dir_exists">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.ensure_products_dir_exists.html#pipeline.domain.datatable.ensure_products_dir_exists">[docs]</a>
 <span class="k">def</span> <span class="nf">ensure_products_dir_exists</span><span class="p">(</span><span class="n">products_dir</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating products directory: </span><span class="si">{</span><span class="n">products_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">products_dir</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">exc</span><span class="o">.</span><span class="n">errno</span> <span class="o">!=</span> <span class="n">errno</span><span class="o">.</span><span class="n">EEXIST</span><span class="p">:</span>
-            <span class="k">raise</span></div>
+            <span class="k">raise</span>
 
 
-
-<div class="viewcode-block" id="export_weblog_as_tar">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.export_weblog_as_tar.html#pipeline.domain.datatable.export_weblog_as_tar">[docs]</a>
 <span class="k">def</span> <span class="nf">export_weblog_as_tar</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">name_builder</span><span class="p">):</span>
     <span class="c1"># Construct filename prefix from oussid and recipe name if available.</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
@@ -1042,40 +952,28 @@
     <span class="n">tar</span> <span class="o">=</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">tarfilename</span><span class="p">),</span> <span class="s2">&quot;w:gz&quot;</span><span class="p">)</span>
     <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">report_dir</span><span class="p">)),</span> <span class="s1">&#39;html&#39;</span><span class="p">))</span>
     <span class="n">tar</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">tarfilename</span></div>
+    <span class="k">return</span> <span class="n">tarfilename</span>
 
 
-
-<div class="viewcode-block" id="get_products_dir">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.get_products_dir.html#pipeline.domain.datatable.get_products_dir">[docs]</a>
 <span class="k">def</span> <span class="nf">get_products_dir</span><span class="p">(</span><span class="n">context</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">products_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">context</span><span class="o">.</span><span class="n">products_dir</span></div>
+        <span class="k">return</span> <span class="n">context</span><span class="o">.</span><span class="n">products_dir</span>
 
 
-
-<div class="viewcode-block" id="pl_defaultdict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.pl_defaultdict.html#pipeline.domain.datatable.pl_defaultdict">[docs]</a>
 <span class="k">class</span> <span class="nc">pl_defaultdict</span><span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">as_plain_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">to_plain_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">to_plain_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="nested_dict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.nested_dict.html#pipeline.domain.datatable.nested_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">nested_dict</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">pl_defaultdict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">pl_defaultdict</span><span class="p">(</span><span class="n">nested_dict</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="to_plain_dict">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.utils.to_plain_dict.html#pipeline.domain.datatable.to_plain_dict">[docs]</a>
 <span class="k">def</span> <span class="nf">to_plain_dict</span><span class="p">(</span><span class="n">default_dict</span><span class="p">):</span>
     <span class="n">plain_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">default_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1084,12 +982,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plain_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
-    <span class="k">return</span> <span class="n">plain_dict</span></div>
+    <span class="k">return</span> <span class="n">plain_dict</span>
 
 
-
-<div class="viewcode-block" id="string_to_val">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.string_to_val.html#pipeline.domain.datatable.string_to_val">[docs]</a>
 <span class="k">def</span> <span class="nf">string_to_val</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a string to a Python data type.</span>
@@ -1103,12 +998,9 @@
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">s</span>
     <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">s</span></div>
+        <span class="k">return</span> <span class="n">s</span>
 
 
-
-<div class="viewcode-block" id="remove_trailing_string">
-<a class="viewcode-back" href="../../../../_autosummary/pipeline.infrastructure.utils.remove_trailing_string.html#pipeline.domain.datatable.remove_trailing_string">[docs]</a>
 <span class="k">def</span> <span class="nf">remove_trailing_string</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Remove a trailing string if it exists.</span>
@@ -1116,8 +1008,7 @@
     <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">s</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">s</span></div>
-
+        <span class="k">return</span> <span class="n">s</span>
 
 
 <div class="viewcode-block" id="list_to_str">
@@ -1155,7 +1046,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

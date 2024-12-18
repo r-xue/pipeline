@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.vdp &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -102,7 +102,6 @@
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
           <li class="breadcrumb-item"><a href="../../pipeline.html">pipeline</a></li>
-          <li class="breadcrumb-item"><a href="../infrastructure.html">pipeline.infrastructure</a></li>
       <li class="breadcrumb-item active">pipeline.infrastructure.vdp</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -197,8 +196,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="SingletonType">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.SingletonType.html#pipeline.infrastructure.vdp.SingletonType">[docs]</a>
 <span class="k">class</span> <span class="nc">SingletonType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SingletonType is a metaclass that ensures that only a single instance of</span>
@@ -206,20 +203,14 @@
 <span class="sd">    instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="SingletonType.__call__">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.SingletonType.html#pipeline.infrastructure.vdp.SingletonType.__call__">[docs]</a>
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SingletonType</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span></div>
-</div>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
 
 
-
-<div class="viewcode-block" id="NullMarker">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NullMarker.html#pipeline.infrastructure.vdp.NullMarker">[docs]</a>
 <span class="k">class</span> <span class="nc">NullMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NullMarker is a class that represents the null &quot;parameter not-set&quot; case.</span>
@@ -235,8 +226,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">null_input</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">null_input</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NullMarker.convert">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NullMarker.html#pipeline.infrastructure.vdp.NullMarker.convert">[docs]</a>
     <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the argument, converting user input considered equivalent to</span>
@@ -244,8 +233,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span> <span class="ow">or</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
-        <span class="k">return</span> <span class="n">val</span></div>
-
+        <span class="k">return</span> <span class="n">val</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
@@ -254,16 +242,13 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;NullMarker(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">))</span></div>
-
+        <span class="k">return</span> <span class="s1">&#39;NullMarker(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">))</span>
 
 
 <span class="c1"># shared instance, as very few inputs require custom null equivalents</span>
 <span class="n">_NULL</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
 
 
-<div class="viewcode-block" id="NoDefaultMarker">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.NoDefaultMarker.html#pipeline.infrastructure.vdp.NoDefaultMarker">[docs]</a>
 <span class="k">class</span> <span class="nc">NoDefaultMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">SingletonType</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NoDefaultMarker is a class that represents the null &quot;parameter not-set&quot; case</span>
@@ -275,12 +260,9 @@
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="PipelineInputsMeta">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.PipelineInputsMeta.html#pipeline.infrastructure.vdp.PipelineInputsMeta">[docs]</a>
 <span class="k">class</span> <span class="nc">PipelineInputsMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the name of a VisDependentProperty at class definition time.</span>
@@ -290,8 +272,7 @@
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">VisDependentProperty</span><span class="p">):</span>
                 <span class="n">obj</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">cls</span></div>
-
+        <span class="k">return</span> <span class="bp">cls</span>
 
 
 <div class="viewcode-block" id="VisDependentProperty">
@@ -863,16 +844,13 @@
 
 
 
-<div class="viewcode-block" id="get_properties">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.get_properties.html#pipeline.infrastructure.vdp.get_properties">[docs]</a>
 <span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)}</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="n">fn_name</span> <span class="k">for</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)}</span>
     <span class="n">props</span> <span class="o">=</span> <span class="n">attrs</span> <span class="o">-</span> <span class="n">methods</span>
     <span class="n">props</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s1">&#39;context&#39;</span><span class="p">)</span>
     <span class="n">props</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="s1">&#39;ms&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">props</span></div>
-
+    <span class="k">return</span> <span class="n">props</span>
 
 
 <div class="viewcode-block" id="StandardInputs">
@@ -1185,8 +1163,6 @@
 <span class="c1"># module utility functions ---------------------------------------------------</span>
 
 
-<div class="viewcode-block" id="all_unique">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.all_unique.html#pipeline.infrastructure.vdp.all_unique">[docs]</a>
 <span class="k">def</span> <span class="nf">all_unique</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if all elements in the iterable argument are unique.</span>
@@ -1196,12 +1172,9 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot determine uniqueness of non-iterables&#39;</span><span class="p">)</span>
 
     <span class="n">hashes</span> <span class="o">=</span> <span class="p">{</span><span class="n">gen_hash</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">o</span><span class="p">}</span>
-    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span></div>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
 
-
-<div class="viewcode-block" id="gen_hash">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.gen_hash.html#pipeline.infrastructure.vdp.gen_hash">[docs]</a>
 <span class="k">def</span> <span class="nf">gen_hash</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a hash from a dictionary, list, tuple or set to any level, that</span>
@@ -1220,12 +1193,9 @@
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">new_o</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_hash</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span></div>
+    <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
 
 
-
-<div class="viewcode-block" id="format_value_list">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.format_value_list.html#pipeline.infrastructure.vdp.format_value_list">[docs]</a>
 <span class="k">def</span> <span class="nf">format_value_list</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="c1"># return single values where possible, which is when only one value</span>
     <span class="c1"># is present because the inputs covers one ms or because the values</span>
@@ -1238,12 +1208,9 @@
         <span class="k">if</span> <span class="n">all_unique</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">val</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+            <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-
-<div class="viewcode-block" id="name_all_arguments">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.infrastructure.vdp.name_all_arguments.html#pipeline.infrastructure.vdp.name_all_arguments">[docs]</a>
 <span class="k">def</span> <span class="nf">name_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># we need to know the names of any non-key/value arguments supplied</span>
     <span class="c1"># in the constructor. The names of the argument can be found in the</span>
@@ -1274,8 +1241,7 @@
     <span class="k">if</span> <span class="s1">&#39;self&#39;</span> <span class="ow">in</span> <span class="n">named_args</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">named_args</span><span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">]</span>
 
-    <span class="k">return</span> <span class="n">named_args</span></div>
-
+    <span class="k">return</span> <span class="n">named_args</span>
 </pre></div>
 
            </div>
@@ -1285,7 +1251,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

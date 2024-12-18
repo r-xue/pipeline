@@ -1,4 +1,4 @@
-pipeline.domain
+﻿pipeline.domain
 ===============
 
 .. automodule:: pipeline.domain
@@ -42,28 +42,31 @@ pipeline.domain
    
    
 
+   
+   
+   .. rubric:: Modules
 
-
-.. autosummary::
-   :toctree:
-   :template: custom-module-template.rst
-   :recursive:
-
-   antenna
-   antennaarray
-   datadescription
-   datatable
-   datatype
-   field
-   fluxmeasurement
-   measurementset
-   measures
-   observingrun
-   polarization
-   scan
-   singledish
-   source
-   spectralwindow
-   state
-   unitformat
-
+   .. autosummary::
+      :toctree:
+      :template: custom-module-template.rst
+      :recursive:
+   
+      antenna
+      antennaarray
+      datadescription
+      datatable
+      datatype
+      field
+      fluxmeasurement
+      measurementset
+      measures
+      observingrun
+      polarization
+      scan
+      singledish
+      source
+      spectralwindow
+      state
+      unitformat
+   
+   

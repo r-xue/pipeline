@@ -856,18 +856,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
 INPUT /usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
-INPUT ./nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT nbsphinx.sty
-INPUT ./nbsphinx.sty
-INPUT nbsphinx.sty
-INPUT ./sphinx.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
@@ -1307,8 +1295,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/txfonts/tcxtt.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ts1-qtmri.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmr.tfm
-INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qhvr.tfm
 INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ts1-qtmb.tfm
 INPUT ./taskdocs.ind
 INPUT taskdocs.ind

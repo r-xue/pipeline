@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.imaging.imaging &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -166,8 +166,6 @@
 <span class="n">REF_MS_ID</span> <span class="o">=</span> <span class="mi">0</span>
 
 
-<div class="viewcode-block" id="SDImagingInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.SDImagingInputs.html#pipeline.hsd.tasks.SDImagingInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">SDImagingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for imaging task class.&quot;&quot;&quot;</span>
 
@@ -268,8 +266,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_direction</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">org_direction</span> <span class="o">=</span> <span class="n">org_direction</span>
 
 
 <div class="viewcode-block" id="SDImaging">
@@ -2131,8 +2128,6 @@
     <span class="k">return</span> <span class="n">raster_info</span>
 
 
-<div class="viewcode-block" id="calc_image_statistics">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.calc_image_statistics.html#pipeline.hsd.tasks.calc_image_statistics">[docs]</a>
 <span class="k">def</span> <span class="nf">calc_image_statistics</span><span class="p">(</span><span class="n">imagename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chans</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">region</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return image statistics with channel and region selection.</span>
 
@@ -2158,13 +2153,10 @@
             <span class="n">stat</span> <span class="o">=</span> <span class="n">subim</span><span class="o">.</span><span class="n">statistics</span><span class="p">(</span><span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="n">subim</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">stat</span></div>
-
+    <span class="k">return</span> <span class="n">stat</span>
 
 
 <span class="c1"># Utility methods to calcluate channel ranges</span>
-<div class="viewcode-block" id="convert_frequency_ranges_to_channels">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.convert_frequency_ranges_to_channels.html#pipeline.hsd.tasks.convert_frequency_ranges_to_channels">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_frequency_ranges_to_channels</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span>
                                          <span class="n">cs</span><span class="p">:</span> <span class="s1">&#39;coordsys&#39;</span><span class="p">,</span> <span class="n">num_chan</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert frequency ranges to channel ones.</span>
@@ -2197,12 +2189,9 @@
         <span class="n">channel_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">min_chan</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span>
                                <span class="nb">min</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_chan</span><span class="p">),</span> <span class="n">num_chan</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)])</span>
     <span class="n">channel_ranges</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">merge_ranges</span><span class="p">(</span><span class="n">channel_ranges</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">merge_ranges</span><span class="p">(</span><span class="n">channel_ranges</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="convert_range_list_to_string">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.convert_range_list_to_string.html#pipeline.hsd.tasks.convert_range_list_to_string">[docs]</a>
 <span class="k">def</span> <span class="nf">convert_range_list_to_string</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a list of index ranges to string.</span>
 
@@ -2218,12 +2207,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">stat_chans</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">~</span><span class="si">{:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">range_list</span><span class="p">[</span><span class="n">iseg</span><span class="p">],</span> <span class="n">range_list</span><span class="p">[</span><span class="n">iseg</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
                                <span class="k">for</span> <span class="n">iseg</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">range_list</span><span class="p">),</span> <span class="mi">2</span><span class="p">)])</span>
-    <span class="k">return</span> <span class="n">stat_chans</span></div>
+    <span class="k">return</span> <span class="n">stat_chans</span>
 
 
-
-<div class="viewcode-block" id="merge_ranges">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.merge_ranges.html#pipeline.hsd.tasks.merge_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">merge_ranges</span><span class="p">(</span><span class="n">range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">,</span> <span class="n">Number</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge overlapping ranges in range_list.</span>
 
@@ -2265,12 +2251,9 @@
         <span class="n">num_range</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
         <span class="n">merged</span> <span class="o">=</span> <span class="n">merge_ranges</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
     <span class="c1"># LOG.info(&quot;#####Merged: {}&quot;.format(str(merged)))</span>
-    <span class="k">return</span> <span class="n">merged</span></div>
+    <span class="k">return</span> <span class="n">merged</span>
 
 
-
-<div class="viewcode-block" id="invert_ranges">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsd.tasks.imaging.imaging.invert_ranges.html#pipeline.hsd.tasks.invert_ranges">[docs]</a>
 <span class="k">def</span> <span class="nf">invert_ranges</span><span class="p">(</span><span class="n">id_range_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
                   <span class="n">num_ids</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">edge</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return inverted ID ranges.</span>
@@ -2304,8 +2287,7 @@
                 <span class="n">inverted_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">start_include</span><span class="p">,</span> <span class="n">end_include</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">id_range_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">num_ids</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="n">inverted_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">id_range_list</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_ids</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">edge</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
-    <span class="k">return</span> <span class="n">inverted_list</span></div>
-
+    <span class="k">return</span> <span class="n">inverted_list</span>
 </pre></div>
 
            </div>
@@ -2315,7 +2297,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

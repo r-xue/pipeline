@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.uvcontsub.uvcontsub &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -134,8 +134,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="UVcontSubInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.UVcontSubInputs.html#pipeline.hif.tasks.UVcontSubInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">UVcontSubInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -156,17 +154,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fitorder</span> <span class="o">=</span> <span class="n">fitorder</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 
-
-<div class="viewcode-block" id="SerialUVcontSub">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.SerialUVcontSub.html#pipeline.hif.tasks.SerialUVcontSub">[docs]</a>
 <span class="k">class</span> <span class="nc">SerialUVcontSub</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">UVcontSubInputs</span>
 
-<div class="viewcode-block" id="SerialUVcontSub.prepare">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.SerialUVcontSub.html#pipeline.hif.tasks.SerialUVcontSub.prepare">[docs]</a>
     <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -344,11 +337,8 @@
         <span class="n">result</span><span class="o">.</span><span class="n">outputvis</span> <span class="o">=</span> <span class="n">outputvis</span>
         <span class="n">result</span><span class="o">.</span><span class="n">casa_uvcontsub_result</span> <span class="o">=</span> <span class="n">casa_uvcontsub_result</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
+        <span class="k">return</span> <span class="n">result</span>
 
-
-<div class="viewcode-block" id="SerialUVcontSub.analyse">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.SerialUVcontSub.html#pipeline.hif.tasks.SerialUVcontSub.analyse">[docs]</a>
     <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">mitigation_error</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>
@@ -368,8 +358,7 @@
                 <span class="n">ms</span><span class="o">.</span><span class="n">set_data_column</span><span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="s1">&#39;DATA&#39;</span><span class="p">)</span>
             <span class="n">result</span><span class="o">.</span><span class="n">line_mses</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">result</span></div>
-
+        <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_copy_xml_files</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="p">):</span>
@@ -379,8 +368,7 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">vis_source</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">outputvis</span><span class="p">):</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> from original MS to science targets line MS&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">)</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">xml_filename</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_target_line</span><span class="p">)</span>
-                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_target_line</span><span class="p">)</span></div>
-
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">vis_source</span><span class="p">,</span> <span class="n">outputvis_target_line</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="UVcontSub">
@@ -393,8 +381,6 @@
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialUVcontSub</span></div>
 
 
-<div class="viewcode-block" id="UVcontSubResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.UVcontSubResults.html#pipeline.hif.tasks.UVcontSubResults">[docs]</a>
 <span class="k">class</span> <span class="nc">UVcontSubResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    UVcontSubResults is the results class for the pipeline UVcontSub task.</span>
@@ -413,8 +399,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error_msg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-<div class="viewcode-block" id="UVcontSubResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.uvcontsub.uvcontsub.UVcontSubResults.html#pipeline.hif.tasks.UVcontSubResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Check to see if this stage was delibrately skipped</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip_stage</span><span class="p">:</span>
@@ -453,8 +437,7 @@
             <span class="c1">#       This is probably only the case for future selfcal use cases.</span>
             <span class="n">calto</span> <span class="o">=</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalTo</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Registering </span><span class="si">{}</span><span class="s1"> with callibrary&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span></div>
-
+            <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="p">[])</span>
 
     <span class="k">def</span> <span class="nf">_make_template_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">titlestr</span><span class="p">):</span>
         <span class="c1"># Create a new file if overwrite is true and the file</span>
@@ -467,8 +450,7 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;UVcontSubResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Continuum subtracted for </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="si">}</span><span class="s1">. Line data stored in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">outputvis</span><span class="si">}</span><span class="s1">&#39;</span>
-        <span class="k">return</span> <span class="n">s</span></div>
-
+        <span class="k">return</span> <span class="n">s</span>
 
 <span class="n">FLAGGING_TEMPLATE_HEADER</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;#</span>
 <span class="s1"># ___TITLESTR___</span>
@@ -490,7 +472,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

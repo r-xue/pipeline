@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -136,8 +136,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="NROImportDataInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataInputs.html#pipeline.hsdn.tasks.NROImportDataInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">NROImportDataInputs</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of NROImportData.</span>
 
@@ -172,12 +170,9 @@
                                                   <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="n">nocopy</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="n">save_flagonline</span><span class="p">,</span>
                                                   <span class="n">bdfflags</span><span class="o">=</span><span class="n">bdfflags</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">lazy</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="n">createmms</span><span class="p">,</span>
                                                   <span class="n">ocorr_mode</span><span class="o">=</span><span class="n">ocorr_mode</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="n">datacolumns</span><span class="p">,</span>
-                                                  <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span></div>
+                                                  <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span>
 
 
-
-<div class="viewcode-block" id="NROImportDataResults">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.NROImportDataResults">[docs]</a>
 <span class="k">class</span> <span class="nc">NROImportDataResults</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NROImportDataResults is an equivalent class with ImportDataResults.</span>
 
@@ -203,8 +198,6 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">NROImportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">mses</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="o">=</span><span class="n">reduction_group_list</span><span class="p">,</span>
                                                    <span class="n">datatable_prefix</span><span class="o">=</span><span class="n">datatable_prefix</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NROImportDataResults.merge_with_context">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hsdn.tasks.importdata.importdata.NROImportDataResults.html#pipeline.hsdn.tasks.NROImportDataResults.merge_with_context">[docs]</a>
     <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
 
@@ -217,9 +210,7 @@
             <span class="k">if</span> <span class="n">ms</span><span class="o">.</span><span class="n">antenna_array</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;NRO&#39;</span><span class="p">,):</span>
                 <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">telescope</span> <span class="o">=</span> <span class="s1">&#39;NRO&#39;</span>
                 <span class="n">context</span><span class="o">.</span><span class="n">project_summary</span><span class="o">.</span><span class="n">observatory</span> <span class="o">=</span> <span class="s1">&#39;Nobeyama Radio Observatory&#39;</span>
-                <span class="k">break</span></div>
-</div>
-
+                <span class="k">break</span>
 
 
 <div class="viewcode-block" id="NROImportData">
@@ -291,7 +282,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

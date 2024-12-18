@@ -6,23 +6,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makeimages.makeimages &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx_astrorefs.css?v=4d4a2fdb" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=de42f844" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/custom_theme.css?v=047bd54c" />
 
   
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=a0faec3b"></script>
+      <script src="../../../../../_static/documentation_options.js?v=ac145b58"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
       <script src="../../../../../_static/copybutton.js?v=0729d509"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -136,8 +136,6 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MakeImagesInputs">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.makeimages.makeimages.MakeImagesInputs.html#pipeline.hif.tasks.MakeImagesInputs">[docs]</a>
 <span class="k">class</span> <span class="nc">MakeImagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -234,8 +232,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hm_mosweight</span> <span class="o">=</span> <span class="n">hm_mosweight</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_on_export</span> <span class="o">=</span> <span class="n">overwrite_on_export</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_plane_reject_im</span> <span class="o">=</span> <span class="n">vlass_plane_reject_im</span></div>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">vlass_plane_reject_im</span> <span class="o">=</span> <span class="n">vlass_plane_reject_im</span>
 
 
 <span class="c1"># tell the infrastructure to give us mstransformed data when possible by</span>
@@ -526,8 +523,6 @@
 
 
 
-<div class="viewcode-block" id="CleanTaskFactory">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.makeimages.makeimages.CleanTaskFactory.html#pipeline.hif.tasks.CleanTaskFactory">[docs]</a>
 <span class="k">class</span> <span class="nc">CleanTaskFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">executor</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span> <span class="o">=</span> <span class="n">inputs</span>
@@ -555,8 +550,6 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CleanTaskFactory.get_task">
-<a class="viewcode-back" href="../../../../../_autosummary/pipeline.hif.tasks.makeimages.makeimages.CleanTaskFactory.html#pipeline.hif.tasks.CleanTaskFactory.get_task">[docs]</a>
     <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a SyncTask or AsyncTask for the clean job required</span>
@@ -617,8 +610,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">inputs</span> <span class="o">=</span> <span class="n">Tclean</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context</span><span class="p">,</span> <span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
             <span class="n">task</span> <span class="o">=</span> <span class="n">Tclean</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span></div>
-
+            <span class="k">return</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span>
@@ -726,8 +718,7 @@
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_maxpsffraction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mf">999.0</span><span class="p">):</span>
             <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;hm_maxpsffraction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">hm_maxpsffraction</span>
 
-        <span class="k">return</span> <span class="n">task_args</span></div>
-
+        <span class="k">return</span> <span class="n">task_args</span>
 
 
 <span class="k">def</span> <span class="nf">_get_description_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
@@ -797,7 +788,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+170-g8885d22c9-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+173-g56b3235306-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
