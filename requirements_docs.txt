@@ -4,6 +4,7 @@
 future
 urllib3
 myst-parser
+myst_nb
 linkify-it-py
 jupytext
 nbsphinx         # nbsphinx requires 'pandoc' (e.g. from macports/apt/conda-forge, not 'pandoc' from PyPI) to work properly.
