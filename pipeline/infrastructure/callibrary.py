@@ -1545,7 +1545,7 @@ def expand_intervaltree(tree, convert_fns, calto_fn):
             for x in expand_interval(interval, convert_fns, calto_fn))
 
 
-def expand_calstate_to_calapps(calstate: "IntervalCalState") -> List[Tuple[CalTo, List[CalFrom]]]:
+def expand_calstate_to_calapps(calstate: IntervalCalState) -> list[tuple[CalTo, list[CalFrom]]]:
     """
     Convert an IntervalCalState into a list of (CalTo, [CalFrom..]) tuples.
 
@@ -1557,7 +1557,7 @@ def expand_calstate_to_calapps(calstate: "IntervalCalState") -> List[Tuple[CalTo
     id_to_field_fn = get_id_to_field_fn(calstate.id_to_field)
     id_to_intent_fn = get_id_to_intent_fn(calstate.id_to_intent)
 
-    calapps: List[Tuple[CalTo, List[CalFrom]]] = []
+    calapps: list[tuple[CalTo, list[CalFrom]]] = []
 
     for vis in calstate:
         # Set the vis argument for the CalToArgs constructor through partial
@@ -2026,7 +2026,7 @@ class IntervalCalState(object):
 
         return calstate
 
-    def get_caltable(self, caltypes=None) -> Set[str]:
+    def get_caltable(self, caltypes=None) -> set[str]:
         """
         Get the names of all caltables registered with this CalState.
 
