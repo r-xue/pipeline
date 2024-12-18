@@ -141,13 +141,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             result.parameterlist = []
 
         imlist = self.inputs.context.subimlist.get_imlist()
-
-        # PIPE-592: find out imaging mode (stored in context by hif_editimlist)
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, alpha images will not be written.")
-            img_mode = None
+        img_mode = self.inputs.context.imaging_mode
 
         images_list = []
         for imageitem in imlist:
@@ -436,13 +430,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     parameterlist_set.add(parameter_filename)
                     _ = self._export_parameterlist(context, parameter_filename, products_dir, oussid)
 
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
-            img_mode = None
-
         # SE Cont imaging mode export for VLASS
+        img_mode = self.inputs.context.imaging_mode
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
             # Identify self cal table
             selfcal_result = None
