@@ -6,31 +6,24 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifv_semiFinalBPdcals(vis=None, weakbp=None, refantignore=None, refant=None):
 
-    """
-    hifv_semiFinalBPdcals ---- Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
+    """Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging.
 
-    Runs a second delay and bandpass calibration and applies to calibrators to setup for RFI flagging
+    Args:
+        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
-    Output:
+        weakbp: Activate weak bandpass heuristics.
 
-    results -- The results object for the pipeline task is returned.
+        refantignore: String list of antennas to ignore.
 
-    --------- parameter descriptions ---------------------------------------------
+        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
 
-    vis           The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                  specified in the h_init or hifv_importdata task.
-    weakbp        Activate weak bandpass heuristics
-    refantignore  String list of antennas to ignore
-    refant        A csv string of reference antenna(s). When used, disables ``refantignore``.
-                  Example: refant = 'ea01, ea02'
+    Returns:
+        The results object for the pipeline task is returned.
 
-    --------- examples -----------------------------------------------------------
+    Examples:
+        1. Heuristic flagging:
 
-
-    1. Heuristic flagging
-
-    >>> hifv_semiFinalBPdcals()
-
+        >>> hifv_semiFinalBPdcals()
 
     """
 

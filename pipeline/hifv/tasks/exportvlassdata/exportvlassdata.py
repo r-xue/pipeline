@@ -9,7 +9,7 @@ import traceback
 
 import numpy as np
 
-import xml.etree.cElementTree as eltree
+import xml.etree.ElementTree as eltree
 import astropy.io.fits as apfits
 
 import pipeline as pipeline
