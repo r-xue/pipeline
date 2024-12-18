@@ -664,7 +664,7 @@ class MeasurementSet(object):
                 raise KeyError('No spectral window with ID \'{0}\' found in '
                                '{1}'.format(spw_id, self.basename))
 
-    def get_spectral_windows(self, task_arg: str = '', with_channels: bool = False,
+    def get_spectral_windows(self, task_arg: int | str = '', with_channels: bool = False,
                              num_channels: list | None = None, science_windows_only: bool = True,
                              spectralspecs: list | None = None, intent: str | None = None) \
             -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
@@ -681,7 +681,8 @@ class MeasurementSet(object):
         as a list of SpectralWindowWithChannelSelection objects.
 
         Args:
-            task_arg: Spectral window selection in CASA format to match.
+            task_arg: Spectral window selection to match, as either single
+                integer ID, or one-or-more IDs in CASA-style string format.
             with_channels: If True, return spectral window with channel selection.
             num_channels: Optional list of spectral window sizes in number of
                 channels; if set, only return spectral windows whose number of
@@ -738,7 +739,7 @@ class MeasurementSet(object):
         """Return list of all spectral specs used in the MS."""
         return list(self.spectralspec_spwmap.keys())
 
-    def get_all_spectral_windows(self, task_arg: str = '', with_channels: bool = False) \
+    def get_all_spectral_windows(self, task_arg: int | str = '', with_channels: bool = False) \
             -> list[spectralwindow.SpectralWindow | spectralwindow.SpectralWindowWithChannelSelection]:
         """
         Return spectral windows corresponding to the given CASA-style spw
@@ -749,7 +750,8 @@ class MeasurementSet(object):
         as a list of SpectralWindowWithChannelSelection objects.
 
         Args:
-            task_arg: Spectral window selection in CASA format to match.
+            task_arg: Spectral window selection to match, as either single
+                integer ID, or one-or-more IDs in CASA-style string format.
             with_channels: If True, return spectral window with channel selection.
 
         Returns:
