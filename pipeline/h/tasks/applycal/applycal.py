@@ -102,15 +102,17 @@ class ApplycalInputs(vdp.StandardInputs):
 
             parang: Apply parallactic angle correction
 
-            applymode: Calibration apply mode 'calflag': calibrate data and apply flags from solutions
-                'calflagstrict': (default) same as above except flag spws for which calibration is
-                unavailable in one or more tables (instead of allowing them to pass
-                uncalibrated and unflagged)
-                'trial': report on flags from solutions, dataset entirely unchanged
-                'flagonly': apply flags from solutions only, data not calibrated
-                'flagonlystrict': same as above except flag spws for which calibration is
-                unavailable in one or more tables
-                'calonly': calibrate data only, flags from solutions NOT applied
+            applymode: Calibration apply mode
+
+                - 'calflag': calibrate data and apply flags from solutions
+                - 'calflagstrict': (default) same as above except flag spws for which calibration is
+                  unavailable in one or more tables (instead of allowing them to pass
+                  uncalibrated and unflagged)
+                - 'trial': report on flags from solutions, dataset entirely unchanged
+                - 'flagonly': apply flags from solutions only, data not calibrated
+                - 'flagonlystrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables
+                - 'calonly': calibrate data only, flags from solutions NOT applied
 
             flagbackup: Backup the flags before the apply
 
