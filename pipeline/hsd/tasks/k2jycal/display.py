@@ -72,6 +72,7 @@ class K2JySingleScatterDisplay(object):
     
     def _plot(self) -> Generator[logger.Plot, None, None]:
         """Create scatter plot with Frequencies as the main X-axis."""
+        legend_lim = 3
         fig = Figure(figsize=(8, 6))  # Customize size as needed
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111)
@@ -85,6 +86,7 @@ class K2JySingleScatterDisplay(object):
         )  # standard Tableau colormap
         # Prepare labels for plotting
         ms_labels = list(self.valid_factors.keys())
+        is_ms_above_lim = len(ms_labels)>legend_lim
         spw_ids = sorted({spw_id for ms_data in self.valid_factors.values() for spw_id in ms_data.keys()})
         frequencies = [self.spws[spw_id].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ) for spw_id in spw_ids]  # Extract frequency decimal values
         # Plot data points for each MS
@@ -92,27 +94,36 @@ class K2JySingleScatterDisplay(object):
             symbol, colour = next(symbols_and_colours)
             ms_data = self.valid_factors[ms_label]
             for idx, spw_id in enumerate(spw_ids):
-                y = ms_data.get(spw_id, [])
+                dat = ms_data.get(spw_id, [])
+                y = [d[0] for d in dat]
                 x = [self.spws[spw_id].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
                 x_unc = [decimal.Decimal('0.5') * self.spws[spw_id].bandwidth.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
                 # Plot ranges for SPWs
+                if is_ms_above_lim:
+                    lab = ms_label.split('_')[-1].split('.')[0]
+                else:
+                    lab = ms_label
                 ax.errorbar(
-                        x, y, xerr=x_unc,
-                        marker=symbol, color=colour, alpha = 1.0, linestyle="-", 
-                        label=ms_label if idx == 0 else ""
+                        x, y, xerr=x_unc, yerr=None, linestyle="None",
+                        marker=symbol, color=colour, alpha = 1.0, 
+                        label=lab if idx == 0 else ""
                     )
+        y_min, y_max = ax.get_ylim()
+        if y_max - y_min < 0.2:  
+            ax.set_ylim(y_min - 0.1, y_max + 0.1)
+        if len(ms_labels) <= 20:
+            if is_ms_above_lim:
+                lims = ax.get_xlim()
+                ax.set_xlim((lims[0], lims[1]+float(max(frequencies)-min(frequencies))/len(spw_ids)))
+            ax.legend(title='EBs', loc='best')
         # Add secondary x-axis for SPW IDs
         ax_top = ax.twiny()
         ax_top.set_xlim(ax.get_xlim())  # Match the range of the main x-axis
         ax_top.set_xticks(frequencies)  # Use the same tick positions as the main x-axis
         ax_top.set_xticklabels(spw_ids)  # Map frequencies back to SPW IDs
-        ax_top.set_xlabel('SPW ID', fontsize=11)
+        ax_top.set_xlabel('SPW ID', fontsize=11)    
         for freq in frequencies:
             ax.axvline(freq, linestyle = '--', color = 'lightgray', alpha = 0.5)
-        y_min, y_max = ax.get_ylim()
-        if y_max - y_min < 0.2:  
-            ax.set_ylim(y_min - 0.1, y_max + 0.1)
-        ax.legend(title='EBs', loc='best')
         ax.grid(True)
         
         # Save the plot

@@ -2,6 +2,7 @@
 import os
 import collections
 import shutil
+from numpy import mean, std
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
@@ -48,6 +49,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             results: ResultsList instance. Should hold a list of SDK2JyCalResults instance.
         """
         spw_factors = collections.defaultdict(list)
+        spw_tr = collections.defaultdict(list)
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(list))
         spw_frequencies = {}
         
@@ -63,6 +65,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             vis = ms.basename
             ms_label = vis
             spws = {}
+            outliers = []
             for spw in ms.get_spectral_windows(science_windows_only=True):
                 spwid = spw.id
                 # virtual spw id
@@ -73,22 +76,33 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                 for ant in ms.get_antenna():
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
-#                     # an attempt to collapse pol rows
-#                     # corr_collector[factor] = [corr0, corr1, ...]
-#                     corr_collector = collections.defaultdict(lambda: [])
                     for corr in corrs:
                         factor = self.__get_factor(r.factors, vis, spwid, ant_name, corr)
-#                       corr_collector[factor].append(corr)
-#                       for factor, corrlist in corr_collector.items():
-#                         corr = str(', ').join(corrlist)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
-#                         tr = JyperKTR(vis, spwid, ant_name, corr, jyperk)
                         tr = trfunc(vspwid, vis, spwid, ant_name, corr, jyperk)
-                        spw_factors[vspwid].append(tr)
+                        spw_factors[vspwid].append(factor)
+                        spw_tr[vspwid].append(tr)
                         if factor is not None:
-                            valid_spw_factors[ms_label][vspwid].append(factor)
+                            valid_spw_factors[ms_label][vspwid].append((factor, corr))
             reffile_list.append(r.reffile)
-            
+        
+        swps_std = {spw_id:(
+                        fact_mean + fact_std * 3, # 3 std away
+                        fact_mean - fact_std * 3,
+                        fact_mean,
+                        fact_std)  
+                    for spw_id in spw_factors.keys()
+                    for fact_mean, fact_std in [(mean(spw_factors[spw_id]), std(spw_factors[spw_id]))]}
+        
+        for ms, spw_data in list(valid_spw_factors.items()):
+            for spw_id, f_list in list(spw_data.items()):
+                for f in f_list:
+                    factor, corr = f
+                    if (factor > swps_std[spw_id][0]) or (factor < swps_std[spw_id][1]):
+                        msg = f"Value of factor {factor} for polarity {corr}, spw {spw_id} in ms '{ms_label}' is significantly away from the mean value factor for this spw, which is {swps_std[spw_id][2]}; std = {swps_std[spw_id][3]}."
+                        outliers.append(msg)
+                        LOG.warning(msg)
+        
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         # histogram plots of Jy/K factors
         hist_plots = []
@@ -110,12 +124,13 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         reffile_copied = None if len(reffile_copied_list) == 0 else reffile_copied_list
         # order table rows so that spw comes first
         row_values = []
-        for factor_list in spw_factors.values():
+        for factor_list in spw_tr.values():
             row_values += list(factor_list)
         ctx.update({'jyperk_rows': utils.merge_td_columns(row_values),
                     'reffile_list': reffile_copied,
                     'jyperk_hist': hist_plots,
-                    'dovirtual': dovirtual})
+                    'dovirtual': dovirtual,
+                    'outliers': None if len(outliers)>0 else outliers})
 
     @staticmethod
     def __get_factor(
