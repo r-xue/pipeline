@@ -2,9 +2,8 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
+from pipeline.infrastructure import casa_tasks, task_registry, utils
 from pipeline.infrastructure.contfilehandler import contfile_to_spwsel
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -118,11 +117,11 @@ class Targetflag(basetask.StandardTaskTemplate):
             LOG.info("TARGETFLAG INFO:  Spectral line heuristics for intent=*TARGET*")
 
             for field in fielddict:
-                method_args = {'field'       : field,
-                               'correlation' : 'ABS_' + corrstring,
-                               'scan'        : '',
-                               'intent'      : '*TARGET*',
-                               'spw'         : fielddict[field]}
+                method_args = {'field': utils.fieldname_for_casa(field),
+                               'correlation': 'ABS_' + corrstring,
+                               'scan': '',
+                               'intent': '*TARGET*',
+                               'spw': fielddict[field]}
 
                 rflag_result = self._do_rflag(**method_args)
 

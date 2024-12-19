@@ -453,7 +453,7 @@ def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
     input_dir = 'pl-regressiontest/uid___A002_Xc46ab2_X15ae_selfcal_restore'
     ref_directory = 'pl-regressiontest/uid___A002_Xc46ab2_X15ae_selfcal_restore'
 
-    pr = PipelineRegression(recipe='procedure_hifa_image_selfcal.xml',
+    pr = PipelineRegression(recipe='procedure_hifa_image.xml',
                             input_dir=input_dir,
                             visname=['uid___A002_Xc46ab2_X15ae'],
                             expectedoutput_dir=ref_directory)

@@ -48,7 +48,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics."""
         if self.vlass_stage == 3:
             return 1.0
@@ -64,7 +64,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         return ['0.6arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [16384, 16384]
 
@@ -121,7 +121,7 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
             # since CASA ver>=6.5.3 to maintain the beam size consistency due to the math correction from CAS-13260.
             return ['2.6476arcsec']
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return '<12km', None
 
@@ -596,7 +596,7 @@ class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
         self.user_cycleniter_final_image_nomask = None
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [12500, 12500]
 

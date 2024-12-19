@@ -1,12 +1,15 @@
 import collections
+import json
 import os
 import shutil
+import traceback
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import utils
+from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.infrastructure import task_registry
 from . import almaifaqua
 
@@ -60,19 +63,29 @@ class ALMAExportData(exportdata.ExportData):
             auxcaltables = None
             auxcalapplys = None
 
+        # Create and export the pipeline stats file
+        pipeline_stats_file = None
+        try:
+            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
+        except Exception as e:
+            LOG.info("Unable to output pipeline statistics file: {}".format(e))
+            LOG.debug(traceback.format_exc())
+            pass
+
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
         #    The calibrator source fluxes file
         #    The antenna positions file
         #    The continuum regions file
         #    The target flagging file
+        #    The pipeline statistics file (if it exists)
         recipe_name = self.get_recipename(self.inputs.context)
         if not recipe_name:
             prefix = oussid
         else:
             prefix = oussid + '.' + recipe_name
         auxfproducts = self._do_if_auxiliary_products(prefix, self.inputs.output_dir, self.inputs.products_dir, vislist,
-                                                   self.inputs.imaging_products_only)
+                                                   self.inputs.imaging_products_only, pipeline_stats_file)
 
         # Export the AQUA report
         pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
@@ -118,6 +131,27 @@ class ALMAExportData(exportdata.ExportData):
 
         return visdict
 
+    def _export_stats_file(self, context, oussid='') -> str:
+        """Generate and output the stats file.
+
+        Args: 
+          context: the pipieline context
+          oussid: the ous id
+
+        Returns:
+          The filename of the outputfile.
+        """
+        statsfile_name = "pipeline_stats_{}.json".format(oussid)
+        stats_file = os.path.join(context.output_dir, statsfile_name)
+        LOG.info('Generating pipeline statistics file')
+
+        stats_dict = stats_extractor.generate_stats(context)
+
+        # Write the stats file to disk
+        with open(stats_file, 'w', encoding='utf-8') as f:
+            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
+
+        return stats_file
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """

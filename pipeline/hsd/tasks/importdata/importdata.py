@@ -127,6 +127,8 @@ class SDImportDataResults(basetask.Results):
         self.setjy_results = setjy_results
         self.org_directions = org_directions
         self.origin = {}
+        self.rasterscan_heuristics_results_direction = {}
+        self.rasterscan_heuristics_results_time = {}
         self.results = importdata.ImportDataResults(mses=mses, setjy_results=setjy_results)
 
     def merge_with_context(self, context: Context):
@@ -182,13 +184,17 @@ class SerialSDImportData(importdata.ImportData):
         table_prefix = relative_path(os.path.join(self.inputs.context.name, 'MSDataTable.tbl'),
                                      self.inputs.output_dir)
         reduction_group_list = []
+        direction_rsh_result_list = []
+        time_rsh_result_list = []
         org_directions_dict = {}
         for ms in results.mses:
             LOG.debug('Start inspection for %s' % ms.basename)
             table_name = os.path.join(table_prefix, ms.basename)
             inspector = inspection.SDInspection(self.inputs.context, table_name, ms=ms, hm_rasterscan=self.inputs.hm_rasterscan)
-            reduction_group, org_directions, msglist = self._executor.execute(inspector, merge=False)
+            reduction_group, org_directions, msglist, direction_rsh_result, time_rsh_result = self._executor.execute(inspector, merge=False)
             reduction_group_list.append(reduction_group)
+            direction_rsh_result_list.append(direction_rsh_result)
+            time_rsh_result_list.append(time_rsh_result)
 
             # update org_directions_dict for only new keys in org_directions
             for key in org_directions:
@@ -203,6 +209,10 @@ class SerialSDImportData(importdata.ImportData):
 
         myresults.origin = results.origin
         myresults.msglist = msglist
+        for rsh in direction_rsh_result_list:
+            myresults.rasterscan_heuristics_results_direction.setdefault(rsh.ms.origin_ms, []).append(rsh)
+        for rsh in time_rsh_result_list:
+            myresults.rasterscan_heuristics_results_time.setdefault(rsh.ms.origin_ms, []).append(rsh)
         return myresults
 
     def _get_fluxes(self, context, observing_run):

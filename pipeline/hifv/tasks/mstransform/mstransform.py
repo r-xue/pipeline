@@ -27,14 +27,16 @@ class VlaMstransformInputs(mst.MstransformInputs):
         return vis_root + '_targets.ms'
 
     spw_line = vdp.VisDependentProperty(default='')
+    omit_contline_ms = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None):
+                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None, omit_contline_ms=None):
 
         super().__init__(context, output_dir, vis, outputvis, field, intent, spw, chanbin, timebin)
         self.spw_line = spw_line
         self.outputvis = outputvis
         self.outputvis_for_line = outputvis_for_line
+        self.omit_contline_ms = omit_contline_ms
 
 
 @task_registry.set_equivalent_casa_task('hifv_mstransform')
@@ -50,6 +52,7 @@ class VlaMstransform(mst.Mstransform):
         # Remove input member variables that don't belong as input to the mstransform task
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
+        mstransform_args.pop('omit_contline_ms', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -60,12 +63,13 @@ class VlaMstransform(mst.Mstransform):
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
 
-        # Create output MS for line data (_target.ms)
-        produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
+        if not self.inputs.omit_contline_ms:
+            # Create output MS for line data (_target.ms)
+            self._create_targets_ms(inputs, mstransform_args)
 
         # Create the results structure
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
+                                       outputvis_for_line=inputs.outputvis_for_line)
 
         return result
 
@@ -78,7 +82,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Check for existence of the output vis for line processing.
         if not os.path.exists(result.outputvis_for_line):
-            LOG.info('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
+            LOG.info('Did not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
 
         # Import the new measurement sets.
         try:
@@ -180,10 +184,9 @@ class VlaMstransform(mst.Mstransform):
 
 
 class VlaMstransformResults(mst.MstransformResults):
-    def __init__(self, vis, outputvis, outputvis_for_line, produce_lines_ms=False):
+    def __init__(self, vis, outputvis, outputvis_for_line):
         super().__init__(vis, outputvis)
         self.outputvis_for_line = outputvis_for_line
-        self.produce_lines_ms = produce_lines_ms
 
     def merge_with_context(self, context):
         # Check for an output vis
@@ -209,10 +212,6 @@ class VlaMstransformResults(mst.MstransformResults):
             calto = callibrary.CalTo(vis=ms.name)
             LOG.info('Registering {} with callibrary'.format(ms.name))
             context.callibrary.add(calto, [])
-
-        # Set whether to do cube imaging or not
-        if not self.produce_lines_ms:
-            context.vla_skip_mfs_and_cube_imaging = True
 
     def __str__(self):
         # Format the Mstransform results.

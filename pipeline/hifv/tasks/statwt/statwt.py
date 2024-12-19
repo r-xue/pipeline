@@ -2,12 +2,14 @@ import os
 import shutil
 
 import numpy as np
+
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hifv.heuristics import set_add_model_column_parameters
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.infrastructure import (casa_tasks, casa_tools, task_registry,
+                                     utils)
 from pipeline.infrastructure.contfilehandler import contfile_to_spwsel
 
 LOG = infrastructure.get_logger(__name__)
@@ -76,7 +78,7 @@ class Statwt(basetask.StandardTaskTemplate):
             self.inputs.statwtmode = 'VLA'
 
         fielddict = contfile_to_spwsel(self.inputs.vis, self.inputs.context)
-        fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
+        fields = ','.join(utils.fieldname_for_casa(x) for x in fielddict) if fielddict != {} else ''
 
         wtables = {}
 
