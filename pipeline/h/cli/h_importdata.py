@@ -3,6 +3,7 @@ import sys
 from . import utils
 
 
+# docstring and type hints: inherits from h.tasks.importdata.importdata.ImportDataInputs.__init__
 @utils.cli_wrapper
 def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, overwrite=None,
                  nocopy=None, bdfflags=None, lazy=None, ocorr_mode=None, createmms=None):
@@ -17,37 +18,6 @@ def h_importdata(vis=None, session=None, asis=None, process_caldevice=None, over
     MS already exists in the output directory, the importasdm
     conversion step is skipped, and the existing MS will be imported
     instead.
-
-    Args:
-        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
-            converted to MS format.
-            example: vis=['X227.ms', 'asdms.tar.gz']
-
-        session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise
-            a session must be assigned to each vis file.
-            example: session=['session_1', 'session_2']
-
-        asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names
-            separated by space characters.
-            default: 'Antenna Station Receiver CalAtmosphere'
-            example: 'Receiver', ''
-
-        process_caldevice: Ingest the ASDM caldevice table.
-
-        overwrite: Overwrite existing files on import. When converting ASDM to MS, if overwrite=False and the MS
-            already exists in output directory, then this existing MS
-            dataset will be used instead.
-
-        nocopy: When importing an MS, disable copying of the MS to the working directory.
-
-        bdfflags: Apply BDF flags on import.
-
-        lazy: Use the lazy import option.
-
-        ocorr_mode: Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).
-
-        createmms: Create a multi-MeasurementSet ('true') ready for parallel processing, or a standard MeasurementSet ('false'). The default setting
-            ('automatic') creates an MMS if running in a cluster environment.
 
     Returns:
         The results object for the pipeline task is returned.
