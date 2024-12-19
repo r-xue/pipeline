@@ -59,25 +59,25 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
                     - polarization string
                     - the scaling factor
 
-                Example for the file is as follows:
+                Example for the file is as follows::
 
-                | #MS,Beam,Spwid,Polarization,Factor
-                | mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000
-                | mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000
+                    #MS,Beam,Spwid,Polarization,Factor
+                    mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000
+                    mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000
 
                 If no file name is specified or specified file doesn't exist,
                 all the factors are set to 1.0.

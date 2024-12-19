@@ -142,21 +142,25 @@ class SDBaselineInputs(vdp.StandardInputs):
             linewindow: Pre-defined line window. If this is set, specified line windows are used as
                 a line mask for baseline subtraction instead to determine masks based on line detection and
                 validation stage. Several types of format are acceptable. One is channel-based window.
+                ::
 
                     [min_chan, max_chan]
 
                 where min_chan and max_chan should be an integer. For multiple  windows, nested list is
                 also acceptable.
+                ::
 
                     [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]
 
                 Another way is frequency-based window.
+                ::
 
                     [min_freq, max_freq]
 
                 where min_freq and max_freq should be either a float or a string. If float value is given,
                 it is interpreted as a frequency in Hz. String should be a quantity consisting
                 of "value" and "unit", e.g., '100GHz'. Multiple windows are also supported.
+                ::
 
                     [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]
 
@@ -172,11 +176,13 @@ class SDBaselineInputs(vdp.StandardInputs):
                 In case when line windows vary with spw, line windows can be specified by a dictionary whose
                 key is spw id while value is line window. For example, the following dictionary gives different
                 line windows to spws 17 and 19. Other spws, if available, will have an empty line window.
+                ::
 
                     {17: [[100, 200], [1200, 1400]], 19: ['112115MHz', '112116MHz']}
 
                 Furthermore, linewindow accepts MS selection string. The following string gives
                 [[100,200],[1200,1400]] for spw 17 while [1000,1500] for spw 21.
+                ::
 
                     "17:100~200;1200~1400,21:1000~1500"
 
@@ -184,9 +190,9 @@ class SDBaselineInputs(vdp.StandardInputs):
                 in this case is not fixed to LSRK. Instead, the frame will be taken from the MS
                 (typically TOPO for ALMA). Thus, the following two frequency-based line windows
                 result different channel selections.
+                ::
 
                     {19: ['112115MHz', '112116MHz']} # frequency frame is LSRK
-
                     "19:11215MHz~11216MHz" # frequency frame is taken from the data (TOPO for ALMA)
 
                 None is allowed as a value of dictionary input to indicate that no line detection/validation
@@ -194,6 +200,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                 and if ``linewindowmode`` is 'replace', line detection/validation is not performed
                 for the corresponding spw. For example, suppose the following parameters are given for the data
                 with four science spws, 17, 19, 21, and 23.
+                ::
 
                     linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
                     linewindowmode='replace'

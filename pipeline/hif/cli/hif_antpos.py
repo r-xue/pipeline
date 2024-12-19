@@ -21,11 +21,11 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     The antenna positions file is in 'csv' format containing 6 comma-delimited
     columns as shown below. The default name of this file is 'antennapos.csv'.
 
-    Contents of example 'antennapos.csv' file:
+    Contents of example 'antennapos.csv' file::
 
-    ms,antenna,xoffset,yoffset,zoffset,comment
-    uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,"No comment"
-    uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,"No comment"
+        ms,antenna,xoffset,yoffset,zoffset,comment
+        uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,"No comment"
+        uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,"No comment"
 
     The corrections are used to generate a calibration table which is recorded
     in the pipeline context and applied to the raw visibility data, on the fly to
