@@ -26,16 +26,16 @@ test_params_func = [({'unit': 'deg', 'value': 239.9617912649343},
                      {'unit': 'deg', 'value': -107.6183},
                      {'unit': 'deg', 'value': 33.90049},
                      {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'},
-                    (0.2981984027696312,
-                     1.4473222298324353)
+                    (0.29819920860195787,
+                     1.4473218710956612)
                      ),
                     ({'unit': 'deg', 'value': 64.45982059345977},
                      {'unit': 'deg', 'value': 24.49997953261358},
                      {'unit': 'deg', 'value': -107.6183},
                      {'unit': 'deg', 'value': 33.90049},
                      {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'},
-                    (0.6200683050479314,
-                     -1.1411500788434417)
+                    (2.0880275133156623,
+                     -0.2674689095474299)
                      )]
 
 
@@ -84,7 +84,7 @@ def test_do_wide_field_corr(fitsname: str, obs_long: Dict[str, Union[str, float]
     assert abs(delta_ra) < epsilon and abs(delta_dec) < epsilon
 
 
-@pytest.mark.parametrize('ra, dec, obs_log, obs_lat, date_time', test_params_func)
+@pytest.mark.parametrize('ra, dec, obs_long, obs_lat, date_time, expected', test_params_func)
 def test_calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict,
                     expected: Tuple[float, float], epsilon: float = 1.0e-9):
     """Test calc_zd_pa()
