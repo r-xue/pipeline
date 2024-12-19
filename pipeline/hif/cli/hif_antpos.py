@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hif.tasks.antpos.antpos.AntposInputs.__init__
 @utils.cli_wrapper
 def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None):
 
@@ -30,24 +31,6 @@ def hif_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=No
     in the pipeline context and applied to the raw visibility data, on the fly to
     generate other calibration tables, or permanently to generate calibrated
     visibilities for imaging.
-
-    Args:
-        vis: List of input visibility files. example: ['ngc5921.ms']
-
-        caltable: Name of output gain calibration tables. example: ['ngc5921.gcal']
-
-        hm_antpos: Heuristics method for retrieving the antenna position corrections. The options are 'online' (not yet implemented), 'manual',
-            and 'file'.
-
-        antenna: The list of antennas for which the positions are to be corrected. Available when hm_antpos='manual'.
-            example: antenna='DV05,DV07'
-
-        offsets: The list of antenna offsets for each antenna in 'antennas'. Each offset is a set of 3 floating point numbers separated by commas, specified
-            in the ITRF frame. Available when hm_antpos='manual'.
-            example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
-
-        antposfile: The file(s) containing the antenna offsets. Used if hm_antpos is 'file'.
-            example: 'antennapos.csv'
 
     Returns:
         The results object for the pipeline task is returned.
