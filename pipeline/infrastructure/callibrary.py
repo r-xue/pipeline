@@ -357,18 +357,19 @@ class CalTo(object):
         return self._antenna
 
     @antenna.setter
-    def antenna(self, value: str | None) -> None:
+    def antenna(self, value: int | str | None) -> None:
         """
         Set the antennas to which the calibrations apply to given value.
 
         Args:
-            value: String of comma-separated antenna IDs to which the
-                calibrations apply. If None, this is set to an empty string.
-                Contiguous ID ranges are represented as a CASA range, e.g. 1~5.
+            value: Antenna ID (integer) or a string of comma-separated antenna
+                IDs to which the calibrations apply. If None, this is set to an
+                empty string. Contiguous ID ranges are represented as a CASA
+                range, e.g. 1~5.
         """
         if value is None:
             value = ''
-        self._antenna = utils.find_ranges(value)
+        self._antenna = utils.find_ranges(str(value))
 
     @property
     def field(self):
@@ -413,18 +414,19 @@ class CalTo(object):
         return self._spw
 
     @spw.setter
-    def spw(self, value: str | None) -> None:
+    def spw(self, value: int | str | None) -> None:
         """
         Set the spectral window(s) to which the calibrations apply.
 
         Args:
-            value: String of comma-separated spectral window IDs to which the
-                calibrations apply. If None, this is set to an empty string.
-                Contiguous ID ranges are represented as a CASA range, e.g. 1~5.
+            value: Spectral window ID (integer) or a string of comma-separated
+            spectral window IDs to which the calibrations apply. If None, this
+            is set to an empty string. Contiguous ID ranges are represented as a
+            CASA range, e.g. 1~5.
         """
         if value is None:
             value = ''
-        self._spw = utils.find_ranges(value)
+        self._spw = utils.find_ranges(str(value))
 
     @property
     def vis(self) -> str:
