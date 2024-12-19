@@ -316,7 +316,8 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
 
-        # PIPE-1878: calculate iteration/specmode-depdendent theshold scaling factor (only used for VLA-PI)
+        # PIPE-1878: calculate iteration/specmode-dependent threshold scaling factor (only used for VLA-PI) to correct the
+        # potential tclean noise estimation bias.
         rms_multiplier = inputs.heuristics.get_nfrms_multiplier(iter, inputs.intent, inputs.specmode, image_name)
 
         # Need to translate the virtual spw IDs to real ones

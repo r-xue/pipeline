@@ -624,6 +624,17 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         nfrms_multiplier = None
 
+        # PIPE-1878: utilize the nfrms/rms ratio inherited from self-calibration final imaging
+        if iteration > 0 and specmode == "cont" and "TARGET" in intent:
+            nfrms_multiplier = self.imaging_params.get("nfrms_multiplier", None)
+            if nfrms_multiplier is not None:
+                LOG.info(
+                    "Use the selfcal-final nfrms multiplier for TARGET imaging (%s): %s",
+                    imagename,
+                    nfrms_multiplier,
+                )
+                return nfrms_multiplier
+
         if iteration == 2 and specmode in ('cont', 'mfs') and 'TARGET' in intent:
             image_name = imagename if os.path.exists(imagename) else imagename + \
                 '.tt0' if os.path.exists(imagename + '.tt0') else None
