@@ -127,6 +127,7 @@ class ExportDataInputs(vdp.StandardInputs):
     session = vdp.VisDependentProperty(default=[])
     targetimages = vdp.VisDependentProperty(default=[])
     imaging_products_only = vdp.VisDependentProperty(default=False)
+    tarms = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def products_dir(self):
@@ -139,7 +140,7 @@ class ExportDataInputs(vdp.StandardInputs):
     def exportcalprods(self):
         return not (self.imaging_products_only or self.exportmses)
 
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None,
                  products_dir=None, imaging_products_only=None):
         """
@@ -170,6 +171,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
         self.session = session
         self.exportmses = exportmses
+        self.tarms = tarms
         self.pprfile = pprfile
         self.calintents = calintents
         self.calimages = calimages
@@ -776,21 +778,47 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return pprmatchesout
 
-    def _export_final_ms(self, context, vis, products_dir):
+    def _export_final_ms(self, context: object, vis: str, products_dir: str) -> Optional[str]:
+        """Export a CASA measurement set (MS) to the products directory.
+
+        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory. 
+        Otherwise, the MS will be copied directly to the products directory as a directory structure.
+
+        Args:
+            context (object): The current pipeline context object (not used directly in this method).
+            vis (str): The path to the measurement set to be exported.
+            products_dir (str): The directory where the final MS will be stored.
+
+        Returns:
+            Optional[str]: The name of the exported file (compressed tarball or directory), or `None` if an error occurs.
         """
-        Save the ms to a compressed tarfile in products.
-        """
-        # Define the name of the output tarfile
+        # Define the name of the output tarfile or directory
         visname = os.path.basename(vis)
-        tarfilename = visname + '.tgz'
-        LOG.info('Storing final ms %s in %s', visname, tarfilename)
 
-        # Create the tar file
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(visname)
-        tar.close()
+        if self.inputs.tarms:
+            # Export as tarball
+            tarfilename = visname + '.tgz'
+            LOG.info('Storing final MS %s in %s', visname, tarfilename)
 
-        return tarfilename
+            # Create the tar file
+            tar_path = os.path.join(products_dir, tarfilename)
+            try:
+                with tarfile.open(tar_path, "w:gz") as tar:
+                    tar.add(visname)
+                return tarfilename
+            except Exception as e:
+                LOG.error('Failed to create tarball %s: %s', tar_path, str(e))
+                return None
+        else:
+            # Copy MS directory directly
+            target_path = os.path.join(products_dir, visname)
+            LOG.info('Copying final MS %s to %s', visname, target_path)
+            try:
+                shutil.copytree(visname, target_path)
+                return visname
+            except Exception as e:
+                LOG.error('Failed to copy MS %s: %s', target_path, str(e))
+                return None        
 
     def _save_final_flagversion(self, vis, flag_version_name):
         """
