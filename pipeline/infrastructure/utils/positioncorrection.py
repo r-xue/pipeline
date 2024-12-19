@@ -2,7 +2,7 @@
 Utilities used for correcting image center coordinates.
 """
 import os
-from typing import Dict, Tuple, Union
+from typing import Dict, Union
 
 import astropy.io.fits as apfits
 import astropy.units as u
@@ -32,6 +32,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
     CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated *in place*
     in the input FITS image header.
+
+    PIPE-1527: added new header variables zaval and zaunit for the zenith angle
 
     Args:
         fitsname: name (and path) of FITS file to be processed.
@@ -107,6 +109,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             header['cunit1'] = 'deg'
             header['crval2'] = dec_fixed.to_value(u.deg)
             header['cunit2'] = 'deg'
+            header['zaval'] = casa_tools.quanta.convert(zd, 'deg')['value']
+            header['zaunit'] = 'deg'
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
