@@ -200,17 +200,18 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        if 'TARGET' in intent:
+        if "TARGET" in intent:
             # iter1, shallow clean, with pruning off, other automasking settings are the default
             if iteration in [1, 2]:
-                sidelobethreshold = 2.0
                 minbeamfrac = 0.0
+                sidelobethreshold = 2.0
+                noisethreshold = 5.0
+                lownoisethreshold = 1.5
+                negativethreshold = 0.0
             # PIPE-677: iter2, same settings, but pruning is turned back on
             # PIPE-1878: explicitly set noisethreshold/lownoisethreshold values for the nfrms/rms-ratio-based scaling
             if iteration == 2:
                 minbeamfrac = 0.3
-                noisethreshold = 5.0
-                lownoisethreshold = 1.5
 
         # PIPE-1878: adjust the threshold based on a rms scaling factor, e.g. the ratio of rms values from ROIs vs rms from entire image
         if rms_multiplier is not None:
