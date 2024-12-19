@@ -33,8 +33,40 @@ class CheckProductSizeInputs(vdp.StandardInputs):
     def maximsize(self):
         return -1
 
+    # docstring and type hints: supplements hif_checkproductsize
     def __init__(self, context, output_dir=None, vis=None, maxcubesize=None, maxcubelimit=None, maxproductsize=None,
                  calcsb=None, parallel=None, maximsize=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            maxcubesize: Maximum allowed cube size in gigabytes (mitigation goal) -1: automatic from performance parameters
+
+            maxcubelimit: Maximum allowed cube limit in gigabytes (mitigation failure limit)
+                -1: automatic from performance parameters
+
+            maxproductsize: Maximum allowed product size in gigabytes (mitigation goal and failure limit)
+                -1: automatic from performance parameters
+
+            calcsb: Force (re-)calculation of sensitivities and beams
+
+            parallel: Use MPI cluster where possible
+
+            maximsize: Maximum allowed image count size (mitigation goal and hard maximum).
+                Parameter ``maximsize`` must be even and divisible by 2,3,5,7 only.
+                Note that ``maximsize`` is disabled by default and cannot be set at
+                the same time as ``maxcubesize``, ``maxcubelimit`` and ``maxproductsize``!
+                -1: disables mitigation for this parameter
+        """
         super(CheckProductSizeInputs, self).__init__()
 
         self.context = context
@@ -123,7 +155,7 @@ class CheckProductSize(basetask.StandardTaskTemplate):
         # Clear any previous size mitigation parameters
         self.inputs.context.size_mitigation_parameters = {}
 
-        
+
         if self.inputs.maximsize != -1:
             # Mitigate image pixel count (used for VLA, see PIPE-676)
             size_mitigation_parameters, \

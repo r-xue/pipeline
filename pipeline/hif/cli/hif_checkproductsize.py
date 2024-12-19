@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hif.tasks.checkproductsize.checkproductsize.CheckProductSizeInputs.__init__
 @utils.cli_wrapper
 def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxproductsize=None, maximsize=None,
                          calcsb=None, parallel=None):
@@ -24,29 +25,6 @@ def hif_checkproductsize(vis=None, maxcubesize=None, maxcubelimit=None, maxprodu
 
     Note that mitigation for image pixel count and for the product size currently
     are mutually exclusive, with maximsize taking precedence if set.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-        maxcubesize: Maximum allowed cube size in gigabytes (mitigation goal) -1: automatic from performance parameters
-
-        maxcubelimit: Maximum allowed cube limit in gigabytes (mitigation failure limit)
-            -1: automatic from performance parameters
-
-        maxproductsize: Maximum allowed product size in gigabytes (mitigation goal and failure limit)
-            -1: automatic from performance parameters
-
-        maximsize: Maximum allowed image count size (mitigation goal and hard maximum).
-            Parameter ``maximsize`` must be even and divisible by 2,3,5,7 only.
-            Note that ``maximsize`` is disabled by default and cannot be set at
-            the same time as ``maxcubesize``, ``maxcubelimit`` and ``maxproductsize``!
-            -1: disables mitigation for this parameter
-
-        calcsb: Force (re-)calculation of sensitivities and beams
-
-        parallel: Use MPI cluster where possible
 
     Returns:
         The results object for the pipeline task is returned.
