@@ -84,7 +84,6 @@ class Context(object):
         selfcal_resources: List of files/tables required for the
             self-calibration restoration.
         selfcal_targets: List of targets for which self-calibration is performed.
-        sensitivities: TODO: introduced for CAS-10146, but appears unused.
         size_mitigation_parameters: Dictionary containing imaging product size
             mitigation parameters; typically populated by hif_checkproductsize,
             and used by hif_makeimlist.
@@ -153,7 +152,6 @@ class Context(object):
         self.sciimlist = imagelibrary.ImageLibrary()
         self.selfcal_resources: list[str] = []  # PIPE-1802
         self.selfcal_targets = []  # PIPE-1802
-        self.sensitivities = []  # CAS-10146
         self.size_mitigation_parameters = {}  # CAS-9255
         self.subimlist = imagelibrary.ImageLibrary()  # CAS-10345
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
