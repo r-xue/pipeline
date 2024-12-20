@@ -2031,8 +2031,22 @@ class IntervalCalLibrary(object):
         self._active -= to_remove
 
 
+# Set the pipeline calibration state and library to the Interval Tree based
+# implementation.
 CalState = IntervalCalState
 CalLibrary = IntervalCalLibrary
+
+# Note: the current Interval Tree based implementation of the callibrary
+# was introduced in March 2016 (commit 71b6e5bd67d240e2e27fe1a973715cf3aec4b0ab)
+# and has been in use since the Cycle 4 Pipeline release, October 2016,
+# (CASA 4.7.0 + Pipeline-Cycle4-R2-B, r38377).
+#
+# The original Pipeline callibrary was a dictionary-based implementation of the
+# calibration state (DictCalState) and corresponding library (DictCalLibrary),
+# that supported the same interface as the interval-tree based implementation.
+# The dictionary-based implementation has been unused since the Cycle 4 Pipeline
+# release in 2016, and was removed in December 2024 (as part of infrastructure
+# work done in PIPE-2160) in commit: 81b674d10b9aa4b6ed9df8550af18ec86e2f26ce
 
 
 class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'data', 'marker'])):
