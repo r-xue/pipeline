@@ -48,6 +48,9 @@ class ObservingRun(object):
 
     Attributes:
         measurement_sets: List of measurementSet objects associated with run.
+        ms_datatable_name: Path to directory that stores DataTable of each
+            MeasurementSet (ALMA Single-Dish only).
+        ms_reduction_group: Dictionary of reduction groups (ALMA Single-Dish only).
         org_directions: Dictionary with Direction objects of the origin (ALMA
             Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
@@ -64,6 +67,8 @@ class ObservingRun(object):
         Initialize an ObservingRun object.
         """
         self.measurement_sets: list[MeasurementSet] = []
+        self.ms_datatable_name = ''
+        self.ms_reduction_group = {}
         self.org_directions = {}
         self.virtual_science_spw_ids: dict[int, str] = {}  # PIPE-123
         self.virtual_science_spw_names: dict[str, int] = {}  # PIPE-123
