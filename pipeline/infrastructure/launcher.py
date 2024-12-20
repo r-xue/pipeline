@@ -419,6 +419,4 @@ class Pipeline(object):
 
     def close(self) -> None:
         """Save a pickle of the Pipeline Context to a file."""
-        filename = self.context.name
-        with open(filename, 'r+b') as session:
-            pickle.dump(self.context, session, protocol=-1)
+        self.context.save()
