@@ -83,12 +83,9 @@ class FluxcalFlagResults(basetask.Results):
             LOG.error(' No results to merge ')
             return
 
-        # Store the refspwmap and flagging commands
-        # in the context. Leave out the line list for now
+        # Store the refspwmap in the context.
         ms = context.observing_run.get_ms(name=self._vis)
         if ms:
-            #ms.fluxcal_linelist = self._fluxcal_linelist
-            ms.flagcmds.extend(self._fluxcal_flagcmds)
             ms.reference_spwmap = self._refspwmap
 
     def __repr__(self):
