@@ -22,10 +22,11 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
 
     imaging_products_only = vdp.VisDependentProperty(default=False)
 
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
+                 pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, imaging_products_only=None):
         super(ALMAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                   exportmses=exportmses, pprfile=pprfile, calintents=calintents,
+                                                   exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
                                                    calimages=calimages, targetimages=targetimages,
                                                    products_dir=products_dir,
                                                    imaging_products_only=imaging_products_only)
