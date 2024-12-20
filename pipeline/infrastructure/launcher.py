@@ -131,10 +131,6 @@ class Context(object):
         self.subtask_counter = 0
         LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
 
-        # TODO: Appears effectively unused, remove?
-        self.logtype = 'MOUS'
-        LOG.todo('Add OUS registration task. Hard-coding log type to MOUS')
-
         # Define observing run.
         self.observing_run = domain.ObservingRun()
 
