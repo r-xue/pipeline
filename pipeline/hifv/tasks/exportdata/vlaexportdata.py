@@ -103,8 +103,8 @@ class VLAExportData(exportdata.ExportData):
 
         # Make the imaging vislist and the sessions lists.
         #     Force this regardless of the value of imaging_only_products
-        session_list, session_names, session_vislists, vislist = super()._make_lists(
-            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=False)
+        _, _, _, vislist = super()._make_lists(
+            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=None)
 
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
