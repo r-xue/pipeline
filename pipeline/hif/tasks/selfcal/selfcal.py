@@ -144,12 +144,26 @@ class SelfcalInputs(vdp.StandardInputs):
     check_all_spws = vdp.VisDependentProperty(default=False)
     inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+
+    usermask = vdp.VisDependentProperty(default=None)
+    # input as dictionary for individual clean targets, e.g.
+    #   usermask={'IRAS32':'IRAS32.rgn', 'IRS5N':'IRS5N.rgn'}
+    #   usermask={'IRAS32':{'Band_6':'IRAS32.rgn'}, 'IRS5N':{'Band_6': 'IRS5N.rgn'}}
+    #   in which .rgn is a CRTF region (CASA region format)
+    # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
+    usermodel = vdp.VisDependentProperty(default=None)
+    # input as dictiionary for individual clean targets, e.g.
+    #   usermodel={'IRAS32':['IRAS32-model.tt0','IRAS32-model.tt1'], 'IRS5N':['IRS5N-model.tt0','IRS5N-model.tt1']}
+    #   usermodel={'IRAS32':{'Band_6':['IRAS32-model.tt0','IRAS32-model.tt1']}, 'IRS5N':{'Band_6':['IRS5N-model.tt0','IRS5N-model.tt1']}}
+    # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
+
     restore_resources = vdp.VisDependentProperty(default=None)
 
     def __init__(self, context, vis=None, field=None, spw=None, contfile=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
+                 usermask=None, usermodel=None,
                  apply=None, parallel=None, recal=None, restore_resources=None):
         super().__init__()
         self.context = context
@@ -173,6 +187,8 @@ class SelfcalInputs(vdp.StandardInputs):
         self.check_all_spws = check_all_spws
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine
         self.restore_resources = restore_resources
+        self.usermask = usermask
+        self.usermodel = usermodel
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -447,20 +463,28 @@ class Selfcal(basetask.StandardTaskTemplate):
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
-            scal_library, solints, bands, _ = tq_results[idx]
+            scal_library, _ = tq_results[idx]
             sc_exception = False
             if scal_library is None:
                 sc_exception = True
             if not sc_exception:
                 try:
-                    target['sc_band'] = bands[0]
-                    target['sc_solints'] = solints[bands[0]]
-                    # note scal_library is keyed by field name without quotes at this moment.
-                    # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
-                    #       utils.fieldname_for_casa() and
-                    #       utils.dequote()
-                    field_name = target['field_name']  # the dequoted field name
-                    target['sc_lib'] = scal_library[field_name][target['sc_band']]
+                    # scal_library here is expected to contain only a single target/band combination.
+                    sc_field = list(scal_library.keys())[0]                  # the selfcal heuristics target name
+                    sc_band = list(scal_library[sc_field].keys())[0]        # the selfcal heuristics band name
+
+                    if sc_field != target['sc_field']:
+                        # note scal_library is keyed by field name without quotes at this moment.
+                        # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
+                        #       utils.fieldname_for_casa() and
+                        #       utils.dequote()
+                        LOG.warning(
+                            'The field name of the selfcal library (%s) is different from the clean target dequoted field name: %s != %s',
+                            sc_field, target['sc_field'])
+                    target['sc_band'] = sc_band
+
+                    target['sc_lib'] = scal_library[sc_field][sc_band]
+                    target['sc_solints'] = target['sc_lib']['solints']
                     target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
                     target['sc_success'] = target['sc_lib']['SC_success']
                 except Exception as err:
@@ -479,9 +503,13 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _run_selfcal_sequence(scal_target, **kwargs):
+        """Run the selfcal sequence for a single target.
+        
+        Note that this function is executed in a TaskQueue so potentially on an MPI server process.
+        """
 
         workdir = os.path.abspath('./')
-        selfcal_library = solints = bands = trackback_msg = None
+        selfcal_library = trackback_msg = None
 
         try:
             os.chdir(scal_target['sc_workdir'])
@@ -494,7 +522,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             # with open('selfcal_heuristics.pickle', 'wb') as handle:
             #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-            selfcal_library, solints, bands = selfcal_heuristics()
+            selfcal_library = selfcal_heuristics()
         except Exception as err:
             traceback_msg = traceback.format_exc()
             LOG.info(traceback_msg)
@@ -508,7 +536,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 mpihelpers.mpiclient.push_command_request(
                     f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
-        return selfcal_library, solints, bands, trackback_msg
+        return selfcal_library, trackback_msg
 
     def _apply_scal(self, sc_targets, mses):
 
@@ -622,6 +650,16 @@ class Selfcal(basetask.StandardTaskTemplate):
         makeimlist_results = makeimlist_task.execute()
 
         scal_targets = makeimlist_results.targets
+
+        if isinstance(self.inputs.usermask, dict):
+            usermask = self.inputs.usermask
+        else:
+            usermask = {}
+        if isinstance(self.inputs.usermodel, dict):
+            usermodel = self.inputs.userrmodel
+        else:
+            usermodel = {}
+
         for scal_target in scal_targets:
             scal_target['sc_telescope'] = telescope
             _, repr_source, repr_spw, _, _, repr_real, _, _, _, _ = scal_target['heuristics'].representative_target()
@@ -635,6 +673,11 @@ class Selfcal(basetask.StandardTaskTemplate):
             # Note that scal_library is currently keyed by field name without quotes.
             # We use the 'field_name' value to retrieve self-calibration results from scal_library generated by the self-cal solver.
             scal_target['field_name'] = utils.dequote(scal_target['field'])
+            scal_target['sc_field'] = utils.dequote(scal_target['field'])
+            # not supporting the target->band nest dictionary structure yet.
+            scal_target['sc_usermask'] = usermask.get(scal_target['sc_field'], '')
+            scal_target['sc_usermodel'] = usermodel.get(scal_target['sc_field'], '')
+          
 
         LOG.debug('scal_targets: %s', scal_targets)
 

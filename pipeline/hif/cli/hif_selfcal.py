@@ -10,6 +10,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
+                usermask=None, usermodel=None,
                 parallel=None):
     """
     hif_selfcal  ---- Determine and apply self-calibration with the science target data
@@ -80,6 +81,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False
+    usermask                User mask to be used for self-calibration imaging.
+    usermodel               User model to be used for self-calibration imaging.
     parallel                Use MPI cluster where possible, default='automatic'.
                             options: 'automatic', 'true', 'false', True, False
 
