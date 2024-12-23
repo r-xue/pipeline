@@ -11,7 +11,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    nchan=None, start=None, width=None, nbins=None,
                    robust=None, uvtaper=None, clearlist=None, per_eb=None,
                    per_session=None, calcsb=None, datatype=None, datacolumn=None,
-                   allow_wproject, parallel=None):
+                   allow_wproject=None, parallel=None):
 
     """
     hif_makeimlist ---- Compute list of clean images to be produced
