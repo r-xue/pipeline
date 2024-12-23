@@ -3,27 +3,28 @@
 see: https://github.com/jjtobin/auto_selfcal
 """
 
+import fnmatch
 import glob
 import os
-import fnmatch
+import shutil
 
 import numpy as np
+
 import pipeline.infrastructure as infrastructure
 from pipeline.domain.observingrun import ObservingRun
-from pipeline.infrastructure import casa_tools, utils
+from pipeline.infrastructure import casa_tools, filenamer, logging, utils
 from pipeline.infrastructure.casa_tasks import CasaTasks
+from pipeline.infrastructure.casa_tools import imager as im
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-from pipeline.infrastructure import logging
-from pipeline.infrastructure import filenamer
 
 from .selfcal_helpers import (analyze_inf_EB_flagging, checkmask,
-                              compare_beams, estimate_near_field_SNR,
-                              estimate_SNR, fetch_targets,
-                              get_dr_correction, get_intflux, get_n_ants,
-                              get_nterms, get_SNR_self,
-                              get_SNR_self_update, get_solints_simple, get_spw_map,
-                              get_spw_bandwidth, get_uv_range, importdata,
-                              copy_products, rank_refants)
+                              compare_beams, copy_products,
+                              estimate_near_field_SNR, estimate_SNR,
+                              fetch_targets, get_dr_correction, get_intflux,
+                              get_n_ants, get_nterms, get_SNR_self,
+                              get_SNR_self_update, get_solints_simple,
+                              get_spw_bandwidth, get_spw_map, get_uv_range,
+                              importdata, rank_refants)
 
 # from pipeline.infrastructure.utils import request_omp_threading
 
@@ -61,6 +62,9 @@ class SelfcalHeuristics(object):
         self.parallel = scal_target['sc_parallel']
         self.telescope = scal_target['sc_telescope']
 
+        self.usermask = scal_target['sc_usermask']
+        self.usermodel = scal_target['sc_usermodel']        
+
         self.vis = self.vislist[-1]
         self.uvtaper = scal_target['uvtaper']
         self.robust = scal_target['robust']
@@ -82,6 +86,19 @@ class SelfcalHeuristics(object):
         self.refantignore = refantignore
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
         self.inf_EB_gaintype = 'G'                              # Options: 'G' or 'T' or 'G,T'
+
+        self.gaincal_unflag_minsnr = 5.0
+        self.unflag_only_lbants = False
+        self.unflag_only_lbants_onlyap = False
+        self.calonly_max_flagged = 0.0
+        self.second_iter_solmode = ''
+        self.unflag_fb_to_prev_solint = False
+        self.rerank_refants = False
+        self.allow_gain_interpolation = False
+        self.guess_scan_combine = False
+        self.aca_use_nfmask = False
+        self.allow_cocal = False
+        self.scale_fov = 1.0 # option to make field of view larger than the default        
 
         LOG.info('recreating observing run from per-selfcal-target MS(es): %r', self.vislist)
         self.image_heuristics.observing_run = self.get_observing_run(self.vislist)
@@ -107,7 +124,7 @@ class SelfcalHeuristics(object):
             savemodel='none', sidelobethreshold=3.0, smoothfactor=1.0,  noisethreshold=5.0, lownoisethreshold=1.5,
             parallel=False, nterms=1, cyclefactor=3, uvrange='', threshold='0.0Jy', startmodel='', pblimit=0.1, pbmask=0.1, field='',
             datacolumn='', spw='', obstype='single-point', nfrms_multiplier=1.0,
-            savemodel_only=False, resume=False):
+            savemodel_only=False, resume=False, image_mosaic_fields_separately=False, mosaic_field_phasecenters={}, mosaic_field_fid_map={}, usermodel=''):
         """
         Wrapper for tclean with keywords set to values desired for the Large Program imaging
         See the CASA 6.1.1 documentation for tclean to get the definitions of all the parameters
@@ -117,26 +134,40 @@ class SelfcalHeuristics(object):
         # Minimize out the nfrms_multiplier at 1.
         nfrms_multiplier = max(nfrms_multiplier, 1.0)
 
-        if mask == '':
-            usemask = 'auto-multithresh'
-        else:
+        # select the proper mask heuristics
+        if mask:
             usemask = 'user'
-        if threshold != '0.0Jy':
-            nsigma = 0.0
-
-        if nsigma != 0.0:
-            if nsigma*nfrms_multiplier*0.66 > nsigma:
-                nsigma = nsigma*nfrms_multiplier*0.66
-
+        else:
+            usemask = 'auto-multithresh'
         if telescope == 'ALMA':
+
+            LOG.info('ALMA band properties: %s', band_properties)
+            uv75pct = band_properties[vis[0]][band]['75thpct_uv']
+
+            baselineThresholdALMA = 400.0
+            if uv75pct > baselineThresholdALMA:
+                fastnoise = True
+            else:
+                fastnoise = False
             sidelobethreshold = 2.5
             smoothfactor = 1.0
             noisethreshold = 5.0*nfrms_multiplier
             lownoisethreshold = 1.5*nfrms_multiplier
             cycleniter = -1
-            cyclefactor = 1.0
-            LOG.info(band_properties)
-            if band_properties[vis[0]][band]['75thpct_uv'] > 2000.0:
+            negativethreshold = 0.0
+            dogrowprune = True
+            minpercentchange = 1.0
+            growiterations = 75
+            minbeamfrac = 0.3
+            # cyclefactor=1.0
+            if uv75pct > 2000.0:
+                sidelobethreshold = 2.0
+            if uv75pct < 300.0:
+                sidelobethreshold = 2.0
+                smoothfactor = 1.0
+                noisethreshold = 4.25*nfrms_multiplier
+                lownoisethreshold = 1.5*nfrms_multiplier
+            if uv75pct < baselineThresholdALMA:
                 sidelobethreshold = 2.0
 
         if telescope == 'ACA':
@@ -145,17 +176,38 @@ class SelfcalHeuristics(object):
             noisethreshold = 5.0*nfrms_multiplier
             lownoisethreshold = 2.0*nfrms_multiplier
             cycleniter = -1
-            cyclefactor = 1.0
+            fastnoise = False
+            negativethreshold = 0.0
+            dogrowprune = True
+            minpercentchange = 1.0
+            growiterations = 75
+            minbeamfrac = 0.3
+            # cyclefactor=1.0
 
         elif 'VLA' in telescope:
+
+            LOG.info('VLA band properties: %s', band_properties)
+            fastnoise = True
             sidelobethreshold = 2.0
             smoothfactor = 1.0
             noisethreshold = 5.0*nfrms_multiplier
             lownoisethreshold = 1.5*nfrms_multiplier
             pblimit = -0.1
             cycleniter = -1
-            cyclefactor = 3.0
+            negativethreshold = 0.0
+            dogrowprune = True
+            minpercentchange = 1.0
+            growiterations = 75
+            minbeamfrac = 0.3
             pbmask = 0.0
+            # cyclefactor=3.0
+
+        if threshold != '0.0Jy':
+            nsigma = 0.0
+
+        if nsigma != 0.0:
+            if nsigma*nfrms_multiplier*0.66 > nsigma:
+                nsigma = nsigma*nfrms_multiplier*0.66
 
         tclean_args = {'vis': vis,
                        'imagename': imagename,
@@ -164,6 +216,7 @@ class SelfcalHeuristics(object):
                        'deconvolver': 'mtmfs',
                        'scales': scales,
                        'gridder': self.gridder,
+                       'wprojplanes': self.wprojplanes,
                        'weighting': 'briggs',
                        'robust': robust,
                        'gain': gain,
@@ -175,6 +228,12 @@ class SelfcalHeuristics(object):
                        'nsigma': nsigma,
                        'cycleniter': cycleniter,
                        'cyclefactor': cyclefactor,
+                       'growiterations': growiterations,
+                       'negativethreshold': negativethreshold,
+                       'dogrowprune': dogrowprune,
+                       'minpercentchange': minpercentchange,
+                       'minbeamfrac': minbeamfrac,
+                       'fastnoise': fastnoise,
                        'uvtaper': uvtaper,
                        'mask': mask,
                        'usemask': usemask,
@@ -211,7 +270,62 @@ class SelfcalHeuristics(object):
                 self.remove_dirs([imagename+ext for ext in image_exts])
             tc_ret = self.cts.tclean(**tclean_args)
 
-        if savemodel == 'modelcolumn':
+            if image_mosaic_fields_separately:
+                for field_id in mosaic_field_phasecenters:
+                    imagename_field = imagename+'_field_'+str(field_id)
+                    if 'VLA' in telescope:
+                        fov = 45.0e9/band_properties[vis[0]][band]['meanfreq']*60.0*1.5*0.5
+                        if band_properties[vis[0]][band]['meanfreq'] < 12.0e9:
+                            fov = fov*2.0
+                    if telescope == 'ALMA':
+                        fov = 63.0*100.0e9/band_properties[vis[0]][band]['meanfreq']*1.5*0.5*1.15
+                    if telescope == 'ACA':
+                        fov = 108.0*100.0e9/band_properties[vis[0]][band]['meanfreq']*1.5*0.5
+
+                    center = np.copy(mosaic_field_phasecenters[field_id])
+                    if self.phasecenter == 'TRACKFIELD':
+                        center += self.cts.imhead(imagename+".image.tt0")['refval'][0:2]
+
+                    region = 'circle[[{0:f}rad, {1:f}rad], {2:f}arcsec]'.format(center[0], center[1], fov)
+
+                    for ext in [".image.tt0", ".mask", ".residual.tt0", ".psf.tt0", ".pb.tt0"]:
+                        shutil.rmtree(imagename_field+ext.replace("pb", "mospb"), ignore_errors=True)
+
+                        if ext == ".psf.tt0":
+                            shutil.copytree(imagename+ext, imagename_field+ext)
+                        else:
+                            self.cts.imsubimage(imagename+ext, outfile=imagename_field +
+                                                ext.replace("pb", "mospb.tmp"), region=region, overwrite=True)
+
+                            if ext == ".pb.tt0":
+                                self.cts.immath(imagename=[imagename_field+ext.replace("pb", "mospb.tmp")],
+                                                outfile=imagename_field+ext.replace("pb", "mospb"),
+                                                expr="IIF(IM0 == 0, 0.1, IM0)")
+                                shutil.rmtree(imagename_field+ext.replace("pb", "mospb.tmp"), ignore_errors=True)
+
+                    # Make an image of the primary beam for each sub-field.
+                    if isinstance(vis, list):
+                        for v in vis:
+                            # Since not every field is in every v, we need to check them all so that we don't accidentally get a v without a given field_id
+                            if field_id in mosaic_field_fid_map[v]:
+                                fid = mosaic_field_fid_map[v][field_id]
+                                break
+
+                        im.open(v)
+                    else:
+                        fid = mosaic_field_fid_map[vis][field_id]
+                        im.open(vis)
+
+                    nx, ny, nfreq, npol = self.cts.imhead(imagename=imagename_field+".image.tt0", mode="get",
+                                                          hdkey="shape")
+
+                    im.selectvis(field=str(fid), spw=spw)
+                    im.defineimage(nx=nx, ny=ny, cellx=self.cell, celly=self.cell, phasecenter=fid, mode="mfs", spw=spw)
+                    im.setvp(dovp=True)
+                    im.makeimage(type="pb", image=imagename_field + ".pb.tt0")
+                    im.close()
+
+        if savemodel == 'modelcolumn' and not usermodel:
             LOG.info("")
             LOG.info("Running tclean in the prediction-only setting to fill the MS model column.")
             # A workaround for CAS-14386
@@ -232,6 +346,9 @@ class SelfcalHeuristics(object):
                                 'parallel': parallel_predict,
                                 'startmodel': ''})
             tc_ret = self.cts.tclean(**tclean_args)
+
+        if usermodel:
+            LOG.info('Using user model %s already filled to model column, skipping model write.', usermodel)
 
         return tc_ret
 
