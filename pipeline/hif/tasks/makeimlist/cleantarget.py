@@ -21,6 +21,7 @@ class CleanTarget(dict):
         self['psf_phasecenter'] = None      # string
         self['specmode'] = None             # string
         self['gridder'] = None              # string
+        self['wprojplanes'] = None          # int
         self['datacolumn'] = None           # string
         self['datatype'] = None             # string
         self['datatype_info'] = None        # string

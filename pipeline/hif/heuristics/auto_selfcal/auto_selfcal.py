@@ -56,6 +56,7 @@ class SelfcalHeuristics(object):
         self.phasecenter = scal_target['phasecenter']  # explictly set phasecenter for now
         self.spw_virtual = scal_target['spw']
         self.gridder = scal_target['gridder']
+        self.wprojplanes= scal_target['wprojplanes']
         self.vislist = scal_target['sc_vislist']
         self.parallel = scal_target['sc_parallel']
         self.telescope = scal_target['sc_telescope']
@@ -819,7 +820,7 @@ class SelfcalHeuristics(object):
                             LOG.info('WARNING SPW '+spw+' HAS A >0.05 CHANGE IN BEAM AREA POST SELFCAL')
 
         # attached solints to selfcal_library as a short-term workaround
-        
+
         band=bands[0]
         target=all_targets[0]
         selfcal_library[target][band]['solints'] = solints

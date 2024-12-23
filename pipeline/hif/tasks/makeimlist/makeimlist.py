@@ -44,6 +44,7 @@ class MakeImListInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
+    allow_wproject = vdp.VisDependentProperty(default=False)
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -184,7 +185,7 @@ class MakeImListInputs(vdp.StandardInputs):
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
-                 datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
+                 datacolumn=None, parallel=None, known_synthesized_beams=None, allow_wproject=False, scal=False):
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -217,6 +218,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
+        self.allow_wproject = allow_wproject
         self.scal = scal
 
 
@@ -1301,6 +1303,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                target_heuristics.imaging_params['allow_wproject'] = inputs.allow_wproject
                                 gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
                                 # Get field-specific uvrange value
@@ -1332,6 +1335,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=gridder,
+                                    wprojplanes=target_heuristics.wprojplanes(gridder=gridder, spwspec=actual_spwspec),
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],

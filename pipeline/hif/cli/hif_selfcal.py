@@ -10,7 +10,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
-                usermask=None, usermodel=None,
+                usermask=None, usermodel=None, allow_wproject=None,
                 parallel=None):
     """
     hif_selfcal  ---- Determine and apply self-calibration with the science target data

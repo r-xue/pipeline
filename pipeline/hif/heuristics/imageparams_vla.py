@@ -264,8 +264,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             gridder_select = 'mosaic'
 
         # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
-        # PIPE-2225: disable the L/S-band wproject heuristics for efficient imaging
-        use_wproject = False
+        # PIPE-2225/2230: disable the L/S-band wproject heuristics for efficient imaging by default,
+        # but expose it as an option (allow_wproject)
+        use_wproject = self.imaging_params.get('allow_wproject', False)
         if use_wproject:
             vla_band = self._get_vla_band(spwspec)
             if vla_band in ['L', 'S'] and 'TARGET' in intent:

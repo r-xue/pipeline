@@ -156,14 +156,15 @@ class SelfcalInputs(vdp.StandardInputs):
     #   usermodel={'IRAS32':['IRAS32-model.tt0','IRAS32-model.tt1'], 'IRS5N':['IRS5N-model.tt0','IRS5N-model.tt1']}
     #   usermodel={'IRAS32':{'Band_6':['IRAS32-model.tt0','IRAS32-model.tt1']}, 'IRS5N':{'Band_6':['IRS5N-model.tt0','IRS5N-model.tt1']}}
     # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
-
+    
+    allow_wproject = vdp.VisDependentProperty(default=False)
     restore_resources = vdp.VisDependentProperty(default=None)
 
     def __init__(self, context, vis=None, field=None, spw=None, contfile=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
-                 usermask=None, usermodel=None,
+                 usermask=None, usermodel=None, allow_wproject=None,
                  apply=None, parallel=None, recal=None, restore_resources=None):
         super().__init__()
         self.context = context
@@ -189,6 +190,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.restore_resources = restore_resources
         self.usermask = usermask
         self.usermodel = usermodel
+        self.allow_wproject = allow_wproject
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -645,6 +647,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
                                               spw=self.inputs.spw,
+                                              allow_wproject=self.inputs.allow_wproject,
                                               parallel=self.inputs.parallel)
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute()
