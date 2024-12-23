@@ -821,9 +821,9 @@ class SelfcalHeuristics(object):
 
         # attached solints to selfcal_library as a short-term workaround
 
-        band=bands[0]
-        target=all_targets[0]
-        selfcal_library[target][band]['solints'] = solints
+        band = bands[0]
+        target = all_targets[0]
+        selfcal_library[target][band]['solints'] = solints[band]
         
         return selfcal_library
 
