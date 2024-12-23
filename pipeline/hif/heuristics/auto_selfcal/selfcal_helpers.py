@@ -140,8 +140,10 @@ def fetch_scan_times(vislist, targets):
     return scantimesdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(min_spws), spwslist_dict, spws_set_dict
 
 
-def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
+def fetch_scan_times_band_aware(vislist, targets):
     scantimesdict = {}
+    scanfieldsdict = {}
+    scannfieldsdict = {}
     scanstartsdict = {}
     scanendsdict = {}
     integrationsdict = {}
@@ -154,7 +156,10 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
     mosaic_field = {}
     scansdict = {}
     for vis in vislist:
+        mosaic_field[vis] = {}
         scantimesdict[vis] = {}
+        scanfieldsdict[vis] = {}
+        scannfieldsdict[vis] = {}
         scanstartsdict[vis] = {}
         scanendsdict[vis] = {}
         integrationsdict[vis] = {}
@@ -171,15 +176,24 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             scansdict[vis][target] = list(set(scansforfield))
             scansdict[vis][target].sort()
         for target in targets:
-            mosaic_field[target] = {}
-            mosaic_field[target]['field_ids'] = []
-            mosaic_field[target]['mosaic'] = False
-            # mosaic_field[target]['field_ids']=msmd.fieldsforname(target)
-            mosaic_field[target]['field_ids'] = msmd.fieldsforscans(scansdict[vis][target])
-            mosaic_field[target]['field_ids'] = list(set(mosaic_field[target]['field_ids']))
-            if len(mosaic_field[target]['field_ids']) > 1:
-                mosaic_field[target]['mosaic'] = True
+            mosaic_field[vis][target] = {}
+            mosaic_field[vis][target]['field_ids'] = []
+            mosaic_field[vis][target]['mosaic'] = False
+
+            mosaic_field[vis][target]['field_ids'] = msmd.fieldsforscans(scansdict[vis][target]).tolist()
+            mosaic_field[vis][target]['field_ids'] = list(set(mosaic_field[vis][target]['field_ids']))
+
+            mosaic_field[vis][target]['phasecenters'] = []
+            for fid in mosaic_field[vis][target]['field_ids']:
+                tb.open(vis+'/FIELD')
+                mosaic_field[vis][target]['phasecenters'].append(tb.getcol("PHASE_DIR")[:, 0, fid])
+                tb.close()
+
+            if len(mosaic_field[vis][target]['field_ids']) > 1:
+                mosaic_field[vis][target]['mosaic'] = True
             scantimes = np.array([])
+            scanfields = np.array([])
+            scannfields = np.array([])
             integrations = np.array([])
             scanstarts = np.array([])
             scanends = np.array([])
@@ -199,8 +213,12 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
                 ints_per_scan = np.round(scantime/integrationtimes[0])
                 scantimes = np.append(scantimes, np.array([scantime]))
                 integrations = np.append(integrations, np.array([ints_per_scan]))
+                scanfields = np.append(scanfields, np.array([','.join(msmd.fieldsforscan(scan).astype(str))]))
+                scannfields = np.append(scannfields, np.array([msmd.fieldsforscan(scan).size]))
 
             scantimesdict[vis][target] = scantimes.copy()
+            scanfieldsdict[vis][target] = scanfields.copy()
+            scannfieldsdict[vis][target] = scannfields.copy()
             scanstartsdict[vis][target] = scanstarts.copy()
             scanendsdict[vis][target] = scanends.copy()
             # assume each band only has a single integration time
@@ -223,8 +241,8 @@ def fetch_scan_times_band_aware(vislist, targets, band_properties, band):
             LOG.debug('Inconsistent minimum spwid in scans/MSes (possibly expected if multi-band VLA data or ALMA spectral scan)')
         spwslist = np.unique(spwslist).astype(int)
     else:
-        return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, spws_set_dict, mosaic_field
-    return scantimesdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(
+        return scantimesdict, scanfieldsdict, scannfieldsdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, -99, -99, spwslist, spws_set_dict, mosaic_field
+    return scantimesdict, scanfieldsdict, scannfieldsdict, scanstartsdict, scanendsdict, integrationsdict, integrationtimesdict, integrationtimes, np.max(n_spws), np.min(
         min_spws), spwslist, spws_set_dict, mosaic_field
 
 
@@ -594,6 +612,54 @@ def estimate_near_field_SNR(imagename, las=None, maskname=None, verbose=True):
 
     return SNR, rms
 
+
+def get_image_stats(image, mask, backup_mask, selfcal_library, use_nfmask, solint, suffix, mosaic_sub_field=False, spw='all'):
+    """Do the assessment of the post- (and pre-) selfcal images."""
+    SNR, RMS = estimate_SNR(image, maskname=mask, mosaic_sub_field=mosaic_sub_field)
+    if use_nfmask:
+       SNR_NF, RMS_NF = estimate_near_field_SNR(
+           image, maskname=mask, las=selfcal_library['LAS'], mosaic_sub_field=mosaic_sub_field)
+       if RMS_NF < 0 and backup_mask != '':
+           SNR_NF, RMS_NF = estimate_near_field_SNR(
+               image, maskname=backup_mask, las=selfcal_library['LAS'], mosaic_sub_field=mosaic_sub_field)
+    else:
+       SNR_NF, RMS_NF = SNR, RMS
+
+    for vis in selfcal_library['vislist']:
+       if suffix in ['dirty', 'orig', 'initial', 'final']:
+           if spw == 'all':
+               update_dict = selfcal_library
+           else:
+               update_dict = selfcal_library['per_spw_stats'][spw]
+       else:
+           update_dict = selfcal_library[vis][solint]
+
+       ##
+       # record self cal results/details for this solint
+       ##
+       update_dict['SNR_'+suffix] = SNR.copy()
+       update_dict['RMS_'+suffix] = RMS.copy()
+       update_dict['SNR_NF_'+suffix] = SNR_NF.copy()
+       update_dict['RMS_NF_'+suffix] = RMS_NF.copy()
+
+       header = cts.imhead(imagename=image)
+       update_dict['Beam_major_'+suffix] = header['restoringbeam']['major']['value']
+       update_dict['Beam_minor_'+suffix] = header['restoringbeam']['minor']['value']
+       update_dict['Beam_PA_'+suffix] = header['restoringbeam']['positionangle']['value']
+
+       if checkmask(imagename=mask):
+           update_dict['intflux_'+suffix], update_dict['e_intflux_'+suffix] = get_intflux(image, RMS, maskname=mask,
+                                                                                          mosaic_sub_field=mosaic_sub_field)
+       elif backup_mask != '' and checkmask(imagename=backup_mask):
+           update_dict['intflux_'+suffix], update_dict['e_intflux_'+suffix] = get_intflux(image, RMS, maskname=backup_mask,
+                                                                                          mosaic_sub_field=mosaic_sub_field)
+       else:
+           update_dict['intflux_'+suffix], update_dict['e_intflux_'+suffix] = -99.0, -99.0
+
+       if suffix in ['dirty', 'orig', 'initial', 'final']:
+           break
+
+    return SNR, RMS, SNR_NF, RMS_NF
 
 def get_intflux(imagename, rms, maskname=None):
 
@@ -1374,6 +1440,8 @@ def importdata(vislist, all_targets, telescope):
             spectral_scan = True
 
     scantimesdict = {}
+    scanfieldsdict = {}
+    scannfieldsdict = {}
     scanstartsdict = {}
     scanendsdict = {}
     integrationsdict = {}
@@ -1385,10 +1453,13 @@ def importdata(vislist, all_targets, telescope):
 
     for band in bands:
         LOG.info(band)
-        scantimesdict_temp, scanstartsdict_temp, scanendsdict_temp, integrationsdict_temp, integrationtimesdict_temp, \
-            integrationtimes_temp, n_spws_temp, minspw_temp, spwsarray_temp, spws_set_dict_temp, mosaic_field_temp = fetch_scan_times_band_aware(vislist, all_targets, band_properties, band)
+        scantimesdict_temp, scanfieldsdict_temp, scannfieldsdict_temp, scanstartsdict_temp, scanendsdict_temp, integrationsdict_temp, integrationtimesdict_temp, \
+            integrationtimes_temp, n_spws_temp, minspw_temp, spwsarray_temp, spws_set_dict_temp, mosaic_field_temp = fetch_scan_times_band_aware(
+                vislist, all_targets)
 
         scantimesdict[band] = scantimesdict_temp.copy()
+        scanfieldsdict[band] = scanfieldsdict_temp.copy()
+        scannfieldsdict[band] = scannfieldsdict_temp.copy()
         scanstartsdict[band] = scanstartsdict_temp.copy()
         scanendsdict[band] = scanendsdict_temp.copy()
         integrationsdict[band] = integrationsdict_temp.copy()
@@ -1414,17 +1485,49 @@ def importdata(vislist, all_targets, telescope):
                     integrationsdict[band][vis].pop(target)
                     integrationtimesdict[band][vis].pop(target)
                     scantimesdict[band][vis].pop(target)
+                    scanfieldsdict[band][vis].pop(target)
+                    scannfieldsdict[band][vis].pop(target)
                     scanstartsdict[band][vis].pop(target)
                     scanendsdict[band][vis].pop(target)
                     if loopcount == 0:
-                        mosaic_field_dict[band].pop(target)
+                        mosaic_field_dict[band][vis].pop(target)
             loopcount += 1
     if len(bands_to_remove) > 0:
         for delband in bands_to_remove:
             bands.remove(delband)
 
-    return bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, integrationtimesdict, \
-        spwslist_dict, spwstring_dict, spwsarray_dict, mosaic_field_dict, spectral_scan, spws_set_dict
+    # Load the gain calibrator information from the original ms, if available.
+
+    gaincalibrator_dict = {}
+    for vis in vislist:
+        parent_vis_check = vis.replace('_targets.ms', '.ms').replace('_targets_cont.ms', '.ms')
+        parent_vis = None
+        if os.path.exists('../'+parent_vis_check):
+            parent_vis = '../'+parent_vis_check
+        elif os.path.exists('./'+parent_vis_check):
+            parent_vis = './'+parent_vis_check
+
+        viskey = vis
+        gaincalibrator_dict[viskey] = {}
+        if parent_vis is not None:
+            LOG.info('Loading gain calibrator information from %s', parent_vis)
+            msmd.open(parent_vis)
+            for field in msmd.fieldsforintent("*CALIBRATE_PHASE*"):
+                scans_for_field = msmd.scansforfield(field)
+                scans_for_gaincal = msmd.scansforintent("*CALIBRATE_PHASE*")
+                field_name = msmd.fieldnames()[field]
+                gaincalibrator_dict[viskey][field_name] = {}
+                gaincalibrator_dict[viskey][field_name]["scans"] = np.intersect1d(scans_for_field, scans_for_gaincal)
+                gaincalibrator_dict[viskey][field_name]["phasecenter"] = msmd.phasecenter(field)
+                gaincalibrator_dict[viskey][field_name]["intent"] = "phase"
+                gaincalibrator_dict[viskey][field_name]["times"] = np.array(
+                    [np.mean(msmd.timesforscan(scan)) for scan in gaincalibrator_dict[viskey][field_name]["scans"]])
+            msmd.close()
+        else:
+            LOG.warning('Unable to load the gain calibrator information because the parent ms of %s cannot be found.', vis)
+
+    return bands, band_properties, scantimesdict, scanfieldsdict, scannfieldsdict, scanstartsdict, scanendsdict, integrationtimesdict, \
+        spwslist_dict, spwstring_dict, spwsarray_dict, mosaic_field_dict, gaincalibrator_dict, spectral_scan, spws_set_dict
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable):
@@ -1551,3 +1654,164 @@ def analyze_inf_EB_flagging(
         if fallback != '' and spectral_scan:
             fallback = 'combinespw'
     return fallback, map_index, spwmap, applycal_spwmap
+
+
+def triage_calibrators(vis, target, potential_calibrators, max_distance=10.0, max_time=600.):
+
+    LOG.info("Triage calibrators: %s %s %s", vis, target, potential_calibrators)
+
+    gaincalibrator_dict = {}
+
+    parent_vis_check = vis.replace('_targets.ms', '.ms').replace('_targets_cont.ms', '.ms')
+    parent_vis = None
+    if os.path.exists('../'+parent_vis_check):
+        parent_vis = '../'+parent_vis_check
+    elif os.path.exists('./'+parent_vis_check):
+        parent_vis = './'+parent_vis_check
+
+    if parent_vis is not None:
+        msmd.open(parent_vis)
+
+        for field in msmd.fieldsforintent("*CALIBRATE_PHASE*"):
+            scans_for_field = msmd.scansforfield(field)
+            scans_for_gaincal = msmd.scansforintent("*CALIBRATE_PHASE*")
+            field_name = msmd.fieldnames()[field]
+            gaincalibrator_dict[field_name] = {}
+            gaincalibrator_dict[field_name]["scans"] = np.intersect1d(scans_for_field, scans_for_gaincal)
+            gaincalibrator_dict[field_name]["phasecenter"] = msmd.phasecenter(field)
+            gaincalibrator_dict[field_name]["intent"] = "phase"
+            gaincalibrator_dict[field_name]["times"] = np.array([np.mean(msmd.timesforscan(scan)) for scan in
+                                                                 gaincalibrator_dict[field_name]["scans"]])
+
+        gaincal_info_found = len(gaincalibrator_dict) > 0
+
+        msmd.close()
+    else:
+        gaincal_info_found = False
+
+    all_targets = potential_calibrators + [target]
+
+    msmd.open(vis)
+    targets_ids = [msmd.fieldsforname(field)[0] for field in all_targets]
+    for i, field in enumerate(targets_ids):
+        scans_for_field = msmd.scansforfield(field)
+        scans_for_science = msmd.scansforintent("*OBSERVE_TARGET*")
+        field_name = all_targets[i]
+        gaincalibrator_dict[field_name] = {}
+        gaincalibrator_dict[field_name]["scans"] = np.intersect1d(scans_for_field, scans_for_science)
+        gaincalibrator_dict[field_name]["phasecenter"] = msmd.phasecenter(field)
+        gaincalibrator_dict[field_name]["intent"] = "target" if field_name == target else "science"
+        gaincalibrator_dict[field_name]["times"] = np.array(
+            [np.mean(msmd.timesforscan(scan)) for scan in gaincalibrator_dict[field_name]["scans"]])
+
+    msmd.close()
+
+    fields = []
+    scans = []
+    distances = []
+    intents = []
+    times = []
+    # import matplotlib.pyplot as plt
+    for t in gaincalibrator_dict.keys():
+        dRA = (gaincalibrator_dict[t]["phasecenter"]["m0"]["value"] -
+               gaincalibrator_dict[target]["phasecenter"]["m0"]["value"]) * 360/(2*np.pi)
+        dDec = (gaincalibrator_dict[t]["phasecenter"]["m1"]["value"] -
+                gaincalibrator_dict[target]["phasecenter"]["m1"]["value"]) * 360/(2*np.pi)
+        d = (dRA**2 + dDec**2)**0.5
+
+        scans += [gaincalibrator_dict[t]["scans"]]
+        distances += [np.repeat(d, gaincalibrator_dict[t]["scans"].size)]
+        intents += [np.repeat(gaincalibrator_dict[t]["intent"], gaincalibrator_dict[t]["scans"].size)]
+        fields += [np.repeat(t, gaincalibrator_dict[t]["scans"].size)]
+        times += [gaincalibrator_dict[t]["times"]]
+
+    times = np.concatenate(times)
+    order = np.argsort(times)
+    times = times[order]
+
+    scans = np.concatenate(scans)[order]
+    distances = np.concatenate(distances)[order]
+    intents = np.concatenate(intents)[order]
+    fields = np.concatenate(fields)[order]
+    good = np.repeat(False, scans.size)
+    case = np.repeat(0, scans.size)
+
+    if gaincal_info_found:
+        is_gaincalibrator = intents == "phase"
+        gaincal_interval = np.median(times[is_gaincalibrator][1:] - times[is_gaincalibrator][0:-1])
+        print(times[is_gaincalibrator] - times[is_gaincalibrator][0])
+    else:
+        gaincal_interval = np.inf
+
+    LOG.info("gaincal_interval = %f", gaincal_interval)
+
+    prev_target = -1
+    prev_calibrator = -2
+    for i in range(scans.size):
+        if gaincal_info_found:
+            next_calibrator = np.where(intents[i:] == "phase")[0][0] + i
+        else:
+            next_calibrator = np.inf
+
+        if "target" in intents[i:]:
+            next_target = np.where(intents[i:] == "target")[0][0] + i
+        else:
+            next_target = scans.size
+
+        if next_calibrator == i:
+            prev_calibrator = i
+        elif next_target == i:
+            prev_target = i
+
+        next_target_time = times[next_target] if next_target < times.size else np.inf
+        prev_target_time = times[prev_target] if prev_target > 0 else 0
+
+        next_calibrator_distance = distances[next_calibrator] if next_calibrator < distances.size else np.inf
+        prev_calibrator_distance = distances[prev_calibrator] if prev_calibrator >= 0 else np.inf
+
+        if prev_target < prev_calibrator < next_target < next_calibrator:
+            good[i] = distances[i] < min(prev_calibrator_distance, max_distance) and \
+                (abs(times[i] - next_target_time) < min(gaincal_interval, max_time) or
+                 abs(times[i] - prev_target_time) < min(gaincal_interval, max_time))
+            case[i] = 1
+        elif prev_calibrator < prev_target < next_calibrator < next_target:
+            good[i] = distances[i] < min(next_calibrator_distance, max_distance) and \
+                (abs(times[i] - prev_target_time) < min(gaincal_interval, max_time) or
+                 abs(times[i] - next_target_time) < min(gaincal_interval, max_time))
+            case[i] = 2
+        elif prev_target < prev_calibrator < next_calibrator < next_target:
+            good[i] = (distances[i] < min(next_calibrator_distance, max_distance) and
+                       abs(times[i] - next_target_time) < min(gaincal_interval, max_time)) or \
+                (distances[i] < min(prev_calibrator_distance, max_distance) and
+                 abs(times[i] - prev_target_time) < min(gaincal_interval, max_time))
+            case[i] = 3
+        elif prev_calibrator < prev_target < next_target < next_calibrator:
+            good[i] = (distances[i] < min(next_calibrator_distance, max_distance) and
+                       abs(times[i] - next_target_time) < min(gaincal_interval, max_time)) or \
+                (distances[i] < min(prev_calibrator_distance, max_distance) and
+                 abs(times[i] - prev_target_time) < min(gaincal_interval, max_time))
+            case[i] = 4
+
+        next_calibrator_scan = scans[next_calibrator] if gaincal_info_found else scans.size
+        prev_calibrator_scan = scans[prev_calibrator] if gaincal_info_found else -1
+        if next_target < scans.size and prev_target > 0:
+            LOG.info("{0:3d}   {1:5.2f}   {2:7s}   {3:20s}   {4:4.0f}   {5:5s}   {6:1d}   {7:3d}   {8:3d}   {9:3d}   {10:3d}".format(
+                scans[i], distances[i], intents[i], fields[i], times[i] -
+                times[0], str(good[i]), case[i], prev_calibrator_scan,
+                next_calibrator_scan, scans[prev_target], scans[next_target]))
+        elif prev_target < 0:
+            LOG.info("{0:3d}   {1:5.2f}   {2:7s}   {3:20s}   {4:4.0f}   {5:5s}   {6:1d}   {7:3d}   {8:3d}   {9:3d}   {10:3d}".format(
+                scans[i], distances[i], intents[i], fields[i], times[i] -
+                times[0], str(good[i]), case[i], prev_calibrator_scan,
+                next_calibrator_scan, -1, scans[next_target]))
+        else:
+            LOG.info("{0:3d}   {1:5.2f}   {2:7s}   {3:20s}   {4:4.0f}   {5:5s}   {6:1d}   {7:3d}   {8:3d}   {9:3d}   {10:3d}".format(
+                scans[i], distances[i], intents[i], fields[i], times[i] -
+                times[0], str(good[i]), case[i], prev_calibrator_scan,
+                next_calibrator_scan, scans[prev_target], scans.max()+1))
+
+    # good = intents == "science"
+    LOG.info("Good scans: %s", scans[good].astype(str))
+    LOG.info("Good fields: %s", np.unique(fields[good]))
+
+    return ",".join(np.unique(fields[good])), ",".join(scans[good].astype(str))

@@ -844,8 +844,9 @@ class SelfcalHeuristics(object):
 
         n_ants = get_n_ants(vislist)
 
-        bands, band_properties, scantimesdict, scanstartsdict, scanendsdict, \
-            integrationtimesdict, _, _, spwsarray_dict, mosaic_field, spectral_scan, spws_set = importdata(vislist, all_targets, telescope)
+        bands, band_properties, scantimesdict, scanfieldsdict, scannfieldsdict,  scanstartsdict, scanendsdict, \
+            integrationtimesdict, _, _, spwsarray_dict, mosaic_field, gaincalibrator_dict, spectral_scan, spws_set = importdata(
+                vislist, all_targets, telescope)
 
         ##
         # Save/restore starting flags
