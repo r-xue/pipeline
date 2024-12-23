@@ -18,6 +18,7 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
 from . import ampphase_vs_freq_qa
+from .ampphase_vs_freq_qa import Outlier
 
 LOG = logging.get_logger(__name__)
 
@@ -221,7 +222,7 @@ class QAMessage:
     that originate from the same reason.
     """
 
-    def __init__(self, ms, outlier, reason):
+    def __init__(self, ms: MeasurementSet, outlier: Outlier, reason: str):
         metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[reason]
 
         # convert pol=0,1 to pol=XX,YY
@@ -256,8 +257,17 @@ class QAMessage:
         ant_msg = f' {",".join(ant_names)}' if ant_names else ''
         corr_msg = f' {corr_msg}' if corr_msg else ''
 
+        # TODO bifurcate this method for Outliers and TargetDataSelections
+        if isinstance(outlier, Outlier):
+            num_sigma_msg = '{0:.3f}'.format(outlier.num_sigma)
+            delta_physical_msg = '{0:.3f}'.format(outlier.delta_physical)
+            amp_freq_sym_off_msg = 'Y' if outlier.amp_freq_sym_off else 'N'
+            significance_msg = f'; n_sig={num_sigma_msg}; d_phys={delta_physical_msg}; ampsymoff={amp_freq_sym_off_msg}'
+        else:
+            significance_msg = ''
+
         short_msg = f'{metric_axes} {outlier_description}'
-        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{extra_description}'
+        full_msg = f'{short_msg} for {vis}{intent_msg}{spw_msg}{ant_msg}{corr_msg}{scan_msg}{significance_msg}{extra_description}'
 
         self.short_message = short_msg
         self.full_message = full_msg
@@ -292,6 +302,8 @@ def outliers_to_qa_scores(ms: MeasurementSet,
                                                     pol=outlier.pol,
                                                     num_sigma=outlier.num_sigma,
                                                     phase_offset_gt90deg=outlier.phase_offset_gt90deg,
+                                                    delta_physical=outlier.delta_physical,
+                                                    amp_freq_sym_off=outlier.amp_freq_sym_off,
                                                     reason=','.join(sorted(outlier.reason))))
     reasons = {outlier.reason for outlier in hashable}
 

@@ -102,7 +102,7 @@ def main():
 
     for ms in raw_mses:
         (all_scores, final_scores, qaevalf) = qa.get_qa_scores(
-            ms.basename,
+            ms,
             output_path=output_path,
             memory_gb=memlim,
             timestamp=timestamp
