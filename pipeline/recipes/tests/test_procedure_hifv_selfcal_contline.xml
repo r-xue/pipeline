@@ -35,7 +35,7 @@
             </Parameter>
             <Parameter>
                 <Keyword xmlns="">allow_wproject</Keyword>
-                <Value xmlns="">True</Value>
+                <Value xmlns="">False</Value>
             </Parameter>                                       
         </ParameterSet>
     </ProcessingCommand>

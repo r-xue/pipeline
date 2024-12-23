@@ -923,7 +923,7 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['spws_per_vis'] = []
                 selfcal_library[target][band]['nterms'] = nterms
                 selfcal_library[target][band]['vislist'] = vislist.copy()
-                if mosaic_field[band][target]['mosaic']:
+                if mosaic_field[band][vislist[0]][target]['mosaic']:
                     selfcal_library[target][band]['obstype'] = 'mosaic'
                 else:
                     selfcal_library[target][band]['obstype'] = 'single-point'
