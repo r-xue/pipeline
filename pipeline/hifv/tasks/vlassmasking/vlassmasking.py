@@ -106,17 +106,27 @@ class VlassmaskingInputs(vdp.StandardInputs):
     maskingmode = vdp.VisDependentProperty(default='vlass-se-tier-1')
     catalog_search_size = vdp.VisDependentProperty(default=1.5)
 
+    # docstring and type hints: supplements hifv_vlassmasking
     def __init__(self, context, vis=None, vlass_ql_database=None, maskingmode=None,
                  catalog_search_size=None):
-        """
-            Args:
+        """Initialize Inputs.
+
+        Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            vlass_ql_database(str): Path to a PyBDSF sky catalog in FITS format.
-                                    Default at AOC is '/home/vlass/packages/VLASS1Q.fits'
-            maskingmode(str): Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)
-            catalog_search_size (float): The half-width (in degrees) of the catalog search centered on the
-                                        image's reference pixel.
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            vlass_ql_database(str): vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits.
+                Path to a PyBDSF sky catalog in FITS format.
+                Default at AOC is '/home/vlass/packages/VLASS1Q.fits'
+
+            maskingmode(str): maskingmode options are vlass-se-tier-1 or vlass-se-tier-2.
+                Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)
+
+            catalog_search_size(float): catalog_search_size in units of degrees.
+                The half-width (in degrees) of the catalog search centered on the
+                image's reference pixel.
+
         """
 
         self.context = context
@@ -409,7 +419,7 @@ class Vlassmasking(basetask.StandardTaskTemplate):
         Obtain the image name from the latest MakeImagesResult object in context.results. The iter parameter controlls
         which iteration image name should be returned. In the current VLASS-SE-CONT workflow, iter=1.
 
-        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates 
+        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates
         the image name used in the VLASS Memo 15 VIP script.
         """
         for result in self.inputs.context.results[::-1]:
