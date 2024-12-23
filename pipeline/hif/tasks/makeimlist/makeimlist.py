@@ -1297,6 +1297,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
+                                nfrms_multiplier = self._get_nfrms_multiplier(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
@@ -1392,6 +1395,48 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_nfrms_multiplier(self, field, spw, datatype_str):
+        """Get the nfrms multiplier for the selfcal-succesfull imaging target for VLA."""
+        nfrms_multiplier = None
+        context = self.inputs.context
+
+        if (
+            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
+            and hasattr(context, "selfcal_targets")
+            and datatype_str.startswith("SELFCAL_")
+            and self.inputs.specmode == "cont"
+        ):
+            for sc_target in context.selfcal_targets:
+                sc_spw = set(sc_target["spw"].split(","))
+                im_spw = set(spw.split(","))
+                # PIPE-1878: use previous succesfully selfcal results to derive the optimal nfrms multiplier value
+                if sc_target["field"] == field and im_spw.intersection(sc_spw) and sc_target["sc_success"]:
+                    try:
+                        nfrms = sc_target["sc_lib"]["RMS_NF_final"]
+                        rms = sc_target["sc_lib"]["RMS_final"]
+                        LOG.info(
+                            "The ratio of nf_rms and rms from the selfcal-final imaging for field %s and spw %s: %s",
+                            field,
+                            spw,
+                            nfrms / rms,
+                        )
+                        nfrms_multiplier = max(nfrms / rms, 1.0)
+                        LOG.info(
+                            "Using nfrms_multiplier=%s for field %s and spw %s based "
+                            "on previous selfcal aggregate continuum imaging results.",
+                            nfrms_multiplier,
+                            field,
+                            spw,
+                        )
+                    except Exception as ex:
+                        LOG.warning(
+                            f"Error calculating the nfrms multiplier value for field {field} spw {spw} from previous succesful self-calibration outcome: {ex}"
+                        )
+
+                    break
+
+        return nfrms_multiplier
 
     def _get_deconvolver_nterms(self, field, intent, spw, stokes, specmode, datatype_str, image_heuristics):
         """
