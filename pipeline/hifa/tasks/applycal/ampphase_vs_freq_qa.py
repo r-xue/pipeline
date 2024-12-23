@@ -29,7 +29,8 @@ LinearFitParameters = collections.namedtuple(
 # Outlier describes an outlier data selection with why it's an outlier, and by how much
 Outlier = collections.namedtuple(
     'Outlier',
-    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'phase_offset_gt90deg', 'reason']
+    # TODO TBC: does PIPE-1770 supersede phase_offset_gt90deg?
+    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'phase_offset_gt90deg', 'delta_physical', 'amp_freq_sym_off', 'reason']
 )
 # ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
 ValueAndUncertainty = collections.namedtuple(

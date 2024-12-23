@@ -1,14 +1,17 @@
 import os
 import pickle
 
-from pipeline.infrastructure import casa_tools
 import numpy as np
+
+from pipeline.domain import MeasurementSet
+from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import conversion
 
 #This file contains functions that applycalqa used to borrow from AnalysisUtils, but given how  unreliable that one huge file is,
 #the very few functions we are actually using were moved here
 
 #List of SSO objects
-SSOfieldnames = ['Ceres', 'Pallas', 'Vesta', 'Venus', 'Mars', 'Jupiter', 'Uranus', 'Neptune', 'Ganymede', 'Titan', 'Callisto', 'Juno', 'Europa']
+SSOfieldnames = {'Ceres', 'Pallas', 'Vesta', 'Venus', 'Mars', 'Jupiter', 'Uranus', 'Neptune', 'Ganymede', 'Titan', 'Callisto', 'Juno', 'Europa'}
 
 
 def getSpwList(msmd,intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=False):
@@ -48,27 +51,21 @@ def onlineChannelAveraging(msmd, spws=None):
     else:
         return Nvalues
 
-def getSpecSetup(myms, spwlist = [], intentlist = ['*BANDPASS*', '*FLUX*', '*PHASE*', '*CHECK*', '*POLARIZATION*'], bfolder = None, applycalQAversion=""):
+def getSpecSetup(myms: MeasurementSet, intents: list[str], bfolder = None, applycalQAversion=""):
     '''Obtain spectral setup dictionary from MS.
     Positional Parameters:
-    myms: MS folder name
+    myms: MeasurementSet domain object
     Keyword Parameters:
     spwlist: List of SPWs to include in the dictionary. Default is to use all science SPWs.
-    intentlist: List of intents to include in the dictionary.
+    intents: List of pipeline intents to include in the dictionary.
     bfolder: Use buffer folder to read dictionary from previous execution of this command, saved as a pickle file.
              Default is None. If some folder is given, but no pickle file for the requested MS is found, create
              it with current result.
     '''
-
-    #If full path is given, take last bit for MS name
-    mssplit = myms.split('/')
-    if len(mssplit) > 1:
-        msname = mssplit[-1]
-    else:
-        msname = myms
+    spwlist = []
 
     #If the buffer folder bfolder is used, and there is a pickle file for the spwsetup, read it
-    spwpkl = str(bfolder)+'/'+str(msname)+'_spwsetup'+'.v'+str(applycalQAversion)+'.pkl'
+    spwpkl = f'{bfolder}/{myms.basename})+spwsetup.v{applycalQAversion}.pkl'
     if (bfolder is not None) and os.path.exists(spwpkl):
         print("Buffering existing spectral setup at : "+spwpkl)
         #Pickle file for spw setup
@@ -80,21 +77,23 @@ def getSpecSetup(myms, spwlist = [], intentlist = ['*BANDPASS*', '*FLUX*', '*PHA
 
     #Else read in the information from the MS
     #if spwlist is empty, get all science SPWs
-    with casa_tools.MSMDReader(myms) as msmd:
+    with casa_tools.MSMDReader(myms.basename) as msmd:
         if len(spwlist) == 0:
             spwlist = getSpwList(msmd)
         spwsetup = {}
         spwsetup['spwlist'] = spwlist
-        spwsetup['intentlist'] = intentlist
+        spwsetup['intentlist'] = intents
         spwsetup['scan'] = {}
         spwsetup['fieldname'] = {}
         spwsetup['fieldid'] = {}
-        for intent in intentlist:
-            spwsetup['scan'][intent] = list(msmd.scansforintent(intent))
-            spwsetup['fieldname'][intent] = list(msmd.fieldsforintent(intent,asnames=True))
-            spwsetup['fieldid'][intent] = list(msmd.fieldsforintent(intent,asnames=False))
+        pipe_intents_in_ms = [i for i in intents if i in myms.intents]
+        for pipe_intent in pipe_intents_in_ms:
+            casa_intent = conversion.to_CASA_intent(myms, pipe_intent)
+            spwsetup['scan'][pipe_intent] = list(msmd.scansforintent(casa_intent))
+            spwsetup['fieldname'][pipe_intent] = list(msmd.fieldsforintent(casa_intent, asnames=True))
+            spwsetup['fieldid'][pipe_intent] = list(msmd.fieldsforintent(casa_intent, asnames=False))
 
-        spwsetup['antids'] = msmd.antennasforscan(scan = spwsetup['scan'][intentlist[0]][0])
+        spwsetup['antids'] = msmd.antennasforscan(scan = spwsetup['scan'][intents[0]][0])
 
         #Get SPW info
         for spwid in spwlist:
@@ -110,7 +109,7 @@ def getSpecSetup(myms, spwlist = [], intentlist = ['*BANDPASS*', '*FLUX*', '*PHA
 
         #Save SPW setup in buffer folder
         if (bfolder is not None):
-            spwpkl = str(bfolder)+'/'+msname+'_spwsetup'+'.v'+str(applycalQAversion)+'.pkl'
+            spwpkl = f'{bfolder}/{myms.basename}_spwsetup.v{applycalQAversion}.pkl'
             print('Writing pickle dump of SPW setup to '+spwpkl)
             pklfile = open(spwpkl, 'wb')
             pickle.dump(spwsetup, pklfile, protocol=2)
@@ -118,21 +117,26 @@ def getSpecSetup(myms, spwlist = [], intentlist = ['*BANDPASS*', '*FLUX*', '*PHA
 
     return spwsetup
 
-def get_intents_to_process(spwsetup, intents = None):
-    #Define intents that need to be processed
-    #avoiding intents with repeated scans
+def get_intents_to_process(ms: MeasurementSet, intents: list[str]) -> list[str]:
+    """
+    Optimise a list of intents so that scans with multiple intents are only
+    processed once.
 
-    if intents is None:
-        intents = spwsetup['intentlist']
-    intents2proc = []
-    for intent in intents: 
-        if intent in spwsetup['intentlist']: 
-            alreadyincluded = any([(spwsetup['scan'][intent] == spwsetup['scan'][prevint]) for prevint in intents2proc])
-            if (len(spwsetup['scan'][intent]) > 0) and (not alreadyincluded) and \
-               (not (spwsetup['fieldname'][intent][0] in SSOfieldnames)):
-                intents2proc.append(intent)
+    :param ms: MeasurementSet domain object
+    :param intents: list of intents to consider for processing
+    :return: optimised list of intents to process
+    """
+    intents_to_process = []
+    for intent in intents:
+        for scan in ms.get_scans(scan_intent=intent):
+            scan_included_via_other_intent = any(i in scan.intents for i in intents_to_process)
+            field_is_not_sso = SSOfieldnames.isdisjoint({field.name for field in scan.fields})
+            
+            if not scan_included_via_other_intent and field_is_not_sso:
+                intents_to_process.append(intent)
 
-    return intents2proc
+    return intents_to_process
+
 
 def getUnitsDicts(spwsetup):
     '''Return dictionaries with factor and unit strings from spwsetup dictionary.'''
