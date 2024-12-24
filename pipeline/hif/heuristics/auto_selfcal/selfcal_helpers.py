@@ -1213,7 +1213,8 @@ def get_spw_map(selfcal_library, target, band, telescope):
     # but the criterea for which SPWs match will need to be updated for this to truly generalize.
     for vis in vislist:
         reverse_spw_map[vis] = {}
-        for spw in list(selfcal_library[target][band][vis]['spwsarray']):
+        for spw in selfcal_library[target][band][vis]['spwsarray']:
+            spw = int(spw)  # can't seriaize np.int64 into JSON as keys using the built-in serializer
             found_match = False
             for s in spw_map:
                 for v in spw_map[s]:
