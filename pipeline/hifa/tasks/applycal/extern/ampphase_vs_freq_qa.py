@@ -6,6 +6,11 @@ import warnings
 import numpy as np
 import scipy.optimize
 
+from ..ampphase_vs_freq_qa import get_median_fit, to_linear_fit_parameters, get_amp_fit, get_phase_fit, PHASE_REF_FN, \
+    get_chi2_ang_model, get_linear_function, get_angular_linear_function, LinearFitParameters, ValueAndUncertainty, \
+    AMPLITUDE_SLOPE_THRESHOLD, AMPLITUDE_INTERCEPT_THRESHOLD, PHASE_SLOPE_THRESHOLD, PHASE_INTERCEPT_THRESHOLD
+
+# TODO TBC: is 1Gb in original
 MEMORY_CHUNK_SIZE = 8  # Size of the memory chunk when loading the MS (in GB)
 
 
@@ -14,25 +19,6 @@ AntennaFit = collections.namedtuple(
     'AntennaFit',
     ['spw', 'scan', 'ant', 'pol', 'amp', 'phase']
 )
-
-# LinearFitParameters is a struct to hold best fit parameters for a linear model
-LinearFitParameters = collections.namedtuple(
-    'LinearFitParameters',
-    ['slope', 'intercept']
-)
-
-# ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
-ValueAndUncertainty = collections.namedtuple(
-    'ValueAndUncertainty',
-    ['value', 'unc']
-)
-
-
-# nsigma thresholds for marking deviating fits as an outlier
-AMPLITUDE_SLOPE_THRESHOLD = 25.0
-AMPLITUDE_INTERCEPT_THRESHOLD = 53.0
-PHASE_SLOPE_THRESHOLD = 40.0
-PHASE_INTERCEPT_THRESHOLD = 60.5
 
 #Threholds for physical deviations
 AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD = 0.05     # in %/GHz (0.05=5%/GHz)
@@ -188,29 +174,11 @@ def score_all(all_fits, outlier_fn, unitdicts, flag_all: bool = False):
 
     for k, v in score_definitions.items():
         threshold = 0.0 if flag_all else v[2]
+        # TODO only difference with original is passing of unitdicts in the following call
         scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold, unitdicts)
         outliers.extend(scores)
 
     return outliers
-
-
-def get_median_fit(all_fits, accessor):
-    """
-    Get the median best fit from a list of best fits.
-
-    The accessor argument should be a function that, when given the list of
-    all fits, returns fits of the desired type (amp.slope, phase.intercept,
-    etc.)
-
-    :param all_fits: mixed list of best fits
-    :type: list of AntennaFit instances
-    :param accessor: function to filter best fits
-    :return: median value and uncertainty of fits of selected type
-    """
-    pol_slopes = [accessor(f) for f in all_fits]
-    values = [f.value for f in pol_slopes]
-    median, median_sigma = robust_stats(values)
-    return ValueAndUncertainty(value=median, unc=median_sigma)
 
 
 def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold, unitdicts):
@@ -384,155 +352,10 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
     return outliers
 
 
-def to_linear_fit_parameters(fit, err):
-    """
-    Convert tuples from the best fit evaluation into a LinearFitParameters
-    namedtuple.
-
-    :param fit: 2-tuple of (slope, intercept) best-fit parameters
-    :param err: 2-tuple of uncertainty in (slope, intercept) parameters
-    :return:
-    """
-    return LinearFitParameters(slope=ValueAndUncertainty(value=fit[0], unc=err[0]),
-                               intercept=ValueAndUncertainty(value=fit[1], unc=err[1]))
-
-
-def get_amp_fit(amp_model_fn, frequencies, visibilities, sigma):
-    """
-    Fit a linear amplitude vs frequency model to a set of time-averaged
-    visibilities.
-
-    :param amp_model_fn: the amplitude linear model to optimise
-    :param frequencies: numpy array of channel frequencies
-    :param visibilities: numpy array of time-averaged visibilities
-    :param sigma: numpy array of uncertainies in time-averaged visibilities
-    :return: tuple of best fit params, uncertainty tuple
-    """
-    # calculate amplitude and phase from visibility, inc. std. deviations for each
-    amp = np.ma.abs(visibilities)
-    # angle of complex argument, in radians
-    sigma_amp = np.ma.sqrt((visibilities.real * sigma.real) ** 2 + (visibilities.imag * sigma.imag) ** 2) / amp
-    sigma_phase = np.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (visibilities.real * sigma.imag) ** 2) / (
-            amp ** 2)
-
-    # curve_fit doesn't handle MaskedArrays, so mask out all bad data and
-    # convert to standard NumPy arrays
-    mask = np.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
-    trimmed_frequencies = frequencies[~mask]
-    trimmed_amp = amp.data[~mask]
-    trimmed_sigma_amp = sigma_amp.data[~mask]
-
-    Cinit = np.ma.median(trimmed_amp)
-
-    amp_fit, amp_cov = scipy.optimize.curve_fit(amp_model_fn, trimmed_frequencies, trimmed_amp,
-                                                p0=[0.0, Cinit], sigma=trimmed_sigma_amp, absolute_sigma=True)
-
-    amp_err = np.sqrt(np.diag(amp_cov))
-
-    return amp_fit, amp_err
-
-
-def get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, sigma):
-    """
-    Fit a linear model for phase vs frequency to a set of time-averaged
-    visibilities.
-
-    :param amp_model_fn: model function for amplitude
-    :param ang_model_fn: model function for phase angle
-    :param frequencies: numpy array of channel frequencies
-    :param visibilities: numpy array of time-averaged visibilities
-    :param sigma: numpy array of uncertainies in time-averaged visibilities
-    :return: tuple of best fit params, uncertainty tuple
-    """
-    # calculate amplitude and phase from visibility, inc. std. deviations for each
-    amp = np.ma.abs(visibilities)
-    phase = np.ma.angle(visibilities)
-
-    zeroamp = (amp.data <= 0.0)
-    amp.mask[zeroamp] = True
-    phase.mask[zeroamp] = True
-
-    sigma_amp = np.ma.sqrt((visibilities.real * sigma.real) ** 2 + (
-            visibilities.imag * sigma.imag) ** 2) / amp
-    sigma_phase = np.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (
-            visibilities.real * sigma.imag) ** 2) / (amp ** 2)
-
-    # curve_fit doesn't handle MaskedArrays, so mask out all bad data and
-    # convert to standard NumPy arrays
-    mask = np.ma.all([amp.mask, sigma_amp <= 0, sigma_phase <= 0], axis=0)
-    trimmed_frequencies = frequencies[~mask]
-    trimmed_phase = phase.data[~mask]
-    trimmed_sigma_phase = sigma_phase.data[~mask]
-
-    phi_init = np.ma.median(trimmed_phase)
-
-    # normalise visibilities by amplitude to fit linear angular model
-    normalised_visibilities = np.ma.divide(visibilities, amp)
-    normalised_sigma = np.ma.divide(sigma, amp)
-
-    ang_fit_res = fit_angular_model(ang_model_fn, frequencies, normalised_visibilities, normalised_sigma)
-
-    # Detrend phases using fit
-    detrend_model = ang_model_fn(frequencies, -ang_fit_res['x'][0], -ang_fit_res['x'][1])
-    detrend_data = normalised_visibilities * detrend_model
-    detrend_phase = np.ma.angle(detrend_data)[~mask]
-
-    # Refit phases to obtain errors from the same curve_fit method
-    zerophasefit, phasecov = scipy.optimize.curve_fit(amp_model_fn, trimmed_frequencies, detrend_phase,
-                                                      p0=[0.0, phi_init - ang_fit_res['x'][1]],
-                                                      sigma=trimmed_sigma_phase, absolute_sigma=True)
-    # Final result is detrending model + new fit (close to zero)
-    phase_fit = ang_fit_res['x'] + zerophasefit
-
-    phase_err = np.sqrt(np.diag(phasecov))
-
-    return phase_fit, phase_err
-
-
-def get_linear_function(midpoint, x_scale):
-    """
-    Return a scaled linear function (a function of slope and intercept).
-
-    :param midpoint:
-    :param x_scale:
-    :return:
-    """
-
-    def f(x, slope, intercept):
-        return np.ma.multiply(
-            np.ma.multiply(slope, np.ma.subtract(x, midpoint)),
-            x_scale
-        ) + intercept
-
-    return f
-
-
-def get_angular_linear_function(midpoint, x_scale):
-    """
-    Angular linear model to fit phases only.
-
-    :param midpoint:
-    :param x_scale:
-    :return:
-    """
-    linear_fn = get_linear_function(midpoint, x_scale)
-
-    def f(x, slope, intercept):
-        return np.ma.exp(1j * linear_fn(x, slope, intercept))
-
-    return f
-
-
-def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
-    m = angular_model(nu, omega, phi)
-    diff = angdata - m
-    aux = (np.square(diff.real / angsigma.real) + np.square(diff.imag / angsigma.imag))[~angdata.mask]
-    return float(np.sum(aux.real))
-
-
 def fit_angular_model(angular_model, nu, angdata, angsigma):
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
     angle = np.ma.angle(angdata[~angdata.mask])
+    # TODO only difference with original is wrapping in catch_warnings and simplefilter
     with warnings.catch_warnings():
         warnings.simplefilter('ignore', np.exceptions.ComplexWarning)
         phi_init = np.ma.median(angle)
@@ -588,8 +411,3 @@ def stdListStr(thislist):
     else:
         return str(thislist).replace(' ','').replace(',','_').replace('[','').replace(']','')
 
-# The function used to create the reference value for phase vs frequency best fits
-# Select this to compare fits against the median
-# PHASE_REF_FN = get_median_fit
-# Select this to compare fits against zero
-PHASE_REF_FN = lambda _, __: ValueAndUncertainty(0, 0)
