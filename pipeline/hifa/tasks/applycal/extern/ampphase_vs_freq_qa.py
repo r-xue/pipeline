@@ -6,13 +6,15 @@ import warnings
 import numpy as np
 import scipy.optimize
 
+import pipeline.infrastructure.logging as logging
 from ..ampphase_vs_freq_qa import get_median_fit, to_linear_fit_parameters, get_amp_fit, get_phase_fit, PHASE_REF_FN, \
     get_chi2_ang_model, get_linear_function, get_angular_linear_function, LinearFitParameters, ValueAndUncertainty, \
     AMPLITUDE_SLOPE_THRESHOLD, AMPLITUDE_INTERCEPT_THRESHOLD, PHASE_SLOPE_THRESHOLD, PHASE_INTERCEPT_THRESHOLD
 
+LOG = logging.get_logger(__name__)
+
 # TODO TBC: is 1Gb in original
 MEMORY_CHUNK_SIZE = 8  # Size of the memory chunk when loading the MS (in GB)
-
 
 # AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
 AntennaFit = collections.namedtuple(
@@ -68,7 +70,7 @@ def get_best_fits_per_ant(wrapper,frequencies):
             ta_sigma = t_sigma[ant, pol, :]
 
             if visibilities.count() == 0:
-                print('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
+                LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
                 continue
             median_sn = np.ma.median(np.ma.abs(visibilities).real / np.ma.abs(ta_sigma).real)
             if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
@@ -78,7 +80,7 @@ def get_best_fits_per_ant(wrapper,frequencies):
                     amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    print('Could not fit phase vs frequency for ant {} pol {} (high S/N; amp. vs frequency)'.format(
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; amp. vs frequency)'.format(
                         ant, pol))
                     continue
                 # Fit the phase
@@ -87,13 +89,13 @@ def get_best_fits_per_ant(wrapper,frequencies):
                     phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
                 except TypeError:
                     # Antenna probably flagged..
-                    print('Could not fit phase vs frequency for ant {} pol {} (high S/N; phase vs frequency)'.format(
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; phase vs frequency)'.format(
                         ant, pol))
                     continue
             else:
-                print('Low S/N for ant {} pol {}'.format(ant, pol))
+                LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
-                try:  # nOTE: PIPE-401 This try block may not be necessary
+                try:  # NOTE: PIPE-401 This try block may not be necessary
                     amp_vis = np.ma.abs(visibilities)
                     n_channels_unmasked = np.sum(~amp_vis.mask)
                     if n_channels_unmasked != 0:
@@ -104,14 +106,18 @@ def get_best_fits_per_ant(wrapper,frequencies):
                                 unc=np.ma.std(amp_vis)/np.sqrt(n_channels_unmasked))
                         )
                     else:
-                        print('Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(ant, pol))
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                                ant, pol))
                         continue
                 except TypeError:
                     # Antenna probably flagged..
-                    print('Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(ant, pol))
+                    LOG.info(
+                        'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
+                            ant, pol))
                     continue
                 # 'Fit' the phase
-                try:  # nOTE: PIPE-401 This try block may not be necessary
+                try:  # NOTE: PIPE-401 This try block may not be necessary
                     phase_vis = np.ma.angle(visibilities)
                     n_channels_unmasked = np.sum(~phase_vis.mask)
                     if n_channels_unmasked != 0:
@@ -123,11 +129,14 @@ def get_best_fits_per_ant(wrapper,frequencies):
                             )
                         )
                     else:
-                        print('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(ant, pol))
+                        LOG.info(
+                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                                ant, pol))
                         continue
                 except TypeError:
                     # Antenna probably flagged..
-                    print('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(ant, pol))
+                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
+                        ant, pol))
                     continue
 
             fit_obj = AntennaFit(spw=wrapper.spw, scan=stdListStr(wrapper.scan), ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
