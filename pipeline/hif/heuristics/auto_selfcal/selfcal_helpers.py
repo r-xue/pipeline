@@ -1771,7 +1771,7 @@ def get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False):
 
     """
 
-    if not os.path.isdir(gaintable):
+    if gaintable is None or not os.path.isdir(gaintable):
         LOG.warning('The gaintable to be examined %s does not exist', gaintable)
         return 0, 0, 1
 
