@@ -14,37 +14,9 @@ from . import mswrapper
 from . import qa_utils as qau
 
 # imports required for WIP testing, to be removed once migration is complete
-from .. import qa as original_qa
 from ..ampphase_vs_freq_qa import Outlier
-
-# Maps outlier reasons to a text snippet that can be used in a QAScore message
-REASONS_TO_TEXT = {
-    'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', ''),
-    'amp_vs_freq.intercept': ('Amp vs frequency', 'zero point outliers', ''),
-    'amp_vs_freq.slope': ('Amp vs frequency', 'slope outliers', ''),
-    'amp_vs_freq': ('Amp vs frequency', 'outliers', ''),
-    'phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', ''),
-    'phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', ''),
-    'phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', ''),
-    'phase_vs_freq': ('Phase vs frequency', 'outliers', ''),
-    'gt90deg_offset_phase_vs_freq.intercept,phase_vs_freq.slope': ('Phase vs frequency', 'zero point and slope outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.intercept': ('Phase vs frequency', 'zero point outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq.slope': ('Phase vs frequency', 'slope outliers', '; phase offset > 90deg detected'),
-    'gt90deg_offset_phase_vs_freq': ('Phase vs frequency', 'outliers', '; phase offset > 90deg detected'),
-}
-
-
-# Tuple to hold data selection parameters. The field order is important as it
-# sets in which order the dimensions are rolled up. With the order below,
-# scores are merged first by pol, then ant, then spw, etc.
-DataSelection = collections.namedtuple('DataSelection', 'vis intent scan spw ant pol')
-
-
-# The key data structure used to consolidate and merge QA scores: a dict
-# mapping data selections to the QA scores that cover that data selection. The
-# DataSelection keys are simple tuples, with index relating to a data
-# selection parameter (e.g., vis=[0], intent=[1], scan=[2], etc.).
-DataSelectionToScores = Dict[DataSelection, List[pqa.QAScore]]
+from .. import qa as original_qa
+from ..qa import QAMessage, outliers_to_qa_scores, REASONS_TO_TEXT
 
 #Dictionaries necessary for the QAScoreEvalFunc class
 #scores_thresholds holds the list of metrics to actually use for calculating the score, each pointing
@@ -165,7 +137,7 @@ class QAScoreEvalFunc(object):
                         #Generate message for this max outlier
                         thismaxoutlieridx = np.arange(self.noutliers)[sel][idxmax]
                         thismaxoutlier = self.outliers[thismaxoutlieridx]
-                        thisqamsg = original_qa.QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
+                        thisqamsg = QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
                         self.qascoremetrics[i][s][m]['long_msg'] = thisqamsg.full_message
                         self.qascoremetrics[i][s][m]['short_msg'] = thisqamsg.short_message
                         #copy the boolean is_amp_sym_offset from this QA scores
@@ -286,7 +258,7 @@ def get_qa_scores(
     #Create QA evaluation function
     qaevalf = QAScoreEvalFunc(ms, spwsetup, outliers)
     # convert outliers to QA scores
-    all_scores.extend(original_qa.outliers_to_qa_scores(ms, outliers, outlier_score))
+    all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
 
     #Get summary QA scores
     final_scores = summarise_scores(all_scores, ms, qaevalf = qaevalf)
