@@ -21,36 +21,6 @@ def getSpwList(msmd,intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=Fa
     return(list(scienceSpws))
 
 
-def onlineChannelAveraging(msmd, spws=None):
-    """
-    For Cycle 3-onward data, determines the channel averaging factor from
-    the ratio of the effective channel bandwidth to the channel width.
-    spw: a single value, or a list; if Nonne, then uses science spws
-    Returns: single value for a single spw, or a list for a list of spws
-    -Todd Hunter
-    """
-    hanning_effBw = {1: 2.667, 2: 3.200, 4: 4.923, 8: 8.828, 16: 16.787}
-    if spws is None:
-        spws = getSpwList(msmd)
-    if type(spws) != list:
-        spws = [spws]
-    Ns = list(hanning_effBw.keys())
-    ratios = [hanning_effBw[i]/i for i in Ns]
-    Nvalues = []
-    for spw in spws:
-        chanwidths = msmd.chanwidths(spw)
-        nchan = len(chanwidths)
-        if (nchan < 5):
-            return 1
-        chanwidth = abs(chanwidths[0])
-        chaneffwidth = msmd.chaneffbws(spw)[0]
-        ratio = chaneffwidth/chanwidth
-        Nvalues.append(Ns[np.argmin(abs(ratios - ratio))])
-    if (len(spws) == 1):
-        return Nvalues[0]
-    else:
-        return Nvalues
-
 def getSpecSetup(myms: MeasurementSet, intents: list[str], bfolder = None, applycalQAversion=""):
     '''Obtain spectral setup dictionary from MS.
     Positional Parameters:
