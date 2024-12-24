@@ -49,8 +49,7 @@ def hsdn_restoredata(vis=None, caltable=None, reffile=None,
     - applies the calibration tables to each MS
 
     When importing the MS, if the output MS already exists in the output directory,
-    then the importasdm conversion step is skipped, and the existing MS will be
-    imported instead.
+    the existing MS will be imported instead.
 
     Returns:
         The results object for the pipeline task is returned.
