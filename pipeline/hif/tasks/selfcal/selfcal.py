@@ -1,14 +1,13 @@
+import copy
+import datetime
+import json
 import os
 import shutil
-import traceback
-import copy
-
-import numpy as np
-import json
-import datetime
 import tarfile
+import traceback
 from fnmatch import fnmatch
 
+import numpy as np
 from astropy.utils.misc import JsonCustomEncoder
 
 import pipeline.domain.measures as measures
@@ -17,15 +16,15 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
+from pipeline import environment
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import SerialIFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, task_registry
+from pipeline.infrastructure import (callibrary, casa_tasks, casa_tools,
+                                     task_registry, utils)
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
-from pipeline import environment
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -217,7 +216,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets_json['datetime'] = current_datetime
         scal_targets_json['pipeline_version'] = environment.pipeline_revision
         with open(filename, 'w') as fp:
-            json.dump(scal_targets_json, fp, sort_keys=True, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
+            # We can’t sort the keys here because they may include a mix of strings and integers (e.g., field IDs).
+            json.dump(scal_targets_json, fp, sort_keys=False, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
 
     @staticmethod
     def _scal_targets_from_json(filename='selfcal.json'):
