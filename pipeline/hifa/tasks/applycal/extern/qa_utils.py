@@ -117,7 +117,6 @@ def getUnitsDicts(spwsetup):
         #plot factors to get the right units, frequencies in GHz:
         frequencies = (1.e-09)*spwsetup[int(spw)]['chanfreqs']
         bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
-        band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
         unitfactor[spw] = {'amp_slope': 1.0/bandwidth, 'amp_intercept': 1.0, 'phase_slope': (180.0/np.pi)/bandwidth, 'phase_intercept': (180.0/np.pi)}
         unitstr[spw] = {'amp_slope': '[Jy/GHz]', 'amp_intercept': '[Jy]', 'phase_slope': '[deg/GHz]', 'phase_intercept': '[deg]'}
 
