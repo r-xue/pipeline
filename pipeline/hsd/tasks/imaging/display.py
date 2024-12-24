@@ -950,8 +950,14 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
+        # self.velocity, self.frequency, and self.nchan do not contain their edges defined as self.edge,
+        # and line_center does not contain the edge defined as self.edge.
         for line_window in line_list:
-            (f_line_center, f_line_width) = (line_window[0] - self.edge[0], line_window[1])
+            (f_line_center, f_line_width) = (line_window[0], line_window[1])
+            f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
+            # The domain of f_line_center is [-0.5, self.nchan-1.5) because of rounding by _digitize()
+            if f_line_center < -0.5 or f_line_center >= self.nchan - 1.5:
+                continue
 
             # calculate slice width
             slice_width = self._calc_slice_width(f_line_width, f_line_center)
@@ -962,7 +968,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             f_leftside = f_line_center - slice_width * self.NUM_CHANNELMAP * 0.5
             f_idx_vertlines = [j for j in
                                   [f_leftside + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
-                              if -0.5 <= j < self.nchan - 1.5]
+                              if -0.5 <= j < self.nchan - 1.5]  # these value will round by _digitize()
             if len(f_idx_vertlines) < 2:
                 continue
 
@@ -1131,9 +1137,10 @@ class SDChannelMapDisplay(SDImageDisplay):
                 LOG.debug('PROFILE: integrated spectrum #2: %s sec' % (t3 - t2))
                 LOG.debug('PROFILE: channel map: %s sec' % (t4 - t3))
 
+                # generate PNG image of plots
                 FigFileRoot = self.inputs.imagename + '.pol%s' % (pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot + '_ChannelMap_%s.png' % (ValidCluster))
-                # PNG Metadata
+                # Save some parameters of the image into metadata of PNG header
                 _metadata = get_metadata(self)
                 _metadata['TYPE'] = 'Channel map'
                 _metadata['LINE_CENTER_VELOCITY'] = velocity_line_center
@@ -1783,9 +1790,9 @@ class SDSpectralImageDisplay(SDImageDisplay):
         """
         plot_list = []
         t0 = time.time()
-        plot_list.extend(
-            self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
-        )
+        # plot_list.extend(
+        #     self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
+        # )
         t1 = time.time()
         LOG.debug('sparse_map: elapsed time %s sec' % (t1-t0))
         plot_list.extend(
@@ -1794,20 +1801,20 @@ class SDSpectralImageDisplay(SDImageDisplay):
         t2 = time.time()
         LOG.debug('channel_map: elapsed time %s sec' % (t2-t1))
         # skip spectral map (detailed profile map) if the data is NRO
-        if not self.inputs.isnro:
-            plot_list.extend(
-                self.__plot(SDSpectralMapDisplay)
-            )
+        # if not self.inputs.isnro:
+        #     plot_list.extend(
+        #         self.__plot(SDSpectralMapDisplay)
+        #     )
         t3 = time.time()
         LOG.debug('spectral_map: elapsed time %s sec' % (t3-t2))
-        plot_list.extend(
-            self.__plot(SDRmsMapDisplay)
-        )
+        # plot_list.extend(
+        #     self.__plot(SDRmsMapDisplay)
+        # )
         t4 = time.time()
         LOG.debug('rms_map: elapsed time %s sec' % (t4-t3))
-        plot_list.extend(
-            self.__plot(SDMomentMapDisplay)
-        )
+        # plot_list.extend(
+        #     self.__plot(SDMomentMapDisplay)
+        # )
         t5 = time.time()
         LOG.debug('moment_map: elapsed time %s sec' % (t5-t4))
 
