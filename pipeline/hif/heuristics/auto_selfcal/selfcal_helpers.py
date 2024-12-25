@@ -1808,7 +1808,7 @@ def get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False):
 
 
 def analyze_inf_EB_flagging(
-        selfcal_library, band, spwlist, gaintable, vis, target, spw_combine_test_gaintable, spectral_scan, telescope,
+        slib, band, spwlist, gaintable, vis, target, spw_combine_test_gaintable, spectral_scan, telescope,
         solint_snr_per_spw, minsnr_to_proceed, spwpol_combine_test_gaintable=None):
 
     if telescope != 'ACA':
@@ -1831,10 +1831,10 @@ def analyze_inf_EB_flagging(
         [spwlist[0]], spw_combine_test_gaintable)
     eff_bws = np.zeros(len(spwlist))
     total_bws = np.zeros(len(spwlist))
-    keylist = list(selfcal_library[target][band][vis]['per_spw_stats'].keys())
+    keylist = list(slib[vis]['per_spw_stats'].keys())
     for i in range(len(spwlist)):
-        eff_bws[i] = selfcal_library[target][band][vis]['per_spw_stats'][keylist[i]]['effective_bandwidth']
-        total_bws[i] = selfcal_library[target][band][vis]['per_spw_stats'][keylist[i]]['bandwidth']
+        eff_bws[i] = slib[vis]['per_spw_stats'][keylist[i]]['effective_bandwidth']
+        total_bws[i] = slib[vis]['per_spw_stats'][keylist[i]]['bandwidth']
     minimum_flagged_ants_per_spw = np.min(nflags)/2.0
     # account for the fact that some antennas might be completely flagged and give
     minimum_flagged_ants_spwcomb = np.min(nflags_spwcomb)/2.0
@@ -1850,7 +1850,7 @@ def analyze_inf_EB_flagging(
 
     # if certain spws have more than max_flagged_ants_spwmap flagged solutions that the least flagged spws, set those to spwmap
     for i in range(len(spwlist)):
-        if np.min(delta_nflags[i]) > max_flagged_ants_spwmap or solint_snr_per_spw[target][band]['inf_EB'][str(selfcal_library[target][band]['reverse_spw_map'][vis][int(spwlist[i])])] < minsnr_to_proceed:
+        if np.min(delta_nflags[i]) > max_flagged_ants_spwmap or solint_snr_per_spw['inf_EB'][str(slib['reverse_spw_map'][vis][int(spwlist[i])])] < minsnr_to_proceed or fracflagged[i] ==1.0:
             fallback = 'spwmap'
             spwmap[i] = True
             if total_bws[i] > min_spwmap_bw:
@@ -1875,7 +1875,7 @@ def analyze_inf_EB_flagging(
         #   map_index=max_bw_min_flags_index[0]
 
         # make spwmap list that first maps everything to itself, need max spw to make that list
-        maxspw = np.max(selfcal_library[target][band][vis]['spwsarray']+1)
+        maxspw = np.max(slib[vis]['spwsarray']+1)
         applycal_spwmap_int_list = list(np.arange(maxspw))
         for i in range(len(applycal_spwmap_int_list)):
             applycal_spwmap.append(applycal_spwmap_int_list[i])
@@ -1890,7 +1890,7 @@ def analyze_inf_EB_flagging(
             fallback = 'combinespw'
 
     # If all of the spws map to the same spw, we might as well do a combinespw fallback.
-    if len(np.unique(applycal_spwmap)) == 1:
+    if fallback == 'spwmap' and len(np.unique(np.array(applycal_spwmap)[np.array(spwlist).astype(int)])) == 1:        
         fallback = 'combinespw'
         applycal_spwmap = []
 
