@@ -804,9 +804,9 @@ class SDSparseMapDisplay(SDImageDisplay):
 class SDChannelMapDisplay(SDImageDisplay):
     """Plotter to create a channel map."""
 
-    NUM_CHANNELMAP = 15
     NhPanel = 5
     NvPanel = 3
+    NUM_CHANNELMAP = NhPanel * NvPanel
 
     def plot(self) -> List[logger.Plot]:
         """Create list of channel maps.
@@ -956,7 +956,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             (f_line_center, f_line_width) = (line_window[0], line_window[1])
             f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
             # The domain of f_line_center is [-0.5, self.nchan-1.5) because of rounding by _digitize()
-            if f_line_center < -0.5 or f_line_center >= self.nchan - 1.5:
+            if f_line_center < -0.5 or self.nchan - 1.5 <= f_line_center:
                 continue
 
             # calculate slice width
@@ -964,7 +964,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             if slice_width == .0:
                 continue
 
-            # eliminate indice of out of channel range
+            # eliminate the indices which are out of channel range
             f_leftside = f_line_center - slice_width * self.NUM_CHANNELMAP * 0.5
             f_idx_vertlines = [j for j in
                                   [f_leftside + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
@@ -974,34 +974,29 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # digitize, and invert if needed, then get several values to plot
             (idx_line_center, idx_vertlines, velocity_line_center, velocity_channelmap_center,
-             velocity_per_channel, chan0, chan1, V0, V1) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
-
-            vertical_lines = []
+             velocity_per_channel, chan0, chan1, V0, V1, is_leftside) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
+            
+            # Plotting objects for vertical lines
+            plotting_objects = []
 
             # vertical lines for integrated spectrum #1
-            vertical_lines.append(
+            plotting_objects.append(
                 axes_integsp1.axvline(x=self.frequency[idx_vertlines[0]], linewidth=0.3, color='r')
             )
-            vertical_lines.append(
+            plotting_objects.append(
                 axes_integsp1.axvline(x=self.frequency[idx_vertlines[-1]], linewidth=0.3, color='r')
             )
-
-            # Drawing red vertical lines for integrated spectrum #2
-            # For detail, see the MEMO below.
-            _y_vel = self.velocity[idx_vertlines]
-            chan2vel = interpolate.interp1d(idx_vertlines, _y_vel, bounds_error=False, fill_value='extrapolate')
-
-            # calculate relative velocities for red vertical lines
-            _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
-            _diff_arr = [idx_vertlines[-1] + (i + 1) * slice_width for i in range(_diff_len)]
-            idx_vertlines.extend(_diff_arr)
-            vertlines = chan2vel(numpy.array(idx_vertlines)-0.5) - velocity_line_center
             
-            vertical_lines.extend(
-                (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
+            # Calculate red vertical lines for integrated spectrum #2
+            # For detail, see the MEMO below.
+            vel_vertlines = self.calc_velocity_lines(is_leftside, slice_width, idx_vertlines, velocity_line_center)
+
+            # vertical lines for integrated spectrum #2
+            plotting_objects.extend(
+                (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vel_vertlines)
             )
 
-            LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
+            LOG.debug('Relative velocities of the vertical lines: %s', vel_vertlines)
 
             # MEMO:
             # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
@@ -1140,7 +1135,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # generate PNG image of plots
                 FigFileRoot = self.inputs.imagename + '.pol%s' % (pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot + '_ChannelMap_%s.png' % (ValidCluster))
-                # Save some parameters of the image into metadata of PNG header
+                # Save some parameters of the image as metadata into PNG header
                 _metadata = get_metadata(self)
                 _metadata['TYPE'] = 'Channel map'
                 _metadata['LINE_CENTER_VELOCITY'] = velocity_line_center
@@ -1153,7 +1148,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
                 for _a in itertools.chain([axes_integmap, axes_integsp1, axes_integsp2], axes_chmap):
                     for obj in itertools.chain(_a.lines[:], _a.texts[:], _a.patches[:], _a.images[:]):
-                        if (obj not in vertical_lines) and (obj != beam_circle):
+                        if (obj not in plotting_objects) and (obj != beam_circle):
                             obj.remove()
 
                 parameters = {}
@@ -1176,7 +1171,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             ValidCluster += 1
 
-            for line in vertical_lines:
+            for line in plotting_objects:
                 line.remove()
 
         del axes_manager
@@ -1186,7 +1181,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         return plot_list
 
     def _digitize(self, line_center:float, idx_vertlines: float, is_lsb:bool) -> \
-            Tuple[int, List[int], float, float, int, int, float, float]:
+            Tuple[Union[bool, int, float, List[int]]]:
         """
         Digitize values and calculate related values.
         
@@ -1209,17 +1204,21 @@ class SDChannelMapDisplay(SDImageDisplay):
             float: velocity value per a channel
             int, int: indice of the both edges of the red lines
             float, float: velocity values of the both edges of the red lines
+            bool: the flag whether the center of the feature line is at left side of the channel map
         """
         LOG.info(f'line center: {line_center}, indice vertical lines: {idx_vertlines}, nchan: {self.nchan}')
 
         # digitize
         i_line_center = floor(line_center + 0.5)
         i_idx_vertlines = sorted([floor(f + 0.5) for f in idx_vertlines])
+        
+        is_leftside = i_line_center <= (self.nchan - 1) // 2
 
         # invert if LSB
         if is_lsb:
             i_line_center = self.nchan - 1 - i_line_center
             i_idx_vertlines = sorted([self.nchan - 1 - f for f in i_idx_vertlines])
+            is_leftside = not is_leftside
 
         LOG.debug(f'digitized line center: {i_line_center}, indice vertical lines: {i_idx_vertlines}, LSB: {is_lsb}')
 
@@ -1257,8 +1256,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         LOG.debug(f'velocity of channel map cennter: {velocity_channelmap_center}')
         LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
                     f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
+
         return (i_line_center, i_idx_vertlines, velocity_line_center, velocity_channelmap_center,
-                velocity_per_channel, chan0, chan1, V0, V1)
+                velocity_per_channel, chan0, chan1, V0, V1, is_leftside)
 
     def _calc_slice_width(self, line_width: float, line_center: float) -> int:
         """Calculate width of a slice.
@@ -1280,7 +1280,31 @@ class SDChannelMapDisplay(SDImageDisplay):
         
         # otherwise, return width to cover the feature line
         return ceil(max(line_width / self.NUM_CHANNELMAP, 1.0))
+
+    def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
+        """
+        Calculate relative velocities for red vertical lines on the velocity plot using extrapolation.
         
+        Args:
+            is_leftside (bool): the flag whether the center of the feature line is at left side of the channel map
+            slice_width (int): width of a slice
+            idx_vertlines (List[int]): indice of vertical red lines
+            velocity_line_center (float): velocity value at the center of feature line
+            
+        Returns:
+            List[float]: relative velocities for red vertical lines
+        """
+        chan2vel = interpolate.interp1d(idx_vertlines, self.velocity[idx_vertlines],
+                                        bounds_error=False, fill_value='extrapolate')
+        
+        _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
+        if is_leftside:
+            _diff_arr = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
+        else:
+            _diff_arr = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
+        idx_vertlines.extend(_diff_arr)
+        vel_vertlines = chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
+        return vel_vertlines
 
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
@@ -1790,9 +1814,9 @@ class SDSpectralImageDisplay(SDImageDisplay):
         """
         plot_list = []
         t0 = time.time()
-        # plot_list.extend(
-        #     self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
-        # )
+        plot_list.extend(
+            self.__plot(SDSparseMapDisplay, lambda x: x.enable_atm())
+        )
         t1 = time.time()
         LOG.debug('sparse_map: elapsed time %s sec' % (t1-t0))
         plot_list.extend(
@@ -1801,20 +1825,20 @@ class SDSpectralImageDisplay(SDImageDisplay):
         t2 = time.time()
         LOG.debug('channel_map: elapsed time %s sec' % (t2-t1))
         # skip spectral map (detailed profile map) if the data is NRO
-        # if not self.inputs.isnro:
-        #     plot_list.extend(
-        #         self.__plot(SDSpectralMapDisplay)
-        #     )
+        if not self.inputs.isnro:
+            plot_list.extend(
+                self.__plot(SDSpectralMapDisplay)
+            )
         t3 = time.time()
         LOG.debug('spectral_map: elapsed time %s sec' % (t3-t2))
-        # plot_list.extend(
-        #     self.__plot(SDRmsMapDisplay)
-        # )
+        plot_list.extend(
+            self.__plot(SDRmsMapDisplay)
+        )
         t4 = time.time()
         LOG.debug('rms_map: elapsed time %s sec' % (t4-t3))
-        # plot_list.extend(
-        #     self.__plot(SDMomentMapDisplay)
-        # )
+        plot_list.extend(
+            self.__plot(SDMomentMapDisplay)
+        )
         t5 = time.time()
         LOG.debug('moment_map: elapsed time %s sec' % (t5-t4))
 

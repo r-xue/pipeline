@@ -565,8 +565,13 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'
 
-    def valid_lines(self) -> List[List[int]]:
-        """Return list of chnnel ranges of valid spectral lines."""
+    def valid_lines(self) -> List[List[Union[float, int, bool]]]:
+        """
+        Return list of channel ranges of valid spectral lines.
+
+        Returns:
+            the list of lists have spectral lines
+        """
         group_desc = self.reduction_group
         ant_index = self.antennaid_list
         spwid_list = self.spwid_list
