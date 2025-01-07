@@ -1318,10 +1318,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         
         _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
         if is_leftside:
-            _diff_arr = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
+            idx_vertlines[len(idx_vertlines):]  = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
         else:
-            _diff_arr = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
-        idx_vertlines.extend(_diff_arr)
+            idx_vertlines[:0] = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
         vel_vertlines = chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
         return vel_vertlines
 
