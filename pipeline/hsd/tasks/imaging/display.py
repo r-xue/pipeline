@@ -1255,7 +1255,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         else:
             velocity_line_center = (self.velocity[i_line_center] + self.velocity[adjacent_channel]) * 0.5
 
-        # calculate the velocity value at the center of the channel map, as a reference value
+        # calculate the velocity value at the center of the channel map, to save it to metadata of PNG image as a reference
         _rightside = [pos for pos, idx in enumerate(i_idx_vertlines) if idx > i_line_center]
         _pos = i_idx_vertlines[-1] if len(_rightside) == 0 else _rightside[0]
         velocity_channelmap_center = (self.velocity[i_idx_vertlines[_pos-1]] +
@@ -1313,16 +1313,23 @@ class SDChannelMapDisplay(SDImageDisplay):
         Returns:
             List[float]: relative velocities for red vertical lines
         """
+        # interpolate function to calculate velocities using extrapolation
         chan2vel = interpolate.interp1d(idx_vertlines, self.velocity[idx_vertlines],
                                         bounds_error=False, fill_value='extrapolate')
         
+        # get size of difference between the number of vertical lines and NUM_CHANNELMAP
         _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
+        
         if is_leftside:
+            # push the indices of the vertical lines for extrapolation to the left side
             idx_vertlines[len(idx_vertlines):]  = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
         else:
+            # push the stuff to the right side
             idx_vertlines[:0] = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
-        vel_vertlines = chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
-        return vel_vertlines
+        
+        # calculate relative velocities for red vertical lines
+        return chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
+
 
 class SDRmsMapDisplay(SDImageDisplay):
     """Plotter to create a baseline rms map."""
