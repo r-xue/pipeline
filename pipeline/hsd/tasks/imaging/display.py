@@ -897,7 +897,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         if isinstance(self.inputs.result, SDImagingResultItem):
             is_lsb = self.inputs.result.frequency_channel_reversed
 
-        # retrieve line list from reduction group
+        # retrieve list of the valid feature lines from reduction group.
         # key is antenna and spw id
         line_list = self.inputs.valid_lines()
 
@@ -950,19 +950,22 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # self.velocity, self.frequency, and self.nchan which are generated from casaimage
-        # don't contain their edges defined by self.edge.
-        # line_center contains the edge, so it need to be subtracted.
+        # Plotting routine for each feature line
         for line_window in line_list:
             (f_line_center, f_line_width) = (line_window[0], line_window[1])
+
+            # self.velocity, self.frequency, and self.nchan which are generated from casaimage
+            # don't contain their edges defined by self.edge.
+            # line_center contains the edge, so it need to be subtracted.
             f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
+
             # The domain of f_line_center is [-0.5, self.nchan-1.5), it will be rounded by _digitize()
             if f_line_center < -0.5 or self.nchan - 1.5 <= f_line_center:
                 continue
 
             # calculate slice width
             slice_width = self._calc_slice_width(f_line_width, f_line_center)
-            if slice_width == .0:
+            if slice_width < 1:
                 continue
 
             # eliminate the indices which are out of channel range
