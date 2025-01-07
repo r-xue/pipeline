@@ -950,8 +950,9 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # self.velocity, self.frequency, and self.nchan do not contain their edges defined as self.edge,
-        # and line_center does not contain the edge defined as self.edge.
+        # self.velocity, self.frequency, and self.nchan which are generated from casaimage
+        # don't contain their edges defined by self.edge.
+        # line_center contains the edge, so it need to subtract.
         for line_window in line_list:
             (f_line_center, f_line_width) = (line_window[0], line_window[1])
             f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
