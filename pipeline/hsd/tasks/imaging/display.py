@@ -973,9 +973,14 @@ class SDChannelMapDisplay(SDImageDisplay):
                 continue
 
             # digitize, and invert if needed, then get several values to plot
-            (idx_line_center, idx_vertlines, velocity_line_center, velocity_channelmap_center,
-             velocity_per_channel, chan0, chan1, V0, V1, is_leftside) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
-            
+            try:
+                (idx_line_center, idx_vertlines, velocity_line_center,
+                 velocity_channelmap_center, velocity_per_channel, chan0, chan1,
+                 V0, V1, is_leftside) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
+            except ValueError as e:
+                LOG.warning('ValueError in digitize: %s' % e)
+                continue
+
             # Plotting objects for vertical lines
             plotting_objects = []
 
@@ -1205,6 +1210,9 @@ class SDChannelMapDisplay(SDImageDisplay):
             int, int: indice of the both edges of the red lines
             float, float: velocity values of the both edges of the red lines
             bool: the flag whether the center of the feature line is at left side of the channel map
+        
+        throws:
+            ValueError: if unexpected out-of-boundery access are detected
         """
         LOG.info(f'line center: {line_center}, indice vertical lines: {idx_vertlines}, nchan: {self.nchan}')
 
@@ -1214,24 +1222,38 @@ class SDChannelMapDisplay(SDImageDisplay):
         
         is_leftside = i_line_center <= (self.nchan - 1) // 2
 
+        # The adjacent channel of i_line_center to calculate the velocity value
+        # at the center of the feature line
+        adjacent_channel = i_line_center - 1
+
         # invert if LSB
         if is_lsb:
             i_line_center = self.nchan - 1 - i_line_center
+            adjacent_channel = self.nchan - 1 - adjacent_channel
             i_idx_vertlines = sorted([self.nchan - 1 - f for f in i_idx_vertlines])
             is_leftside = not is_leftside
 
-        LOG.debug(f'digitized line center: {i_line_center}, indice vertical lines: {i_idx_vertlines}, LSB: {is_lsb}')
+        # adjust adjacent channel at the edge
+        if adjacent_channel < 0:
+            adjacent_channel = 1
+        elif adjacent_channel >= self.nchan:
+            adjacent_channel = self.nchan - 2
+
+        _msg = f'line center: {i_line_center}, adjacent channel: {adjacent_channel}, ' + \
+               f'indice vertical lines: {i_idx_vertlines}, LSB: {is_lsb}'
+
+        # prevent unexpected out-of-range access
+        if i_line_center < 0 or i_line_center >= self.nchan or \
+           abs(adjacent_channel-i_line_center) != 1:
+            raise ValueError('Unexpected out-of-boundery access detected: %s' % _msg)
+
+        LOG.debug(_msg)
 
         # calculate the velocity value at the center of the feature line
         if float(i_line_center) == line_center:
             velocity_line_center = self.velocity[i_line_center]
         else:
-            if i_line_center > 0:
-                velocity_line_center = (self.velocity[i_line_center] +
-                                        self.velocity[i_line_center - 1]) * 0.5
-            else:
-                velocity_line_center = (self.velocity[i_line_center] +
-                                        self.velocity[i_line_center + 1]) * 0.5
+            velocity_line_center = (self.velocity[i_line_center] + self.velocity[adjacent_channel]) * 0.5
 
         # calculate the velocity value at the center of the channel map, as a reference value
         _rightside = [pos for pos, idx in enumerate(i_idx_vertlines) if idx > i_line_center]
@@ -1240,10 +1262,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                                       self.velocity[i_idx_vertlines[_pos] - 1]) * 0.5
 
         # caluculate the velocity value per a channel
-        if i_line_center > 0:
-            velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[i_line_center - 1])
-        else:
-            velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[i_line_center + 1])
+        velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[adjacent_channel])
 
         # caluculate values of the both edges of vertical red lines for plotting
         chan0 = max(i_idx_vertlines[0] - 1, 0)
