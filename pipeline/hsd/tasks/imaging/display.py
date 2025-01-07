@@ -952,11 +952,11 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         # self.velocity, self.frequency, and self.nchan which are generated from casaimage
         # don't contain their edges defined by self.edge.
-        # line_center contains the edge, so it need to subtract.
+        # line_center contains the edge, so it need to be subtracted.
         for line_window in line_list:
             (f_line_center, f_line_width) = (line_window[0], line_window[1])
             f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
-            # The domain of f_line_center is [-0.5, self.nchan-1.5) because of rounding by _digitize()
+            # The domain of f_line_center is [-0.5, self.nchan-1.5), it will be rounded by _digitize()
             if f_line_center < -0.5 or self.nchan - 1.5 <= f_line_center:
                 continue
 
