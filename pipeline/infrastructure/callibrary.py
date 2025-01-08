@@ -10,7 +10,7 @@ import operator
 import os
 import uuid
 import weakref
-from typing import Callable, TYPE_CHECKING
+from typing import Callable, Generator, Iterable, TYPE_CHECKING
 
 import cachetools
 import intervaltree
@@ -820,12 +820,25 @@ def unit(x):
     return x
 
 
-def contiguous_sequences(l):
+def contiguous_sequences(l: Iterable) -> Generator[list[int], None, None]:
     """
-    Group a sequence of numbers into contiguous groups
+    Generate contiguous sequences of numbers from a list.
 
-    :param l: a sequence
-    :return: list of Intervals
+    This function takes a list of integers (or values that can be converted to
+    integers), sorts them, and yields contiguous sequences of these integers.
+
+    A contiguous sequence is defined as a sequence of numbers where each number
+    is exactly one greater than the previous number.
+
+    Args:
+        l: A list of integers or values that can be converted to integers.
+
+    Yields:
+        List containing sequence of continguous integers.
+
+    Example:
+    >>> list(contiguous_sequences([3, 1, 4, 2, 6, 5, 8]))
+    [[1, 2, 3, 4, 5, 6], [8]]
     """
     s = sorted([int(d) for d in l])
 
@@ -881,15 +894,15 @@ class CalToIntervalAdapter(object):
                           if intent in intent_to_id)
             self.intent = [sequence_to_range(seq) for seq in contiguous_sequences(intent_ids)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ('CalToIntervalAdapter(ms={!r}, field={!r}, intent={!r}, spw={!r}, antenna={!r})'.format(
             os.path.basename(self._calto.vis), self.field, self.intent, self.spw, self.antenna))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'CalToIntervalAdapter({!s}, {!s})'.format(self._context, self._calto)
 
 
-def create_data_reducer(join):
+def create_data_reducer(join: Callable) -> Callable:
     """
     Return a function that creates a new TimestampedData object containing the
     result of executing the given operation on two TimestampedData objects.
@@ -901,11 +914,15 @@ def create_data_reducer(join):
     The resulting TimestampedData object has a creation time equal to that of
     the oldest input object.
 
-    :param join: the function to call on the two input objects
-    :return:
-    """
+    Args:
+        join: The function to call on the two input objects.
 
-    def m(td1, td2, join=join):
+    Returns:
+        Function that creates a TimestampedData object containing result of
+        executing given join operation on two TimestampedData objects, with
+        creation time equal to that of the oldest input object.
+    """
+    def m(td1: TimestampedData, td2: TimestampedData, join: Callable = join) -> TimestampedData:
         oldest = min(td1, td2)
         newest = max(td1, td2)
         return TimestampedData(oldest.time, join(oldest, newest))
@@ -960,12 +977,15 @@ def safe_join(vals, separator=','):
     return separator.join((str(o) for o in vals))
 
 
-def merge_contiguous_intervals(tree):
+def merge_contiguous_intervals(tree: intervaltree.IntervalTree) -> intervaltree.IntervalTree:
     """
     Merge contiguous Intervals with the same value into one Interval.
 
-    :param tree: an IntervalTree
-    :return: new IntervalTree with merged Intervals
+    Args:
+        tree: An IntervalTree.
+
+    Returns:
+        A new IntervalTree with merged Intervals.
     """
     merged_tree = intervaltree.IntervalTree()
 
@@ -1022,30 +1042,33 @@ def defrag_interval_tree(tree):
 
 # this chain of functions defines how to add overlapping Intervals when adding
 # IntervalTrees
-intent_add = create_data_reducer(join=merge_lists(join_fn=operator.add))
-field_add = create_data_reducer(join=merge_intervaltrees(intent_add))
-spw_add = create_data_reducer(join=merge_intervaltrees(field_add))
-ant_add = create_data_reducer(join=merge_intervaltrees(spw_add))
+intent_add: Callable = create_data_reducer(join=merge_lists(join_fn=operator.add))
+field_add: Callable = create_data_reducer(join=merge_intervaltrees(intent_add))
+spw_add: Callable = create_data_reducer(join=merge_intervaltrees(field_add))
+ant_add: Callable = create_data_reducer(join=merge_intervaltrees(spw_add))
 
 # this chain of functions defines how to subtract overlapping Intervals when
 # subtracting IntervalTrees
-intent_sub = create_data_reducer(join=merge_lists(join_fn=lambda x, y: [item for item in x if item not in y]))
-field_sub = create_data_reducer(join=merge_intervaltrees(intent_sub))
-spw_sub = create_data_reducer(join=merge_intervaltrees(field_sub))
-ant_sub = create_data_reducer(join=merge_intervaltrees(spw_sub))
+intent_sub: Callable = create_data_reducer(join=merge_lists(join_fn=lambda x, y: [item for item in x if item not in y]))
+field_sub: Callable = create_data_reducer(join=merge_intervaltrees(intent_sub))
+spw_sub: Callable = create_data_reducer(join=merge_intervaltrees(field_sub))
+ant_sub: Callable = create_data_reducer(join=merge_intervaltrees(spw_sub))
 
 
-def interval_to_set(interval):
+def interval_to_set(interval: intervaltree.Interval) -> set[int]:
     """
-    Get the all the indexes covered by an Interval.
+    Get all the indices covered by an Interval.
 
-    :param interval:
-    :return:
+    Args:
+        interval: Interval to retrieve indices for.
+
+    Returns:
+        Set of indices covered by given Interval.
     """
     return set(range(interval.begin, interval.end))
 
 
-def get_id_to_intent_fn(id_to_intent):
+def get_id_to_intent_fn(id_to_intent: dict[str, dict[int, str]]) -> Callable:
     """
     Return a function that can convert intent IDs to a string intent.
 
@@ -1054,10 +1077,12 @@ def get_id_to_intent_fn(id_to_intent):
 
     {'a.ms': {0: 'PHASE', 1: 'BANDPASS'}
 
-    :param id_to_intent: dict of vis : intent ID : string intent
-    :return: set of intents
-    """
+    Args:
+        id_to_intent: Dictionary mapping vis to a dictionary of intent ID: string intent.
 
+    Returns:
+        Function that converts given intent IDs for given MS to set of intents.
+    """
     def f(vis, intent_ids):
         assert vis in id_to_intent
 
@@ -1181,9 +1206,12 @@ def expand_calstate_to_calapps(calstate: IntervalCalState) -> list[tuple[CalTo, 
     """
     Convert an IntervalCalState into a list of (CalTo, [CalFrom..]) tuples.
 
-    :param calstate: the IntervalCalState to convert
-    :return: a list of 2-tuples, first element a Calto, second element a list
-    of CalFroms
+    Args:
+        calstate: The IntervalCalState to convert.
+
+    Returns:
+        A list of 2-tuples, first element a Calto, second element a list
+        of CalFroms.
     """
     # get functions to map from integer IDs to field and intent for this MS
     id_to_field_fn = get_id_to_field_fn(calstate.id_to_field)
@@ -1325,15 +1353,16 @@ def consolidate_calibrations(all_my_calapps):
     return result
 
 
-def data_selection_contains(proposed, calto_args):
+def data_selection_contains(proposed: CalToArgs, calto_args: CalToArgs) -> bool:
     """
     Return True if one data selection is contained within another.
 
-    :param proposed: data selection 1
-    :type proposed: CalToArgs
-    :param calto_args: data selection 2
-    :type calto_args: CalToArgs
-    :return: True if data selection 2 is contained within data selection 1
+    Args:
+        proposed: Data selection 1 as CalToArgs tuple.
+        calto_args: Data selection 2 as CalToArgs tuple.
+
+    Returns:
+        True if data selection 2 is contained within data selection 1.
     """
     return all([not proposed.vis.isdisjoint(calto_args.vis),
                 not proposed.antenna.isdisjoint(calto_args.antenna),
@@ -1342,17 +1371,20 @@ def data_selection_contains(proposed, calto_args):
                 not proposed.intent.isdisjoint(calto_args.intent)])
 
 
-def expand_calstate(calstate):
+def expand_calstate(calstate: IntervalCalState) -> list[tuple[CalToArgs, list[CalFrom]]]:
     """
     Convert an IntervalCalState into the equivalent consolidated list of
-    (CalTo, [CalFrom..]) 2-tuples.
+    (CalToArgs, [CalFrom..]) 2-tuples.
 
-    This function is is the top-level entry point for converting a calibration
+    This function is the top-level entry point for converting a calibration
     state to 2-tuples. It consolidates data selections and converts numeric
     data selection IDs to friendly equivalents through downstream processing,
 
-    :param calstate: the IntervalCalState to convert
-    :return: a list of (CalTo, [CalFrom..]) tuples
+    Args:
+        calstate: The IntervalCalState to convert.
+
+    Returns:
+        A list of (CalToArgs, [CalFrom..]) tuples.
     """
     # step 1: convert to [(CalTo, [CalFrom..]), ..]
     unmerged = expand_calstate_to_calapps(calstate)
@@ -1436,7 +1468,7 @@ def create_interval_tree_nd(intervals, value_fn):
     return root
 
 
-def create_interval_tree_for_ms(ms):
+def create_interval_tree_for_ms(ms: MeasurementSet) -> intervaltree.IntervalTree:
     """
     Create a new IntervalTree fitted to the dimensions of a measurement set.
 
@@ -1444,8 +1476,11 @@ def create_interval_tree_for_ms(ms):
     spw, field and intent dimensions fitted to envelop of the input measurement
     set.
 
-    :param ms:
-    :return: an IntervalTree
+    Args:
+        ms: MeasurementSet to create new IntervalTree for.
+
+    Returns:
+        An IntervalTree fitted to the dimensions of given measurement set.
     """
     id_getter = operator.attrgetter('id')
     tree_intervals = [
@@ -1527,12 +1562,15 @@ def trim_nd(tree, selection):
     return root
 
 
-def get_intent_id_map(ms):
+def get_intent_id_map(ms: MeasurementSet) -> dict[int, str]:
     """
     Get the mapping of intent ID to string intent for a measurement set.
 
-    :param ms: the measurement set to analyse
-    :return: a dict of intent ID: intent
+    Args:
+        ms: The measurement set to analyse.
+
+    Returns:
+        A dict of intent ID: intent.
     """
     # intents are sorted to ensure consistent ordering
     return dict(enumerate(sorted(ms.intents)))
@@ -1540,7 +1578,7 @@ def get_intent_id_map(ms):
 
 class IntervalCalState(object):
     """
-    CalState is a data structure used to map calibrations for all data
+    IntervalCalState is a data structure used to map calibrations for all data
     registered with the pipeline.
 
     It is implemented as a multi-dimensional array indexed by data selection
@@ -1550,6 +1588,7 @@ class IntervalCalState(object):
     """
 
     def __init__(self):
+        """Initialize an IntervalCalState object."""
         self.data = {}
         self.id_to_intent = {}
         self.id_to_field = {}
@@ -1579,7 +1618,22 @@ class IntervalCalState(object):
         return calstate
 
     @staticmethod
-    def create_from_context(context):
+    def create_from_context(context: launcher.Context) -> IntervalCalState:
+        """
+        Return a new IntervalCalState based on given Pipeline context.
+
+        This method initialises a new IntervalCalState instance and then updates
+        its key attributes by generating "ID to intent" and "ID to field"
+        mapping dictionaries, generating interval trees with correct dimensions,
+        and computing the shape, for all measurement sets that are registered in
+        the given context.
+
+        Args:
+            context: The Pipeline context.
+
+        Returns:
+            IntervalCalState based on given Pipeline context.
+        """
         if LOG.isEnabledFor(logging.TRACE):
             LOG.trace('Creating new CalLibrary from context')
 
@@ -1704,23 +1758,28 @@ class IntervalCalState(object):
                              spwmap=calapp.spwmap, calwt=calapp.calwt)
             append = True
 
-    def as_applycal(self):
+    def as_applycal(self) -> str:
+        """Return the CalState as a string representation of the corresponding applycal commands."""
         calapps = (CalApplication(calto, calfroms)
                    for calto, calfroms in self.merged(hide_empty=True).items())
 
         return '\n'.join([str(c) for c in calapps])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.as_applycal()
 
-    def _combine(self, other, combine_fn):
+    def _combine(self, other: IntervalCalState, combine_fn: Callable) -> IntervalCalState:
         """
         Get the union of this object combined with another IntervalCalState,
         applying a function to any Intervals that overlap.
 
-        :param other: the other IntervalCalState
-        :param combine_fn: the combining function to apply
-        :return: IntervalCalState
+        Args:
+            other: The other IntervalCalState.
+            combine_fn: The combining function to apply to overlapping intervals.
+
+        Returns:
+            New IntervalCalState object representing union of this
+            IntervalCalState and given ``other`` IntervalCalState.
         """
         calstate = IntervalCalState()
 
@@ -1761,7 +1820,11 @@ class IntervalCalState(object):
 
         return unmarked
 
-    def __add__(self, other):
+    def __add__(self, other: IntervalCalState) -> IntervalCalState:
+        """Defines how to add this IntervalCalState to given ``other`` IntervalCalState."""
+        # Create new IntervalCalState by combining this IntervalCalState with
+        # given "other" IntervalCalState, while applying the "antenna addition"
+        # function chain to overlapping intervals.
         calstate = self._combine(other, ant_add)
 
         # also adopt IntervalTrees only present in the other object
@@ -1804,7 +1867,7 @@ class IntervalCalState(object):
         return iter(self.data)
 
 
-def fix_cycle0_data_selection(context, calstate):
+def fix_cycle0_data_selection(context: launcher.Context, calstate: IntervalCalState) -> IntervalCalState:
     # shortcut to minimise processing for data from Cycle 1 onwards.
     if any(utils.get_epoch_as_datetime(ms.start_time) <= CYCLE_0_END_DATE
            for ms in context.observing_run.measurement_sets):
@@ -1845,25 +1908,49 @@ def fix_cycle0_data_selection(context, calstate):
 
 class IntervalCalLibrary(object):
     """
-    CalLibrary is the root object for the pipeline calibration state.
-    """
+    IntervalCalLibrary is the root object for the pipeline calibration state.
 
-    def __init__(self, context):
+    This implementation of the CalLibrary is based on the interval tree data
+    structure.
+    """
+    def __init__(self, context: launcher.Context) -> None:
+        """Initialize an IntervalCalLibrary instance."""
         self._context = context
         self._active = IntervalCalState.create_from_context(context)
         self._applied = IntervalCalState.create_from_context(context)
 
-    def clear(self):
+    def clear(self) -> None:
+        """Clear all active and applied calibrations."""
         self._active.clear()
         self._applied.clear()
 
-    def _calc_filename(self, filename=None):
+    def _calc_filename(self, filename: str | None = None) -> str:
+        """
+        Return output filename for this IntervalCalLibrary.
+
+        If given filename is not None or an empty string, then given filename is
+        returned. Otherwise, a new filename is defined based on the context
+        name.
+
+        Args:
+            filename: Proposed output filename (optional).
+
+        Returns:
+            Output filename to use.
+        """
         if filename in ('', None):
             filename = os.path.join(self._context.output_dir,
                                     self._context.name + '.calstate')
         return filename
 
-    def _export(self, calstate, filename=None):
+    def _export(self, calstate: IntervalCalState, filename: str | None = None) -> None:
+        """
+        Export input calibration state to a file.
+
+        Args:
+            calstate: Calibration state to export to a file.
+            filename: Name for saved calibration state file.
+        """
         filename = self._calc_filename(filename)
 
         calapps = [CalApplication(k, v) for k, v in calstate.merged().items()]
@@ -1881,49 +1968,59 @@ class IntervalCalLibrary(object):
             LOG.trace('Calstate after _add:\n%s', self._active.as_applycal())
 
     @property
-    def active(self):
+    def active(self) -> IntervalCalState:
         """
         CalState holding CalApplications to be (pre-)applied to the MS.
         """
         return self._active
 
     @property
-    def applied(self):
+    def applied(self) -> IntervalCalState:
         """
         CalState holding CalApplications that have been applied to the MS via
         the pipeline applycal task.
         """
         return self._applied
 
-    def export(self, filename=None):
+    def export(self, filename: str | None = None) -> None:
         """
         Export the pre-apply calibration state to disk.
 
         The pre-apply calibrations held in the 'active' CalState will be
         written to disk as a set of equivalent applycal calls.
+
+        Args:
+            filename: Name for saved calibration state file.
         """
         filename = self._calc_filename(filename)
         LOG.info('Exporting current calibration state to %s', filename)
         self._export(self._active, filename)
 
-    def export_applied(self, filename=None):
+    def export_applied(self, filename: str | None = None) -> None:
         """
         Export the applied calibration state to disk.
 
         The calibrations held in the 'applied' CalState will be written to
         disk as a set of equivalent applycal calls.
+
+        Args:
+            filename: Name for saved calibration state file.
         """
         filename = self._calc_filename(filename)
         LOG.info('Exporting applied calibration state to %s', filename)
         self._export(self._applied, filename)
 
-    def get_calstate(self, calto, ignore=None):
+    def get_calstate(self, calto, ignore: list | None = None) -> IntervalCalState:
         """
         Get the active calibration state for a target data selection.
 
-        :param calto: the data selection
-        :param ignore:
-        :return:
+        Args:
+            calto: The data selection to retrieve active calibration state for.
+            ignore: CalFrom properties to ignore.
+
+        Returns:
+            New IntervalCalState object representing active calibration state
+            for a target data selection.
         """
         if ignore is None:
             ignore = []
@@ -1986,7 +2083,7 @@ class IntervalCalLibrary(object):
             LOG.debug('New calibration state:\n%s', self.active.as_applycal())
             LOG.debug('Applied calibration state:\n%s', self.applied.as_applycal())
 
-    def unregister_calibrations(self, predicate_fn: Callable[[CalToArgs, CalFrom], bool]):
+    def unregister_calibrations(self, predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> None:
         """
         Delete active calibrations that match the input predicate function.
 
@@ -2101,29 +2198,25 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
 
     def __repr__(self):
         """
-        Executable string representation of this Interval.
-        :return: string representation
-        :rtype: str
-        """
+        Return executable string representation of this Interval."""
         if self.marker is None:
             return 'TSD({0}, {1})'.format(self.time, repr(self.data))
         return 'TSD({0}, {1}, {2})'.format(self.time, repr(self.data), self.marker)
 
-    def __str__(self):
-        """
-        String representation of this Interval.
-        :return: string representation
-        :rtype: str
-        """
+    def __str__(self) -> str:
+        """Return string representation of this Interval."""
         return 'TSD({0})'.format(repr(self.data))
 
-    def __eq__(self, other):
+    def __eq__(self, other: TimestampedData) -> bool:
         """
         Whether the begins equal, the ends equal, and the data fields
         equal. Compare range_matches().
-        :param other: Interval
-        :return: True or False
-        :rtype: bool
+
+        Args:
+            other: TimestampedData to test equality for.
+
+        Returns:
+            True or False.
         """
         if not isinstance(other, TimestampedData):
             return False
@@ -2132,7 +2225,8 @@ class TimestampedData(collections.namedtuple('TimestampedDataBase', ['time', 'da
                self.marker == other.marker
 
 
-def trim_to_valid_data_selection(calstate, vis=None):
+def trim_to_valid_data_selection(calstate: IntervalCalState, vis: str | None = None) \
+        -> dict[str, intervaltree.IntervalTree]:
     """
     Trim an IntervalCalState to the shape of valid (present) data selections.
 
@@ -2142,9 +2236,12 @@ def trim_to_valid_data_selection(calstate, vis=None):
     See CAS-9415: CalLibrary needs a way to filter out calibration
     applications for missing data selections
 
-    :param calstate: the calstate to shape
-    :param vis: name of the calstate to shape. If not defined, shape all.
-    :return: a new, shaped IntervalCalState
+    Args:
+        calstate: The calstate to shape.
+        vis: Name of the calstate to shape. If not defined, shape all.
+
+    Returns:
+        A dictionary mapping name of MS to its trimmed IntervalTree.
     """
     if vis is None:
         vislist = list(calstate.data.keys())
@@ -2169,7 +2266,7 @@ def trim_to_valid_data_selection(calstate, vis=None):
     return results
 
 
-def _merge_intervals(unmerged):
+def _merge_intervals(unmerged: dict) -> tuple:
     """
     Merge adjacent Intervals (represented by the keys within the input dict)
     that have identical values and output an IntervalTree-friendly tuple of
@@ -2183,8 +2280,11 @@ def _merge_intervals(unmerged):
 
         ((((1, 2), (3, 5)), 'A'), (((2, 3),), 'B'))
 
-    :param unmerged: a dict mapping IDs to values
-    :return: tuple of constructor arguments ready for create_interval_tree_nd
+    Args:
+        unmerged: A dict mapping IDs to values.
+
+    Returns:
+        Tuple of constructor arguments ready for create_interval_tree_nd.
     """
     reversed = collections.defaultdict(set)
     for k, v in unmerged.items():
@@ -2193,12 +2293,12 @@ def _merge_intervals(unmerged):
                         for k, v in reversed.items()))
 
 
-def _print_dimensions(calstate):
+def _print_dimensions(calstate: IntervalCalState) -> None:
     """
     Debugging function used to print the dimensions of an IntervalCalState.
 
-    :param calstate: the calstate to inspect
-    :return:
+    Args:
+        calstate: The calstate to inspect.
     """
     for vis, antenna_tree in calstate.data.items():
         for antenna_interval in antenna_tree.items():
@@ -2209,9 +2309,7 @@ def _print_dimensions(calstate):
                     field_ranges = (field_interval.begin, field_interval.end)
                     for intent_interval in field_interval.data.data:
                         intent_ranges = (intent_interval.begin, intent_interval.end)
-
-                        tree_intervals = (
-                        os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
+                        tree_intervals = (os.path.basename(vis), antenna_ranges, spw_ranges, field_ranges, intent_ranges)
                         print('{!r}'.format(tree_intervals))
 
 
@@ -2242,9 +2340,12 @@ def set_calstate_marker(calstate, marker):
     IntervalTree union operation, and subsequently operated on in a
     merge_equals step.
 
-    :param calstate: the calstate to modify
-    :param marker: the object to annotate calstates with
-    :return: annotated calstate 
+    Args:
+        calstate: The calstate to modify.
+        marker: The object to annotate calstates with.
+
+    Returns:
+        New IntervalCalState representing the annotated calibration state.
     """
     calstate_copy = copy.deepcopy(calstate)
 
@@ -2270,7 +2371,7 @@ def set_calstate_marker(calstate, marker):
     return calstate_copy
 
 
-def _copy_calfrom(calfrom, **overrides):
+def _copy_calfrom(calfrom: CalFrom, **overrides) -> CalFrom:
     """
     Copy a CalFrom, overwriting any CalFrom properties with the specified
     override values.
@@ -2279,9 +2380,12 @@ def _copy_calfrom(calfrom, **overrides):
 
     modified = _copy_calfrom(calfrom, calwt=True)
 
-    :param calapp: CalFrom to copy
-    :param overrides: kw/val pairs of CalFrom properties to override
-    :return: CalFrom instance
+    Args:
+        calapp: CalFrom to copy.
+        overrides: Keyword/value pairs of CalFrom properties to override.
+
+    Returns:
+        CalFrom instance with keywords overridden as per given arguments.
     """
     new_kwargs = dict(gaintable=calfrom.gaintable, gainfield=calfrom.gainfield, interp=calfrom.interp,
                       spwmap=list(calfrom.spwmap), caltype=calfrom.caltype, calwt=calfrom.calwt)
@@ -2289,7 +2393,7 @@ def _copy_calfrom(calfrom, **overrides):
     return CalFrom(**new_kwargs)
 
 
-def _copy_calto(calto, **overrides):
+def _copy_calto(calto: CalTo, **overrides) -> CalTo:
     """
     Copy a CalTo, overwriting any CalFrom properties with the specified
     override values.
@@ -2298,16 +2402,19 @@ def _copy_calto(calto, **overrides):
 
     modified = _copy_calto(calto, spw=9)
 
-    :param calapp: CalTo to copy
-    :param overrides: kw/val pairs of CalTo properties to override
-    :return: CalTo instance
+    Args:
+        calapp: CalTo to copy.
+        overrides: Keyword/value pairs of CalTo properties to override
+
+    Returns:
+        CalTo instance with keywords overridden as per given arguments.
     """
     new_kwargs = dict(vis=calto.vis, field=calto.field, spw=calto.spw, antenna=calto.antenna, intent=calto.intent)
     new_kwargs.update(overrides)
     return CalTo(**new_kwargs)
 
 
-def copy_calapplication(calapp, origin=None, **overrides):
+def copy_calapplication(calapp: CalApplication, origin: CalAppOrigin | None = None, **overrides) -> CalApplication:
     """
     Copy a CalApplication, overwriting any CalTo or CalFrom values with the
     given override values.
@@ -2317,10 +2424,14 @@ def copy_calapplication(calapp, origin=None, **overrides):
 
     modified = copy_calapplication(calapp, calwt=True, spw=9)
 
-    :param calapp: CalApplication to copy
-    :param origin: origin to set, or None to copy the origin from calapp
-    :param overrides: kw/val pairs of calto/calfrom attributes to override
-    :return: CalApplication instance
+    Args:
+        calapp: The CalApplication to copy.
+        origin: Origin to set, or None to copy the origin from calapp.
+        overrides: Keyword/value pairs of CalTo/CalFrom attributes to override.
+
+    Returns:
+        New CalApplication instance with origin and keywords overridden as per
+        given arguments.
     """
     if origin is None:
         origin = calapp.origin
@@ -2337,7 +2448,7 @@ def copy_calapplication(calapp, origin=None, **overrides):
 
 
 @cachetools.cached(cachetools.LRUCache(50), key=operator.attrgetter('name'))
-def get_calstate_shape(ms):
+def get_calstate_shape(ms: MeasurementSet):
     """
     Get an IntervalTree shaped to the dimensions of the given measurement set.
 
@@ -2353,8 +2464,11 @@ def get_calstate_shape(ms):
     Note: this assumes that shape of an MS never changes, which should be
     true; the number of spws, fields, ants, etc. never changes.
 
-    :param ms: the MeasurementSet to analyse
-    :return: IntervalTree shaped to match valid data dimensions
+    Args:
+        ms: The MeasurementSet to analyse.
+
+    Returns:
+        IntervalTree shaped to match valid data dimensions.
     """
     LOG.debug('Calculating callibrary shape for {}'.format(ms.basename))
 
@@ -2411,9 +2525,8 @@ def get_calstate_shape(ms):
     return antenna_shape
 
 
-def get_matching_calstate(context: launcher.Context,
-                           calstate: IntervalCalState,
-                           predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> IntervalCalState:
+def get_matching_calstate(context: launcher.Context, calstate: IntervalCalState,
+                          predicate_fn: Callable[[CalToArgs, CalFrom], bool]) -> IntervalCalState:
     """
     Return an IntervalCalState contain calibrations in the input 
     IntervalCalState that match the predicate function.
@@ -2423,10 +2536,15 @@ def get_matching_calstate(context: launcher.Context,
     instance, matching registered bandpass caltables so they can be removed
     from the active CalState.
 
-    :param context: pipeline context (required to create IntervalCalState)
-    :param calstate: calibration state to inspect
-    :predicate_fn: matching function that returns True when the selection is
-        to be added to the output IntervalCalState
+    Args:
+        context: Pipeline context (required to create IntervalCalState).
+        calstate: Calibration state to inspect.
+        predicate_fn: Matching function that returns True when the selection
+            is to be added to the output IntervalCalState.
+
+    Returns:
+        IntervalCalState containing the calibrations from the input
+        IntervalCalState that match the given predicate function.
     """
     expanded = expand_calstate_to_calapps(calstate)
 
