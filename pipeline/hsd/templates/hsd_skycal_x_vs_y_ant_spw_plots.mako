@@ -17,11 +17,11 @@ def get_caltable_from_result(result):
 %>
 
 <%self:render_plots plots="${sorted(plots, key=lambda p: p.parameters['spw'])}">
-	<%def name="mouseover(plot)">Click to magnify plot for ${plot.parameters['vis']} ${plot.parameters['ant']}, field ${plot.parameters['field']} spw ${plot.parameters['spw']}</%def>
+	<%def name="mouseover(plot)">Click to magnify plot for ${plot.parameters['vis']}, Antenna: ${plot.parameters['ant']}, Field: ${plot.parameters['field']}, Spw: ${plot.parameters['spw']}</%def>
 
 	<%def name="fancybox_caption(plot)">
         % if multi_vis:
-        ${plot.parameters['vis']}<br>
+                ${plot.parameters['vis']}<br>
         % endif
                 ${get_caltable_from_result(result)}<br>
 		Field: ${plot.parameters['field']}<br>

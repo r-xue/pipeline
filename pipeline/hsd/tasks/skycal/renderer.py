@@ -94,12 +94,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             summaries_interval = []
             details_interval = []
             gainfield_name = []
+
             for calapp in final_original:
                 result.final = [calapp]
                 gainfield = calapp.calfrom[0].gainfield
-                fields = ms.get_fields(field_id=int(gainfield))  ##
-                clean_name = fields[0].clean_name  ##
-                gainfield_name.append(clean_name)  ##
+                gainfield_name.append(ms.get_fields(field_id=int(gainfield))[0].clean_name)
 
                 # Amp vs. Freq: summary plots
                 summary_plotter = skycal_display.SingleDishSkyCalAmpVsFreqSummaryChart(context, result, gainfield)
@@ -118,9 +117,9 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 details_interval.extend(detail_plotter.plot())
 
                 # reference coordinates
-                #LOG.debug('calapp=%s'%(calapp))
+                # LOG.debug('calapp=%s'%(calapp))
                 calmode = utils.get_origin_input_arg(calapp, 'calmode')
-                LOG.debug('calmode=\'%s\''%(calmode))
+                LOG.debug('calmode=\'%s\'' % (calmode))
                 field_domain = ms.get_fields(gainfield)[0]
                 if calmode == 'ps':
                     reference_coord = self._get_reference_coord(context, ms, field_domain)
@@ -131,7 +130,6 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             summaries_time.extend(summary_plotter.plot())
 
             # Amp vs. Time: detail plots
-            gainfield_name = ', '.join(gainfield_name)  ##
             detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, final_original, gainfield_name)
             details_time.extend(detail_plotter.plot())
 
@@ -156,31 +154,30 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_interval_vs_time[vis].extend(details_interval)
 
         # sort plots
-#        for vis in summary_amp_vs_freq:
-#            ms = context.observing_run.get_ms(vis)
-#            name_id_map = dict((f.clean_name, f.id) for f in ms.fields)
+        for vis in summary_amp_vs_freq:
+            ms = context.observing_run.get_ms(vis)
+            name_id_map = dict((f.clean_name, f.id) for f in ms.fields)
 
-#            def sort_by_field_spw(plot):
-#                field_name = plot.parameters['field']
-#                spw_id = plot.parameters['spw']
-#                field_id = name_id_map[field_name]
-#                return field_id, spw_id
+            def sort_by_field_spw(plot):
+                field_name = plot.parameters['field']
+                spw_id = plot.parameters['spw']
+                field_id = name_id_map[field_name]
+                return field_id, spw_id
 
-#            for summary_dict in summary_amp_vs_freq:
-#            for summary_dict in (summary_amp_vs_freq, summary_amp_vs_time,):
-#                if vis not in summary_dict:
-#                    continue
+            for summary_dict in (summary_amp_vs_freq,):
+                if vis not in summary_dict:
+                    continue
 
-#                _plot_list = summary_dict[vis]
+                _plot_list = summary_dict[vis]
 
-#                if len(_plot_list) == 0:
-#                    continue
+                if len(_plot_list) == 0:
+                    continue
 
-#                LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
-#                         (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
-#                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
-#                _plot_list.sort(key=sort_by_field_spw)
-#                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+                LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
+                          (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
+                LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
+                _plot_list.sort(key=sort_by_field_spw)
+                LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
 
         # Sky Level vs Frequency
         flattened = [plot for inner in details_amp_vs_freq.values() for plot in inner]
@@ -188,7 +185,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
-                                                  title ='Sky Level vs Frequency',
+                                                  title='Sky Level vs Frequency',
                                                   outfile='sky_level_vs_frequency.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
@@ -197,12 +194,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         # Sky Level vs Time
         flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
-#        renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
         renderer = basetemplates.JsonPlotRenderer(uri='hsd_skycal_x_vs_y_ant_spw_plots.mako',
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
-                                                  title ='Sky Level vs Time',
+                                                  title='Sky Level vs Time',
                                                   outfile='sky_level_vs_time.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
@@ -215,7 +211,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
-                                                  title ='Interval Ratio (Off-source/On-source) vs Time',
+                                                  title='Interval Ratio (Off-source/On-source) vs Time',
                                                   outfile='interval_ratio_vs_time.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
