@@ -70,8 +70,7 @@ def _auto_detector(spw: Type[SpectralWindow], band: str) -> None:
         LOG.info("Frequencies below 1GHz are not currently supported. Regarding spw %s as a continuum window." % spw.id)
     else:
         if band in ["L", "S"]:
-            if all([spw.bandwidth.value < 32000000.0,
-                    spw.num_channels > 64]):
+            if (spw.bandwidth.value / spw.num_channels) < 250000.0:
                 LOG.debug("New criteria met for spw %d.", spw.id)
                 spectral_line_spw = True
                 spw_type = "spectral line"
