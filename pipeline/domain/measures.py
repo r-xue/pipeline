@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import abc
-import copy
 import datetime
 import decimal
 import math
@@ -1107,46 +1106,6 @@ class Longitude(EquatorialArc):
         return '%.2d%s%.2d%s%05.2f%s' % (h, ArcUnits.HOUR['symbol'],
                                          m, ArcUnits.MINUTE['symbol'],
                                          utils.round_half_up(s, 2), ArcUnits.SECOND['symbol'])
-
-
-class TemporalCollection(object):
-    def __init__(self):
-        self.__contents = {}
-        self.__milestoneCache = None
-
-    def __getitem__(self, i):
-        return self.__milestones()[i]
-
-    def get(self, when=None):
-        """Returns the value that was effective on the given date
-        """
-        if when is None:
-            when = datetime.datetime.utcnow()
-        for m in self.__milestones():
-            thisDate = m
-            if thisDate <= when:
-                return self.__contents.get(thisDate)
-        raise LookupError("No records that early")
-
-    def put(self, at, item):
-        # The item is valid from the supplied date onwards
-        self.__contents[at] = copy.deepcopy(item)
-        self.__milestoneCache = None
-
-    def __milestones(self):
-        """A list of all the dates where the value changed, returned in order
-        latest first
-        """
-        if self.__milestoneCache is None:
-            self.__calculateMilestones()
-        return self.__milestoneCache
-
-    def __calculateMilestones(self):
-        self.__milestoneCache = list(self.__contents.keys())
-        self.__milestoneCache.sort(reverse=True)
-
-    def __clearMilestoneCache(self):
-        self.__milestoneCache = None
 
 
 class TimeInterval(object):

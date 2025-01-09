@@ -16,7 +16,7 @@ from .eventbus import ContextCreatedEvent, ContextResumedEvent
 LOG = logging.get_logger(__name__)
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 6, 1, 17]
+MIN_CASA_REVISION = [6, 6, 6, 1]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -84,7 +84,6 @@ class Context(object):
         selfcal_resources: List of files/tables required for the
             self-calibration restoration.
         selfcal_targets: List of targets for which self-calibration is performed.
-        sensitivities: TODO: introduced for CAS-10146, but appears unused.
         size_mitigation_parameters: Dictionary containing imaging product size
             mitigation parameters; typically populated by hif_checkproductsize,
             and used by hif_makeimlist.
@@ -131,10 +130,6 @@ class Context(object):
         self.subtask_counter = 0
         LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
 
-        # TODO: Appears effectively unused, remove?
-        self.logtype = 'MOUS'
-        LOG.todo('Add OUS registration task. Hard-coding log type to MOUS')
-
         # Define observing run.
         self.observing_run = domain.ObservingRun()
 
@@ -157,7 +152,6 @@ class Context(object):
         self.sciimlist = imagelibrary.ImageLibrary()
         self.selfcal_resources: list[str] = []  # PIPE-1802
         self.selfcal_targets = []  # PIPE-1802
-        self.sensitivities = []  # CAS-10146
         self.size_mitigation_parameters = {}  # CAS-9255
         self.subimlist = imagelibrary.ImageLibrary()  # CAS-10345
         self.synthesized_beams = {'robust': None, 'uvtaper': None}
@@ -425,6 +419,4 @@ class Pipeline(object):
 
     def close(self) -> None:
         """Save a pickle of the Pipeline Context to a file."""
-        filename = self.context.name
-        with open(filename, 'r+b') as session:
-            pickle.dump(self.context, session, protocol=-1)
+        self.context.save()

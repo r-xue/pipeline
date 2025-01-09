@@ -83,7 +83,6 @@ class MeasurementSet(object):
 
         derived_fluxes: Calibrated visibility based flux measurements derived
             during pipeline run, used in subsequent imaging stages.
-        flagcmds: A list of flag commands, typically populated by hifa_fluxcalflag.
         fluxscale_fluxes: Flux measurements derived by CASA's fluxscale during
             the hifa_gfluxscale task, for use by a subsequent hifa_polcal task
             (ALMA interferometry polarisation calibration only).
@@ -158,7 +157,6 @@ class MeasurementSet(object):
         # Attributes expected to be populated during the Pipeline run, to store
         # information derived by stages that is used in subsequent stages.
         self.derived_fluxes: collections.defaultdict | None = None  # PIPE-644, PIPE-660
-        self.flagcmds: list[str] = []  # TODO: updated by hifa_fluxcalflag, but appear unused; remove?
         self.fluxscale_fluxes: collections.defaultdict | None = None  # PIPE-1776
         self.origin_ms: str = name  # PIPE-1062
         self.phase_calapps_for_check_sources = []  # PIPE-1377

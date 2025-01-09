@@ -14,7 +14,6 @@ from . import MeasurementSet
 
 if TYPE_CHECKING:
     from datetime import datetime
-    from pipeline.domain.field import Field
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -48,6 +47,9 @@ class ObservingRun(object):
 
     Attributes:
         measurement_sets: List of measurementSet objects associated with run.
+        ms_datatable_name: Path to directory that stores DataTable of each
+            MeasurementSet (ALMA Single-Dish only).
+        ms_reduction_group: Dictionary of reduction groups (ALMA Single-Dish only).
         org_directions: Dictionary with Direction objects of the origin (ALMA
             Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
@@ -64,6 +66,8 @@ class ObservingRun(object):
         Initialize an ObservingRun object.
         """
         self.measurement_sets: list[MeasurementSet] = []
+        self.ms_datatable_name = ''
+        self.ms_reduction_group = {}
         self.org_directions = {}
         self.virtual_science_spw_ids: dict[int, str] = {}  # PIPE-123
         self.virtual_science_spw_names: dict[str, int] = {}  # PIPE-123
@@ -247,33 +251,6 @@ class ObservingRun(object):
                 return ms_dict, dtype
             else:
                 return collections.OrderedDict(), None
-
-    # TODO: appears unused, remove?
-    def get_fields(self, names: str | None = None) -> list[Field]:
-        """
-        Returns fields matching the given arguments from all measurement sets in
-        this observing run.
-
-        Args:
-            names: Field name(s) to match. If None, it will match all field(s) found.
-
-        Returns:
-            List of Field objects for fields in all measurements sets in this
-            observing run, filtered by given field names.
-        """
-        match = [ms.fields for ms in self.measurement_sets]
-        # flatten the fields lists to one sequence
-        match = itertools.chain(*match)
-
-        if names is not None:
-            if isinstance(names, str):
-                names = utils.safe_split(names)
-            names = set(names)
-            match = [f for f in match if f.name in names]
-        else:
-            match = list(match)
-
-        return match
 
     @staticmethod
     def get_real_spw_id_by_name(spw_name: str | None, target_ms: MeasurementSet) -> int | None:

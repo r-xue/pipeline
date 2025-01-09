@@ -40,7 +40,6 @@ class DataDescription(object):
             description.
         corr_axis: vector containing polarization labels that were correlated
             together for data matching the data description.
-        group_name: TODO: unknown purpose, no known usage.
     """
     def __init__(self, dd_id: int, spw: SpectralWindow, pol_id: int) -> None:
         """
@@ -58,7 +57,6 @@ class DataDescription(object):
         self.obs_time = None
         self.chan_freq = []
         self.corr_axis = []
-        self.group_name = ''
 
     def __repr__(self) -> str:
         return 'DataDescription({0}, {1!r}, {2!r})'.format(

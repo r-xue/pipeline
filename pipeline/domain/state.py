@@ -48,42 +48,6 @@ class State(object):
         # return all intents
         return {intent for mode, intent in self.obs_mode_mapping.items() if self.obs_mode.find(mode) != -1}
 
-    @property
-    def reduction_intents(self) -> set[str]:
-        # get the raw intents from the ms
-        raw_intents = self.intents
-
-        # translate these into intents understood by the pipeline
-        red_intents = set()
-        if 'CHECK' in raw_intents:
-            red_intents.update(['CHECK'])
-        if 'POLARIZATION' in raw_intents:
-            red_intents.update(['POLARIZATION'])
-        if 'POLANGLE' in raw_intents:
-            red_intents.update(['POLANGLE'])
-        if 'POLLEAKAGE' in raw_intents:
-            red_intents.update(['POLLEAKAGE'])
-        if 'BANDPASS' in raw_intents:
-            red_intents.update(['BANDPASS'])
-        if 'AMPLITUDE' in raw_intents:
-            red_intents.update(['AMPLITUDE'])
-        if 'FLUX' in raw_intents:
-            red_intents.update(['AMPLITUDE'])
-        if 'DIFFGAINREF' in raw_intents:
-            red_intents.update(['DIFFGAINREF'])
-        if 'DIFFGAINSRC' in raw_intents:
-            red_intents.update(['DIFFGAINSRC'])
-        if 'TARGET' in raw_intents:
-            red_intents.update(['TARGET'])
-        if ('PHASE' in raw_intents) and \
-          not ('BANDPASS' in raw_intents) and \
-          not ('AMPLITUDE' in raw_intents) and \
-          not ('FLUX' in raw_intents) and \
-          not ('TARGET' in raw_intents):
-            red_intents.update(['PHASE'])
-
-        return red_intents
-
     def get_obs_mode_for_intent(self, intent: str) -> list[str]:
         """Return list of obs_mode values associated with given intent."""
         intents = {i.strip('*') for i in intent.split(',') if i is not None}

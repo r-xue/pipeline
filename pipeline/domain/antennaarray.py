@@ -4,7 +4,6 @@ import math
 from typing import Sequence
 
 import numpy
-from casatasks.private import simutil
 
 from pipeline.infrastructure import casa_tools
 from . import measures, Antenna
@@ -142,32 +141,6 @@ class AntennaArray(object):
         Get the array longitude as a CASA quantity.
         """
         return self.__position['m0']
-
-    @property
-    def centre(self):
-        """
-        Return the array centre as earth-centered x, y, z.
-
-        If the array position reference frame is "IRTF", this will return the
-        position directly. Otherwise, the array position reference is assumed to
-        be "WGS84" and the array position (geodetic longitude, latitute,
-        elevation) is converted to earth-centered x, y, z, using the private
-        CASA script "simutil".
-        """
-        datum = self.__position['refer']
-        if datum == 'ITRF':
-            return self.__position
-
-        qa = casa_tools.quanta
-        longitude = qa.convert(self.longitude, 'rad')
-        latitude = qa.convert(self.latitude, 'rad')
-        elevation = qa.convert(self.elevation, 'm')
-
-        s = simutil.simutil()
-        return s.long2xyz(qa.getvalue(longitude)[0],
-                          qa.getvalue(latitude)[0],
-                          qa.getvalue(elevation)[0],
-                          datum)
 
     def baselines_for_antennas(self, antenna_ids: Sequence[int]) -> list[Baseline]:
         """
