@@ -390,29 +390,6 @@ def convert_to_amp_phase(visibilities, sigma):
 
     return (amp, sigma_amp, phase, sigma_phase)
 
-def robust_stats(a):
-    """
-    Return median and estimate standard deviation
-    of numpy array A using median statistics
-
-    :param a:
-    :return:
-    """
-    # correction factor for obtaining sigma from MAD
-    madfactor = 1.482602218505602
-
-    n = len(a)
-    # Fitting parameters for sample size correction factor b(n)
-    if n % 2 == 0:
-        alpha = 1.32
-        beta = -1.5
-    else:
-        alpha = 1.32
-        beta = -0.9
-    bn = 1.0 - 1.0 / (alpha * n + beta)
-    mu = np.median(a)
-    sigma = (1.0 / bn) * madfactor * np.median(np.abs(a - mu))
-    return mu, sigma
 
 def stdListStr(thislist):
     if (type(thislist) == list) or (type(thislist) == np.ndarray):
