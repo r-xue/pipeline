@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.baselineflag.baselineflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,40 +113,40 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hsd.tasks.baselineflag.baselineflag</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">fieldnames</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">reshape_flagdata_summary</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">absolute_path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">fieldnames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.applycal.applycal</span><span class="w"> </span><span class="kn">import</span> <span class="n">reshape_flagdata_summary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_path</span>
 
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">worker</span>
-<span class="kn">from</span> <span class="nn">.flagsummary</span> <span class="kn">import</span> <span class="n">SDBLFlagSummary</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">worker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.flagsummary</span><span class="w"> </span><span class="kn">import</span> <span class="n">SDBLFlagSummary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span> <span class="k">as</span> <span class="n">sdutils</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">numbers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integral</span>
 
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDBLFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBLFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Inputs for single dish flagging</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__to_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Integral&#39;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__to_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Integral&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into numeric.</span>
 
 <span class="sd">        Utility method for VisDependentProperty.</span>
@@ -159,7 +159,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__to_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__to_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into boolean.</span>
 
 <span class="sd">        Utility method for VisDependentProperty.</span>
@@ -172,7 +172,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">sdutils</span><span class="o">.</span><span class="n">to_bool</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into integer.</span>
 
 <span class="sd">        Utility method for VisDependentProperty.</span>
@@ -185,7 +185,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any value into integer list.</span>
 
 <span class="sd">        Utility method for VisDependentProperty.</span>
@@ -227,7 +227,7 @@
     <span class="n">plotflag</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="n">__to_bool</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Name of input MS.</span>
 
 <span class="sd">        This is just an alias of vis.</span>
@@ -238,7 +238,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
 
     <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Additional conversion operation on infiles.</span>
 
 <span class="sd">        It doesn&#39;t apply any conversion. Instead, this ensures</span>
@@ -256,7 +256,7 @@
     <span class="n">antenna</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@antenna</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make antenna selection consistent with vis.</span>
 
 <span class="sd">        Args:</span>
@@ -273,7 +273,7 @@
 <span class="c1">#         return &#39;,&#39;.join([str(a.id) for a in antennas])</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define default field selection.</span>
 
 <span class="sd">        Default field selection is constructed from vis</span>
@@ -293,7 +293,7 @@
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Define default polarization selection.</span>
 
 <span class="sd">        Default polarization selection is constructed</span>
@@ -311,7 +311,7 @@
 
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pols</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
                  <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">iteration</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -424,11 +424,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
         <span class="c1">### Default Flag rule</span>
-        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SDFlagRule</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">SDFlagRule</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span> <span class="o">=</span> <span class="n">SDFlagRule</span><span class="o">.</span><span class="n">SDFlagRule</span>
         <span class="c1"># MUST NOT configure FlagRuleDictionary here.</span>
 
-    <span class="k">def</span> <span class="nf">_configureFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_configureFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A private method to convert input parameters to FlagRuleDictionary&quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TsysFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_tsys</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tsys_thresh</span><span class="p">]),</span>
              <span class="s1">&#39;RmsPreFitFlag&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag_prfr</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prfr_thresh</span><span class="p">]),</span>
@@ -449,14 +449,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Invalid flag operation definition for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">activateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">activateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Activates a flag type specified by the input parameter in FlagRuleDictionary&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> not in predefined Flagging Rules&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">deactivateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">deactivateFlagRule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Deactivates a flag type specified by the input parameter in FlagRuleDictionary&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">FlagRuleDictionary</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;isActive&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
@@ -464,21 +464,21 @@
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Error: </span><span class="si">%s</span><span class="s1"> not in predefined Flagging Rules&#39;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDBLFlagResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBLFlagResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The results of SDFalgData</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">success</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outcome</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">success</span><span class="p">,</span> <span class="n">outcome</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBLFlagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;none&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">SerialSDBLFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialSDBLFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Single dish flagging class.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -490,7 +490,7 @@
     <span class="c1">##################################################</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBLFlagInputs</span>
 
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Iterates over reduction group and invoke flagdata worker function in each clip_niteration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -655,7 +655,7 @@
 
         <span class="k">return</span> <span class="n">results</span>
 
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span>
 
 <div class="viewcode-block" id="SDBLFlag">
@@ -665,7 +665,7 @@
     <span class="s1">&#39;Perform row-based flagging based on noise level and quality of spectral baseline subtraction.</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">SDBLFlag</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBLFlag</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBLFlagInputs</span>
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDBLFlag</span></div>
 
@@ -678,7 +678,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.gfluxscaleflag.gfluxscaleflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,26 +118,26 @@
 
 <span class="sd">@author: Vincent Geers (UKATC)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">correctedampflag</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="kn">import</span> <span class="n">CalTo</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">GfluxscaleflagResults</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common.displays</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">correctedampflag</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalTo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">GfluxscaleflagResults</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;GfluxscaleflagInputs&#39;</span><span class="p">,</span>
@@ -148,7 +148,7 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GfluxscaleflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GfluxscaleflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GfluxscaleflagInputs defines the inputs for the Gfluxscaleflag pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -175,7 +175,7 @@
     <span class="n">antpossig</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">4.6</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># By default, return the fields corresponding to the input</span>
         <span class="c1"># intents.</span>
         <span class="n">fieldids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span>
@@ -183,7 +183,7 @@
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fieldids</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># By default, this task will run for AMPLITUDE, PHASE, CHECK, and</span>
         <span class="c1"># DIFFGAIN* intents.</span>
         <span class="n">intents_to_flag</span> <span class="o">=</span> <span class="s1">&#39;AMPLITUDE,PHASE,CHECK,DIFFGAINREF,DIFFGAINSRC&#39;</span>
@@ -213,7 +213,7 @@
     <span class="n">solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">science_spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span>
             <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
@@ -233,7 +233,7 @@
     <span class="c1"># tooManyIntegrationsFraction</span>
     <span class="n">tmint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.085</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmantint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">tmint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tmbl</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antblnegsig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antblpossig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">relaxed_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">niter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GfluxscaleflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -275,12 +275,12 @@
     <span class="s1">&#39;looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes &#39;</span>
     <span class="s1">&#39;minus model amplitudes, and flagging those outliers.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">Gfluxscaleflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Gfluxscaleflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GfluxscaleflagInputs</span>
 
 <div class="viewcode-block" id="Gfluxscaleflag.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Gfluxscaleflag.html#pipeline.hifa.tasks.Gfluxscaleflag.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize results.</span>
@@ -375,11 +375,11 @@
 
 <div class="viewcode-block" id="Gfluxscaleflag.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Gfluxscaleflag.html#pipeline.hifa.tasks.Gfluxscaleflag.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># SJW - always just one job</span>
@@ -399,7 +399,7 @@
 
         <span class="k">return</span> <span class="n">callib_map</span>
 
-    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
                     <span class="n">calmode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">minsnr</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">list</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                     <span class="n">interp</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -519,7 +519,7 @@
                 <span class="c1"># in local context callibrary.</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Note: at present, phaseupsolint is specified as a fixed</span>
         <span class="c1"># value, defined in inputs. In the future, phaseupsolint may</span>
         <span class="c1"># need to be set based on exposure times; if so, see discussion</span>
@@ -549,7 +549,7 @@
             <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_do_phasecal_per_field_for_intent</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecal_per_field_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_per_field_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Create separate phase solutions for each field covered by requested</span>
@@ -566,7 +566,7 @@
                              <span class="n">interp</span><span class="o">=</span><span class="n">interp</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">list</span><span class="p">]:</span>
         <span class="c1"># By default, no spw mapping or combining, no interp.</span>
         <span class="n">combine</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="n">interp</span> <span class="o">=</span> <span class="kc">None</span>
@@ -587,7 +587,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">intents</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return amplitude vs time and amplitude vs UV distance plots for the given</span>
 <span class="sd">    intents.</span>
@@ -618,12 +618,12 @@
     <span class="p">}</span>
 
 
-<span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">PlotmsFieldSpwComposite</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">PlotmsFieldSpwComposite</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plotting class that creates an amplitude vs X plot for each field and spw,</span>
 <span class="sd">    where X is given as a constructor argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calto</span><span class="p">:</span> <span class="n">CalTo</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calto</span><span class="p">:</span> <span class="n">CalTo</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
         <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;ydatacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
             <span class="s1">&#39;avgtime&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -647,7 +647,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

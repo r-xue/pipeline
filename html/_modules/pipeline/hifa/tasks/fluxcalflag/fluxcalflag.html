@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.fluxcalflag.fluxcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,18 +113,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.fluxcalflag.fluxcalflag</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.solsyslinesdict</span> <span class="kn">import</span> <span class="n">SolarSystemLineList</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.solsyslinesdict</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolarSystemLineList</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;FluxcalFlag&#39;</span><span class="p">,</span>
@@ -135,13 +135,13 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">FluxcalFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxcalFlagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Initialise the flux calibration flagging task inputs object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Return each field in the current ms that has been observed</span>
         <span class="c1"># with the desired intent</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
@@ -153,13 +153,13 @@
     <span class="n">appendlines</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s1">&#39;_.txt&#39;</span>
 
     <span class="n">applyflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">appendlines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">applyflags</span><span class="o">=</span><span class="kc">None</span>
@@ -180,8 +180,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">applyflags</span> <span class="o">=</span> <span class="n">applyflags</span>
 
 
-<span class="k">class</span> <span class="nc">FluxcalFlagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">fluxcal_linelist</span><span class="o">=</span><span class="p">[],</span> <span class="n">fluxcal_flagcmds</span><span class="o">=</span><span class="p">[],</span> <span class="n">refspwmap</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">science_spw_ids</span><span class="o">=</span><span class="p">[]):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxcalFlagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">fluxcal_linelist</span><span class="o">=</span><span class="p">[],</span> <span class="n">fluxcal_flagcmds</span><span class="o">=</span><span class="p">[],</span> <span class="n">refspwmap</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">science_spw_ids</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the flux calibration flagging task results object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -192,21 +192,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_refspwmap</span> <span class="o">=</span> <span class="n">refspwmap</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_science_spw_ids</span> <span class="o">=</span> <span class="n">science_spw_ids</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
-        <span class="c1"># Store the refspwmap and flagging commands</span>
-        <span class="c1"># in the context. Leave out the line list for now</span>
+        <span class="c1"># Store the refspwmap in the context.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_vis</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
-            <span class="c1">#ms.fluxcal_linelist = self._fluxcal_linelist</span>
-            <span class="n">ms</span><span class="o">.</span><span class="n">flagcmds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_flagcmds</span><span class="p">)</span>
             <span class="n">ms</span><span class="o">.</span><span class="n">reference_spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refspwmap</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxcal_linelist</span><span class="p">:</span>
             <span class="k">return</span><span class="p">(</span><span class="s1">&#39;FluxcalFlagResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
                    <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">No lines detected in flux calibrators&#39;</span><span class="p">)</span>
@@ -226,12 +223,12 @@
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">FluxcalFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxcalFlag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FluxcalFlagInputs</span>
 
 <div class="viewcode-block" id="FluxcalFlag.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.FluxcalFlag.html#pipeline.hifa.tasks.FluxcalFlag.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># TODO there&#39;s so much mixed tab/tabspace formatting in this file I</span>
@@ -368,7 +365,7 @@
 
 <div class="viewcode-block" id="FluxcalFlag.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.FluxcalFlag.html#pipeline.hifa.tasks.FluxcalFlag.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
@@ -380,7 +377,7 @@
     <span class="c1">#    the molecular species name, e.g. &#39;13CO&#39; and the starting</span>
     <span class="c1">#    and ending frequency in GHz.</span>
     <span class="c1">#</span>
-    <span class="k">def</span> <span class="nf">_append_linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linedict</span><span class="p">,</span> <span class="n">linefile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_append_linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">linedict</span><span class="p">,</span> <span class="n">linefile</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">linefile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">datafile</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">datafile</span><span class="p">:</span>
 
@@ -418,7 +415,7 @@
     <span class="c1"># mask corresponding to line regions with 1&#39;s. When appropriate</span>
     <span class="c1"># compute the fraction of the array containing 1&#39;s by summing the</span>
     <span class="c1"># array and dividing by the total number of channels.</span>
-    <span class="k">def</span> <span class="nf">_newflagstats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_newflagstats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">):</span>
 
         <span class="n">flagstats</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">maskarrays</span> <span class="o">=</span> <span class="p">{}</span>
@@ -458,7 +455,7 @@
         <span class="k">return</span> <span class="n">flagstats</span>
 
     <span class="c1"># Compute the reference spwmap</span>
-    <span class="k">def</span> <span class="nf">_refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allspws</span><span class="p">,</span> <span class="n">scispws</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">allspws</span><span class="p">,</span> <span class="n">scispws</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 
         <span class="c1"># Determine which science windows should be flagged</span>
         <span class="c1"># entirely and which not. Assume that the same spw in</span>
@@ -519,7 +516,7 @@
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">refspwmap</span>
 
     <span class="c1"># Generate flagging commands one per field and spw</span>
-    <span class="k">def</span> <span class="nf">_flagcmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">obsmodes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">flagall</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flagcmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxcal_lines</span><span class="p">,</span> <span class="n">flagstats</span><span class="p">,</span> <span class="n">obsmodes</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">flagall</span><span class="p">):</span>
 
         <span class="c1"># Generate the flagging commands</span>
         <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[]</span>
@@ -562,7 +559,7 @@
 
         <span class="k">return</span> <span class="n">flagcmds</span>
 
-    <span class="k">def</span> <span class="nf">_get_chanrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refframe</span><span class="o">=</span><span class="s1">&#39;TOPO&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_chanrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fieldid</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfreq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refframe</span><span class="o">=</span><span class="s1">&#39;TOPO&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a tuple containing the two channels in an spw corresponding</span>
 <span class="sd">           to the minimum and maximum frequency in the given ref frame</span>
@@ -663,8 +660,8 @@
 
 
 
-<span class="k">class</span> <span class="nc">MolecularLine</span><span class="p">():</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MolecularLine</span><span class="p">():</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">freqrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">spwid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanrange</span><span class="o">=</span><span class="p">(),</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">species</span> <span class="o">=</span> <span class="n">species</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freqrange</span> <span class="o">=</span> <span class="n">freqrange</span>
@@ -680,7 +677,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

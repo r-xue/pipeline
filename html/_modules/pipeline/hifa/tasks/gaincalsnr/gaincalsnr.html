@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.gaincalsnr.gaincalsnr &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,19 +113,19 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.gaincalsnr.gaincalsnr</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">snr</span> <span class="k">as</span> <span class="n">snr_heuristics</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">snr</span> <span class="k">as</span> <span class="n">snr_heuristics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">GaincalSnrInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GaincalSnrInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Return field names in the current ms that have been</span>
         <span class="c1"># observed with the desired intent</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
@@ -140,7 +140,7 @@
     <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Get the science spw ids</span>
         <span class="n">sci_spws</span> <span class="o">=</span> <span class="p">{</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)}</span>
@@ -172,7 +172,7 @@
     <span class="n">hm_nantennas</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;unflagged&#39;</span><span class="p">)</span>
     <span class="n">maxfracflagged</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.90</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasesnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bwedgefrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_nantennas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxfracflagged</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
@@ -194,12 +194,12 @@
 <div class="viewcode-block" id="GaincalSnr">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_gaincalsnr&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">GaincalSnr</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GaincalSnr</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GaincalSnrInputs</span>
 
 <div class="viewcode-block" id="GaincalSnr.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 
         <span class="c1"># Simplify the inputs</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -237,13 +237,13 @@
 
 <div class="viewcode-block" id="GaincalSnr.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GaincalSnr.html#pipeline.hifa.tasks.GaincalSnr.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="c1"># Get final results from the spw dictionary</span>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_results</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">snr_dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_results</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwidlist</span><span class="p">,</span> <span class="n">snr_dict</span><span class="p">):</span>
 
         <span class="c1"># Initialize result structure.</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">GaincalSnrResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="n">spwidlist</span><span class="p">)</span>
@@ -280,8 +280,8 @@
 
 
 <span class="c1"># The results class</span>
-<span class="k">class</span> <span class="nc">GaincalSnrResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span> <span class="n">scantimes</span><span class="o">=</span><span class="p">[],</span> <span class="n">inttimes</span><span class="o">=</span><span class="p">[],</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GaincalSnrResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwids</span><span class="o">=</span><span class="p">[],</span> <span class="n">scantimes</span><span class="o">=</span><span class="p">[],</span> <span class="n">inttimes</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">sensitivities</span><span class="o">=</span><span class="p">[],</span> <span class="n">snrs</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the results object.</span>
@@ -298,7 +298,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span> <span class="o">=</span> <span class="n">sensitivities</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">snrs</span> <span class="o">=</span> <span class="n">snrs</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spwids</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;GaincalSnrResults:</span><span class="se">\n\t</span><span class="s1">No gaincal SNRs computed&#39;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -318,7 +318,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

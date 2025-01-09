@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,24 +114,24 @@
   <h1>Source code for pipeline</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Pipeline software package</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">atexit</span>
-<span class="kn">import</span> <span class="nn">decimal</span>
-<span class="kn">import</span> <span class="nn">http.server</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pathlib</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">webbrowser</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">decimal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">http.server</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pathlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
 
-<span class="kn">from</span> <span class="nn">astropy.utils.iers</span> <span class="kn">import</span> <span class="n">conf</span> <span class="k">as</span> <span class="n">iers_conf</span>
-<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.utils.iers</span><span class="w"> </span><span class="kn">import</span> <span class="n">conf</span> <span class="k">as</span> <span class="n">iers_conf</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pkg_resources</span>
 
 <span class="c1"># customize casaconfig/pipeconfig etc, if valid pipeline CLI opts are specified.</span>
-<span class="kn">from</span> <span class="nn">.config</span> <span class="kn">import</span> <span class="n">cli_interface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">cli_interface</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">session_config</span> <span class="o">=</span> <span class="n">cli_interface</span><span class="p">()</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="c1"># update the casaconfig attributes before importing the casatasks module</span>
-    <span class="kn">from</span> <span class="nn">casaconfig</span> <span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">casa_config</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">casaconfig</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span> <span class="k">as</span> <span class="n">casa_config</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">session_config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;casaconfig&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">casa_config</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;path&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
@@ -141,20 +141,20 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">infrastructure</span>
-<span class="kn">from</span> <span class="nn">.domain</span> <span class="kn">import</span> <span class="n">measures</span>
-<span class="kn">from</span> <span class="nn">.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">logging</span>
 
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">h</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hif</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hifa</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hsd</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hifv</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hsdn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">h</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">hif</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">hifa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">hsd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">hifv</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">hsdn</span>
 
-<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">casalog</span>
-<span class="kn">from</span> <span class="nn">casashell.private.stack_manip</span> <span class="kn">import</span> <span class="n">find_frame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">casatasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">casalog</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">casashell.private.stack_manip</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_frame</span>
 
 <span class="c1"># adjust the log filtering level for casalogsink</span>
 <span class="c1"># by default, modify filter to get INFO1 message which the pipeline</span>
@@ -190,7 +190,7 @@
 
 <div class="viewcode-block" id="show_weblog">
 <a class="viewcode-back" href="../_autosummary/pipeline.show_weblog.html#pipeline.show_weblog">[docs]</a>
-<span class="k">def</span> <span class="nf">show_weblog</span><span class="p">(</span><span class="n">index_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_weblog</span><span class="p">(</span><span class="n">index_path</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                 <span class="n">handler_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">SimpleHTTPRequestHandler</span><span class="p">,</span>
                 <span class="n">server_class</span><span class="o">=</span><span class="n">http</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">HTTPServer</span><span class="p">,</span>
                 <span class="n">bind</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">):</span>
@@ -286,7 +286,7 @@
 
 <div class="viewcode-block" id="stop_weblog">
 <a class="viewcode-back" href="../_autosummary/pipeline.stop_weblog.html#pipeline.stop_weblog">[docs]</a>
-<span class="k">def</span> <span class="nf">stop_weblog</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">stop_weblog</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">HTTP_SERVER</span>
     <span class="k">with</span> <span class="n">WEBLOG_LOCK</span><span class="p">:</span>
 
@@ -303,7 +303,7 @@
 
 <div class="viewcode-block" id="initcli">
 <a class="viewcode-back" href="../_autosummary/pipeline.initcli.html#pipeline.initcli">[docs]</a>
-<span class="k">def</span> <span class="nf">initcli</span><span class="p">(</span><span class="n">user_globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">initcli</span><span class="p">(</span><span class="n">user_globals</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Initializing cli...&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user_globals</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">my_globals</span> <span class="o">=</span> <span class="n">find_frame</span><span class="p">()</span>
@@ -327,7 +327,7 @@
 
 <div class="viewcode-block" id="log_host_environment">
 <a class="viewcode-back" href="../_autosummary/pipeline.log_host_environment.html#pipeline.log_host_environment">[docs]</a>
-<span class="k">def</span> <span class="nf">log_host_environment</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">log_host_environment</span><span class="p">():</span>
     <span class="n">env</span> <span class="o">=</span> <span class="n">environment</span><span class="o">.</span><span class="n">ENVIRONMENT</span>
     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pipeline version </span><span class="si">{!s}</span><span class="s1"> running on </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">hostname</span><span class="p">))</span>
 
@@ -377,7 +377,7 @@
 
 <span class="c1"># FINALLY import executeppr. Do so as late as possible in pipeline module</span>
 <span class="c1"># because executeppr make use of a part of pipeline module.</span>
-<span class="kn">from</span> <span class="nn">.infrastructure</span> <span class="kn">import</span> <span class="n">executeppr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">executeppr</span>
 </pre></div>
 
            </div>
@@ -387,7 +387,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

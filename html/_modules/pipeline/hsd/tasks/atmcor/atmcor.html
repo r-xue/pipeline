@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.atmcor.atmcor &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,28 +114,28 @@
              
   <h1>Source code for pipeline.hsd.tasks.atmcor.atmcor</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Offline ATM correction stage.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tasks</span> <span class="k">as</span> <span class="nn">casa_tasks</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.casa_tools</span> <span class="k">as</span> <span class="nn">casa_tools</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.logging</span> <span class="k">as</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.extern</span> <span class="kn">import</span> <span class="n">SDcalatmcorr</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">fieldnames</span>
-<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.inspection_util</span> <span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.casa_tasks</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">casa_tasks</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.casa_tools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">casa_tools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.logging</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.extern</span><span class="w"> </span><span class="kn">import</span> <span class="n">SDcalatmcorr</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">fieldnames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.inspection_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -148,7 +148,7 @@
 <span class="n">DEFAULT_ATMTYPE_LIST</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">SDATMCorrectionInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDATMCorrectionInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDATMCorrection task.&quot;&quot;&quot;</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
@@ -162,7 +162,7 @@
     <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
 
     <span class="nd">@atmtype</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">atmtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">atmtype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert atmtype into str or a list of str.</span>
 
 <span class="sd">        Args:</span>
@@ -184,7 +184,7 @@
             <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">__to_float_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]],</span> <span class="n">default_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__to_float_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]],</span> <span class="n">default_unit</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert input value into float value or list of float values.</span>
 
 <span class="sd">        This method converts any value into float value. If input is a list,</span>
@@ -231,7 +231,7 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@h0</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">h0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">h0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any h0 value into float or a list of float.</span>
 
 <span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
@@ -247,7 +247,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
 
     <span class="nd">@dtem_dh</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">dtem_dh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dtem_dh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any dtem_dh value into float or a list of float.</span>
 
 <span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
@@ -263,7 +263,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;K/km&#39;</span><span class="p">)</span>
 
     <span class="nd">@maxalt</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">maxalt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxalt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert any maxalt value into float or a list of float.</span>
 
 <span class="sd">        Input value(s) can be numerical value or a quantity in the</span>
@@ -279,7 +279,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__to_float_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;km&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return infiles.</span>
 
 <span class="sd">        infiles is an alias of vis</span>
@@ -290,7 +290,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
 
     <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update infiles and vis consistently.</span>
 
 <span class="sd">        Args:</span>
@@ -303,7 +303,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return antenna selection.</span>
 
 <span class="sd">        By default, empty string (all antennas) is returned.</span>
@@ -314,7 +314,7 @@
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@antenna</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">antenna</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert antenna selection string.</span>
 
 <span class="sd">        Args:</span>
@@ -330,7 +330,7 @@
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">find_ranges</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">antennas</span><span class="p">])</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return field selection string.</span>
 
 <span class="sd">        By default, only fields that matches given intent are returned.</span>
@@ -349,7 +349,7 @@
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return spw selection string.</span>
 
 <span class="sd">        By default, channelized spws are returned.</span>
@@ -361,7 +361,7 @@
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pol</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return pol selection string.</span>
 
 <span class="sd">        By default, polarizatons corresponding to selected spws are selected.</span>
@@ -377,7 +377,7 @@
 
         <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pols</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
                  <span class="n">atmtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">dtem_dh</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -420,7 +420,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pol</span> <span class="o">=</span> <span class="n">pol</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-    <span class="k">def</span> <span class="nf">_identify_datacolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_datacolumn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Identify data column.</span>
 
 <span class="sd">        Args:</span>
@@ -449,7 +449,7 @@
 
         <span class="k">return</span> <span class="n">datacolumn</span>
 
-    <span class="k">def</span> <span class="nf">get_caltable_from_callibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_caltable_from_callibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal caltable name from callibrary.</span>
 
 <span class="sd">        Returns:</span>
@@ -467,7 +467,7 @@
 
         <span class="k">return</span> <span class="n">k2jycal_caltable</span>
 
-    <span class="k">def</span> <span class="nf">get_gainfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_gainfactor</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve k2jycal table from callibrary.</span>
 
 <span class="sd">        Returns:</span>
@@ -479,7 +479,7 @@
             <span class="n">gainfactor</span> <span class="o">=</span> <span class="n">k2jycal_caltable</span>
         <span class="k">return</span> <span class="n">gainfactor</span>
 
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return task arguments for sdatmcor.</span>
 
 <span class="sd">        Note that it might return invalid argument list when</span>
@@ -538,7 +538,7 @@
 
         <span class="k">return</span> <span class="n">args</span>
 
-    <span class="k">def</span> <span class="nf">require_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">require_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if ATM heuristics is required.</span>
 
 <span class="sd">        ATM heuristics is required if any of the following</span>
@@ -557,10 +557,10 @@
         <span class="k">return</span> <span class="n">check_atmtype</span> <span class="ow">or</span> <span class="n">check_dtem_dh</span> <span class="ow">or</span> <span class="n">check_h0</span>
 
 
-<span class="k">class</span> <span class="nc">SDATMCorrectionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDATMCorrectionResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results instance for hsd_atmcor.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">outcome</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -590,7 +590,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;model_list&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge execution result of atmcor stage into pipeline context.</span>
 
 <span class="sd">        Args:</span>
@@ -622,7 +622,7 @@
             <span class="n">reduction_group</span> <span class="o">=</span> <span class="n">inspect_reduction_group</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span>
             <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return representative string for the outcome.</span>
 
 <span class="sd">        Any string that represents outcome is returned.</span>
@@ -640,14 +640,14 @@
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;Apply offline correction of atmospheric transmission model.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">SerialSDATMCorrection</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialSDATMCorrection</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Offline ATM correction task.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDATMCorrectionInputs</span>
 
 <div class="viewcode-block" id="SerialSDATMCorrection.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute task and produce results instance.</span>
 
 <span class="sd">        Raises:</span>
@@ -702,7 +702,7 @@
 
 <div class="viewcode-block" id="SerialSDATMCorrection.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SerialSDATMCorrection.html#pipeline.hsd.tasks.SerialSDATMCorrection.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDATMCorrectionResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDATMCorrectionResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDATMCorrectionResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse results produced by prepare method.</span>
 
 <span class="sd">        Generate domain object of MS with offline ATM correction.</span>
@@ -720,7 +720,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_perform_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_perform_atm_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform ATM model heuristics.</span>
 
 <span class="sd">        Perform ATM model heuristics, SDcalatmcorr.</span>
@@ -789,7 +789,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Original error:&#39;</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">LOG</span><span class="o">.</span><span class="n">isEnabledFor</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">):</span>
-                <span class="kn">import</span> <span class="nn">traceback</span>
+                <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
 
         <span class="c1"># construct argument list for sdatmcor</span>
@@ -804,7 +804,7 @@
 
 
 
-<span class="k">class</span> <span class="nc">HpcSDATMCorrection</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HpcSDATMCorrection</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Parallel implementation of offline ATM correction task.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDATMCorrectionInputs</span>
@@ -818,7 +818,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

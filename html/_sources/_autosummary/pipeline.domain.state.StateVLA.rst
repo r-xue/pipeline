@@ -30,6 +30,5 @@ pipeline.domain.state.StateVLA
       ~StateVLA.obs_mode
       ~StateVLA.intents
       ~StateVLA.obs_mode_mapping
-      ~StateVLA.reduction_intents
    
    

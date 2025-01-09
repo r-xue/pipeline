@@ -14,7 +14,6 @@ State
       ~State.intents
       ~State.obs_mode
       ~State.obs_mode_mapping
-      ~State.reduction_intents
 
    .. rubric:: Methods Summary
 
@@ -28,7 +27,6 @@ State
    .. autoattribute:: intents
    .. autoattribute:: obs_mode
    .. autoattribute:: obs_mode_mapping
-   .. autoattribute:: reduction_intents
 
    .. rubric:: Methods Documentation
 

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.fluxscale.gcorfluxscale &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,40 +113,40 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.fluxscale.gcorfluxscale</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="k">as</span> <span class="nn">stats</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stats</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
-<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.extern.adopted</span> <span class="k">as</span> <span class="nn">adopted</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">FluxMeasurement</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonfluxresults</span><span class="p">,</span> <span class="n">mstools</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.fluxscale</span> <span class="kn">import</span> <span class="n">fluxscale</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal.common</span> <span class="kn">import</span> <span class="n">GaincalResults</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.setmodel</span> <span class="kn">import</span> <span class="n">setjy</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">exceptions</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fluxes</span>
-<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">heuristics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">domain</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.extern.adopted</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">adopted</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxMeasurement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonfluxresults</span><span class="p">,</span> <span class="n">mstools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.fluxscale</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxscale</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.gaincal.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaincalResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.setmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">setjy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">...</span><span class="w"> </span><span class="kn">import</span> <span class="n">heuristics</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;GcorFluxscale&#39;</span><span class="p">,</span>
@@ -161,8 +161,8 @@
 <span class="n">ORIGIN</span> <span class="o">=</span> <span class="s1">&#39;gcorfluxscale&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">GcorFluxscaleResults</span><span class="p">(</span><span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxscale_measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscaleResults</span><span class="p">(</span><span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxscale_measurements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">applies_adopted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ampcal_flagcmds</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GcorFluxscaleResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">resantenna</span><span class="o">=</span><span class="n">resantenna</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="n">uvrange</span><span class="p">,</span>
                                                    <span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">)</span>
@@ -180,7 +180,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">calapps_for_check_sources</span> <span class="o">=</span> <span class="p">[]</span> 
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="c1"># Update the measurement set with the calibrated visibility based flux</span>
         <span class="c1"># measurements for later use in imaging (PIPE-644, PIPE-660).</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -195,7 +195,7 @@
         <span class="n">ms</span><span class="o">.</span><span class="n">phase_calapps_for_check_sources</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calapps_for_check_sources</span>
 
 
-<span class="k">class</span> <span class="nc">GcorFluxscaleInputs</span><span class="p">(</span><span class="n">fluxscale</span><span class="o">.</span><span class="n">FluxscaleInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscaleInputs</span><span class="p">(</span><span class="n">fluxscale</span><span class="o">.</span><span class="n">FluxscaleInputs</span><span class="p">):</span>
     <span class="n">amp_outlier_sigma</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
     <span class="n">antenna</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">hm_resolvedcals</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
@@ -205,11 +205,11 @@
     <span class="n">refant</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reffile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;flux.csv&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="n">solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
@@ -219,7 +219,7 @@
                                                    <span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">)</span>
     <span class="n">uvrange</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_resolvedcals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">peak_fraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">amp_outlier_sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -244,15 +244,15 @@
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;The absolute flux calibration is transferred to secondary calibrator sources.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">GcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">GcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">GcorFluxscaleInputs</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GcorFluxscale</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GcorFluxscale.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize results.</span>
@@ -337,12 +337,12 @@
 
 <div class="viewcode-block" id="GcorFluxscale.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.GcorFluxscale.html#pipeline.hifa.tasks.GcorFluxscale.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_check_caltable</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">transfer</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_caltable</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">reference</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">transfer</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check that the given caltable is well-formed so that a &#39;fluxscale&#39; will</span>
 <span class="sd">        run successfully on it, by checking that the caltable contains results</span>
@@ -370,7 +370,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">fieldids</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">transfer_fieldids</span><span class="p">):</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> does not contain results for all transfer calibrators&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">caltable</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_derive_ants_to_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_derive_ants_to_use</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refant</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Resolved source heuristics.</span>
@@ -414,7 +414,7 @@
 
         <span class="k">return</span> <span class="n">allantenna</span><span class="p">,</span> <span class="n">filtered_refant</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">,</span> <span class="n">resantenna</span><span class="p">,</span> <span class="n">uvrange</span>
 
-    <span class="k">def</span> <span class="nf">_derive_calvis_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_derive_calvis_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Derive calibrated visibility fluxes.</span>
 
@@ -476,7 +476,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_derive_fluxscale_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">refspwmap</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_derive_fluxscale_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">refspwmap</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Schedule a fluxscale job using this caltable. This is the result</span>
@@ -512,7 +512,7 @@
 
         <span class="k">return</span> <span class="n">fluxscale_result</span>
 
-    <span class="k">def</span> <span class="nf">_do_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">GaincalResults</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">GaincalResults</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">ampcal_result</span> <span class="o">=</span> <span class="kc">None</span>
@@ -549,7 +549,7 @@
 
         <span class="k">return</span> <span class="n">ampcal_result</span><span class="p">,</span> <span class="n">caltable</span><span class="p">,</span> <span class="n">check_ok</span>
 
-    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -623,7 +623,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">all_ants</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">restr_ants</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">all_ants</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">restr_ants</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                       <span class="n">uvrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
         <span class="c1"># Collect phase cal results for merging into context.</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -670,7 +670,7 @@
         <span class="k">return</span> <span class="n">phase_results</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_extract_calapps_for_check</span><span class="p">(</span><span class="n">gaincal_results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_calapps_for_check</span><span class="p">(</span><span class="n">gaincal_results</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
         <span class="c1"># Extract list of CalApps for any gaincal result where intent was</span>
         <span class="c1"># CHECK.</span>
         <span class="n">calapps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -680,7 +680,7 @@
         <span class="k">return</span> <span class="n">calapps</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_intent_field</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_intent_field</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
         <span class="k">if</span> <span class="n">exclude_intents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">exclude_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -709,7 +709,7 @@
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">intent_field</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecal_for_amp_calibrator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_amp_calibrator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">minblperant</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                         <span class="n">uvrange</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">non_pc_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -738,7 +738,7 @@
 
         <span class="k">return</span> <span class="n">phase_result</span>
 
-    <span class="k">def</span> <span class="nf">_do_phase_for_phase_check_no_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pc_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_check_no_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pc_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                                              <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
         <span class="c1"># Collect phase cal results.</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -757,7 +757,7 @@
 
         <span class="k">return</span> <span class="n">phase_results</span>
 
-    <span class="k">def</span> <span class="nf">_do_phase_for_phase_with_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phase_for_phase_with_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
         <span class="c1"># Collect phase cal results.</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -775,7 +775,7 @@
 
         <span class="k">return</span> <span class="n">phase_results</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecal_for_intent_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_intent_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
         <span class="c1"># Get optimal phase solution parameters for current intent and</span>
         <span class="c1"># field, based on spw mapping info in MS.</span>
         <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_phasecal_params</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
@@ -789,7 +789,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_do_phasecal_for_other_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phasecal_for_other_calibrators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="n">Set</span><span class="p">,</span> <span class="n">antenna</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GaincalResults</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">phase_results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -814,7 +814,7 @@
                                                   <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">phase_results</span>
 
-    <span class="k">def</span> <span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_phasecal_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
 
@@ -853,7 +853,7 @@
 
         <span class="k">return</span> <span class="n">combine</span><span class="p">,</span> <span class="n">gaintype</span><span class="p">,</span> <span class="n">interp</span><span class="p">,</span> <span class="n">solint</span><span class="p">,</span> <span class="n">spwmap</span>
 
-    <span class="k">def</span> <span class="nf">_do_fluxscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_fluxscale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
@@ -870,7 +870,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># By default, use reference antenna specified by task inputs.</span>
@@ -895,7 +895,7 @@
 
         <span class="k">return</span> <span class="n">refant</span>
 
-    <span class="k">def</span> <span class="nf">_get_refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># By default, use reference antenna specified by task inputs.</span>
@@ -913,7 +913,7 @@
 
         <span class="k">return</span> <span class="n">refspwmap</span>
 
-    <span class="k">def</span> <span class="nf">_do_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_setjy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">task_args</span> <span class="o">=</span> <span class="p">{</span>
@@ -929,14 +929,14 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_replace_amplitude_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ampresult</span><span class="p">,</span> <span class="n">fsresult</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_replace_amplitude_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ampresult</span><span class="p">,</span> <span class="n">fsresult</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Identify the MS to process.</span>
         <span class="n">vis</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
         <span class="c1"># predicate function to match hifa_gfluxscale amplitude caltable for this MS</span>
-        <span class="k">def</span> <span class="nf">gfluxscale_amp_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">gfluxscale_amp_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="n">calto_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span><span class="p">}</span>
 
             <span class="c1"># Standard caltable filenames contain task identifiers,</span>
@@ -958,7 +958,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="si">{</span><span class="n">new_calapp</span><span class="o">.</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">new_calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">new_calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_flag_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_flag_ampcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="c1"># Get fields and SpWs to evaluate.</span>
         <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">transfer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">reference</span><span class="p">]))</span>
         <span class="n">scispws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">()</span>
@@ -1032,11 +1032,11 @@
 
 
 
-<span class="k">class</span> <span class="nc">SessionGcorFluxscaleInputs</span><span class="p">(</span><span class="n">GcorFluxscaleInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionGcorFluxscaleInputs</span><span class="p">(</span><span class="n">GcorFluxscaleInputs</span><span class="p">):</span>
     <span class="c1"># use common implementation for parallel inputs argument</span>
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_resolvedcals</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">peak_fraction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1056,17 +1056,17 @@
 <div class="viewcode-block" id="SessionGcorFluxscale">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;session_gfluxscale&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SessionGcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionGcorFluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SessionGcorFluxscaleInputs</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SessionGcorFluxscale</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="SessionGcorFluxscale.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">vis_list</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">as_list</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -1096,7 +1096,7 @@
 
 <div class="viewcode-block" id="SessionGcorFluxscale.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.SessionGcorFluxscale.html#pipeline.hifa.tasks.SessionGcorFluxscale.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assessed</span><span class="p">):</span>
         <span class="c1"># all results will be added to this object</span>
         <span class="n">final_result</span> <span class="o">=</span> <span class="n">basetask</span><span class="o">.</span><span class="n">ResultsList</span><span class="p">()</span>
 
@@ -1155,7 +1155,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_field_name</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_field_name</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">identifier</span><span class="p">):</span>
     <span class="n">ms</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">vis</span><span class="p">)</span>
     <span class="n">fields</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">identifier</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1165,7 +1165,7 @@
     <span class="k">return</span> <span class="n">fields</span><span class="o">.</span><span class="n">name</span>
 
 
-<span class="k">def</span> <span class="nf">collect_flux_measurements</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis_result_tuples</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">collect_flux_measurements</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis_result_tuples</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compile the flux measurements from a set of results into a new</span>
 <span class="sd">    dict data structure.</span>
@@ -1196,7 +1196,7 @@
     <span class="k">return</span> <span class="n">d</span>
 
 
-<span class="k">def</span> <span class="nf">calc_averages_per_field</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calc_averages_per_field</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a compiled and averaged flux calibrations per field.</span>
 
@@ -1238,7 +1238,7 @@
     <span class="k">return</span> <span class="n">averages</span>
 
 
-<span class="k">def</span> <span class="nf">map_spw_names_to_id</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field_measurements</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">map_spw_names_to_id</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="p">,</span> <span class="n">field_measurements</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copy a flux result dict, remapping the target spectral window in</span>
 <span class="sd">    the original result to a new measurement set.</span>
@@ -1269,7 +1269,7 @@
     <span class="k">return</span> <span class="n">d</span>
 
 
-<span class="k">def</span> <span class="nf">copy_flux_measurement</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uU</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_flux_measurement</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">spw_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">U</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">V</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uI</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uQ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uU</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">uV</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">spw_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">spw_id</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">spw_id</span>
@@ -1306,7 +1306,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

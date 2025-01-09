@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.restoredata.restoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -140,29 +140,29 @@
 <span class="sd">results = task.execute()</span>
 <span class="sd">results.accept(context)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">tarfile</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">importdata</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">manifest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">importdata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">manifest</span>
 
-<span class="kn">from</span> <span class="nn">pipeline.extern.almarenorm_pl2023</span> <span class="kn">import</span> <span class="n">alma_renorm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.extern.almarenorm_pl2023</span><span class="w"> </span><span class="kn">import</span> <span class="n">alma_renorm</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">RestoreDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestoreDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RestoreDataInputs manages the inputs for the RestoreData task.</span>
 
@@ -203,20 +203,20 @@
     <span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;../products&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">products_dir</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">rawdata_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rawdata_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s1">&#39;../rawdata&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the Inputs, initialising any property values to those given</span>
@@ -260,8 +260,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ocorr_mode</span> <span class="o">=</span> <span class="n">ocorr_mode</span>
 
 
-<span class="k">class</span> <span class="nc">RestoreDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">importdata_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagging_summaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestoreDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">importdata_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">applycal_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagging_summaries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">casa_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pipeline_version_orig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orig_mpi_servers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">renorm_applied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the results objects.</span>
@@ -276,7 +276,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">orig_mpi_servers</span> <span class="o">=</span> <span class="n">orig_mpi_servers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">renorm_applied</span> <span class="o">=</span> <span class="n">renorm_applied</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">importdata_results</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
@@ -289,7 +289,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">applycal_results</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;RestoreDataResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">]))</span>
 
@@ -297,7 +297,7 @@
 <div class="viewcode-block" id="RestoreData">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.RestoreData.html#pipeline.h.tasks.RestoreData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_restoredata&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">RestoreData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RestoreData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    RestoreData is the base class for restoring flagged and calibrated</span>
 <span class="sd">    data produced during a previous pipeline run and archived on disk.</span>
@@ -320,7 +320,7 @@
 
 <div class="viewcode-block" id="RestoreData.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.RestoreData.html#pipeline.h.tasks.RestoreData.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Create a local alias for inputs, so we&#39;re not saying</span>
         <span class="c1"># &#39;self.inputs&#39; everywhere</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -400,11 +400,11 @@
 
 <div class="viewcode-block" id="RestoreData.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.RestoreData.html#pipeline.h.tasks.RestoreData.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_renormalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_renormalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># read the manifest and look for a renorm element(s).  there should be one per EB</span>
         <span class="c1"># if it&#39;s there, do the renorm steps using the stored params, but do not</span>
         <span class="c1"># create the plots</span>
@@ -454,7 +454,7 @@
 
         <span class="k">return</span> <span class="n">applied</span>
 
-    <span class="k">def</span> <span class="nf">_do_copy_manifest_toraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_copy_manifest_toraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the pipeline manifest</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -468,7 +468,7 @@
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">manifestfile</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span>
                                                    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">manifestfile</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_do_get_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template1</span><span class="p">,</span> <span class="n">template2</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_get_manifest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template1</span><span class="p">,</span> <span class="n">template2</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the pipeline manifest object</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -494,7 +494,7 @@
 
         <span class="k">return</span> <span class="n">pipemanifest</span>
 
-    <span class="k">def</span> <span class="nf">_do_copytoraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_copytoraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
 
@@ -535,7 +535,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Copying </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">calapply_list</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">))</span>
             <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">calapply_list</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapply_list</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="c1"># The asis is temporary until we get the EVLA / ALMA factoring</span>
         <span class="c1"># figured out.</span>
@@ -545,7 +545,7 @@
         <span class="n">importdata_task</span> <span class="o">=</span> <span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">importdata_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_restore_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="o">=</span><span class="s1">&#39;Pipeline_Final&#39;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_restore_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">flag_version_name</span><span class="o">=</span><span class="s1">&#39;Pipeline_Final&#39;</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">flagversionlist</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -591,7 +591,7 @@
 
         <span class="k">return</span> <span class="n">flagversionlist</span>
 
-    <span class="k">def</span> <span class="nf">_do_restore_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_restore_calstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
@@ -623,7 +623,7 @@
                                                        <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span>
             <span class="n">append</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_convert_calstate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applyfile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_convert_calstate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applyfile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert paths in the exported calstate to point to the new output</span>
 <span class="sd">        directory.</span>
@@ -636,7 +636,7 @@
 
         <span class="c1"># define a function that replaces directory names with our new output</span>
         <span class="c1"># directory</span>
-        <span class="k">def</span> <span class="nf">repfn</span><span class="p">(</span><span class="n">matchobj</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">repfn</span><span class="p">(</span><span class="n">matchobj</span><span class="p">):</span>
             <span class="n">basename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">matchobj</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">basename</span><span class="p">)</span>
 
@@ -644,7 +644,7 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">applyfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">unix_path</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">repfn</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_do_restore_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_restore_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pipemanifest</span><span class="p">,</span> <span class="n">session_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vislists</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
@@ -700,12 +700,12 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">tar</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">members</span><span class="o">=</span><span class="n">extractlist</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
         <span class="n">applycal_task</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">applycal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a list of sessions where each element of the list contains</span>
 <span class="sd">        the  vis files associated with that session. If sessions is</span>
@@ -764,7 +764,7 @@
 
         <span class="k">return</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vis_list</span>
 
-    <span class="k">def</span> <span class="nf">_get_flagging_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_flagging_summaries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">):</span>
 
         <span class="c1"># Initialize summaries dictionary.</span>
         <span class="n">summaries</span> <span class="o">=</span> <span class="p">{}</span>
@@ -790,7 +790,7 @@
         <span class="k">return</span> <span class="n">summaries</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_extract_casa_pipeline_version</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_casa_pipeline_version</span><span class="p">(</span><span class="n">pipemanifest</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">pipemanifest</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ouss</span> <span class="o">=</span> <span class="n">pipemanifest</span><span class="o">.</span><span class="n">get_ous</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -816,7 +816,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

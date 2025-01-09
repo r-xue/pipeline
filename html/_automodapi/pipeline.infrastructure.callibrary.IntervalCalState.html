@@ -7,8 +7,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IntervalCalState &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -80,8 +80,6 @@
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToArgs.html">CalToArgs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIdAdapter.html">CalToIdAdapter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.CalToIntervalAdapter.html">CalToIntervalAdapter</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalLibrary.html">DictCalLibrary</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.DictCalState.html">DictCalState</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.IntervalCalLibrary.html">IntervalCalLibrary</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">IntervalCalState</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pipeline.infrastructure.callibrary.TimestampedData.html">TimestampedData</a></li>
@@ -150,7 +148,7 @@
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">IntervalCalState</span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalState" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>CalState is a data structure used to map calibrations for all data
+<p>IntervalCalState is a data structure used to map calibrations for all data
 registered with the pipeline.</p>
 <p>It is implemented as a multi-dimensional array indexed by data selection
 parameters (ms, spw, field, intent, antenna), with the end value being a
@@ -160,13 +158,13 @@ selection.</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalState.as_applycal" title="pipeline.infrastructure.callibrary.IntervalCalState.as_applycal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_applycal</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Return the CalState as a string representation of the corresponding applycal commands.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalState.clear" title="pipeline.infrastructure.callibrary.IntervalCalState.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalState.create_from_context" title="pipeline.infrastructure.callibrary.IntervalCalState.create_from_context"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_from_context</span></code></a>(context)</p></td>
-<td><p></p></td>
+<td><p>Return a new IntervalCalState based on given Pipeline context.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalState.export_to_casa_callibrary" title="pipeline.infrastructure.callibrary.IntervalCalState.export_to_casa_callibrary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">export_to_casa_callibrary</span></code></a>(ms, callibfile)</p></td>
 <td><p></p></td>
@@ -188,8 +186,9 @@ selection.</p>
 <p class="rubric">Methods Documentation</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalState.as_applycal">
-<span class="sig-name descname"><span class="pre">as_applycal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalState.as_applycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalState.as_applycal" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">as_applycal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalState.as_applycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalState.as_applycal" title="Link to this definition"></a></dt>
+<dd><p>Return the CalState as a string representation of the corresponding applycal commands.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalState.clear">
@@ -198,8 +197,22 @@ selection.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalState.create_from_context">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_from_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalState.create_from_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalState.create_from_context" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_from_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Context</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pipeline.infrastructure.callibrary.IntervalCalState" title="pipeline.infrastructure.callibrary.IntervalCalState"><span class="pre">IntervalCalState</span></a></span></span><a class="reference internal" href="../_modules/pipeline/infrastructure/callibrary.html#IntervalCalState.create_from_context"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.infrastructure.callibrary.IntervalCalState.create_from_context" title="Link to this definition"></a></dt>
+<dd><p>Return a new IntervalCalState based on given Pipeline context.</p>
+<p>This method initialises a new IntervalCalState instance and then updates
+its key attributes by generating “ID to intent” and “ID to field”
+mapping dictionaries, generating interval trees with correct dimensions,
+and computing the shape, for all measurement sets that are registered in
+the given context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>context</strong> – The Pipeline context.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>IntervalCalState based on given Pipeline context.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pipeline.infrastructure.callibrary.IntervalCalState.export_to_casa_callibrary">
@@ -259,7 +272,7 @@ requested type will be returned.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

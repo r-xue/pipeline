@@ -36,7 +36,6 @@ pipeline.domain.measures
       LinearVelocity
       LinearVelocityUnits
       Longitude
-      TemporalCollection
       TimeInterval
    
    

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.fluxscale.fluxscale &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,37 +113,37 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.fluxscale.fluxscale</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">re</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain</span> <span class="k">as</span> <span class="nn">domain</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">fcaltable</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">fieldnames</span> <span class="k">as</span> <span class="n">fieldnames</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonfluxresults</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">domain</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">fcaltable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">fieldnames</span> <span class="k">as</span> <span class="n">fieldnames</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonfluxresults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">ORIGIN</span> <span class="o">=</span> <span class="s1">&#39;fluxscale&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">FluxscaleInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxscaleInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">fluxtable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fluxtable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">namer</span> <span class="o">=</span> <span class="n">fcaltable</span><span class="o">.</span><span class="n">FluxCaltable</span><span class="p">()</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fluxtable&#39;</span><span class="p">,))</span>
         <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># this will give something like &#39;0542+3243,0343+242&#39;</span>
         <span class="n">field_fn</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="o">.</span><span class="n">IntentFieldnames</span><span class="p">()</span>
         <span class="n">reference_fields</span> <span class="o">=</span> <span class="n">field_fn</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refintent</span><span class="p">)</span>
@@ -155,12 +155,12 @@
     <span class="n">refintent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_spwmap</span>
 
     <span class="nd">@refspwmap</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">element_to_int</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refspwmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">element_to_int</span><span class="p">(</span><span class="n">e</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
                 <span class="k">return</span> <span class="p">[</span><span class="n">element_to_int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">e</span><span class="p">]</span>
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -171,7 +171,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">transfer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transfer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">transfer_fn</span> <span class="o">=</span> <span class="n">fieldnames</span><span class="o">.</span><span class="n">IntentFieldnames</span><span class="p">()</span>
         <span class="c1"># call the heuristic to get the transfer fields as a string</span>
         <span class="n">transfer_fields</span> <span class="o">=</span> <span class="n">transfer_fn</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transintent</span><span class="p">)</span>
@@ -191,7 +191,7 @@
 
     <span class="n">transintent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;PHASE,BANDPASS,CHECK&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FluxscaleInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="c1"># delete pipeline-only properties that shouldn&#39;t be passed to</span>
         <span class="c1"># the CASA task</span>
@@ -199,7 +199,7 @@
         <span class="k">del</span> <span class="n">casa_args</span><span class="p">[</span><span class="s1">&#39;transintent&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">casa_args</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxtable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transfer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">refspwmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transintent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FluxscaleInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -217,10 +217,10 @@
 <div class="viewcode-block" id="Fluxscale">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Fluxscale.html#pipeline.hif.tasks.Fluxscale">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_fluxscale&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Fluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Fluxscale</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FluxscaleInputs</span>
 
-    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">gaincal_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
             <span class="n">vis</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
@@ -231,7 +231,7 @@
 
 <div class="viewcode-block" id="Fluxscale.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Fluxscale.html#pipeline.hif.tasks.Fluxscale.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
@@ -287,7 +287,7 @@
 
 <div class="viewcode-block" id="Fluxscale.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Fluxscale.html#pipeline.hif.tasks.Fluxscale.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 </div>
 
@@ -300,7 +300,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

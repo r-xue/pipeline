@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.polcalflag.polcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,29 +113,29 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.polcalflag.polcalflag</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.displays</span> <span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">correctedampflag</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.refantflag</span> <span class="kn">import</span> <span class="n">identify_fully_flagged_antennas_from_flagcmds</span><span class="p">,</span> \
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common.displays</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span> <span class="k">as</span> <span class="n">applycal_displays</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">correctedampflag</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.refantflag</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_fully_flagged_antennas_from_flagcmds</span><span class="p">,</span> \
     <span class="n">mark_antennas_for_refant_update</span><span class="p">,</span> <span class="n">aggregate_fully_flagged_antenna_notifications</span><span class="p">,</span> <span class="n">FullyFlaggedAntennasNotification</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalflagResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PolcalflagResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="kc">None</span>
@@ -154,7 +154,7 @@
         <span class="c1"># records callibrary files used in applycal calls</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">callib_map</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -164,11 +164,11 @@
         <span class="n">ms</span><span class="o">.</span><span class="n">update_reference_antennas</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_demote</span><span class="p">,</span>
                                      <span class="n">ants_to_remove</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">refants_to_remove</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;PolcalflagResults&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">minsnr</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">2.0</span><span class="p">)</span>
     <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
@@ -176,12 +176,12 @@
     <span class="n">solint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># By default, this task will run for POLARIZATION, POLANGLE, and POLLEAKAGE</span>
         <span class="c1"># intents.</span>
         <span class="k">return</span> <span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
 
@@ -190,12 +190,12 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_polcalflag&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Flag polarization calibrator outliers.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Polcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Polcalflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalflagInputs</span>
 
 <div class="viewcode-block" id="Polcalflag.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -316,11 +316,11 @@
 
 <div class="viewcode-block" id="Polcalflag.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcalflag.html#pipeline.hifa.tasks.Polcalflag.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">merge</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># SJW - always just one job</span>
@@ -341,7 +341,7 @@
 
         <span class="k">return</span> <span class="n">callib_map</span>
 
-    <span class="k">def</span> <span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaintype</span><span class="o">=</span><span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="n">calmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -444,7 +444,7 @@
                 <span class="k">if</span> <span class="n">merge</span><span class="p">:</span>
                     <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_identify_refants_to_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_refants_to_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Updates the Polcalflag result with lists of &quot;bad&quot; and &quot;poor&quot;</span>
 <span class="sd">        antennas, for reference antenna update.</span>
 
@@ -478,7 +478,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_ant_id_to_name_dict</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_ant_id_to_name_dict</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return dictionary with antenna ID mapped to antenna name.</span>
 <span class="sd">        If no unique antenna name can be assigned to each antenna ID,</span>
@@ -505,7 +505,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_plots</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return amplitude vs time plots for the given data column.</span>
 
@@ -535,12 +535,12 @@
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">amp_time_plots</span><span class="p">,</span> <span class="s1">&#39;uvdist&#39;</span><span class="p">:</span> <span class="n">amp_uvdist_plots</span><span class="p">}</span>
 
 
-<span class="k">class</span> <span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AmpVsXChart</span><span class="p">(</span><span class="n">applycal_displays</span><span class="o">.</span><span class="n">SpwSummaryChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Plotting class that creates an amplitude vs X plot for each spw, where X</span>
 <span class="sd">    is given as a constructor argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xaxis</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="o">**</span><span class="n">overrides</span><span class="p">):</span>
         <span class="n">plot_args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;ydatacolumn&#39;</span><span class="p">:</span> <span class="s1">&#39;corrected&#39;</span><span class="p">,</span>
             <span class="s1">&#39;avgtime&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -564,7 +564,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

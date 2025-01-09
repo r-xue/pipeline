@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.k2jycal.k2jycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,32 +114,32 @@
              
   <h1>Source code for pipeline.hsd.tasks.k2jycal.k2jycal</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;The k2jycal task to perform the calibration of Jy/K conversion.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">jyperkreader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">jyperkreader</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="kn">import</span> <span class="n">CalApplication</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalApplication</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">QUERIED_FACTOR_FILE</span> <span class="o">=</span> <span class="s1">&#39;jyperk_query.csv&#39;</span>  <span class="c1"># filename of the queried factor file</span>
 
 
-<span class="k">class</span> <span class="nc">SDK2JyCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDK2JyCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDK2JyCal task.&quot;&quot;&quot;</span>
 
     <span class="n">reffile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;jyperk.csv&#39;</span><span class="p">)</span>
@@ -148,12 +148,12 @@
     <span class="n">caltype</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of MS. Alias for &quot;vis&quot; attribute.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>
 
     <span class="nd">@infiles</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">infiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert value into expected type.</span>
 
 <span class="sd">        Currently, no conversion is performed.</span>
@@ -168,7 +168,7 @@
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the caltable argument for these inputs.</span>
 
 <span class="sd">        If set to a table-naming heuristic, this should give a sensible name</span>
@@ -181,7 +181,7 @@
                                              <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span>
                                              <span class="o">**</span><span class="n">casa_args</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance into dictionary.</span>
 
 <span class="sd">        Returns:</span>
@@ -192,7 +192,7 @@
                 <span class="s1">&#39;caltype&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltype</span><span class="p">,</span>
                 <span class="s1">&#39;endpoint&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
         <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -232,10 +232,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">endpoint</span> <span class="o">=</span> <span class="n">endpoint</span>
 
 
-<span class="k">class</span> <span class="nc">SDK2JyCalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDK2JyCalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class to hold processing result of SDK2JyCal task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">final</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;CalApplication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
@@ -267,7 +267,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">all_ok</span> <span class="o">=</span> <span class="n">all_ok</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dbstatus</span> <span class="o">=</span> <span class="n">dbstatus</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
 <span class="sd">        Merge of the result instance of Jy/K calibration task includes</span>
@@ -296,7 +296,7 @@
                     <span class="k">for</span> <span class="n">pol</span><span class="p">,</span> <span class="n">pol_k2jy</span> <span class="ow">in</span> <span class="n">ant_k2jy</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="n">msobj</span><span class="o">.</span><span class="n">k2jy_factor</span><span class="p">[(</span><span class="n">spwid</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">pol</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pol_k2jy</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of the instance.&quot;&quot;&quot;</span>
         <span class="c1"># Format the Tsyscal results.</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;SDK2JyCalResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -311,14 +311,14 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDK2JyCal.html#pipeline.hsd.tasks.SDK2JyCal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_k2jycal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The Kelvin to Jy calibration tables are generated.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SDK2JyCal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDK2JyCal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate calibration table of Jy/K factors.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDK2JyCalInputs</span>
 
 <div class="viewcode-block" id="SDK2JyCal.execute">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDK2JyCal.html#pipeline.hsd.tasks.SDK2JyCal.execute">[docs]</a>
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        remove existing QUERIED_FACTOR_FILE before the first run</span>
 
@@ -341,7 +341,7 @@
 
 <div class="viewcode-block" id="SDK2JyCal.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDK2JyCal.html#pipeline.hsd.tasks.SDK2JyCal.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve Jy/K facors from the DB and save them in QUERIED_FACTOR_FILE if dbaccess is True</span>
 
@@ -401,7 +401,7 @@
                                 <span class="n">dbstatus</span><span class="o">=</span><span class="n">caltable_status</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_extract_factors</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dbstatus</span><span class="p">:</span> <span class="nb">bool</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_extract_factors</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dbstatus</span><span class="p">:</span> <span class="nb">bool</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        extract Jy/K factors</span>
 
@@ -470,7 +470,7 @@
 
         <span class="k">return</span> <span class="n">factors_used</span>
 
-    <span class="k">def</span> <span class="nf">_create_caltable</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">common_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_caltable</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">common_params</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Invoke gencal and ceate the calibration table file</span>
 
@@ -524,7 +524,7 @@
 
 <div class="viewcode-block" id="SDK2JyCal.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDK2JyCal.html#pipeline.hsd.tasks.SDK2JyCal.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDK2JyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDK2JyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDK2JyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Analyse SDK2JyCalResults instance produced by prepare.</span>
 
 <span class="sd">        1. Define factors actually used and analyze if the factors are provided to all relevant data in MS.</span>
@@ -587,7 +587,7 @@
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">__check_factor</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__check_factor</span><span class="p">(</span>
         <span class="n">factors</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
         <span class="n">spw</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">ant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -612,7 +612,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">export_jyperk</span><span class="p">(</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">factors_used</span><span class="p">:</span> <span class="nb">dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">export_jyperk</span><span class="p">(</span> <span class="n">outfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">factors_used</span><span class="p">:</span> <span class="nb">dict</span> <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Export conversion factors to file.</span>
 
 <span class="sd">    Format of the output file is CSV.</span>
@@ -641,7 +641,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

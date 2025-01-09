@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.baseline.baseline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,40 +114,40 @@
              
   <h1>Source code for pipeline.hsd.tasks.baseline.baseline</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Spectral baseline subtraction stage.&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
-<span class="kn">from</span> <span class="nn">pipeline.hsd.heuristics</span> <span class="kn">import</span> <span class="n">MaskDeviationHeuristic</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">maskline</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">worker</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">common</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">compress</span>
-<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.inspection_util</span> <span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
-<span class="kn">from</span> <span class="nn">..common</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.mpihelpers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpihelpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.singledish</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">MaskDeviationHeuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">maskline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">worker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">compress</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.inspection_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_ms</span><span class="p">,</span> <span class="n">inspect_reduction_group</span><span class="p">,</span> <span class="n">merge_reduction_group</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..common</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
-<span class="kn">from</span> <span class="nn">.typing</span> <span class="kn">import</span> <span class="n">LineWindow</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineWindow</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.api</span> <span class="kn">import</span> <span class="n">Heuristic</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.api</span><span class="w"> </span><span class="kn">import</span> <span class="n">Heuristic</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
 <span class="c1"># import memory_profiler</span>
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDBaselineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaselineInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs for baseline subtraction task.&quot;&quot;&quot;</span>
 
     <span class="c1"># Search order of input vis</span>
@@ -169,13 +169,13 @@
 
     <span class="c1"># Synchronization between infiles and vis is still necessary</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vis</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return input MS name.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">infiles</span>
 
     <span class="c1"># handle conversion from string to bool</span>
     <span class="nd">@switchpoly</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">switchpoly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">switchpoly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert switchpoly value into bool.</span>
 
 <span class="sd">        Args:</span>
@@ -201,7 +201,7 @@
     <span class="c1"># use common implementation for parallel inputs argument</span>
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
                  <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">antenna</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -277,7 +277,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">deviationmask</span> <span class="o">=</span> <span class="n">deviationmask</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Inputs instance into task execution parameter.</span>
 
 <span class="sd">        Returns:</span>
@@ -294,10 +294,10 @@
         <span class="k">return</span> <span class="n">args</span>
 
 
-<span class="k">class</span> <span class="nc">SDBaselineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaselineResults</span><span class="p">(</span><span class="n">common</span><span class="o">.</span><span class="n">SingleDishResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class to hold the result of baseline subtraction task.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">task</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">success</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">outcome</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -312,7 +312,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">out_mses</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># @utils.profiler</span>
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge result instance into context.</span>
 
 <span class="sd">        Merge of the result instance of baseline subtraction task includes</span>
@@ -385,7 +385,7 @@
                 <span class="n">out_ms</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">outcome</span><span class="p">[</span><span class="s1">&#39;vis_map&#39;</span><span class="p">][</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
                 <span class="n">out_ms</span><span class="o">.</span><span class="n">deviation_mask</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">deviation_mask</span>
 
-    <span class="k">def</span> <span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_outcome_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string summarizing the outcome.</span>
 
 <span class="sd">        Returns:</span>
@@ -403,7 +403,7 @@
     <span class="s1">&#39;detected and examined to determine the region that is masked to protect these features from the fit.</span><span class="se">\n</span><span class="s1">&#39;</span>
     <span class="s1">&#39;This stage performs a pipeline calculation without running any CASA commands to be put in this file.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">SDBaseline</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDBaseline</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseline subtraction task.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDBaselineInputs</span>
@@ -412,7 +412,7 @@
 <span class="c1">#    @memory_profiler.profile</span>
 <div class="viewcode-block" id="SDBaseline.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform baseline subtraction.</span>
 
 <span class="sd">        The method first evaluates deviation mask for each MS if the mask</span>
@@ -663,7 +663,7 @@
 
 <div class="viewcode-block" id="SDBaseline.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDBaseline.html#pipeline.hsd.tasks.SDBaseline.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDBaselineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">SDBaselineResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDBaselineResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate measurementset domain object for output MS.</span>
 
 <span class="sd">        The method generates measumentsets objects from output MSes</span>
@@ -687,10 +687,10 @@
 </div>
 
 
-<span class="k">class</span> <span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">HeuristicsTask</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor for heuristics class. It is an adaptor to mpihelper framework.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristics_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;Heuristic&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristics_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="s1">&#39;Heuristic&#39;</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct HeuristicsTask instance.</span>
 
 <span class="sd">        Args:</span>
@@ -702,7 +702,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
         <span class="c1"># print(self.args, self.kwargs)</span>
 
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform Heuristics and return its result.</span>
 
 <span class="sd">        Returns:</span>
@@ -711,7 +711,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristics</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_executable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return function that runs execute method.</span>
 
 <span class="sd">        Returns:</span>
@@ -720,10 +720,10 @@
         <span class="k">return</span> <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">HeuristicsTask</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviationMaskHeuristicsTask</span><span class="p">(</span><span class="n">HeuristicsTask</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executor class specialized to MaskDeviationHeuristic.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">heuristics_cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MaskDeviationHeuristic</span><span class="p">],</span>
                  <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
                  <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -751,7 +751,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">antenna_list</span> <span class="o">=</span> <span class="n">antenna_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">spw_list</span> <span class="o">=</span> <span class="n">spw_list</span>
 
-    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute heuristics.</span>
 
 <span class="sd">        Returns:</span>
@@ -766,7 +766,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="k">def</span> <span class="nf">deviation_mask_heuristic</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">deviation_mask_heuristic</span><span class="p">(</span>
         <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">field_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="n">antenna_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -799,21 +799,21 @@
     <span class="k">return</span> <span class="n">vis</span><span class="p">,</span> <span class="n">task</span>
 
 
-<span class="k">def</span> <span class="nf">test_deviation_mask_heuristic</span><span class="p">(</span><span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_deviation_mask_heuristic</span><span class="p">(</span><span class="n">spw</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Test deviation mask heuristic.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        spw: spectral window id to process.</span>
 <span class="sd">             If None is given, spw is set to 17.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">glob</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
     <span class="n">vislist</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;uid___A002_X*.ms&#39;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;vislist=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vislist</span><span class="p">))</span>
     <span class="n">field_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
     <span class="n">antenna_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
     <span class="n">spw_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">17</span><span class="p">]</span> <span class="k">if</span> <span class="n">spw</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">spw</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">spw</span><span class="p">]</span>
     <span class="n">consider_flag</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
     <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">serial_tasks</span> <span class="o">=</span> <span class="p">[</span><span class="n">deviation_mask_heuristic</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field_list</span><span class="o">=</span><span class="n">field_list</span><span class="p">,</span> <span class="n">antenna_list</span><span class="o">=</span><span class="n">antenna_list</span><span class="p">,</span> <span class="n">spw_list</span><span class="o">=</span><span class="n">spw_list</span><span class="p">,</span> <span class="n">consider_flag</span><span class="o">=</span><span class="n">consider_flag</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">]</span>
     <span class="n">serial_results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">get_result</span><span class="p">())</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">serial_tasks</span><span class="p">]</span>
@@ -844,7 +844,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

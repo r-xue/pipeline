@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,29 +120,29 @@
 <span class="sd">context unpacking and / or converting it as necessary.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.h.tasks.importdata.importdata</span> <span class="k">as</span> <span class="nn">importdata</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.commonfluxresults</span> <span class="kn">import</span> <span class="n">FluxCalibrationResults</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.observingrun</span> <span class="kn">import</span> <span class="n">ObservingRun</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
-<span class="kn">from</span> <span class="nn">pipeline.hsd.tasks.common.inspection_util</span> <span class="kn">import</span> <span class="n">merge_reduction_group</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">relative_path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.tasks.importdata.importdata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">importdata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common.commonfluxresults</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxCalibrationResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.measurementset</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.observingrun</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObservingRun</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.singledish</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.common.inspection_util</span><span class="w"> </span><span class="kn">import</span> <span class="n">merge_reduction_group</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">relative_path</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">inspection</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">inspection</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDImportDataInputs</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDImportDataInputs</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of SDImportData.</span>
 
 <span class="sd">    This class extends importdata.ImportDataInputs.</span>
@@ -156,7 +156,7 @@
 
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span>
                  <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -208,7 +208,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parallel</span> <span class="o">=</span> <span class="n">parallel</span>
 
 
-<span class="k">class</span> <span class="nc">SDImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SDImportDataResults is an equivalent class with ImportDataResults.</span>
 
 <span class="sd">    Purpose of SDImportDataResults is to replace QA scoring associated</span>
@@ -220,7 +220,7 @@
 <span class="sd">    SetJy results generated from flux entries in Source.xml.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">mses</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">datatable_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -246,7 +246,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_time</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="n">importdata</span><span class="o">.</span><span class="n">ImportDataResults</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">mses</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
 
 <span class="sd">        Args:</span>
@@ -257,7 +257,7 @@
         <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">ms_datatable_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">datatable_prefix</span>
         <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">org_directions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">org_directions</span>
 
-    <span class="k">def</span> <span class="nf">__merge_reduction_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">:</span> <span class="n">ObservingRun</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__merge_reduction_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">:</span> <span class="n">ObservingRun</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Call merge_reduction_group.</span>
 
 <span class="sd">        Args:</span>
@@ -267,7 +267,7 @@
         <span class="k">for</span> <span class="n">reduction_group</span> <span class="ow">in</span> <span class="n">reduction_group_list</span><span class="p">:</span>
             <span class="n">merge_reduction_group</span><span class="p">(</span><span class="n">observing_run</span><span class="p">,</span> <span class="n">reduction_group</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override of __repr__.</span>
 
 <span class="sd">        Returns:</span>
@@ -276,7 +276,7 @@
         <span class="k">return</span> <span class="s1">&#39;SDImportDataResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">]))</span>
 
 
-<span class="k">class</span> <span class="nc">SerialSDImportData</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialSDImportData</span><span class="p">(</span><span class="n">importdata</span><span class="o">.</span><span class="n">ImportData</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Data import execution task of SingleDish.</span>
 
 <span class="sd">    This class extends importdata.ImportData class, and methods execute main logics depends on it.</span>
@@ -284,7 +284,7 @@
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDImportDataInputs</span>
 
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SDImportDataResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">SDImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare job requests for execution.</span>
 
 <span class="sd">        Args:</span>
@@ -330,7 +330,7 @@
             <span class="n">myresults</span><span class="o">.</span><span class="n">rasterscan_heuristics_results_time</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">rsh</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rsh</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">myresults</span>
 
-    <span class="k">def</span> <span class="nf">_get_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">):</span>
         <span class="c1"># override _get_fluxes not to create flux.csv (PIPE-1846)</span>
         <span class="c1"># do nothing, return empty results</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">None</span>
@@ -341,7 +341,7 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDImportData.html#pipeline.hsd.tasks.SDImportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_importdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;If required, ASDMs are converted to MeasurementSets.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SDImportData</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDImportData</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;SDImportData class for parallelization.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDImportDataInputs</span>
@@ -356,7 +356,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

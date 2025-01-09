@@ -30,6 +30,5 @@ pipeline.domain.State
       ~State.obs_mode
       ~State.intents
       ~State.obs_mode_mapping
-      ~State.reduction_intents
    
    

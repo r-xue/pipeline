@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measures &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -114,25 +114,24 @@
              
   <h1>Source code for pipeline.domain.measures</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Do not evaluate type annotations at definition time.</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">decimal</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">numbers</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">abc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">decimal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">unitformat</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">unitformat</span>
 
 
 <div class="viewcode-block" id="ArcUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.ArcUnits.html#pipeline.domain.antennaarray.ArcUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">ArcUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArcUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">DEGREE</span>           <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;DEGREE&#39;</span>           <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;d&#39;</span>   <span class="p">,</span> <span class="s1">&#39;html&#39;</span> <span class="p">:</span> <span class="s1">&#39;&amp;#x00B0;&#39;</span> <span class="p">,</span> <span class="s1">&#39;units per circle&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">360</span><span class="p">)</span>        <span class="p">}</span>
     <span class="n">RADIAN</span>           <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;RADIAN&#39;</span>           <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;rad&#39;</span> <span class="p">,</span> <span class="s1">&#39;html&#39;</span> <span class="p">:</span> <span class="s1">&#39;rad&#39;</span>      <span class="p">,</span> <span class="s1">&#39;units per circle&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>  <span class="p">}</span>
     <span class="n">PERCENT</span>          <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;PERCENT&#39;</span>          <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;%&#39;</span>   <span class="p">,</span> <span class="s1">&#39;html&#39;</span> <span class="p">:</span> <span class="s1">&#39;&amp;#x0025;&#39;</span> <span class="p">,</span> <span class="s1">&#39;units per circle&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>        <span class="p">}</span>
@@ -147,7 +146,7 @@
 
 <div class="viewcode-block" id="DistanceUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.DistanceUnits.html#pipeline.domain.antennaarray.DistanceUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">DistanceUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DistanceUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">ANGSTROM</span>          <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ANGSTROM&#39;</span>          <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">u212B&#39;</span><span class="p">,</span> <span class="s1">&#39;metres&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-10&#39;</span><span class="p">)</span>              <span class="p">}</span>
     <span class="n">NANOMETRE</span>         <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;NANOMETRE&#39;</span>         <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;nm&#39;</span>     <span class="p">,</span> <span class="s1">&#39;metres&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-9&#39;</span><span class="p">)</span>               <span class="p">}</span>
     <span class="n">MICROMETRE</span>        <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;MICROMETRE&#39;</span>        <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">u00B5m&#39;</span><span class="p">,</span> <span class="s1">&#39;metres&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-6&#39;</span><span class="p">)</span>               <span class="p">}</span>
@@ -168,7 +167,7 @@
 
 <div class="viewcode-block" id="FluxDensityUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensityUnits.html#pipeline.domain.antennaarray.FluxDensityUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">FluxDensityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxDensityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">YOCTOJANSKY</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;YOCTOJANSKY&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;yJy&#39;</span>      <span class="p">,</span> <span class="s1">&#39;Jy&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-24&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ZEPTOJANSKY</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ZEPTOJANSKY&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;zJy&#39;</span>      <span class="p">,</span> <span class="s1">&#39;Jy&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-21&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ATTOJANSKY</span>  <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ATTOJANSKY&#39;</span>  <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;aJy&#39;</span>      <span class="p">,</span> <span class="s1">&#39;Jy&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-18&#39;</span><span class="p">)</span> <span class="p">}</span>
@@ -195,7 +194,7 @@
 
 <div class="viewcode-block" id="FrequencyUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyUnits.html#pipeline.domain.antennaarray.FrequencyUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">FrequencyUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FrequencyUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">YOCTOHERTZ</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;YOCTOHERTZ&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;yHz&#39;</span>      <span class="p">,</span> <span class="s1">&#39;hz&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-24&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ZEPTOHERTZ</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ZEPTOHERTZ&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;zHz&#39;</span>      <span class="p">,</span> <span class="s1">&#39;hz&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-21&#39;</span><span class="p">)</span> <span class="p">}</span>
     <span class="n">ATTOHERTZ</span>  <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;ATTOHERTZ&#39;</span>  <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;aHz&#39;</span>      <span class="p">,</span> <span class="s1">&#39;hz&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1e-18&#39;</span><span class="p">)</span> <span class="p">}</span>
@@ -222,7 +221,7 @@
 
 <div class="viewcode-block" id="LinearVelocityUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocityUnits.html#pipeline.domain.antennaarray.LinearVelocityUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">LinearVelocityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearVelocityUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">METRES_PER_SECOND</span>     <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;METRES_PER_SECOND&#39;</span>     <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;m/s&#39;</span>  <span class="p">,</span> <span class="s1">&#39;mps&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>         <span class="p">}</span>
     <span class="n">KILOMETRES_PER_SECOND</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;KILOMETERS_PER_SECOND&#39;</span> <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;km/s&#39;</span> <span class="p">,</span> <span class="s1">&#39;mps&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>      <span class="p">}</span>
     <span class="n">Z</span>                     <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;Z&#39;</span>                     <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;Z&#39;</span>    <span class="p">,</span> <span class="s1">&#39;mps&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">299792458</span><span class="p">)</span> <span class="p">}</span></div>
@@ -231,7 +230,7 @@
 
 <div class="viewcode-block" id="FileSizeUnits">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSizeUnits.html#pipeline.domain.antennaarray.FileSizeUnits">[docs]</a>
-<span class="k">class</span> <span class="nc">FileSizeUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileSizeUnits</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">BYTES</span>     <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;BYTES&#39;</span>    <span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;b&#39;</span> <span class="p">,</span> <span class="s1">&#39;bytes&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>               <span class="p">}</span>
     <span class="n">KILOBYTES</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;KILOBYTES&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;kb&#39;</span><span class="p">,</span> <span class="s1">&#39;bytes&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1024&#39;</span><span class="p">)</span>          <span class="p">}</span>
     <span class="n">MEGABYTES</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;name&#39;</span> <span class="p">:</span> <span class="s1">&#39;MEGABYTES&#39;</span><span class="p">,</span> <span class="s1">&#39;symbol&#39;</span> <span class="p">:</span> <span class="s1">&#39;Mb&#39;</span><span class="p">,</span> <span class="s1">&#39;bytes&#39;</span> <span class="p">:</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;1048576&#39;</span><span class="p">)</span>       <span class="p">}</span>
@@ -242,40 +241,40 @@
 
 <div class="viewcode-block" id="ComparableUnit">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.ComparableUnit.html#pipeline.domain.antennaarray.ComparableUnit">[docs]</a>
-<span class="k">class</span> <span class="nc">ComparableUnit</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ComparableUnit</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;units&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">state</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override __init__ of ComparableUnit&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__abs__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for +: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span> <span class="o">|</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span> <span class="o">|</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">()</span> <span class="o">/</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
@@ -283,7 +282,7 @@
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span> <span class="o">|</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span> <span class="o">|</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">()</span> <span class="o">//</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
@@ -291,79 +290,79 @@
                                                                                    <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">//</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">other</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for &gt;=: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                    <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for &gt;: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__itruediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for /=: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                    <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">/=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__ifloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ifloordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for //=: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                    <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">//=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__le__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for &lt;=: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                    <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ComparableUnit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for &lt;: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComparableUnit</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for *: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Number</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for *: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;unsupported operand type(s) for -: &#39;</span><span class="si">%s</span><span class="s2">&#39; and &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                                                                                   <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override convert_to of ComparableUnit&#39;</span><span class="p">)</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Must override to_units of ComparableUnit&#39;</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="Distance">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance">[docs]</a>
-<span class="k">class</span> <span class="nc">Distance</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">KILOMETRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Distance</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">KILOMETRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new distance with the given magnitude and units.</span>
 
 <span class="sd">        If no arguments are given, a new distance of 0 km is created. If no</span>
@@ -376,7 +375,7 @@
 
 <div class="viewcode-block" id="Distance.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distance</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Distance</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of distance to the new units.</span>
 
 <span class="sd">        After this method is complete this distance will have units of newUnits</span>
@@ -398,7 +397,7 @@
 
 <div class="viewcode-block" id="Distance.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Distance.html#pipeline.domain.antennaarray.Distance.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this distance in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this distance.</span>
@@ -414,10 +413,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">unitformat</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">METRE</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;Distance(</span><span class="si">%s</span><span class="s1">, DistanceUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
 
@@ -425,8 +424,8 @@
 
 <div class="viewcode-block" id="EquatorialArc">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc">[docs]</a>
-<span class="k">class</span> <span class="nc">EquatorialArc</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EquatorialArc</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new equatorial arc with the given magnitude and units.</span>
 
 <span class="sd">        If no arguments are given, a new arc of 0 degrees is created. If no</span>
@@ -443,7 +442,7 @@
 
 <div class="viewcode-block" id="EquatorialArc.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EquatorialArc</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EquatorialArc</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this arc to the new units.</span>
 
 <span class="sd">        After this method is complete this arc will have units of units and its</span>
@@ -465,7 +464,7 @@
 
 <div class="viewcode-block" id="EquatorialArc.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this arc in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this arc. Contrast</span>
@@ -484,7 +483,7 @@
 
 <div class="viewcode-block" id="EquatorialArc.toDms">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.toDms">[docs]</a>
-    <span class="k">def</span> <span class="nf">toDms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toDms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of this arc in degrees, minutes, and</span>
 <span class="sd">        seconds.</span>
 
@@ -519,7 +518,7 @@
 
 <div class="viewcode-block" id="EquatorialArc.toHms">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.EquatorialArc.html#pipeline.domain.antennaarray.EquatorialArc.toHms">[docs]</a>
-    <span class="k">def</span> <span class="nf">toHms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toHms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a representation of this arc in hours, minutes, and seconds.</span>
 
 <span class="sd">        Returns:</span>
@@ -531,7 +530,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span> <span class="o">/</span> <span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">toDms</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;EquatorialArc(</span><span class="si">%s</span><span class="s1">, ArcUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
 
@@ -539,8 +538,8 @@
 
 <div class="viewcode-block" id="FluxDensity">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity">[docs]</a>
-<span class="k">class</span> <span class="nc">FluxDensity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FluxDensity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new flux density with the given magnitude and units.</span>
 
 <span class="sd">        If called without arguments, the constructor will create a</span>
@@ -557,7 +556,7 @@
 
 <div class="viewcode-block" id="FluxDensity.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FluxDensity</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FluxDensity</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of flux density to the new units.</span>
 <span class="sd">        After this method is complete this flux density will have units of</span>
 <span class="sd">        units and its value will have been converted accordingly.</span>
@@ -578,7 +577,7 @@
 
 <div class="viewcode-block" id="FluxDensity.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FluxDensity.html#pipeline.domain.antennaarray.FluxDensity.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this flux density in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this flux density.</span>
@@ -594,10 +593,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">unitformat</span><span class="o">.</span><span class="n">flux</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FluxDensityUnits</span><span class="o">.</span><span class="n">JANSKY</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;FluxDensity(</span><span class="si">%s</span><span class="s1">, FluxDensityUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                          <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
 
@@ -605,8 +604,8 @@
 
 <div class="viewcode-block" id="LinearVelocity">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity">[docs]</a>
-<span class="k">class</span> <span class="nc">LinearVelocity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LinearVelocity</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                  <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new linear velocity with the given magnitude and units.</span>
 
@@ -624,7 +623,7 @@
 
 <div class="viewcode-block" id="LinearVelocity.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearVelocity</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinearVelocity</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of linear velocity to the new units.</span>
 <span class="sd">        After this method is complete this linear veloity will have units of</span>
 <span class="sd">        units and its value will have been converted accordingly.</span>
@@ -646,7 +645,7 @@
 
 <div class="viewcode-block" id="LinearVelocity.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.LinearVelocity.html#pipeline.domain.antennaarray.LinearVelocity.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">KILOMETRES_PER_SECOND</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this linear velocity in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this linear velocity.</span>
@@ -664,11 +663,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">mps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">LinearVelocityUnits</span><span class="o">.</span><span class="n">METRES_PER_SECOND</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">unitformat</span><span class="o">.</span><span class="n">velocity</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mps</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;LinearVelocity(</span><span class="si">%s</span><span class="s1">, &#39;</span>
                 <span class="s1">&#39;LinearVelocityUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span></div>
 
@@ -676,8 +675,8 @@
 
 <div class="viewcode-block" id="FileSize">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize">[docs]</a>
-<span class="k">class</span> <span class="nc">FileSize</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileSize</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new file size with the given magnitude and units.</span>
 
 <span class="sd">        If called without arguments, the constructor will create a</span>
@@ -694,7 +693,7 @@
 
 <div class="viewcode-block" id="FileSize.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileSize</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">MEGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FileSize</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of file size to the new units.</span>
 
 <span class="sd">        After this method is complete this file size will have units of</span>
@@ -716,7 +715,7 @@
 
 <div class="viewcode-block" id="FileSize.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FileSize.html#pipeline.domain.antennaarray.FileSize.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">GIGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">GIGABYTES</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this file size in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this file size.</span>
@@ -733,10 +732,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="n">factor</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">unitformat</span><span class="o">.</span><span class="n">file_size</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FileSizeUnits</span><span class="o">.</span><span class="n">BYTES</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;FileSize(</span><span class="si">%s</span><span class="s1">, FileSizeUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
 
@@ -744,8 +743,8 @@
 
 <div class="viewcode-block" id="Frequency">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency">[docs]</a>
-<span class="k">class</span> <span class="nc">Frequency</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Frequency</span><span class="p">(</span><span class="n">ComparableUnit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new frequency with the given magnitude and units.</span>
 
 <span class="sd">        If called without arguments, the constructor will create a</span>
@@ -762,7 +761,7 @@
 
 <div class="viewcode-block" id="Frequency.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts this measure of frequency to the new units.</span>
 
 <span class="sd">        After this method is complete this frequency will have units of</span>
@@ -785,7 +784,7 @@
 
 <div class="viewcode-block" id="Frequency.to_units">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.to_units">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_units</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">otherUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the magnitude of this frequency in otherUnits.</span>
 
 <span class="sd">        Note that this method does not alter the state of this frequency.</span>
@@ -805,7 +804,7 @@
 
 <div class="viewcode-block" id="Frequency.str_to_precision">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Frequency.html#pipeline.domain.antennaarray.Frequency.str_to_precision">[docs]</a>
-    <span class="k">def</span> <span class="nf">str_to_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">str_to_precision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">precision</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the string representation of this Frequency to a fixed number</span>
 <span class="sd">        of decimal places.</span>
@@ -821,10 +820,10 @@
         <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">unitformat</span><span class="o">.</span><span class="n">frequency</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_units</span><span class="p">(</span><span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">HERTZ</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;Frequency(</span><span class="si">%s</span><span class="s1">, FrequencyUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                      <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span></div>
 
@@ -832,16 +831,16 @@
 
 <div class="viewcode-block" id="FrequencyRange">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange">[docs]</a>
-<span class="k">class</span> <span class="nc">FrequencyRange</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FrequencyRange</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span> <span class="o">=</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new instance with the given endpoints.</span>
 
 <span class="sd">        This method will set the lower value of its range to the lesser of the</span>
@@ -863,23 +862,23 @@
             <span class="n">frequency2</span> <span class="o">=</span> <span class="n">Frequency</span><span class="p">(</span><span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span><span class="p">(</span><span class="s1">&#39;Infinity&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">frequency1</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Frequency</span><span class="p">,</span> <span class="n">Frequency</span><span class="p">]:</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FrequencyRange</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">low</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">low</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">high</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;FrequencyRange(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">low</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">high</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FrequencyRange.contains">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.contains">[docs]</a>
-    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="n">FrequencyRange</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="n">FrequencyRange</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if this range contains given frequency (range).</span>
 
 <span class="sd">        The frequency argument can be a frequency or a frequency range. If the</span>
@@ -905,7 +904,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.convert_to">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.convert_to">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newUnits</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">FrequencyUnits</span><span class="o">.</span><span class="n">GIGAHERTZ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Converts both endpoints of this range to the given units.</span>
 
 <span class="sd">        After this method is complete both endpoints of this range will have</span>
@@ -925,7 +924,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.getCentreFrequency">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getCentreFrequency">[docs]</a>
-    <span class="k">def</span> <span class="nf">getCentreFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getCentreFrequency</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the frequency that is midway between the endpoints of this</span>
 <span class="sd">        range.</span>
 
@@ -941,7 +940,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.getOverlapWith">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getOverlapWith">[docs]</a>
-    <span class="k">def</span> <span class="nf">getOverlapWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getOverlapWith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new range that represents the region of overlap between</span>
 <span class="sd">        this range and other. If there is no overlap, None is returned.</span>
 
@@ -962,7 +961,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.getGapBetween">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getGapBetween">[docs]</a>
-    <span class="k">def</span> <span class="nf">getGapBetween</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getGapBetween</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new range that represents the region of frequency space</span>
 <span class="sd">        between this range and other. If the other range is coincident with, or</span>
 <span class="sd">        overlaps, this range, None is returned. If the other range is None,</span>
@@ -986,7 +985,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.getWidth">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.getWidth">[docs]</a>
-    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Frequency</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the width of this range.</span>
 
 <span class="sd">        The units for the returned frequency will be the same as those of the</span>
@@ -1000,7 +999,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.overlaps">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.overlaps">[docs]</a>
-    <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">FrequencyRange</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether this frequency range overlaps with ``other`` frequency range.</span>
 
 <span class="sd">        Remember that this range is a closed interval, that is, one that</span>
@@ -1023,7 +1022,7 @@
 
 <div class="viewcode-block" id="FrequencyRange.set">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.FrequencyRange.html#pipeline.domain.antennaarray.FrequencyRange.set">[docs]</a>
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency1</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">frequency2</span><span class="p">:</span> <span class="n">Frequency</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the frequencies of this range.</span>
 
 <span class="sd">        This method will set the lower value of its range to the lesser of the</span>
@@ -1056,7 +1055,7 @@
 
 <div class="viewcode-block" id="Latitude">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude">[docs]</a>
-<span class="k">class</span> <span class="nc">Latitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Latitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
     <span class="n">patt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;degs&gt;[-+]?\d+)&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;\s*:?\s*&#39;</span> <span class="o">+</span>
@@ -1065,7 +1064,7 @@
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;secs&gt;\d+\.?\d*)&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;\s*&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new latitude with the given magnitude and units.</span>
 
 <span class="sd">        If no magnitude or units are give, a latitude of 0 degrees will be</span>
@@ -1102,7 +1101,7 @@
 <div class="viewcode-block" id="Latitude.parse">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.parse">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Latitude</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Latitude</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new Latitude based on the given text.</span>
 
 <span class="sd">        See the parse method of Angle for information on the format of text.</span>
@@ -1150,7 +1149,7 @@
 
 <div class="viewcode-block" id="Latitude.isNorthOfEquator">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isNorthOfEquator">[docs]</a>
-    <span class="k">def</span> <span class="nf">isNorthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isNorthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is north of the equator.</span>
 
 <span class="sd">        Returns:</span>
@@ -1161,7 +1160,7 @@
 
 <div class="viewcode-block" id="Latitude.isSouthOfEquator">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isSouthOfEquator">[docs]</a>
-    <span class="k">def</span> <span class="nf">isSouthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isSouthOfEquator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is south of the equator.</span>
 
 <span class="sd">        Returns:</span>
@@ -1172,7 +1171,7 @@
 
 <div class="viewcode-block" id="Latitude.isNorthOf">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isNorthOf">[docs]</a>
-    <span class="k">def</span> <span class="nf">isNorthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Latitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isNorthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Latitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is north of other.</span>
 
 <span class="sd">        Args:</span>
@@ -1186,7 +1185,7 @@
 
 <div class="viewcode-block" id="Latitude.isSouthOf">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Latitude.html#pipeline.domain.antennaarray.Latitude.isSouthOf">[docs]</a>
-    <span class="k">def</span> <span class="nf">isSouthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Latitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isSouthOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Latitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this latitude is south of other.</span>
 
 <span class="sd">        Args:</span>
@@ -1198,11 +1197,11 @@
         <span class="k">return</span> <span class="bp">self</span> <span class="o">&lt;</span> <span class="n">other</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;Latitude(</span><span class="si">%s</span><span class="s1">, ArcUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                               <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toDms</span><span class="p">()</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%+.2d%s%.2d%s%05.2f%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">],</span>
                                           <span class="n">m</span><span class="p">,</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">ARC_MINUTE</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">],</span>
@@ -1212,7 +1211,7 @@
 
 <div class="viewcode-block" id="Longitude">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude">[docs]</a>
-<span class="k">class</span> <span class="nc">Longitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Longitude</span><span class="p">(</span><span class="n">EquatorialArc</span><span class="p">):</span>
     <span class="n">patt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\s*&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;hours&gt;\d+)&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;\s*:?\s*&#39;</span> <span class="o">+</span>
@@ -1221,7 +1220,7 @@
                       <span class="sa">r</span><span class="s1">&#39;(?P&lt;secs&gt;\d+\.?\d*)&#39;</span> <span class="o">+</span>
                       <span class="sa">r</span><span class="s1">&#39;\s*&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">float</span> <span class="o">|</span> <span class="n">decimal</span><span class="o">.</span><span class="n">Decimal</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">DEGREE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new longitude with the given magnitude and units.</span>
 
 <span class="sd">        If magnitude is not a valid value1 for longitude, it will be normalised</span>
@@ -1247,7 +1246,7 @@
 <div class="viewcode-block" id="Longitude.parse">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.parse">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Longitude</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Longitude</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a new longitude based on the given text.</span>
 
 <span class="sd">        See the parse method of Angle for information on the format of text.</span>
@@ -1291,7 +1290,7 @@
 
 <div class="viewcode-block" id="Longitude.isOpposite">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isOpposite">[docs]</a>
-    <span class="k">def</span> <span class="nf">isOpposite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isOpposite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this longitude and other are separated by one half</span>
 <span class="sd">        circle.</span>
 
@@ -1308,7 +1307,7 @@
 
 <div class="viewcode-block" id="Longitude.isEastOf">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isEastOf">[docs]</a>
-    <span class="k">def</span> <span class="nf">isEastOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isEastOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns true if this longitude is east of other.</span>
 
 <span class="sd">        One longitude is east of another if there are fewer lines of longitude</span>
@@ -1333,7 +1332,7 @@
 
 <div class="viewcode-block" id="Longitude.isWestOf">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.Longitude.html#pipeline.domain.antennaarray.Longitude.isWestOf">[docs]</a>
-    <span class="k">def</span> <span class="nf">isWestOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isWestOf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Longitude</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this longitude is west of other.</span>
 
 <span class="sd">        One longitude is west of another if there are fewer lines of longitude</span>
@@ -1356,11 +1355,11 @@
         <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">o</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">or</span> <span class="n">o</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;Longitude(</span><span class="si">%s</span><span class="s1">, ArcUnits.</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                                                <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">toHms</span><span class="p">()</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%.2d%s%.2d%s%05.2f%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">HOUR</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">],</span>
                                          <span class="n">m</span><span class="p">,</span> <span class="n">ArcUnits</span><span class="o">.</span><span class="n">MINUTE</span><span class="p">[</span><span class="s1">&#39;symbol&#39;</span><span class="p">],</span>
@@ -1368,55 +1367,9 @@
 
 
 
-<div class="viewcode-block" id="TemporalCollection">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TemporalCollection.html#pipeline.domain.antennaarray.TemporalCollection">[docs]</a>
-<span class="k">class</span> <span class="nc">TemporalCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__contents</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__milestones</span><span class="p">()[</span><span class="n">i</span><span class="p">]</span>
-
-<div class="viewcode-block" id="TemporalCollection.get">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TemporalCollection.html#pipeline.domain.antennaarray.TemporalCollection.get">[docs]</a>
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the value that was effective on the given date</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">when</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">when</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__milestones</span><span class="p">():</span>
-            <span class="n">thisDate</span> <span class="o">=</span> <span class="n">m</span>
-            <span class="k">if</span> <span class="n">thisDate</span> <span class="o">&lt;=</span> <span class="n">when</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__contents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">thisDate</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="s2">&quot;No records that early&quot;</span><span class="p">)</span></div>
-
-
-    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">at</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="c1"># The item is valid from the supplied date onwards</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__contents</span><span class="p">[</span><span class="n">at</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">__milestones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A list of all the dates where the value changed, returned in order</span>
-<span class="sd">        latest first</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__calculateMilestones</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span>
-
-    <span class="k">def</span> <span class="nf">__calculateMilestones</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__contents</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__clearMilestoneCache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__milestoneCache</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-
-
 <div class="viewcode-block" id="TimeInterval">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval">[docs]</a>
-<span class="k">class</span> <span class="nc">TimeInterval</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TimeInterval</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Logical representation of a time interval.</span>
 
@@ -1428,13 +1381,13 @@
 
     <span class="n">FOREVER</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">9999</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">31</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a TimeInterval object.</span>
 
@@ -1445,27 +1398,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
-    <span class="k">def</span> <span class="nf">__composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
 
-    <span class="k">def</span> <span class="nf">__set_composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__set_composite_values__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">end</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">end</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;TimeInterval(</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimeInterval.contains">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.contains">[docs]</a>
-    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if time is contained in this interval.</span>
 
 <span class="sd">        Note that this interval is half-open; it does not include its ending</span>
@@ -1491,7 +1444,7 @@
 
 <div class="viewcode-block" id="TimeInterval.is_empty">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.is_empty">[docs]</a>
-    <span class="k">def</span> <span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns True if this TimeInterval is empty.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span></div>
@@ -1499,7 +1452,7 @@
 
 <div class="viewcode-block" id="TimeInterval.overlaps">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.overlaps">[docs]</a>
-    <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ti</span><span class="p">:</span> <span class="n">TimeInterval</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if this interval overlaps with the given interval.</span>
 
@@ -1517,7 +1470,7 @@
 <div class="viewcode-block" id="TimeInterval.starting_from">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.starting_from">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">starting_from</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeInterval</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">starting_from</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeInterval</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an open-ended TimeInterval starting from the given time.</span>
 
@@ -1533,7 +1486,7 @@
 <div class="viewcode-block" id="TimeInterval.starting_from_now">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.measures.TimeInterval.html#pipeline.domain.antennaarray.TimeInterval.starting_from_now">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">starting_from_now</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeInterval</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">starting_from_now</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeInterval</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns an open-ended TimeInterval starting from now.</span>
 
@@ -1552,7 +1505,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.polcal.polcal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,26 +113,26 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.polcal.polcal</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="k">as</span> <span class="nn">tablereader</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">measures</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">polcal</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">sessionutils</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.tablereader</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tablereader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">measures</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">polcal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">sessionutils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -143,13 +143,13 @@
 <span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -157,12 +157,12 @@
         <span class="k">for</span> <span class="n">session_results</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">session_results</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;PolcalResults&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalSessionResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalSessionResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vislist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_field_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">init_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_ratio_rms_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uncal_pfg_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">best_scan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">kcross_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_phase_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">final_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gain_ratio_rms_after</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cal_pfg_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">leak_polcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xyratio_gcal_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_vs_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -205,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vs_diffs</span> <span class="o">=</span> <span class="n">vs_diffs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">polcal_amp_results</span> <span class="o">=</span> <span class="n">polcal_amp_results</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -215,11 +215,11 @@
                       <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;PolcalSessionResults&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">)</span>
     <span class="n">minpacov</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
@@ -227,7 +227,7 @@
     <span class="n">vs_stats</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;min,max,mean&#39;</span><span class="p">)</span>
     <span class="n">vs_thresh</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minpacov</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint_chavg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_stats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minpacov</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint_chavg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_stats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vs_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="n">intent</span>
@@ -241,7 +241,7 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_polcal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Compute the polarization calibration.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Polcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Polcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalInputs</span>
 
     <span class="c1"># This is a multi-vis task that handles all MSes for one or more sessions</span>
@@ -250,7 +250,7 @@
 
 <div class="viewcode-block" id="Polcal.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Execute polarization calibration heuristics and return Results object</span>
 <span class="sd">        that includes final caltables.</span>
@@ -273,7 +273,7 @@
 
 <div class="viewcode-block" id="Polcal.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Polcal.html#pipeline.hifa.tasks.Polcal.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PolcalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">PolcalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PolcalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyze the PolcalResults: check that all caltables from</span>
 <span class="sd">        CalApplications exist on disk.</span>
@@ -295,7 +295,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_polcal_for_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PolcalSessionResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_polcal_for_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PolcalSessionResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run polarization calibration heuristics for a single session and</span>
 <span class="sd">        corresponding list of measurement sets.</span>
@@ -487,7 +487,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_get_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_refant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="c1"># In the polarization recipes, the best reference antenna should have</span>
         <span class="c1"># been determined for the entire session by hifa_session_refant, and</span>
         <span class="c1"># stored in each MS of the session. Retrieve this refant from the first</span>
@@ -496,7 +496,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session &#39;</span><span class="si">{</span><span class="n">session_name</span><span class="si">}</span><span class="s2">&#39; is using reference antenna: </span><span class="si">{</span><span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ms</span><span class="o">.</span><span class="n">reference_antenna</span>
 
-    <span class="k">def</span> <span class="nf">_check_matching_pol_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_matching_pol_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="c1"># Retrieve polarization calibrator field name for each MS in session.</span>
         <span class="n">pol_fields</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">vislist</span><span class="p">:</span>
@@ -525,13 +525,13 @@
 
         <span class="k">return</span> <span class="n">pol_field_name</span>
 
-    <span class="k">def</span> <span class="nf">_run_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parang</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parang</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="n">acinputs</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">IFApplycalInputs</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">,</span>
                                              <span class="n">parang</span><span class="o">=</span><span class="n">parang</span><span class="p">,</span> <span class="n">flagsum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flagdetailedsum</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">actask</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialIFApplycal</span><span class="p">(</span><span class="n">acinputs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">actask</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_create_session_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_session_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method uses mstransform to create a new MS that contains only</span>
 <span class="sd">        the polarization calibrator data.&quot;&quot;&quot;</span>
         <span class="c1"># Extract polarization data for each vis, and capture name of new MS.</span>
@@ -586,7 +586,7 @@
 
         <span class="k">return</span> <span class="n">session_msname</span><span class="p">,</span> <span class="n">spwmaps</span>
 
-    <span class="k">def</span> <span class="nf">_compute_pol_scan_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_pol_scan_duration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="c1"># Get polarization scans for session MS.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
         <span class="n">pol_scans</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_scans</span><span class="p">(</span><span class="n">scan_intent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">)</span>
@@ -596,7 +596,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Session MS </span><span class="si">{</span><span class="n">vis</span><span class="si">}</span><span class="s2">: median scan duration = </span><span class="si">{</span><span class="n">scan_duration</span><span class="si">}</span><span class="s2"> seconds.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">scan_duration</span>
 
-    <span class="k">def</span> <span class="nf">_initial_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initial_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize gaincal task inputs.</span>
@@ -621,7 +621,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_register_calapps_from_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_calapps_from_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will register any &quot;final&quot; CalApplication present in any</span>
 <span class="sd">        of the input Results to the callibrary in the local context (stored in</span>
 <span class="sd">        inputs).</span>
@@ -636,7 +636,7 @@
         <span class="n">calapps_to_merge</span> <span class="o">=</span> <span class="p">[</span><span class="n">calapp</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span> <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_register_calapps</span><span class="p">(</span><span class="n">calapps_to_merge</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_register_calapps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calapps</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_register_calapps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calapps</span><span class="p">:</span> <span class="n">List</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;This method will register a list of CalApplications to the</span>
 <span class="sd">        callibrary in the local context (stored in inputs).&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="n">calapps</span><span class="p">:</span>
@@ -644,7 +644,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_compute_gain_ratio_rms</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_gain_ratio_rms</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="c1"># Get caltable to analyse.</span>
         <span class="n">caltable</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
 
@@ -662,7 +662,7 @@
 
         <span class="k">return</span> <span class="n">uniq_scans</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">ratio_rms</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_polfromgain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">minpacov</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_polfromgain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">minpacov</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># Get caltable to analyse, and set name of output caltable.</span>
         <span class="n">intable</span> <span class="o">=</span> <span class="n">gcal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
         <span class="n">caltable</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">intable</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_polfromgain.tbl&#39;</span>
@@ -674,7 +674,7 @@
         <span class="k">return</span> <span class="n">pfg_result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_identify_scan_highest_xy</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_scan_highest_xy</span><span class="p">(</span><span class="n">session_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">gcal_result</span><span class="p">:</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="c1"># Get caltable to analyse.</span>
         <span class="n">caltable</span> <span class="o">=</span> <span class="n">gcal_result</span><span class="o">.</span><span class="n">final</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gaintable</span>
 
@@ -699,7 +699,7 @@
 
         <span class="k">return</span> <span class="n">best_scan_id</span>
 
-    <span class="k">def</span> <span class="nf">_compute_xy_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_scan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_xy_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">best_scan</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -742,7 +742,7 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
 
-    <span class="k">def</span> <span class="nf">_calibrate_xy_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calibrate_xy_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                             <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">polcal</span><span class="o">.</span><span class="n">polcalworker</span><span class="o">.</span><span class="n">PolcalWorkerResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -782,7 +782,7 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
 
-    <span class="k">def</span> <span class="nf">_unregister_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unregister_caltables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method will unregister from the callibrary in the local context</span>
 <span class="sd">        (stored in inputs) any CalApplication that is registered for caltable</span>
@@ -790,7 +790,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Define predicate function that matches the kind of caltable that</span>
         <span class="c1"># needs to be removed from the CalLibrary.</span>
-        <span class="k">def</span> <span class="nf">hifa_polcal_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">hifa_polcal_matcher</span><span class="p">(</span><span class="n">calto</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalToArgs</span><span class="p">,</span> <span class="n">calfrom</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalFrom</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="n">calto_vis</span> <span class="o">=</span> <span class="p">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">calto</span><span class="o">.</span><span class="n">vis</span><span class="p">}</span>
             <span class="n">do_delete</span> <span class="o">=</span> <span class="s1">&#39;hifa_polcal&#39;</span> <span class="ow">in</span> <span class="n">calfrom</span><span class="o">.</span><span class="n">gaintable</span> <span class="ow">and</span> <span class="n">vis</span> <span class="ow">in</span> <span class="n">calto_vis</span>
             <span class="k">if</span> <span class="n">do_delete</span><span class="p">:</span>
@@ -799,7 +799,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">unregister_calibrations</span><span class="p">(</span><span class="n">hifa_polcal_matcher</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_final_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+    <span class="k">def</span><span class="w"> </span><span class="nf">_final_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -840,7 +840,7 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
 
-    <span class="k">def</span> <span class="nf">_compute_leakage_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_leakage_terms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">scan_duration</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                                <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">polcal</span><span class="o">.</span><span class="n">polcalworker</span><span class="o">.</span><span class="n">PolcalWorkerResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -881,7 +881,7 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
 
-    <span class="k">def</span> <span class="nf">_compute_xy_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_xy_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -919,7 +919,7 @@
 
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="n">final_calapps</span>
 
-    <span class="k">def</span> <span class="nf">_run_visstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obsid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_visstat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">obsid</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">obsid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">obsid</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
@@ -946,11 +946,11 @@
         <span class="k">return</span> <span class="n">vs_results</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_compare_visstat_results</span><span class="p">(</span><span class="n">stats</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">session_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">vis_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compare_visstat_results</span><span class="p">(</span><span class="n">stats</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">session_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">vis_vs_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
                                  <span class="n">spwmaps</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="c1"># Define function for determining the difference in given visstat</span>
         <span class="c1"># derived statistic between session MS and individual MS.</span>
-        <span class="k">def</span> <span class="nf">compute_diff</span><span class="p">(</span><span class="n">vres</span><span class="p">,</span> <span class="n">sres</span><span class="p">,</span> <span class="n">st</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">compute_diff</span><span class="p">(</span><span class="n">vres</span><span class="p">,</span> <span class="n">sres</span><span class="p">,</span> <span class="n">st</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">vres</span><span class="p">[</span><span class="n">st</span><span class="p">]</span> <span class="o">-</span> <span class="n">sres</span><span class="p">[</span><span class="n">st</span><span class="p">])</span> <span class="o">/</span> <span class="n">sres</span><span class="p">[</span><span class="n">st</span><span class="p">]</span>
 
         <span class="c1"># Collect difference to put in task result.</span>
@@ -974,7 +974,7 @@
 
         <span class="k">return</span> <span class="n">diffs</span>
 
-    <span class="k">def</span> <span class="nf">_setjy_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setjy_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">smodel</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
         <span class="c1"># Get pol calibrator field ID and science SpWs from MS.</span>
         <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">vis</span><span class="p">)</span>
         <span class="n">sci_spws</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1030,7 +1030,7 @@
             <span class="n">job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">setjy</span><span class="p">(</span><span class="o">**</span><span class="n">task_args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_compute_ampcal_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> \
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compute_ampcal_for_polcal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vislist</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">refant</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> \
             <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">gaincal</span><span class="o">.</span><span class="n">common</span><span class="o">.</span><span class="n">GaincalResults</span><span class="p">],</span> <span class="n">List</span><span class="p">]:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -1071,7 +1071,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

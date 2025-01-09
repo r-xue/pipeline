@@ -30,6 +30,5 @@ pipeline.domain.state.StateAPEX
       ~StateAPEX.obs_mode
       ~StateAPEX.intents
       ~StateAPEX.obs_mode_mapping
-      ~StateAPEX.reduction_intents
    
    

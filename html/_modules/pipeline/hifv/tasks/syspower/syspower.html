@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.syspower.syspower &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,21 +113,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifv.tasks.syspower.syspower</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">factorial</span>
-<span class="kn">import</span> <span class="nn">collections</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">factorial</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -136,7 +136,7 @@
 <span class="c1">#  scipy.signal.savgol_filter(x, window_length, polyorder, deriv=0, delta=1.0, axis=-1, mode=&#39;interp&#39;, cval=0.0)</span>
 
 <span class="c1"># http://scipy-cookbook.readthedocs.io/items/SavitzkyGolay.html</span>
-<span class="k">def</span> <span class="nf">savitzky_golay</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">savitzky_golay</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">rate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Smooth (and optionally differentiate) data with a Savitzky-Golay filter.</span>
 <span class="sd">    The Savitzky-Golay filter removes high frequency noise from data.</span>
 <span class="sd">    It has the advantage of preserving the original shape and</span>
@@ -207,8 +207,8 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span> <span class="n">m</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;valid&#39;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SyspowerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dat_common</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SyspowerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gaintable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spowerdict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dat_common</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template_table</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band_baseband_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plotrq</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">gaintable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -237,29 +237,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">band_baseband_spw</span> <span class="o">=</span> <span class="n">band_baseband_spw</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plotrq</span> <span class="o">=</span> <span class="n">plotrq</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># return &#39;SyspowerResults:\n\t{0}&#39;.format(</span>
         <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
         <span class="k">return</span> <span class="s1">&#39;SyspowerResults:&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">SyspowerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SyspowerInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">antexclude</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">{})</span>
     <span class="n">apply</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">do_not_apply</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">clip_sp_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clip_sp_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">]</span>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antexclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_sp_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antexclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">do_not_apply</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -273,12 +273,12 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_syspower&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Sys power fix compression&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Syspower</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Syspower</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SyspowerInputs</span>
 
 <div class="viewcode-block" id="Syspower.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
         <span class="c1"># flag normalized p_diff outside this range</span>
@@ -739,7 +739,7 @@
 
 <div class="viewcode-block" id="Syspower.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
@@ -747,7 +747,7 @@
     <span class="c1"># adapted from https://gist.github.com/bhawkins/3535131</span>
 <div class="viewcode-block" id="Syspower.medfilt">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower.medfilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_median</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span> <span class="n">flag_rms</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_median</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">k2</span> <span class="o">=</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">k</span><span class="p">))</span>
@@ -797,7 +797,7 @@
     <span class="c1"># combine SPWs and flag based on moving window statistics</span>
 <div class="viewcode-block" id="Syspower.flag_with_medfilt">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower.flag_with_medfilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">flag_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flag_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">do_shift</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">do_shift</span><span class="p">:</span>
             <span class="n">resid</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ravel</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -812,7 +812,7 @@
     <span class="c1"># use median filter to interpolate flagged values</span>
 <div class="viewcode-block" id="Syspower.interp_with_medfilt">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Syspower.html#pipeline.hifv.tasks.Syspower.interp_with_medfilt">[docs]</a>
-    <span class="k">def</span> <span class="nf">interp_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span> <span class="n">max_interp</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interp_with_medfilt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mi">99</span><span class="p">,</span> <span class="n">max_interp</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">getmaskarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">this_interp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">==</span> <span class="kc">True</span><span class="p">):</span>
@@ -843,7 +843,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

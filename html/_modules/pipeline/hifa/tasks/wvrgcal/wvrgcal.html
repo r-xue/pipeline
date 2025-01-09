@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.wvrgcal.wvrgcal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,29 +113,29 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.wvrgcal.wvrgcal</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">commonhelpermethods</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks</span> <span class="kn">import</span> <span class="n">gaincal</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.bandpass.common</span> <span class="kn">import</span> <span class="n">BandpassResults</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.gaincal.common</span> <span class="kn">import</span> <span class="n">GaincalResults</span>
-<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">atm</span> <span class="k">as</span> <span class="n">atm_heuristic</span>
-<span class="kn">from</span> <span class="nn">pipeline.hifa.heuristics</span> <span class="kn">import</span> <span class="n">wvrgcal</span> <span class="k">as</span> <span class="n">wvrgcal_heuristic</span>
-<span class="kn">from</span> <span class="nn">pipeline.hifa.tasks</span> <span class="kn">import</span> <span class="n">bandpass</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">wvrg_qa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commonhelpermethods</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.bandpass.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">BandpassResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.gaincal.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaincalResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">atm</span> <span class="k">as</span> <span class="n">atm_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">wvrgcal</span> <span class="k">as</span> <span class="n">wvrgcal_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifa.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">bandpass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">resultobjects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">wvrg_qa</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;Wvrgcal&#39;</span><span class="p">,</span>
@@ -148,7 +148,7 @@
                                  <span class="s1">&#39;antenna wvr flag rms disc&#39;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">WvrgcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">WvrgcalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    WvrgcalInputs defines the inputs for the Wvrgcal pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -160,7 +160,7 @@
     <span class="n">hm_toffset</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">])</span>
-    <span class="k">def</span> <span class="nf">maxdistm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">maxdistm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Identify fraction of antennas that are 7m.</span>
         <span class="n">nants_7m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span><span class="n">ant</span>
                         <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">antennas</span>
@@ -193,21 +193,21 @@
     <span class="n">smooth</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">sourceflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sourceflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">tie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tie</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="n">toffset</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@wvrflag</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wvrflag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">):</span>
                 <span class="c1"># Remove the characters [, ], and &#39; from the value.</span>
@@ -216,7 +216,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetstable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">toffset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">segsource</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tie</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sourceflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nsol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">disperse</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">wvrflag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maxdistm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minnumants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">mingoodfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_bandpass_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -261,15 +261,15 @@
 <div class="viewcode-block" id="Wvrgcal">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_wvrgcal&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Wvrgcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Wvrgcal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">WvrgcalInputs</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Wvrgcal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Wvrgcal.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">WvrgcalResult</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>        
         <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
@@ -439,7 +439,7 @@
 
 <div class="viewcode-block" id="Wvrgcal.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.Wvrgcal.html#pipeline.hifa.tasks.Wvrgcal.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># check that the caltable was actually generated</span>
@@ -562,7 +562,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_report_wvr_improvement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">WvrgcalResult</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_report_wvr_improvement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">WvrgcalResult</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Report the improvement factors from QA data views to the log (PIPE-846).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -585,7 +585,7 @@
                     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ant #</span><span class="si">{</span><span class="n">antid</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">ant_names</span><span class="p">[</span><span class="n">antid</span><span class="p">]</span><span class="si">}</span><span class="s2">), time </span><span class="si">{</span><span class="n">timestamp</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">qa_result</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">xid</span><span class="p">,</span><span class="w"> </span><span class="n">yid</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span>
                              <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="s1">&#39;(flagged)&#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">qa_result</span><span class="o">.</span><span class="n">flag</span><span class="p">[</span><span class="n">xid</span><span class="p">,</span><span class="w"> </span><span class="n">yid</span><span class="p">]</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a bandpass caltable for QA analysis, returning the result of</span>
 <span class="sd">        the worker bandpass task.</span>
@@ -603,7 +603,7 @@
             <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_do_user_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_user_qa_bandpass</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Accept and return the bandpass result affixed to the inputs.</span>
 
@@ -614,7 +614,7 @@
         <span class="n">bp_result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">bp_result</span>
 
-    <span class="k">def</span> <span class="nf">_do_new_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_new_qa_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BandpassResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new bandpass caltable by spawning a bandpass worker task, </span>
 <span class="sd">        merging the results with the context.</span>
@@ -646,7 +646,7 @@
             <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_do_nowvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_nowvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
         <span class="c1"># do a phase calibration on the bandpass and phase</span>
         <span class="c1"># calibrators with B preapplied</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Calculating phase calibration with B applied&#39;</span><span class="p">)</span>
@@ -663,12 +663,12 @@
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_qa_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">nowvr_caltable_namer</span><span class="p">)</span>            
             <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_do_wvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_wvr_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
         <span class="c1"># get namer that will add &#39;.flags_1_2.wvr&#39; to caltable filename </span>
         <span class="n">wvr_caltable_namer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_wvr_caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>            
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_qa_gaincal</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">wvr_caltable_namer</span><span class="p">)</span>                    
 
-    <span class="k">def</span> <span class="nf">_do_qa_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">,</span> <span class="n">caltable_namer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_qa_gaincal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">,</span> <span class="n">caltable_namer</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GaincalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a new gain caltable via a call to a child pipeline task.</span>
 
@@ -696,11 +696,11 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_nowvr_caltable_namer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_nowvr_caltable_namer</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;        </span>
 <span class="sd">        Returns a function that inserts a &#39;.nowvr&#39; component into a filename.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
             <span class="n">new_caltable_name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.nowvr</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;WVR uncorrected phase RMS gain table is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
@@ -710,14 +710,14 @@
         <span class="k">return</span> <span class="n">caltable_namer</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_wvr_caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_wvr_caltable_namer</span><span class="p">(</span><span class="n">inputs</span><span class="p">:</span> <span class="n">WvrgcalInputs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;        </span>
 <span class="sd">        Returns a function that inserts a &#39;&#39;.flagged_&lt;N&gt;_antennas.wvr&#39; component into a</span>
 <span class="sd">        filename.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">flags</span> <span class="o">=</span> <span class="s1">&#39;.flagged_</span><span class="si">%d</span><span class="s1">_antennas&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span><span class="p">)</span> <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">wvrflag</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
 
-        <span class="k">def</span> <span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">caltable_namer</span><span class="p">(</span><span class="n">caltable</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">root</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">caltable</span><span class="p">)</span>
             <span class="n">new_caltable</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%s%s</span><span class="s1">.wvr</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;WVR-corrected phase RMS gain table is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
@@ -727,7 +727,7 @@
         <span class="k">return</span> <span class="n">caltable_namer</span>    
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_get_wvrinfos</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">WVRInfo</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_wvrinfos</span><span class="p">(</span><span class="n">result</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">WVRInfo</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Retrieve necessary information from the result returned by the CASA</span>
 <span class="sd">        &#39;wvrgcal&#39; task.</span>
@@ -738,7 +738,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List containing WVR info for each antenna.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">to_microns</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">to_microns</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">measures</span><span class="o">.</span><span class="n">Distance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">measures</span><span class="o">.</span><span class="n">DistanceUnits</span><span class="o">.</span><span class="n">MICROMETRE</span><span class="p">)</span>
 
         <span class="c1"># copy result in case we need it unaltered elsewhere, then convert raw</span>
@@ -762,7 +762,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

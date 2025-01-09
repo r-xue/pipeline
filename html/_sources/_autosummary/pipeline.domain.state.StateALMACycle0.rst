@@ -30,6 +30,5 @@ pipeline.domain.state.StateALMACycle0
       ~StateALMACycle0.obs_mode
       ~StateALMACycle0.intents
       ~StateALMACycle0.obs_mode_mapping
-      ~StateALMACycle0.reduction_intents
    
    

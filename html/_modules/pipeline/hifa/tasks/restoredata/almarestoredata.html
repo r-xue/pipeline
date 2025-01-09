@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.restoredata.almarestoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,22 +113,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.restoredata.almarestoredata</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pipeline.h.tasks.restoredata.restoredata</span> <span class="k">as</span> <span class="nn">restoredata</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal</span> <span class="kn">import</span> <span class="n">applycal</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">..importdata</span> <span class="kn">import</span> <span class="n">almaimportdata</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.tasks.restoredata.restoredata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">restoredata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.applycal</span><span class="w"> </span><span class="kn">import</span> <span class="n">applycal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..importdata</span><span class="w"> </span><span class="kn">import</span> <span class="n">almaimportdata</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ALMARestoreDataInputs</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreDataInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMARestoreDataInputs</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreDataInputs</span><span class="p">):</span>
     <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="s1">&#39;SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ALMARestoreDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="n">copytoraw</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">,</span>
                                                     <span class="n">rawdata_dir</span><span class="o">=</span><span class="n">rawdata_dir</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
@@ -139,12 +139,12 @@
 <div class="viewcode-block" id="ALMARestoreData">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMARestoreData.html#pipeline.hifa.tasks.ALMARestoreData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_restoredata&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ALMARestoreData</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreData</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMARestoreData</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreData</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMARestoreDataInputs</span>
 
     <span class="c1"># Override generic method and use an ALMA specific one. Not much difference</span>
     <span class="c1"># now but should simplify parameters in future</span>
-    <span class="k">def</span> <span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sessionlist</span><span class="p">,</span> <span class="n">vislist</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">almaimportdata</span><span class="o">.</span><span class="n">ALMAImportData</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vislist</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">sessionlist</span><span class="p">,</span>
@@ -154,7 +154,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">importdata_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Override generic method for an ALMA specific one.</span>
-    <span class="k">def</span> <span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_applycal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># PIPE-1165: for hifa_applycal, include the polarization intents.</span>
         <span class="n">container</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">InputsContainer</span><span class="p">(</span><span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
                                         <span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span><span class="p">)</span>
@@ -175,7 +175,7 @@
         <span class="n">applycal_task</span> <span class="o">=</span> <span class="n">applycal</span><span class="o">.</span><span class="n">SerialApplycal</span><span class="p">(</span><span class="n">container</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">applycal_task</span><span class="p">,</span> <span class="n">merge</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_check_for_hifa_polcal_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_container</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_for_hifa_polcal_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs_container</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Utility method to determine whether a hifa_polcal produced caltable</span>
 <span class="sd">        is present in the context callibrary.</span>
@@ -206,7 +206,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

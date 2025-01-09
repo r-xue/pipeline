@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makeimages.makeimages &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,31 +113,31 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.makeimages.makeimages</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">tempfile</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.daskhelpers</span> <span class="k">as</span> <span class="nn">daskhelpers</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.pipelineqa</span> <span class="k">as</span> <span class="nn">pqa</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.daskhelpers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">daskhelpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.mpihelpers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpihelpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.pipelineqa</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pqa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
 
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.sensitivity</span> <span class="kn">import</span> <span class="n">Sensitivity</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common.sensitivity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sensitivity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">task_registry</span>
 
-<span class="kn">from</span> <span class="nn">..tclean</span> <span class="kn">import</span> <span class="n">Tclean</span>
-<span class="kn">from</span> <span class="nn">..tclean.resultobjects</span> <span class="kn">import</span> <span class="n">TcleanResult</span>
-<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">MakeImagesResult</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tclean</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tclean</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..tclean.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">TcleanResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">MakeImagesResult</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">MakeImagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakeImagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">SELFCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
 
@@ -169,7 +169,7 @@
     <span class="n">vlass_plane_reject_im</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@vlass_plane_reject_im</span><span class="o">.</span><span class="n">postprocess</span>
-    <span class="k">def</span> <span class="nf">vlass_plane_reject_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vlass_plane_reject_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the allowed argument input datatype to the dictionary form used by the task.&quot;&quot;&quot;</span>
         <span class="n">vlass_plane_reject_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;apply&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;exclude_spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s1">&#39;beamdev_thresh&#39;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
@@ -182,17 +182,17 @@
         <span class="k">return</span> <span class="n">vlass_plane_reject_dict</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">{}])</span>
-    <span class="k">def</span> <span class="nf">target_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">target_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">clean_list_pending</span>
 
     <span class="nd">@tlimit</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">tlimit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlimit</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tlimit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlimit</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">tlimit</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;tlimit values must be larger than 0.0&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tlimit</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_masking</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_sidelobethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_noisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_lownoisethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_negativethreshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minbeamfrac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_growiterations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_dogrowprune</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_minpercentchange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_fastnoise</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_nsigma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -245,14 +245,14 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_makeimages&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;A list of target sources is cleaned.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MakeImages</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakeImages</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MakeImagesInputs</span>
 
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="MakeImages.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">result</span> <span class="o">=</span> <span class="n">MakeImagesResult</span><span class="p">()</span>
@@ -323,7 +323,7 @@
 
 <div class="viewcode-block" id="MakeImages.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImages.html#pipeline.hif.tasks.MakeImages.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">imaging_mode</span> <span class="o">==</span> <span class="s1">&#39;VLASS-SE-CUBE&#39;</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_vlass_se_cube_metadata</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
@@ -331,7 +331,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_vlass_se_cube_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_vlass_se_cube_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Attach extra imaging metadata to Tclean results for the VLASS Coarse Cube imaging.&quot;&quot;&quot;</span>
 
         <span class="n">vlass_plane_reject_keys_allowed</span> <span class="o">=</span> <span class="p">[</span>
@@ -426,7 +426,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_vlass_cube_set_miscinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_vlass_cube_set_miscinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tclean_result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the VLASS cube plane rejection header keyword.&quot;&quot;&quot;</span>
 
         <span class="n">imagename</span> <span class="o">=</span> <span class="n">tclean_result</span><span class="o">.</span><span class="n">image</span>
@@ -439,7 +439,7 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;mark the image </span><span class="si">%s</span><span class="s1"> as reject=</span><span class="si">%r</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">reject</span><span class="p">)</span>
                 <span class="n">image</span><span class="o">.</span><span class="n">setmiscinfo</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_is_target_for_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clean_result</span><span class="p">,</span> <span class="n">heuristics</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_target_for_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clean_result</span><span class="p">,</span> <span class="n">heuristics</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns True if the clean target is one to export image sensitivity</span>
 <span class="sd">        Conditions to export image sensitivities are</span>
@@ -465,7 +465,7 @@
         <span class="c1"># Don&#39;t export image sensitivity for the other clean targets</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_get_image_rms_as_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">heuristics</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_image_rms_as_sensitivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">heuristics</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">image</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
@@ -524,14 +524,14 @@
 
 
 
-<span class="k">class</span> <span class="nc">CleanTaskFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">executor</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">CleanTaskFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">executor</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span> <span class="o">=</span> <span class="n">inputs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__context</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span> <span class="o">=</span> <span class="n">executor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># If there&#39;s a possibility that we&#39;ll submit MPI jobs, save the context</span>
         <span class="c1"># to disk ready for import by the MPI servers.</span>
         <span class="k">if</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">mpiclient</span> <span class="ow">or</span> <span class="n">daskhelpers</span><span class="o">.</span><span class="n">daskclient</span><span class="p">:</span>
@@ -547,11 +547,11 @@
 
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__context_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create and return a SyncTask or AsyncTask for the clean job required</span>
 <span class="sd">        to produce the clean target.</span>
@@ -613,7 +613,7 @@
             <span class="n">task</span> <span class="o">=</span> <span class="n">Tclean</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">SyncTask</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__executor</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__inputs</span>
 
         <span class="n">parallel_wanted</span> <span class="o">=</span> <span class="n">mpihelpers</span><span class="o">.</span><span class="n">parse_mpi_input_parameter</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">parallel</span><span class="p">)</span>
@@ -722,7 +722,7 @@
         <span class="k">return</span> <span class="n">task_args</span>
 
 
-<span class="k">def</span> <span class="nf">_get_description_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_description_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;Make calibrator images&#39;</span><span class="p">,</span>
@@ -755,7 +755,7 @@
         <span class="k">return</span> <span class="p">{}</span>
 
 
-<span class="k">def</span> <span class="nf">_get_sidebar_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_sidebar_map</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;mfs&#39;</span><span class="p">:</span> <span class="s1">&#39;cals&#39;</span><span class="p">,</span>
@@ -789,7 +789,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

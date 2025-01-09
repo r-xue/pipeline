@@ -30,6 +30,5 @@ pipeline.domain.state.StateSMT
       ~StateSMT.obs_mode
       ~StateSMT.intents
       ~StateSMT.obs_mode_mapping
-      ~StateSMT.reduction_intents
    
    

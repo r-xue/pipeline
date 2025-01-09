@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -123,27 +123,27 @@
 
 <span class="sd">@author: kana</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.hsd.tasks.importdata.importdata</span> <span class="k">as</span> <span class="nn">sd_importdata</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.fluxmeasurement</span> <span class="kn">import</span> <span class="n">FluxMeasurement</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.singledish</span> <span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.launcher</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.hsd.tasks.importdata.importdata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sd_importdata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.fluxmeasurement</span><span class="w"> </span><span class="kn">import</span> <span class="n">FluxMeasurement</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.measurementset</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.singledish</span><span class="w"> </span><span class="kn">import</span> <span class="n">MSReductionGroupDesc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.launcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">NROImportDataInputs</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NROImportDataInputs</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class of inputs of NROImportData.</span>
 
 <span class="sd">    This class extends importdata.ImportDataInputs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">datacolumns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_rasterscan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise NROImportDataInputs class.</span>
@@ -174,7 +174,7 @@
                                                   <span class="n">hm_rasterscan</span><span class="o">=</span><span class="n">hm_rasterscan</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">NROImportDataResults</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NROImportDataResults</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SDImportDataResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NROImportDataResults is an equivalent class with ImportDataResults.</span>
 
 <span class="sd">    Purpose of NROImportDataResults is to replace QA scoring associated</span>
@@ -186,7 +186,7 @@
 <span class="sd">    SetJy results generated from flux entries in Source.xml.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">MeasurementSet</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">MSReductionGroupDesc</span><span class="p">]]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">datatable_prefix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setjy_results</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">FluxMeasurement</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise NROImportDataResults class.</span>
 
@@ -199,7 +199,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">NROImportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mses</span><span class="o">=</span><span class="n">mses</span><span class="p">,</span> <span class="n">reduction_group_list</span><span class="o">=</span><span class="n">reduction_group_list</span><span class="p">,</span>
                                                    <span class="n">datatable_prefix</span><span class="o">=</span><span class="n">datatable_prefix</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="n">setjy_results</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override method of basetask.Results.merge_with_context.</span>
 
 <span class="sd">        Args:</span>
@@ -218,7 +218,7 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsdn_importdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Import Nobeyama MeasurementSets.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">NROImportData</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SerialSDImportData</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NROImportData</span><span class="p">(</span><span class="n">sd_importdata</span><span class="o">.</span><span class="n">SerialSDImportData</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NRO Data import execution task.</span>
 
 <span class="sd">    This class extends importdata.ImportData class, and methods execute main logics depends on it.</span>
@@ -228,7 +228,7 @@
 
 <div class="viewcode-block" id="NROImportData.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare job requests for execution.</span>
 
 <span class="sd">        Args:</span>
@@ -249,7 +249,7 @@
 
 <div class="viewcode-block" id="NROImportData.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsdn.tasks.NROImportData.html#pipeline.hsdn.tasks.NROImportData.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NROImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">NROImportDataResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NROImportDataResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get version information for merge2 and set it to MS of result.</span>
 
 <span class="sd">        Args:</span>
@@ -283,7 +283,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

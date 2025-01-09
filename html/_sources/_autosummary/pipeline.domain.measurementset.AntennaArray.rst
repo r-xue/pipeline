@@ -30,7 +30,6 @@ pipeline.domain.measurementset.AntennaArray
    .. autosummary::
    
       ~AntennaArray.baselines
-      ~AntennaArray.centre
       ~AntennaArray.elevation
       ~AntennaArray.latitude
       ~AntennaArray.longitude

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.vdp &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -172,22 +172,22 @@
 <span class="sd">            return int(user_input)</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">numbers</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numbers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
 
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.datatype</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">api</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">argmapper</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">launcher</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logging</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">api</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">argmapper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">launcher</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;VisDependentProperty&#39;</span><span class="p">,</span>
            <span class="s1">&#39;InputsContainer&#39;</span><span class="p">,</span>
@@ -197,14 +197,14 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SingletonType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SingletonType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SingletonType is a metaclass that ensures that only a single instance of</span>
 <span class="sd">    a class exists. Creating additional instances returns the existing</span>
 <span class="sd">    instance.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -212,13 +212,13 @@
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__instance</span>
 
 
-<span class="k">class</span> <span class="nc">NullMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NullMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NullMarker is a class that represents the null &quot;parameter not-set&quot; case.</span>
 <span class="sd">    It exists to distinguish between a user-provided null value, such as None</span>
 <span class="sd">    or &#39;&#39;, and an argument that is null because it has not been set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">null_input</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">null_input</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Values equal to those in null_input will be considered equal to null.</span>
 
@@ -227,7 +227,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">null_input</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">null_input</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Process the argument, converting user input considered equivalent to</span>
 <span class="sd">        null to a NullMarker object.</span>
@@ -236,13 +236,13 @@
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">val</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NullMarker</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;NullMarker(</span><span class="si">{!s}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">))</span>
 
 
@@ -250,25 +250,25 @@
 <span class="n">_NULL</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
 
 
-<span class="k">class</span> <span class="nc">NoDefaultMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">SingletonType</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NoDefaultMarker</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">SingletonType</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    NoDefaultMarker is a class that represents the null &quot;parameter not-set&quot; case</span>
 <span class="sd">    for default values. It exists to distinguish between a user-provided</span>
 <span class="sd">    default value of None, and when a default has not been set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">NoDefaultMarker</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">PipelineInputsMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PipelineInputsMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sets the name of a VisDependentProperty at class definition time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PipelineInputsMeta</span><span class="p">,</span> <span class="n">mcls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">mcls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">VisDependentProperty</span><span class="p">):</span>
@@ -278,7 +278,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty">[docs]</a>
-<span class="k">class</span> <span class="nc">VisDependentProperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">VisDependentProperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    VisDependentProperty is a Python data descriptor that standardises the</span>
 <span class="sd">    behaviour of pipeline Inputs properties and lets them create default values</span>
@@ -320,7 +320,7 @@
     <span class="n">NO_DEFAULT</span> <span class="o">=</span> <span class="n">NoDefaultMarker</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">backing_store_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">backing_store_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The name of the attribute holding the value for this property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -328,7 +328,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty.convert">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.convert">[docs]</a>
-    <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fconvert</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fconvert</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to clean and/or convert user-supplied argument</span>
 <span class="sd">        values before they are associated with the instance property.</span>
@@ -343,7 +343,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty.default">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.default">[docs]</a>
-    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to get the attribute value when the user has not</span>
 <span class="sd">        supplied an override value.</span>
@@ -353,7 +353,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty.fget">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.fget">[docs]</a>
-    <span class="k">def</span> <span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the underlying property value from an instance of the class</span>
 <span class="sd">        owning this property</span>
@@ -366,7 +366,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty.fset">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.fset">[docs]</a>
-    <span class="k">def</span> <span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sets the property value on the instance owning this property.</span>
 
@@ -379,7 +379,7 @@
 
 <div class="viewcode-block" id="VisDependentProperty.postprocess">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.VisDependentProperty.html#pipeline.infrastructure.vdp.VisDependentProperty.postprocess">[docs]</a>
-    <span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpostprocess</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">postprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fpostprocess</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the function used to process the value that is about to be</span>
 <span class="sd">        returned. This allows the value to be modified or perhaps a different</span>
@@ -392,7 +392,7 @@
                           <span class="n">null_input</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">null_input</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fpostprocess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">NO_DEFAULT</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fconvert</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fpostprocess</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">NO_DEFAULT</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">null_input</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fdefault</span> <span class="o">=</span> <span class="n">fdefault</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fconvert</span> <span class="o">=</span> <span class="n">fconvert</span>
@@ -409,14 +409,14 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">null</span> <span class="o">=</span> <span class="n">NullMarker</span><span class="p">(</span><span class="n">null_input</span><span class="o">=</span><span class="n">null_input</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdefault</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># __call__ is executed when a function definition is called with</span>
         <span class="c1"># arguments</span>
         <span class="c1"># LOG.info(&#39;In __call__ for %s&#39; % fget.func_name)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fdefault</span> <span class="o">=</span> <span class="n">fdefault</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
         <span class="c1"># Return the VisDependentProperty itself when called directly</span>
         <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
@@ -436,7 +436,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">instance_val</span>
 
-    <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;can</span><span class="se">\&#39;</span><span class="s1">t set read-only attribute: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
@@ -449,14 +449,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">converted</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span></div>
 
 
 
 <div class="viewcode-block" id="InputsContainer">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.InputsContainer.html#pipeline.infrastructure.vdp.InputsContainer">[docs]</a>
-<span class="k">class</span> <span class="nc">InputsContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">InputsContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    InputsContainer is the top-level container object for all task Inputs.</span>
 
@@ -500,7 +500,7 @@
 <span class="sd">    convert function allows the developer to validate or convert user input to</span>
 <span class="sd">    a standard format before accepting it as a new argument.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_cls</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_task_cls</span> <span class="o">=</span> <span class="n">task_cls</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initargs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -580,7 +580,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;MS to be processed: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">named_args</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_scope_attr</span><span class="p">]))</span>
 
         <span class="c1"># multi-vis tasks do not require any further processing</span>
-        <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">sessionutils</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">sessionutils</span>
         <span class="c1"># CAS-11443. ParallelTaskTemplate is a multivis task, in the sense that</span>
         <span class="c1"># one instance of ParallelTaskTemplate executes for all MSes, but the</span>
         <span class="c1"># Inputs should be treated as non-multivis so that the input arguments</span>
@@ -608,7 +608,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cls_instances</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_remap_constructor_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remap_constructor_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># find out how many datasets are in this call. This number is used to</span>
         <span class="c1"># multiply scalar values appropriately</span>
         <span class="n">scope_val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_scope_attr</span><span class="p">]</span>
@@ -627,7 +627,7 @@
         <span class="c1"># dict containing just the values for that data.</span>
         <span class="k">return</span> <span class="p">[{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">processed</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_datasets</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">_process_arg_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_datasets</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_process_arg_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_datasets</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scope_attr</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
@@ -642,7 +642,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">val</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_datasets</span><span class="p">)]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_pipeline_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pipeline_casa_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Map the Inputs class to the hif* equivalent. Note that registry maps</span>
         <span class="c1"># maps Task classes, not Inputs classes, to their CASA task equivalent.</span>
         <span class="c1"># However, Task.Inputs *does* point to an Inputs class so we can</span>
@@ -686,13 +686,13 @@
 
         <span class="k">return</span> <span class="n">casa_call</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
@@ -702,13 +702,13 @@
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{cls.__name__}</span><span class="s1"> indices must either be integers or the name of a measurement set&#39;</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="bp">cls</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__members__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__members__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="nf">__methods__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__methods__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="c1"># __getattr__ is only called when this object&#39;s __dict__ does not</span>
         <span class="c1"># contain the requested property. When this happens, we delegate to</span>
         <span class="c1"># the currently selected Inputs. First, however, we check whether</span>
@@ -731,7 +731,7 @@
 
         <span class="k">return</span> <span class="n">format_value_list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="c1"># If the property we&#39;re trying to set is one of this base class&#39;s</span>
         <span class="c1"># private variables, add it to our __dict__ using the standard</span>
         <span class="c1"># __setattr__ method</span>
@@ -760,7 +760,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Setting VDP target inputs class to </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new_cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_inputs_cls</span> <span class="o">=</span> <span class="n">new_cls</span>
 
-    <span class="k">def</span> <span class="nf">_map_args_to_vis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_map_args_to_vis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        distribute a incoming user argument amongst the active instances.</span>
 
@@ -772,11 +772,11 @@
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">,</span> <span class="n">val</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_get_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">scope</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scope_attr</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">format_value_list</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_set_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_scope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
         <span class="c1"># for multivis tasks, all we should do is set vis on the contained</span>
         <span class="c1"># inputs. As there only ever one active inputs instance, no further</span>
         <span class="c1"># processing is required so we can exit.</span>
@@ -807,10 +807,10 @@
         <span class="c1"># set the task scope to the vises set here</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_cls_instances</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">basenames</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&lt;InputsContainer(</span><span class="si">{!s}</span><span class="s1">, </span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_task_cls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;Empty&#39;</span>
 
@@ -828,7 +828,7 @@
 
 <div class="viewcode-block" id="InputsContainer.as_dict">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.InputsContainer.html#pipeline.infrastructure.vdp.InputsContainer.as_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">input_dicts</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active_instances</span><span class="p">]</span>
@@ -842,7 +842,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_properties</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_properties</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">):</span>
     <span class="n">attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)}</span>
     <span class="n">methods</span> <span class="o">=</span> <span class="p">{</span><span class="n">fn_name</span> <span class="k">for</span> <span class="n">fn_name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">inputs_cls</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)}</span>
     <span class="n">props</span> <span class="o">=</span> <span class="n">attrs</span> <span class="o">-</span> <span class="n">methods</span>
@@ -853,13 +853,13 @@
 
 <div class="viewcode-block" id="StandardInputs">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs">[docs]</a>
-<span class="k">class</span> <span class="nc">StandardInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StandardInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
 
     <span class="c1"># - standard non-vis-dependent properties --------------------------------</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the context used as the base for the parameters for this Inputs.</span>
 
@@ -878,7 +878,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_context</span>
 
     <span class="nd">@context</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">launcher</span><span class="o">.</span><span class="n">Context</span><span class="p">):</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;context not a pipeline context: </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -891,7 +891,7 @@
 <div class="viewcode-block" id="StandardInputs.ms">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.ms">[docs]</a>
     <span class="nd">@VisDependentProperty</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the MeasurementSet for the current value of vis.</span>
 
@@ -905,11 +905,11 @@
 <div class="viewcode-block" id="StandardInputs.output_dir">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.output_dir">[docs]</a>
     <span class="nd">@VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">output_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Express this class as a dictionary of CASA arguments, listing all</span>
 <span class="sd">        inputs except those named in ignore.</span>
@@ -945,7 +945,7 @@
 
 <div class="viewcode-block" id="StandardInputs.to_casa_args">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.to_casa_args">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Express these inputs as a dictionary of CASA arguments. The values</span>
 <span class="sd">        in the dictionary are in a format suitable for CASA and can be</span>
@@ -975,15 +975,15 @@
         <span class="k">return</span> <span class="n">args</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
 
 <div class="viewcode-block" id="StandardInputs.as_dict">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.StandardInputs.html#pipeline.infrastructure.vdp.StandardInputs.as_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 </div>
 
@@ -991,7 +991,7 @@
 
 <div class="viewcode-block" id="ModeInputs">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs">[docs]</a>
-<span class="k">class</span> <span class="nc">ModeInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModeInputs</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">PipelineInputsMeta</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ModeInputs is a facade for Inputs of a common task type, allowing the user</span>
 <span class="sd">    to switch between task implementations by changing the &#39;mode&#39; parameter.</span>
@@ -1003,7 +1003,7 @@
 
     <span class="n">_modes</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="c1"># create a dictionary of Inputs objects, one of each type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delegates</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">task_cls</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;vis&#39;</span><span class="p">])</span>
                            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">task_cls</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -1015,7 +1015,7 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">parameters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="c1"># __getattr__ is only called when this object&#39;s __dict__ does not</span>
         <span class="c1"># contain the requested property. When this happens, we delegate to</span>
         <span class="c1"># the currently selected Inputs. First, however, we check whether</span>
@@ -1031,7 +1031,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;ModeInputs.</span><span class="si">{!s}</span><span class="s1">: delegating to </span><span class="si">{!s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="c1"># If the property we&#39;re trying to set is one of this base class&#39;s</span>
         <span class="c1"># private variables, add it to our __dict__ using the standard</span>
         <span class="c1"># __setattr__ method</span>
@@ -1086,11 +1086,11 @@
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span>
 
     <span class="nd">@mode</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="p">:</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_modes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Mode must be one of </span><span class="se">\&#39;</span><span class="si">{0}</span><span class="se">\&#39;</span><span class="s1"> but got </span><span class="se">\&#39;</span><span class="si">{1}</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -1103,7 +1103,7 @@
 
 <div class="viewcode-block" id="ModeInputs.get_task">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.get_task">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the task appropriate to the current Inputs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1113,7 +1113,7 @@
 
 <div class="viewcode-block" id="ModeInputs.as_dict">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.as_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">props</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
         <span class="n">props</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">collect_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">props</span></div>
@@ -1121,17 +1121,17 @@
 
 <div class="viewcode-block" id="ModeInputs.to_casa_args">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.to_casa_args">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
 
 <div class="viewcode-block" id="ModeInputs.get_constructor_args">
 <a class="viewcode-back" href="../../../_automodapi/pipeline.infrastructure.vdp.ModeInputs.html#pipeline.infrastructure.vdp.ModeInputs.get_constructor_args">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_constructor_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;context&#39;</span><span class="p">)):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_constructor_args</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;context&#39;</span><span class="p">)):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the union of all arguments accepted by this class&#39;s constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1161,7 +1161,7 @@
 <span class="c1"># module utility functions ---------------------------------------------------</span>
 
 
-<span class="k">def</span> <span class="nf">all_unique</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">all_unique</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return True if all elements in the iterable argument are unique.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1173,7 +1173,7 @@
     <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
 
 
-<span class="k">def</span> <span class="nf">gen_hash</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">gen_hash</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Makes a hash from a dictionary, list, tuple or set to any level, that</span>
 <span class="sd">    contains only other hashable types (including any lists, tuples, sets,</span>
@@ -1194,7 +1194,7 @@
     <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">new_o</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
 
 
-<span class="k">def</span> <span class="nf">format_value_list</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">format_value_list</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="c1"># return single values where possible, which is when only one value</span>
     <span class="c1"># is present because the inputs covers one ms or because the values</span>
     <span class="c1"># for each ms are all the same.</span>
@@ -1209,7 +1209,7 @@
             <span class="k">return</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">name_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">name_all_arguments</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="c1"># we need to know the names of any non-key/value arguments supplied</span>
     <span class="c1"># in the constructor. The names of the argument can be found in the</span>
     <span class="c1"># constructor specification.</span>
@@ -1249,7 +1249,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

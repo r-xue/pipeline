@@ -7,8 +7,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Run the Pipeline in a Conda environment &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="_static/favicon-16x16.png"/>
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="_static/documentation_options.js?v=c65d28cc"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -197,7 +197,7 @@ xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w">
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">run_pipeline.py</span></code> is a demo script. An example context could be:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pipeline.recipereducer</span><span class="o">,</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.recipereducer</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">pipeline</span><span class="o">.</span><span class="n">recipereducer</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;../rawdata/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms&#39;</span><span class="p">],</span>
                               <span class="n">procedure</span><span class="o">=</span><span class="s1">&#39;procedure_hifa_calimage.xml&#39;</span><span class="p">,</span> <span class="n">loglevel</span><span class="o">=</span><span class="s1">&#39;debug&#39;</span><span class="p">)</span>
 </pre></div>
@@ -222,8 +222,8 @@ xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w">
 <p>As reported in <cite>CAS-14037 &lt;https://open-jira.nrao.edu/browse/CAS-14037&gt;</cite>, to avoid circular imports during the <cite>casampi</cite> process initialization, you need to execute <cite>casampi.private.start_mpi</cite> before and outside the scope of <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casatasks.html">casatasks</a> or <a class="reference external" href="https://casadocs.readthedocs.io/en/stable/api/casashell.html">casashell</a> (which implicitly import <cite>casatasks</cite>). As a workaround, include the following boilerplate command:</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">casampi.private.start_mpi</span>  <span class="c1"># assign the client and server roles</span>
-    <span class="kn">import</span> <span class="nn">casatasks</span>                  <span class="c1"># ensure the time-based logfile name</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">casampi.private.start_mpi</span>  <span class="c1"># assign the client and server roles</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">casatasks</span>                  <span class="c1"># ensure the time-based logfile name</span>
 <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
     <span class="k">pass</span>
 </pre></div>
@@ -255,9 +255,9 @@ xvfb-run<span class="w"> </span>-a<span class="w"> </span>python<span class="w">
 <p>A parallel Pipeline data processing session might hang on macOS at the compleation of the job due to lingering <cite>casaplotms.app</cite> sub-processes.
 This behavior appears to be different from Linux, potentially caused by the fact that each <code class="docutils literal notranslate"><span class="pre">casaplotms</span></code> process spawned from a MPIserver proceess runs as a macOS “app”.
 Although this doesn’t affect the data processing, to ensure a clean exit, one might need to use the following snippet at the end of your Python job script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">close_plotms_on_mpiservers</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">close_plotms_on_mpiservers</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">casampi.MPIEnvironment</span> <span class="kn">import</span> <span class="n">MPIEnvironment</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">casampi.MPIEnvironment</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPIEnvironment</span>
         <span class="n">mpi_server_list</span> <span class="o">=</span> <span class="n">MPIEnvironment</span><span class="o">.</span><span class="n">mpi_server_rank_list</span><span class="p">()</span>
         <span class="n">client</span><span class="o">.</span><span class="n">push_command_request</span><span class="p">(</span><span class="s1">&#39;from casaplotms import plotmstool&#39;</span><span class="p">,</span> <span class="n">block</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                     <span class="n">target_server</span><span class="o">=</span><span class="n">mpi_server_list</span><span class="p">)</span>
@@ -355,7 +355,7 @@ The support of CPU architectures from <a class="reference external" href="https:
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

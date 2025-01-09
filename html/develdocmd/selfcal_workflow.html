@@ -7,8 +7,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VLASS Selfcal &amp; Restore workflows &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -260,15 +260,15 @@ by default, the pointing table content of each output MS is hardlinked to the ta
 <h3>Image Names<a class="headerlink" href="#image-names" title="Link to this heading"></a></h3>
 <p>For the selfcal image names, we follow a schema loosely based on the traditional <code class="docutils literal notranslate"><span class="pre">hif_makeimlist</span></code> naming pattern.</p>
 <p>Generally, hif_selfcal will produce the following image types:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iter0</span><span class="p">:</span> <span class="n">dirty</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">data</span>
-<span class="n">iter1</span><span class="p">:</span> <span class="s2">&quot;properly-cleaned&quot;</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">DATA</span> <span class="n">before</span> <span class="n">selfcal</span> <span class="p">(</span><span class="ow">in</span> <span class="n">prototype</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">called</span> <span class="s1">&#39;initial&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">iter0</span><span class="p">:</span> <span class="n">dirty</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span><span class="w"> </span><span class="nn">data</span>
+<span class="n">iter1</span><span class="p">:</span> <span class="s2">&quot;properly-cleaned&quot;</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span><span class="w"> </span><span class="nn">DATA</span> <span class="n">before</span> <span class="n">selfcal</span> <span class="p">(</span><span class="ow">in</span> <span class="n">prototype</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">called</span> <span class="s1">&#39;initial&#39;</span><span class="p">)</span>
 <span class="n">iter2</span><span class="p">:</span> 
     <span class="n">iter2_solint1_prior</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="n">moderately</span><span class="o">-</span><span class="n">cleaned</span> <span class="n">image</span> <span class="k">for</span> <span class="n">create</span> <span class="n">selfcal</span> <span class="n">model</span>
     <span class="n">iter2_solint1_post</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="s2">&quot;properly-cleaned&quot;</span> <span class="n">image</span> <span class="k">for</span> <span class="n">selfcal</span> <span class="n">assessment</span>
     <span class="n">iter2_solint2_prior</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="o">...</span>
     <span class="n">iter2_solint2_post</span><span class="o">.</span><span class="n">image</span><span class="p">:</span> <span class="o">...</span>
     <span class="o">....</span>
-<span class="n">iter3</span><span class="p">:</span> <span class="n">final</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span> <span class="nn">corrected</span> <span class="n">data</span> 
+<span class="n">iter3</span><span class="p">:</span> <span class="n">final</span> <span class="n">image</span> <span class="n">generated</span> <span class="kn">from</span><span class="w"> </span><span class="nn">corrected</span> <span class="n">data</span> 
 </pre></div>
 </div>
 <p>Here is a practical example of their names:</p>
@@ -298,7 +298,7 @@ by default, the pointing table content of each output MS is hardlinked to the ta
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

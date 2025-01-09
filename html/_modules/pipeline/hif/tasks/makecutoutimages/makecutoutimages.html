@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makecutoutimages.makecutoutimages &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,25 +113,25 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.makecutoutimages.makecutoutimages</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.imagelibrary</span> <span class="k">as</span> <span class="nn">imagelibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">get_stokes</span><span class="p">,</span> <span class="n">imstat_items</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.imagelibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">imagelibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_stokes</span><span class="p">,</span> <span class="n">imstat_items</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">MakecutoutimagesResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakecutoutimagesResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preceding</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">subimagelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subimagenames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">stats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -156,7 +156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">image_size</span> <span class="o">=</span> <span class="n">image_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stats</span> <span class="o">=</span> <span class="n">stats</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        See :method:`~pipeline.infrastructure.api.Results.merge_with_context`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -178,23 +178,23 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;MakecutoutimagesResults:&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">MakecutoutimagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakecutoutimagesInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">offsetblc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offsetblc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>   <span class="c1"># Units of arcseconds</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">offsettrc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offsettrc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>   <span class="c1"># Units of arcseconds</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetblc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsettrc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetblc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsettrc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MakecutoutimagesInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -205,13 +205,13 @@
 <div class="viewcode-block" id="Makecutoutimages">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Makecutoutimages.html#pipeline.hif.tasks.Makecutoutimages">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_makecutoutimages&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Makecutoutimages</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Makecutoutimages</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MakecutoutimagesInputs</span>
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="Makecutoutimages.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Makecutoutimages.html#pipeline.hif.tasks.Makecutoutimages.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">imlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">sciimlist</span><span class="o">.</span><span class="n">get_imlist</span><span class="p">()</span>
         <span class="n">imagenames</span> <span class="o">=</span> <span class="p">[]</span>
@@ -287,17 +287,17 @@
 
 <div class="viewcode-block" id="Makecutoutimages.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Makecutoutimages.html#pipeline.hif.tasks.Makecutoutimages.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_imhead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_imhead</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
 
         <span class="n">task</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">imhead</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_do_subim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_subim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -396,7 +396,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">task</span><span class="p">),</span> <span class="n">subimage_size</span>
 
-    <span class="k">def</span> <span class="nf">_get_image_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_image_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename</span><span class="p">):</span>
 
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">imagename</span><span class="p">)</span> <span class="k">as</span> <span class="n">image</span><span class="p">:</span>
             <span class="n">image_summary</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">summary</span><span class="p">(</span><span class="nb">list</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -415,7 +415,7 @@
 
         <span class="k">return</span> <span class="n">image_size</span>
 
-    <span class="k">def</span> <span class="nf">_do_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subimagenames</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subimagenames</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract essential stats from images.</span>
 <span class="sd">        </span>
 <span class="sd">        The return stats is a nested dictionary container: stats[spw_key][im_type][stats_type]</span>
@@ -482,7 +482,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

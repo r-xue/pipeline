@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.tsysflag.tsysflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,28 +113,28 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.h.tasks.tsysflag.tsysflag</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">string</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span>
 
-<span class="kn">from</span> <span class="nn">casatasks.private</span> <span class="kn">import</span> <span class="n">flaghelper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">casatasks.private</span><span class="w"> </span><span class="kn">import</span> <span class="n">flaghelper</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics.tsysnormalize</span> <span class="kn">import</span> <span class="n">tsysNormalize</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span><span class="p">,</span> \
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics.tsysnormalize</span><span class="w"> </span><span class="kn">import</span> <span class="n">tsysNormalize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">calibrationtableaccess</span> <span class="k">as</span> <span class="n">caltableaccess</span><span class="p">,</span> \
     <span class="n">commonhelpermethods</span><span class="p">,</span> <span class="n">commonresultobjects</span><span class="p">,</span> <span class="n">viewflaggers</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span> <span class="kn">import</span> <span class="n">FlagdataSetter</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.refantflag</span> <span class="kn">import</span> <span class="n">identify_fully_flagged_antennas_from_flagview</span><span class="p">,</span> \
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging.flagdatasetter</span><span class="w"> </span><span class="kn">import</span> <span class="n">FlagdataSetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.refantflag</span><span class="w"> </span><span class="kn">import</span> <span class="n">identify_fully_flagged_antennas_from_flagview</span><span class="p">,</span> \
     <span class="n">mark_antennas_for_refant_update</span><span class="p">,</span> <span class="n">aggregate_fully_flagged_antenna_notifications</span>
-<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">TsysflagResults</span><span class="p">,</span> <span class="n">TsysflagspectraResults</span><span class="p">,</span> <span class="n">TsysflagDataResults</span><span class="p">,</span> <span class="n">TsysflagViewResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">TsysflagResults</span><span class="p">,</span> <span class="n">TsysflagspectraResults</span><span class="p">,</span> <span class="n">TsysflagDataResults</span><span class="p">,</span> <span class="n">TsysflagViewResults</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;Tsysflag&#39;</span><span class="p">,</span>
@@ -144,7 +144,7 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_create_normalized_caltable</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_normalized_caltable</span><span class="p">(</span><span class="n">vis</span><span class="p">,</span> <span class="n">caltable</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create normalized Tsys caltable and return filename.&quot;&quot;&quot;</span>
     <span class="n">norm_caltable</span> <span class="o">=</span> <span class="n">caltable</span> <span class="o">+</span> <span class="s1">&#39;_normalized&#39;</span>
 
@@ -157,7 +157,7 @@
     <span class="k">return</span> <span class="n">norm_caltable</span>
 
 
-<span class="k">def</span> <span class="nf">_identify_testable_metrics</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">testable_metrics</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_identify_testable_metrics</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">testable_metrics</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">testable_metrics_completed</span> <span class="o">=</span> <span class="p">[</span><span class="n">metric</span> <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">metric_order</span>
                                       <span class="k">if</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">testable_metrics</span> <span class="ow">and</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">components</span><span class="p">]</span>
@@ -167,7 +167,7 @@
     <span class="k">return</span> <span class="n">testable_metrics_completed</span>
 
 
-<span class="k">def</span> <span class="nf">_read_tsystemplate</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_tsystemplate</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">vis</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return flag commands read in from manual Tsys flag template file.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="n">flagcmds</span> <span class="o">=</span> <span class="p">[]</span>
@@ -183,12 +183,12 @@
     <span class="k">return</span> <span class="n">flagcmds</span>
 
 
-<span class="k">class</span> <span class="nc">TsysflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TsysflagInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsysflagInputs defines the inputs for the Tsysflag pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">caltables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">active</span><span class="o">.</span><span class="n">get_caltable</span><span class="p">(</span>
             <span class="n">caltypes</span><span class="o">=</span><span class="s1">&#39;tsys&#39;</span><span class="p">)</span>
 
@@ -211,7 +211,7 @@
     <span class="n">ff_refintent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">filetemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filetemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s1">&#39;.flagtsystemplate.txt&#39;</span>
 
@@ -228,7 +228,7 @@
     <span class="n">tmf1_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.666</span><span class="p">)</span>
     <span class="n">tmef1_limit</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.666</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">flag_nmedian</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fnm_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fnm_byfield</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">flag_derivative</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fd_max_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">flag_edgechans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fe_edge_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -275,12 +275,12 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsysflag.html#pipeline.h.tasks.Tsysflag">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_tsysflag&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The Tsys calibration and spectral window map is computed.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Tsysflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Tsysflag</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagInputs</span>
 
 <div class="viewcode-block" id="Tsysflag.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsysflag.html#pipeline.h.tasks.Tsysflag.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -346,7 +346,7 @@
 
 <div class="viewcode-block" id="Tsysflag.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsysflag.html#pipeline.h.tasks.Tsysflag.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analyses the Tsysflag result.</span>
 
@@ -362,7 +362,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_apply_flags_orig_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_flags_orig_caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">components</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Create list of all flagging commands.</span>
@@ -377,7 +377,7 @@
         <span class="n">flagsettertask</span><span class="o">.</span><span class="n">flags_to_set</span><span class="p">(</span><span class="n">flagcmds</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">flagsettertask</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_identify_refants_to_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_identify_refants_to_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Updates the Tsysflag result with lists of antennas to remove from the</span>
 <span class="sd">        reference antenna list, or to demote to end of the reference antenna list,</span>
@@ -440,7 +440,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_run_manual_flagging</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable_to_assess</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_manual_flagging</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caltable_to_assess</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize results object, and add caltable from inputs.</span>
@@ -481,7 +481,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_apply_manual_tsysflags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_apply_manual_tsysflags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">flagcmds</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize flagging summaries.</span>
@@ -521,7 +521,7 @@
 
         <span class="k">return</span> <span class="n">stats_before</span><span class="p">,</span> <span class="n">stats_after</span>
 
-    <span class="k">def</span> <span class="nf">_run_flagging_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_flagging_heuristics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Initialize output.</span>
@@ -577,7 +577,7 @@
 
         <span class="k">return</span> <span class="n">results</span><span class="p">,</span> <span class="n">ordered_list_metrics_to_evaluate</span><span class="p">,</span> <span class="n">errmsg</span>
 
-    <span class="k">def</span> <span class="nf">_run_flagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">caltable_to_assess</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_run_flagger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">,</span> <span class="n">caltable_to_assess</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Evaluates the Tsys spectra for a specified flagging metric.</span>
 
@@ -712,7 +712,7 @@
         <span class="k">return</span> <span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_warn_about_prior_flags</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_warn_about_prior_flags</span><span class="p">(</span><span class="n">caltable</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluates Tsys caltable for existence of fully flagged scans and</span>
 <span class="sd">        raises a warning if any exist.</span>
 
@@ -736,11 +736,11 @@
 
 
 
-<span class="k">class</span> <span class="nc">TsysflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TsysflagDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsysflagDataInputs defines the inputs for the TsysflagData pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TsysflagDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># pipeline inputs</span>
@@ -752,24 +752,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span> <span class="o">=</span> <span class="n">caltable</span>
 
 
-<span class="k">class</span> <span class="nc">TsysflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TsysflagData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsysflagDataInputs</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TsysflagData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">TsysflagDataResults</span><span class="p">()</span>
         <span class="n">result</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">caltable</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="k">class</span> <span class="nc">TsysflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TsysflagView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refintent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                  <span class="n">split_by_field</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates an TsysflagView instance for specified metric.</span>
@@ -811,7 +811,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">intentgroup</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        When called, the TsysflagView object calculates flagging views</span>
 <span class="sd">        for the TsysflagDataResults that are provided, based on the </span>
@@ -832,7 +832,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">intent_ids</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intent_ids</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the fieldids associated with the given intents.</span>
 <span class="sd">        &quot;&quot;&quot;</span>  
@@ -872,7 +872,7 @@
 
         <span class="k">return</span> <span class="n">ids</span>
 
-    <span class="k">def</span> <span class="nf">calculate_views</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_views</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates a flagging view for the specified table, based on </span>
 <span class="sd">        metric that TsysflagView was initialized with.</span>
@@ -955,7 +955,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">calculate_median_channel_view</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">tsys_spw_id</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">field_ids</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_tsystable_data</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">antenna_names</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tsystable_data</span><span class="p">(</span><span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">antenna_names</span><span class="p">,</span>
                            <span class="n">corr_type</span><span class="p">,</span> <span class="n">normalise</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads in specified Tsys table, selects data for the specified </span>
@@ -1011,7 +1011,7 @@
 
         <span class="k">return</span> <span class="n">tsysspectra</span><span class="p">,</span> <span class="n">times</span>
 
-    <span class="k">def</span> <span class="nf">calculate_median_spectra_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">split_by_field</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_median_spectra_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span> <span class="n">split_by_field</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
 <span class="sd">        read from the given tsystable object. Two data &#39;views&#39; will be</span>
@@ -1243,7 +1243,7 @@
                                 <span class="s2">&quot;flagging view created.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tsystable</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">spwid</span><span class="p">,</span>
                                                                 <span class="n">corr_type</span><span class="p">[</span><span class="n">pol</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
 
-    <span class="k">def</span> <span class="nf">calculate_derivative_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_derivative_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
 <span class="sd">        read from the given tsystable object. Two data &#39;views&#39; will be</span>
@@ -1370,7 +1370,7 @@
             <span class="c1"># Add the view results to the class result structure</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">calculate_fieldshape_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_fieldshape_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">,</span>
                                   <span class="n">refintent</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
@@ -1566,7 +1566,7 @@
             <span class="c1"># Add the view results to the class result structure</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">calculate_median_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_median_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
 <span class="sd">        read from the given tsystable object. From all this one data &#39;view&#39; </span>
@@ -1639,7 +1639,7 @@
                 <span class="n">filename</span><span class="o">=</span><span class="n">tsystable</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">addview</span><span class="p">(</span><span class="n">viewresult</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">viewresult</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">calculate_antenna_diff_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calculate_antenna_diff_channel_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwid</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">fieldids</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Data of the specified spwid, intent and range of fieldids are</span>
 <span class="sd">        read from the given tsystable object. From all this a series</span>
@@ -1764,7 +1764,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

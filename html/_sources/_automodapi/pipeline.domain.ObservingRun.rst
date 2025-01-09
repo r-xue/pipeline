@@ -24,7 +24,6 @@ ObservingRun
    .. autosummary::
 
       ~ObservingRun.add_measurement_set
-      ~ObservingRun.get_fields
       ~ObservingRun.get_measurement_sets
       ~ObservingRun.get_measurement_sets_of_type
       ~ObservingRun.get_ms
@@ -48,7 +47,6 @@ ObservingRun
    .. rubric:: Methods Documentation
 
    .. automethod:: add_measurement_set
-   .. automethod:: get_fields
    .. automethod:: get_measurement_sets
    .. automethod:: get_measurement_sets_of_type
    .. automethod:: get_ms

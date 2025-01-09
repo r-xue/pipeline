@@ -30,6 +30,5 @@ pipeline.domain.state.StateNAOJ
       ~StateNAOJ.obs_mode
       ~StateNAOJ.intents
       ~StateNAOJ.obs_mode_mapping
-      ~StateNAOJ.reduction_intents
    
    

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.state &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,16 +113,16 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.domain.state</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="State">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.State.html#pipeline.domain.State">[docs]</a>
-<span class="k">class</span> <span class="nc">State</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">State</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    State is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    relating STATE_ID (in the MAIN table) to the observing mode(s) and</span>
@@ -136,13 +136,13 @@
 
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;obs_mode&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="n">state</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a State object.</span>
 
@@ -155,62 +155,26 @@
         <span class="c1"># http://projects.scipy.org/numpy/ticket/1239</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">obs_mode</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(</span><span class="si">{1!r}</span><span class="s1">, </span><span class="si">{2!r}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all intents associated with this State.&quot;&quot;&quot;</span>
         <span class="c1"># return all intents</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">intent</span> <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">intent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reduction_intents</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-        <span class="c1"># get the raw intents from the ms</span>
-        <span class="n">raw_intents</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span>
-
-        <span class="c1"># translate these into intents understood by the pipeline</span>
-        <span class="n">red_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s1">&#39;CHECK&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;CHECK&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;POLARIZATION&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLARIZATION&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;POLANGLE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLANGLE&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;POLLEAKAGE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;POLLEAKAGE&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;FLUX&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;DIFFGAINREF&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;DIFFGAINSRC&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">:</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;TARGET&#39;</span><span class="p">])</span>
-        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;PHASE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
-          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
-          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
-          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;FLUX&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">)</span> <span class="ow">and</span> \
-          <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="n">raw_intents</span><span class="p">):</span>
-            <span class="n">red_intents</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s1">&#39;PHASE&#39;</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">red_intents</span>
-
 <div class="viewcode-block" id="State.get_obs_mode_for_intent">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.State.html#pipeline.domain.State.get_obs_mode_for_intent">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_obs_mode_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_obs_mode_for_intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of obs_mode values associated with given intent.&quot;&quot;&quot;</span>
         <span class="n">intents</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">mode</span> <span class="k">for</span> <span class="n">mode</span><span class="p">,</span> <span class="n">pipeline_intent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">pipeline_intent</span> <span class="ow">in</span> <span class="n">intents</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">obs_mode</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">(id=</span><span class="si">{1}</span><span class="s1">, intents=</span><span class="si">{2}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> 
                                                  <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span></div>
 
@@ -218,7 +182,7 @@
 
 <div class="viewcode-block" id="StateALMA">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMA.html#pipeline.domain.StateALMA">[docs]</a>
-<span class="k">class</span> <span class="nc">StateALMA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateALMA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateALMA is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    for ALMA Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
@@ -294,7 +258,7 @@
         <span class="s1">&#39;OBSERVE_TARGET_OFF_SOURCE&#39;</span>          <span class="p">:</span> <span class="s1">&#39;REFERENCE&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateALMA object.</span>
 
@@ -312,7 +276,7 @@
 
 <div class="viewcode-block" id="StateALMACycle0">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateALMACycle0.html#pipeline.domain.StateALMACycle0">[docs]</a>
-<span class="k">class</span> <span class="nc">StateALMACycle0</span><span class="p">(</span><span class="n">StateALMA</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateALMACycle0</span><span class="p">(</span><span class="n">StateALMA</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateALMACycle0 is a logical representation of (part of) rows in the STATE</span>
 <span class="sd">    table for ALMA Observatory Cycle 0 measurement sets, relating STATE_ID (in</span>
@@ -326,7 +290,7 @@
     <span class="c1"># Check whether these states co-exist with PHASE</span>
     <span class="n">_PHASE_BYPASS_INTENTS</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateALMACycle0 object.</span>
 
@@ -367,7 +331,7 @@
 
 <div class="viewcode-block" id="StateVLA">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateVLA.html#pipeline.domain.StateVLA">[docs]</a>
-<span class="k">class</span> <span class="nc">StateVLA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateVLA</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateVLA is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    for VLA Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
@@ -437,7 +401,7 @@
         <span class="s1">&#39;SYSTEM_CONFIGURATION#UNSPECIFIED&#39;</span>   <span class="p">:</span> <span class="s1">&#39;SYSTEM_CONFIGURATION&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateVLA object.</span>
 
@@ -451,7 +415,7 @@
 
 <div class="viewcode-block" id="StateAPEX">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateAPEX.html#pipeline.domain.StateAPEX">[docs]</a>
-<span class="k">class</span> <span class="nc">StateAPEX</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateAPEX</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateAPEX is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    for APEX Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
@@ -466,7 +430,7 @@
         <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateAPEX object.</span>
 
@@ -480,7 +444,7 @@
 
 <div class="viewcode-block" id="StateSMT">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateSMT.html#pipeline.domain.StateSMT">[docs]</a>
-<span class="k">class</span> <span class="nc">StateSMT</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateSMT</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateSMT is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    for SMT Observatory measurement sets, relating STATE_ID (in the MAIN table)</span>
@@ -495,7 +459,7 @@
         <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span><span class="p">:</span> <span class="s1">&#39;TARGET&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateSMT object.</span>
 
@@ -509,7 +473,7 @@
 
 <div class="viewcode-block" id="StateNAOJ">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateNAOJ.html#pipeline.domain.StateNAOJ">[docs]</a>
-<span class="k">class</span> <span class="nc">StateNAOJ</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateNAOJ</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    StateNAOJ is a logical representation of (part of) rows in the STATE table</span>
 <span class="sd">    for Nobeyama or ASTE Observatory measurement sets, relating STATE_ID (in the</span>
@@ -528,7 +492,7 @@
         <span class="s1">&#39;CALIBRATE_ATMOSPHERE#ZERO_SOURCE&#39;</span>   <span class="p">:</span> <span class="s1">&#39;ATMOSPHERE&#39;</span>
     <span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateNAOJ object.</span>
 
@@ -542,12 +506,12 @@
 
 <div class="viewcode-block" id="StateFactory">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory">[docs]</a>
-<span class="k">class</span> <span class="nc">StateFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StateFactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Factory class to create State objects based on given observatory and</span>
 <span class="sd">    observation/measurement set start time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">observatory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a StateFactory object.</span>
 
@@ -574,7 +538,7 @@
 
 <div class="viewcode-block" id="StateFactory.create_state">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.state.StateFactory.html#pipeline.domain.StateFactory.create_state">[docs]</a>
-    <span class="k">def</span> <span class="nf">create_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">State</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a State object with given ID and obs_mode.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span><span class="p">(</span><span class="n">state_id</span><span class="p">,</span> <span class="n">obs_mode</span><span class="p">)</span></div>
 </div>
@@ -588,7 +552,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makeimlist.makeimlist &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,28 +113,28 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.makeimlist.makeimlist</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">operator</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">operator</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics</span> <span class="kn">import</span> <span class="n">imageparams_factory</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimages.resultobjects</span> <span class="kn">import</span> <span class="n">MakeImagesResult</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">imageparams_factory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.makeimages.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">MakeImagesResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
 
-<span class="kn">from</span> <span class="nn">.cleantarget</span> <span class="kn">import</span> <span class="n">CleanTarget</span>
-<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">MakeImListResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.cleantarget</span><span class="w"> </span><span class="kn">import</span> <span class="n">CleanTarget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">MakeImListResult</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">MakeImListInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakeImListInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Must use empty data type list to allow for user override and</span>
     <span class="c1"># automatic determination depending on specmode, field and spw.</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[]</span>
@@ -165,17 +165,17 @@
     <span class="n">contfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;cont.dat&#39;</span><span class="p">)</span>
 
     <span class="nd">@contfile</span><span class="o">.</span><span class="n">postprocess</span>
-    <span class="k">def</span> <span class="nf">contfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">contfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;field&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;field&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@field</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
             <span class="c1"># PIPE-1881: allow field names that mistakenly get casted into non-string datatype by</span>
             <span class="c1"># recipereducer (utils.string_to_val) and executeppr (XmlObjectifier.castType)</span>
@@ -184,13 +184,13 @@
         <span class="k">return</span> <span class="n">val</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_cell&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@hm_cell</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Malformatted value for hm_cell: </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
 
@@ -205,13 +205,13 @@
         <span class="k">return</span> <span class="n">val</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;hm_imsize&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@hm_imsize</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Malformatted value for hm_imsize: </span><span class="si">{!r}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
 
@@ -231,33 +231,33 @@
     <span class="n">linesfile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;lines.dat&#39;</span><span class="p">)</span>
 
     <span class="nd">@linesfile</span><span class="o">.</span><span class="n">postprocess</span>
-    <span class="k">def</span> <span class="nf">linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linesfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">nbins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nbins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;nbins&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span> <span class="ow">and</span> <span class="s1">&#39;spw&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specmode</span><span class="o">==</span><span class="s1">&#39;cube&#39;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@spw</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="c1"># Use str() method to catch single spwid case via PPR which maps to int.</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">specmode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;TARGET&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;cube&#39;</span>
         <span class="k">return</span> <span class="s1">&#39;mfs&#39;</span>
 
-    <span class="k">def</span> <span class="nf">get_spw_hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_spw_hm_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If possible obtain spwlist specific hm_cell, otherwise return generic value.</span>
 
 <span class="sd">        hif_checkproductsize() task determines the mitigation parameters. It does not know, however, about the</span>
@@ -280,7 +280,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_cell</span>
 
-    <span class="k">def</span> <span class="nf">get_spw_hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_spw_hm_imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spwlist</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;If possible obtain spwlist specific hm_imsize, otherwise return generic value.</span>
 
 <span class="sd">        TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware.&quot;&quot;&quot;</span>
@@ -295,7 +295,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hm_imsize</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imagename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outframe</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_imsize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calmaxpix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">psf_phasecenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nchan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">robust</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clearlist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_eb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">per_session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calcsb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -339,14 +339,14 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_makeimlist&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;A list of target sources to be imaged is constructed.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MakeImList</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MakeImList</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">MakeImListInputs</span>
 
     <span class="n">is_multi_vis_task</span> <span class="o">=</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="MakeImList.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># this python class will produce a list of images to be calculated.</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -1508,11 +1508,11 @@
 
 <div class="viewcode-block" id="MakeImList.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.MakeImList.html#pipeline.hif.tasks.MakeImList.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_deconvolver_nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">,</span> <span class="n">image_heuristics</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_deconvolver_nterms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">stokes</span><span class="p">,</span> <span class="n">specmode</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">,</span> <span class="n">image_heuristics</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get deconvolver and nterms. First check for any modified parameters based</span>
 <span class="sd">        on existing selfcal results. Otherwise use the heuristics methods.</span>
@@ -1540,7 +1540,7 @@
 
         <span class="k">return</span> <span class="n">deconvolver</span><span class="p">,</span> <span class="n">nterms</span>
 
-    <span class="k">def</span> <span class="nf">_get_drcorrect_maxthreshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_drcorrect_maxthreshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">datatype_str</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the modified drcorrect parameter based on existing selfcal results.&quot;&quot;&quot;</span>
 
         <span class="n">drcorrect</span> <span class="o">=</span> <span class="n">maxthreshold</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1640,7 +1640,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.polcal.polcalworker &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,28 +113,28 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.polcal.polcalworker</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">pcaltable</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.common</span> <span class="kn">import</span> <span class="n">commoncalinputs</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">pcaltable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">commoncalinputs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalWorkerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalWorkerResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    PolcalWorkerResults is the results class for the pipeline polcal calibration</span>
 <span class="sd">    task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_returns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">final</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">polcal_returns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct and return a new PolcalWorkerResults.</span>
 
@@ -160,7 +160,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">polcal_returns</span> <span class="o">=</span> <span class="n">polcal_returns</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">to_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">to_field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_intent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No results to merge&#39;</span><span class="p">)</span>
             <span class="k">return</span>
@@ -171,7 +171,7 @@
             <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Adding calibration to callibrary:</span><span class="se">\n</span><span class="si">{</span><span class="n">calto</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="n">context</span><span class="o">.</span><span class="n">callibrary</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">calto</span><span class="p">,</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_calto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">to_field</span><span class="p">,</span> <span class="n">to_intent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_calto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calto</span><span class="p">,</span> <span class="n">to_field</span><span class="p">,</span> <span class="n">to_intent</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Prepare and return the CalTo to be used for results merging.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -197,33 +197,33 @@
 
         <span class="k">return</span> <span class="n">calto_copy</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;PolcalWorkerResults:</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">for</span> <span class="n">calapp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">final</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">calapp</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span><span class="si">}</span><span class="s1">: calibration application for table </span><span class="si">{</span><span class="n">calapp</span><span class="o">.</span><span class="n">gaintable</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">s</span>
 
 
-<span class="k">class</span> <span class="nc">PolcalWorkerInputs</span><span class="p">(</span><span class="n">commoncalinputs</span><span class="o">.</span><span class="n">VdpCommonCalibrationInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalWorkerInputs</span><span class="p">(</span><span class="n">commoncalinputs</span><span class="o">.</span><span class="n">VdpCommonCalibrationInputs</span><span class="p">):</span>
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">namer</span> <span class="o">=</span> <span class="n">pcaltable</span><span class="o">.</span><span class="n">PolcalCaltable</span><span class="p">()</span>
         <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;caltable&#39;</span><span class="p">,))</span>
         <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span>
 
     <span class="nd">@intent</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">intent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">refant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">antenna</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minblperant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">selectdata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">preavg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">poltype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">smodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="n">spw</span><span class="p">,</span> <span class="n">refant</span><span class="o">=</span><span class="n">refant</span><span class="p">,</span>
@@ -243,12 +243,12 @@
 
 <div class="viewcode-block" id="PolcalWorker">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker">[docs]</a>
-<span class="k">class</span> <span class="nc">PolcalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PolcalWorker</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PolcalWorkerInputs</span>
 
 <div class="viewcode-block" id="PolcalWorker.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># Set caltable to itself to generate a permanent caltable name.</span>
@@ -323,7 +323,7 @@
 
 <div class="viewcode-block" id="PolcalWorker.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PolcalWorker.html#pipeline.hif.tasks.PolcalWorker.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># Check that the caltable was actually generated</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">table</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">table</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
         <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
@@ -342,7 +342,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

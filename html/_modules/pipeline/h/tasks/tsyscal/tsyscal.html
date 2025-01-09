@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.tsyscal.tsyscal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,22 +113,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.h.tasks.tsyscal.tsyscal</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.callibrary</span> <span class="k">as</span> <span class="nn">callibrary</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="k">as</span> <span class="nn">utils</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics</span> <span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.heuristics.tsysspwmap</span> <span class="kn">import</span> <span class="n">tsysspwmap</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">resultobjects</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.callibrary</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">callibrary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">caltable</span> <span class="k">as</span> <span class="n">caltable_heuristic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.heuristics.tsysspwmap</span><span class="w"> </span><span class="kn">import</span> <span class="n">tsysspwmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">resultobjects</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;Tsyscal&#39;</span><span class="p">,</span>
@@ -138,14 +138,14 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">TsyscalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TsyscalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    TsyscalInputs defines the inputs for the Tsyscal pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">chantol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caltable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the caltable argument for these inputs.</span>
 
@@ -156,7 +156,7 @@
         <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;caltable&#39;</span><span class="p">,))</span>
         <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chantol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chantol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TsyscalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># pipeline inputs</span>
@@ -172,7 +172,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">chantol</span> <span class="o">=</span> <span class="n">chantol</span>
 
     <span class="c1"># Convert to CASA gencal task arguments.</span>
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span>
             <span class="s1">&#39;caltable&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">caltable</span>
@@ -183,12 +183,12 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_tsyscal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The Tsys calibration and spectral window map is computed.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Tsyscal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Tsyscal</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">TsyscalInputs</span>
 
 <div class="viewcode-block" id="Tsyscal.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># make a note of the current inputs state before we start fiddling</span>
@@ -216,7 +216,7 @@
 
 <div class="viewcode-block" id="Tsyscal.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="c1"># double-check that the caltable was actually generated</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
         <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
@@ -234,7 +234,7 @@
 <span class="n">GainfieldMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GainfieldMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;intent preferred fallback&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get gainfield solution map. Different solution maps are returned for</span>
 <span class="sd">    single dish and interferometric data.</span>
@@ -244,7 +244,7 @@
 <span class="sd">    :return: list of GainfieldMappings</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># define function to get Tsys fields for intent</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
             <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="c1"># the &#39;if o&#39; test filters out results for intents that do not have</span>
@@ -283,7 +283,7 @@
         <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the mapping of observing intent to gainfield parameter for a</span>
 <span class="sd">    measurement set.</span>
@@ -315,7 +315,7 @@
     <span class="k">return</span> <span class="n">converted</span>
 
 
-<span class="k">def</span> <span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the identity of the Tsys field(s) for an intent.</span>
 
@@ -368,7 +368,7 @@
     <span class="k">return</span> <span class="p">{</span><span class="n">field_identifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
                         <span class="n">spw_map</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a list of CalApplications that apply a Tsys caltable to a measurement</span>
@@ -504,7 +504,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.bandpass.phcorbandpass &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,26 +113,26 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hif.tasks.bandpass.phcorbandpass</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">bandpassmode</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">bandpassworker</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">gaincal</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">bandpassmode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">bandpassworker</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">gaincal</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">PhcorBandpassInputs</span><span class="p">(</span><span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassModeInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PhcorBandpassInputs</span><span class="p">(</span><span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassModeInputs</span><span class="p">):</span>
 
     <span class="n">phaseup</span>       <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">phaseupbw</span>     <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">phaseupsolint</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
     <span class="n">solint</span>        <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">phaseupsolint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">solint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PhcorBandpassInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="n">phaseup</span><span class="o">=</span><span class="n">phaseup</span><span class="p">,</span> <span class="n">phaseupbw</span><span class="o">=</span><span class="n">phaseupbw</span><span class="p">,</span>
                                                   <span class="n">phaseupsolint</span><span class="o">=</span><span class="n">phaseupsolint</span><span class="p">,</span> <span class="n">solint</span><span class="o">=</span><span class="n">solint</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
@@ -145,12 +145,12 @@
     <span class="s1">&#39;The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove &#39;</span>
     <span class="s1">&#39;decorrelation of the bandpass calibrator before the bandpass is calculated.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">PhcorBandpass</span><span class="p">(</span><span class="n">bandpassworker</span><span class="o">.</span><span class="n">BandpassWorker</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PhcorBandpass</span><span class="p">(</span><span class="n">bandpassworker</span><span class="o">.</span><span class="n">BandpassWorker</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">PhcorBandpassInputs</span>
 
 <div class="viewcode-block" id="PhcorBandpass.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.PhcorBandpass.html#pipeline.hif.tasks.PhcorBandpass.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># if requested, execute a phaseup job. This will add the resulting</span>
@@ -170,7 +170,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_phaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_phaseup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="n">phaseup_inputs</span> <span class="o">=</span> <span class="n">gaincal</span><span class="o">.</span><span class="n">GTypeGaincal</span><span class="o">.</span><span class="n">Inputs</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
@@ -194,11 +194,11 @@
             <span class="n">result</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_do_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_bandpass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">bandpass_task</span> <span class="o">=</span> <span class="n">bandpassmode</span><span class="o">.</span><span class="n">BandpassMode</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">bandpass_task</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_phaseup_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_phaseup_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">                   ms -- measurement set object </span>
 <span class="sd">               spwstr -- comma delimited list of spw ids</span>
@@ -240,7 +240,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

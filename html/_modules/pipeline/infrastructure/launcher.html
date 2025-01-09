@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.launcher &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -117,28 +117,28 @@
 <span class="sd">The launcher module contains classes to initialize the pipeline, potentially</span>
 <span class="sd">from a saved context state.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">datetime</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="p">(</span><span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">eventbus</span><span class="p">,</span> <span class="n">imagelibrary</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">domain</span><span class="p">,</span> <span class="n">environment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">callibrary</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">eventbus</span><span class="p">,</span> <span class="n">imagelibrary</span><span class="p">,</span> <span class="n">logging</span><span class="p">,</span>
                <span class="n">project</span><span class="p">,</span> <span class="n">utils</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.eventbus</span> <span class="kn">import</span> <span class="n">ContextCreatedEvent</span><span class="p">,</span> <span class="n">ContextResumedEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.eventbus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextCreatedEvent</span><span class="p">,</span> <span class="n">ContextResumedEvent</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="c1"># minimum allowed CASA revision. Set to 0 or None to disable</span>
-<span class="n">MIN_CASA_REVISION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">]</span>
+<span class="n">MIN_CASA_REVISION</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="c1"># maximum allowed CASA revision. Set to 0 or None to disable</span>
 <span class="n">MAX_CASA_REVISION</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="Context">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context">[docs]</a>
-<span class="k">class</span> <span class="nc">Context</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Context</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Context holds all pipeline state, consisting of metadata describing the</span>
 <span class="sd">    data set, objects describing the pipeline calibration state, the tree of</span>
@@ -201,7 +201,6 @@
 <span class="sd">        selfcal_resources: List of files/tables required for the</span>
 <span class="sd">            self-calibration restoration.</span>
 <span class="sd">        selfcal_targets: List of targets for which self-calibration is performed.</span>
-<span class="sd">        sensitivities: TODO: introduced for CAS-10146, but appears unused.</span>
 <span class="sd">        size_mitigation_parameters: Dictionary containing imaging product size</span>
 <span class="sd">            mitigation parameters; typically populated by hif_checkproductsize,</span>
 <span class="sd">            and used by hif_makeimlist.</span>
@@ -212,7 +211,7 @@
 <span class="sd">            by hifa_imageprecheck, hif_checkproductsize, hif_makeimlist,</span>
 <span class="sd">            hif_makeimages, and hif_tclean.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize a Context object.</span>
 
@@ -248,10 +247,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">subtask_counter</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;Pipeline stage counter set to </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">))</span>
 
-        <span class="c1"># TODO: Appears effectively unused, remove?</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">logtype</span> <span class="o">=</span> <span class="s1">&#39;MOUS&#39;</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">todo</span><span class="p">(</span><span class="s1">&#39;Add OUS registration task. Hard-coding log type to MOUS&#39;</span><span class="p">)</span>
-
         <span class="c1"># Define observing run.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span> <span class="o">=</span> <span class="n">domain</span><span class="o">.</span><span class="n">ObservingRun</span><span class="p">()</span>
 
@@ -274,7 +269,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sciimlist</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageLibrary</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_resources</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># PIPE-1802</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selfcal_targets</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># PIPE-1802</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sensitivities</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># CAS-10146</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size_mitigation_parameters</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># CAS-9255</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">subimlist</span> <span class="o">=</span> <span class="n">imagelibrary</span><span class="o">.</span><span class="n">ImageLibrary</span><span class="p">()</span>  <span class="c1"># CAS-10345</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">synthesized_beams</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;robust&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;uvtaper&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
@@ -284,17 +278,17 @@
         <span class="n">eventbus</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return task and sub-task stage number.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">task_counter</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">subtask_counter</span><span class="si">}</span><span class="s1">&#39;</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return path to the products directory.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_products_dir</span>
 
     <span class="nd">@products_dir</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">products_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set path to the products directory.</span>
 
@@ -312,7 +306,7 @@
 
 <div class="viewcode-block" id="Context.save">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.save">[docs]</a>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save a pickle of the Context to a file with given filename.</span>
 
@@ -328,7 +322,7 @@
             <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_file</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">ms_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
                     <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;Context(name=</span><span class="se">\&#39;</span><span class="si">{0}</span><span class="se">\&#39;</span><span class="s1">, output_dir=</span><span class="se">\&#39;</span><span class="si">{1}</span><span class="se">\&#39;</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span>
@@ -336,12 +330,12 @@
                 <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
                           <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">ms_names</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;Context(name=&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;)&gt;&quot;</span>
 
 <div class="viewcode-block" id="Context.set_state">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.set_state">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a context property using the class name, property name and property</span>
 <span class="sd">        value.</span>
@@ -371,7 +365,7 @@
 
 <div class="viewcode-block" id="Context.get_oussid">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_oussid">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_oussid</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the parent OUS &#39;ousstatus&#39; name. This is the sanitized OUS</span>
 <span class="sd">        status UID.</span>
@@ -385,7 +379,7 @@
 
 <div class="viewcode-block" id="Context.get_recipe_name">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Context.html#pipeline.infrastructure.launcher.Context.get_recipe_name">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_recipe_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_recipe_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the recipe name from project structure.&quot;&quot;&quot;</span>
         <span class="n">ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_structure</span>
         <span class="k">if</span> <span class="n">ps</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">ps</span><span class="o">.</span><span class="n">recipe_name</span> <span class="o">==</span> <span class="s1">&#39;Undefined&#39;</span><span class="p">:</span>
@@ -395,7 +389,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vla_skip_mfs_and_cube_imaging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vla_skip_mfs_and_cube_imaging</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the stage skipping condition for the VLA specmode=mfs/cube imaging workflow.</span>
 
 <span class="sd">        This is currently used to skip the following stages for VLA:</span>
@@ -413,7 +407,7 @@
 
 <div class="viewcode-block" id="Pipeline">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Pipeline.html#pipeline.infrastructure.launcher.Pipeline">[docs]</a>
-<span class="k">class</span> <span class="nc">Pipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Pipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pipeline is the entry point for initialising the pipeline. It is</span>
 <span class="sd">    responsible for the creation of new Context objects and for loading</span>
@@ -422,7 +416,7 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        context: Context object containing the Pipeline state information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">casa_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">loglevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">casa_version_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
                  <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">plotlevel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="n">path_overrides</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialise the pipeline, creating a new Context or loading a saved</span>
@@ -487,10 +481,10 @@
         <span class="c1"># define the plot level as a global setting rather than on the</span>
         <span class="c1"># context, as we want it to be a session-wide setting and adjustable</span>
         <span class="c1"># mid-session for interactive use.</span>
-        <span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
         <span class="n">infrastructure</span><span class="o">.</span><span class="n">set_plot_level</span><span class="p">(</span><span class="n">plotlevel</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_link_casa_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_link_casa_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a hard-link to the current CASA log in the report directory,</span>
 <span class="sd">        and add path to current CASA log to given Context.</span>
@@ -523,7 +517,7 @@
             <span class="n">context</span><span class="o">.</span><span class="n">logs</span><span class="p">[</span><span class="s1">&#39;casalogs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">dst</span><span class="p">))</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_find_most_recent_session</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_most_recent_session</span><span class="p">(</span><span class="n">directory</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return filename for the most recently saved Pipeline Context in given directory.</span>
 
@@ -550,18 +544,16 @@
         <span class="c1"># .. then return the file with the most recent timestamp</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">name_n_timestamp</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">name_n_timestamp</span><span class="o">.</span><span class="n">get</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">ms_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span>
                     <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">]</span>
         <span class="k">return</span> <span class="s1">&#39;Pipeline(</span><span class="si">{0}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms_names</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Pipeline.close">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.Pipeline.html#pipeline.infrastructure.launcher.Pipeline.close">[docs]</a>
-    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save a pickle of the Pipeline Context to a file.&quot;&quot;&quot;</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r+b&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
 </div>
 
 </pre></div>
@@ -573,7 +565,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -17,7 +17,6 @@ pipeline.domain.observingrun.ObservingRun
       :nosignatures:
    
       ~ObservingRun.add_measurement_set
-      ~ObservingRun.get_fields
       ~ObservingRun.get_measurement_sets
       ~ObservingRun.get_measurement_sets_of_type
       ~ObservingRun.get_ms

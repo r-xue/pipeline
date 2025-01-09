@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.exportdata.almaexportdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,31 +113,31 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.exportdata.almaexportdata</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">traceback</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.h.tasks.exportdata.exportdata</span> <span class="k">as</span> <span class="nn">exportdata</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">manifest</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.renderer</span> <span class="kn">import</span> <span class="n">stats_extractor</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">almaifaqua</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.tasks.exportdata.exportdata</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">exportdata</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">manifest</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.renderer</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats_extractor</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">almaifaqua</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 <span class="n">AuxFileProducts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;AuxFileProducts&#39;</span><span class="p">,</span> <span class="s1">&#39;flux_file antenna_file cont_file flagtargets_list&#39;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ALMAExportDataInputs</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMAExportDataInputs</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportDataInputs</span><span class="p">):</span>
 
     <span class="n">imaging_products_only</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exportmses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pprfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calintents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exportmses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pprfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calintents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">calimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetimages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_products_only</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ALMAExportDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span>
                                                    <span class="n">exportmses</span><span class="o">=</span><span class="n">exportmses</span><span class="p">,</span> <span class="n">pprfile</span><span class="o">=</span><span class="n">pprfile</span><span class="p">,</span> <span class="n">calintents</span><span class="o">=</span><span class="n">calintents</span><span class="p">,</span>
@@ -150,14 +150,14 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAExportData.html#pipeline.hifa.tasks.ALMAExportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifa_exportdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;The output data products are computed.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ALMAExportData</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportData</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ALMAExportData</span><span class="p">(</span><span class="n">exportdata</span><span class="o">.</span><span class="n">ExportData</span><span class="p">):</span>
 
     <span class="c1"># link the accompanying inputs to this task</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ALMAExportDataInputs</span>
 
 <div class="viewcode-block" id="ALMAExportData.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.ALMAExportData.html#pipeline.hifa.tasks.ALMAExportData.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ALMAExportData</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
 
@@ -222,7 +222,7 @@
         <span class="k">return</span> <span class="n">results</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_do_aux_session_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_aux_session_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">session_names</span><span class="p">,</span> <span class="n">session_vislists</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">):</span>
 
         <span class="c1"># Make the standard sessions dictionary and export per session products</span>
         <span class="c1">#    Currently these are compressed tar files of per session calibration tables</span>
@@ -231,7 +231,7 @@
 
         <span class="k">return</span> <span class="n">sessiondict</span>
 
-    <span class="k">def</span> <span class="nf">_do_aux_ms_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_aux_ms_products</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">):</span>
 
         <span class="c1"># Loop over the measurements sets in the working directory, and</span>
         <span class="c1"># create the calibration apply file(s) in the products directory.</span>
@@ -251,7 +251,7 @@
 
         <span class="k">return</span> <span class="n">visdict</span>
 
-    <span class="k">def</span> <span class="nf">_export_stats_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_export_stats_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">oussid</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate and output the stats file.</span>
 
 <span class="sd">        Args: </span>
@@ -273,7 +273,7 @@
 
         <span class="k">return</span> <span class="n">stats_file</span>
 
-    <span class="k">def</span> <span class="nf">_export_casa_restore_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">session_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_export_casa_restore_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">script_name</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">,</span> <span class="n">oussid</span><span class="p">,</span> <span class="n">vislist</span><span class="p">,</span> <span class="n">session_list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the CASA restore scropt.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -327,7 +327,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

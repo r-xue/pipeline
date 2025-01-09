@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.datatable &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -137,24 +137,24 @@
 <span class="c1"># $Date: 2013/03/01 05:07:45 $</span>
 <span class="c1"># $Author: tnakazat $</span>
 <span class="c1">#</span>
-<span class="kn">import</span> <span class="nn">bisect</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tuple</span>
 
 <span class="c1"># import memory_profiler</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">absolute_path</span><span class="p">,</span> <span class="n">list_to_str</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_path</span><span class="p">,</span> <span class="n">list_to_str</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">__coldesc</span><span class="p">(</span><span class="n">vtype</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">maxlen</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">__coldesc</span><span class="p">(</span><span class="n">vtype</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">maxlen</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">comment</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dataManagerGroup&#39;</span><span class="p">:</span> <span class="s1">&#39;StandardStMan&#39;</span><span class="p">,</span>
          <span class="s1">&#39;dataManagerType&#39;</span><span class="p">:</span> <span class="s1">&#39;StandardStMan&#39;</span><span class="p">,</span>
          <span class="s1">&#39;valueType&#39;</span><span class="p">:</span> <span class="n">vtype</span><span class="p">,</span>
@@ -177,7 +177,7 @@
 <span class="c1">#</span>
 <span class="c1"># 2018/07/31 HE : added SHIFT_RA, SHIFT_DEC for CAS-11674</span>
 <span class="c1"># 2019/05/23 HE : added OFS_RA, OFS_DEC for PIPE-220</span>
-<span class="k">def</span> <span class="nf">__tabledescro</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">__tabledescro</span><span class="p">():</span>
     <span class="n">TD_DESC_RO</span> <span class="o">=</span> <span class="p">[</span>
         <span class="c1">#    __coldesc(&#39;integer&#39;, 0, 0, -1, &#39;Primary key&#39;),</span>
         <span class="n">__coldesc</span><span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Row number&#39;</span><span class="p">),</span>
@@ -215,7 +215,7 @@
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">TD_DESC_RO</span><span class="p">))</span>
 
 
-<span class="k">def</span> <span class="nf">__tabledescrw</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">__tabledescrw</span><span class="p">():</span>
     <span class="n">TD_DESC_RW</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">__coldesc</span><span class="p">(</span><span class="s1">&#39;double&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Statistics&#39;</span><span class="p">),</span>
         <span class="n">__coldesc</span><span class="p">(</span><span class="s1">&#39;integer&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Flgas&#39;</span><span class="p">),</span>
@@ -240,7 +240,7 @@
 
 <div class="viewcode-block" id="create_table">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.create_table.html#pipeline.domain.datatable.create_table">[docs]</a>
-<span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">memtype</span><span class="o">=</span><span class="s1">&#39;plain&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">memtype</span><span class="o">=</span><span class="n">memtype</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="n">nrow</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">ret</span> <span class="o">==</span> <span class="kc">True</span>
     <span class="k">for</span> <span class="n">_colname</span><span class="p">,</span> <span class="n">_coldesc</span> <span class="ow">in</span> <span class="n">desc</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -258,7 +258,7 @@
 
 <div class="viewcode-block" id="timetable_key">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.timetable_key.html#pipeline.domain.datatable.timetable_key">[docs]</a>
-<span class="k">def</span> <span class="nf">timetable_key</span><span class="p">(</span><span class="n">table_type</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">timetable_key</span><span class="p">(</span><span class="n">table_type</span><span class="p">,</span> <span class="n">antenna</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">polarization</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;TIMETABLE_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">table_type</span>
     <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">key</span> <span class="o">+</span> <span class="s1">&#39;_</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span>
@@ -273,7 +273,7 @@
 
 <div class="viewcode-block" id="DataTableIndexer">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer">[docs]</a>
-<span class="k">class</span> <span class="nc">DataTableIndexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataTableIndexer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Map between serial indices and per-MS row indices.</span>
 
@@ -282,15 +282,15 @@
 <span class="sd">    and per-MS row indices.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">origin_mses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">origin_mses</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__origin_mses</span>
 
     <span class="nd">@origin_mses</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">origin_mses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">origin_mses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set an attribute, origin_ms.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__origin_mses</span> <span class="o">=</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize DataTable Indexer class.</span>
 
@@ -309,7 +309,7 @@
 
 <div class="viewcode-block" id="DataTableIndexer.serial2perms">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer.serial2perms">[docs]</a>
-    <span class="k">def</span> <span class="nf">serial2perms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">serial2perms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return basename of origin MS and per-MS row id of a given serial index.</span>
 
@@ -332,7 +332,7 @@
 
 <div class="viewcode-block" id="DataTableIndexer.perms2serial">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableIndexer.html#pipeline.domain.datatable.DataTableIndexer.perms2serial">[docs]</a>
-    <span class="k">def</span> <span class="nf">perms2serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">perms2serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return serial index.</span>
 
@@ -352,7 +352,7 @@
         <span class="k">return</span> <span class="n">base</span> <span class="o">+</span> <span class="n">i</span></div>
 
 
-    <span class="k">def</span> <span class="nf">per_ms_index_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">index_list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">per_ms_index_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">index_list</span><span class="p">):</span>
         <span class="n">origin_ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">origin_ms</span><span class="p">)</span>
         <span class="n">j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin_mses</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">origin_ms</span><span class="p">)</span>
         <span class="n">base</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nrow_per_ms</span><span class="p">[:</span><span class="n">j</span><span class="p">])</span>
@@ -365,7 +365,7 @@
 
 <div class="viewcode-block" id="DataTableImpl">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl">[docs]</a>
-<span class="k">class</span> <span class="nc">DataTableImpl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataTableImpl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    DataTable is an object to hold meta data of scantable on memory.</span>
 
@@ -388,16 +388,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_rotable_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datatable_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_rotable_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datatable_name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="s1">&#39;RO&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">get_rwtable_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datatable_name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_rwtable_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">datatable_name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">datatable_name</span><span class="p">,</span> <span class="s1">&#39;RW&#39;</span><span class="p">)</span>
 
     <span class="n">REFKEY</span> <span class="o">=</span> <span class="s1">&#39;DIRECTION_REF&#39;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name (optional) -- name of DataTable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -426,28 +426,28 @@
                 <span class="n">readonly</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">importdata2</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="n">readonly</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># make sure that table is closed</span>
         <span class="c1"># LOG.debug(&#39;__del__ close CASA table...&#39;)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">nrows</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plaintable</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">position_group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">position_group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;POSGRP_REP&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">haskeyword</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">((</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="n">key</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
@@ -455,22 +455,22 @@
             <span class="k">return</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">time_group_id_small</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_group_id_small</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_time_group_id</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">time_group_id_large</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_group_id_large</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_time_group_id</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">direction_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">direction_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">REFKEY</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">keywordnames</span><span class="p">():</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REFKEY</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@direction_ref</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">direction_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">direction_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># value must be string</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">return</span>
@@ -479,7 +479,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">REFKEY</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">keywordnames</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">putkeyword</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REFKEY</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__get_time_group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">small</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__get_time_group_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">small</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">small</span><span class="p">:</span>
             <span class="n">subkey</span> <span class="o">=</span> <span class="s1">&#39;SMALL&#39;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -496,10 +496,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="nf">haskeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">haskeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="o">.</span><span class="n">keywordnames</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">addrows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrow</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addrows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nrow</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">addrows</span><span class="p">(</span><span class="n">nrow</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="o">.</span><span class="n">addrows</span><span class="p">(</span><span class="n">nrow</span><span class="p">)</span>
 
@@ -507,21 +507,21 @@
         <span class="c1"># plain table have different nrows</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plaintable</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span>
 
-    <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DataTableImpl.putcell">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.putcell">[docs]</a>
-    <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- column name</span>
 <span class="sd">        idx -- row index</span>
@@ -530,19 +530,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">getcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">getcolslice</span><span class="p">(</span><span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">putcolslice</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">getcellslice</span><span class="p">(</span><span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">putcellslice</span><span class="p">(</span><span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcolkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columnname</span><span class="p">,</span> <span class="n">keyword</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcolkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columnname</span><span class="p">,</span> <span class="n">keyword</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">columnname</span> <span class="ow">in</span> <span class="n">TABLEDESC_RO</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">getcolkeyword</span><span class="p">(</span><span class="n">columnname</span><span class="p">,</span> <span class="n">keyword</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -550,7 +550,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.putkeyword">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.putkeyword">[docs]</a>
-    <span class="k">def</span> <span class="nf">putkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- keyword name</span>
 <span class="sd">        val -- keyword value</span>
@@ -564,7 +564,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.getkeyword">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.getkeyword">[docs]</a>
-    <span class="k">def</span> <span class="nf">getkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getkeyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- keyword name</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -575,7 +575,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.keywordnames">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.keywordnames">[docs]</a>
-    <span class="k">def</span> <span class="nf">keywordnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keywordnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        return table keyword names</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -584,7 +584,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.importdata">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.importdata">[docs]</a>
-    <span class="k">def</span> <span class="nf">importdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">importdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of DataTable to be imported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -598,7 +598,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.importdata2">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.importdata2">[docs]</a>
-    <span class="k">def</span> <span class="nf">importdata2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">importdata2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of DataTable to be imported</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -612,7 +612,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.sync">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.sync">[docs]</a>
-    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sync with DataTable on disk.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -621,7 +621,7 @@
 
 <div class="viewcode-block" id="DataTableImpl.exportdata">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.exportdata">[docs]</a>
-    <span class="k">def</span> <span class="nf">exportdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exportdata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        name -- name of exported DataTable</span>
 <span class="sd">        overwrite -- overwrite existing DataTable</span>
@@ -665,7 +665,7 @@
     <span class="c1"># FIXME: this unused method contains bugs to fix.</span>
 <div class="viewcode-block" id="DataTableImpl.export_rwtable_exclusive">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableImpl.html#pipeline.domain.datatable.DataTableImpl.export_rwtable_exclusive">[docs]</a>
-    <span class="k">def</span> <span class="nf">export_rwtable_exclusive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirty_rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">export_rwtable_exclusive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirty_rows</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export &quot;on-memory&quot; RW table to the one on disk.</span>
 
@@ -754,14 +754,14 @@
                 <span class="n">tb</span><span class="o">.</span><span class="n">unlock</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="n">create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memtable1</span><span class="p">,</span> <span class="n">TABLEDESC_RO</span><span class="p">,</span> <span class="s1">&#39;memory&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">)</span>
         <span class="n">create_table</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">memtable2</span><span class="p">,</span> <span class="n">TABLEDESC_RW</span><span class="p">,</span> <span class="s1">&#39;memory&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__init_cols</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="n">readonly</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init_cols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__init_cols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">readonly</span><span class="p">:</span>
             <span class="n">RO_COLUMN</span> <span class="o">=</span> <span class="n">RODataTableColumn</span>
@@ -783,13 +783,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">RW_COLUMN</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">datatype</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tb1</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tb2</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_copyfrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copyfrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">minimal</span> <span class="ow">or</span> <span class="n">abspath</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plaintable</span><span class="p">:</span>
@@ -803,7 +803,7 @@
                                <span class="n">returnobject</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_copyfrom2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_copyfrom2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">minimal</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">()</span>
         <span class="n">abspath</span> <span class="o">=</span> <span class="n">absolute_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">minimal</span> <span class="ow">or</span> <span class="n">abspath</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plaintable</span><span class="p">:</span>
@@ -817,7 +817,7 @@
                                <span class="n">returnobject</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isopened</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">get_posdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_posdict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">):</span>
         <span class="n">posgrp_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;POSGRP_LIST&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">mygrp</span> <span class="o">=</span> <span class="n">posgrp_list</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ant</span><span class="p">)][</span><span class="nb">str</span><span class="p">(</span><span class="n">spw</span><span class="p">)][</span><span class="nb">str</span><span class="p">(</span><span class="n">pol</span><span class="p">)]</span>
@@ -850,7 +850,7 @@
 
         <span class="k">return</span> <span class="n">posdict</span>
 
-    <span class="k">def</span> <span class="nf">set_timetable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">mygrp</span><span class="p">,</span> <span class="n">timegrp_s</span><span class="p">,</span> <span class="n">timegrp_l</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_timetable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">mygrp</span><span class="p">,</span> <span class="n">timegrp_s</span><span class="p">,</span> <span class="n">timegrp_l</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># time table format</span>
         <span class="c1"># TimeTable: [TimeTableSmallGap, TimeTableLargeGap]</span>
         <span class="c1"># TimeTableXXXGap: [[[row0, row1, ...], [idx0, idx1, ...]], ...]</span>
@@ -886,7 +886,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;put timetable: Elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time2</span><span class="p">))</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;set get_timetable end: Elapsed time </span><span class="si">%s</span><span class="s1"> sec&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">get_timetable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_timetable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="s1">&#39;new get_timetable start&#39;</span><span class="p">)</span>
         <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         <span class="n">key_small</span> <span class="o">=</span> <span class="n">timetable_key</span><span class="p">(</span><span class="s1">&#39;SMALL&#39;</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">field_id</span><span class="p">)</span>
@@ -906,7 +906,7 @@
 
         <span class="k">return</span> <span class="n">timetable</span>
 
-    <span class="k">def</span> <span class="nf">get_timegap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">asrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_timegap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ant</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">pol</span><span class="p">,</span> <span class="n">asrow</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">timegap_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;TIMEGAP_S&#39;</span><span class="p">)</span>
         <span class="n">timegap_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getkeyword</span><span class="p">(</span><span class="s1">&#39;TIMEGAP_L&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -938,7 +938,7 @@
             <span class="n">timegap</span> <span class="o">=</span> <span class="p">[</span><span class="n">mygap_s</span><span class="p">,</span> <span class="n">mygap_l</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">timegap</span>
 
-    <span class="k">def</span> <span class="nf">_update_tsys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">infile</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">to_fieldid</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_tsys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">infile</span><span class="p">,</span> <span class="n">tsystable</span><span class="p">,</span> <span class="n">spwmap</span><span class="p">,</span> <span class="n">to_fieldid</span><span class="p">,</span> <span class="n">gainfield</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Transfer Tsys values in a Tsys calibration table and fill Tsys</span>
 <span class="sd">        values in DataTable.</span>
@@ -1010,7 +1010,7 @@
 
         <span class="c1">#LOG.info(&#39;tsys={}&#39;.format(tsys_masked))</span>
 
-        <span class="k">def</span> <span class="nf">map_spwchans</span><span class="p">(</span><span class="n">atm_spw</span><span class="p">,</span> <span class="n">science_spw</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">map_spwchans</span><span class="p">(</span><span class="n">atm_spw</span><span class="p">,</span> <span class="n">science_spw</span><span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Map the channel ID ranges of ATMCal spw that covers frequency range of a science spw</span>
 <span class="sd">            Arguments: spw object of ATMCal and science spws</span>
@@ -1078,7 +1078,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;_update_tsys: elapsed </span><span class="si">{}</span><span class="s1"> sec&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
 
     <span class="c1"># @memory_profiler.profile</span>
-    <span class="k">def</span> <span class="nf">_update_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Read MS and update online flag status of DataTable.</span>
 <span class="sd">        Arguments:</span>
@@ -1117,75 +1117,75 @@
 
 <div class="viewcode-block" id="RODataTableColumn">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RODataTableColumn.html#pipeline.domain.datatable.RODataTableColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">RODataTableColumn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RODataTableColumn</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span> <span class="o">=</span> <span class="n">table</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">caster_get</span> <span class="o">=</span> <span class="n">dtype</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1">(&quot;</span><span class="si">%s</span><span class="s1">&quot;,&quot;</span><span class="si">%s</span><span class="s1">&quot;)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">caster_get</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcellslice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcolslice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__raise</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__raise</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__raise</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__raise</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__raise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__raise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;column </span><span class="si">%s</span><span class="s1"> is read-only&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="RWDataTableColumn">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.RWDataTableColumn.html#pipeline.domain.datatable.RWDataTableColumn">[docs]</a>
-<span class="k">class</span> <span class="nc">RWDataTableColumn</span><span class="p">(</span><span class="n">RODataTableColumn</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RWDataTableColumn</span><span class="p">(</span><span class="n">RODataTableColumn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">caster_put</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">caster_put</span> <span class="o">=</span> <span class="n">dtype</span>
 
-    <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">putcell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">caster_put</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">putcol</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">val</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">startrow</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">nrow</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">rowincr</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">putcellslice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">rownr</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">putcolslice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">blc</span><span class="p">,</span> <span class="n">trc</span><span class="p">,</span> <span class="n">incr</span><span class="p">,</span> <span class="n">startrow</span><span class="p">,</span> <span class="n">nrow</span><span class="p">,</span> <span class="n">rowincr</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="DataTableColumnNoChange">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnNoChange.html#pipeline.domain.datatable.DataTableColumnNoChange">[docs]</a>
-<span class="k">class</span> <span class="nc">DataTableColumnNoChange</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataTableColumnNoChange</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;NOCHANGE&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1196,13 +1196,13 @@
 
 <div class="viewcode-block" id="DataTableColumnMaskList">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList">[docs]</a>
-<span class="k">class</span> <span class="nc">DataTableColumnMaskList</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DataTableColumnMaskList</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">):</span>
     <span class="n">NoMask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># [[-1,-1]]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RWDataTableColumn</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;MASKLIST&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tb</span><span class="o">.</span><span class="n">getcell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
@@ -1211,7 +1211,7 @@
 
 <div class="viewcode-block" id="DataTableColumnMaskList.getcol">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList.getcol">[docs]</a>
-    <span class="k">def</span> <span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Note: returned array has shape (nrow,nmask), in</span>
 <span class="sd">              contrast to (nmask,nrow) for return value of</span>
@@ -1230,7 +1230,7 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
 
-    <span class="k">def</span> <span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">NoMask</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1239,7 +1239,7 @@
 
 <div class="viewcode-block" id="DataTableColumnMaskList.putcol">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.DataTableColumnMaskList.html#pipeline.domain.datatable.DataTableColumnMaskList.putcol">[docs]</a>
-    <span class="k">def</span> <span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">putcol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rowincr</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Note: input array should have shape (nrow,nmask), in</span>
 <span class="sd">              contrast to (nmask,nrow) for tb.putcol()</span>
@@ -1254,7 +1254,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">_interpolate</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tref</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpolate</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tref</span><span class="p">):</span>
     <span class="c1"># bisect.bisect_left(a, x)</span>
     <span class="c1"># bisect_left returns an insertion point of x in a.</span>
     <span class="c1"># if x matches any value in a, bisect_left returns its index.</span>
@@ -1273,7 +1273,7 @@
 
 <div class="viewcode-block" id="construct_timegroup">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.datatable.construct_timegroup.html#pipeline.domain.datatable.construct_timegroup">[docs]</a>
-<span class="k">def</span> <span class="nf">construct_timegroup</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">group_id_list</span><span class="p">,</span> <span class="n">group_association_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">construct_timegroup</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">group_id_list</span><span class="p">,</span> <span class="n">group_association_list</span><span class="p">):</span>
     <span class="n">timetable_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="p">[[],</span> <span class="p">[]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">group_id_list</span><span class="p">}</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">group_id</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">group_association_list</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">group_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">group_id_list</span><span class="p">:</span>
@@ -1291,7 +1291,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

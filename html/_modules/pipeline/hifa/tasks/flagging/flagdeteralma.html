@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.flagging.flagdeteralma &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,22 +113,22 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifa.tasks.flagging.flagdeteralma</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">AltAz</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span>
-<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.coordinates</span><span class="w"> </span><span class="kn">import</span> <span class="n">AltAz</span><span class="p">,</span> <span class="n">EarthLocation</span><span class="p">,</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">astropy.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.measurementset</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-<span class="kn">from</span> <span class="nn">pipeline.extern.adopted</span> <span class="kn">import</span> <span class="n">getMedianPWV</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common</span> <span class="kn">import</span> <span class="n">atmutil</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.common.arrayflaggerbase</span> <span class="kn">import</span> <span class="n">channel_ranges</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.flagging</span> <span class="kn">import</span> <span class="n">flagdeterbase</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.measurementset</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.extern.adopted</span><span class="w"> </span><span class="kn">import</span> <span class="n">getMedianPWV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common</span><span class="w"> </span><span class="kn">import</span> <span class="n">atmutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.common.arrayflaggerbase</span><span class="w"> </span><span class="kn">import</span> <span class="n">channel_ranges</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.flagging</span><span class="w"> </span><span class="kn">import</span> <span class="n">flagdeterbase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;FlagDeterALMA&#39;</span><span class="p">,</span>
@@ -139,11 +139,11 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">FlagDeterALMAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlagDeterALMAResults</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseResults</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">FlagDeterALMAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlagDeterALMAInputs</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBaseInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FlagDeterALMAInputs defines the inputs for the FlagDeterALMA pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -167,7 +167,7 @@
     <span class="n">qa0</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">qa2</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">scan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scannumber</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">edgespw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fracspw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fracspwfps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">online</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">partialpol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lowtrans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">fileonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filetemplate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hm_tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tbuff</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qa2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -189,7 +189,7 @@
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span>
     <span class="s1">&#39;Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.&#39;</span>
 <span class="p">)</span>
-<span class="k">class</span> <span class="nc">FlagDeterALMA</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FlagDeterALMA</span><span class="p">(</span><span class="n">flagdeterbase</span><span class="o">.</span><span class="n">FlagDeterBase</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">FlagDeterALMAInputs</span>
 
     <span class="c1"># PIPE-425: define allowed bandwidths of ACA spectral windows for which to</span>
@@ -222,7 +222,7 @@
 
 <div class="viewcode-block" id="FlagDeterALMA.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.FlagDeterALMA.html#pipeline.hifa.tasks.FlagDeterALMA.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># PIPE-1759: this list collects the spws with missing basebands subsequently used to create a QA score</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">missing_baseband_spws</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -245,7 +245,7 @@
 
 <div class="viewcode-block" id="FlagDeterALMA.get_fracspw">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.FlagDeterALMA.html#pipeline.hifa.tasks.FlagDeterALMA.get_fracspw">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_fracspw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
         <span class="c1"># From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA</span>
         <span class="c1"># correlator&#39;s frequency profile synthesis (fps) algorithm produced TDM</span>
         <span class="c1"># spws that had 64 channels in full-polarisation, 124 channels in dual</span>
@@ -267,7 +267,7 @@
 
 <div class="viewcode-block" id="FlagDeterALMA.verify_spw">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifa.tasks.FlagDeterALMA.html#pipeline.hifa.tasks.FlagDeterALMA.verify_spw">[docs]</a>
-    <span class="k">def</span> <span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verify_spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">):</span>
         <span class="c1"># Override the default verifier:</span>
         <span class="c1">#  - first run the default verifier</span>
         <span class="c1">#  - then run extra test to skip flagging of TDM windows</span>
@@ -292,7 +292,7 @@
                              <span class="s1">&#39;heuristics.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_partialpol_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_partialpol_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ALMA specific step to identify and flag data where only part of the</span>
 <span class="sd">        polarization products are flagged.</span>
@@ -302,7 +302,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">load_partialpols_alma</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_lowtrans_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_lowtrans_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ALMA specific step to identify and flag data with low atmospheric</span>
 <span class="sd">        transmission.</span>
@@ -314,7 +314,7 @@
                              <span class="n">mintransnonrepspws</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">mintransnonrepspws</span><span class="p">,</span>
                              <span class="n">max_frac_low_trans</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_frac_low_trans</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Run default edge channel flagging first.</span>
         <span class="n">to_flag</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FlagDeterALMA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_get_edgespw_cmds</span><span class="p">()</span>
 
@@ -355,7 +355,7 @@
 
         <span class="k">return</span> <span class="n">to_flag</span>
 
-    <span class="k">def</span> <span class="nf">_get_fdm_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_fdm_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        FDM spectral window edge flagging heuristic.</span>
 
@@ -395,7 +395,7 @@
 
         <span class="k">return</span> <span class="n">to_flag</span>
 
-    <span class="k">def</span> <span class="nf">_get_aca_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_aca_edgespw_cmds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spw</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ACA FDM spectral window edge flagging heuristic.</span>
 
@@ -466,7 +466,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">load_partialpols_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_partialpols_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve the relevant data to extend partial polarization flagging to all the polarizations (see PIPE-1028).</span>
 <span class="sd">    It returns the list of flagging commands required to flag the partial polarization.</span>
 
@@ -551,7 +551,7 @@
     <span class="k">return</span> <span class="n">commands</span>
 
 
-<span class="k">def</span> <span class="nf">get_partialpol_spws</span><span class="p">(</span><span class="n">ms_name</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_partialpol_spws</span><span class="p">(</span><span class="n">ms_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtain the spws and DATA_DESC_IDs required for the Partial Polarization flagging agent.</span>
 <span class="sd">    According to the comments in PIPE-1028 they are all non-WVR/non-SQLD spws with an intent that</span>
 <span class="sd">    starts with OBSERVE_TARGET or CALIBRATE_PHASE (which includes the Science spws).</span>
@@ -575,7 +575,7 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">spws</span><span class="p">),</span> <span class="n">datadescids</span>
 
 
-<span class="k">def</span> <span class="nf">get_partialpol_flag_cmd_params</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_partialpol_flag_cmd_params</span><span class="p">(</span><span class="n">flags</span><span class="p">,</span> <span class="n">ant1</span><span class="p">,</span> <span class="n">ant2</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">interval</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the parameters that identify points where partial polarizations need to be flagged.</span>
 <span class="sd">    This function should be called only if the data presents more than one polarization.</span>
 <span class="sd">    At the moment it only handles data with 3 dimensions (n_pol, n_channels, n_params).</span>
@@ -621,7 +621,7 @@
     <span class="k">return</span> <span class="n">params</span>
 
 
-<span class="k">def</span> <span class="nf">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">ant_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">convert_params_to_commands</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">ant_id_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert the identified partial polarization parameters to flagging commands.</span>
 
 <span class="sd">    :param ms: Measurement Set to get the antenna id map (it can be None if ant_id_map is entered)</span>
@@ -652,7 +652,7 @@
     <span class="k">return</span> <span class="n">commands</span>
 
 
-<span class="k">def</span> <span class="nf">lowtrans_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lowtrans_alma</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">mintransrepspw</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mintransnonrepspws</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
                   <span class="n">max_frac_low_trans</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create flagging commands to flag science spectral windows with low</span>
@@ -748,7 +748,7 @@
     <span class="k">return</span> <span class="n">commands</span>
 
 
-<span class="k">def</span> <span class="nf">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_elevation_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the elevation for the beginning or the end of an ALMA scan.</span>
 
 <span class="sd">    Args:</span>
@@ -775,7 +775,7 @@
     <span class="k">return</span> <span class="n">coords_altaz</span><span class="o">.</span><span class="n">alt</span>
 
 
-<span class="k">def</span> <span class="nf">get_airmass_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_airmass_for_alma_scan</span><span class="p">(</span><span class="n">scan</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the airmass corresponding to an ALMA observation scan.</span>
 
 <span class="sd">    Args:</span>
@@ -798,7 +798,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

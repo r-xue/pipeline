@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.applycal.applycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,29 +113,29 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hsd.tasks.applycal.applycal</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.sessionutils</span> <span class="k">as</span> <span class="nn">sessionutils</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.datatable</span> <span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.h.tasks.applycal.applycal</span> <span class="kn">import</span> <span class="n">SerialApplycal</span><span class="p">,</span> <span class="n">ApplycalInputs</span><span class="p">,</span> <span class="n">ApplycalResults</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.sessionutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sessionutils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.datatable</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTableImpl</span> <span class="k">as</span> <span class="n">DataTable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.h.tasks.applycal.applycal</span><span class="w"> </span><span class="kn">import</span> <span class="n">SerialApplycal</span><span class="p">,</span> <span class="n">ApplycalInputs</span><span class="p">,</span> <span class="n">ApplycalResults</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">MeasurementSet</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">Context</span>
-    <span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">CalApplication</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">MeasurementSet</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">CalApplication</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDApplycalInputs</span><span class="p">(</span><span class="n">ApplycalInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDApplycalInputs</span><span class="p">(</span><span class="n">ApplycalInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalInputs defines the inputs for the Applycal pipeline task.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -145,7 +145,7 @@
     <span class="n">flagdetailedsum</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">intent</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
                  <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -187,12 +187,12 @@
         <span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SDApplycalResults</span><span class="p">(</span><span class="n">ApplycalResults</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDApplycalResults</span><span class="p">(</span><span class="n">ApplycalResults</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ApplycalResults generated by SDApplycal task.</span>
 <span class="sd">    Please see parent task&#39;s docstring for detail.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">applied</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="s1">&#39;CalApplication&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">data_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct SDApplycalResults instance.</span>
@@ -205,7 +205,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">applied</span><span class="p">,</span> <span class="n">data_type</span><span class="o">=</span><span class="n">data_type</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SerialSDApplycal</span><span class="p">(</span><span class="n">SerialApplycal</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SerialSDApplycal</span><span class="p">(</span><span class="n">SerialApplycal</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applycal executes CASA applycal tasks for the current context state,</span>
 <span class="sd">    applying calibrations registered with the pipeline context to the target</span>
@@ -217,7 +217,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDApplycalInputs</span>
 
-    <span class="k">def</span> <span class="nf">modify_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">modify_task_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">task_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override template arguments for applycal execution.</span>
 
 <span class="sd">        This method receives template task_args created by the parent task,</span>
@@ -232,7 +232,7 @@
         <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;antenna&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;*&amp;&amp;&amp;&#39;</span>
         <span class="k">return</span> <span class="n">task_args</span>
 
-    <span class="k">def</span> <span class="nf">_get_flagsum_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_flagsum_arg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update arguments for flag summary.</span>
 
 <span class="sd">        According to the requirement in CAS-8813, flag fraction should be</span>
@@ -248,7 +248,7 @@
         <span class="n">task_args</span><span class="p">[</span><span class="s1">&#39;intent&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;OBSERVE_TARGET#ON_SOURCE&#39;</span>
         <span class="k">return</span> <span class="n">task_args</span>
 
-    <span class="k">def</span> <span class="nf">_tweak_flagkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tweak_flagkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override flagging commands.</span>
 
 <span class="sd">        According to the requirement in CAS-8813, flag fraction should be</span>
@@ -263,7 +263,7 @@
         <span class="c1"># use of &#39; rather than &quot; is required to prevent escaping of flagcmds</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">row</span> <span class="o">+</span> <span class="s2">&quot; intent=&#39;OBSERVE_TARGET#ON_SOURCE&#39;&quot;</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">template</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># execute Applycal</span>
         <span class="n">results</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">prepare</span><span class="p">()</span>
 
@@ -301,7 +301,7 @@
         <span class="k">return</span> <span class="n">sdresults</span>
 
 
-<span class="k">def</span> <span class="nf">set_unit</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">calapp</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;CalApplication&#39;</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_unit</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="s1">&#39;MeasurementSet&#39;</span><span class="p">,</span> <span class="n">calapp</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s1">&#39;CalApplication&#39;</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set unit to MS data column according to applied calibrations.</span>
 
 <span class="sd">    Args:</span>
@@ -356,7 +356,7 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hsd.tasks.SDApplycal.html#pipeline.hsd.tasks.SDApplycal">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hsd_applycal&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Calibrations are applied to the data. Final flagging summaries are computed&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SDApplycal</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SDApplycal</span><span class="p">(</span><span class="n">sessionutils</span><span class="o">.</span><span class="n">ParallelTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDApplycalInputs</span>
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDApplycal</span></div>
 
@@ -369,7 +369,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

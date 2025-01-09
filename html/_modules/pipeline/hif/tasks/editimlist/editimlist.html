@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.editimlist.editimlist &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,28 +145,28 @@
 <span class="sd">    of an existing context.clean_list_pending entry.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.domain.measures</span> <span class="k">as</span> <span class="nn">measures</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.heuristics</span> <span class="kn">import</span> <span class="n">imageparams_factory</span>
-<span class="kn">from</span> <span class="nn">pipeline.hif.tasks.makeimlist.cleantarget</span> <span class="kn">import</span> <span class="n">CleanTarget</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure.utils</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.domain.measures</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">measures</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.heuristics</span><span class="w"> </span><span class="kn">import</span> <span class="n">imageparams_factory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hif.tasks.makeimlist.cleantarget</span><span class="w"> </span><span class="kn">import</span> <span class="n">CleanTarget</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
 
-<span class="kn">from</span> <span class="nn">.resultobjects</span> <span class="kn">import</span> <span class="n">EditimlistResult</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.resultobjects</span><span class="w"> </span><span class="kn">import</span> <span class="n">EditimlistResult</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">EditimlistInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">EditimlistInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="c1"># Search order of input vis</span>
     <span class="n">processing_data_type</span> <span class="o">=</span> <span class="p">[</span><span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_LINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_SCIENCE</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">REGCAL_CONTLINE_ALL</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">RAW</span><span class="p">]</span>
 
@@ -214,14 +214,14 @@
     <span class="n">vlass_plane_reject_ms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
         <span class="k">if</span> <span class="s1">&#39;hm_cell&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_cell&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@cell</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
@@ -231,14 +231,14 @@
         <span class="k">return</span> <span class="n">val</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
         <span class="k">if</span> <span class="s1">&#39;hm_imsize&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;hm_imsize&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@imsize</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">imsize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="n">val</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="p">]</span>
 
@@ -249,12 +249,12 @@
         <span class="k">return</span> <span class="n">val</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># mutable object, so should not use VisDependentProperty(default=[])</span>
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="nd">@field</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
             <span class="c1"># PIPE-1881: allow field names that mistakenly get casted into non-string datatype by</span>
             <span class="c1"># recipereducer (utils.string_to_val) and executeppr (XmlObjectifier.castType)</span>
@@ -265,7 +265,7 @@
         <span class="k">return</span> <span class="n">val</span>
 
     <span class="nd">@vlass_plane_reject_ms</span><span class="o">.</span><span class="n">postprocess</span>
-    <span class="k">def</span> <span class="nf">vlass_plane_reject_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vlass_plane_reject_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unprocessed</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the allowed argument input datatype to the dictionary form used by the task.&quot;&quot;&quot;</span>
         <span class="n">vlass_plane_reject_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s1">&#39;apply&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;exclude_spw&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;flagpct_thresh&#39;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s1">&#39;nfield_thresh&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">}</span>
@@ -278,21 +278,21 @@
         <span class="k">return</span> <span class="n">vlass_plane_reject_dict</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">nbin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">nbin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;nbins&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">size_mitigation_parameters</span><span class="p">[</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
     <span class="nd">@spw</span><span class="o">.</span><span class="n">convert</span>
-    <span class="k">def</span> <span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="c1"># Use str() method to catch single spwid case via PPR which maps to int.</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">search_radius_arcsec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfcache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conjbeams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycleniter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nmajor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deconvolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">editmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">imaging_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -362,7 +362,7 @@
 <div class="viewcode-block" id="Editimlist">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Editimlist.html#pipeline.hif.tasks.Editimlist">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hif_editimlist&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Editimlist</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Editimlist</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="c1"># &#39;Inputs&#39; will be used later in execute_task().</span>
     <span class="c1">#   See h/cli/utils.py and infrastructure/argmagger.py</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">EditimlistInputs</span>
@@ -372,7 +372,7 @@
 
 <div class="viewcode-block" id="Editimlist.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Editimlist.html#pipeline.hif.tasks.Editimlist.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">inp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
@@ -792,11 +792,11 @@
 
 <div class="viewcode-block" id="Editimlist.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Editimlist.html#pipeline.hif.tasks.Editimlist.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_add_vlasscube_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_vlasscube_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add multiple clean targets for the VLASS-SE-CUBE mode.</span>
 <span class="sd">        </span>
 <span class="sd">        For the &quot;coarse cube&quot; mode, we perform the following operations:</span>
@@ -871,7 +871,7 @@
 
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_vlass_plane_rejection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_vlass_plane_rejection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Decide whether to reject a spw group based on the number of high-flagging-percentage fields.&quot;&quot;&quot;</span>
 
         <span class="n">vis_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -945,7 +945,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

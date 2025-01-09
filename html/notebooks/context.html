@@ -7,8 +7,8 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pipeline Context and Domain Objects &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -328,12 +328,12 @@ The current implementation is not designed for long-term persistence or scalabil
 We first read a <code class="docutils literal notranslate"><span class="pre">Context</span></code> object from a on-disk pickle file, then examine over the object structure and varioys attributes</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">pickle</span>
-<span class="kn">import</span> <span class="nn">pipeline</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline</span>
 
 
-<span class="k">def</span> <span class="nf">read_context</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_vlassCCIP&#39;</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reaccept</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">result_from_context</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_context</span><span class="p">(</span><span class="n">context_name</span><span class="o">=</span><span class="s1">&#39;pipeline-procedure_vlassCCIP&#39;</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reaccept</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">result_from_context</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">loglevel</span> <span class="o">=</span> <span class="s1">&#39;info&#39;</span>  <span class="c1"># &#39;debug&#39;</span>
     <span class="n">plotlevel</span> <span class="o">=</span> <span class="s1">&#39;default&#39;</span>
     <span class="k">if</span> <span class="n">stage</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -415,7 +415,7 @@ measurespath = /home/rxue/Workspace/nvme/nrao/casa_dist/casarundata
 <h3>Context/domain Object Query – Task Results per Stage<a class="headerlink" href="#context-domain-object-query-task-results-per-stage" title="Link to this heading"></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pprint</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
 <span class="n">ctx</span><span class="o">.</span><span class="n">get_recipe_name</span><span class="p">()</span>
 <span class="n">ctx</span><span class="o">.</span><span class="n">get_oussid</span><span class="p">()</span>
 
@@ -508,7 +508,7 @@ vis=uid___A002_X1181695_X1c6a4_8ant.ms
 <h3>Context queries – observing run info<a class="headerlink" href="#context-queries-observing-run-info" title="Link to this heading"></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pprint</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pprint</span>
 
 <span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;project_ids&#39;</span><span class="p">,</span>
@@ -546,7 +546,7 @@ end_datetime    : 2024-06-01 10:00:34.080000
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get names of MeasurementSets in current run</span>
 
-<span class="kn">from</span> <span class="nn">pipeline.domain.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.datatype</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
 
 <span class="n">msnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ctx</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_measurement_sets</span><span class="p">()]</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">msnames</span><span class="p">)</span>
@@ -750,11 +750,11 @@ MeasurementSet(uid___A002_X1181695_X1c6a4_8ant.ms)  - basename -  uid___A002_X11
 <h3>A live example of the pipeline <code class="docutils literal notranslate"><span class="pre">context</span></code> object<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">rich</span> <span class="kn">import</span> <span class="n">inspect</span> <span class="k">as</span> <span class="n">inspect</span>
-<span class="kn">from</span> <span class="nn">rich.console</span> <span class="kn">import</span> <span class="n">Console</span>
-<span class="kn">import</span> <span class="nn">io</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">rich</span><span class="w"> </span><span class="kn">import</span> <span class="n">inspect</span> <span class="k">as</span> <span class="n">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
 
-<span class="k">def</span> <span class="nf">crop_output</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">crop_output</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>
     <span class="n">out</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[:</span><span class="n">height</span><span class="p">])</span>
@@ -764,7 +764,7 @@ MeasurementSet(uid___A002_X1181695_X1c6a4_8ant.ms)  - basename -  uid___A002_X11
     <span class="k">return</span> <span class="n">out</span>
 
 
-<span class="k">def</span> <span class="nf">rinspect</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">rinspect</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">(</span>
         <span class="n">color_system</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">,</span>
         <span class="n">soft_wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -2042,7 +2042,7 @@ MeasurementSet(uid___A002_X1181695_X1c6a4_8ant.ms)  - basename -  uid___A002_X11
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

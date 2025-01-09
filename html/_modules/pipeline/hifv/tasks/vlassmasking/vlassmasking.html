@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.vlassmasking.vlassmasking &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,30 +113,30 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.hifv.tasks.vlassmasking.vlassmasking</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">casatasks</span> <span class="kn">import</span> <span class="n">imsmooth</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">casatasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">imsmooth</span>
 
-<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">infrastructure</span>
-<span class="kn">from</span> <span class="nn">pipeline.hifv.heuristics.vip_helper_functions</span> <span class="kn">import</span> <span class="p">(</span><span class="n">edit_pybdsf_islands</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">infrastructure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.hifv.heuristics.vip_helper_functions</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">edit_pybdsf_islands</span><span class="p">,</span>
                                                            <span class="n">mask_from_catalog</span><span class="p">,</span>
                                                            <span class="n">run_bdsf</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="p">(</span><span class="n">basetask</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">basetask</span><span class="p">,</span> <span class="n">casa_tasks</span><span class="p">,</span> <span class="n">casa_tools</span><span class="p">,</span>
                                      <span class="n">task_registry</span><span class="p">,</span> <span class="n">vdp</span><span class="p">)</span>
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">VlassmaskingResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">VlassmaskingResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Results class for the hifv_vlassmasking pipeline smoothing task.  Used on VLASS measurement sets.</span>
 
 <span class="sd">    The class inherits from basetask.Results</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_fits_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog_fits_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">tier1mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tier2mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">combinedmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_islands_found</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -178,7 +178,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pipeline_casa_task</span> <span class="o">=</span> <span class="s1">&#39;Vlassmasking&#39;</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            context(:obj:): Pipeline context object</span>
@@ -205,13 +205,13 @@
                                                                                       <span class="ow">and</span> <span class="n">clp_mask</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">combinedmask</span>
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># return &#39;VlassmaskingResults:\n\t{0}&#39;.format(</span>
         <span class="c1">#    &#39;\n\t&#39;.join([ms.name for ms in self.mses]))</span>
         <span class="k">return</span> <span class="s1">&#39;VlassmaskingResults:&#39;</span>
 
 
-<span class="k">class</span> <span class="nc">VlassmaskingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">VlassmaskingInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for the hifv_vlassmasking pipeline task.  Used in conjunction with VLASS measurement sets.</span>
 
 <span class="sd">    The class inherits from vdp.StandardInputs.</span>
@@ -221,7 +221,7 @@
     <span class="n">maskingmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">)</span>
     <span class="n">catalog_search_size</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_ql_database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_ql_database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Args:</span>
@@ -245,7 +245,7 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Vlassmasking.html#pipeline.hifv.tasks.Vlassmasking">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;hifv_vlassmasking&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;Add your task description for inclusion in casa_commands.log&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">Vlassmasking</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Vlassmasking</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for the hifv_vlassmasking pipeline task.  Used on VLASS measurement sets.</span>
 
 <span class="sd">        The class inherits from basetask.StandardTaskTemplate</span>
@@ -256,7 +256,7 @@
 
 <div class="viewcode-block" id="Vlassmasking.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Vlassmasking.html#pipeline.hifv.tasks.Vlassmasking.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Method where the VLASS Masking operation is executed.</span>
 
 <span class="sd">        The mask creation steps are critical pieces of the VIP workflow. Mask creation uses islands</span>
@@ -487,13 +487,13 @@
 
 <div class="viewcode-block" id="Vlassmasking.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Vlassmasking.html#pipeline.hifv.tasks.Vlassmasking.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">results</span></div>
 
 
 <div class="viewcode-block" id="Vlassmasking.bdsfcompute">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hifv.tasks.Vlassmasking.html#pipeline.hifv.tasks.Vlassmasking.bdsfcompute">[docs]</a>
-    <span class="k">def</span> <span class="nf">bdsfcompute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bdsfcompute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">):</span>
 
         <span class="n">imsmooth</span><span class="p">(</span><span class="n">imagename</span><span class="o">=</span><span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.tt0&quot;</span><span class="p">,</span> <span class="n">major</span><span class="o">=</span><span class="s1">&#39;5arcsec&#39;</span><span class="p">,</span> <span class="n">minor</span><span class="o">=</span><span class="s1">&#39;5arcsec&#39;</span><span class="p">,</span> <span class="n">pa</span><span class="o">=</span><span class="s1">&#39;0deg&#39;</span><span class="p">,</span>
                  <span class="n">outfile</span><span class="o">=</span><span class="n">imagename_base</span> <span class="o">+</span> <span class="s2">&quot;.smooth5.tt0&quot;</span><span class="p">)</span>
@@ -509,7 +509,7 @@
         <span class="k">return</span> <span class="n">fitsimage</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.fits&#39;</span><span class="p">,</span> <span class="s1">&#39;.cat.fits&#39;</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_maskname_base</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_maskname_base</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns base name for the mask.</span>
 
@@ -528,7 +528,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;VIP_&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_get_bdsf_imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_bdsf_imagename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagename_base</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Image file name to be used as input to BDSF blob finder.</span>
 
@@ -546,7 +546,7 @@
         <span class="c1"># In case hif_makeimages result was not found.</span>
         <span class="k">return</span> <span class="n">imagename_base</span> <span class="o">+</span> <span class="s1">&#39;iter1b.image&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_computepixelfraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widthdeg</span><span class="p">,</span> <span class="n">maskimage</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_computepixelfraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widthdeg</span><span class="p">,</span> <span class="n">maskimage</span><span class="p">):</span>
 
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">ImageReader</span><span class="p">(</span><span class="n">maskimage</span><span class="p">)</span> <span class="k">as</span> <span class="n">myia</span><span class="p">:</span>
             <span class="c1"># myia = casa_tools.image</span>
@@ -599,7 +599,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

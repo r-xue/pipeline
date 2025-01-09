@@ -11,7 +11,6 @@ AntennaArray
    .. autosummary::
 
       ~AntennaArray.baselines
-      ~AntennaArray.centre
       ~AntennaArray.elevation
       ~AntennaArray.latitude
       ~AntennaArray.longitude
@@ -31,7 +30,6 @@ AntennaArray
    .. rubric:: Attributes Documentation
 
    .. autoattribute:: baselines
-   .. autoattribute:: centre
    .. autoattribute:: elevation
    .. autoattribute:: latitude
    .. autoattribute:: longitude

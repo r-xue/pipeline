@@ -6,8 +6,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=80d5e7a1" />
+ (2024.2.0.4) 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/graphviz.css?v=4ae1632d" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=e958ebb4"></script>
+      <script src="../../../../../_static/documentation_options.js?v=c65d28cc"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -113,24 +113,24 @@
            <div itemprop="articleBody">
              
   <h1>Source code for pipeline.h.tasks.importdata.importdata</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">contextlib</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">tarfile</span>
-<span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span>
 
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure</span> <span class="k">as</span> <span class="nn">infrastructure</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.basetask</span> <span class="k">as</span> <span class="nn">basetask</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.mpihelpers</span> <span class="k">as</span> <span class="nn">mpihelpers</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.tablereader</span> <span class="k">as</span> <span class="nn">tablereader</span>
-<span class="kn">import</span> <span class="nn">pipeline.infrastructure.vdp</span> <span class="k">as</span> <span class="nn">vdp</span>
-<span class="kn">from</span> <span class="nn">pipeline.domain.datatype</span> <span class="kn">import</span> <span class="n">DataType</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tasks</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">casa_tools</span>
-<span class="kn">from</span> <span class="nn">pipeline.infrastructure</span> <span class="kn">import</span> <span class="n">task_registry</span>
-<span class="kn">from</span> <span class="nn">pipeline</span> <span class="kn">import</span> <span class="n">environment</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">fluxes</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.mpihelpers</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpihelpers</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.tablereader</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">tablereader</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.vdp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">vdp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.domain.datatype</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">casa_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="kn">import</span> <span class="n">task_registry</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">environment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">fluxes</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;ImportData&#39;</span><span class="p">,</span>
@@ -141,7 +141,7 @@
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ImportDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImportDataInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
     <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">bdfflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">createmms</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;automatic&#39;</span><span class="p">)</span>
@@ -154,7 +154,7 @@
     <span class="n">save_flagonline</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;session_1&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">process_caldevice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">process_caldevice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -175,18 +175,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_flagonline</span> <span class="o">=</span> <span class="n">save_flagonline</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">session</span>
 
-    <span class="k">def</span> <span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_casa_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
 
-<span class="k">class</span> <span class="nc">ImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImportDataResults</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">Results</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ImportDataResults holds the results of the ImportData task. It contains</span>
 <span class="sd">    the resulting MeasurementSet domain objects and optionally the additional</span>
 <span class="sd">    SetJy results generated from flux entries in Source.xml.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mses</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">setjy_results</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ImportDataResults</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mses</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">mses</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mses</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span> <span class="o">=</span> <span class="n">setjy_results</span>
@@ -195,7 +195,7 @@
         <span class="c1"># Flux service query is None (dbservice=False), FIRSTURL, BACKUPURL, or FAIL</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fluxservice</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">observing_run</span>
         <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Adding </span><span class="si">{0}</span><span class="s1"> to context&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
@@ -205,7 +205,7 @@
             <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">setjy_results</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">merge_with_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;ImportDataResults:</span><span class="se">\n\t</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">ms</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mses</span><span class="p">]))</span>
 
@@ -214,12 +214,12 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData">[docs]</a>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_equivalent_casa_task</span><span class="p">(</span><span class="s1">&#39;h_importdata&#39;</span><span class="p">)</span>
 <span class="nd">@task_registry</span><span class="o">.</span><span class="n">set_casa_commands_comment</span><span class="p">(</span><span class="s1">&#39;If required, ASDMs are converted to MeasurementSets.&#39;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">ImportData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImportData</span><span class="p">(</span><span class="n">basetask</span><span class="o">.</span><span class="n">StandardTaskTemplate</span><span class="p">):</span>
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">ImportDataInputs</span>
     <span class="n">Results</span> <span class="o">=</span> <span class="n">ImportDataResults</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_ms_directories</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ms_directories</span><span class="p">(</span><span class="n">names</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect a list of file entries, finding the root directory of any</span>
 <span class="sd">        measurement sets present via a set of characteristic files and</span>
@@ -233,7 +233,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matching</span> <span class="k">if</span> <span class="n">matching</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">identifiers</span><span class="p">)}</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_asdm_directories</span><span class="p">(</span><span class="n">members</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdm_directories</span><span class="p">(</span><span class="n">members</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Inspect a list of file entries, finding the root directory of any</span>
 <span class="sd">        ASDMs present via a set of characteristic files and directories.</span>
@@ -247,7 +247,7 @@
 
 <div class="viewcode-block" id="ImportData.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData.prepare">[docs]</a>
-    <span class="k">def</span> <span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
         <span class="n">abs_output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
 
@@ -440,11 +440,11 @@
 
 <div class="viewcode-block" id="ImportData.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.ImportData.html#pipeline.h.tasks.ImportData.analyse">[docs]</a>
-    <span class="k">def</span> <span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">observing_run</span><span class="p">):</span>
 
         <span class="c1"># get the flux measurements from Source.xml for each MS</span>
         <span class="n">xml_results</span> <span class="o">=</span> <span class="n">fluxes</span><span class="o">.</span><span class="n">get_setjy_results</span><span class="p">(</span><span class="n">observing_run</span><span class="o">.</span><span class="n">measurement_sets</span><span class="p">)</span>
@@ -467,7 +467,7 @@
         <span class="c1"># QA flux service messaging, return None by default</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="n">combined_results</span><span class="p">,</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_analyse_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_analyse_filenames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">vis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="n">to_import</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">to_convert</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
@@ -487,11 +487,11 @@
 
         <span class="k">return</span> <span class="n">to_import</span><span class="p">,</span> <span class="n">to_convert</span>
 
-    <span class="k">def</span> <span class="nf">_asdm_to_vis_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdm_to_vis_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
                                             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">asdm</span><span class="p">)))</span>
 
-    <span class="k">def</span> <span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_do_importasdm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asdm</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="k">if</span> <span class="n">inputs</span><span class="o">.</span><span class="n">save_flagonline</span><span class="p">:</span>
@@ -560,7 +560,7 @@
                 <span class="n">LOG</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Copying </span><span class="si">{</span><span class="n">xml_filename</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">asdm_source</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">vis_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">asdm_source</span><span class="p">,</span> <span class="n">vis_source</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_make_template_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">titlestr</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_make_template_flagfile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">titlestr</span><span class="p">):</span>
         <span class="c1"># Create a new file if overwrite is true and the file</span>
         <span class="c1"># does not already exist.</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
@@ -570,7 +570,7 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">template_text</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_rename_J2000_to_ICRS</span><span class="p">(</span><span class="n">ms_path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rename_J2000_to_ICRS</span><span class="p">(</span><span class="n">ms_path</span><span class="p">):</span>
         <span class="c1"># PIPE-2006: rename J2000 FIELD and SOURCE table directions to ICRS (only for ALMA cycles 0-2);</span>
         <span class="c1"># adapted from a script by D.Petry (ESO), 2016-03-04</span>
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSMDReader</span><span class="p">(</span><span class="n">ms_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">msmd</span><span class="p">:</span>
@@ -600,7 +600,7 @@
 
 
 
-<span class="k">def</span> <span class="nf">get_datacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_datacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a name of data column in MeasurementSet (MS).</span>
 
@@ -614,7 +614,7 @@
     <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;DATA&#39;</span><span class="p">,</span> <span class="s1">&#39;FLOAT_DATA&#39;</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">get_correcteddatacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_correcteddatacolumn_name</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return name of corrected data column in MeasurementSet (MS).</span>
 
@@ -628,7 +628,7 @@
     <span class="k">return</span> <span class="n">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;CORRECTED_DATA&#39;</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_cols</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_columns</span><span class="p">(</span><span class="n">msname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">search_cols</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Args:</span>
 <span class="sd">        msname: MS directory name</span>
@@ -671,7 +671,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2024, Pipeline Dev. Team, build: 2024.2.0.4+183-g3a847d1e77-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+199-g699abeb779-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
