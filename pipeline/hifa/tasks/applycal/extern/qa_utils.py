@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 
 from pipeline.domain import MeasurementSet
+from pipeline.domain.measures import FrequencyUnits
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import conversion
 
@@ -108,16 +109,18 @@ def get_intents_to_process(ms: MeasurementSet, intents: list[str]) -> list[str]:
     return intents_to_process
 
 
-def getUnitsDicts(spwsetup):
-    '''Return dictionaries with factor and unit strings from spwsetup dictionary.'''
-
+def get_unit_factor(ms: MeasurementSet):
     unitfactor = {}
-    unitstr = {}
-    for spw in spwsetup['spwlist']:
-        #plot factors to get the right units, frequencies in GHz:
-        frequencies = (1.e-09)*spwsetup[int(spw)]['chanfreqs']
-        bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
-        unitfactor[spw] = {'amp_slope': 1.0/bandwidth, 'amp_intercept': 1.0, 'phase_slope': (180.0/np.pi)/bandwidth, 'phase_intercept': (180.0/np.pi)}
-        unitstr[spw] = {'amp_slope': '[Jy/GHz]', 'amp_intercept': '[Jy]', 'phase_slope': '[deg/GHz]', 'phase_intercept': '[deg]'}
+    for spw in ms.spectral_windows:
+        bandwidth = spw.bandwidth
+        bandwidth_ghz = float(bandwidth.to_units(FrequencyUnits.GIGAHERTZ))
 
-    return (unitfactor, unitstr)
+        #plot factors to get the right units, frequencies in GHz:
+        unitfactor[spw.id] = {
+            'amp_slope': 1.0 / bandwidth_ghz,
+            'amp_intercept': 1.0,
+            'phase_slope': (180.0 / np.pi) / bandwidth_ghz,
+            'phase_intercept': (180.0 / np.pi)
+        }
+
+    return unitfactor

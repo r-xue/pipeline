@@ -145,7 +145,7 @@ def get_best_fits_per_ant(wrapper,frequencies):
     return all_fits
 
 
-def score_all(all_fits, outlier_fn, unitdicts, flag_all: bool = False):
+def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
     """
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
@@ -184,13 +184,13 @@ def score_all(all_fits, outlier_fn, unitdicts, flag_all: bool = False):
     for k, v in score_definitions.items():
         threshold = 0.0 if flag_all else v[2]
         # TODO only difference with original is passing of unitdicts in the following call
-        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold, unitdicts)
+        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold, unitfactor)
         outliers.extend(scores)
 
     return outliers
 
 
-def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold, unitdicts):
+def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold, unitfactor):
     """
     Score a set of best fits, comparing the fits identified by the 'attr'
     attribute against a reference value calculated by the ref_value_fn,
@@ -214,7 +214,7 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     outlier_fn_wreason = functools.partial(outlier_fn, reason={reason, })
 
     accessor = operator.attrgetter(attr)
-    outliers = score_fits(all_fits, ref_value_fn, accessor, outlier_fn_wreason, sigma_threshold, unitdicts)
+    outliers = score_fits(all_fits, ref_value_fn, accessor, outlier_fn_wreason, sigma_threshold, unitfactor)
 
     # Check for >90deg phase offsets which should have extra QA messages
     if (y_axis == 'phase') and (fit_parameter == 'intercept'):
@@ -229,7 +229,7 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     return outliers
 
 
-def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_threshold, unitdicts):
+def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_threshold, unitfactor):
     """
     Score a list of best fit parameters against a reference value, identifying
     outliers as fits that deviate by more than sigma_threshold * std dev from
@@ -245,7 +245,6 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
     :return: list of Outliers, dictionary of values for summary
     """
     median_cor_factor = np.sqrt(np.pi / 2.)  # PIPE-401: factor due to using the median instead of the mean
-    (unitfactor, unitstr) = unitdicts
     pols = {f.pol for f in all_fits}
     spws = {f.spw for f in all_fits}
     ants = {f.ant for f in all_fits}

@@ -243,7 +243,7 @@ def get_qa_scores(
     #Go and process each of these intents
     for intent in intents2proc:
         print('Processing intent '+str(intent))
-        outliers_for_intent = score_all_scans(ms.basename, intent, spwsetup, memory_gb=memory_gb,
+        outliers_for_intent = score_all_scans(ms, intent, spwsetup, memory_gb=memory_gb,
                                               saved_visibilities=buffer_folder, flag_all=flag_all)
         outliers.extend(outliers_for_intent)
 
@@ -266,7 +266,7 @@ def get_qa_scores(
     return all_scores, final_scores, qaevalf
 
 def score_all_scans(
-        ms: str,
+        ms: MeasurementSet,
         intent: str,
         spwsetup: dict,
         memory_gb: str = '2.0',
@@ -291,9 +291,9 @@ def score_all_scans(
     antennaids = spwsetup['antids']
     nants = len(antennaids)
     spwlist = spwsetup['spwlist']
-    msname = ms.split('/')[-1]
+    msname = ms.basename
     nscans = len(scanlist)
-    unitdicts = qau.getUnitsDicts(spwsetup)
+    unit_factor = qau.get_unit_factor(ms)
 
     if scanlist: #if there are any scans for the required intent
 
@@ -348,7 +348,7 @@ def score_all_scans(
                 frequency_fit = ampphase_vs_freq_qa.get_best_fits_per_ant(wrapper, channel_frequencies)
 
                 #amp/phase vs frequency scores
-                scan_outliers = ampphase_vs_freq_qa.score_all(frequency_fit, outlier_fn_for_scan, unitdicts, flag_all)
+                scan_outliers = ampphase_vs_freq_qa.score_all(frequency_fit, outlier_fn_for_scan, unit_factor, flag_all)
                 outliers.extend(scan_outliers)
 
                 #in case we need to average over average visibilities to get scores over all scans
@@ -370,7 +370,7 @@ def score_all_scans(
                 all_scan_frequency_fits = ampphase_vs_freq_qa.get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
                 #for lack of a better number, '-1' means 'all scans'
                 outlier_fn_for_all_scans = functools.partial(outlier_fn, scan={-1, })
-                scan_outliers = ampphase_vs_freq_qa.score_all(all_scan_frequency_fits, outlier_fn_for_all_scans, unitdicts, flag_all)
+                scan_outliers = ampphase_vs_freq_qa.score_all(all_scan_frequency_fits, outlier_fn_for_all_scans, unit_factor, flag_all)
                 outliers.extend(scan_outliers)
 
     return outliers
