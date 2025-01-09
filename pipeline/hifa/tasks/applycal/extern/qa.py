@@ -228,7 +228,7 @@ def get_qa_scores(
     #if there are any average visibilities saved, they are in buffer_folder
     buffer_folder = output_path / 'databuffer'
     #this is still using function from analysisUtils, but should probably be replaced
-    spwsetup = qau.getSpecSetup(ms, intents=pipe_intents, bfolder=buffer_folder)
+    spwsetup = qau.get_spec_setup(ms, intents=pipe_intents)
     #All outlier objects in this list
     outliers = []
     #all outlier scores objects will be saved here
