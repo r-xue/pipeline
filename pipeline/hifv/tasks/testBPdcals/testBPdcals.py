@@ -11,6 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.hifv.heuristics import getBCalStatistics
@@ -488,7 +489,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
@@ -549,7 +550,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
@@ -645,7 +646,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
         bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         if delay_scan_select_string == bandpass_scan_select_string:
             testgainscans = bandpass_scan_select_string

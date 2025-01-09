@@ -949,21 +949,6 @@ class MeasurementSet(object):
 
         return spw2band
 
-    def vla_minbaselineforcal(self):
-        """Min baseline for cal
-
-        Args:
-            None
-
-        Returns:
-            Constant value
-
-        """
-
-        # Old determination before it was changed to a constant value of 4
-        # return max(4, int(len(self.antennas) / 2.0))
-        return 4
-
     def get_vla_field_spws(self, spwlist=[]):
         """Find field spws for VLA
 
