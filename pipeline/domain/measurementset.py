@@ -774,87 +774,6 @@ class MeasurementSet(object):
 
         return int_time
 
-    def get_vla_datadesc(self):
-        """Generate VLA data description index
-            Use the original VLA buildscans function to return a dd index
-
-        Args:
-            None
-
-        Returns:
-            ddindex: indexed list of dictionaries with VLA metadata
-
-        """
-
-        cordesclist = ['Undefined', 'I', 'Q', 'U', 'V',
-                       'RR', 'RL', 'LR', 'LL',
-                       'XX', 'XY', 'YX', 'YY',
-                       'RX', 'RY', 'LX', 'LY',
-                       'XR', 'XL', 'YR', 'YL',
-                       'PP', 'PQ', 'QP', 'QQ',
-                       'RCircular', 'LCircular',
-                       'Linear', 'Ptotal',
-                       'Plinear', 'PFtotal',
-                       'PFlinear', 'Pangle']
-
-        # From Steve Myers buildscans function
-        with casa_tools.TableReader(self.name + '/DATA_DESCRIPTION') as table:
-            ddspwarr = table.getcol("SPECTRAL_WINDOW_ID")
-            ddpolarr = table.getcol("POLARIZATION_ID")
-
-        ddspwlist = ddspwarr.tolist()
-        ddpollist = ddpolarr.tolist()
-        ndd = len(ddspwlist)
-
-        with casa_tools.TableReader(self.name + '/SPECTRAL_WINDOW') as table:
-            nchanarr = table.getcol("NUM_CHAN")
-            spwnamearr = table.getcol("NAME")
-            reffreqarr = table.getcol("REF_FREQUENCY")
-
-        nspw = len(nchanarr)
-        spwlookup = {}
-        for isp in range(nspw):
-            spwlookup[isp] = {}
-            spwlookup[isp]['nchan'] = nchanarr[isp]
-            spwlookup[isp]['name'] = str(spwnamearr[isp])
-            spwlookup[isp]['reffreq'] = reffreqarr[isp]
-
-        with casa_tools.TableReader(self.name + '/POLARIZATION') as table:
-            ncorarr = table.getcol("NUM_CORR")
-            npols = len(ncorarr)
-            polindex = {}
-            poldescr = {}
-            for ip in range(npols):
-                cort = table.getcol("CORR_TYPE", startrow=ip, nrow=1)
-                (nct, nr) = cort.shape
-                cortypes = []
-                cordescs = []
-                for ict in range(nct):
-                    cct = cort[ict][0]
-                    cde = cordesclist[cct]
-                    cortypes.append(cct)
-                    cordescs.append(cde)
-                polindex[ip] = cortypes
-                poldescr[ip] = cordescs
-
-        ddindex = {}
-        ncorlist = ncorarr.tolist()
-        for idd in range(ndd):
-            ddindex[idd] = {}
-            isp = ddspwlist[idd]
-            ddindex[idd]['spw'] = isp
-            ddindex[idd]['spwname'] = spwlookup[isp]['name']
-            ddindex[idd]['nchan'] = spwlookup[isp]['nchan']
-            ddindex[idd]['reffreq'] = spwlookup[isp]['reffreq']
-            #
-            ipol = ddpollist[idd]
-            ddindex[idd]['ipol'] = ipol
-            ddindex[idd]['npol'] = ncorlist[ipol]
-            ddindex[idd]['corrtype'] = polindex[ipol]
-            ddindex[idd]['corrdesc'] = poldescr[ipol]
-
-        return ddindex
-
     def get_vla_corrstring(self):
         """Get correlation string for VLA
 
@@ -869,9 +788,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        ddindex = self.get_vla_datadesc()
-
-        corrstring_list = ddindex[0]['corrdesc']
+        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -887,11 +804,11 @@ class MeasurementSet(object):
         Returns:
             list: a list of correlation labels.
         """
-        ddindex = self.get_vla_datadesc()
+
         corrs = set()
-        for dd in ddindex.values():
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd['spw']) in spw.split(',')):
-                corrs = corrs.union(dd['corrdesc'])
+        for lspw in self.spectral_windows:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
 
         return sorted(corrs)
 
@@ -931,21 +848,19 @@ class MeasurementSet(object):
 
         """
 
-        ddindex = self.get_vla_datadesc()
-
         spw2band = {}
 
-        for spw in ddindex:
+        for spw in self.spectral_windows:
 
-            strelems = list(ddindex[spw]['spwname'])
+            strelems = list(spw.name)
             bandname = strelems[5]
             if bandname in '4PLSCXUKAQ':
-                spw2band[spw] = strelems[5]
+                spw2band[spw.id] = strelems[5]
             # Check for U / KU
             if strelems[5] == 'K' and strelems[6] == 'U':
-                spw2band[spw] = 'U'
+                spw2band[spw.id] = 'U'
             if strelems[5] == 'K' and strelems[6] == 'A':
-                spw2band[spw] = 'A'
+                spw2band[spw.id] = 'A'
 
         return spw2band
 
