@@ -67,11 +67,14 @@ class MsSplitInputs(vdp.StandardInputs):
             spw: Select spectral windows to split. default: '', All spws are selected
                 example: '9', '9,13,15'
 
-            datacolumn: Select spectral windows to split. The standard CASA options are supported. example: 'corrected', 'model'
+            datacolumn: Select spectral windows to split. The standard CASA options are supported.
+                example: 'corrected', 'model'
 
-            chanbin: The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16. example: 2, 4
+            chanbin: The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16.
+                example: 2, 4
 
-            timebin: The time binning factor. '0s' for no binning example: '10s' for 10 second binning
+            timebin: The time binning factor. '0s' for no binning.
+                example: '10s' for 10 second binning
 
             replace: If a split was performed delete the parent MS and remove it from the context.
         """
