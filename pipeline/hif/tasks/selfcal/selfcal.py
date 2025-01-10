@@ -128,6 +128,7 @@ class SelfcalInputs(vdp.StandardInputs):
 
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
+    imsize = vdp.VisDependentProperty(default=None)
     apply = vdp.VisDependentProperty(default=True)
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
@@ -159,7 +160,7 @@ class SelfcalInputs(vdp.StandardInputs):
     allow_wproject = vdp.VisDependentProperty(default=False)
     restore_resources = vdp.VisDependentProperty(default=None)
 
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, n_solints=None,
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, imsize=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
@@ -171,6 +172,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.contfile = contfile
+        self.imsize = imsize
         self.apply = apply
         self.parallel = parallel
         self.recal = recal
@@ -647,6 +649,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
                                               spw=self.inputs.spw,
+                                              hm_imsize=self.inputs.imsize,
                                               allow_wproject=self.inputs.allow_wproject,
                                               parallel=self.inputs.parallel)
         makeimlist_task = MakeImList(makeimlist_inputs)
