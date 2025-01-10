@@ -563,7 +563,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         quack_scan_string = self._get_vla_quackingscans()
-        int_time = m.get_vla_max_integration_time()
+        int_time = m.get_integration_time_stats(stat_type="max")
 
         quack_mode_cmd = 'mode=\'quack\' scan=\'%s\' quackinterval=%s quackmode=\'beg\' quackincrement=False reason=\'quack\' name=\'quack\'' % (quack_scan_string, str(1.5*int_time))
 

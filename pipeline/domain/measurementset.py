@@ -718,61 +718,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-    def get_vla_max_integration_time(self):
-        """Get the integration time used by the original VLA scripts
-
-        Args:
-            None
-
-        Returns:
-            int_time: int value of the max integration time used
-        """
-
-        # with casa_tools.TableReader(vis + '/FIELD') as table:
-        #     numFields = table.nrows()
-        #     field_positions = table.getcol('PHASE_DIR')
-        #     field_ids = range(numFields)
-        #     field_names = table.getcol('NAME')
-
-        # with casa_tools.TableReader(vis) as table:
-        #     scanNums = sorted(np.unique(table.getcol('SCAN_NUMBER')))
-        #     field_scans = []
-        #     for ii in range(0,numFields):
-        #         subtable = table.query('FIELD_ID==%s'%ii)
-        #         field_scans.append(list(np.unique(subtable.getcol('SCAN_NUMBER'))))
-        #         subtable.close()
-
-        # field_scans is now a list of lists containing the scans for each field.
-        # so, to access all the scans for the fields, you'd:
-        #
-        # for ii in range(0,len(field_scans)):
-        #    for jj in range(0,len(field_scans[ii]))
-        #
-        # the jj'th scan of the ii'th field is in field_scans[ii][jj]
-
-        # Figure out integration time used
-
-        with casa_tools.MSReader(self.name) as ms:
-            scan_summary = ms.getscansummary()
-        # startdate=float(ms_summary['BeginTime'])
-
-        integ_scan_list = []
-        for scan in scan_summary:
-            integ_scan_list.append(int(scan))
-        sorted_scan_list = sorted(integ_scan_list)
-
-        # find max and median integration times
-        #
-        integration_times = []
-        for ii in sorted_scan_list:
-            integration_times.append(scan_summary[str(ii)]['0']['IntegrationTime'])
-
-        maximum_integration_time = max(integration_times)
-        median_integration_time = np.median(integration_times)
-
-        int_time = maximum_integration_time
-
-        return int_time
 
     def get_vla_corrstring(self):
         """Get correlation string for VLA
@@ -1053,18 +998,19 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_median_integration_time(self, intent=None):
-        """Get the median integration time used to get data for the given
-        intent.
+    def get_integration_time_stats(self, intent=None, spw=None, science_windows_only=False, stat_type="max"):
+        """Get the given statistcs of integration time.
 
         Args:
-            intent (str, optional): The intent of the data of interest.
-
-        Returns:
-            The median integration time used.
+            intent: The intent of the data of interest.
+            spw: spw string list - '1,7,11,18'.
+            science_windows_only: Use integration time of science spws only to compute the given statistics.
+            stat_type: Type of the statistics.
+        Returns
+            Computed statistics value.
         """
-        LOG.debug('inefficiency - MSFlagger reading file to get integration '
-                  'time')
+        LOG.debug('inefficiency - MSFlagger reading file to get median integration '
+                  'time for science targets')
 
         # get the field IDs and state IDs for fields in the measurement set,
         # filtering by intent if necessary
@@ -1073,40 +1019,9 @@ class MeasurementSet(object):
                          if intent in field.intents]
             state_ids = [state.id for state in self.states
                          if intent in state.intents]
-#        if intent:
-#            re_intent = intent.replace('*', '.*')
-#            re_intent = re.compile(re_intent)
-#            field_ids = [field.id for field in self.fields
-#                         if re_intent.match(str(field.intents))]
-#            state_ids = [state.id for state in self.states
-#                         if re_intent.match(str(state.intents))]
         else:
             field_ids = [field.id for field in self.fields]
             state_ids = [state.id for state in self.states]
-
-        # VLA datasets have an empty STATE table; in the main table such rows
-        # have a state ID of -1.
-        if not state_ids:
-            state_ids = [-1]
-
-        with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (utils.list_to_str(state_ids), utils.list_to_str(field_ids))
-            with contextlib.closing(table.query(taql)) as subtable:
-                integration = subtable.getcol('INTERVAL')
-            return np.median(integration)
-
-    def get_median_science_integration_time(self, intent=None, spw=None):
-        """Get the median integration time for science targets used to get data for the given
-        intent.
-
-        Keyword arguments:
-        intent  -- The intent of the data of interest.
-        spw     -- spw string list - '1,7,11,18'
-
-        Returns -- The median integration time used.
-        """
-        LOG.debug('inefficiency - MSFlagger reading file to get median integration '
-                  'time for science targets')
 
         if spw is None:
             spws = self.spectral_windows
@@ -1124,31 +1039,44 @@ class MeasurementSet(object):
             except:
                 LOG.error("Incorrect spw string format.")
 
-        # now get the science spws, those used for scientific intent
-        science_spws = [
-            ispw for ispw in spws
-            if ispw.num_channels not in self.exclude_num_chans
-            and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
-                                             'TARGET'])]
-        LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
+        if science_windows_only == True:
+            # now get the science spws, those used for scientific intent
+            science_spws = [
+                ispw for ispw in spws
+                if ispw.num_channels not in self.exclude_num_chans
+                and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
+                                                'TARGET'])]
+            LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
+            # and the science fields/states
+            science_field_ids = [
+                fid for fid in field_ids
+                if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
+                                                    'PHASE', 'TARGET'])]
+            science_state_ids = [
+                sid for sid in state_ids
+                if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
+                                                    'PHASE', 'TARGET'])]
 
-        # and the science fields/states
-        science_field_ids = [
-            field.id for field in self.fields
-            if not set(field.intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                  'PHASE', 'TARGET'])]
-        science_state_ids = [
-            state.id for state in self.states
-            if not set(state.intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                  'PHASE', 'TARGET'])]
+            science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
-        science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
+        # VLA datasets have an empty STATE table; in the main table such rows
+        # have a state ID of -1.
+        if not state_ids:
+            state_ids = [-1]
+
+        state_str = utils.list_to_str(science_state_ids if science_windows_only else state_ids)
+        field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
+        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
+
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (utils.list_to_str(science_state_ids), utils.list_to_str(science_field_ids), utils.list_to_str(science_spw_dd_ids))
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
-            return np.median(integration)
+            if stat_type == "max":
+                return np.max(integration)
+            elif stat_type == "median":
+                return np.median(integration)
 
     def get_times_on_source_per_field_id(self, field: str, intent: str):
         """
