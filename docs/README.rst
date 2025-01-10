@@ -1,28 +1,32 @@
-PARIS :sub:`Pipeline Analysis for Radio Interferometer and Single-Dish`
-========================================================================
-*An experimental fork of the operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
+Pipeline
+========
+*The operational data processing pipelines for ALMA, VLA, and the NRO 45m telescope.*
 
 |Sphinx Build|
 
 .. important::
 
- This is an **experimental fork** and not the official development repository.  
- The official repository is a collaboration among `NRAO`_, `ESO`_ (contracted with `UKATC`_ and `MPIfR`_), and `NAOJ`_.
+  This is a **demonstration** for the new internal technical documentation framework for the Pipeline development.
+  The effort is expected to provide the *up-to-date and version-controlled* supplementary information to the official documentation from the `ALMA <https://almascience.nrao.edu/processing/science-pipeline>`_ and `VLA <https://science.nrao.edu/facilities/vla/data-processing>`_ science portals.
+  The Pipeline development is a collaborative effort involving `NRAO`_, `ESO`_ (in partnership with `UKATC`_ and `MPIfR`_), and `NAOJ`_.
+
 
 Official Repository
 --------------------
 
-The official repository can be accessed here:  
+The official public repository can be accessed here:  
 - `Open Bitbucket @ NRAO - PIPE <https://open-bitbucket.nrao.edu/projects/PIPE>`_
 
-Documentation
--------------------
+Highlights
+----------
 
-`The documentation from this fork <https://r-xue.github.io/pipeline/html>`_ is currently under restructuring and some contents are highlighted below:
- * `Past Pipeline Releases <https://r-xue.github.io/pipeline/html/releases.html#>`_
- * `Pipeline Dependencies <https://r-xue.github.io/pipeline/html/dependencies.html>`_
- * `Running a Pipeline Session in Python <https://r-xue.github.io/pipeline/html/modular.html>`_
- * `The latest Pipeline task reference manual <https://r-xue.github.io/pipeline/latex/taskdocs.pdf>`_ (PDF)
+`This demo <pipe-docs.readthedocs.io>`_ is automatically built from `a development branch <https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse?at=refs%2Fheads%2FPIPE-1669-run-dev-pipeline-with-modular-casa6>`_ of the official repository, and is still under restructuring.
+Some contents are highlighted below:
+ 
+  * `Past Pipeline Releases <https://pipe-docs.readthedocs.io/en/latest/releases.html#>`_
+  * `Pipeline Dependencies <https://pipe-docs.readthedocs.io/en/latest/dependencies.html>`_
+  * `Running a Pipeline Session in Python <https://pipe-docs.readthedocs.io/en/latest/modular.html>`_
+  * The latest Pipeline task reference manual: `PDF <https://pipe-docs.readthedocs.io/_/downloads/en/latest/pdf>`_ `HTML <https://pipe-docs.readthedocs.io/en/latest/apisummary.html#pipeline-tasks-autosummary>`_
 
 .. _NRAO: http://www.nrao.edu  
 .. _ESO: https://www.eso.org  
