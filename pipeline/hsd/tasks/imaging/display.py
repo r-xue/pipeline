@@ -1,5 +1,6 @@
 """Set of plotting classes for hsd_imaging task."""
 import copy
+import datetime
 import itertools
 import math
 from math import ceil, floor
@@ -968,19 +969,11 @@ class SDChannelMapDisplay(SDImageDisplay):
             if slice_width < 1:
                 continue
 
-            # eliminate the indices which are out of channel range
-            f_leftside = f_line_center - slice_width * self.NUM_CHANNELMAP * 0.5
-            f_idx_vertlines = [j for j in
-                                  [f_leftside + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
-                              if -0.5 <= j < self.nchan - 1.5]  # these value will round by _digitize()
-            if len(f_idx_vertlines) < 2:
-                continue
-
             # digitize, and invert if needed, then get several values to plot
             try:
                 (idx_line_center, idx_vertlines, velocity_line_center,
-                 velocity_channelmap_center, velocity_per_channel, chan0, chan1,
-                 V0, V1, is_leftside) = self._digitize(f_line_center, f_idx_vertlines, is_lsb)
+                 velocity_per_channel, chan0, chan1, V0, V1, is_leftside) = \
+                     self._digitize(f_line_center, slice_width, is_lsb)
             except ValueError as e:
                 LOG.warning('ValueError in digitize: %s' % e)
                 continue
@@ -1097,7 +1090,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # Draw Channel Map
                 NMap = 0
                 Vmax0 = Vmin0 = 0
-                Title = []
+                Title = [] 
                 for i in range(self.NUM_CHANNELMAP-1, -1, -1):
                     if len(idx_vertlines) - 2 < i:
                         continue
@@ -1148,7 +1141,6 @@ class SDChannelMapDisplay(SDImageDisplay):
                 _metadata = get_metadata(self)
                 _metadata['TYPE'] = 'Channel map'
                 _metadata['LINE_CENTER_VELOCITY'] = velocity_line_center
-                _metadata['CHANNELMAP_CENTER_VELOCITY'] = velocity_channelmap_center
                 _metadata['LINE_CENTER'] = f_line_center
                 _metadata['LINE_CENTER_REV'] = self.nchan - 1 - f_line_center if is_lsb else None
                 _metadata['LINE_WIDTH'] = f_line_width
@@ -1189,7 +1181,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
-    def _digitize(self, line_center:float, idx_vertlines: float, is_lsb:bool) -> \
+    def _digitize(self, f_line_center:float, slice_width: int, is_lsb:bool) -> \
             Tuple[Union[bool, int, float, List[int]]]:
         """
         Digitize values and calculate related values.
@@ -1202,8 +1194,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         Args:
             line_center (float): center index (but float) of feature line
-            idx_vertlines (float): indice (but float) of vertical red lines
-                                   on velocity plot.
+            slice_width (int): width of a slice on the channel map
             is_lsb (bool): the flag whether the casaimage was LSB or not.
 
         Returns: Tuple of them (in order):
@@ -1216,57 +1207,62 @@ class SDChannelMapDisplay(SDImageDisplay):
             bool: the flag whether the center of the feature line is at left side of the channel map
         
         throws:
-            ValueError: if unexpected out-of-boundery access are detected
+            ValueError: unexpected out-of-boundery access or too few red lines are detected.
         """
-        LOG.info(f'line center: {line_center}, indice vertical lines: {idx_vertlines}, nchan: {self.nchan}')
-
         # digitize
-        i_line_center = floor(line_center + 0.5)
-        i_idx_vertlines = sorted([floor(f + 0.5) for f in idx_vertlines])
-        
+        i_line_center = floor(f_line_center + 0.5)
         is_leftside = i_line_center <= (self.nchan - 1) // 2
 
-        # The adjacent channel of i_line_center to calculate the velocity value
+        # The neighbor channel of i_line_center to calculate the velocity value
         # at the center of the feature line
-        adjacent_channel = i_line_center - 1
+        neighbor_channel = i_line_center - 1
 
+        # The index of the first (left side) vertical red line
+        idx_1st_vertline = ceil((i_line_center + neighbor_channel) * 0.5 - slice_width * self.NUM_CHANNELMAP * 0.5 + 0.5)
+
+        def _invert(x):
+            return self.nchan - 1 - x
+        
         # invert if LSB
         if is_lsb:
-            i_line_center = self.nchan - 1 - i_line_center
-            adjacent_channel = self.nchan - 1 - adjacent_channel
-            i_idx_vertlines = sorted([self.nchan - 1 - f for f in i_idx_vertlines])
+            f_line_center, i_line_center, neighbor_channel, _idx = \
+                [_invert(x) for x in (f_line_center, i_line_center, neighbor_channel, idx_1st_vertline)]
             is_leftside = not is_leftside
+            idx_1st_vertline = _idx - slice_width * self.NUM_CHANNELMAP + 1
 
-        # adjust adjacent channel at the edge
-        if adjacent_channel < 0:
-            adjacent_channel = 1
-        elif adjacent_channel >= self.nchan:
-            adjacent_channel = self.nchan - 2
+        # The indices of all vertical red lines
+        i_idx_vertlines = [j for j in 
+                            [idx_1st_vertline + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
+                           if 0 <= j < self.nchan]
+        if len(i_idx_vertlines) < 2:
+            raise ValueError('Too few red lines: %s' % i_idx_vertlines)
+        
+        LOG.info(f'line center: {f_line_center}, indice vertical lines: {i_idx_vertlines}, nchan: {self.nchan}')
+        
+        # adjust neighbor channel at the edge
+        if neighbor_channel < 0:
+            neighbor_channel = 1
+        elif neighbor_channel >= self.nchan:
+            neighbor_channel = self.nchan - 2
 
-        _msg = f'line center: {i_line_center}, adjacent channel: {adjacent_channel}, ' + \
+        _msg = f'line center: {i_line_center}, neighbor channel: {neighbor_channel}, ' + \
                f'indice vertical lines: {i_idx_vertlines}, LSB: {is_lsb}'
 
         # prevent unexpected out-of-range access
         if i_line_center < 0 or i_line_center >= self.nchan or \
-           abs(adjacent_channel-i_line_center) != 1:
+           abs(neighbor_channel-i_line_center) != 1:
             raise ValueError('Unexpected out-of-boundery access detected: %s' % _msg)
 
         LOG.debug(_msg)
 
         # calculate the velocity value at the center of the feature line
-        if float(i_line_center) == line_center:
+        if float(i_line_center) == f_line_center:
             velocity_line_center = self.velocity[i_line_center]
         else:
-            velocity_line_center = (self.velocity[i_line_center] + self.velocity[adjacent_channel]) * 0.5
-
-        # calculate the velocity value at the center of the channel map, to save it to metadata of PNG image as a reference
-        _rightside = [pos for pos, idx in enumerate(i_idx_vertlines) if idx > i_line_center]
-        _pos = i_idx_vertlines[-1] if len(_rightside) == 0 else _rightside[0]
-        velocity_channelmap_center = (self.velocity[i_idx_vertlines[_pos-1]] +
-                                      self.velocity[i_idx_vertlines[_pos] - 1]) * 0.5
+            velocity_line_center = (self.velocity[i_line_center] + self.velocity[neighbor_channel]) * 0.5
 
         # caluculate the velocity value per a channel
-        velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[adjacent_channel])
+        velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[neighbor_channel])
 
         # caluculate values of the both edges of vertical red lines for plotting
         chan0 = max(i_idx_vertlines[0] - 1, 0)
@@ -1276,11 +1272,10 @@ class SDChannelMapDisplay(SDImageDisplay):
         
         LOG.debug(f'center velocity[{i_line_center}]: {velocity_line_center}')
         LOG.debug(f"center frequency[{i_line_center}]: {self.frequency[i_line_center]}")
-        LOG.debug(f'velocity of channel map cennter: {velocity_channelmap_center}')
         LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
                     f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
 
-        return (i_line_center, i_idx_vertlines, velocity_line_center, velocity_channelmap_center,
+        return (i_line_center, i_idx_vertlines, velocity_line_center, 
                 velocity_per_channel, chan0, chan1, V0, V1, is_leftside)
 
     def _calc_slice_width(self, line_width: float, line_center: float) -> int:
@@ -1943,6 +1938,7 @@ def get_metadata(obj: SDImageDisplay) -> Dict[str, str]:
     _metadata['ANTENNA'] = getattr(obj, 'antenna', None)
     _metadata['CASA'] = casa_version_string
     _metadata['VERSION'] = pipeline_revision
+    _metadata['DATE'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
     if hasattr(obj, 'inputs'):
         _metadata['IMAGE'] = getattr(obj.inputs, 'imagename', None)
         _metadata['FIELD'] = getattr(obj.inputs, 'source', None)
