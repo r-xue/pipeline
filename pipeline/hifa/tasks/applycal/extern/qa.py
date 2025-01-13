@@ -1,6 +1,6 @@
-import collections
 import functools
 import math
+import operator
 import os
 from pathlib import Path
 from typing import Dict, List
@@ -9,13 +9,13 @@ import numpy as np
 
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.domain.measures import FrequencyUnits
 from . import ampphase_vs_freq_qa
 from . import mswrapper
 from . import qa_utils as qau
-
+from .. import qa as original_qa
 # imports required for WIP testing, to be removed once migration is complete
 from ..ampphase_vs_freq_qa import Outlier
-from .. import qa as original_qa
 from ..qa import QAMessage, outliers_to_qa_scores, REASONS_TO_TEXT
 
 #Dictionaries necessary for the QAScoreEvalFunc class
@@ -243,7 +243,7 @@ def get_qa_scores(
     #Go and process each of these intents
     for intent in intents2proc:
         print('Processing intent '+str(intent))
-        outliers_for_intent = score_all_scans(ms, intent, spwsetup, memory_gb=memory_gb,
+        outliers_for_intent = score_all_scans(ms, intent, memory_gb=memory_gb,
                                               saved_visibilities=buffer_folder, flag_all=flag_all)
         outliers.extend(outliers_for_intent)
 
@@ -268,7 +268,6 @@ def get_qa_scores(
 def score_all_scans(
         ms: MeasurementSet,
         intent: str,
-        spwsetup: dict,
         memory_gb: str = '2.0',
         saved_visibilities: Path = Path(''),
         flag_all: bool = False
@@ -277,7 +276,6 @@ def score_all_scans(
     Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
     :param ms: name of ms file 
     :param intent: intent for scans
-    :spwsetup: dictionary with information regarding the spectral set-up, remnant from old script. should probably be a class
     :memory_gb: max memory allowed in gb
     :saved_visibilities: folder where saved average visibilities are, if any
     :param outlier_score: score to assign to generated QAScores
@@ -286,92 +284,94 @@ def score_all_scans(
     #all outliers will be here
     outliers = []
 
-    #spwsetup dictionary contains:
-    scanlist = spwsetup['scan'][intent]
-    antennaids = spwsetup['antids']
-    nants = len(antennaids)
-    spwlist = spwsetup['spwlist']
+    scans_for_intent = sorted(ms.get_scans(scan_intent=intent), key=operator.attrgetter('id'))
+
+    # TODO antenna IDs could be calculated per scan for better accuracy
+    antennaids = sorted([ant.id for ant in scans_for_intent[0].antennas])
+    # TODO spws should be retrieved from the scan, like the original
+    spws = ms.get_spectral_windows(intent=intent)
     msname = ms.basename
-    nscans = len(scanlist)
+    nscans = len(scans_for_intent)
     unit_factor = qau.get_unit_factor(ms)
 
-    if scanlist: #if there are any scans for the required intent
+    if not scans_for_intent:
+        return outliers
 
-        print('Starting analysis of intent: '+str(intent)+' with scan list: '+str(scanlist))
-        for spw in spwlist: #for all spectral windows in it
+    print(f'Starting analysis of intent: {intent} with scan list: {str([int(scan.id) for scan in scans_for_intent])}')
+    for spw in spws: #for all spectral windows in it
 
-            #partial function to construct outlier, so we don't have to repeat these arguments for all outliers connected to this ms, intent, spw
-            outlier_fn = functools.partial(
-                Outlier,
-                vis={msname, },
-                intent={intent, },
-                spw={int(spw), },
-                # TODO remove this attribute added for backwards compatibility
-                phase_offset_gt90deg=None
-            )
+        #partial function to construct outlier, so we don't have to repeat these arguments for all outliers connected to this ms, intent, spw
+        outlier_fn = functools.partial(
+            Outlier,
+            vis={msname, },
+            intent={intent, },
+            spw={spw.id, },
+            # TODO remove this attribute added for backwards compatibility
+            phase_offset_gt90deg=None
+        )
 
-            print('Processing SPW '+str(spw)+' , intent '+str(intent))
-            npol = spwsetup[spw]['npol']
-            nchan = spwsetup[spw]['nchan']
-            channel_frequencies=spwsetup[spw]['chanfreqs']
-            ddi = spwsetup[spw]['ddi']
-            fieldid=spwsetup['fieldid'][intent][0]
+        print('Processing SPW '+str(spw.id)+' , intent '+str(intent))
+        npol = ms.get_data_description(spw=spw.id).num_polarizations
+        nchan = len(spw.channels)
+        channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
+        ddi = ms.get_data_description(spw=spw.id)
+        fieldid = [field.id for field in ms.get_fields(intent=intent)][0]
 
-            if nscans > 1:
-                #string to check whether a file of averaged visibilities for all scans exists
-                all_scans = str(scanlist).replace(', ','_')[1:-1] #string with list of all scans separated by underscore
-                all_scans_saved_visibilities = saved_visibilities / f'buf.{msname}.{all_scans}.{ddi}.{fieldid}.pkl'
-                all_scans_visibility_exists = os.path.exists(all_scans_saved_visibilities) #do the average visibili ties for all scans already exist
+        #all mswrapper objects of this ms, intent, will go here. this is in case we need to average the visibilities of all scans
+        wrappers = []
+        for scan in scans_for_intent:
+            print('Starting QA of scan '+str(scan.id))
+            #are there saved averaged visbilities?
+            saved_visibility = saved_visibilities / f'buf.{msname}.{int(scan.id)}.{ddi.id}.{fieldid}.pkl'
+            if os.path.exists(saved_visibility):
+                #then load them
+                print("loading visibilities")
+                wrapper = mswrapper.MSWrapper(ms, scan.id, spw.id)
+                wrapper.load(saved_visibility)
+            else:
+                #then create them
+                print('Creating averaged visibilities, since they do not exist yet...')
+                wrapper = mswrapper.MSWrapper.create_averages_from_ms(msname, int(scan.id), spw.id, memory_gb, antennaids, npol, nchan)
+                wrapper.save(saved_visibility)
 
-            #all mswrapper objects of this ms, intent, will go here. this is in case we need to average the visibilities of all scans
-            wrapper_list=[]
+            #add scan parameter to outlier partial function
+            outlier_fn_for_scan = functools.partial(outlier_fn, scan={scan.id, })
+            #amp/phase vs frequency fits per scan
+            frequency_fit = ampphase_vs_freq_qa.get_best_fits_per_ant(wrapper, channel_frequencies)
 
-            for scan in scanlist:
+            #amp/phase vs frequency scores
+            scan_outliers = ampphase_vs_freq_qa.score_all(frequency_fit, outlier_fn_for_scan, unit_factor, flag_all)
+            outliers.extend(scan_outliers)
 
-                print('Starting QA of scan '+str(scan))
-                #are there saved averaged visbilities? 
-                saved_visibility = saved_visibilities / f'buf.{msname}.{scan}.{ddi}.{fieldid}.pkl'
-                if os.path.exists(saved_visibility):
-                    #then load them
-                    print("loading visibilities")
-                    wrapper = mswrapper.MSWrapper(ms, scan, spw)
-                    wrapper.load(saved_visibility)
-                else:
-                    #then create them    
-                    print('Creating averaged visibilities, since they do not exist yet...')
-                    wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms, scan, spw, memory_gb, antennaids, npol, nchan)
-                    wrapper.save(saved_visibility)
+            #in case we need to average over average visibilities to get scores over all scans
+            wrappers.append(wrapper)
 
-                #add scan parameter to outlier partial function
-                outlier_fn_for_scan = functools.partial(outlier_fn, scan={scan, })
-                #amp/phase vs frequency fits per scan            
-                frequency_fit = ampphase_vs_freq_qa.get_best_fits_per_ant(wrapper, channel_frequencies)
+        #now we get scores for the average over average visibilities across all scans
+        if nscans > 1:
+            # only difference between this an above is that MSWrapper.create_averages_from_combination
+            # is called rather than MSWrapper.create_averages_from_ms
 
-                #amp/phase vs frequency scores
-                scan_outliers = ampphase_vs_freq_qa.score_all(frequency_fit, outlier_fn_for_scan, unit_factor, flag_all)
-                outliers.extend(scan_outliers)
+            #string to check whether a file of averaged visibilities for all scans exists
+            all_scans = '_'.join(str(scan.id) for scan in scans_for_intent) #string with list of all scans separated by underscore
+            all_scans_saved_visibilities = saved_visibilities / f'buf.{msname}.{all_scans}.{ddi.id}.{fieldid}.pkl'
+            all_scans_visibility_exists = os.path.exists(all_scans_saved_visibilities) #do the average visibili ties for all scans already exist
 
-                #in case we need to average over average visibilities to get scores over all scans
-                if (nscans > 1) and not all_scans_visibility_exists:
-                    wrapper_list.append(wrapper)
-
-            #now we get scores for the average over average visibilities across all scans
-            if (nscans > 1) and all_scans_visibility_exists:
-                print('All-scan visibilities for '+str(all_scans)+' exist, reading them...')
+            if all_scans_visibility_exists:
+                print('All-scan visibilities for ' + str(all_scans) + ' exist, reading them...')
                 all_scan_wrapper = mswrapper.MSWrapper(ms, all_scans, spw)
                 all_scan_wrapper.load(all_scans_saved_visibilities)
-            elif nscans > 1:
-                print('All-scan visibilities for '+str(all_scans)+' DO NOT exist, creating them...')
-                all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrapper_list, antennaids, npol, nchan)
+            else:
+                print('All-scan visibilities for ' + str(all_scans) + ' DO NOT exist, creating them...')
+                all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers, antennaids, npol,
+                                                                                        nchan)
                 all_scan_wrapper.save(all_scans_saved_visibilities)
 
-            if nscans > 1:
-                #amp/phase vs frequency scores for all scans              
-                all_scan_frequency_fits = ampphase_vs_freq_qa.get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
-                #for lack of a better number, '-1' means 'all scans'
-                outlier_fn_for_all_scans = functools.partial(outlier_fn, scan={-1, })
-                scan_outliers = ampphase_vs_freq_qa.score_all(all_scan_frequency_fits, outlier_fn_for_all_scans, unit_factor, flag_all)
-                outliers.extend(scan_outliers)
+            #amp/phase vs frequency scores for all scans
+            all_scan_frequency_fits = ampphase_vs_freq_qa.get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
+            #for lack of a better number, '-1' means 'all scans'
+            outlier_fn_for_all_scans = functools.partial(outlier_fn, scan={-1, })
+            scan_outliers = ampphase_vs_freq_qa.score_all(all_scan_frequency_fits, outlier_fn_for_all_scans, unit_factor, flag_all)
+            outliers.extend(scan_outliers)
 
     return outliers
 
