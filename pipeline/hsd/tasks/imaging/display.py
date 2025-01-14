@@ -960,7 +960,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             # line_center contains the edge, so it need to be subtracted.
             f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
 
-            # The domain of f_line_center is [-0.5, self.nchan-1.5), it will be rounded by _digitize()
+            # The domain of f_line_center is [-0.5, self.nchan-1.5), it will be rounded by _calc_plot_values()
             if f_line_center < -0.5 or self.nchan - 1.5 <= f_line_center:
                 continue
 
@@ -973,7 +973,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             try:
                 (idx_line_center, idx_vertlines, velocity_line_center,
                  velocity_per_channel, chan0, chan1, V0, V1, is_leftside) = \
-                     self._digitize(f_line_center, slice_width, is_lsb)
+                     self._calc_plot_values(f_line_center, slice_width, is_lsb)
             except ValueError as e:
                 LOG.warning('ValueError in digitize: %s' % e)
                 continue
@@ -983,10 +983,10 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             # vertical lines for integrated spectrum #1
             plotting_objects.append(
-                axes_integsp1.axvline(x=self.frequency[idx_vertlines[0]], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[chan0], linewidth=0.3, color='r')
             )
             plotting_objects.append(
-                axes_integsp1.axvline(x=self.frequency[idx_vertlines[-1]], linewidth=0.3, color='r')
+                axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
             )
             
             # Calculate red vertical lines for integrated spectrum #2
@@ -1181,7 +1181,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         return plot_list
 
-    def _digitize(self, f_line_center:float, slice_width: int, is_lsb:bool) -> \
+    def _calc_plot_values(self, f_line_center:float, slice_width: int, is_lsb:bool) -> \
             Tuple[Union[bool, int, float, List[int]]]:
         """
         Digitize values and calculate related values.
@@ -1261,7 +1261,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         else:
             velocity_line_center = (self.velocity[i_line_center] + self.velocity[neighbor_channel]) * 0.5
 
-        # caluculate the velocity value per a channel
+        # calculate the velocity value per channel
         velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[neighbor_channel])
 
         # caluculate values of the both edges of vertical red lines for plotting
