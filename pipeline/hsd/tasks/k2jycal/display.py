@@ -13,12 +13,16 @@ import matplotlib.cm as cm
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.logging as logging
+
 from ..common.display import DPISummary
 from pipeline.domain.spectralwindow import SpectralWindow
 from pipeline.domain.measures import FrequencyUnits
 
+LOG = logging.get_logger(__name__)
+
 class K2JySingleScatterDisplay(object):
-    """A display class to generate a scatter plot of K/Jy factors across all SPWs."""
+    """A display class to generate a scatter plot of Jy/K factors across all SPWs."""
     
     def __init__(
         self,
@@ -77,8 +81,8 @@ class K2JySingleScatterDisplay(object):
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111)
         ax.set_xlabel('Frequency (GHz)', fontsize=11)
-        ax.set_ylabel('K/Jy factor', fontsize=11)
-        ax.set_title('K/Jy Factors across Frequencies', fontsize=11, fontweight='bold')
+        ax.set_ylabel('Jy/K factor', fontsize=11)
+        ax.set_title('Jy/K Factors across Frequencies', fontsize=11, fontweight='bold')
         # Corrected symbols_and_colours definition
         symbols_and_colours = zip(
             itertools.cycle('osDv^<>'),  # Cycle through marker symbols
@@ -93,16 +97,17 @@ class K2JySingleScatterDisplay(object):
         for ms_label in ms_labels:
             symbol, colour = next(symbols_and_colours)
             ms_data = self.valid_factors[ms_label]
+            if is_ms_above_lim:
+                lab = ms_label.split('_')[-1].split('.')[0]
+                LOG.log("Label {lab} stands for ms {ms_label}")
+            else:
+                lab = ms_label
             for idx, spw_id in enumerate(spw_ids):
                 dat = ms_data.get(spw_id, [])
                 y = [d[0] for d in dat]
                 x = [self.spws[spw_id].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
                 x_unc = [decimal.Decimal('0.5') * self.spws[spw_id].bandwidth.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
                 # Plot ranges for SPWs
-                if is_ms_above_lim:
-                    lab = ms_label.split('_')[-1].split('.')[0]
-                else:
-                    lab = ms_label
                 ax.errorbar(
                         x, y, xerr=x_unc, yerr=None, linestyle="None",
                         marker=symbol, color=colour, alpha = 1.0, 
@@ -130,7 +135,7 @@ class K2JySingleScatterDisplay(object):
         plotfile = os.path.join(self.stage_dir, 'kjy_factors_across_frequencies.png')
         canvas.print_figure(plotfile, format='png', dpi=DPISummary)
         # Create Plot object
-        plot = self._create_plot(plotfile, 'Frequency (GHz)', 'K/Jy factor')
+        plot = self._create_plot(plotfile, 'Frequency (GHz)', 'Jy/K factor')
         yield plot
         
 

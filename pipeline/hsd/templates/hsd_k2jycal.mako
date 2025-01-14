@@ -22,7 +22,7 @@ def id2name(spwid):
 
 <h3>Summary of Jy/K Conversion Factor</h3>
 <p>
-This plot shows the K/Jy factors across SPWs for different measurement sets.
+This plot shows the Jy/K factors across SPWs for different measurement sets.
 </p>
 % if jyperk_hist and len(jyperk_hist) > 0:
     <% plot = jyperk_hist[0] %>
@@ -35,18 +35,18 @@ This plot shows the K/Jy factors across SPWs for different measurement sets.
         <div class="thumbnail">
             <a href="${fullsize_relpath}"
                data-fancybox
-               title='K/Jy Factors across SPWs'>
+               title='Jy/K Factors across SPWs'>
                 <img class="lazyload"
                      data-src="${thumbnail_relpath}"
-                     title="Click to show plot of K/Jy factors across SPWs">
+                     title="Click to show plot of Jy/K factors across SPWs">
             </a>
 
             <div class="caption">
                 % if dovirtual:
-                    <h4>K/Jy Factors across Virtual Spectral Windows</h4>
+                    <h4>Jy/K Factors across Virtual Spectral Windows</h4>
                     <p>Virtual SPWs included: ${', '.join(map(str, plot.parameters['spws']))}</p>
                 % else:
-                    <h4>K/Jy Factors across Spectral Windows</h4>
+                    <h4>Jy/K Factors across Spectral Windows</h4>
                     <p>SPWs included: ${', '.join(map(str, plot.parameters['spws']))}</p>
                 % endif
                 <h6>Receivers: ${', '.join(plot.parameters['receivers'])}</h6>

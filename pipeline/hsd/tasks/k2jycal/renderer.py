@@ -48,11 +48,16 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             context: Pipeline context
             results: ResultsList instance. Should hold a list of SDK2JyCalResults instance.
         """
+        calculate_stats = lambda fs, r=0: (lambda m, s: {
+                    "upper_limit": m + r * s,
+                    "lower_limit": m - r * s,
+                    "mean": m,
+                    "std": s,
+                })(mean(fs), std(fs))
+        
         spw_factors = collections.defaultdict(list)
         spw_tr = collections.defaultdict(list)
         valid_spw_factors = collections.defaultdict(lambda: collections.defaultdict(list))
-        spw_frequencies = {}
-        
         dovirtual = sdutils.require_virtual_spw_id_handling(context.observing_run)
         trfunc_r = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTR(_rspwid, _vis, _antenna, _pol, _factor)
         trfunc_v = lambda _vspwid, _vis, _rspwid, _antenna, _pol, _factor: JyperKTRV(_vspwid, _vis, _rspwid, _antenna, _pol, _factor)
@@ -60,56 +65,60 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         reffile_list = []
         
         for r in results:
-            # rearrange jyperk factors
             ms = context.observing_run.get_ms(name=r.vis)
-            vis = ms.basename
-            ms_label = vis
+            ms_label = ms.basename
             spws = {}
-            outliers = []
-            for spw in ms.get_spectral_windows(science_windows_only=True):
+            factors_data = r.factors
+            spw_list = list(ms.get_spectral_windows(science_windows_only=True))
+            antennas = list(ms.get_antenna())
+            for spw in spw_list:
                 spwid = spw.id
-                # virtual spw id
                 vspwid = context.observing_run.real2virtual_spw_id(spwid, ms)
+                spws.setdefault(vspwid, spw)
                 ddid = ms.get_data_description(spw=spwid)
-                if vspwid not in spws:
-                    spws[vspwid] = spw
-                for ant in ms.get_antenna():
+                corrs = [ddid.get_polarization_label(i) for i in range(ddid.num_polarizations)]
+
+                # Collect factors for each antenna and correlation
+                for ant in antennas:
                     ant_name = ant.name
-                    corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
                     for corr in corrs:
-                        factor = self.__get_factor(r.factors, vis, spwid, ant_name, corr)
+                        factor = self.__get_factor(factors_data, ms_label, spwid, ant_name, corr)
                         jyperk = factor if factor is not None else 'N/A (1.0)'
-                        tr = trfunc(vspwid, vis, spwid, ant_name, corr, jyperk)
                         spw_factors[vspwid].append(factor)
-                        spw_tr[vspwid].append(tr)
+                        spw_tr[vspwid].append(trfunc(vspwid, ms_label, spwid, ant_name, corr, jyperk))
                         if factor is not None:
-                            valid_spw_factors[ms_label][vspwid].append((factor, corr))
+                            valid_spw_factors[ms_label][vspwid].append((factor, corr, ant_name))
             reffile_list.append(r.reffile)
         
-        swps_std = {spw_id:(
-                        fact_mean + fact_std * 3, # 3 std away
-                        fact_mean - fact_std * 3,
-                        fact_mean,
-                        fact_std)  
-                    for spw_id in spw_factors.keys()
-                    for fact_mean, fact_std in [(mean(spw_factors[spw_id]), std(spw_factors[spw_id]))]}
+        # Compute statistics for each spectral window
+        swps_stats = {spw_id: calculate_stats([f for f in spw_factors[spw_id] if f is not None])
+                  for spw_id in spw_factors if any(f is not None for f in spw_factors[spw_id])}
         
-        for ms, spw_data in list(valid_spw_factors.items()):
-            for spw_id, f_list in list(spw_data.items()):
-                for f in f_list:
-                    factor, corr = f
-                    if (factor > swps_std[spw_id][0]) or (factor < swps_std[spw_id][1]):
-                        msg = f"Value of factor {factor} for polarity {corr}, spw {spw_id} in ms '{ms_label}' is significantly away from the mean value factor for this spw, which is {swps_std[spw_id][2]}; std = {swps_std[spw_id][3]}."
-                        outliers.append(msg)
-                        LOG.warning(msg)
+        format_outlier_msg = lambda factor, corr, ant, spw_id, ms_label, m, s: (
+            f"Value of factor {factor} for polarity {corr}, spw {spw_id} of antenna {ant} in ms '{ms_label}' "
+            f"is significantly away from the mean {m} (std={s})."
+        )
+        
+        extra_logrecords_handler = logging.CapturingHandler(logging.WARNING)
+        logging.add_handler(extra_logrecords_handler)
+
+        for ms_label, spw_data in valid_spw_factors.items():
+            for spw_id, factors_list in spw_data.items():
+                stats = swps_stats.get(spw_id)
+                if not stats:
+                    continue
+                u, l, m, s = stats["upper_limit"], stats["lower_limit"], stats["mean"], stats["std"]
+                for factor, corr, ant in factors_list:                    
+                    if factor < l or factor > u:
+                        LOG.warning(format_outlier_msg(factor, corr, ant, spw_id, ms_label, m, s))
+        
+        
+        logging.remove_handler(extra_logrecords_handler)
+        extra_logrecords = extra_logrecords_handler.buffer
         
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         # histogram plots of Jy/K factors
         hist_plots = []
-        # for vspwid, valid_factors in valid_spw_factors.items():
-        #     if len(valid_factors) > 0:
-        #         task = display.K2JyHistDisplay(stage_dir, vspwid, valid_factors, spw_band[vspwid])
-        #         hist_plots += task.plot()
         if any(len(spw_data) > 0 for spw_data in valid_spw_factors.values()):
             task = display.K2JySingleScatterDisplay(stage_dir, valid_spw_factors, spws)
             hist_plots += task.plot()
@@ -130,7 +139,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                     'reffile_list': reffile_copied,
                     'jyperk_hist': hist_plots,
                     'dovirtual': dovirtual,
-                    'outliers': None if len(outliers)>0 else outliers})
+                    'extra_logrecords': extra_logrecords})
 
     @staticmethod
     def __get_factor(
