@@ -48,7 +48,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
             context: Pipeline context
             results: ResultsList instance. Should hold a list of SDK2JyCalResults instance.
         """
-        calculate_stats = lambda fs, r=0: (lambda m, s: {
+        calculate_stats = lambda fs, r = 3: (lambda m, s: {
                     "upper_limit": m + r * s,
                     "lower_limit": m - r * s,
                     "mean": m,
