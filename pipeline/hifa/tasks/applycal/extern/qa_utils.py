@@ -10,39 +10,6 @@ from pipeline.domain.measures import FrequencyUnits
 SSOfieldnames = {'Ceres', 'Pallas', 'Vesta', 'Venus', 'Mars', 'Jupiter', 'Uranus', 'Neptune', 'Ganymede', 'Titan', 'Callisto', 'Juno', 'Europa'}
 
 
-def get_spec_setup(ms: MeasurementSet, intents: list[str]):
-    """
-    Obtain spectral setup dictionary from MS.
-
-    @param ms: MeasurementSet domain object
-    @param intents: List of pipeline intents to include in the dictionary.
-    """
-    science_spws = ms.get_spectral_windows(intent=','.join(intents))
-    spwsetup = {}
-    spwsetup['spwlist'] = [spw.id for spw in science_spws]
-    spwsetup['intentlist'] = intents
-    spwsetup['scan'] = {intent: [scan.id for scan in ms.get_scans(scan_intent=intent)]
-                        for intent in intents
-                        if len(ms.get_scans(scan_intent=intent)) > 0}
-    spwsetup['fieldid'] = {intent: [field.id for field in ms.get_fields(intent=intent)]
-                           for intent in intents
-                           if len(ms.get_fields(intent=intent)) > 0}
-    spwsetup['fieldname'] = {intent: [field.name for field in ms.get_fields(intent=intent)]
-                             for intent in intents
-                             if len(ms.get_fields(intent=intent)) > 0}
-    spwsetup['antids'] = sorted([ant.id for ant in ms.get_scans(scan_intent=intents[0])[0].antennas])
-    for spw in science_spws:
-        spwsetup[spw.id] = {
-            # prototype cached the channel centre frequencies
-            'chanfreqs': np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels]),
-            'nchan': len(spw.channels),
-            'ddi': ms.get_data_description(spw=spw.id).id,
-            'npol': ms.get_data_description(spw=spw.id).num_polarizations
-        }
-
-    return spwsetup
-
-
 def get_intents_to_process(ms: MeasurementSet, intents: list[str]) -> list[str]:
     """
     Optimise a list of intents so that scans with multiple intents are only
