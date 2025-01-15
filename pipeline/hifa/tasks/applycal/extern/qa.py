@@ -35,7 +35,7 @@ SSOfieldnames = ['Ceres', 'Pallas', 'Vesta', 'Venus', 'Mars', 'Jupiter', 'Uranus
 
 class QAScoreEvalFunc(object):
 
-    def __init__(self, ms: MeasurementSet, spwsetup, outliers: List[Outlier]):
+    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: List[Outlier]):
         """
         QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
         objects, generates an object that can be evaluated to obtain a QA score evaluation
@@ -50,10 +50,9 @@ class QAScoreEvalFunc(object):
         self.QAEVALF_MAX = 1.0
         self.QAEVALF_SCALE = 1.55
 
-        #Save basic data, MS name and spwsetup dictionary.
+        #Save basic data and MeasurementSet domain object
         self.ms = ms
-        self.spwsetup = spwsetup
-        
+
         #Create the relevant vector array for QA scores evaluation, and save them
         self.outliers = outliers
         self.noutliers = len(outliers)
@@ -69,18 +68,19 @@ class QAScoreEvalFunc(object):
         self.intent = np.array([list(o.intent)[0] for o in outliers])
         self.ant = np.array([list(o.ant)[0] for o in outliers])
         self.pol = np.array([list(o.pol)[0] for o in outliers])
-        self.allintents = [i for i in self.spwsetup['scan'].keys() if len(self.spwsetup['scan'][i]) > 0]
+        # prototype operated on intents in ms, including all intents for scans with multiple intents
+        self.allintents = frozenset(intents).intersection(ms.intents)
         self.long_msg = 'EVALUATE_TO_GET_LONGMSG'
         self.short_msg = 'EVALUATE_TO_GET_SHORTMSG'
         #Initialize metrics/data dictionary
-        mlist = score_thresholds.keys()
         self.qascoremetrics = {}
-        for i in self.allintents:
-            self.qascoremetrics[i] = {}
-            for s in self.spwsetup['spwlist']:
-                self.qascoremetrics[i][s] = {}
-                for m in mlist:
-                    self.qascoremetrics[i][s][m] = {}
+
+        for intent in self.allintents:
+            self.qascoremetrics[intent] = {}
+            for spw in ms.get_spectral_windows(intent=','.join(intents)):
+                self.qascoremetrics[intent][spw.id] = {}
+                for metric in score_thresholds:
+                    self.qascoremetrics[intent][spw.id][metric] = {}
 
 
     def __call__(self, qascore: pqa.QAScore):
@@ -100,12 +100,11 @@ class QAScoreEvalFunc(object):
 
         #Case of no data selected as outlier for this metric,
         #fill values with default values for non-outlier QA scores
-        if (len(selscan) == 0) and (len(selspw) == 0) and (len(selintent) == 0) and (len(selant) == 0):
-            for i in self.allintents:
+        if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
+            for i in self.qascoremetrics:
                 self.qascoremetrics[i]['subscore'] = 1.0
-                self.qascoremetrics['finalscore'] = 1.0
-                for s in self.spwsetup['spwlist']:
-                    for m in mlist:
+                for s in self.qascoremetrics[i]:
+                    for m in self.qascoremetrics[i][s]:
                         self.qascoremetrics[i][s][m]['significance'] = 0.0
                         self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
                         self.qascoremetrics[i][s][m]['outliers'] = False
@@ -119,12 +118,8 @@ class QAScoreEvalFunc(object):
         testintent = lambda x: x in selintent
         testant = lambda x: x in selant
         basesel = np.array(list(map(testspw, self.spw))) & np.array(list(map(testscan, self.scan))) & np.array(list(map(testintent, self.intent))) & np.array(list(map(testant, self.ant)))
-        #npols = self.spwsetup[selspw[0]]['npol']
-        nants = len(self.spwsetup['antids'])
 
         for i in selintent:
-            intentscans = np.intersect1d(selscan, np.array(self.spwsetup['scan'][i]))
-            nscans = len(intentscans)
             for s in selspw:
                 for m in mlist:
                     #For this metric, select the pool of outliers from the "applies_to" attribute
@@ -173,7 +168,7 @@ class QAScoreEvalFunc(object):
                 #Decide the minimum QA score for this subscore
                 #Unless it is a non-polarization intent with symmetric amplitude outliers,
                 #should be determined by the intent_minscore dictionary from the intent
-                if (selmetric == 'amp_vs_freq.intercept') and (i != '*POLARIZATION*') and is_amp_sym_off_all:
+                if (selmetric == 'amp_vs_freq.intercept') and (i != 'POLARIZATION') and is_amp_sym_off_all:
                     thisminscore = intent_minscore['AMP_SYM_OFFSET']
                 else:
                     thisminscore = intent_minscore[i]
@@ -227,8 +222,6 @@ def get_qa_scores(
     print(f'Calculating scores for MS: {ms.basename}')
     #if there are any average visibilities saved, they are in buffer_folder
     buffer_folder = output_path / 'databuffer'
-    #this is still using function from analysisUtils, but should probably be replaced
-    spwsetup = qau.get_spec_setup(ms, intents=pipe_intents)
     #All outlier objects in this list
     outliers = []
     #all outlier scores objects will be saved here
@@ -256,7 +249,7 @@ def get_qa_scores(
                     debug_file.write('{}\n'.format(msg))
 
     #Create QA evaluation function
-    qaevalf = QAScoreEvalFunc(ms, spwsetup, outliers)
+    qaevalf = QAScoreEvalFunc(ms, pipe_intents, outliers)
     # convert outliers to QA scores
     all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
 
