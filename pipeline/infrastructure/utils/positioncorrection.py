@@ -31,9 +31,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
     be executed outside of the pipeline.
 
     CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated *in place*
-    in the input FITS image header.
-
-    PIPE-1527: added new header variables zaval and zaunit for the zenith angle
+    in the input FITS image header. ZD and TELMJD keywords describe the zenith
+    distance value and time of zenith distance, respectively.
 
     Args:
         fitsname: name (and path) of FITS file to be processed.
@@ -90,8 +89,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
             amp = np.deg2rad(0.25 / 3600.0)
             deltatot = amp * np.tan(zd)
-            offset_pa = list(rtq(({'value': deltatot, 'unit': 'rad'},
-                                  {'value': pa, 'unit': 'rad'})))
+            offset_pa = rtq(({'value': deltatot, 'unit': 'rad'}, {'value': pa, 'unit': 'rad'}))
 
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
@@ -109,8 +107,13 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             header['cunit1'] = 'deg'
             header['crval2'] = dec_fixed.to_value(u.deg)
             header['cunit2'] = 'deg'
-            header['zaval'] = casa_tools.quanta.convert(zd, 'deg')['value']
-            header['zaunit'] = 'deg'
+
+            # PIPE-1527: added new header variables per NOAO guidelines; more information can be found here:
+            # https://nom-tam-fits.github.io/nom-tam-fits/apidocs/nom/tam/fits/header/extra/NOAOExt.html#ZD
+            # zd for zenith distance rounded to 2 sig figs and telmjd for time for zd rounded to 6 sig figs
+            zd_deg = casa_tools.quanta.convert(zd, 'deg')['value']
+            header['zd'] = round(zd_deg, 2)
+            header['telmjd'] = round(date_time["m0"]["value"], 6)
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
@@ -130,7 +133,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
 
 def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict):
-    """
+    """Computes the zenith distance and parallactic angle chi.
+
     Args:
         ra: Uncorrected Right Ascension.
         dec: Uncorrected Declination.
@@ -144,14 +148,14 @@ def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Di
 
     Returns:
         zd: zenith distance in radians
-        pa: parallactic angle in radians
+        chi: parallactic angle in radians
 
     Examples:
     >>> ra, dec = {'unit': 'deg', 'value': 239.9618166667}, {'unit': 'deg', 'value': 33.5}
     >>> obslong, obslat =  {'unit': 'deg', 'value': -107.61833}, {'unit': 'deg', 'value': 33.90049},
     >>> datetime = {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'}
-    >>> zd, pa = calc_zd_pa(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
-    >>> '{}rad,{}rad'.format(zd, pa)
+    >>> zd, chi = calc_zd_pa(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
+    >>> '{}rad,{}rad'.format(zd, chi)
     0.2981984027696312rad, 1.4473222298324353rad
     """
 
@@ -179,7 +183,7 @@ def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Di
 
     zd = np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad) 
                    * np.cos(dec_rad) * np.cos(ha_rad))
-    pa = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) - 
+    chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) -
                                      np.sin(dec_rad) * np.cos(ha_rad)))
 
     # Restrict ha_rad to the -np.pi to +np.pi range in order to deal with
@@ -189,9 +193,9 @@ def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Di
     # negative ha_rad, subtract np.pi to keep chi negative.
     if ha_rad > np.pi:
         ha_rad = ha_rad - 2.0 * np.pi
-    if (ha_rad < 0.0) and (pa > 0.0):
-        pa = pa - np.pi
-    elif (ha_rad > 0.0) and (pa < 0.0):
-        pa = pa + np.pi
+    if (ha_rad < 0.0) and (chi > 0.0):
+        chi = chi - np.pi
+    elif (ha_rad > 0.0) and (chi < 0.0):
+        chi = chi + np.pi
 
-    return zd, pa
+    return zd, chi

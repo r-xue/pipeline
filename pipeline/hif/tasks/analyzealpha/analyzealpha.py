@@ -111,14 +111,16 @@ class Analyzealpha(basetask.StandardTaskTemplate):
             observatory = casa_tools.measures.observatory('VLA')
             obs_long = observatory['m0']
             obs_lat = observatory['m1']
-            # Mean observing time
-            date_obs = header['DATE-OBS']
-            timesys = header['TIMESYS']
-            date_time = casa_tools.measures.epoch(timesys, date_obs)
+            # Mean observing time; mimics mid time calculation in exportvlassdata
+            start_time = self.inputs.context.observing_run.start_datetime
+            end_time = self.inputs.context.observing_run.end_datetime
+            mid_time = start_time + (end_time - start_time) / 2
+            mid_time = casa_tools.measures.epoch('utc', mid_time.isoformat())
 
-            # retrieve zenith angle for reporting to weblog
-            za_rad, _ = utils.positioncorrection.calc_zd_pa(ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=date_time)
-            zenith_angle = casa_tools.quanta.convert(za_rad, 'deg')['value']
+            # retrieve zenith angle to 2 sig figs for reporting to weblog
+            za_rad, _ = utils.positioncorrection.calc_zd_pa(
+                ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time)
+            zenith_angle = round(casa_tools.quanta.convert(za_rad, 'deg')['value'], 2)
             LOG.info('|* Zenith angle of alpha image in degrees {}'.format(zenith_angle))
 
         return AnalyzealphaResults(max_location=max_location, alpha_and_error=alpha_and_error,

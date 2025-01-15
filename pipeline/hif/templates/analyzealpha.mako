@@ -24,6 +24,6 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
   </tr>
   <tr>
     <td><b>Zenith angle</b></td>
-    <td>${result[0].zenith_angle}</td>
+    <td>${result[0].zenith_angle}&#176;</td>
   </tr>
 </table>
