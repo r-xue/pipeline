@@ -497,8 +497,8 @@ class SingleDishPlotmsLeaf(object):
         Return:
             List of plot object.
         """
-        prefix = '{caltable}-{y}_vs_{x}-{ant}-spw{spw}'.format(
-            caltable=os.path.basename(self.caltable), y=self.yaxis, x=self.xaxis,
+        prefix = '{ms}-{y}_vs_{x}-{ant}-spw{spw}'.format(
+            ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
             ant=self.antenna_selection, spw=self.spw)
 
         title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis=field'.format(
@@ -608,6 +608,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
+            gainfield_name: List of field names.
         """
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp, gainfield_name,
                                                                     xaxis='time', yaxis='amp',
@@ -629,6 +630,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
+            gainfield_name: List of field names.
         """
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, gainfield_name,
                                                                    xaxis='time', yaxis='amp',
