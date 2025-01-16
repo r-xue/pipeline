@@ -89,7 +89,7 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
             amp = np.deg2rad(0.25 / 3600.0)
             deltatot = amp * np.tan(zd)
-            offset_pa = rtq(({'value': deltatot, 'unit': 'rad'}, {'value': pa, 'unit': 'rad'}))
+            offset_pa = rtq([{'value': deltatot, 'unit': 'rad'}, {'value': pa, 'unit': 'rad'}])
 
             # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
             freq_scale = (3.e9/freq_head['value'])**2
@@ -110,10 +110,10 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
             # PIPE-1527: added new header variables per NOAO guidelines; more information can be found here:
             # https://nom-tam-fits.github.io/nom-tam-fits/apidocs/nom/tam/fits/header/extra/NOAOExt.html#ZD
-            # zd for zenith distance rounded to 2 sig figs and telmjd for time for zd rounded to 6 sig figs
+            # zd for zenith distance and telmjd for time
             zd_deg = casa_tools.quanta.convert(zd, 'deg')['value']
-            header['zd'] = round(zd_deg, 2)
-            header['telmjd'] = round(date_time["m0"]["value"], 6)
+            header['zd'] = zd_deg
+            header['telmjd'] = date_time["m0"]["value"]
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
