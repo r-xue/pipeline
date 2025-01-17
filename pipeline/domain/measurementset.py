@@ -30,6 +30,7 @@ from pipeline.infrastructure import logging
 from . import measures, spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
+from .polarization import Polarization
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -65,6 +66,7 @@ class MeasurementSet(object):
         observer: The name of the observer, as listed in the OBSERVATIONS table.
         observing_modes: The name(s) of the Observing Mode(s) used for this MS,
             populated from the ASDM_SBSUMMARY table (empty list if not ALMA).
+        polarizations: A list of Polarization objects associated with the MS.
         project_id: Project ID associated with this MS, as listed in the
             OBSERVATIONS table.
         representative_target: A tuple of the name of representative source,
@@ -143,6 +145,7 @@ class MeasurementSet(object):
         self.fields: RetrieveByIndexContainer | list = []
         self.observer: str = ''
         self.observing_modes: list[str] = []  # PIPE-2084
+        self.polarizations: list[Polarization] = []
         self.project_id: str = ''
         self.representative_target: tuple[str | None, dict | None, dict | None] = (None, None, None)
         self.representative_window: str | None = None
