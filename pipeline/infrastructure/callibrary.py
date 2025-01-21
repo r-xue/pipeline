@@ -169,8 +169,8 @@ class CalApplication(object):
         The antennas to which the calibrations apply.
 
         Returns:
-            String representing the antennas (comma-separated) antennas to which
-            the calibrations apply.
+            String representing the (comma-separated) antennas to which the
+            calibrations apply.
         """
         return self.calto.antenna
 

@@ -14,11 +14,11 @@ class Antenna(object):
         id: The numerical identifier of this antenna within the ANTENNA subtable
             of the measurement set.
         name: The (potentially empty) name of the antenna.
-        station: The station name of the antenna.
-        diameter: The physical diameter of the antenna.
+        station: The station pad on which the antenna is situated.
+        diameter: The physical diameter of the antenna in meters.
         position: Dictionary with longitude, latitude, and height of the antenna.
-        offset: The offset position of the antenna relative to the array
-            reference position.
+        offset: The offset position of the antenna relative to AntennaArray.position
+            (the antenna array reference position).
         longitude: The longitude of the antenna.
         latitude: The latitude of the antenna.
         height: The radial distance of the antenna from the Earth's centre.
@@ -31,11 +31,11 @@ class Antenna(object):
         Args:
             antenna_id: The numerical identifier of the antenna.
             name: The name of the antenna.
-            station: The station name of the antenna.
+            station: The station pad on which the antenna is situated.
             position: Dictionary with longitude, latitude, and height of the antenna.
-            offset: The offset position of the antenna relative to the array
-                reference position.
-            diameter: The physical diameter of the antenna.
+            offset: The offset position of the antenna relative to AntennaArray.position
+                (the antenna array reference position).
+            diameter: The physical diameter of the antenna in meters.
         """
         self.id = antenna_id
 
