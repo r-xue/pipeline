@@ -203,7 +203,7 @@ class FlagDeterBaseInputs(vdp.StandardInputs):
             if any([a.diameter == 7.0 for a in self.ms.antennas]):
                 return [0.048, 0.0]
 
-            median_ints = [self.ms.get_integration_time_stats(intent=intent, stat_type="median")
+            median_ints = [self.ms.get_integration_time_stats(science_windows_only=True, stat_type="median")
                            for intent in ('AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK')
                            if intent in self.ms.intents]
             if not median_ints:
