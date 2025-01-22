@@ -1600,11 +1600,11 @@ class SDImaging(basetask.StandardTaskTemplate):
             if not self.__obtain_and_set_factors_by_convolution_function(_pp, _tirp):
                 return _tirp.failed_rms
 
-        if _tirp.N == 0:
+        if _tirp.weight_sum == 0:
             LOG.warning('No rms estimate is available.')
             return _tirp.failed_rms
 
-        __theoretical_rms = numpy.sqrt(_tirp.sq_rms) / _tirp.N
+        __theoretical_rms = numpy.sqrt(_tirp.sq_rms) / _tirp.weight_sum
         LOG.info('Theoretical RMS of image = {} {}'.format(__theoretical_rms, _pp.brightnessunit))
         return _tirp.cqa.quantity(__theoretical_rms, _pp.brightnessunit)
 
@@ -1734,10 +1734,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         inv_variant_on = _tirp.effBW * numpy.abs(_tirp.cx_val * _tirp.cy_val) * \
             _tirp.t_on_act / _tirp.width / _tirp.height
         inv_variant_off = _tirp.effBW * c_proj * _tirp.t_sub_off * _tirp.t_on_act / _tirp.t_sub_on / _tirp.height
+        weight = _tirp.t_on_act ** 2 * _tirp.t_sub_off / _tirp.t_sub_on
         for ipol in _tirp.polids:
-            _tirp.sq_rms += (jy_per_k * _tirp.mean_tsys_per_pol[ipol]) ** 2 * \
+            _tirp.sq_rms += (jy_per_k * _tirp.mean_tsys_per_pol[ipol] * weight) ** 2 * \
                 (policy.get_conv2d() ** 2 / inv_variant_on + policy.get_conv1d() ** 2 / inv_variant_off)
-            _tirp.N += 1.0
+            _tirp.weight_sum += weight
         return True
 
     def __obtain_t_on_actual(self, _tirp: imaging_params.TheoreticalImageRmsParameters):
@@ -1978,11 +1979,11 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     sign_ra = +1.0 if delta_ra[complete_idx[0][0]] >= 0 else -1.0
     sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
     scan_angle = math.atan2(sign_dec * row_delta_dec, sign_ra * row_delta_ra)
-    hight = numpy.max(height_list)
+    height = numpy.max(height_list)
     center = (cqa.quantity(0.5 * (center_ra.min() + center_ra.max()), radec_unit),
               cqa.quantity(0.5 * (center_dec.min() + center_dec.max()), radec_unit))
     raster_info = RasterInfo(center[0], center[1],
-                             cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
+                             cqa.quantity(width, radec_unit), cqa.quantity(height, radec_unit),
                              cqa.quantity(scan_angle, 'rad'), cqa.quantity(row_separation, radec_unit),
                              cqa.quantity(row_duration, exp_unit))
     LOG.info('Raster Information')
