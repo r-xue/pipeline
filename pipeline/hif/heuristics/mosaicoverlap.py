@@ -73,7 +73,7 @@ def mosaicOverlapFactorMS(ms, source, spw, diameter, intent='TARGET', fwhmfactor
 
     # Find all the spw ids associated with the
     # specified intent
-    science_spws = [spw.id for spw in ms.get_spectral_windows(intent=intent)]
+    science_spws = [s.id for s in ms.get_spectral_windows(intent=intent)]
 
     # Compute the intersection of the two
     #    Replace the specified spws with the intersection if
