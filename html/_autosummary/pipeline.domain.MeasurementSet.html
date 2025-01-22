@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.MeasurementSet &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-206-g2486c0b809-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=c1769f9f"></script>
+      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -164,6 +164,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">MeasurementSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.MeasurementSet" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class to store logical representation of a MeasurementSet (MS).</p>
+<p>The MeasurementSet class represents the metadata and relationships held in a
+measurement set on disk, acting as an in-memory representation so that
+metadata and relationships can be quickly queried without additional disk I/O.</p>
+<p>MeasurementSet does not cache binary data or offer functions to facilitate
+processing of binary data held in the measurement set. For general reading
+of binary data, see the MSWrapper class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -191,6 +197,7 @@ available data types (values) in this MS per (source,spw) tuples
 <li><p><strong>observer</strong> (<em>str</em>) – The name of the observer, as listed in the OBSERVATIONS table.</p></li>
 <li><p><strong>observing_modes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – The name(s) of the Observing Mode(s) used for this MS,
 populated from the ASDM_SBSUMMARY table (empty list if not ALMA).</p></li>
+<li><p><strong>polarizations</strong> (<em>list</em><em>[</em><a class="reference internal" href="pipeline.domain.Polarization.html#pipeline.domain.Polarization" title="pipeline.domain.Polarization"><em>Polarization</em></a><em>]</em>) – A list of Polarization objects associated with the MS.</p></li>
 <li><p><strong>project_id</strong> (<em>str</em>) – Project ID associated with this MS, as listed in the
 OBSERVATIONS table.</p></li>
 <li><p><strong>representative_target</strong> (<em>tuple</em><em>[</em><em>str</em><em> | </em><em>None</em><em>, </em><em>dict</em><em> | </em><em>None</em><em>, </em><em>dict</em><em> | </em><em>None</em><em>]</em>) – A tuple of the name of representative source,
@@ -1051,7 +1058,7 @@ column, the function raises ValueError.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-206-g2486c0b809-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

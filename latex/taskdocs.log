@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.10)  10 JAN 2025 22:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.22)  22 JAN 2025 17:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2332,7 +2332,7 @@ pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/public/txfonts/tcxtt.pfb>
-Output written on taskdocs.pdf (127 pages, 566403 bytes).
+Output written on taskdocs.pdf (127 pages, 566413 bytes).
 PDF statistics:
  1918 PDF objects out of 2073 (max. 8388607)
  1667 compressed objects within 17 object streams

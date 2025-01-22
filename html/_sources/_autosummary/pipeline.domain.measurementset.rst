@@ -23,6 +23,7 @@ pipeline.domain.measurementset
       AntennaArray
       DataType
       MeasurementSet
+      Polarization
    
    
 
