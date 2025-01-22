@@ -5,9 +5,6 @@ import os
 import matplotlib.pyplot as plt
 import numpy
 import traceback
-
-from typing import TYPE_CHECKING, Any, List
-
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
@@ -44,7 +41,6 @@ def get_field_from_ms(ms: 'MeasurementSet', field: str) -> List['Field']:
         List of field domain objects
     """
     field_list = []
-
     if field.isdigit():
         # regard field as FIELD_ID
         field_list = ms.get_fields(field_id=int(field))
@@ -82,7 +78,7 @@ class SingleDishSkyCalDisplayBase(object):
         self.field_id = fields[0].id
         self.field_name = fields[0].clean_name
 
-        LOG.debug('field: ID %s Name \'%s\''%(self.field_id, self.field_name))
+        LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
         old_prefix = self._figroot.replace('.png', '')
         self._figroot = self._figroot.replace('.png', '-%s.png' % (self.field_name))
         new_prefix = self._figroot.replace('.png', '')
@@ -222,7 +218,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             self._figfile[spw_id] = '.'.join(pieces)
 
     def create_task_for_tp_spectral_scan(self, spw_arg: int, antenna_arg: str,
-                                         showimage: bool=False) -> 'JobRequest':
+                                         showimage: bool = False) -> 'JobRequest':
         """
         Return plotbandpass task job with a tweaked parameter value.
 
@@ -241,8 +237,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         try:
             ms = self.context.observing_run.get_ms(self._vis)
             def __get_sorted_reference_scans(msobj: 'MeasurementSet',
-                                             spw: Optional[Union[int, str,
-                                                                 collections.abc.Sequence]] = None) -> List['Scan']:
+                                             spw: Optional[Union[int, str, collections.abc.Sequence]] = None) -> List['Scan']:
                 """
                 Return a list of REFERENCE Scan objects sorted by scan IDs.
                 Args:
@@ -264,7 +259,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
                 start_time_scan_spw = myqa.convert(scan_spw.start_time['m0'], 's')['value']
                 end_time_previous_scan = myqa.convert(scans_all[idx_scan_spw - 1].end_time['m0'], 's')['value']
                 self._kwargs['solutionTimeThresholdSeconds'] = start_time_scan_spw - end_time_previous_scan
-            else: # I don't think this should happen but defining a reasonable value to avoid failure.
+            else:  # I don't think this should happen but defining a reasonable value to avoid failure.
                 self._kwargs['solutionTimeThresholdSeconds'] = scan_spw.exposure_time(spw_arg).seconds / 2
             self._kwargs['scans'] = scan_spw.id
             task = super().create_task(spw_arg, antenna_arg, showimage)
@@ -291,6 +286,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         os.rename(figures[0], figfile)
         for fig in figures[1:]:
             os.remove(fig)
+
 
 class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleDishSkyCalDisplayBase):
     """Class for plotting Amplitude vs. Frequency detail chart.
@@ -444,20 +440,23 @@ class SingleDishPlotmsLeaf(object):
         to customize plotms but currently those parameters are ignored.
 
         Args:
-            context: Pipeline context
-            result: SDSkyCalResults instance
-            calapp: CalApplication instance
+            context: Pipeline context.
+            result: SDSkyCalResults instance.
+            calapp: CalApplication instance.
             gainfield_name: List of field names.
-            xaxis: X-axis type of the plot
-            yaxis: Y-axis type of the plot
+            xaxis: X-axis type of the plot.
+            yaxis: Y-axis type of the plot.
             spw: Spectral window selection. Defaults to '' (all spw).
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
             plotindex: Indices from 0 to n (=len(calapp)-1).
-            clearplots: True for the first field's data or False for the others if multiple fields exist.
+            clearplots: Not output (True) the first field's data or output (False)
+                        the others, if multiple fields exist.
         Raises:
             RuntimeError: Invalid field selection in calapp
         """
+        LOG.debug('__init__(caltable={caltable}, spw={spw}, ant={ant})'.format(caltable=calapp.gaintable, spw=spw,
+                                                                               ant=ant))
         self.xaxis = xaxis
         self.yaxis = yaxis
         self.field = calapp.gainfield
@@ -470,8 +469,7 @@ class SingleDishPlotmsLeaf(object):
         self.clearplots = clearplots
 
         ms = context.observing_run.get_ms(self.vis)
-        fieldlist = ms.get_fields(intent='TARGET')
-        self.fieldidlist = [a.id for a in fieldlist]
+        self.fieldids = [a.id for a in ms.get_fields(intent='TARGET')]
         fields = get_field_from_ms(ms, self.field)
         if len(fields) == 0:
             # failed to find field domain object with field
@@ -488,6 +486,7 @@ class SingleDishPlotmsLeaf(object):
         else:
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
+#        self.antenna_selection = '*&&&'
 
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
@@ -498,8 +497,8 @@ class SingleDishPlotmsLeaf(object):
         Return:
             List of plot object.
         """
-        prefix = '{caltable}-{y}_vs_{x}-{ant}-spw{spw}'.format(
-            caltable=os.path.basename(self.caltable), y=self.yaxis, x=self.xaxis,
+        prefix = '{ms}-{y}_vs_{x}-{ant}-spw{spw}'.format(
+            ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
             ant=self.antenna_selection, spw=self.spw)
 
         title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis=field'.format(
@@ -546,8 +545,9 @@ class SingleDishPlotmsLeaf(object):
                      'plotindex': self.plotindex,
                      'clearplots': self.clearplots
                      }
-        if (self.plotindex+1) % (len(self.fieldidlist)) == 0:
+        if (self.plotindex+1) % (len(self.fieldids)) == 0:
             task_args['plotfile'] = figfile
+
         return casa_tasks.plotms(**task_args)
 
     def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
@@ -564,7 +564,8 @@ class SingleDishPlotmsLeaf(object):
                       'ant': self.antenna_selection,
                       'spw': self.spw,
                       'field': self.field_name}
-        if self.clearplots is False:
+
+        if self.clearplots is False and (self.plotindex+1) % (len(self.fieldids)) == 0:
             return logger.Plot(figfile,
                                x_axis='Time',
                                y_axis='Amplitude',
@@ -600,6 +601,14 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     """
 
     def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication'], gainfield_name: List[str]) -> None:
+        """Initialize the class.
+
+        Args:
+            context: Pipeline context.
+            result: SDSkyCalResults instance.
+            calapp: CalApplication instance.
+            gainfield_name: List of field names.
+        """
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp, gainfield_name,
                                                                     xaxis='time', yaxis='amp',
                                                                     coloraxis='field')
@@ -620,6 +629,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
+            gainfield_name: List of field names.
         """
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, gainfield_name,
                                                                    xaxis='time', yaxis='amp',
@@ -632,7 +642,7 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
     If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication', figtype: str='') -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication', figtype: str = '') -> None:
         """Initialize the class.
 
         Args:
@@ -694,14 +704,14 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             interval_unit = target_scans0.mean_interval(spw_id=spw_id).total_seconds()
                             interval = t.getcol('INTERVAL') / interval_unit
                             t.close()
-                            date_list = sd_display.mjd_to_plotval( (mjd_secs/86400.0) )
+                            date_list = sd_display.mjd_to_plotval((mjd_secs/86400.0))
                             start_time = numpy.min(date_list)
                             end_time = numpy.max(date_list)
                             fig = plt.figure()
-                            ax = fig.add_subplot(1,1,1)
+                            ax = fig.add_subplot(1, 1, 1)
                             ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
                             ax.xaxis.set_major_formatter(sd_display.utc_formatter())
-                            ax.tick_params( axis='both', labelsize=10 )
+                            ax.tick_params(axis='both', labelsize=10)
                             antenna_name = antennas[antenna_id].name
                             field_name = field.clean_name
                             plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
@@ -713,9 +723,9 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             ax.set_ylim([min_interval-3.0, max_interval+3.0])
                             plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
                             if figtype == "summary":
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_summary_hsd_skycal_offinterval"
+                                prefix = vis + "_" + '{}'.format(antenna_name) + "_" + '{}'.format(field_name) + "_summary_hsd_skycal_offinterval"
                             else:
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
+                                prefix = vis + "_" + '{}'.format(antenna_name) + "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
                             figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
                             figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
                             LOG.info('Plot of Interval vs Time: figpath = {0}'.format(figpath))
@@ -723,16 +733,16 @@ class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, Singl
                             plt.close()
                             if os.path.exists(figpath):
                                 parameters = {
-                                'spw': spw_id,
-                                'ant': antenna_name,
-                                'vis': vis,
-                                'type': 'Plot of Interval vs. Time',
-                                'file': vis}
+                                              'spw': spw_id,
+                                              'ant': antenna_name,
+                                              'vis': vis,
+                                              'type': 'Plot of Interval vs. Time',
+                                              'file': vis}
                                 plot = logger.Plot(figpath,
-                                    x_axis='Time',
-                                    y_axis='Off-Source Interval / On-Source Interval',
-                                    field=field_name,
-                                    parameters=parameters)
+                                                   x_axis='Time',
+                                                   y_axis='Off-Source Interval / On-Source Interval',
+                                                   field=field_name,
+                                                   parameters=parameters)
                                 plots.append(plot)
         return plots
 
@@ -742,7 +752,7 @@ def plot_elevation_difference(
         context: 'Context',
         result: 'SDSkyCalResults',
         eldiff: Dict,
-        threshold: float=3.0
+        threshold: float = 3.0
         ) -> List[logger.Plot]:
     """Generate plot of elevation difference.
 
@@ -791,13 +801,13 @@ def plot_elevation_difference(
         a0 = plt.axes([0.125, 0.51, 0.775, 0.39])
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a0.xaxis.set_major_formatter(plt.NullFormatter())
-        a0.tick_params( axis='both', labelsize=10 )
+        a0.tick_params(axis='both', labelsize=10)
         plt.ylabel('Elevation [deg]', fontsize=10)
 
         a1 = plt.axes([0.125, 0.11, 0.775, 0.39])
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
-        a1.tick_params( axis='both', labelsize=10 )
+        a1.tick_params(axis='both', labelsize=10)
         plt.ylabel('Elevation Difference [deg]', fontsize=10)
         plt.xlabel('UTC', fontsize=10)
         return a0, a1
@@ -861,7 +871,6 @@ def plot_elevation_difference(
         vis_prefix = '.'.join(vis.split('.')[:-1])
         figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
         figpath = os.path.join(figroot, figfile)
-        #LOG.info('figpath={}'.format(figpath))
         plt.savefig(figpath)
         plot = None
         if os.path.exists(figpath):
@@ -952,7 +961,7 @@ def plot_elevation_difference(
 
         plots.extend(plots_per_field)
 
-    close_figure( figure0 )
-    close_figure( figure1 )
+    close_figure(figure0)
+    close_figure(figure1)
 
     return plots
