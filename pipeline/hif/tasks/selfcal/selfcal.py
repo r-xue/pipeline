@@ -73,7 +73,6 @@ class SelfcalResults(basetask.Results):
         for calto in calto_list:
 
             vis = calto.vis
-            field_sel = calto.field
             spw_sel = calto.spw
 
             # Create a mapping of regcal data types to their applied selfcal types
@@ -83,14 +82,26 @@ class SelfcalResults(basetask.Results):
                 DataType.REGCAL_CONT_SCIENCE: DataType.SELFCAL_CONT_SCIENCE
             }
 
+            # `calto.field` is a reduced CASA-style selection string derived from the calapp-apply consolidation.
+            # The value can be a field name, a comma separated field id selection string, or an empty string.
+            # See `CaltoIDAdapter.field` for more details on this structure.
+            # Here, its selection scope needs to be translated back to the source name(s) used in `cleantarget`.
+
+            # Retrieve the MS object for the observing run associated with the given visibility (`vis`).
+            ms = context.observing_run.get_ms(vis)
+
+            # Fetch the field names matching the given `calto.field` and `calto.intent`.
+            # Use a set comprehension to collect unique field names, and join them into a single string.
+            field_name = ','.join({field.name for field in ms.get_fields(task_arg=calto.field, intent=calto.intent)})
+
             # Retrieve the data type
-            data_dtype = context.observing_run.get_ms(vis).get_data_type('DATA', field_sel, spw_sel)
+            data_dtype = ms.get_data_type('DATA', field_name, spw_sel)
 
             # Find the corresponding selfcal type
             dtype_applied = data_type_mapping.get(data_dtype, None)
             if dtype_applied is None:
                 LOG.warning(f"No selfcal data type found corresponding to the data type: {data_dtype} "
-                            f"associated with field={field_sel}, spw={spw_sel} in vis={vis}. Skipping registration.")
+                            f"associated with field={field_name!r}, spw={spw_sel!r} in vis={vis}. Skipping registration.")
                 continue
 
             with casa_tools.TableReader(vis) as tb:
@@ -99,9 +110,8 @@ class SelfcalResults(basetask.Results):
                     LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype_applied} registration')
                     continue
                 LOG.info(
-                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_sel!r} spw={spw_sel!r}')
-                ms = context.observing_run.get_ms(vis)
-                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=False)
+                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_name!r} spw={spw_sel!r}')
+                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_name, spw=spw_sel, overwrite=False)
 
     def __repr__(self):
         return 'SelfcalResults:'
