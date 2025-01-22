@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.imageprecheck.imageprecheck.ImagePreCheckInputs.__init__
 @utils.cli_wrapper
 def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
     """Calculates the best Briggs robust parameter to achieve sensitivity and angular resolution goals.
@@ -16,19 +17,6 @@ def hifa_imageprecheck(vis=None, desired_angular_resolution=None, calcsb=None, p
     (e.g. pre-Cycle 5 data does not have this information available). The best Briggs
     robust parameter to achieve the PI's desired angular resolution is chosen
     automatically. See the User's guide for further details.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-        desired_angular_resolution: User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
-            '': automatic from performance parameters (default).
-            Example: '1.0arcsec'
-
-        calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
-
-        parallel: Use MPI cluster where possible
 
     Returns:
         The results object for the pipeline task is returned.

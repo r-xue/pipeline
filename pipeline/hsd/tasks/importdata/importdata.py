@@ -41,6 +41,7 @@ class SDImportDataInputs(importdata.ImportDataInputs):
 
     parallel = sessionutils.parallel_inputs_impl()
 
+    # docstring and type hints: supplements hsd_importdata
     def __init__(self,
                  context: Context,
                  vis: Optional[List[str]] = None,
@@ -63,25 +64,106 @@ class SDImportDataInputs(importdata.ImportDataInputs):
 
         Args:
             context: pipeline context
-            vis: List of input visibility data
+
+            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs,
+                MSes, or tar files of MSes, If ASDM files are specified, they will be
+                converted to MS format.
+
+                Example: vis=['X227.ms', 'asdms.tar.gz']
+
             output_dir: path of output directory
+
             asis: Creates verbatim copies of the ASDM tables in the output MS.
-                  The value given to this option must be a list of table names separated by space characters.
-            process_caldevice: Import the CalDevice table from the ASDM
-            session: List of sessions of input visibility data. Each element in the list indicates the session of a corresponding element in vis.
-            overwrite: Overwrite existing files on import
+                The value given to this option must be a list of table names
+                separated by space characters. Default value, None, is
+                equivalent to the following list.
+
+                    'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow'
+
+                Example: 'Receiver', ''
+
+            process_caldevice: Import the ASDM caldevice table.
+
+                Example: True
+
+                Default: None (equivalent to True)
+
+            session: List of sessions to which the visibility files belong.
+                Defaults to a single session containing all the visibility files,
+                otherwise a session must be assigned to each vis file.
+
+                Example: session=['Session_1', 'Sessions_2']
+
+            overwrite: Overwrite existing files on import. When converting
+                ASDM to MS, if overwrite=False and the MS already exists in
+                output directory, then this existing MS dataset will be used
+                instead.
+
+                Default: None (equivalent to False)
+
             nocopy: Disable copying of MS to working directory
-            bdfflags: Apply BDF flags on import
-            save_flagonline: Save flag commands, flagging template, imaging targets, to text files
-            lazy: use the lazy filler to import data
-            with_pointing_correction: Apply pointing correction to DIRECTION
-            createmms: Create an MMS
+
+            bdfflags: Apply BDF flags on import.
+
+            datacolumns: Dictionary defining the data types of existing columns.
+                The format is:
+
+                    {'data': 'data type 1'}
+
+                or
+
+                    {'data': 'data type 1', 'corrected': 'data type 2'}
+
+                For ASDMs the data type can only be RAW and one can only specify
+                it for the data column.
+                For MSes one can define two different data types for the DATA and
+                CORRECTED_DATA columns and they can be any of the known data types
+                (RAW, REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,
+                SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,
+                SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR).
+                The intent selection strings _ALL or _SCIENCE can be skipped.
+                In that case the task determines this automatically by inspecting
+                the existing intents in the dataset.
+                Usually, a single datacolumns dictionary is used for all datasets.
+                If necessary, one can define a list of dictionaries, one for each EB,
+                with different setups per EB. If no type is specified, {'data':'raw'}
+                will be assumed.
+
+            save_flagonline: Save flag commands, flagging template, imaging targets, to text files。
+
+                Default: None (equivalent to True)
+
+            lazy: Use the lazy filter import.
+
+                Default: None (equivalent to False)
+
+            with_pointing_correction: Apply pointing correction to DIRECTION.
+                Add (ASDM::Pointing::encoder - ASDM::Pointing::pointingDirection)
+                to the value to be written in MS::Pointing::direction.
+
+                Default: None (equivalent to True)
+
+            createmms: Create an MMS.
+
+                Default: None (equivalent to False)
+
             ocorr_mode: Selection of baseline correlation to import.
-                        Valid only if input visibility is ASDM. See a document of CASA, casatasks::importasdm, for available options.
-            hm_rasterscan: heuristics method for raster scan analysis
+                Valid only if input visibility is ASDM. See a document of CASA,
+                casatasks::importasdm, for available options.
+
+                Default: None (equivalent to 'ao')
+
+            hm_rasterscan: Heuristics method for raster scan analysis.
+                Two analysis modes, time-domain analysis ('time') and
+                direction analysis ('direction'), are available.
+
+                Default: None (equivalent to 'time')
+
             parallel: Execute using CASA HPC functionality, if available.
-                      Default is None, which intends to turn on parallel
-                      processing if possible.
+
+                Options: 'automatic', 'true', 'false', True, False
+
+                Default: None (equivalent to 'automatic')
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
                          process_caldevice=process_caldevice, session=session,

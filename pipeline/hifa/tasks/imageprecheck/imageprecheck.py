@@ -82,7 +82,7 @@ class ImagePreCheckResults(basetask.Results):
         #
         # Note: For Cycle 6 the robust heuristic is used in subsequent stages.
         #       The uvtaper heuristic is not yet to be used for the ALMA PI pipeline,
-        #       but is used for SRDP. 
+        #       but is used for SRDP.
         context.imaging_parameters['robust'] = self.hm_robust
         if 'uvtaper' in context.imaging_parameters.keys():
             del context.imaging_parameters['uvtaper']
@@ -110,7 +110,28 @@ class ImagePreCheckInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     desired_angular_resolution = vdp.VisDependentProperty(default='')
 
+    # docstring and type hints: supplements hifa_imageprecheck
     def __init__(self, context, vis=None, desired_angular_resolution=None, calcsb=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            desired_angular_resolution: User specified angular resolution goal string. When this parameter is set, uvtapering may be performed.
+                '': automatic from performance parameters (default).
+
+                Example: '1.0arcsec'
+
+            calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
+
+            parallel: Use MPI cluster where possible
+
+        """
         self.context = context
         self.vis = vis
         self.desired_angular_resolution = desired_angular_resolution

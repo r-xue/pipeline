@@ -3,17 +3,13 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.hanning.hanning.HanningInputs.__init__
 @utils.cli_wrapper
 def hifv_hanning(vis=None, maser_detection=None):
 
     """Hanning smoothing on a dataset.
 
     The hifv_hanning task will hanning smooth a VLA dataset.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
-
-        maser_detection: Run maser detect algorithm on spectral line windows. Defaults to True.
 
     Returns:
         The results object for the pipeline task is returned.
