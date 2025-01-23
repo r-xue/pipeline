@@ -299,8 +299,6 @@ def score_all_scans(
             vis={msname, },
             intent={intent, },
             spw={spw.id, },
-            # TODO remove this attribute added for backwards compatibility
-            phase_offset_gt90deg=None
         )
 
         print('Processing SPW '+str(spw.id)+' , intent '+str(intent))
