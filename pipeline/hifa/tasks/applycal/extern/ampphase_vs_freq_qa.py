@@ -2,6 +2,7 @@ import collections
 import functools
 import operator
 import warnings
+from typing import Callable
 
 import numpy as np
 import scipy.optimize
@@ -244,121 +245,206 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
     :param sigma_threshold: threshold nsigma deviation for comparisons
     :return: list of Outliers, dictionary of values for summary
     """
-    median_cor_factor = np.sqrt(np.pi / 2.)  # PIPE-401: factor due to using the median instead of the mean
-    pols = {f.pol for f in all_fits}
     spws = {f.spw for f in all_fits}
+    if len(spws) > 1:
+        raise ValueError(f"Multiple SPWs detected: {spws}. All fits must belong to the same SPW.")
+    if not all_fits:
+        LOG.debug('No fits to evaluate')
+        return []
+
+    this_spw = spws.pop()
+    pols = {f.pol for f in all_fits}
     ants = {f.ant for f in all_fits}
-    if len(spws) == 1:
-        thisspw = spws.pop()
-    elif len(all_fits) == 0:
-        print('No fits to evaluate here!')
-        return []
-    elif len(spws) > 1:
-        print('Error: Not all antenna fits object belong to same SPW!!')
-        print('***all_fits***')
-        print(str(all_fits))
-        print('spws: '+str(spws))
-        return []
-    else:
-        print('Unknown error with antenna fits list!')
-        return []
 
-    #Get accessor metric name
-    thismetric = ((accessor.__str__()).split("'")[1]).replace('.', '_')
-    normfactor = {}
-    #Get factors to convert deviation into requested physical units
-    #If this metric is amp_slope/intercept), get median flux to calculate % or %/GHz
-    if (thismetric == 'amp_slope') or (thismetric == 'amp_intercept'):
-        medampaccessor = operator.attrgetter('amp.intercept')
-        for pol in pols:
-            pol_fits = [f for f in all_fits if f.pol == pol]
-            normfactor[pol] = unitfactor[thisspw][thismetric]/(get_median_fit(pol_fits, medampaccessor).value)
-    #If this metric is phase_slope/intercept, just include the factor in the units dictionary
-    #this leaves the "physical values" in deg/GHz and deg, respectively.
-    elif (thismetric == 'phase_slope') or (thismetric == 'phase_intercept'):
-        for pol in pols:
-            normfactor[pol] = unitfactor[thisspw][thismetric]
-    else:
-        print('Unknown metric: '+str(thismetric)+' !!! Setting units normalization to 1.0')
-        for pol in pols:
-            normfactor[pol] = 1.0
+    # Get accessor metric name
+    this_metric = _get_metric_name_from_accessor(accessor)
 
-    #Gather information for assessing outliers
-    outliers = []
-    databuffer = {}
+    # Calculate normalization factors
+    normfactor = _calculate_normalisation_factors(
+        all_fits, pols, this_spw, this_metric, unitfactor
+    )
+
+    # Calculate metric fits
+    data_buffer = _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, normfactor)
+
+    # Calculate combined polarization fits (I)
+    last_pol = sorted(pols).pop() if pols else None
+    data_buffer_i = _calculate_combined_polarization_data(
+        pols, ants, data_buffer, this_metric, normfactor, last_pol
+    )
+
+    # Detect outliers
+    return _detect_outliers(
+        pols, ants, data_buffer, data_buffer_i,
+        sigma_threshold, delta_physical_limit,
+        this_metric, outlier_fn
+    )
+
+
+def _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, normfactor):
+    """Creates structured data buffer with fit information."""
+    median_cor_factor = np.sqrt(np.pi / 2)
+    buffer = collections.defaultdict(dict)
+
     for pol in pols:
         pol_fits = [f for f in all_fits if f.pol == pol]
         n_antennas = len(pol_fits)
 
         # get reference val. Usually median, could be zero for phase
         reference_val, sigma_sample = reference_value_fn(pol_fits, accessor)
-        reference_sigma = median_cor_factor * sigma_sample / np.sqrt(n_antennas)
+        ref_sigma = median_cor_factor * sigma_sample / np.sqrt(n_antennas)
 
-        databuffer[pol] = {}
-        #Examine each antenna fit
         for fit in pol_fits:
             ant = fit.ant
-            unc = accessor(fit).unc
-            value = accessor(fit).value
-            this_sigma = np.sqrt(reference_sigma ** 2 + unc ** 2)
+            fit_param = accessor(fit)
+            value = fit_param.value
+            unc = fit_param.unc
+
+            this_sigma = np.sqrt(ref_sigma ** 2 + unc ** 2)
             raw_sigma = (value - reference_val) / this_sigma
-            num_sigma = np.abs(raw_sigma)
-            delta_physical = np.abs(value - reference_val)*normfactor[pol]
-            databuffer[pol][ant] = {'value': value, 'num_sigma': raw_sigma, 'refval': reference_val, 'this_sigma': this_sigma, 'delta_physical': delta_physical, 'masked': False}
-    #Mark any antenna that doesn exist in the list of fits as flagged
-    for pol in pols:
-        for ant in ants:
-            if not ((pol in databuffer.keys()) and (ant in databuffer[pol].keys())):
-                databuffer[pol][ant] = {'value': np.nan, 'num_sigma': np.nan, 'refval': np.nan, 'this_sigma': np.nan, 'delta_physical': np.nan, 'masked': True}
+            delta_physical = np.abs(value - reference_val) * normfactor[pol]
 
-    #If this are Amplitude intercepts, determine value for combined polarization XX+YY
-    #if not relevant for this metric, just fill in NANs and a masked value
-    databufferI = {}
+            buffer[pol][ant] = {
+                'value': value,
+                'num_sigma': raw_sigma,
+                'refval': reference_val,
+                'this_sigma': this_sigma,
+                'delta_physical': delta_physical,
+                'masked': False
+            }
+
+        # Flag any antenna that doesn't exist in the list of fits
+        for ant in ants - buffer[pol].keys():
+            buffer[pol][ant] = _create_masked_entry()
+
+    return buffer
+
+
+def _calculate_combined_polarization_data(pols, ants, data_buffer, metric, normfactor, last_pol):
+    """Calculates combined polarization data (I) where applicable."""
+    buffer_i = {}
+
     for ant in ants:
-        antvalues = []
-        antsigma = []
-        antref = []
-        for pol in pols:
-            if (pol in databuffer.keys()) and (ant in databuffer[pol].keys()):
-                antvalues.append(databuffer[pol][ant]['value'])
-                antsigma.append(databuffer[pol][ant]['this_sigma'])
-                antref.append(databuffer[pol][ant]['refval'])
-        if (thismetric == 'amp_intercept') and (len(antvalues) == len(pols)):
-            antIvalue = np.mean(antvalues)
-            antIref = np.mean(antref)
-            antIsigma = 1.0/np.sqrt(np.sum(1.0/np.square(antsigma)))
-            raw_I_sigma = (antIvalue - antIref)/antIsigma
-            num_I_sigma = np.abs(raw_I_sigma)
-            delta_I_physical = np.abs(antIvalue - antIref)*normfactor[pol]
-            databufferI[ant] = {'value': antIvalue, 'num_sigma': raw_I_sigma, 'refval': antIref, 'this_sigma': antIsigma, 'delta_physical': delta_I_physical, 'masked': False}
-        else:
-            databufferI[ant] = {'value': np.nan, 'num_sigma': np.nan, 'refval': np.nan, 'this_sigma': np.nan, 'delta_physical': np.nan, 'masked': True}
-            
+        values, sigmas, refs = [], [], []
 
-    #Create list of outliers evaluating both individual offset per polarization (for all metrics)
-    #and both XX,YY and I in the case of Amplitude 
-    for pol in pols:
-        for ant in ants:
-            #First evaluate if this is an outlier in the individual polarizations
-            #including both relative and absolute deviation criteria
-            isoutlier = (not databuffer[pol][ant]['masked']) and \
-                        (np.abs(databuffer[pol][ant]['num_sigma']) > sigma_threshold) and \
-                        (np.abs(databuffer[pol][ant]['delta_physical']) > delta_physical_limit[thismetric])
-            #Additionally if for this antenna this is an Amp Offset outlier.
-            #If not an Amp intercept metric, just leave that boolean as True
-            isAmpIoutlier = (thismetric == 'amp_intercept') and \
-                            (not databufferI[ant]['masked']) and \
-                            (np.abs(databufferI[ant]['num_sigma']) > sigma_threshold) and \
-                            (np.abs(databufferI[ant]['delta_physical']) > delta_physical_limit[thismetric])
-            if isoutlier and isAmpIoutlier:
-                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=databuffer[pol][ant]['num_sigma'], delta_physical=databuffer[pol][ant]['delta_physical'], amp_freq_sym_off=False)
-                outliers.append(outlier)
-            elif isoutlier and (not isAmpIoutlier):
-                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=databuffer[pol][ant]['num_sigma'], delta_physical=databuffer[pol][ant]['delta_physical'], amp_freq_sym_off=True)
+        for pol in pols:
+            if ant in data_buffer[pol]:
+                entry = data_buffer[pol][ant]
+                values.append(entry['value'])
+                sigmas.append(entry['this_sigma'])
+                refs.append(entry['refval'])
+
+        # If these are Amplitude intercepts, determine value for combined
+        # polarization XX+YY
+        if metric == 'amp_intercept' and len(values) == len(pols):
+            avg_value = np.mean(values)
+            avg_ref = np.mean(refs)
+            combined_sigma = 1 / np.sqrt(sum(1 / np.square(sigmas)))
+            raw_sigma = (avg_value - avg_ref) / combined_sigma
+            delta_physical = abs(avg_value - avg_ref) * normfactor[last_pol]
+
+            buffer_i[ant] = {
+                'value': avg_value,
+                'num_sigma': raw_sigma,
+                'refval': avg_ref,
+                'this_sigma': combined_sigma,
+                'delta_physical': delta_physical,
+                'masked': False
+            }
+
+        # if not relevant for this metric, just fill in NANs and a masked
+        # value
+        else:
+            buffer_i[ant] = _create_masked_entry()
+
+    return buffer_i
+
+
+def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) -> dict:
+    """Calculates normalisation factors for different metrics."""
+    factors = {}
+
+    # For amp slope and amp intercept metric, get median flux to calculate %
+    # or %/GHz
+    if metric in {'amp_slope', 'amp_intercept'}:
+        med_amp_accessor = operator.attrgetter('amp.intercept')
+        for pol in pols:
+            pol_fits = [f for f in all_fits if f.pol == pol]
+            median_flux = get_median_fit(pol_fits, med_amp_accessor).value
+            factors[pol] = unitfactor[spw][metric] / median_flux
+
+    # For phase slope and phase intercept metrics, just include the factor in
+    # the units dictionary. This leaves the "physical values" in deg/GHz and
+    # deg, respectively.
+    elif metric in {'phase_slope', 'phase_intercept'}:
+        for pol in pols:
+            factors[pol] = unitfactor[spw][metric]
+
+    else:
+        print(f'Unknown metric: {metric}! Using unit factor 1.0')
+        for pol in pols:
+            factors[pol] = 1.0
+
+    return factors
+
+
+def _get_metric_name_from_accessor(accessor: Callable) -> str:
+    """Extracts metric name from accessor function."""
+    return ((accessor.__str__()).split("'")[1]).replace('.', '_')
+
+
+def _detect_outliers(pols, ants, data_buffer, data_buffer_i, sigma_thresh, delta_lim, metric, outlier_fn):
+    """Identifies outliers based on statistical thresholds."""
+    outliers = []
+
+    # Create list of outliers evaluating per polarization for all metrics,
+    # plus I in the case of amplitude
+    for ant in ants:
+        for pol in pols:
+            entry = data_buffer[pol][ant]
+            i_entry = data_buffer_i[ant]
+
+            if entry['masked']:
+                continue
+
+            # First evaluate if this is an outlier in the individual
+            # polarizations, including both relative and absolute deviation
+            # criteria
+            sigma_condition = abs(entry['num_sigma']) > sigma_thresh
+            delta_condition = entry['delta_physical'] > delta_lim[metric]
+            is_outlier = sigma_condition and delta_condition
+
+            # Additionally, if this antenna has an amp offset outlier, see if
+            # this is an outlier in the combined polarization XX+YY too
+            is_i_outlier = False
+            if metric == 'amp_intercept' and not i_entry['masked']:
+                i_sigma_cond = abs(i_entry['num_sigma']) > sigma_thresh
+                i_delta_cond = i_entry['delta_physical'] > delta_lim[metric]
+                is_i_outlier = i_sigma_cond and i_delta_cond
+
+            if is_outlier:
+                outlier = outlier_fn(
+                    ant={ant},
+                    pol={pol},
+                    num_sigma=entry['num_sigma'],
+                    delta_physical=entry['delta_physical'],
+                    amp_freq_sym_off=is_i_outlier
+                )
                 outliers.append(outlier)
 
     return outliers
 
+
+def _create_masked_entry():
+    """Helper to create a masked data entry."""
+    return {
+        'value': np.nan,
+        'num_sigma': np.nan,
+        'refval': np.nan,
+        'this_sigma': np.nan,
+        'delta_physical': np.nan,
+        'masked': True
+    }
 
 def fit_angular_model(angular_model, nu, angdata, angsigma):
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
