@@ -301,7 +301,6 @@ def outliers_to_qa_scores(ms: MeasurementSet,
                                                     ant=outlier.ant,
                                                     pol=outlier.pol,
                                                     num_sigma=outlier.num_sigma,
-                                                    phase_offset_gt90deg=outlier.phase_offset_gt90deg,
                                                     delta_physical=outlier.delta_physical,
                                                     amp_freq_sym_off=outlier.amp_freq_sym_off,
                                                     reason=','.join(sorted(outlier.reason))))
