@@ -1,7 +1,7 @@
 """Parameter classes of Imaging."""
 
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, NewType, Optional, Union, Final
 
 import numpy
 
@@ -329,7 +329,7 @@ class TheoreticalImageRmsParameters(Parameters):
         self.failed_rms = self.cqa.quantity(-1, _pp.brightnessunit)    # Dict[str, float]: Failed RMS value
         self.sq_rms = 0.0                  # float: Square of RMS
         self.weight_sum = 0.0              # float: Weighted sum of time on source.
-        self.time_unit = 's'               # str: Time unit
+        self.time_unit: Final[str] = 's'                   # str: Time unit (constant)
         self.ang_unit = self.cqa.getunit(_pp.qcell[0])     # str: Ang unit
         self.cx_val = self.cqa.getvalue(_pp.qcell[0])[0]   # float: cx
         self.cy_val = self.cqa.getvalue(self.cqa.convert(_pp.qcell[1], self.ang_unit))[0]  # float: cy

@@ -50,7 +50,8 @@ RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width he
                                                   'scan_angle row_separation row_duration')
 # Reference MS in combined list
 REF_MS_ID = 0
-
+# The minimum limit of integration time (seconds) to be valid scan duration (1 ms)
+MIN_INTEGRATION_SEC = 0.001
 
 class SDImagingInputs(vdp.StandardInputs):
     """Inputs for imaging task class."""
@@ -1589,11 +1590,16 @@ class SDImaging(basetask.StandardTaskTemplate):
             self.__obtain_wx_and_wy(_tirp)
             # obtain T_ON
             self.__obtain_t_on_actual(_tirp)
+            if _tirp.t_on_act < MIN_INTEGRATION_SEC:
+                continue
             # obtain calibration tables applied
             self.__obtain_calibration_tables_applied(_tirp)
-            # obtain T_sub,on, T_sub,off
+            # obtain T_sub,on, T_sub,off (average ON and OFF integration duration per raster row)
             if not self.__obtain_t_sub_on_off(_tirp):
                 return _tirp.failed_rms
+            if _tirp.t_sub_on < MIN_INTEGRATION_SEC or \
+                    _tirp.t_sub_off < MIN_INTEGRATION_SEC:
+                continue
             # obtain factors by convolution function
             # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
@@ -1973,13 +1979,16 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     complete_idx = numpy.where(num_integration >= num_row_int)
     # raster scan parameters
     row_duration = numpy.array(duration)[complete_idx].mean()
+    assert row_duration > 0
     row_delta_ra = numpy.abs(delta_ra)[complete_idx].mean()
     row_delta_dec = numpy.abs(delta_dec)[complete_idx].mean()
     width = numpy.hypot(row_delta_ra, row_delta_dec)
+    assert width > 0
     sign_ra = +1.0 if delta_ra[complete_idx[0][0]] >= 0 else -1.0
     sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
     scan_angle = math.atan2(sign_dec * row_delta_dec, sign_ra * row_delta_ra)
     height = numpy.max(height_list)
+    assert height > 0
     center = (cqa.quantity(0.5 * (center_ra.min() + center_ra.max()), radec_unit),
               cqa.quantity(0.5 * (center_dec.min() + center_dec.max()), radec_unit))
     raster_info = RasterInfo(center[0], center[1],
