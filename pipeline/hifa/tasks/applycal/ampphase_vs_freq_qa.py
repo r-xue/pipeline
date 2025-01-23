@@ -29,8 +29,7 @@ LinearFitParameters = collections.namedtuple(
 # Outlier describes an outlier data selection with why it's an outlier, and by how much
 Outlier = collections.namedtuple(
     'Outlier',
-    # TODO TBC: does PIPE-1770 supersede phase_offset_gt90deg?
-    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'phase_offset_gt90deg', 'delta_physical', 'amp_freq_sym_off', 'reason']
+    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'delta_physical', 'amp_freq_sym_off', 'reason']
 )
 # ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
 ValueAndUncertainty = collections.namedtuple(
@@ -330,7 +329,6 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
                                       ant=outliers[i].ant,
                                       pol=outliers[i].pol,
                                       num_sigma=outliers[i].num_sigma,
-                                      phase_offset_gt90deg=outliers[i].phase_offset_gt90deg,
                                       reason={f'gt90deg_offset_{y_axis}_vs_freq.{fit_parameter}', })
     return outliers
 
@@ -369,7 +367,7 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
             this_sigma = np.sqrt(reference_sigma ** 2 + unc ** 2)
             num_sigma = np.abs((value - reference_val) / this_sigma)
             if num_sigma > sigma_threshold:
-                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma, phase_offset_gt90deg=abs(fit.phase.intercept.value) > 0.5 * np.pi)
+                outlier = outlier_fn(ant={ant, }, pol={pol, }, num_sigma=num_sigma)
                 outliers.append(outlier)
 
     return outliers
