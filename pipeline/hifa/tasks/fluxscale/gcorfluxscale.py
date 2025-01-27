@@ -817,8 +817,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 gaintype = 'T'
                 interp = 'linearPD,linear'
 
-                # Compute optimal solint.
-                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+                # Compute optimal solint for science SpWs for current intent.
+                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True, intent=intent)]
                 exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
                 solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:
