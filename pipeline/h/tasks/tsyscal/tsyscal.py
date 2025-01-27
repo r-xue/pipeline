@@ -41,7 +41,29 @@ class TsyscalInputs(vdp.StandardInputs):
         casa_args = self._get_task_args(ignore=('caltable',))
         return namer.calculate(output_dir=self.output_dir, stage=self.context.stage, **casa_args)
 
+    # docstring and type hints: supplements h_tsyscal
     def __init__(self, context, output_dir=None, vis=None, caltable=None, chantol=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input visibility files.
+
+                Example: vis=['ngc5921.ms']
+
+            caltable: Name of output gain calibration tables.
+
+                Example: caltable='ngc5921.gcal'
+
+            chantol: The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).
+
+                Example: chantol=5
+
+        """
         super(TsyscalInputs, self).__init__()
 
         # pipeline inputs

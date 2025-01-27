@@ -3,12 +3,11 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.restoredata.almarestoredata.ALMARestoreDataInputs.__init__
 @utils.cli_wrapper
 def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                      bdfflags=None, ocorr_mode=None, asis=None):
-    """
-    hifa_restoredata ---- Restore flagged and calibration interferometry data from a pipeline run
-
+    """Restore flagged and calibration interferometry data from a pipeline run
 
     The hifa_restoredata task restores flagged and calibrated MeasurementSets
     from archived ASDMs and pipeline flagging and calibration data products.
@@ -51,70 +50,13 @@ def hifa_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and instead the existing MS will be imported.
 
-    Output:
+    Returns:
+        The results object for the pipeline task is returned.
 
-        results -- The results object for the pipeline task is returned.
+    Examples:
+        1. Restore the pipeline results for a single ASDM in a single session:
 
-    --------- parameter descriptions ---------------------------------------------
-
-    vis
-                  List of raw visibility data files to be restored.
-                  Assumed to be in the directory specified by rawdata_dir.
-
-                  Example: vis=['uid___A002_X30a93d_X43e']
-    session
-                  List of sessions one per visibility file.
-
-                  Example: session=['session_3']
-    products_dir
-                  Name of the data products directory to copy calibration
-                  products from.
-                  Default: '../products'
-
-                  The parameter is effective only when ``copytoraw`` = True.
-                  When ``copytoraw`` = False, calibration products in
-                  ``rawdata_dir`` will be used.
-
-                  Example: products_dir='myproductspath'
-    copytoraw
-                  Copy calibration and flagging tables from ``products_dir`` to
-                  ``rawdata_dir`` directory.
-                  Default: True
-
-                  Example: copytoraw=False
-    rawdata_dir
-                  Name of the raw data directory.
-                  Default: '../rawdata'
-
-                  Example: rawdata_dir='myrawdatapath'
-    lazy
-                  Use the lazy filler option.
-                  Default: False
-
-                  Example: lazy=True
-    bdfflags
-                  Set the BDF flags.
-                  Default: True
-
-                  Example: bdfflags=False
-    ocorr_mode
-                  Set ocorr_mode.
-                  Default: 'ca'
-
-                  Example: ocorr_mode='ca'
-    asis
-                  Creates verbatim copies of the ASDM tables in the output MS.
-                  The value given to this option must be a string containing a
-                  list of table names separated by whitespace characters.
-                  Default: 'SBSummary ExecBlock Antenna Annotation Station Receiver Source CalAtmosphere CalWVR CalPointing'
-
-                  Example: asis='Source Receiver'
-
-    --------- examples -----------------------------------------------------------
-
-    1. Restore the pipeline results for a single ASDM in a single session:
-
-    >>> hifa_restoredata(vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
+        >>> hifa_restoredata(vis=['uid___A002_X30a93d_X43e'], session=['session_1'], ocorr_mode='ca')
 
     """
     ##########################################################################
