@@ -23,7 +23,6 @@ def get_caltable_from_result(result):
         % if multi_vis:
                 ${plot.parameters['vis']}<br>
         % endif
-                ${get_caltable_from_result(result)}<br>
 		Field: ${plot.parameters['field']}<br>
 		Antenna: ${plot.parameters['ant']}<br>
 		Spw: ${plot.parameters['spw']}
@@ -33,7 +32,6 @@ def get_caltable_from_result(result):
         % if multi_vis:
 		${plot.parameters['vis']}<br>
         % endif
-                ${get_caltable_from_result(result)}<br>
 		Field: ${plot.parameters['field']}<br>
 		Antenna: ${plot.parameters['ant']}<br>
 		Spw: ${plot.parameters['spw']}

@@ -178,7 +178,6 @@ def get_original_field_name(field_name, vis):
 	                        </a>
 	                    </h4>
 	                    ${vis}<br>
-                            ${get_gaintables(vis)}<br>
                             Field: ${clean_field_name}<br>
                             Antenna: summary<br>
                             Spw: ${spw}<br>
