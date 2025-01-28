@@ -58,6 +58,9 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         for r in results:
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
+                freq_frame = r.outcome['freq_frame']
+                if 'freq_frame' not in ctx:
+                    ctx['freq_frame'] = freq_frame
                 msid_list = r.outcome['file_index']
                 imagemode = r.outcome['imagemode']
                 v_spwid = image_item.spwlist

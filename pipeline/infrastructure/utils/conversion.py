@@ -735,18 +735,18 @@ def phasecenter_to_skycoord(phasecenter):
 
 def refcode_to_skyframe(refcode):
     """Conver a CASA coordsysy refcode to an Astropy SkyCoord frame name.
-    
+
     Limitations:
-    
+
     Currently, it only handles the common cases, e.g. J2000, B1950, ICRS
-    
+
     To get a list of built-in astropy.coordinates frame names:
         from astropy.coordinates import frame_transform_graph
         print(frame_transform_graph.get_name())
     To get a list of CASA csys reference code:
         csys = cs.newcoordsys(direction=True)
         clist = csys.referencecode('dir', True)
-    
+
     """
 
     frame = refcode.lower()
@@ -756,3 +756,18 @@ def refcode_to_skyframe(refcode):
         frame = 'fk4'
 
     return frame
+
+
+def get_spectral_reference_code_from_image(imagename: str) -> str:
+    """Get the spectral reference code from the image header.
+
+    Args:
+        imagename: The name of the image file.
+    Returns:
+        The spectral reference code.
+    """
+    with casa_tools.ImageReader(imagename) as ia:
+        cs = ia.coordsys()
+        refcode = cs.getconversiontype('spectral')
+        cs.done()
+        return refcode

@@ -773,6 +773,7 @@ class SDImageDisplay(object, metaclass=abc.ABCMeta):
         self.npol = self.image.npol
         self.brightnessunit = self.image.brightnessunit
         self.direction_reference = self.image.direction_reference
+        self.frequency_frame = self.image.frequency_frame
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
         self.frequency = np.array([refval + increment * (i - refpix) for i in range(self.nchan)])
         self.velocity = self.image.to_velocity(self.frequency, freq_unit='GHz')
@@ -964,7 +965,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
     """
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, brightnessunit: str,
-                 ticksize: int, clearpanel: bool = True) -> None:
+                 freq_frame: str, ticksize: int, clearpanel: bool = True) -> None:
         """Construct SparseMapAxesManager instance.
 
         Args:
@@ -972,6 +973,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
+            freq_frame: Frequency reference frame.
             ticksize: Size of tick label.
             clearpanel: Clear existing Axes. Defaults to True.
         """
@@ -981,6 +983,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
         self.nv = nv
         self.ticksize = ticksize
         self.brightnessunit = brightnessunit
+        self.freq_frame = freq_frame
 
         self._axes_integsp = None
         self._axes_spmap = None
@@ -1017,7 +1020,7 @@ class SparseMapAxesManager(pointing.MapAxesManagerBase):
             axes.cla()
             axes.xaxis.get_major_formatter().set_useOffset(False)
             axes.yaxis.get_major_formatter().set_useOffset(False)
-            axes.set_xlabel('Frequency(GHz)', size=(self.ticksize + 1))
+            axes.set_xlabel(f'Frequency (GHz) {self.freq_frame}', size=(self.ticksize + 1))
             axes.set_ylabel('Intensity({})'.format(self.brightnessunit), size=(self.ticksize + 1))
             xlabels = axes.get_xticklabels()
             for label in xlabels:
@@ -1197,7 +1200,7 @@ class SDSparseMapPlotter(object):
     """Plotter for sparse spectral map."""
 
     def __init__(self, fig: figure.Figure, nh: int, nv: int, step: int, brightnessunit: str,
-                 clearpanel: bool = True) -> None:
+                 freq_frame: str, clearpanel: bool = True) -> None:
         """Construct SDSparseMapPlotter instance.
 
         Args:
@@ -1205,6 +1208,7 @@ class SDSparseMapPlotter(object):
             nh: Number of panels along vertical axis.
             nv: Number of panels along horizontal axis.
             brightnessunit: Brightness unit.
+            freq_frame: Frequency reference frame.
             clearpanel: Clear existing Axes. Defaults to True.
         """
         self.step = step
@@ -1214,7 +1218,11 @@ class SDSparseMapPlotter(object):
             ticksize = 10 - int(max(nh, nv)) // 2
         ticksize = max(ticksize, 3)
         fig.set_dpi(DPIDetail)
-        self.axes = SparseMapAxesManager(fig, nh, nv, brightnessunit, ticksize, clearpanel)
+        self.axes = SparseMapAxesManager(
+            fig, nh, nv,
+            brightnessunit, freq_frame,
+            ticksize, clearpanel
+        )
         self.lines_averaged = None
         self.lines_map = None
         self.reference_level = None
@@ -1224,6 +1232,7 @@ class SDSparseMapPlotter(object):
         self.atm_transmission = None
         self.atm_frequency = None
         self.channel_axis = False
+        self.freq_frame = None
 
     @property
     def nh(self) -> int:
