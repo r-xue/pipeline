@@ -48,8 +48,8 @@ class ObservingRun(object):
     Attributes:
         measurement_sets: List of measurementSet objects associated with run.
         ms_datatable_name: Path to directory that stores DataTable of each
-            MeasurementSet (ALMA Single-Dish only).
-        ms_reduction_group: Dictionary of reduction groups (ALMA Single-Dish only).
+            MeasurementSet (Single-Dish only).
+        ms_reduction_group: Dictionary of reduction groups (Single-Dish only).
         org_directions: Dictionary with Direction objects of the origin (ALMA
             Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
