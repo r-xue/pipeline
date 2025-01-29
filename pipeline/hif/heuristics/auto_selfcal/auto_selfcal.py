@@ -2850,17 +2850,17 @@ class SelfcalHeuristics(object):
                     if (iteration < len(solints[band][target])-1) and (slib[vis][solint]['SNR_post'] >
                                                                        slib['SNR_orig']):  # (iteration == 0) and
                         LOG.info('Updating solint = '+solints[band][target][iteration+1]+' SNR')
-                        LOG.info('Was: ', solint_snr[target][band][solints[band][target][iteration+1]])
+                        LOG.info('Was: %s', solint_snr[target][band][solints[band][target][iteration+1]])
                         get_SNR_self_update([target], band, vislist, slib, n_ants,
                                             solint, solints[band][target][iteration+1], integration_time, solint_snr[target][band])
-                        LOG.info('Now: ', solint_snr[target][band][solints[band][target][iteration+1]])
+                        LOG.info('Now: %s', solint_snr[target][band][solints[band][target][iteration+1]])
 
                         for fid in slib['sub-fields-to-selfcal']:
-                            LOG.info('Field '+str(fid)+' Was: ',
+                            LOG.info('Field '+str(fid)+' Was: %s',
                                      solint_snr_per_field[target][band][fid][solints[band][target][iteration+1]])
                             get_SNR_self_update([target], band, vislist, slib[fid], n_ants, solint,
                                                 solints[band][target][iteration+1], integration_time, solint_snr_per_field[target][band][fid])
-                            LOG.info('Field '+str(fid)+' Now: ',
+                            LOG.info('Field '+str(fid)+' Now: %s',
                                      solint_snr_per_field[target][band][fid][solints[band][target][iteration+1]])
 
                     # If not all fields succeed for inf_EB or scan_inf/inf, depending on mosaic or single field, then don't go on to amplitude selfcal,
