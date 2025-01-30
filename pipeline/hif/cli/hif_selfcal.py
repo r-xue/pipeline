@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 @utils.cli_wrapper
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None,
-                apply=None, recal=None, refantignore=None, restore_resources=None,
+                apply=None, recal=None, restore_only=None, refantignore=None, restore_resources=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
@@ -38,6 +38,10 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None,
     recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline
                             context or json restore file.
                             default = False
+    restore_only            Only attempt to apply pre-existing selfcal calibration tables and would not run 
+                            the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
+                            default = False
+                            note: restore_only will take precedence over recal=True/False
     refantignore            string list to be ignored as reference antennas.
                             example:  refantignore='ea02,ea03'
     restore_resources       Path to the restore resources from a standard run of hif_selfcal.

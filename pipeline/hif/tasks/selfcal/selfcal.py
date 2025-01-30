@@ -142,6 +142,7 @@ class SelfcalInputs(vdp.StandardInputs):
     apply = vdp.VisDependentProperty(default=True)
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
+    restore_only = vdp.VisDependentProperty(default=False)
 
     n_solints = vdp.VisDependentProperty(default=4.0)
     amplitude_selfcal = vdp.VisDependentProperty(default=False)
@@ -175,7 +176,7 @@ class SelfcalInputs(vdp.StandardInputs):
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                  usermask=None, usermodel=None, allow_wproject=None,
-                 apply=None, parallel=None, recal=None, restore_resources=None):
+                 apply=None, parallel=None, recal=None, restore_only=None, restore_resources=None):
         super().__init__()
         self.context = context
         self.vis = vis
@@ -186,6 +187,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.apply = apply
         self.parallel = parallel
         self.recal = recal
+        self.restore_only = restore_only
         self.refantignore = refantignore
 
         self.n_solints = n_solints
@@ -388,6 +390,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         is_restore = True
 
         if not scal_targets:
+
+            if self.inputs.restore_only:
+                LOG.info('No valid selfcal restoration resource is found and restore_only=True; skip a new self-calibration sequence.')
+                return SelfcalResults(
+                    scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
             if self.inputs.recal:
                 LOG.info('recal=True, override any existing selfcal solution in context or json, '
