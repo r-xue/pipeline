@@ -71,8 +71,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_cell(self):
-        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @hm_cell.convert
@@ -92,8 +90,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_imsize(self):
-        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @hm_imsize.convert
@@ -155,31 +151,40 @@ class MakeImListInputs(vdp.StandardInputs):
         returned.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+
         mitigated_hm_cell = None
+        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+            mitigated_hm_cell = self.context.size_mitigation_parameters['hm_cell']
+
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
-        if mitigated_hm_cell not in [None, {}]:
-            return mitigated_hm_cell
-        else:
+
+        if mitigated_hm_cell in [None, {}] or self.hm_cell:
             return self.hm_cell
+        else:
+            return mitigated_hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
         """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
         mitigated_hm_imsize = None
+        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+            mitigated_hm_imsize = self.context.size_mitigation_parameters['hm_imsize']
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
-        if mitigated_hm_imsize not in [None, {}]:
-            return mitigated_hm_imsize
-        else:
+        if mitigated_hm_imsize in [None, {}] or self.hm_imsize:
             return self.hm_imsize
+        else:
+            return mitigated_hm_imsize
 
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
