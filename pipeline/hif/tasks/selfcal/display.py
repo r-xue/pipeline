@@ -94,8 +94,19 @@ class SelfcalSummary(object):
             ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
             self.plot_ants_flagging_colored(figname, ms, caltb_loc)
+
             nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc, ms)
-            antpos_plots[vis] = logger.Plot(figname, parameters={'nflagged_sols': nflagged_sols, 'nsols': nsols})
+
+            # PIPE-2446: Check original gaincal table in mosaic cases before solint trials
+            caltb_loc_predrop = os.path.splitext(caltb_loc)[0]+'.pre-drop.g'
+            if os.path.exists(caltb_loc_predrop):
+                nflagged_sols_predrop, nsols_predrop = self.get_sols_flagged_solns(caltb_loc_predrop, ms)
+            else:
+                nflagged_sols_predrop = nsols_predrop = None
+
+            antpos_plots[vis] = logger.Plot(figname, parameters={
+                                            'nflagged_sols': nflagged_sols, 'nsols': nsols,
+                                            'nflagged_sols_predrop': nflagged_sols_predrop, 'nsols_predrop': nsols_predrop})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
             antpos_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint}'
             antpos_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
@@ -113,9 +124,12 @@ class SelfcalSummary(object):
     def get_sols_flagged_solns(gaintable, ms):
 
         with casa_tools.TableReader(gaintable) as tb:
-            pol_id = list(dict.fromkeys(ms.get_data_description(
-                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
-            corr_type = ms.polarizations[pol_id].corr_type_string
+            if tb.nrows():
+                pol_id = list(dict.fromkeys(ms.get_data_description(
+                    int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+                corr_type = ms.polarizations[pol_id].corr_type_string
+            else:
+                corr_type = []
             corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
                 pol.corr_type_string), reverse=True)[0].corr_type_string
             idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
@@ -197,9 +211,12 @@ class SelfcalSummary(object):
                     range(len(names))]
 
         with casa_tools.TableReader(gaintable) as tb:
-            pol_id = list(dict.fromkeys(ms.get_data_description(
-                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
-            corr_type = ms.polarizations[pol_id].corr_type_string
+            if tb.nrows():
+                pol_id = list(dict.fromkeys(ms.get_data_description(
+                    int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+                corr_type = ms.polarizations[pol_id].corr_type_string
+            else:
+                corr_type = []
             corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
                 pol.corr_type_string), reverse=True)[0].corr_type_string
             idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]

@@ -99,7 +99,10 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                 if row_name == 'N Flagged Sol.':
                     row_values = [nsol_stats['nflagged_sols']]
                 if row_name == 'Frac. Flagged Sol.':
-                    row_values = ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
+                    if nsol_stats['nsols'] > 0:
+                        row_values = ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
+                    else:
+                        row_values = ['-']
                 if row_name == 'Fallback Mode':
                     row_value = '-'
                     if solint == 'inf_EB' and 'fallback' in slib[vis][solint]:
@@ -390,18 +393,31 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for vis in vislist:
 
             rows.append(['Measurement Set']+[vis]*len(solints))
+            if slib['obstype'] == 'mosaic':
+                row_names = ['Flagged Frac.<br>by antenna',
+                             'N.Sols (initial)', 'N.Sols Flagged (initial)', 'Flagged Frac.']
+            else:
+                row_names = ['Flagged Frac.<br>by antenna', 'N.Sols', 'N.Sols Flagged', 'Flagged Frac.']
 
-            for row_name in ['Flagged Frac.<br>by antenna', 'N.Sols', 'N.Sols Flagged', 'Flagged Frac.']:
+            for row_name in row_names:
                 row = [row_name]
                 for solint in solints:
                     if solint in vis_keys:
                         nsol_stats = qa_extra_data[solint]['antpos_plots'][vis].parameters
                         if row_name == 'N.Sols':
                             row.append(nsol_stats['nsols'])
+                        if row_name == 'N.Sols (initial)':
+                            row.append('{} ({})'.format(nsol_stats['nsols'], nsol_stats['nsols_predrop']))
                         if row_name == 'N.Sols Flagged':
                             row.append(nsol_stats['nflagged_sols'])
+                        if row_name == 'N.Sols Flagged (initial)':
+                            row.append('{} ({})'.format(nsol_stats['nflagged_sols'],
+                                       nsol_stats['nflagged_sols_predrop']))
                         if row_name == 'Flagged Frac.':
-                            row.append('{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
+                            if nsol_stats['nsols'] > 0:
+                                row.append('{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
+                            else:
+                                row.append('-')
                         if row_name == 'Flagged Frac.<br>by antenna':
                             antpos_html = utils.plots_to_html(
                                 [qa_extra_data[solint]['antpos_plots'][vis]],
