@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None,
+def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None, cell=None,
                 apply=None, recal=None, restore_only=None, refantignore=None, restore_resources=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
@@ -32,7 +32,8 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None,
                             "": Images will be computed for all science spectral windows.
     contfile                Name of file to specify line-free frequency ranges for selfcal continuum imaging.
                             default="cont.dat"
-    imsize                  Image X and Y size in pixels or PB level for single fields.                  
+    imsize                  Image X and Y size in pixels or PB level for single fields.
+    cell                    Image X and Y cell sizes                  
     apply                   Apply final selfcal solutions back to the input MeasurementSets.
                             default = True
     recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline
