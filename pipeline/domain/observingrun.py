@@ -50,8 +50,8 @@ class ObservingRun(object):
         ms_datatable_name: Path to directory that stores DataTable of each
             MeasurementSet (Single-Dish only).
         ms_reduction_group: Dictionary of reduction groups (Single-Dish only).
-        org_directions: Dictionary with Direction objects of the origin (ALMA
-            Single-Dish only).
+        org_directions: Dictionary with Direction objects of the origin
+            (Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
             spectral window ID (key) to corresponding science spectral window
             name (value) that is shared across all measurement sets in the
