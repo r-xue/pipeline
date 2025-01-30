@@ -7,6 +7,8 @@ import numpy as np
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import \
+    unflag_failed_antennas
 from pipeline.infrastructure import casa_tools, filenamer
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
@@ -59,6 +61,7 @@ class SelfcalSummary(object):
         image_plots = []          # pre/post selfcal images
         antpos_plots = {}         # solution flagged fraction at antenna positions, keyed by MS
         phasefreq_plots = {}      # phase vs frequency per antenna, keyed by MS
+        fracflag_plots = {}       # flagging fraction vs. basedline, keyed by MS
 
         im_post = self._im_solname(solint)+'_post.image.tt0'
         im_pre = self._im_solname(solint)+'.image.tt0'
@@ -118,7 +121,22 @@ class SelfcalSummary(object):
                         '{0}'.format(vis))
             phasefreq_plots[vis_desc] = self._plot_gain(ms, gaintable, solint)
 
-        return image_plots, antpos_plots, phasefreq_plots
+            # PIPE-2447: Check pre-pass gaincal table
+            caltb_loc_prepass = os.path.splitext(caltb_loc)[0]+'.pre-pass.g'
+            if self.slib[vis][solint].get('unflagged_lbs', False) and os.path.exists(caltb_loc_prepass):
+                figname = os.path.join(self.stage_dir, 'plot_fracflag_bl_'+gaintable+'.png')
+                LOG.debug('Creating the ')
+                unflag_failed_antennas(vis, caltb_loc_prepass, self.slib[vis][solint]['gaincal_return'],
+                                       flagged_fraction=0.25, spwmap=self.slib[vis][solint]['unflag_spwmap'],
+                                       plot=True, figname=figname)
+                fracflag_plots[vis] = logger.Plot(figname, parameters={})
+                fracflag_plots[vis].parameters['title'] = 'Frac. Flagged Sol. vs. Baseline'
+                fracflag_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
+                fracflag_plots[vis].parameters['group'] = 'Frac. Flagged Sol. vs. Baseline'
+            else:
+                fracflag_plots[vis] = None
+
+        return image_plots, antpos_plots, phasefreq_plots, fracflag_plots
 
     @staticmethod
     def get_sols_flagged_solns(gaintable, ms):

@@ -27,8 +27,10 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, valid_chars))
         self.rel_path = os.path.relpath(self.path, context.report_dir)
 
-        image_plots, antpos_plots, phasefreq_plots = display.SelfcalSummary(context, r, cleantarget).plot_qa(solint)
-        summary_tab, nsol_tab = self.make_summary_table(context, r, cleantarget, solint, image_plots, antpos_plots)
+        image_plots, antpos_plots, phasefreq_plots, fracflag_plots = display.SelfcalSummary(
+            context, r, cleantarget).plot_qa(solint)
+        summary_tab, nsol_tab = self.make_summary_table(
+            context, r, cleantarget, solint, image_plots, antpos_plots, fracflag_plots)
 
         self.extra_data = {
             'summary_tab': summary_tab,
@@ -38,12 +40,13 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             'solint': solint,
             'antpos_plots': antpos_plots,
             'phasefreq_plots': phasefreq_plots,
+            'fracflag_plots': fracflag_plots,
             'slib': slib}
 
     def update_mako_context(self, mako_context):
         mako_context.update(self.extra_data)
 
-    def make_summary_table(self, context, r, cleantarget, solint, image_plots, antpos_plots):
+    def make_summary_table(self, context, r, cleantarget, solint, image_plots, antpos_plots, fracflag_plots):
 
         slib = cleantarget['sc_lib']
 
@@ -84,14 +87,20 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         for vis in vislist:
             nsol_stats = antpos_plots[vis].parameters
 
-            antpos_html = utils.plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)[0]
+            antpos_html = utils.plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)
+
+            if fracflag_plots[vis] is not None:
+                fracflag_html = utils.plots_to_html([fracflag_plots[vis]], report_dir=context.report_dir)
+            else:
+                fracflag_html = []
 
             vis_desc = ('<a class="anchor" id="{0}_summary"></a>'
                         '<a href="#{0}_byant">'
                         '   {0}'
                         '</a>'.format(vis))
 
-            vis_desc = vis_desc+' '+antpos_html
+            vis_desc = [vis_desc]+antpos_html+fracflag_html
+            vis_desc = ' '.join(vis_desc)
 
             for row_name in vis_row_names:
                 if row_name == 'N Sol.':

@@ -22,6 +22,7 @@ from pipeline.infrastructure.casa_tools import imager as im
 from pipeline.infrastructure.casa_tools import msmd
 from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.contfilehandler import ContFileHandler
+from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -2068,8 +2069,9 @@ def triage_calibrators(vis, target, potential_calibrators, max_distance=10.0, ma
     return ",".join(np.unique(fields[good])), ",".join(scans[good].astype(str))
 
 
+@matplotlibrc_formal
 def unflag_failed_antennas(vis, caltable, gaincal_return, flagged_fraction=0.25, only_long_baselines=False, solnorm=True, calonly_max_flagged=0., spwmap=[],
-                           fb_to_prev_solint=False, solints=[], iteration=0, plot=False, plot_directory="./"):
+                           fb_to_prev_solint=False, solints=[], iteration=0, plot=False, figname=None):
     # Because we only modify if we aren't plotting, i.e. in the selfcal loop itself plot=False
     tb.open(caltable, nomodify=plot)
     antennas = tb.getcol("ANTENNA1")
@@ -2253,7 +2255,9 @@ def unflag_failed_antennas(vis, caltable, gaincal_return, flagged_fraction=0.25,
         ax2.add_artist(anchored_ybox2)
 
         fig.tight_layout()
-        fig.savefig(plot_directory+"/"+caltable.replace(".g", ".pass.png"))
+        if figname is None:
+            figname = caltable+'.png'
+        fig.savefig(figname)
         plt.close(fig)
 
         tb.close()
