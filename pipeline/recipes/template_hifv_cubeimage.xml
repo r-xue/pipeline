@@ -148,6 +148,10 @@
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
             <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>            
+            <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>
             </Parameter>
@@ -314,6 +318,10 @@
                 <Keyword xmlns="">width</Keyword>
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>            
             <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>
