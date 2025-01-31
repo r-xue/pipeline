@@ -322,7 +322,7 @@ def score_all_scans(
             else:
                 #then create them
                 print('Creating averaged visibilities, since they do not exist yet...')
-                wrapper = mswrapper.MSWrapper.create_averages_from_ms(msname, int(scan.id), spw.id, memory_gb, antennaids, npol, nchan)
+                wrapper = mswrapper.MSWrapper.create_averages_from_ms(msname, int(scan.id), spw.id, memory_gb)
                 wrapper.save(saved_visibility)
 
             #add scan parameter to outlier partial function
