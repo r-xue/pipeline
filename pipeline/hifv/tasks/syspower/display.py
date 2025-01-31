@@ -39,7 +39,7 @@ class syspowerBoxChart(object):
         LOG.info("Creating syspower box chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
-        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
+        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.prod(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
         ant_dat.mask = np.ma.getmaskarray(ant_dat)
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
@@ -103,7 +103,7 @@ class syspowerBarChart(object):
         LOG.info("Creating syspower bar chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
-        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
+        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.prod(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
         ant_dat.mask = np.ma.getmaskarray(ant_dat)
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])

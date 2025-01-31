@@ -3,11 +3,11 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.testBPdcals.testBPdcals.testBPdcalsInputs.__init__
 @utils.cli_wrapper
 def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None, refant=None):
 
-    """
-    hifv_testBPdcals ---- Runs initial delay and bandpass calibration to setup for RFI flagging
+    """Runs initial delay and bandpass calibration to setup for RFI flagging.
 
     Runs initial delay and bandpass calibration to setup for RFI flagging
 
@@ -33,9 +33,13 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
 
 
     1. Initial delay calibration to set up heuristic flagging.
+    Returns:
+        The results object for the pipeline task is returned.
 
-    >>> hifv_testBPdcals()
+    Examples:
+        1. Initial delay calibration to set up heuristic flagging:
 
+        >>> hifv_testBPdcals()
 
     """
 

@@ -11,6 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
@@ -36,20 +37,32 @@ class testBPdcalsInputs(vdp.StandardInputs):
     def iglist(self):
         return {}
 
+    # docstring and type hints: supplements hifv_testBPdcals
     def __init__(self, context, vis=None, weakbp=None, refantignore=None, doflagundernspwlimit=None, flagbaddef=None, iglist=None, refant=None):
-        """
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
-            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
-            doflagunderspwlimit(Boolean): Will identify individual spw when less than nspwlimit bad spw
-                                          Used in the flagging of bad deformatters heuristics
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            weakbp(Boolean): Activate weak bandpass heuristics.
+                Weak bandpass heuristics on/off - currently not used - see PIPE-104.
+
+            refantignore(str): String list of antennas to ignore.
+
+                Example:  refantignore='ea02, ea03'
+
+            doflagundernspwlimit(Boolean): If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
+
             flagbaddef(Boolean, optional): Enable/disable bad deformatter flagging. Default is True.
             iglist(dict, optional): When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
                           Format: {antName:{band:{spw}}}
                           Example: {'ea02': {'L': {0, 1, '10~13'}}}
-            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
+
         """
         super(testBPdcalsInputs, self).__init__()
         self.context = context
@@ -319,7 +332,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        soltimes = [m.get_vla_max_integration_time() * x for x in soltimes]
+        integration_time = m.get_integration_time_stats(stat_type="max")
+        soltimes = [integration_time * x for x in soltimes]
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
         solint = solints[0]
@@ -509,7 +523,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
@@ -570,7 +584,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
@@ -666,7 +680,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
         bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         if delay_scan_select_string == bandpass_scan_select_string:
             testgainscans = bandpass_scan_select_string
