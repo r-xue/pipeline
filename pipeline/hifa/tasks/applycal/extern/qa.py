@@ -302,8 +302,6 @@ def score_all_scans(
         )
 
         print('Processing SPW '+str(spw.id)+' , intent '+str(intent))
-        npol = ms.get_data_description(spw=spw.id).num_polarizations
-        nchan = len(spw.channels)
         channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
         ddi = ms.get_data_description(spw=spw.id)
         fieldid = [field.id for field in ms.get_fields(intent=intent)][0]
@@ -353,8 +351,7 @@ def score_all_scans(
                 all_scan_wrapper.load(all_scans_saved_visibilities)
             else:
                 print('All-scan visibilities for ' + str(all_scans) + ' DO NOT exist, creating them...')
-                all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers, antennaids, npol,
-                                                                                        nchan)
+                all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(wrappers, antennaids)
                 all_scan_wrapper.save(all_scans_saved_visibilities)
 
             #amp/phase vs frequency scores for all scans

@@ -227,7 +227,7 @@ class MSWrapper(object):
 
 
     @staticmethod
-    def create_averages_from_combination(mswlist,antennaids,npol,nchan):
+    def create_averages_from_combination(mswlist,antennaids):
         """
         Calculate and return the average MSWrapper of the list of MSWrapper objects given as input.
         The 'sigma' column get filled with the standard error of the mean, by adding inverse squared variances
@@ -249,6 +249,8 @@ class MSWrapper(object):
         int_axis = mswlist[0].int_axis
         time_axis = mswlist[0].time_axis
         nant = len(antennaids)
+        npol = len(corr_axis)
+        nchan = len(freq_axis['chan_freq'])
 
         f_avg_max_length = mswlist[0].V['f_avg'].shape[2]
 
