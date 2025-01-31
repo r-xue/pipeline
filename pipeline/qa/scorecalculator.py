@@ -2686,7 +2686,7 @@ def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: 
     start = edge[0]
     end = nchan - edge[1]
     effective_nchan = nchan - sum(edge)
-    line_coverage = sum(mask[start:end])
+    line_coverage = np.sum(mask[start:end])
 
     return line_coverage > effective_nchan * fraction
 
@@ -3326,7 +3326,7 @@ def generate_metric_mask(context, result, cs, mask):
         with casa_tools.TableReader(rotable_name) as tb:
             unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
             unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
-            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(list(_antlist), list(_fieldlist), list(_spwlist)))
+            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(utils.list_to_str(_antlist), utils.list_to_str(_fieldlist), utils.list_to_str(_spwlist)))
             ofs_ra.extend(tsel.getcol('OFS_RA'))
             ofs_dec.extend(tsel.getcol('OFS_DEC'))
             rows = tsel.rownumbers()

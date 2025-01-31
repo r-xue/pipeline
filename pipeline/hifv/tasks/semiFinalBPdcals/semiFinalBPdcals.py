@@ -26,14 +26,25 @@ class semiFinalBPdcalsInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     refant = vdp.VisDependentProperty(default='')
 
+    # docstring and type hints: supplements hifv_semiFinalBPdcals
     def __init__(self, context, vis=None, weakbp=None, refantignore=None, refant=None):
-        """
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
-            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
-            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            weakbp(Boolean): Activate weak bandpass heuristics.
+                Weak bandpass heuristics on/off - currently not used - see PIPE-104.
+
+            refantignore(str): String list of antennas to ignore.
+
+                Example: refantignore='ea24,ea15,ea08'
+
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
 
         """
         super(semiFinalBPdcalsInputs, self).__init__()
