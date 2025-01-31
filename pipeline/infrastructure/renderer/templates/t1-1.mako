@@ -195,16 +195,6 @@ $(document).ready(function() {
 </%doc>
             </tbody>
         </table>
-<!-- 
-        % if pcontext.logtype == 'GOUS':
-        <li>GOUS ID</li>
-        <ul>
-            <li>MOUS1 ID</li>
-            <li>MOUS2 ID</li>
-            <li>MOUS3 ID</li>
-        </ul>
-        % endif
- -->
     </div>
 
 </div>

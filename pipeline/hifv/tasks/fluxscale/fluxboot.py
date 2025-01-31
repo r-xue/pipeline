@@ -11,6 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
@@ -1034,7 +1035,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     fluxflag: bool = False, vlassmode: bool = False, spw: str = ''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 

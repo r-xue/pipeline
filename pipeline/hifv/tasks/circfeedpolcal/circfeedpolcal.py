@@ -12,6 +12,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
 from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
@@ -315,7 +316,7 @@ class Circfeedpolcal(polarization.Polarization):
     def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         append = False
         if os.path.exists(caltable):
@@ -400,7 +401,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         GainTables = GainTables[0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         spwmap = []
         for gaintable in GainTables:

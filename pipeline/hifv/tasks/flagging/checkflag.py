@@ -121,7 +121,7 @@ class Checkflag(basetask.StandardTaskTemplate):
         LOG.info("Checkflag task: {}".format(repr(self.inputs.checkflagmode)))
 
         ms = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        self.tint = ms.get_vla_max_integration_time()
+        self.tint = ms.get_integration_time_stats(stat_type="max")
 
         # a list of strings representing polarizations from science spws
         sci_spwlist = ms.get_spectral_windows(science_windows_only=True)
