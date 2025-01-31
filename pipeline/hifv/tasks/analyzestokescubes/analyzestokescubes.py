@@ -29,7 +29,16 @@ class AnalyzestokescubesResults(basetask.Results):
 
 
 class AnalyzestokescubesInputs(vdp.StandardInputs):
+    # docstring and type hints: supplements hifv_analysestokescubes
     def __init__(self, context, vis=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+        """
         self.context = context
         self.vis = vis
 
@@ -116,7 +125,7 @@ class Analyzestokescubes(basetask.StandardTaskTemplate):
 
     def _get_imstat(self, imlist):
         """Identify the image with lowest ref. frequency and measure its 'maxpos'.
-        
+
         See the requirement in PIPE-1356.
         """
 

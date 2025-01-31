@@ -27,7 +27,24 @@ class AnalyzealphaResults(basetask.Results):
 
 
 class AnalyzealphaInputs(vdp.StandardInputs):
+    # docstring and type hints: supplements hif_analyzealpha
     def __init__(self, context, vis=None, image=None, alphafile=None, alphaerrorfile=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of visisbility  data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
+                converted  to MS format.
+
+                Example: vis=['X227.ms', 'asdms.tar.gz']
+
+            image: Restored subimage
+
+            alphafile: Input spectral index map
+
+            alphaerrorfile: Input spectral index error map
+        """
         self.context = context
         self.vis = vis
         self.image = image

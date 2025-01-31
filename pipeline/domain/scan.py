@@ -1,10 +1,21 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import datetime
 import operator
 import pprint
+from typing import TYPE_CHECKING
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+
+if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
+    from .antenna import Antenna
+    from .datadescription import DataDescription
+    from .field import Field
+    from .spectralwindow import SpectralWindow
+    from .state import State
 
 _pprinter = pprint.PrettyPrinter()
 
@@ -13,10 +24,41 @@ LOG = infrastructure.get_logger(__name__)
 
 class Scan(object):
     """
-    Class containing info about a single scan.
+    Scan is a logical representation of a single scan.
+
+    Attributes:
+        id: The scan number within the MeasurementSet.
+        antennas: Set of Antenna objects for antennas associated with this scan.
+        intents: Set of Pipeline intents corresponding to the states associated
+            with this scan.
+        fields: Set of Field objects for fields associated with this scan.
+        states: Set of State objects for states associated with this scan.
+        data_descriptions: Set of DataDescription objects for data description
+            entries associated with this scan.
     """
-    def __init__(self, id=None, antennas=None, intents=None, fields=None,
-                 states=None, data_descriptions=None, scan_times=None):
+    def __init__(self, id: int | None = None, antennas: list[Antenna] | None = None, intents: list[str] | None = None,
+                 fields: list[Field] | None = None, states: list[State] | None = None,
+                 data_descriptions: list[DataDescription] | None = None, scan_times: dict | None = None) -> None:
+        """
+        Initialize a Scan object.
+
+        Args:
+            id: The scan number within the MeasurementSet.
+            antennas: List of Antenna objects for antennas associated with this scan.
+            intents: Set of Pipeline intents corresponding to the states
+                associated with this scan.
+            fields: List of Field objects for fields associated with this scan.
+            states: List of State objects for states associated with this scan.
+            data_descriptions: List of DataDescription objects for data
+                description entries associated with this scan.
+            scan_times: Dictionary mapping spectral window ID keys (for all
+                spectral windows associated with this scan) to a list of
+                2-tuples for all sub-scans, where each 2-tuple for a sub-scan
+                contains the sub-scan epoch midpoint time and the sub-scan
+                exposure time (for that spectral window). These are used to
+                derive and store properties such as start-time, end-time,
+                time-on-source.
+        """
         self.id = id
 
         if antennas is None:
@@ -51,7 +93,7 @@ class Scan(object):
         self.__start_time = None
         self.__end_time = None
 
-        # midpoints is a list of tuple of (midpoint epochs, integation time)            
+        # midpoints is a list of tuple of (midpoint epochs, integration time)
         sorted_epochs = {spw_id: sorted(midpoints, key=lambda e: e[0]['m0']['value'])
                          for spw_id, midpoints in scan_times.items()}
 
@@ -87,7 +129,7 @@ class Scan(object):
             if self.__end_time is None or qt.gt(max_val, self.__end_time['m0']):
                 self.__end_time = range_end_epoch
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         mt = casa_tools.measures
         qt = casa_tools.quanta
 
@@ -126,7 +168,7 @@ class Scan(object):
                     dds=sort_by_id(self.data_descriptions),
                     scan_times=_pprinter.pformat(scan_times)))
 
-    def __str__(self):
+    def __str__(self) -> str:
         return ('<Scan #{id}: intents=\'{intents}\' start=\'{start}\' '
                 'end=\'{end}\' duration=\'{duration}\'>'.format(
                     id=self.id,
@@ -136,15 +178,18 @@ class Scan(object):
                     duration=str(self.time_on_source)))
 
     @property
-    def start_time(self):
+    def start_time(self) -> dict:
+        """Return start time of the Scan as a CASA 'epoch' measure dictionary."""
         return self.__start_time
 
     @property
-    def end_time(self):
+    def end_time(self) -> dict:
+        """Return end time of the Scan as a CASA 'epoch' measure dictionary."""
         return self.__end_time
 
     @property
-    def time_on_source(self):
+    def time_on_source(self) -> datetime.timedelta:
+        """Return time-on-source for the Scan."""
         # adding up the scan exposures does not give us the total time on 
         # source. Instead we should simply subtract the scan end time from the 
         # scan start time to calculate the total time
@@ -152,12 +197,37 @@ class Scan(object):
         end = utils.get_epoch_as_datetime(self.end_time)
         return end - start
 
-    def exposure_time(self, spw_id):
+    def exposure_time(self, spw_id: int) -> datetime.timedelta:
+        """
+        Return exposure time for this Scan for given spectral window ID.
+
+        Args:
+            spw_id: Numerical identifier of spectral window to select.
+
+        Returns:
+            Exposure time for this Scan and given spectral window ID.
+        """
         return self.__exposure_time[spw_id]
 
-    def mean_interval(self, spw_id):
+    def mean_interval(self, spw_id: int) -> datetime.timedelta:
+        """
+        Return the "mean" sub-scan integration time for given spectral window ID.
+
+        Note: at present, it is assumed that the integration time does not vary
+        per sub-scan, and it therefore takes the integration time from the first
+        sub-scan in this Scan to be representative (i.e. it does not take the
+        mean from all sub-scan integration times).
+
+        Args:
+            spw_id: Numerical identifier of spectral window to select.
+
+        Returns:
+            Sub-scan integration time for given spectral window ID.
+        """
         return self.__mean_intervals[spw_id]
 
     @property
-    def spws(self):
+    def spws(self) -> set[SpectralWindow]:
+        """Return set of SpectralWindow objects for spectral windows associated
+        with this Scan."""
         return {dd.spw for dd in self.data_descriptions}
