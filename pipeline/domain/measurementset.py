@@ -1012,9 +1012,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        ddindex = self.get_vla_datadesc()
-
-        corrstring_list = ddindex[0]['corrdesc']
+        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -1030,11 +1028,11 @@ class MeasurementSet(object):
         Returns:
             list: a list of correlation labels.
         """
-        ddindex = self.get_vla_datadesc()
+
         corrs = set()
-        for dd in ddindex.values():
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd['spw']) in spw.split(',')):
-                corrs = corrs.union(dd['corrdesc'])
+        for lspw in self.spectral_windows:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
 
         return sorted(corrs)
 
@@ -1068,17 +1066,17 @@ class MeasurementSet(object):
 
         spw2band = {}
 
-        for spw in ddindex:
+        for spw in self.spectral_windows:
 
-            strelems = list(ddindex[spw]['spwname'])
+            strelems = list(spw.name)
             bandname = strelems[5]
             if bandname in '4PLSCXUKAQ':
-                spw2band[spw] = strelems[5]
+                spw2band[spw.id] = strelems[5]
             # Check for U / KU
             if strelems[5] == 'K' and strelems[6] == 'U':
-                spw2band[spw] = 'U'
+                spw2band[spw.id] = 'U'
             if strelems[5] == 'K' and strelems[6] == 'A':
-                spw2band[spw] = 'A'
+                spw2band[spw.id] = 'A'
 
         return spw2band
 
@@ -1279,8 +1277,8 @@ class MeasurementSet(object):
         Returns:
             The median integration time used.
         """
-        LOG.debug('inefficiency - MSFlagger reading file to get integration '
-                  'time')
+        LOG.debug('inefficiency - MSFlagger reading file to get median integration '
+                  'time for science targets')
 
         # get the field IDs and state IDs for fields in the measurement set,
         # filtering by intent if necessary
@@ -1289,13 +1287,6 @@ class MeasurementSet(object):
                          if intent in field.intents]
             state_ids = [state.id for state in self.states
                          if intent in state.intents]
-#        if intent:
-#            re_intent = intent.replace('*', '.*')
-#            re_intent = re.compile(re_intent)
-#            field_ids = [field.id for field in self.fields
-#                         if re_intent.match(str(field.intents))]
-#            state_ids = [state.id for state in self.states
-#                         if re_intent.match(str(state.intents))]
         else:
             field_ids = [field.id for field in self.fields]
             state_ids = [state.id for state in self.states]
@@ -1342,31 +1333,44 @@ class MeasurementSet(object):
             except:
                 LOG.error("Incorrect spw string format.")
 
-        # now get the science spws, those used for scientific intent
-        science_spws = [
-            ispw for ispw in spws
-            if ispw.num_channels not in self.exclude_num_chans
-            and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
-                                             'TARGET'])]
-        LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
+        if science_windows_only == True:
+            # now get the science spws, those used for scientific intent
+            science_spws = [
+                ispw for ispw in spws
+                if ispw.num_channels not in self.exclude_num_chans
+                and not ispw.intents.isdisjoint(['BANDPASS', 'AMPLITUDE', 'PHASE',
+                                                'TARGET'])]
+            LOG.debug('science spws are: %s' % [ispw.id for ispw in science_spws])
+            # and the science fields/states
+            science_field_ids = [
+                fid for fid in field_ids
+                if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
+                                                    'PHASE', 'TARGET'])]
+            science_state_ids = [
+                sid for sid in state_ids
+                if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
+                                                    'PHASE', 'TARGET'])]
 
-        # and the science fields/states
-        science_field_ids = [
-            field.id for field in self.fields
-            if not set(field.intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                  'PHASE', 'TARGET'])]
-        science_state_ids = [
-            state.id for state in self.states
-            if not set(state.intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                  'PHASE', 'TARGET'])]
+            science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
-        science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
+        # VLA datasets have an empty STATE table; in the main table such rows
+        # have a state ID of -1.
+        if not state_ids:
+            state_ids = [-1]
+
+        state_str = utils.list_to_str(science_state_ids if science_windows_only else state_ids)
+        field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
+        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
+
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s AND DATA_DESC_ID in %s)' % (utils.list_to_str(science_state_ids), utils.list_to_str(science_field_ids), utils.list_to_str(science_spw_dd_ids))
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
-            return np.median(integration)
+            if stat_type == "max":
+                return np.max(integration)
+            elif stat_type == "median":
+                return np.median(integration)
 
     def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
