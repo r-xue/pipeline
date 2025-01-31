@@ -198,18 +198,24 @@ class VLAExportData(exportdata.ExportData):
             except:
                 continue
 
-        # Is hif_selfcal executed?
+        # Is hif_selfcal/hif_uvcontsub executed?
         selfcal = False
+        uvcontsub = False
         for result in context.results:
             result_meta = result.read()
-            if hasattr(result_meta, 'pipeline_casa_task') and result_meta.pipeline_casa_task.startswith('hif_selfcal'):
-                selfcal = True
+            if hasattr(result_meta, 'pipeline_casa_task'):
+                if result_meta.pipeline_casa_task.startswith('hif_selfcal'):
+                    selfcal = True
+                if result_meta.pipeline_casa_task.startswith('hif_uvcontsub'):
+                    uvcontsub = True
 
         if vlassmode:
             task_string += "\n    hifv_fixpointing()"
 
         task_string += "\n    hifv_statwt()"
         task_string += "\n    hifv_mstransform()"
+        if uvcontsub:
+            task_string += "\n    hif_uvcontsub()"
         if selfcal:
             task_string += "\n    hif_selfcal(restore_only=True)"
 
