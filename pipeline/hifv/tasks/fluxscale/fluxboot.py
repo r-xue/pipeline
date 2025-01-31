@@ -35,17 +35,35 @@ class FluxbootInputs(vdp.StandardInputs):
     fitorder = vdp.VisDependentProperty(default=-1)
     refant = vdp.VisDependentProperty(default='')
 
+    # docstring and type hints: supplements hifv_fluxboot
     def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
-        """
+        """Initialize Inputs.
+
         Args:
-            vis(str or list):  measurement set
-            caltable(str):  fluxgaincal table from user input.  If None, task uses default name.
+            context: Pipeline context.
+
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
                 and we proceed directly to the flux density bootstrapping.
-            refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
-            fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
-            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
-        """
+
+            refantignore(str): String list of antennas to ignore
+
+                Example:  refantignore='ea02, ea03'
+
+            fitorder(int): Polynomial order of the spectral fitting for valid flux densities with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
+                fractional bandwidth and receiver bands present in the observation.
+                An override value of 1,2,3 or 4 may be specified by the user.
+                Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
+                If no determination can be made by the heuristics, a fitorder of 1 will be used.
+                Default is -1 (heuristics will determine).
+
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
+
+       """
 
         if fitorder is None:
             fitorder = -1

@@ -17,7 +17,7 @@ from .eventbus import ContextCreatedEvent, ContextResumedEvent
 LOG = logging.get_logger(__name__)
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 5, 4, 7]
+MIN_CASA_REVISION = [6, 6, 1, 17]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 

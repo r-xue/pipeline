@@ -81,7 +81,7 @@ def savitzky_golay(y, window_size, order, deriv=0, rate=1):
 
     half_window = (window_size - 1) // 2
     # precompute coefficients
-    b = np.mat([[k**i for i in range(order + 1)] for k in range(-half_window, half_window+1)])
+    b = np.asmatrix([[k**i for i in range(order + 1)] for k in range(-half_window, half_window+1)])
     m = np.linalg.pinv(b).A[deriv] * rate**deriv * factorial(deriv)
     # pad the signal at the extremes with
     # values taken from the signal itself
@@ -144,8 +144,34 @@ class SyspowerInputs(vdp.StandardInputs):
         return [0.7, 1.2]
 
 
+    # docstring and type hints: supplements hifv_syspower
     def __init__(self, context, vis=None, clip_sp_template=None, antexclude=None,
                  apply=None, do_not_apply=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged.
+
+            antexclude: dictionary in the format of:
+
+                {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+
+                If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
+                If 'usemedian': True, the template values are replaced with the median of the good antennas.
+
+            apply: Apply task results to RQ table.
+
+            do_not_apply: csv string of band names to not apply.
+
+                Example: 'L,X,S'
+
+        """
         self.context = context
         self.vis = vis
         self.clip_sp_template = clip_sp_template
