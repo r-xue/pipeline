@@ -4,6 +4,7 @@ from typing import Type, Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+from pipeline.infrastructure.utils import conversion
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -21,18 +22,29 @@ class HanningInputs(vdp.StandardInputs):
 
     """
     maser_detection = vdp.VisDependentProperty(default=True)
+    spws_to_smooth = vdp.VisDependentProperty(default=None)
 
-    def __init__(self, context, vis=None, maser_detection=None):
+    # docstring and type hints: supplements hifv_hanning
+    def __init__(self, context, vis=None, maser_detection=None, spws_to_smooth=None):
         """
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            maser_detection: Run maser detect algorithm on spectral line windows. Defaults to True.
+
+            spws_to_smooth:
 
         """
         super(HanningInputs, self).__init__()
         self.context = context
         self.vis = vis
         self.maser_detection = maser_detection
+        self.spws_to_smooth = spws_to_smooth
+
+        if self.spws_to_smooth is not None:
+            self.spws_to_smooth = conversion.range_to_list(self.spws_to_smooth)
 
 
 class HanningResults(basetask.Results):
@@ -41,7 +53,7 @@ class HanningResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
-    def __init__(self, final=None, pool=None, preceding=None):
+    def __init__(self, final=None, pool=None, preceding=None, smoothed_spws=None):
         """
         Args:
             final(list): final list of tables (not used in this task)
@@ -49,13 +61,14 @@ class HanningResults(basetask.Results):
             preceding(list): preceding list (not used in this task)
 
         """
-
         if final is None:
             final = []
         if pool is None:
             pool = []
         if preceding is None:
             preceding = []
+        if smoothed_spws is None:
+            smoothed_spws = {}
 
         super(HanningResults, self).__init__()
 
@@ -64,6 +77,7 @@ class HanningResults(basetask.Results):
         self.final = final[:]
         self.preceding = preceding[:]
         self.error = set()
+        self.smoothed_spws = smoothed_spws
 
     def merge_with_context(self, context):
         """
@@ -101,19 +115,40 @@ class Hanning(basetask.StandardTaskTemplate):
                 LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
                 return HanningResults()
 
-        # Retrieve SPWs information and determine which to smooth
-        if not self.inputs.maser_detection:
-            LOG.info("Maser detection turned off.")
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
-        hs_dict = dict()
-        for spw in spws:
-            hs_dict[spw.id] = False
-            if spw.sdm_num_bin > 1 or spw.specline_window:
-                if self.inputs.maser_detection:
-                    if self._checkmaserline(str(spw.id)):
-                        hs_dict[spw.id] = True
+        smoothing_dict = {}
+
+        # Smooth input spws only if applicable. Overrides everything else
+        # At this time, only used by hifv_restoredata and not exposed to the user
+        if self.inputs.spws_to_smooth is not None:
+            for spw in spws:
+                if spw.id in self.inputs.spws_to_smooth:
+                    smoothing_dict[spw.id] = (True, "restored smoothing")
+                else:
+                    smoothing_dict[spw.id] = (False, "")
+        else:
+            # Retrieve SPWs information and determine which to smooth
+            if not self.inputs.maser_detection:
+                LOG.info("Maser detection turned off.")
+
+            # If any spws had online smoothing applied, do not smooth any spws
+            if any([spw.sdm_num_bin > 1 for spw in spws]):
+                for spw in spws:
+                    smoothing_dict[spw.id] = (False, "online smoothing applied")
             else:
-                hs_dict[spw.id] = True
+                for spw in spws:
+                    smoothing_dict[spw.id] = (False, "")
+                    if spw.specline_window:
+                        if self.inputs.maser_detection and self._checkmaserline(str(spw.id)):
+                            smoothing_dict[spw.id] = (True, "spectral line, maser line")
+                        else:
+                            smoothing_dict[spw.id] = (False, "spectral line")
+                    else:
+                        smoothing_dict[spw.id] = (True, "continuum")
+
+        hs_dict = {}
+        for key, val in smoothing_dict.items():
+            hs_dict[key] = val[0]
 
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
@@ -142,7 +177,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults()
+        return HanningResults(smoothed_spws=smoothing_dict)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -209,7 +244,7 @@ class Hanning(basetask.StandardTaskTemplate):
         for ms in self.inputs.context.observing_run.measurement_sets:
             if ms.name == self.inputs.vis:
                 ms_info = ms
-        
+
         spw_info = ms_info.get_spectral_window(spw)
         freq_low = spw_info._min_frequency.convert_to(newUnits=FrequencyUnits.HERTZ).value
         freq_high = spw_info._max_frequency.convert_to(newUnits=FrequencyUnits.HERTZ).value

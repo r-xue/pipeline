@@ -21,10 +21,14 @@ class FindContResult(basetask.Results):
         self.single_range_channel_fractions = single_range_channel_fractions
 
     def merge_with_context(self, context):
+
         if not self.mitigation_error:
+
             # write the new ranges to the continuum file
-            contfile_handler = contfilehandler.ContFileHandler(context.contfile)
-            contfile_handler.write(self.cont_ranges)
+            if not context.vla_skip_mfs_and_cube_imaging:
+                # PIPE-2255: avoid writing a blank cont.dat file if hif_findcont is bypassed in the VLA cube-imaging workflow.
+                contfile_handler = contfilehandler.ContFileHandler(context.contfile)
+                contfile_handler.write(self.cont_ranges)
 
             # Store new selection for subsequent mfs or cont imaging step.
             # NOTE: This only works for the default setup, not for a user supplied list.

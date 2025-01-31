@@ -27,14 +27,70 @@ class VlaMstransformInputs(mst.MstransformInputs):
         return vis_root + '_targets.ms'
 
     spw_line = vdp.VisDependentProperty(default='')
+    omit_contline_ms = vdp.VisDependentProperty(default=False)
 
+    # docstring and type hints: supplements hifv_mstransform
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None):
+                 spw_line=None, chanbin=None, timebin=None, outputvis_for_line=None, omit_contline_ms=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            outputvis: The list of output transformed MeasurementSets to be used for continuum imaging. The output list must be the same length as the input
+                list. The default output name defaults to
+                <msrootname>_targets_cont.ms
+
+                Examples:
+
+                - outputvis='ngc5921.ms',
+                - outputvis=['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
+
+                Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
+
+            intent: Select intents for which associated fields will be imaged. By default only TARGET data is selected.
+
+                Examples: 'PHASE, BANDPASS'
+
+            spw: Select spectral window/channels to include for continuum imaging. By default all science spws for which the specified intent is valid are
+                selected.
+
+            spw_line: Select spectral window/channels to include for line imaging. If specified, these will override the default, which
+                is to use the spws identified as specline_windows in hifv_importdata
+                or hifv_restoredata.
+
+            chanbin: Width (bin) of input channels to average to form an output channel. If chanbin > 1 then chanaverage is automatically
+                switched to True.
+
+            timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
+
+            outputvis_for_line: The list of output transformed MeasurementSets to be used for line imaging. The output list must be the same length as the input
+                list. The default output name defaults to
+                <msrootname>_targets.ms
+
+                Examples:
+                - outputvis_for_line='ngc5921.ms',
+                - outputvis_for_line=['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            omit_contline_ms: If True, don't make the contline ms (_targets.ms). Only make cont MS (_targets_cont.ms). Default is False.
+
+        """
 
         super().__init__(context, output_dir, vis, outputvis, field, intent, spw, chanbin, timebin)
         self.spw_line = spw_line
         self.outputvis = outputvis
         self.outputvis_for_line = outputvis_for_line
+        self.omit_contline_ms = omit_contline_ms
 
 
 @task_registry.set_equivalent_casa_task('hifv_mstransform')
@@ -50,6 +106,7 @@ class VlaMstransform(mst.Mstransform):
         # Remove input member variables that don't belong as input to the mstransform task
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
+        mstransform_args.pop('omit_contline_ms', None)
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:
@@ -60,12 +117,13 @@ class VlaMstransform(mst.Mstransform):
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
 
-        # Create output MS for line data (_target.ms)
-        produce_lines_ms = self._create_targets_ms(inputs, mstransform_args)
+        if not self.inputs.omit_contline_ms:
+            # Create output MS for line data (_target.ms)
+            self._create_targets_ms(inputs, mstransform_args)
 
         # Create the results structure
         result = VlaMstransformResults(vis=inputs.vis, outputvis=inputs.outputvis,
-                                       outputvis_for_line=inputs.outputvis_for_line, produce_lines_ms=produce_lines_ms)
+                                       outputvis_for_line=inputs.outputvis_for_line)
 
         return result
 
@@ -78,7 +136,7 @@ class VlaMstransform(mst.Mstransform):
 
         # Check for existence of the output vis for line processing.
         if not os.path.exists(result.outputvis_for_line):
-            LOG.info('Could not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
+            LOG.info('Did not create science targets cont+line MS for line imaging: %s. Subsequent stages will not do line imaging.' % (os.path.basename(result.outputvis_for_line)))
 
         # Import the new measurement sets.
         try:
@@ -98,7 +156,7 @@ class VlaMstransform(mst.Mstransform):
         """
         Create _targets.ms for line imaging.
 
-        This will be created if pre-RFI flags exist and there are spectral lines in 
+        This will be created if pre-RFI flags exist and there are spectral lines in
         any spws.
 
         Returns True if targets.ms was created, else False.
@@ -146,7 +204,7 @@ class VlaMstransform(mst.Mstransform):
             mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
             try:
-                self._executor.execute(mstransform_job)     
+                self._executor.execute(mstransform_job)
             except OSError as ee:
                 LOG.warning(f"Caught mstransform exception: {ee}")
 
@@ -180,10 +238,9 @@ class VlaMstransform(mst.Mstransform):
 
 
 class VlaMstransformResults(mst.MstransformResults):
-    def __init__(self, vis, outputvis, outputvis_for_line, produce_lines_ms=False):
+    def __init__(self, vis, outputvis, outputvis_for_line):
         super().__init__(vis, outputvis)
         self.outputvis_for_line = outputvis_for_line
-        self.produce_lines_ms = produce_lines_ms
 
     def merge_with_context(self, context):
         # Check for an output vis
@@ -209,10 +266,6 @@ class VlaMstransformResults(mst.MstransformResults):
             calto = callibrary.CalTo(vis=ms.name)
             LOG.info('Registering {} with callibrary'.format(ms.name))
             context.callibrary.add(calto, [])
-
-        # Set whether to do cube imaging or not
-        if not self.produce_lines_ms:
-            context.vla_skip_mfs_and_cube_imaging = True
 
     def __str__(self):
         # Format the Mstransform results.

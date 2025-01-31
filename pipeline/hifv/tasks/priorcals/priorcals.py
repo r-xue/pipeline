@@ -43,23 +43,39 @@ class PriorcalsInputs(vdp.StandardInputs):
     apply_swpowcal = vdp.VisDependentProperty(default=False)
     ant_pos_time_limit = vdp.VisDependentProperty(default=150)
 
+    # docstring and type hints: supplements hifv_priorcals
     def __init__(self, context, vis=None, show_tec_maps=None, apply_tec_correction=None, apply_gaincurves=None, apply_opcal=None,
                  apply_rqcal=None, apply_antpos=None, apply_swpowcal=None, swpow_spw=None, ant_pos_time_limit=None):
-        """
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str):  Measurement set
-            show_tec_maps(bool):    Display the plot output from the CASA tec_maps recipe function
-            apply_tec_correction:   CASA tec_maps recipe function is executed - this bool determines if gencal is
-                                    executed and the resulting table applied
-            apply_gaincurves(bool): Flag to apply gain curves correction. Default is True.
-            apply_opcal(bool):      Flag to apply opacities correction. Default is True.
-            apply_rqcal(bool):      Flag to apply requantizer gains correction. Default is True.
-            apply_antpos(bool):     Flag to apply antenna position correction. Default is True.
-            apply_swpowcal(bool):   Flag to apply switched power table. Default is False. If set True,
-                                    apply_rqcal is ignored and no requantizer gain correction will be applied.
-            swpow_spw(str):         spws for switched power
-            ant_pos_time_limit(int): Antenna position time limit in days. Default is 150 days.
+
+            vis(str): List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
+                converted  to MS format.
+
+                Example: vis=['X227.ms', 'asdms.tar.gz']
+
+            show_tec_maps(bool): Plot tec maps. Display the plot output from the CASA tec_maps recipe function.
+
+            apply_tec_correction: Apply tec correction. CASA tec_maps recipe function is executed -
+                this bool determines if gencal is
+                executed and the resulting table applied
+
+            apply_gaincurves(bool): Apply gain curves correction, default True.
+
+            apply_opcal(bool): Apply opacities correction, default True.
+
+            apply_rqcal(bool): Apply requantizer gains correction, default True.
+
+            apply_antpos(bool): Apply antenna position corrections, default True.
+
+            apply_swpowcal(bool): Apply switched power table, default False.  If set True, ``apply_rqcal`` is ignored and no requantizer gain correction will be applied.
+
+            swpow_spw(str): Spectral-window(s) for plotting: "" ==>all, spw="6, 14"
+
+            ant_pos_time_limit(int): Antenna position time limit in days, default to 150 days.
+
         """
         self.context = context
         self.vis = vis

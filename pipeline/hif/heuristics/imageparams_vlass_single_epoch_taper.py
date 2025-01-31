@@ -32,7 +32,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics."""
         return 1.0
 
@@ -45,7 +45,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return ['1.8arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '') -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [4050, 4050]
 
@@ -69,7 +69,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean uvtaper parameter heuristics."""
         return ['7.0arcsec']
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return None, None
 

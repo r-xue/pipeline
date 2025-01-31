@@ -126,6 +126,7 @@ class SDImagingInputs(vdp.StandardInputs):
         )
         return _datatype
 
+    # docstring and type hints: supplements hsd_imaging
     def __init__(self, context: 'Context', mode: Optional[str]=None, restfreq: Optional[str]=None,
                  infiles: Optional[List[str]]=None, field: Optional[str]=None, spw: Optional[str]=None,
                  org_direction: Optional['sdtyping.Direction']=None):
@@ -133,13 +134,39 @@ class SDImagingInputs(vdp.StandardInputs):
 
         Args:
             context : Pipeline context
-            mode : Spectrum mode. Defaults to None, but in effect to 'line'.
-            restfreq : Rest frequency. Defaults to None, it executes without rest frequency.
-            infiles : String joined infiles list. Defaults to None.
-            field : Field ID. Defaults to None, all fields are used.
-            spw : Spectral window. Defaults to None, all spws are used.
-            org_direction : Directions of the origin for moving targets.
-                            Defaults to None, it doesn't have some moving targets.
+
+            mode: Imaging mode controls imaging parameters in the task.
+                Accepts either "line" (spectral line imaging) or "ampcal"
+                (image settings for amplitude calibrator).
+
+                Default: None (equivalent to 'line')
+
+            restfreq: Rest frequency. Defaults to None,
+                it executes without rest frequency.
+
+            infiles: List of data files. These must be a name of
+                MeasurementSets that are registered to context via
+                hsd_importdata or hsd_restoredata tasks.
+
+                Example: vis=['uid___A002_X85c183_X36f.ms', 'uid___A002_X85c183_X60b.ms']
+
+                Default: None (process all registered MeasurementSets)
+
+            field: Data selection by field names or ids.
+
+                Example: "`*Sgr*,M100`"
+
+                Default: None (process all science fields)
+
+            spw: Data selection by spw ids.
+
+                Example: "3,4" (generate images for spw 3 and 4)
+
+                Default: None (process all science spws)
+
+            org_direction: Directions of the origin for moving targets.
+                Defaults to None, it doesn't have some moving targets.
+
         """
         super(SDImagingInputs, self).__init__()
 

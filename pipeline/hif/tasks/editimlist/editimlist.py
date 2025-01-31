@@ -177,6 +177,7 @@ class EditimlistInputs(vdp.StandardInputs):
         # Use str() method to catch single spwid case via PPR which maps to int.
         return str(val)
 
+    # docstring and type hints: supplements hif_editimlist
     def __init__(self, context, output_dir=None, vis=None,
                  search_radius_arcsec=None, cell=None, cfcache=None, conjbeams=None,
                  cyclefactor=None, cycleniter=None, nmajor=None, datatype=None, datacolumn=None, deconvolver=None,
@@ -189,6 +190,128 @@ class EditimlistInputs(vdp.StandardInputs):
                  uvtaper=None, uvrange=None, width=None, sensitivity=None, clean_no_mask_selfcal_image=None,
                  vlass_plane_reject_ms=None,
                  cycleniter_final_image_nomask=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input visibility files.
+
+            search_radius_arcsec: Size of the field finding beam search radius in arcsec.
+
+            cell: Image X and Y cell size(s) with units or pixels per beam. Single value same for both. '<number>ppb' for pixels per beam.
+                Compute cell size based on the UV coverage of all the fields
+                to be imaged and use a 5 pix per beam sampling.
+                The pix per beam specification uses the above default cell size
+                ('5ppb') and scales it accordingly.
+
+                Example: ['0.5arcsec', '0.5arcsec'] '3ppb'
+
+            cfcache: Convolution function cache directory name
+
+            conjbeams: Use conjugate frequency in tclean for wideband A-terms.
+
+            cyclefactor: Controls the depth of clean in minor cycles based on PSF.
+
+            cycleniter: Controls max number of minor cycle iterations in a single major cycle.
+
+            nmajor: Controls the maximum number of major cycles to evaluate.
+
+            datatype: Data type(s) to image. The default '' selects the best available data type (e.g. selfcal over regcal) with
+                an automatic fallback to the next available data type.
+                With the ``datatype`` parameter of 'regcal' or 'selfcal', one
+                can force the use of only given data type(s).
+                Note that this parameter is only for non-VLASS data when the datacolumn
+                is not explictly set by user or imaging heuristics.
+
+            datacolumn: Data column to image; this will take precedence over the datatype parameter.
+
+            deconvolver: Minor cycle algorithm (multiscale or mtmfs)
+
+            editmode: The edit mode of the task ('add' or 'replace'). Defaults to 'add'.
+
+            field: Set of data selection field names or ids.
+
+            imaging_mode: Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.
+
+            imagename: Prefix for output image names.
+
+            imsize: Image X and Y size(s) in pixels or PB level (single fields), '' for default. Single value same for both. '<number>pb' for PB level.
+
+            intent: Set of data selection intents
+
+            gridder: Name of the gridder to use with tclean
+
+            mask: Used to declare whether to use a predefined mask for tclean.
+
+            pbmask: Used to declare primary beam gain level for cleaning with primary beam mask (usemask='pb'), used only for VLASS-SE-CONT imaging mode.
+
+            nbin: Channel binning factor.
+
+            nchan: Number of channels, -1 = all
+
+            niter: The max total number of minor cycle iterations allowed for tclean
+
+            nterms: Number of Taylor coefficients in the spectral model
+
+            parameter_file: keyword=value text file as alternative method of input parameters
+
+            pblimit: PB gain level at which to cut off normalizations
+
+            phasecenter: The default phase center is set to the mean of the field directions of all fields that are to be image together.
+
+                Example: 0, 'J2000 19h30m00 -40d00m00'
+
+            reffreq: Reference frequency of the output image coordinate system
+
+            restfreq: List of rest frequencies or a rest frequency in a string for output image.
+
+            robust: Briggs robustness parameter for tclean
+
+            scales: The scales for multi-scale imaging.
+
+            specmode: Spectral gridding type (mfs, cont, cube, '' for default)
+
+            spw: Set of data selection spectral window/channels, '' for all
+
+            start: First channel for frequency mode images. Starts at first input channel of the spw.
+
+                Example: '22.3GHz'
+
+            stokes: Stokes Planes to make
+
+            threshold: Stopping threshold (number in units of Jy, or string)
+
+            nsigma: Multiplicative factor for rms-based threshold stopping
+
+            uvtaper: Used to set a uv-taper during clean.
+
+            uvrange: Set of data selection uv ranges, '' for all.
+
+            width: Channel width
+
+            sensitivity: Theoretical sensitivity (override internal calculation)
+
+            clean_no_mask_selfcal_image:
+
+            vlass_plane_reject_ms: Only used for the 'VLASS-SE-CUBE' imaging mode. default: True If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)
+                If False, do not perform flagging-based VLASS Coarse Cube plane rejection.
+                If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.
+                The optional keys are:
+
+                - exclude_spw, default: ''
+                  Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.
+                - flagpct_thresh, default: 0.9
+                  Flagging percentage threshold per field for the plane rejection.
+                - nfield_thresh: default: 12
+                  A minimal number of fields above the flagging percentage threshold is required for the plane rejection.
+
+            cycleniter_final_image_nomask:
+
+        """
 
         super(EditimlistInputs, self).__init__()
         self.context = context
@@ -402,7 +525,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['stokes'] = th.stokes() if not inpdict['stokes'] else inpdict['stokes']
         imlist_entry['conjbeams'] = th.conjbeams() if not inpdict['conjbeams'] else inpdict['conjbeams']
         imlist_entry['reffreq'] = th.reffreq() if not inpdict['reffreq'] else inpdict['reffreq']
-        imlist_entry['restfreq'] = th.restfreq() if not inpdict['restfreq'] else inpdict['restfreq']
+
         # niter_correction is run again in tclean.py
         imlist_entry['niter'] = th.niter() if not inpdict['niter'] else inpdict['niter']
         imlist_entry['cyclefactor'] = inpdict['cyclefactor']
@@ -412,13 +535,17 @@ class Editimlist(basetask.StandardTaskTemplate):
         imlist_entry['scales'] = th.scales() if not inpdict['scales'] else inpdict['scales']
         imlist_entry['uvtaper'] = (th.uvtaper() if not 'uvtaper' in inp.context.imaging_parameters
                                    else inp.context.imaging_parameters['uvtaper']) if not inpdict['uvtaper'] else inpdict['uvtaper']
-        imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
-                                                spwspec=imlist_entry['spw']) if not inpdict['uvrange'] else inpdict['uvrange']
+
         imlist_entry['deconvolver'] = th.deconvolver(None, None) if not inpdict['deconvolver'] else inpdict['deconvolver']
-        imlist_entry['robust'] = th.robust() if inpdict['robust'] in (None, -999.0) else inpdict['robust']
         imlist_entry['mask'] = th.mask() if not inpdict['mask'] else inpdict['mask']
         imlist_entry['pbmask'] = None if not inpdict['pbmask'] else inpdict['pbmask']
         imlist_entry['specmode'] = th.specmode() if not inpdict['specmode'] else inpdict['specmode']
+        imlist_entry['robust'] = th.robust(specmode=imlist_entry['specmode']) if inpdict['robust'] in (None, -999.0) else inpdict['robust']
+
+        imlist_entry['uvrange'], _ = th.uvrange(field=fieldnames[0] if fieldnames else None,
+                                                spwspec=imlist_entry['spw'],
+                                                specmode=imlist_entry['specmode']) if not inpdict['uvrange'] else inpdict['uvrange']
+
         LOG.info('RADIUS')
         LOG.info(repr(inpdict['search_radius_arcsec']))
         LOG.info('default={d}'.format(d=not inpdict['search_radius_arcsec']
@@ -435,11 +562,15 @@ class Editimlist(basetask.StandardTaskTemplate):
         # imlist_entry['datacolumn'] is either None or an non-empty string here based on the current heuristics implementation.
         imlist_entry['datacolumn'] = th.datacolumn() if not inpdict['datacolumn'] else inpdict['datacolumn']
         imlist_entry['nterms'] = th.nterms(imlist_entry['spw']) if not inpdict['nterms'] else inpdict['nterms']
-        if 'ALMA' not in img_mode:
-            imlist_entry['sensitivity'] = th.get_sensitivity(ms_do=None, field=None, intent=None, spw=None,
-                                                             chansel=None, specmode=None, cell=None, imsize=None,
-                                                             weighting=None, robust=None,
-                                                             uvtaper=None)[0] if not inpdict['sensitivity'] else inpdict['sensitivity']
+
+        # Specify the sensitivity value to be used in TcleanInputs
+        if 'VLASS' in img_mode:
+            # Force sensitivity = 0.0 to disable sensitivity calculation inside hif_tclean()
+            imlist_entry['sensitivity'] = 0.0
+        else:
+            # Assign user input if not None or 0.0; otherwise, set to None for in-flight calculation by hif_tclean()
+            imlist_entry['sensitivity'] = inpdict['sensitivity'] if inpdict['sensitivity'] else None
+
         # ---------------------------------------------------------------------------------- set cell (SRDP ALMA)
         ppb = 5.0  # pixels per beam
         if fieldnames:
@@ -488,16 +619,23 @@ class Editimlist(basetask.StandardTaskTemplate):
                 # PIPE-675: VLA imsize heuristic update; band dependent FOV in 'cont' specmode.
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam, spwspec=imlist_entry['spw'],
-                                                   intent=imlist_entry['intent'])
+                                                   intent=imlist_entry['intent'], specmode=imlist_entry['specmode'])
             else:
                 imlist_entry['imsize'] = th.imsize(fields=fieldids, cell=imlist_entry['cell'],
                                                    primary_beam=largest_primary_beam,
-                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'])
+                                                   sfpblimit=sfpblimit, intent=imlist_entry['intent'],
+                                                   specmode=imlist_entry['specmode'])
 
         imlist_entry['nchan'] = inpdict['nchan']
         imlist_entry['nbin'] = inpdict['nbin']
         imlist_entry['start'] = inpdict['start']
         imlist_entry['width'] = inpdict['width']
+
+        imlist_entry['restfreq'] = th.restfreq(
+            specmode=imlist_entry['specmode'],
+            nchan=imlist_entry['nchan'],
+            start=imlist_entry['start'],
+            width=imlist_entry['width']) if not inpdict['restfreq'] else inpdict['restfreq']
 
         # for VLASS phasecenter is required user input (not determined by heuristics)
         if inpdict['phasecenter']:
@@ -660,13 +798,13 @@ class Editimlist(basetask.StandardTaskTemplate):
 
     def _add_vlasscube_targets(self, result, imlist_entry):
         """Add multiple clean targets for the VLASS-SE-CUBE mode.
-        
+
         For the "coarse cube" mode, we perform the following operations:
             - loop over individual spw groups
             - generate corresponding clean target using a modified copy of the base CleanTarget object template
             - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.
         note: the initial 'spw' from the base CleanTarget object template, i.e., imlist_entry['spw'], is expected to be a list here.
-        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        
+        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.
         """
 
         vlass_plane_reject_keys_allowed = [
@@ -700,7 +838,7 @@ class Editimlist(basetask.StandardTaskTemplate):
             flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
             # PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.
             # We hardcode the value to 1.0 which means we reject any spw that is completely flagged.
-            # Note that this is different from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging threshold to 
+            # Note that this is different from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging threshold to
             # define "bad" fields.
             flagpct_threshold = 1.0
 

@@ -3,6 +3,7 @@ import collections
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+
 from . import resultobjects
 
 LOG = logging.get_logger(__name__)
@@ -17,7 +18,10 @@ class FindContQAHandler(pqa.QAPlugin):
         scores = []
 
         if context.vla_skip_mfs_and_cube_imaging:
-            scores.append(pqa.QAScore(None, longmsg='Stage skipped.', shortmsg='Stage skipped.'))
+            scores.append(
+                pqa.QAScore(
+                    None, longmsg='Skip the VLA continuum finding due to absence of required datatype: CONTLINE_SCIECNE',
+                    shortmsg='Stage skipped'))
             result.qa.pool.extend(scores)
             return
 

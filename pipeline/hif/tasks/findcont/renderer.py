@@ -73,9 +73,13 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                 status = ranges_dict[field][spw]['status']
 
-                ranges_for_spw = ranges_dict[field][spw].get('cont_ranges', ['NONE'])
-                if ranges_for_spw != ['NONE']:
-                    ranges_for_spw = ranges_for_spw['ranges']
+                ranges_and_flags_for_spw = ranges_dict[field][spw].get('cont_ranges', ['NONE'])
+                if ranges_and_flags_for_spw != ['NONE']:
+                    ranges_for_spw = ranges_and_flags_for_spw['ranges']
+                    flags_for_spw = ranges_and_flags_for_spw['flags']
+                else:
+                    ranges_for_spw = ['NONE']
+                    flags_for_spw = []
 
                 if ranges_for_spw in non_detection:
                     rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min='None', max='',
@@ -92,7 +96,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     else:
                         refer = 'UNDEFINED'
                     sorted_ranges = sorted(raw_ranges_for_spw, key=operator.itemgetter(0))
-                    if 'ALL' in ranges_for_spw:
+                    if 'ALL' in flags_for_spw or 'ALLCONT' in flags_for_spw:
                         status += ' , All cont.'
                     for (range_min, range_max) in sorted_ranges:
                         # default units for Frequency is GHz, which matches the
