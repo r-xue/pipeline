@@ -16,6 +16,7 @@ def average_visibility_dtype(npol,nchan,f_avg_max_length):
     ]
     return dtype
 
+
 class MSWrapper(object):
     """
     MSWrapper is a wrapper around a NumPy array populated with measurement set
@@ -72,7 +73,6 @@ class MSWrapper(object):
         freqdim = np.array([0, 0, 1, 0, 1], dtype='int32')
         # Total size of the whole piece of data should be:
         # Size = nrows*Sum( dsizes*(npols*poldim+1)*(nchan*freqdim+1) )(over number of colnames)
-        excluded_columns = ['antenna1', 'antenna2', 'flag']
 
         # commented out from copied PL code
         with casa_tools.MSReader(filename) as openms:
@@ -89,15 +89,6 @@ class MSWrapper(object):
             # Create frequency axes to be introduced in output V
             corr_axis = axis_info['axis_info']['corr_axis']
             freq_axis = axis_info['axis_info']['freq_axis']
-            # get 1D array of channel frequencies and include its definition in the dtype
-            chan_freq = freq_axis['chan_freq']
-            chan_freq = chan_freq.swapaxes(0, 1)[0]
-            # get 1D array of channel widths and include the column in the dtype
-            resolution = freq_axis['resolution']
-            resolution = resolution.swapaxes(0, 1)[0]
-
-            #npol = len(corr_axis)
-            #nchan = len(freq_axis['chan_freq'])
 
             # Data size per row and for the whole scan
             rowdatasize = np.sum(col_dsizes * (npol * poldim + 1) * (nchan * freqdim + 1))
@@ -269,15 +260,6 @@ class MSWrapper(object):
             t_sigmameanimag = 1.0 / np.ma.sqrt(np.ma.sum(t_invsigmasqimag, axis=0))
             t_sigma = t_sigmameanreal + 1.j * t_sigmameanimag
 
-            #Removing because it doesn't make much physical sense
-            # f_data = [mswlist[idxscan].V['f_avg'][ant, :, :] for idxscan in range(nscans)]
-            # f_mean = np.ma.mean(f_data, axis=0)
-            # f_invsigmasqreal = [1.0 / (mswlist[idxscan].V['f_sigma'][ant, :, :].real ** 2) for idxscan in range(nscans)]
-            # f_invsigmasqimag = [1.0 / (mswlist[idxscan].V['f_sigma'][ant, :, :].imag ** 2) for idxscan in range(nscans)]
-            # f_sigmameanreal = 1.0 / np.ma.sqrt(np.ma.sum(f_invsigmasqreal, axis=0))
-            # f_sigmameanimag = 1.0 / np.ma.sqrt(np.ma.sum(f_invsigmasqimag, axis=0))
-            # f_sigma = f_sigmameanreal + 1.j * f_sigmameanimag
-
             flags = [mswlist[idxscan].V['flagged'][ant] for idxscan in range(nscans)]
 
             dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
@@ -340,7 +322,7 @@ class MSWrapper(object):
             print('Saving MSWrapper data arrays...')
             pkl.dump((self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V), pklfile, protocol=2)
             pklfile.close()
-        else: 
+        else:
             print("Nothing to save.")
 
     def load(self,filename):
