@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.tsysflag_contamination.tsysflagcontamination.TsysFlagContaminationInputs.__init__
 @utils.cli_wrapper
 def hifa_tsysflagcontamination(
     vis=None,
@@ -14,9 +15,7 @@ def hifa_tsysflagcontamination(
     diagnostic_plots=None,
     continue_on_failure=None,
 ):
-    """
-    hifa_tsysflagcontamination ---- Flag line contamination in ALMA interferometric Tsys caltables
-
+    """Flag line contamination in ALMA interferometric Tsys caltables
 
     This task flags all line contamination detected through an analysis of the
     Tsys and bandpass caltables.
@@ -27,59 +26,17 @@ def hifa_tsysflagcontamination(
     scans taken toward the bandpass. The bandpass scan should be clean of
     astrophysical line features.
 
+    Returns:
+        The results object for the pipeline task is returned.
 
-    Output:
+    Examples:
+        1. Flag Tsys line contamination using currently recommended parameters:
 
-        results -- The results object for the pipeline task is returned.
+        >>> hifa_tsysflagcontamination()
 
-    --------- parameter descriptions ---------------------------------------------
+        2. Halt pipeline execution if a failure occurs in the underlying heuristic:
 
-    vis
-                    List of input MeasurementSets (Not used).
-    caltable
-                    List of input Tsys calibration tables.
-
-                    Default: [] - Use the table currently stored in the pipeline context.
-
-                    Example: caltable=['X132.ms.tsys.s2.tbl']
-
-    filetemplate
-                    output file to which regions to flag will be written
-
-    logpath
-                    output file to which heuristic log statements will be
-                    written
-
-    remove_n_extreme
-                    expert parameter for contamination heuristic
-
-                    Default: 2
-
-    relative_detection_factor
-                    expert parameter for contamination detection heuristic
-
-                    Default: 0.005
-
-    diagnostic_plots
-                    create diagnostic plots for the line contamination heuristic
-
-                    Default: True
-
-    continue_on_failure
-                    controls whether pipeline execution continues if a failure
-                    occurs in the underlying contamination detection heuristic.
-
-                    Default: True
-
-    --------- examples -----------------------------------------------------------
-
-    1. Flag Tsys line contamination using currently recommended parameters:
-
-    >>> hifa_tsysflagcontamination()
-
-    2. Halt pipeline execution if a failure occurs in the underlying heuristic:
-
-    >>> hifa_tsysflagcontamination(continue_on_failure=False)
+        >>> hifa_tsysflagcontamination(continue_on_failure=False)
 
     """
     ##########################################################################

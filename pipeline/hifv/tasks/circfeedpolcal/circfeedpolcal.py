@@ -79,8 +79,33 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     def clipminmax(self):
         return [0.0, 0.25]
 
+    # docstring and type hints: supplements hifv_circfeedpolcal
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
                  mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            Dterm_solint: D-terms spectral averaging.
+
+                Example: refantignore='ea02,ea03'.
+
+            refantignore: String list of antennas to ignore.
+
+            leakage_poltype: poltype to use in first polcal execution - blank string means use default heuristics.
+
+            mbdkcross: Run gaincal KCROSS grouped by baseband.
+
+            clipminmax: Acceptable range for leakage amplitudes, values outside will be flagged.
+
+            refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
+
+            run_setjy: Run setjy for amplitude/flux calibrator, default set to True.
+
+        """
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
