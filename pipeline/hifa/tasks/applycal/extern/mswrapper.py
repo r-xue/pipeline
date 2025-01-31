@@ -33,7 +33,7 @@ class MSWrapper(object):
     """
 
     @staticmethod
-    def create_averages_from_ms(filename, scan, spw, memlim, antennaids, npol, nchan, perantave=True):
+    def create_averages_from_ms(filename, scan, spw, memlim, perantave=True):
         """
         Create a new MSWrapper for the specified scan and spw.
 
@@ -80,6 +80,8 @@ class MSWrapper(object):
             # select data for this scan
             data_selection = {"scan": str(scan), "spw": str(spw)}
             openms.msselect(data_selection)
+            md = openms.metadata()
+            antennaids = md.antennaids()
             nant = len(antennaids)
             nbl = nant * (nant - 1) / 2 + nant
             nrows = openms.nrow(selected=True)
@@ -89,6 +91,9 @@ class MSWrapper(object):
             # Create frequency axes to be introduced in output V
             corr_axis = axis_info['axis_info']['corr_axis']
             freq_axis = axis_info['axis_info']['freq_axis']
+
+            npol = len(corr_axis)
+            nchan = len(freq_axis['chan_freq'])
 
             # Data size per row and for the whole scan
             rowdatasize = np.sum(col_dsizes * (npol * poldim + 1) * (nchan * freqdim + 1))
