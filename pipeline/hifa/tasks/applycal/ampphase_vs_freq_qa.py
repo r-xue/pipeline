@@ -525,16 +525,16 @@ def _detect_outliers(pols, ants, data_buffer, data_buffer_i, sigma_thresh, delta
             # First evaluate if this is an outlier in the individual
             # polarizations, including both relative and absolute deviation
             # criteria
-            sigma_condition = abs(entry['num_sigma']) > sigma_thresh
-            delta_condition = entry['delta_physical'] > delta_lim[metric]
+            sigma_condition = np.abs(entry['num_sigma']) > sigma_thresh
+            delta_condition = np.abs(entry['delta_physical']) > delta_lim[metric]
             is_outlier = sigma_condition and delta_condition
 
             # Additionally, if this antenna has an amp offset outlier, see if
             # this is an outlier in the combined polarization XX+YY too
             is_i_outlier = False
             if metric == 'amp_intercept' and not i_entry['masked']:
-                i_sigma_cond = abs(i_entry['num_sigma']) > sigma_thresh
-                i_delta_cond = i_entry['delta_physical'] > delta_lim[metric]
+                i_sigma_cond = np.abs(i_entry['num_sigma']) > sigma_thresh
+                i_delta_cond = np.abs(i_entry['delta_physical']) > delta_lim[metric]
                 is_i_outlier = i_sigma_cond and i_delta_cond
 
             if is_outlier:
@@ -543,7 +543,7 @@ def _detect_outliers(pols, ants, data_buffer, data_buffer_i, sigma_thresh, delta
                     pol={pol},
                     num_sigma=entry['num_sigma'],
                     delta_physical=entry['delta_physical'],
-                    amp_freq_sym_off=is_i_outlier
+                    amp_freq_sym_off=not is_i_outlier
                 )
                 outliers.append(outlier)
 
