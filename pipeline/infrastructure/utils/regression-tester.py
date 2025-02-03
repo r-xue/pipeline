@@ -411,7 +411,7 @@ def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
                             input_dir=input_dir,
                             visname=['uid___A002_Xd0a588_X2239'],
-                            expectedoutput_dir=ref_directory)
+                            expectedoutput_file=f'{ref_directory}/uid___A002_Xd0a588_X2239.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt')
 
     pr.run()
 
