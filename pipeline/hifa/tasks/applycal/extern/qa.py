@@ -13,8 +13,7 @@ from pipeline.domain.measures import FrequencyUnits
 from pipeline.infrastructure import logging
 from . import ampphase_vs_freq_qa
 from . import mswrapper
-from . import qa_utils as qau
-from .. import qa as original_qa
+from .. import qa as original_qa, qa_utils as qau
 # imports required for WIP testing, to be removed once migration is complete
 from ..ampphase_vs_freq_qa import Outlier
 from ..qa import QAMessage, outliers_to_qa_scores, REASONS_TO_TEXT
