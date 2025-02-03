@@ -1,6 +1,7 @@
 import collections
 import os
 import shutil
+from typing import Optional, List
 
 import pipeline.h.tasks.common.flagging_renderer_utils as flagutils
 import pipeline.h.tasks.common.displays.flagging as flagging
@@ -19,12 +20,10 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
     def __init__(self, uri='flagdetervla.mako',
                  description='VLA Deterministic flagging', always_rerender=False):
 
-        super(T2_4MDetailsFlagDeterVLARenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, result):
-        super_cls = super(T2_4MDetailsFlagDeterVLARenderer, self)
-        ctx = super_cls.get_display_context(context, result)
+        ctx = super().get_display_context(context, result)
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % result.stage_number)
@@ -82,12 +81,10 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='vlatargetflag.mako',
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
-        super(T2_4MDetailstargetflagRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailstargetflagRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
+        ctx = super().get_display_context(context, results)
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
@@ -112,12 +109,10 @@ class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='checkflag.mako', description='Checkflag summary',
                  always_rerender=False):
-        super(T2_4MDetailscheckflagRenderer, self).__init__(uri=uri, description=description,
-                                                            always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailscheckflagRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
+        ctx = super().get_display_context(context, results)
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
 
@@ -214,12 +209,10 @@ class T2_4MDetailsFlagtargetsdataRenderer(basetemplates.T2_4MDetailsDefaultRende
     def __init__(self, uri='flagtargetsdata.mako',
                  description='Flagtargetsdata flagging', always_rerender=False):
 
-        super(T2_4MDetailsFlagtargetsdataRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailsFlagtargetsdataRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
+        ctx = super().get_display_context(context, results)
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         results = results[0]
@@ -292,8 +285,8 @@ class T2_4MDetailsFlagtargetsdataRenderer(basetemplates.T2_4MDetailsDefaultRende
     def flags_for_result(self,
                          ms,
                          summary,
-                         intents_to_summarise=None,
-                         non_science_agents=None):
+                         intents_to_summarise: Optional[List[str]] = None,
+                         non_science_agents: Optional[List[str]] = None):
         if intents_to_summarise is None:
             intents_to_summarise = ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET']
 
