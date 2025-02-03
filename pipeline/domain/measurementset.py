@@ -38,6 +38,14 @@ class MeasurementSet(object):
     """
     A class to store logical representation of a MeasurementSet (MS).
 
+    The MeasurementSet class represents the metadata and relationships held in a
+    measurement set on disk, acting as an in-memory representation so that
+    metadata and relationships can be quickly queried without additional disk I/O.
+
+    MeasurementSet does not cache binary data or offer functions to facilitate
+    processing of binary data held in the measurement set. For general reading
+    of binary data, see the MSWrapper class.
+
     Attributes:
         name: Name of MeasurementSet, equivalent to file path to MeasurementSet.
         session: Name of session associated with MS.
