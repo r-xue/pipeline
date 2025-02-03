@@ -109,14 +109,14 @@ def main():
         )
 
         #Write QA score Eval Function For testing
-        fname_qascoref = output_path / f'{ms.basename}.{timestamp}.qascoref.pipe'
+        fname_qascoref = output_path / f'{ms.basename}.qascoref.pipe'
         with open(f'{fname_qascoref}.pickle','wb') as f:
             pickle.dump(qaevalf, f)
 
-        fname_final_scores = output_path / f'{ms.basename}.{timestamp}.final_scores.pipe'
+        fname_final_scores = output_path / f'{ms.basename}.final_scores.pipe'
         save_txt_pkl(fname_final_scores, final_scores)
 
-        fname_all_scores = output_path / f'{ms.basename}.{timestamp}.all_scores.pipe'
+        fname_all_scores = output_path / f'{ms.basename}.all_scores.pipe'
         save_txt_pkl(fname_all_scores, all_scores)
 
 

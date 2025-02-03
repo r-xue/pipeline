@@ -227,7 +227,7 @@ def get_qa_scores(
     #all outlier scores objects will be saved here
     all_scores = []
     #Define debug filename
-    debug_path = output_path / f'PIPE356_outliers.pipe.{timestamp}.txt'
+    debug_path = output_path / f'PIPE356_outliers.pipe.txt'
 
     #Define intents that need to be processed
     #avoiding intents with repeated scans
