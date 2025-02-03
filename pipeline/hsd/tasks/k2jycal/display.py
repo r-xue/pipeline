@@ -75,52 +75,84 @@ class K2JySingleScatterDisplay(object):
         return plot_obj
     
     def _plot(self) -> Generator[logger.Plot, None, None]:
-        """Create scatter plot with Frequencies as the main X-axis."""
-        legend_lim = 3
+        """Create box plot"""
         fig = Figure(figsize=(8, 6))  # Customize size as needed
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111)
         ax.set_xlabel('Frequency (GHz)', fontsize=11)
         ax.set_ylabel('Jy/K factor', fontsize=11)
         ax.set_title('Jy/K Factors across Frequencies', fontsize=11, fontweight='bold')
+        
+        # Prepare labels for plotting
+        spw_ids = sorted(self.valid_factors.keys())
+        frequencies = []
+        box_data = []
+        for spw_id in spw_ids:
+            spw = self.valid_factors[spw_id]
+            frequencies.append(
+                np.round(float(
+                    spw["spw_obj"].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+                         , 1))
+            box_data.append(spw["all_factors"])
+      
+        if frequencies:
+            width_scale = max(frequencies) - min(frequencies) if len(frequencies) > 1 else 1
+            box_width = 0.5 * float(width_scale / max(1, len(frequencies)))
+            bp = ax.boxplot(
+                box_data,
+                positions=frequencies,
+                widths=box_width,
+                patch_artist=True,
+                showfliers=False  # outliers are handled manually below,
+            )
+            color_cycle = itertools.cycle(cm.get_cmap("tab10").colors)
+            for box in bp['boxes']:
+                c = next(color_cycle)
+                box.set_facecolor(c)
+                box.set_alpha(0.5)
+        
+            for freq in frequencies:
+                ax.axvline(freq, linestyle='--', color='lightgray', alpha=0.5)
+
         # Corrected symbols_and_colours definition
         symbols_and_colours = zip(
             itertools.cycle('osDv^<>'),  # Cycle through marker symbols
             itertools.cycle(cm.get_cmap('tab10').colors)  # Get colors from the 'tab10' colormap
         )  # standard Tableau colormap
-        # Prepare labels for plotting
-        ms_labels = list(self.valid_factors.keys())
-        is_ms_above_lim = len(ms_labels)>legend_lim
-        spw_ids = sorted({spw_id for ms_data in self.valid_factors.values() for spw_id in ms_data.keys()})
-        frequencies = [self.spws[spw_id].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ) for spw_id in spw_ids]  # Extract frequency decimal values
-        # Plot data points for each MS
-        for ms_label in ms_labels:
-            symbol, colour = next(symbols_and_colours)
-            ms_data = self.valid_factors[ms_label]
-            if is_ms_above_lim:
-                lab = ms_label.split('_')[-1].split('.')[0]
-                LOG.log("Label {lab} stands for ms {ms_label}")
-            else:
-                lab = ms_label
-            for idx, spw_id in enumerate(spw_ids):
-                dat = ms_data.get(spw_id, [])
-                y = [d[0] for d in dat]
-                x = [self.spws[spw_id].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
-                x_unc = [decimal.Decimal('0.5') * self.spws[spw_id].bandwidth.to_units(FrequencyUnits.GIGAHERTZ)] * len(y)
-                # Plot ranges for SPWs
-                ax.errorbar(
-                        x, y, xerr=x_unc, yerr=None, linestyle="None",
-                        marker=symbol, color=colour, alpha = 1.0, 
-                        label=lab if idx == 0 else ""
-                    )
+        ms_styles = {}
+        for ms_lab, (marker, color) in zip(self.ms_labels, symbols_and_colours):
+            ms_styles[ms_lab] = (marker, color)
+      
+        # scatter outliers
+        handles = {}  # use a dictionary to store unique scatter handles by ms_label
+        for i, spw_id in enumerate(spw_ids):
+            freq = frequencies[i]
+            outlier_list = self.valid_factors[spw_id]["outliers"]
+            for ms_label, factor in outlier_list:
+                marker, color = ms_styles[ms_label]
+                scatter = ax.scatter(
+                    freq, factor,
+                    marker=marker,
+                    color=color,
+                    edgecolor="black",
+                    zorder=3,
+                    label=ms_label
+                )
+                if ms_label not in handles:
+                    handles[ms_label] = scatter
+        if handles:
+            ax.legend(
+                handles.values(),  # Use scatter handles
+                handles.keys(),    # Labels
+                title="EB with outliers",
+                loc="best"
+            )
+            
+        # adjust y-limits if range is too small
         y_min, y_max = ax.get_ylim()
-        if y_max - y_min < 0.2:  
+        if (y_max - y_min) < 0.2:
             ax.set_ylim(y_min - 0.1, y_max + 0.1)
-        if len(ms_labels) <= 20:
-            if is_ms_above_lim:
-                lims = ax.get_xlim()
-                ax.set_xlim((lims[0], lims[1]+float(max(frequencies)-min(frequencies))/len(spw_ids)))
-            ax.legend(title='EBs', loc='best')
+            
         # Add secondary x-axis for SPW IDs
         ax_top = ax.twiny()
         ax_top.set_xlim(ax.get_xlim())  # Match the range of the main x-axis
