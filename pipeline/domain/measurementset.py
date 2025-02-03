@@ -30,7 +30,6 @@ from pipeline.infrastructure import logging
 from . import measures, spectralwindow
 from .antennaarray import AntennaArray
 from .datatype import DataType
-from .polarization import Polarization
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,14 +37,6 @@ LOG = infrastructure.get_logger(__name__)
 class MeasurementSet(object):
     """
     A class to store logical representation of a MeasurementSet (MS).
-
-    The MeasurementSet class represents the metadata and relationships held in a
-    measurement set on disk, acting as an in-memory representation so that
-    metadata and relationships can be quickly queried without additional disk I/O.
-
-    MeasurementSet does not cache binary data or offer functions to facilitate
-    processing of binary data held in the measurement set. For general reading
-    of binary data, see the MSWrapper class.
 
     Attributes:
         name: Name of MeasurementSet, equivalent to file path to MeasurementSet.
@@ -74,7 +65,6 @@ class MeasurementSet(object):
         observer: The name of the observer, as listed in the OBSERVATIONS table.
         observing_modes: The name(s) of the Observing Mode(s) used for this MS,
             populated from the ASDM_SBSUMMARY table (empty list if not ALMA).
-        polarizations: A list of Polarization objects associated with the MS.
         project_id: Project ID associated with this MS, as listed in the
             OBSERVATIONS table.
         representative_target: A tuple of the name of representative source,
@@ -153,7 +143,6 @@ class MeasurementSet(object):
         self.fields: RetrieveByIndexContainer | list = []
         self.observer: str = ''
         self.observing_modes: list[str] = []  # PIPE-2084
-        self.polarizations: list[Polarization] = []
         self.project_id: str = ''
         self.representative_target: tuple[str | None, dict | None, dict | None] = (None, None, None)
         self.representative_window: str | None = None
@@ -875,133 +864,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-    def get_vla_max_integration_time(self):
-        """Get the integration time used by the original VLA scripts.
-
-        Returns:
-            int_time: int value of the max integration time used
-        """
-        # with casa_tools.TableReader(vis + '/FIELD') as table:
-        #     numFields = table.nrows()
-        #     field_positions = table.getcol('PHASE_DIR')
-        #     field_ids = range(numFields)
-        #     field_names = table.getcol('NAME')
-
-        # with casa_tools.TableReader(vis) as table:
-        #     scanNums = sorted(np.unique(table.getcol('SCAN_NUMBER')))
-        #     field_scans = []
-        #     for ii in range(0,numFields):
-        #         subtable = table.query('FIELD_ID==%s'%ii)
-        #         field_scans.append(list(np.unique(subtable.getcol('SCAN_NUMBER'))))
-        #         subtable.close()
-
-        # field_scans is now a list of lists containing the scans for each field.
-        # so, to access all the scans for the fields, you'd:
-        #
-        # for ii in range(0,len(field_scans)):
-        #    for jj in range(0,len(field_scans[ii]))
-        #
-        # the jj'th scan of the ii'th field is in field_scans[ii][jj]
-
-        # Figure out integration time used
-
-        with casa_tools.MSReader(self.name) as ms:
-            scan_summary = ms.getscansummary()
-        # startdate=float(ms_summary['BeginTime'])
-
-        integ_scan_list = []
-        for scan in scan_summary:
-            integ_scan_list.append(int(scan))
-        sorted_scan_list = sorted(integ_scan_list)
-
-        # find max and median integration times
-        #
-        integration_times = []
-        for ii in sorted_scan_list:
-            integration_times.append(scan_summary[str(ii)]['0']['IntegrationTime'])
-
-        maximum_integration_time = max(integration_times)
-        median_integration_time = np.median(integration_times)
-
-        int_time = maximum_integration_time
-
-        return int_time
-
-    def get_vla_datadesc(self) -> dict[int, dict]:
-        """Generate VLA data description index
-            Use the original VLA buildscans function to return a dd index
-
-        Returns:
-            ddindex: indexed list of dictionaries with VLA metadata
-        """
-        cordesclist = ['Undefined', 'I', 'Q', 'U', 'V',
-                       'RR', 'RL', 'LR', 'LL',
-                       'XX', 'XY', 'YX', 'YY',
-                       'RX', 'RY', 'LX', 'LY',
-                       'XR', 'XL', 'YR', 'YL',
-                       'PP', 'PQ', 'QP', 'QQ',
-                       'RCircular', 'LCircular',
-                       'Linear', 'Ptotal',
-                       'Plinear', 'PFtotal',
-                       'PFlinear', 'Pangle']
-
-        # From Steve Myers buildscans function
-        with casa_tools.TableReader(self.name + '/DATA_DESCRIPTION') as table:
-            ddspwarr = table.getcol("SPECTRAL_WINDOW_ID")
-            ddpolarr = table.getcol("POLARIZATION_ID")
-
-        ddspwlist = ddspwarr.tolist()
-        ddpollist = ddpolarr.tolist()
-        ndd = len(ddspwlist)
-
-        with casa_tools.TableReader(self.name + '/SPECTRAL_WINDOW') as table:
-            nchanarr = table.getcol("NUM_CHAN")
-            spwnamearr = table.getcol("NAME")
-            reffreqarr = table.getcol("REF_FREQUENCY")
-
-        nspw = len(nchanarr)
-        spwlookup = {}
-        for isp in range(nspw):
-            spwlookup[isp] = {}
-            spwlookup[isp]['nchan'] = nchanarr[isp]
-            spwlookup[isp]['name'] = str(spwnamearr[isp])
-            spwlookup[isp]['reffreq'] = reffreqarr[isp]
-
-        with casa_tools.TableReader(self.name + '/POLARIZATION') as table:
-            ncorarr = table.getcol("NUM_CORR")
-            npols = len(ncorarr)
-            polindex = {}
-            poldescr = {}
-            for ip in range(npols):
-                cort = table.getcol("CORR_TYPE", startrow=ip, nrow=1)
-                (nct, nr) = cort.shape
-                cortypes = []
-                cordescs = []
-                for ict in range(nct):
-                    cct = cort[ict][0]
-                    cde = cordesclist[cct]
-                    cortypes.append(cct)
-                    cordescs.append(cde)
-                polindex[ip] = cortypes
-                poldescr[ip] = cordescs
-
-        ddindex = {}
-        ncorlist = ncorarr.tolist()
-        for idd in range(ndd):
-            ddindex[idd] = {}
-            isp = ddspwlist[idd]
-            ddindex[idd]['spw'] = isp
-            ddindex[idd]['spwname'] = spwlookup[isp]['name']
-            ddindex[idd]['nchan'] = spwlookup[isp]['nchan']
-            ddindex[idd]['reffreq'] = spwlookup[isp]['reffreq']
-            #
-            ipol = ddpollist[idd]
-            ddindex[idd]['ipol'] = ipol
-            ddindex[idd]['npol'] = ncorlist[ipol]
-            ddindex[idd]['corrtype'] = polindex[ipol]
-            ddindex[idd]['corrdesc'] = poldescr[ipol]
-
-        return ddindex
 
     def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
@@ -1062,7 +924,6 @@ class MeasurementSet(object):
         Returns:
             spw2band: dictionary with each string key spw index giving a single letter string value of the band
         """
-        ddindex = self.get_vla_datadesc()
 
         spw2band = {}
 
@@ -1079,16 +940,6 @@ class MeasurementSet(object):
                 spw2band[spw.id] = 'A'
 
         return spw2band
-
-    def vla_minbaselineforcal(self) -> int:
-        """Min baseline for cal
-
-        Returns:
-            Constant value
-        """
-        # Old determination before it was changed to a constant value of 4
-        # return max(4, int(len(self.antennas) / 2.0))
-        return 4
 
     def get_vla_field_spws(self, spwlist=[]):
         """Find field spws for VLA
@@ -1267,15 +1118,16 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_median_integration_time(self, intent: str | None = None) -> np.float:
-        """Get the median integration time used to get data for the given
-        intent.
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> np.float:
+        """Get the given statistcs of integration time.
 
         Args:
             intent: The intent of the data of interest.
-
-        Returns:
-            The median integration time used.
+            spw: spw string list - '1,7,11,18'.
+            science_windows_only: Use integration time of science spws only to compute the given statistics.
+            stat_type: Type of the statistics.
+        Returns
+            Computed statistics value.
         """
         LOG.debug('inefficiency - MSFlagger reading file to get median integration '
                   'time for science targets')
@@ -1290,32 +1142,6 @@ class MeasurementSet(object):
         else:
             field_ids = [field.id for field in self.fields]
             state_ids = [state.id for state in self.states]
-
-        # VLA datasets have an empty STATE table; in the main table such rows
-        # have a state ID of -1.
-        if not state_ids:
-            state_ids = [-1]
-
-        with casa_tools.TableReader(self.name) as table:
-            taql = '(STATE_ID IN %s AND FIELD_ID IN %s)' % (utils.list_to_str(state_ids), utils.list_to_str(field_ids))
-            with contextlib.closing(table.query(taql)) as subtable:
-                integration = subtable.getcol('INTERVAL')
-            return np.median(integration)
-
-    # FiXME: Investigate usage: intent argument unused, but method is called
-    # with specific values for intent.
-    def get_median_science_integration_time(self, intent=None, spw: str | None = None) -> np.float:
-        """Get the median integration time for science targets used to get data for the given
-        intent.
-
-        Keyword arguments:
-        intent  -- The intent of the data of interest.
-        spw     -- spw string list - '1,7,11,18'
-
-        Returns -- The median integration time used.
-        """
-        LOG.debug('inefficiency - MSFlagger reading file to get median integration '
-                  'time for science targets')
 
         if spw is None:
             spws = self.spectral_windows
