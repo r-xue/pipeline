@@ -9,11 +9,6 @@ import os
 <%block name="title">Single-Dish Sky Calibration</%block>
 
 <%
-def get_gaintables(vis):
-    gaintable = [a['gaintable'] for a in applications if a['ms'] == vis]
-    gaintable = ', '.join(gaintable)
-    return gaintable
-
 def get_mses():
 	"""Return a list of MS domain objects"""
 	return [pcontext.observing_run.get_ms(name=r.inputs['vis']) for r in result]
@@ -161,7 +156,6 @@ def get_original_field_name(field_name, vis):
                 img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
                 thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
                 spw = plot.parameters['spw']
-                clean_field_name = plot.parameters['field']
             %>
  	        <div class="col-md-3">
 	            <div class="thumbnail">
@@ -173,12 +167,11 @@ def get_original_field_name(field_name, vis):
 	                <div class="caption">
 	                    <h4>
 	                        <a href="${subpage}" class="replace"
-	                           data-vis="${vis}" data-field="${clean_field_name}" data-spw="${spw}">
+	                           data-vis="${vis}" data-spw="${spw}">
 	                           Spw ${spw}
 	                        </a>
 	                    </h4>
 	                    ${vis}<br>
-                            Field: ${clean_field_name}<br>
                             Antenna: summary<br>
                             Spw: ${spw}<br>
 	                </div>

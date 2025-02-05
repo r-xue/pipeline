@@ -476,7 +476,7 @@ class SingleDishPlotmsLeaf(object):
             raise RuntimeError(f'No match found for field "{self.field}".')
 
         self.field_id = fields[0].id
-        self.field_name = ", ".join(map(str, gainfield_name))
+        self.field_name = ", ".join(gainfield_name)
 
         LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
 
@@ -486,7 +486,6 @@ class SingleDishPlotmsLeaf(object):
         else:
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
-#        self.antenna_selection = '*&&&'
 
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
