@@ -2,6 +2,7 @@ import collections
 import copy
 import functools
 import operator
+import warnings
 from typing import List, Callable
 
 import numpy as np
@@ -711,7 +712,9 @@ def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
 def fit_angular_model(angular_model, nu, angdata, angsigma):
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
     angle = np.ma.angle(angdata[~angdata.mask])
-    phi_init = np.ma.median(angle)
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', np.exceptions.ComplexWarning)
+        phi_init = np.ma.median(angle)
     fitres = scipy.optimize.minimize(f_aux, np.array([0.0, phi_init]), method='L-BFGS-B')
     return fitres
 
