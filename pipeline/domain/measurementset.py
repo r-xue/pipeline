@@ -1301,7 +1301,7 @@ class MeasurementSet(object):
         LOG.info('ms.update_reference_antennas for MS {} ({}): previous list={}, removed={}, demoted={}, new list={}'.
                  format(self.basename, hex(id(self)), previous_reference_antenna,
                         ','.join(sorted(ants_to_remove)) if ants_to_remove else 'none',
-                        ','.join(sorted(ants_to_demote)) if ants_to_remove else 'none',
+                        ','.join(sorted(ants_to_demote)) if ants_to_demote else 'none',
                         self.reference_antenna))
 
     @property
