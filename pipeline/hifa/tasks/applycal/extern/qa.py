@@ -208,24 +208,3 @@ def summarise_scores(
     # TODO TBC: prototype did not summarise to .BANNER scores. Repeat?
 
     return final_scores
-
-def get_max_scores(all_scores: List[pqa.QAScore]) -> Dict[str, List[pqa.QAScore]]:
-    '''Process the entire list of QA scores for a dataset and extract the ones with maximum
-    metric score value for each metric.
-    '''
-
-    #List of metric names to search for
-    metricnamelist = [item for item in REASONS_TO_TEXT if '.' in item and not ',' in item]
-    #Extract metric names for indexing all_scores data
-    metricname = np.array([score.origin.metric_name for score in all_scores])
-    scoreval = np.array([score.origin.metric_score for score in all_scores])
-    maxqascores = []
-
-    for m in metricnamelist:
-        sel = (metricname == m)
-        #If there is some QAscore, search for the one with maximum metric score
-        if np.sum(sel) > 0:
-            idxmax = np.argsort(scoreval[sel])[-1]
-            maxqascores.append(np.array(all_scores)[sel][idxmax])
-
-    return maxqascores
