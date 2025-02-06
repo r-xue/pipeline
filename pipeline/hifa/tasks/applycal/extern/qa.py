@@ -1,17 +1,10 @@
-import functools
-import operator
-import os
 from pathlib import Path
 
-import numpy as np
-
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.domain.measures import FrequencyUnits
 from pipeline.infrastructure import logging
-from .. import mswrapper, ampphase_vs_freq_qa
 from .. import qa_utils as qau
 # imports required for WIP testing, to be removed once migration is complete
-from ..ampphase_vs_freq_qa import Outlier, get_best_fits_per_ant, score_all
+from ..ampphase_vs_freq_qa import score_all_scans
 from ..qa import outliers_to_qa_scores, QAScoreEvalFunc, summarise_scores
 
 LOG = logging.get_logger(__name__)
@@ -79,102 +72,3 @@ def get_qa_scores(
     final_scores = summarise_scores(all_scores, ms, qaevalf = qaevalf)
 
     return all_scores, final_scores, qaevalf
-
-def score_all_scans(
-        ms: MeasurementSet,
-        intent: str,
-        memory_gb: str = '2.0',
-        saved_visibilities: Path = Path(''),
-        flag_all: bool = False
-) -> list[Outlier]:
-    """
-    Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
-    :param ms: name of ms file 
-    :param intent: intent for scans
-    :memory_gb: max memory allowed in gb
-    :saved_visibilities: folder where saved average visibilities are, if any
-    :param outlier_score: score to assign to generated QAScores
-    :return: list of Outlier objects
-    """
-    outliers = []
-    wrappers = {}
-    scans = sorted(ms.get_scans(scan_intent=intent), key=operator.attrgetter('id'))
-
-    if not scans:
-        return outliers
-
-    unit_factor = qau.get_unit_factor(ms)
-    antenna_ids = [antenna.id for antenna in scans[0].antennas]
-
-    for scan in scans:
-        spws = sorted([spw for spw in scan.spws if spw.type in ('FDM', 'TDM')],
-                      key=operator.attrgetter('id'))
-        for spw in spws:
-            LOG.info('Applycal QA analysis: processing {} scan {} spw {}'.format(ms.basename, scan.id, spw.id))
-
-            channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
-
-            # are there saved averaged visbilities?
-            saved_visibility = saved_visibilities / f'buf.{ms.basename}.{int(scan.id)}.{spw.id}.pkl'
-            if os.path.exists(saved_visibility):
-                print("loading visibilities")
-                wrapper = mswrapper.MSWrapper(ms, scan.id, spw.id)
-                wrapper.load(saved_visibility)
-            else:
-                print('Creating averaged visibilities, since they do not exist yet...')
-                wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.basename, int(scan.id), spw.id, memory_gb)
-                wrapper.save(saved_visibility)
-
-            wrappers.setdefault(spw.id, []).append(wrapper)
-
-            # amp/phase vs frequency fits per scan
-            frequency_fit = get_best_fits_per_ant(wrapper, channel_frequencies)
-
-            # partial function to construct outlier, so we don't have to repeat
-            # these arguments for all outliers connected to this ms, intent, spw
-            outlier_fn = functools.partial(
-                Outlier,
-                vis={ms.basename, },
-                intent={intent, },
-                spw={spw.id, },
-                scan={scan.id, }
-            )
-
-            scan_outliers = score_all(frequency_fit, outlier_fn, unit_factor, flag_all)
-            outliers.extend(scan_outliers)
-
-    # now we get scores for the average over average visibilities across all scans
-    for spw_id, spw_wrappers in wrappers.items():
-        if len(spw_wrappers) == 1:
-            LOG.info('Applycal QA analysis: skipping {} scan average for spw {} due to single scan'.format(ms.basename, spw_id))
-            continue
-
-        LOG.info('Applycal QA analysis: processing {} scan average spw {}'.format(ms.basename, spw_id))
-
-        all_scans = '_'.join(str(scan.id) for scan in scans) #string with list of all scans separated by underscore
-        ddi = ms.get_data_description(spw=spw_id)
-        pickle_file = saved_visibilities / f'buf.{ms.basename}.{all_scans}.{ddi.id}.pkl'
-        if os.path.exists(pickle_file):
-            print('All-scan visibilities for ' + str(all_scans) + ' exist, reading them...')
-            all_scan_wrapper = mswrapper.MSWrapper(ms, all_scans, spw_id)
-            all_scan_wrapper.load(pickle_file)
-        else:
-            print('All-scan visibilities for ' + str(all_scans) + ' DO NOT exist, creating them...')
-            all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(spw_wrappers, antenna_ids)
-            all_scan_wrapper.save(pickle_file)
-
-        spw = ms.get_spectral_window(spw_id)
-        channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
-        all_scan_frequency_fits = get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
-        outlier_fn = functools.partial(
-            Outlier,
-            vis={ms.basename, },
-            intent={intent, },
-            spw={spw_id, },
-            scan={-1, }  #for lack of a better idenfifier, '-1' means 'all scans'
-        )
-
-        scan_outliers = ampphase_vs_freq_qa.score_all(all_scan_frequency_fits, outlier_fn, unit_factor, flag_all)
-        outliers.extend(scan_outliers)
-
-    return outliers
