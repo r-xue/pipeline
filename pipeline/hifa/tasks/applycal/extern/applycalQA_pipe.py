@@ -11,7 +11,7 @@ import numpy as np
 import pipeline
 from pipeline import Context
 from pipeline.domain import DataType
-from . import qa
+from pipeline.hifa.tasks.applycal.qa import get_qa_scores
 
 def_output_path = "./pipe-1770"
 
@@ -87,8 +87,6 @@ def save_txt_pkl(filename: Path, scores):
 def main():
     args = parse_arguments()
     # #Get timestamp for output folders and files
-    aux = systime.asctime().split()
-    timestamp = (aux[4]+aux[1]+aux[2]+'T'+aux[3]).replace(':','_')
 
     output_path = Path(args.output)
     memlim = float(args.memlim)
@@ -101,11 +99,10 @@ def main():
     raw_mses = ctx.observing_run.get_measurement_sets_of_type([DataType.RAW])
 
     for ms in raw_mses:
-        (all_scores, final_scores, qaevalf) = qa.get_qa_scores(
+        (all_scores, final_scores, qaevalf) = get_qa_scores(
             ms,
             output_path=output_path,
             memory_gb=memlim,
-            timestamp=timestamp
         )
 
         #Write QA score Eval Function For testing
