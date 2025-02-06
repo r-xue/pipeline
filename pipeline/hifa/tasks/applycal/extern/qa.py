@@ -11,11 +11,10 @@ import pipeline.infrastructure.pipelineqa as pqa
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from pipeline.infrastructure import logging
-from . import ampphase_vs_freq_qa
-from .. import mswrapper
+from .. import mswrapper, ampphase_vs_freq_qa
 from .. import qa as original_qa, qa_utils as qau
 # imports required for WIP testing, to be removed once migration is complete
-from ..ampphase_vs_freq_qa import Outlier, get_best_fits_per_ant
+from ..ampphase_vs_freq_qa import Outlier, get_best_fits_per_ant, score_all
 from ..qa import QAMessage, outliers_to_qa_scores, REASONS_TO_TEXT
 
 LOG = logging.get_logger(__name__)
@@ -321,7 +320,7 @@ def score_all_scans(
                 scan={scan.id, }
             )
 
-            scan_outliers = ampphase_vs_freq_qa.score_all(frequency_fit, outlier_fn, unit_factor, flag_all)
+            scan_outliers = score_all(frequency_fit, outlier_fn, unit_factor, flag_all)
             outliers.extend(scan_outliers)
 
     # now we get scores for the average over average visibilities across all scans
