@@ -216,16 +216,6 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     return outliers
 
 
-def fit_angular_model(angular_model, nu, angdata, angsigma):
-    f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
-    angle = np.ma.angle(angdata[~angdata.mask])
-    # TODO only difference with original is wrapping in catch_warnings and simplefilter
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', np.exceptions.ComplexWarning)
-        phi_init = np.ma.median(angle)
-    fitres = scipy.optimize.minimize(f_aux, np.array([0.0, phi_init]), method='L-BFGS-B')
-    return fitres
-
 def convert_to_amp_phase(visibilities, sigma):
     '''Calculate amplitude and phase from visibility's real and imaginary
     components, inc. std. deviations for each
