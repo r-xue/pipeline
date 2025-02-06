@@ -216,26 +216,6 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     return outliers
 
 
-def convert_to_amp_phase(visibilities, sigma):
-    '''Calculate amplitude and phase from visibility's real and imaginary
-    components, inc. std. deviations for each
-    '''
-
-    amp = np.ma.abs(visibilities)
-    phase = np.ma.angle(visibilities)
-
-    zeroamp = (amp.data <= 0.0)
-    amp.mask[zeroamp] = True
-    phase.mask[zeroamp] = True
-
-    sigma_amp = np.ma.sqrt((visibilities.real * sigma.real) ** 2 + (
-            visibilities.imag * sigma.imag) ** 2) / amp
-    sigma_phase = np.ma.sqrt((visibilities.imag * sigma.real) ** 2 + (
-            visibilities.real * sigma.imag) ** 2) / (amp ** 2)
-
-    return (amp, sigma_amp, phase, sigma_phase)
-
-
 def stdListStr(thislist):
     if (type(thislist) == list) or (type(thislist) == np.ndarray):
         return str(sorted(thislist)).replace(' ','').replace(',','_').replace('[','').replace(']','')
