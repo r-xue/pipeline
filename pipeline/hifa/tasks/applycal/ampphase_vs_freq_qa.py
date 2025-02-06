@@ -309,7 +309,7 @@ def get_median_fit(all_fits, accessor):
     return ValueAndUncertainty(value=median, unc=median_sigma)
 
 
-def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold):
+def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold, unitfactor):
     """
     Score a set of best fits, comparing the fits identified by the 'attr'
     attribute against a reference value calculated by the ref_value_fn,
@@ -333,20 +333,19 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     outlier_fn = functools.partial(outlier_fn, reason={reason, })
 
     accessor = operator.attrgetter(attr)
-    outliers = score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold)
+    outliers = score_fits(all_fits, ref_value_fn, accessor, outlier_fn, sigma_threshold, unitfactor)
 
     # Check for >90deg phase offsets which should have extra QA messages
-    if y_axis == 'phase':
+    if y_axis == 'phase' and fit_parameter == 'intercept':
         for i in range(len(outliers)):
-            if outliers[i].phase_offset_gt90deg:
-                outliers[i] = Outlier(vis=outliers[i].vis,
-                                      intent=outliers[i].intent,
-                                      scan=outliers[i].scan,
-                                      spw=outliers[i].spw,
-                                      ant=outliers[i].ant,
-                                      pol=outliers[i].pol,
-                                      num_sigma=outliers[i].num_sigma,
-                                      reason={f'gt90deg_offset_{y_axis}_vs_freq.{fit_parameter}', })
+            if outliers[i].delta_physical > 90.0:
+                outliers[i] = outlier_fn(ant=outliers[i].ant,
+                                         pol=outliers[i].pol,
+                                         num_sigma=outliers[i].num_sigma,
+                                         delta_physical=outliers[i].delta_physical,
+                                         amp_freq_sym_off=outliers[i].amp_freq_sym_off,
+                                         reason={f'gt90deg_offset_{y_axis}_vs_freq.{fit_parameter}', })
+
     return outliers
 
 
