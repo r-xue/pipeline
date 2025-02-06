@@ -445,8 +445,8 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
-        ordered_agents = ['before', 'anos', 'online', 'shadow', 'intents', 'qa0',  'qa2', 'template', 'autocorr',
-                          'edgespw', 'clip', 'quack',
+        ordered_agents = ['before', 'clip', 'anos', 'online', 'shadow', 'intents', 'qa0',  'qa2', 'template', 'autocorr',
+                          'edgespw', 'quack',
                           'baseband']
 
         summary_reps = [agent_summaries[agent]
@@ -465,6 +465,11 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         inputs = self.inputs
 
+        # PIPE-1033: Moving zero flagging before template.
+        # Flag mode clip
+        if inputs.clip:
+            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
+            flag_cmds.append('mode=\'summary\' name=\'clip\'')
         # flag anos?
         if inputs.online:
             if not os.path.exists(inputs.fileonline):
@@ -501,12 +506,6 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
                     intent = '*%s*' % intent
                 flag_cmds.append('mode=\'manual\' intent=\'%s\' reason=\'intents\'' % intent)
             flag_cmds.append('mode=\'summary\' name=\'intents\'')
-
-        # PIPE-1033: Moving zero flagging before template.
-        # Flag mode clip
-        if inputs.clip:
-            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
-            flag_cmds.append('mode=\'summary\' name=\'clip\'')
 
         # flag template?
         if inputs.template:
