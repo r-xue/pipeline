@@ -2,19 +2,17 @@ import functools
 import operator
 import os
 from pathlib import Path
-from typing import Dict, List
 
 import numpy as np
 
-import pipeline.infrastructure.pipelineqa as pqa
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from pipeline.infrastructure import logging
 from .. import mswrapper, ampphase_vs_freq_qa
-from .. import qa as original_qa, qa_utils as qau
+from .. import qa_utils as qau
 # imports required for WIP testing, to be removed once migration is complete
 from ..ampphase_vs_freq_qa import Outlier, get_best_fits_per_ant, score_all
-from ..qa import outliers_to_qa_scores, REASONS_TO_TEXT, QAScoreEvalFunc
+from ..qa import outliers_to_qa_scores, QAScoreEvalFunc, summarise_scores
 
 LOG = logging.get_logger(__name__)
 
@@ -180,31 +178,3 @@ def score_all_scans(
         outliers.extend(scan_outliers)
 
     return outliers
-
-def summarise_scores(
-        all_scores: List[pqa.QAScore],
-        ms: MeasurementSet,
-        qaevalf: QAScoreEvalFunc = None
-) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
-    """
-    Process a list of QAscores, replacing the detailed and highly specific
-    input scores with compressed representations intended for display in the
-    web log accordion, and even more generalised summaries intended for
-    display as warning banners.
-    """
-    final_scores = original_qa.summarise_scores(all_scores, ms)
-    # TODO TBC: erase WebLogLocation.HIDDEN scores like prototype?
-
-    #Use continuum scoring function, if one is given.
-    if qaevalf is not None:
-        # TODO TBC: operate exclusively on .ACCORDION scores, like prototype?
-        for scores in final_scores.values():
-            for fq in scores:
-                newscore = qaevalf(fq)
-                fq.score = newscore
-                fq.longmsg = qaevalf.long_msg
-                fq.shortmsg = qaevalf.short_msg
-
-    # TODO TBC: prototype did not summarise to .BANNER scores. Repeat?
-
-    return final_scores
