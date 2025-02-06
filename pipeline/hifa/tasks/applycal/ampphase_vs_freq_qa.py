@@ -18,7 +18,7 @@ LOG = logging.get_logger(__name__)
 # AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
 AntennaFit = collections.namedtuple(
     'AntennaFit',
-    ['ant', 'pol', 'amp', 'phase']
+    ['spw', 'scan', 'ant', 'pol', 'amp', 'phase']
 )
 # LinearFitParameters is a struct to hold best fit parameters for a linear model
 LinearFitParameters = collections.namedtuple(
@@ -126,7 +126,7 @@ def score_all_scans(ms, intent: str, flag_all: bool = False, memory_gb: int = ME
     return outliers
 
 
-def get_best_fits_per_ant(wrapper):
+def get_best_fits_per_ant(wrapper, frequencies):
     """
     Calculate and return the best amp/phase vs freq fits for data in the input
     MSWrapper.
@@ -140,18 +140,16 @@ def get_best_fits_per_ant(wrapper):
     """
     V_k = wrapper.V
 
-    corrected_data = V_k['corrected_data']
-    sigma = V_k['sigma']
+    t_avg = V_k['t_avg']
+    t_sigma = V_k['t_sigma']
 
-    num_antennas, _, num_chans = corrected_data.shape
+    num_antennas, _, num_chans = t_avg.shape
     # Filter cross-pol data
     pol_indices = tuple(np.where((wrapper.corr_axis=='XX') | (wrapper.corr_axis=='YY'))[0])
 
     all_fits = []
 
     for ant in range(num_antennas):
-        frequencies = V_k['chan_freq'][ant]
-
         bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
         band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
         frequency_scale = 1.0 / bandwidth
@@ -160,8 +158,8 @@ def get_best_fits_per_ant(wrapper):
         ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
 
         for pol in pol_indices:
-            visibilities = corrected_data[ant, pol, :]
-            ta_sigma = sigma[ant, pol, :]
+            visibilities = t_avg[ant, pol, :]
+            ta_sigma = t_sigma[ant, pol, :]
 
             if visibilities.count() == 0:
                 LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
@@ -194,7 +192,7 @@ def get_best_fits_per_ant(wrapper):
                 LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
                 # 'Fit' the amplitude
                 try:  # NOTE: PIPE-401 This try block may not be necessary
-                    amp_vis = np.ma.abs(visibilities).real
+                    amp_vis = np.ma.abs(visibilities)
                     n_channels_unmasked = np.sum(~amp_vis.mask)
                     if n_channels_unmasked != 0:
                         amplitude_fit = LinearFitParameters(
@@ -216,7 +214,7 @@ def get_best_fits_per_ant(wrapper):
                     continue
                 # 'Fit' the phase
                 try:  # NOTE: PIPE-401 This try block may not be necessary
-                    phase_vis = np.ma.angle(visibilities).real
+                    phase_vis = np.ma.angle(visibilities)
                     n_channels_unmasked = np.sum(~phase_vis.mask)
                     if n_channels_unmasked != 0:
                         phase_fit = LinearFitParameters(
@@ -237,10 +235,16 @@ def get_best_fits_per_ant(wrapper):
                         ant, pol))
                     continue
 
-            fit_obj = AntennaFit(ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
+            fit_obj = AntennaFit(spw=wrapper.spw, scan=stdListStr(wrapper.scan), ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
             all_fits.append(fit_obj)
 
     return all_fits
+
+
+def stdListStr(thislist):
+    if isinstance(thislist, (list, np.ndarray)):
+        return '_'.join(map(str, sorted(thislist)))
+    return str(thislist).replace(' ', '').replace(',', '_').replace('[', '').replace(']', '')
 
 
 def score_all(all_fits, outlier_fn, flag_all: bool = False):
