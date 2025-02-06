@@ -26,7 +26,7 @@ import string
 import sys
 import tarfile
 import time
-from typing import Any, Collection, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Collection, Dict, List, Optional, Sequence, Tuple, Union
 
 import casaplotms
 import numpy as np
@@ -896,10 +896,10 @@ def remove_trailing_string(s, t):
     else:
         return s
 
+ConditionType = Union[Callable, Dict[str, Dict[str, Dict[str, Any]]]]
 
-<<<<<<< HEAD
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
-                       condition: Dict[str, Dict[str, Dict[str, Any]]]=None, timestamp: bool=True):
+                       condition: Optional[ConditionType]=None, timestamp: bool=True):
     """
     Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
     
@@ -926,8 +926,16 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
         to_pickle (bool, optional): Dump pickle or not. Defaults to True.
         to_json (bool, optional): Dump JSON-like file or not. Defaults to False.
         json_max_depth (int, optional): Set depth of dumping JSON tree. Defaults to 5.
-        condition (Dict[str, Dict[str, Dict[str, Any]]], optional): Set conditions of argument dumping. Defaults to None.
-            ex) condition={'self', {'spw':10}}
+        condition (ConditionType): Set callable function user defined, or conditions of
+            argument dumping. Defaults to None.
+            ex1) Callable condition
+                condition = my_condition
+                And, a function my_condition() must be defined as:
+                    def my_condition(kwargs) -> bool:
+                        # Serialize only if the keyword argument 'spw' is 10 or True.
+                        return kwargs.get("spw") in (10, True)
+            ex2) Dict condition
+                condition = {'self', {'spw':10}}
         timestamp (bool, optional): Add timestamp to the names of output directories. If not and the same function was
             executed multiple times, the output directory will be overwritten. Defaults to True.
     """
@@ -945,8 +953,15 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
             sig = inspect.signature(func)
             bound_args = sig.bind(*args, **kwargs)
             bound_args.apply_defaults()
-            
-            exec_dumpargs = _eval_condition(condition, bound_args)
+
+            try:
+                if callable(condition):
+                    exec_dumpargs = condition(bound_args)
+                else:
+                    exec_dumpargs = _eval_condition(condition, bound_args)
+            except Exception as e:
+                    LOG.warning(f'Error evaluating condition callable: {e}')
+                    exec_dumpargs = False
 
             extention = ''
             if timestamp:
@@ -1065,14 +1080,14 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
         return obj
 
 
-def decorate_iodumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
-    """Decorate function_io_dumper dynamically.
+def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+    """Apply function_io_dumper dynamically.
 
     Usage:
     ...
     import pipeline.infrastructure.utils.utils as ut
     
-    ut.decorate_iodumper(SDInspection, ['execute'])
+    ut.decorate_io_dumper(SDInspection, ['execute'])
     
     ...
     hsd_importdata()  # -> dump args of SDInspection.execute()
@@ -1102,7 +1117,8 @@ def _str_to_func(cls: object, _name: str):
         if callable(_c):
             return _c
     return False
-=======
+
+
 def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
     """Convert list or numpy.ndarray into string.
 
@@ -1126,4 +1142,3 @@ def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
     else:
         ret = str(value)
     return ret
->>>>>>> main
