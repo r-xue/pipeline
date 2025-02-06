@@ -15,7 +15,7 @@ from . import ampphase_vs_freq_qa
 from .. import mswrapper
 from .. import qa as original_qa, qa_utils as qau
 # imports required for WIP testing, to be removed once migration is complete
-from ..ampphase_vs_freq_qa import Outlier
+from ..ampphase_vs_freq_qa import Outlier, get_best_fits_per_ant
 from ..qa import QAMessage, outliers_to_qa_scores, REASONS_TO_TEXT
 
 LOG = logging.get_logger(__name__)
@@ -309,7 +309,7 @@ def score_all_scans(
             wrappers.setdefault(spw.id, []).append(wrapper)
 
             # amp/phase vs frequency fits per scan
-            frequency_fit = ampphase_vs_freq_qa.get_best_fits_per_ant(wrapper, channel_frequencies)
+            frequency_fit = get_best_fits_per_ant(wrapper, channel_frequencies)
 
             # partial function to construct outlier, so we don't have to repeat
             # these arguments for all outliers connected to this ms, intent, spw
@@ -346,7 +346,7 @@ def score_all_scans(
 
         spw = ms.get_spectral_window(spw_id)
         channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
-        all_scan_frequency_fits = ampphase_vs_freq_qa.get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
+        all_scan_frequency_fits = get_best_fits_per_ant(all_scan_wrapper, channel_frequencies)
         outlier_fn = functools.partial(
             Outlier,
             vis={ms.basename, },

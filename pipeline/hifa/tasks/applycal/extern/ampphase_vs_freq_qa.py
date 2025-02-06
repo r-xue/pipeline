@@ -1,135 +1,14 @@
-import collections
 import functools
 import operator
-import warnings
 
 import numpy as np
-import scipy.optimize
 
 import pipeline.infrastructure.logging as logging
-from ..ampphase_vs_freq_qa import get_median_fit, to_linear_fit_parameters, get_amp_fit, get_phase_fit, PHASE_REF_FN, \
-    get_chi2_ang_model, get_linear_function, get_angular_linear_function, LinearFitParameters, ValueAndUncertainty, \
+from ..ampphase_vs_freq_qa import get_median_fit, PHASE_REF_FN, \
     AMPLITUDE_SLOPE_THRESHOLD, AMPLITUDE_INTERCEPT_THRESHOLD, PHASE_SLOPE_THRESHOLD, PHASE_INTERCEPT_THRESHOLD, \
     score_fits
 
 LOG = logging.get_logger(__name__)
-
-# AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
-AntennaFit = collections.namedtuple(
-    'AntennaFit',
-    ['spw', 'scan', 'ant', 'pol', 'amp', 'phase']
-)
-
-
-def get_best_fits_per_ant(wrapper,frequencies):
-    """
-    Calculate and return the best amp/phase vs freq fits for data in the input
-    MSWrapper.
-
-    This function calculates an independent best fit per polarisation per
-    antenna, returning a list of AntennaFit objects that characterise the fit
-    parameters and fit uncertainties per fit.
-
-    :param wrapper: MSWrapper to process
-    :return: a list of AntennaFit objects
-    """
-    data = wrapper.V
-
-    t_avg = data['t_avg']
-    t_sigma = data['t_sigma']
-
-    num_antennas, _, num_chans = t_avg.shape
-    # Filter cross-pol data
-    pol_indices = tuple(np.where((wrapper.corr_axis=='XX') | (wrapper.corr_axis=='YY'))[0])
-
-    all_fits = []
-
-    for ant in range(num_antennas):
-        bandwidth = np.ma.max(frequencies) - np.ma.min(frequencies)
-        band_midpoint = (np.ma.max(frequencies) + np.ma.min(frequencies)) / 2.0
-        frequency_scale = 1.0 / bandwidth
-
-        amp_model_fn = get_linear_function(band_midpoint, frequency_scale)
-        ang_model_fn = get_angular_linear_function(band_midpoint, frequency_scale)
-
-        for pol in pol_indices:
-            visibilities = t_avg[ant, pol, :]
-            ta_sigma = t_sigma[ant, pol, :]
-
-            if visibilities.count() == 0:
-                LOG.info('Could not fit ant {} pol {}: data is completely flagged'.format(ant, pol))
-                continue
-            median_sn = np.ma.median(np.ma.abs(visibilities).real / np.ma.abs(ta_sigma).real)
-            if median_sn > 3:  # PIPE-401: Check S/N and either fit or use average
-                # Fit the amplitude
-                try:
-                    amp_fit, amp_err = get_amp_fit(amp_model_fn, frequencies, visibilities, ta_sigma)
-                    amplitude_fit = to_linear_fit_parameters(amp_fit, amp_err)
-                except TypeError:
-                    # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; amp. vs frequency)'.format(
-                        ant, pol))
-                    continue
-                # Fit the phase
-                try:
-                    phase_fit, phase_err = get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, ta_sigma)
-                    phase_fit = to_linear_fit_parameters(phase_fit, phase_err)
-                except TypeError:
-                    # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (high S/N; phase vs frequency)'.format(
-                        ant, pol))
-                    continue
-            else:
-                LOG.debug('Low S/N for ant {} pol {}'.format(ant, pol))
-                # 'Fit' the amplitude
-                try:  # NOTE: PIPE-401 This try block may not be necessary
-                    amp_vis = np.ma.abs(visibilities)
-                    n_channels_unmasked = np.sum(~amp_vis.mask)
-                    if n_channels_unmasked != 0:
-                        amplitude_fit = LinearFitParameters(
-                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
-                            intercept=ValueAndUncertainty(
-                                value=np.ma.median(amp_vis),
-                                unc=np.ma.std(amp_vis)/np.sqrt(n_channels_unmasked))
-                        )
-                    else:
-                        LOG.info(
-                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
-                                ant, pol))
-                        continue
-                except TypeError:
-                    # Antenna probably flagged..
-                    LOG.info(
-                        'Could not fit phase vs frequency for ant {} pol {} (low S/N; amp. vs frequency)'.format(
-                            ant, pol))
-                    continue
-                # 'Fit' the phase
-                try:  # NOTE: PIPE-401 This try block may not be necessary
-                    phase_vis = np.ma.angle(visibilities)
-                    n_channels_unmasked = np.sum(~phase_vis.mask)
-                    if n_channels_unmasked != 0:
-                        phase_fit = LinearFitParameters(
-                            slope=ValueAndUncertainty(value=0., unc=1.0e06),
-                            intercept=ValueAndUncertainty(
-                                value=np.ma.median(phase_vis),
-                                unc=np.ma.std(phase_vis)/np.sqrt(n_channels_unmasked)
-                            )
-                        )
-                    else:
-                        LOG.info(
-                            'Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
-                                ant, pol))
-                        continue
-                except TypeError:
-                    # Antenna probably flagged..
-                    LOG.info('Could not fit phase vs frequency for ant {} pol {} (low S/N; phase vs frequency)'.format(
-                        ant, pol))
-                    continue
-
-            fit_obj = AntennaFit(spw=wrapper.spw, scan=stdListStr(wrapper.scan), ant=ant, pol=pol, amp=amplitude_fit, phase=phase_fit)
-            all_fits.append(fit_obj)
-
-    return all_fits
 
 
 def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
@@ -214,11 +93,3 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
                                          reason={f'gt90deg_offset_{y_axis}_vs_freq.{fit_parameter}', })
 
     return outliers
-
-
-def stdListStr(thislist):
-    if (type(thislist) == list) or (type(thislist) == np.ndarray):
-        return str(sorted(thislist)).replace(' ','').replace(',','_').replace('[','').replace(']','')
-    else:
-        return str(thislist).replace(' ','').replace(',','_').replace('[','').replace(']','')
-
