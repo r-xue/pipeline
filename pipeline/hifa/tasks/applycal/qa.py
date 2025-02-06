@@ -10,6 +10,7 @@ import itertools
 import math
 import operator
 import os
+from pathlib import Path
 from typing import Dict, Iterable, List, Reversible, Optional
 
 import numpy as np
@@ -20,8 +21,8 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from . import ampphase_vs_freq_qa
-from .ampphase_vs_freq_qa import Outlier
+from . import ampphase_vs_freq_qa, qa_utils
+from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
 LOG = logging.get_logger(__name__)
 
@@ -344,63 +345,68 @@ class QAScoreEvalFunc:
         return self.qascoremetrics['finalscore']
 
 
-def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float, flag_all: bool):
+def get_qa_scores(
+        ms: MeasurementSet,
+        outlier_score: float=0.5,
+        output_path: Path = Path(''),
+        memory_gb: str='2.0',
+        flag_all=False,
+):
     """
-    Calculate amp/phase vs freq outliers for an EB and convert to QA scores.
+    Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
 
     This is the key entry point for applycal QA metric calculation. It
     delegates to the detailed metric implementation in ampphase_vs_freq_qa.py
-    to detect outliers, converting the outlier descriptions to normalised QA
+    and ampphase_vs_time_qa.py to detect outliers,
+    converting the outlier descriptions to normalised QA
     scores.
     """
-    intents = ['AMPLITUDE', 'BANDPASS', 'PHASE', 'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'POLARIZATION', 'POLANGLE',
-               'POLLEAKAGE']
+    # TODO: there should be ONE place that we get this info from. This is
+    # replicated in field.py and measurementset.py, and now here as the info
+    # is not accessible from those two modules :(
+    pipe_intents = [
+        'BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'POLARIZATION',
+        'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE'
+    ]
 
+    print(f'Calculating scores for MS: {ms.basename}')
+    #if there are any average visibilities saved, they are in buffer_folder
+    buffer_folder = output_path / 'databuffer'
+    #All outlier objects in this list
+    outliers = []
+    #all outlier scores objects will be saved here
     all_scores = []
+    #Define debug filename
+    debug_path = output_path / f'PIPE356_outliers.pipe.txt'
 
-    # if requested, write outlier file header
-    if export_outliers:
-        debug_path = 'applycalQA_outliers.txt'
-        with open(debug_path, 'a') as debug_file:
-            debug_file.write(f'AMPLITUDE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD}\n')
-            debug_file.write(f'AMPLITUDE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD}\n')
-            debug_file.write(f'PHASE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD}\n')
-            debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
+    #Define intents that need to be processed
+    #avoiding intents with repeated scans
+    intents2proc = qa_utils.get_intents_to_process(ms, pipe_intents)
 
-    for intent in intents:
-        # delegate to dedicated module for outlier detection
-        outliers = ampphase_vs_freq_qa.score_all_scans(ms, intent, flag_all=flag_all)
+    #Go and process each of these intents
+    for intent in intents2proc:
+        print('Processing intent '+str(intent))
+        outliers_for_intent = score_all_scans(ms, intent, memory_gb=memory_gb,
+                                              saved_visibilities=buffer_folder, flag_all=flag_all)
+        outliers.extend(outliers_for_intent)
 
-        # if requested, export outlier descriptions to a file
-        if export_outliers:
+        if not flag_all:
             with open(debug_path, 'a') as debug_file:
-                for i,o in enumerate(outliers):
-                    # Filter doubles from sources with multiple intents
-                    duplicate_entry = False
-                    for j in range(i-1):
-                        if o.vis == outliers[j].vis and \
-                           o.scan == outliers[j].scan and \
-                           o.spw == outliers[j].spw and \
-                           o.ant == outliers[j].ant and \
-                           o.pol == outliers[j].pol and \
-                           o.reason == outliers[j].reason and \
-                           o.num_sigma == outliers[j].num_sigma:
-                            duplicate_entry = True
-                            break
-                    if not duplicate_entry:
-                        if o.scan == {-1, }:
-                            msg = (f'{o.vis} {o.intent} scan={{all}} spw={o.spw} ant={o.ant} '
-                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
-                        else:
-                            msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
-                                   f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma}')
-                        debug_file.write('{}\n'.format(msg))
+                for o in outliers:
+                    msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
+                           f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma} '
+                           f'delta_physical={o.delta_physical} amp_freq_sym_off={o.amp_freq_sym_off}')
+                    debug_file.write('{}\n'.format(msg))
 
-        # convert outliers to QA scores
-        scores_for_intent = outliers_to_qa_scores(ms, outliers, outlier_score)
-        all_scores.extend(scores_for_intent)
+    #Create QA evaluation function
+    qaevalf = QAScoreEvalFunc(ms, pipe_intents, outliers)
+    # convert outliers to QA scores
+    all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
 
-    return all_scores
+    #Get summary QA scores
+    final_scores = summarise_scores(all_scores, ms, qaevalf = qaevalf)
+
+    return all_scores, final_scores, qaevalf
 
 
 class QAMessage:
