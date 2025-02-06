@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 import pipeline.infrastructure.logging as logging
 from pipeline.infrastructure import casa_tools
@@ -6,30 +7,16 @@ from pipeline.infrastructure import casa_tools
 LOG = logging.get_logger(__name__)
 
 
-def create_V_array(n_pol: int, n_chan: int):
-    """Create an empty array to hold the time averaged visibilities.
-
-    Args:
-        n_pol: int
-            Number of polarizations.
-        n_chan: int
-            Number of channels.
-
-    Returns:
-        numpy.ma
-            Empty numpy masked array
-    """
-    # Create variables and storage space for V_k
-    result_dtype = [
+def average_visibility_dtype(npol,nchan,f_avg_max_length):
+    dtype = [
         ('antenna', np.dtype('int32')),
-        ('corrected_data', np.dtype('complex128'), (n_pol, n_chan)),
-        ('time', np.dtype('float64')),
-        ('sigma', np.dtype('complex128'), (n_pol, n_chan)),
-        ('chan_freq', np.dtype('float64'), (n_chan,)),
-        ('resolution', np.dtype('float64'), (n_chan,))
+        ('t_avg', np.dtype('complex128'), (npol, nchan)),
+        ('t_sigma', np.dtype('complex128'), (npol, nchan)),
+        ('f_avg', np.dtype('complex128'), (npol, f_avg_max_length)),
+        ('f_sigma', np.dtype('complex128'), (npol, f_avg_max_length)),
+        ('flagged',np.dtype('bool'))
     ]
-    # new numpy array to hold visibilities V
-    return np.ma.empty((0,), dtype=result_dtype)
+    return dtype
 
 
 class MSWrapper(object):
@@ -245,19 +232,15 @@ class MSWrapper(object):
             nbl = nant * (nant - 1) / 2 + nant
             nrows = openms.nrow(selected=True)
             ntstamps = nrows / nbl
+
             axis_info = openms.getdata(['axis_info'])
             # Create frequency axes to be introduced in output V
             corr_axis = axis_info['axis_info']['corr_axis']
             freq_axis = axis_info['axis_info']['freq_axis']
-            # get 1D array of channel frequencies and include its definition in the dtype
-            chan_freq = freq_axis['chan_freq']
-            chan_freq = chan_freq.swapaxes(0, 1)[0]
-            # get 1D array of channel widths and include the column in the dtype
-            resolution = freq_axis['resolution']
-            resolution = resolution.swapaxes(0, 1)[0]
 
             npol = len(corr_axis)
             nchan = len(freq_axis['chan_freq'])
+
             # Data size per row and for the whole scan
             rowdatasize = np.sum(col_dsizes * (npol * poldim + 1) * (nchan * freqdim + 1))
             scandatasize = nrows * rowdatasize
@@ -265,26 +248,25 @@ class MSWrapper(object):
             # the entire piece of data for this scan,spw
             niter = int(np.ceil(1.0 * scandatasize / memlim))
             nrowsbuffer = int(np.floor(1.0 * memlim / rowdatasize))
+            print('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(scan, nrows, 1.0*scandatasize/(1024.0**3), 1.0*memlim/(1024.0**3)))
+            print('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
 
-            LOG.debug('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(
-                scan, nrows, 1.0 * scandatasize / (1024.0 ** 3), 1.0 * memlim / (1024.0 ** 3)))
-            LOG.debug('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
+            norm_sigma_tavg = np.sqrt(ntstamps * (nant - 1.0))
+            norm_sigma_favg = np.sqrt(nchan)
 
-            # new numpy array to hold visibilities V
-            V = create_V_array(npol, nchan)
-            # Partial sums storage variables
-            realdatasum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-            imagdatasum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-            realdatasqsum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-            imagdatasqsum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
-            # ndata is a counter for the amount of data being averaged
-            ndata = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            #arrays to sum over so we can average later
+            t_real_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_imag_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_real_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            t_imag_sq_sum = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
+            n_t_points = {ant: np.ma.zeros((npol, nchan), dtype=np.dtype('float64')) for ant in antennaids}
 
-            # Sigma is a function of sqrt(num_antennas - 1). Calculate and cache this value now.
-            norm_sigma_tmaverage = np.sqrt(ntstamps * (nant - 1.0))
+            f_avg = {ant: None for ant in antennaids}
+            f_sigma = {ant: None for ant in antennaids}
 
-            # return ([nrows, npols, nchan], [memlim, rowdatasize, scandatasize], [niter, nrowsbuffer])
-            # Load data in chunks of 'nrowsbuffer' number of rows
+            #Variable to store starting time
+            tstart = 1.e12
+
             openms.iterinit(maxrows=nrowsbuffer)
             do_next = openms.iterorigin()
 
@@ -297,6 +279,7 @@ class MSWrapper(object):
                     dtype=np.dtype('complex128'),
                     mask=raw_data['flag'].swapaxes(0, 2).swapaxes(1, 2)
                 )
+                tstart = min(tstart, np.min(raw_data['time']))
                 # Iterate over antennas, selecting rows of data for averaging
                 for antenna in antennaids:
                     sel = np.logical_xor(raw_data['antenna1'] == antenna, raw_data['antenna2'] == antenna)
@@ -310,64 +293,86 @@ class MSWrapper(object):
                         for j in sel2:
                             seldataimag[j, :, :] *= -1.0
                     # Accumulate the sum of data averaged over time and baselines (MS rows)
-                    realseldata = seldatareal.sum(axis=0)
-                    imagseldata = seldataimag.sum(axis=0)
+                    t_r_sum = seldatareal.sum(axis=0)
+                    t_i_sum = seldataimag.sum(axis=0)
+                    t_r_sq_sum = np.square(seldatareal).sum(axis=0)
+                    t_i_sq_sum = np.square(seldataimag).sum(axis=0)
+
+                    #No need to accumulate the sum of data averaged over frequency
+                    f_r_avg = seldatareal.mean(axis=2)
+                    f_i_avg = seldataimag.mean(axis=2)
+                    f_ant_avg = (f_r_avg + 1j*f_i_avg).swapaxes(0,1)
+
+                    f_r_sq_sum=np.square(np.ma.array([seldatareal[:,:,i]-f_r_avg for i in np.arange(seldatareal.shape[-1])])).sum(axis=0)
+                    f_r_sigma = np.sqrt(f_r_sq_sum/nchan).swapaxes(0,1)
+
+                    f_i_sq_sum=np.square(np.ma.array([seldataimag[:,:,i]-f_i_avg for i in np.arange(seldataimag.shape[-1])])).sum(axis=0)
+                    f_i_sigma = np.sqrt(f_i_sq_sum/nchan).swapaxes(0,1)#(s,pol)->(pol,s)
+                    f_ant_sigma = (f_r_sigma + 1j* f_i_sigma)/norm_sigma_favg
+
                     # Perform the the stacking to existing sums with np.ma.sum() to avoid
                     # propagating masking over the cumulative sum
-                    realdatasum[antenna] = np.ma.MaskedArray([realdatasum[antenna], realseldata]).sum(axis=0)
-                    imagdatasum[antenna] = np.ma.MaskedArray([imagdatasum[antenna], imagseldata]).sum(axis=0)
-                    # and count the number of unmasked datapoints accumulated
-                    ndata[antenna] = np.ma.MaskedArray([ndata[antenna], data[sel].count(axis=0)]).sum(axis=0)
-                    # Calculate sum of squares over time and baselines, separated by real and imaginary
-                    realdatasq = np.square(seldatareal).sum(axis=0)
-                    imagdatasq = np.square(seldataimag).sum(axis=0)
-                    # Perform the the stacking to existing sums of squares
-                    realdatasqsum[antenna] = np.ma.MaskedArray([realdatasqsum[antenna], realdatasq]).sum(axis=0)
-                    imagdatasqsum[antenna] = np.ma.MaskedArray([imagdatasqsum[antenna], imagdatasq]).sum(axis=0)
+                    t_real_sum[antenna] = np.ma.MaskedArray([t_real_sum[antenna], t_r_sum]).sum(axis=0)
+                    t_imag_sum[antenna] = np.ma.MaskedArray([t_imag_sum[antenna], t_i_sum]).sum(axis=0)
+                    t_real_sq_sum[antenna] = np.ma.MaskedArray([t_real_sq_sum[antenna], t_r_sq_sum]).sum(axis=0)
+                    t_imag_sq_sum[antenna] = np.ma.MaskedArray([t_imag_sq_sum[antenna], t_i_sq_sum]).sum(axis=0)
+                    # Perform the the stacking to existing sums with np.ma.sum() to avoid
+                    # propagating masking over the cumulative sum
+                    if f_avg[antenna] is not None:
+                        f_avg[antenna] = np.ma.append(f_avg[antenna],f_ant_avg,axis=1)
+                    else:
+                        f_avg[antenna] = f_ant_avg
+                    if f_sigma[antenna] is not None:
+                        f_sigma[antenna] = np.ma.append(f_sigma[antenna],f_ant_sigma,axis=1)
+                    else:
+                        f_sigma[antenna] = f_ant_sigma
+                    n_t_points[antenna] = np.ma.MaskedArray([n_t_points[antenna], data[sel].count(axis=0)]).sum(axis=0)
                 # Jump to next chunk of data
                 do_next = openms.iternext()
 
             # For pixels with no unmasked data accumulated, make sure those
             # pixels are filled with some epsilon dummy value
+            #On the same iteration, get the maximum length of freq averages and use that length as masked array size
+            f_avg_max_length = 0
+
             for antenna in antennaids:
-                zerosel = ndata[antenna].data < 1.0
-                ndata[antenna].data[zerosel] = epsilon
-                ndata[antenna].mask += zerosel
+                zeroselt = n_t_points[antenna].data < 1.0 #if no t_points were counted, antenna should be flagged.should it not be masked already?
+                n_t_points[antenna].data[zeroselt] = epsilon
+                n_t_points[antenna].mask += zeroselt
+
+                f_avg_l = f_avg[antenna].shape[1]
+                if f_avg_l>f_avg_max_length:
+                    f_avg_max_length = f_avg_l
 
             # Iterate over antennas, now calculating the mean and sigma of the data
             # creating the variable V to be returned as output
+            dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
+            visibilities=np.ma.empty((0,), dtype=dtype)
             for antenna in antennaids:
-                # Compute time averaged visibilities (Vk arrays)
-                V_k = np.ma.empty((1,), dtype=V.data.dtype)
-
-                # add antenna and channel frequencies to the row for this antenna
-                V_k['antenna'] = antenna
-                V_k['chan_freq'] = chan_freq
-                V_k['resolution'] = resolution
-
-                # Average data over time by taking sum/N
-                V_k['corrected_data'] = (realdatasum[antenna] + 1j * imagdatasum[antenna]) / ndata[antenna]
-
-                # Equation 2: sigma_{k}(nu_{i}) = std(V_{jk}(nu_{i}))_{j} / sqrt(n_{ant})
-                # calculate this from the sum of data and data squared:
-                # sigma = sqrt( ( sum_squared_values + (1/N)*sum_values^2 ) / (N-1) )
-                # where this N is the sum of accumulated values
-                sigma_k_real = np.ma.sqrt(
-                    (realdatasqsum[antenna] - np.square(realdatasum[antenna]) / ndata[antenna]) / (ndata[antenna] - 1.0)
-                )
-                sigma_k_imag = np.ma.sqrt(
-                    (imagdatasqsum[antenna] - np.square(imagdatasum[antenna]) / ndata[antenna]) / (ndata[antenna] - 1.0)
-                )
+                #compute avgs
+                t_avg = (t_real_sum[antenna] + 1j*t_imag_sum[antenna]) / n_t_points[antenna]
+                t_sigma_real = np.ma.sqrt((t_real_sq_sum[antenna] - np.square(t_real_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
+                t_sigma_imag = np.ma.sqrt((t_imag_sq_sum[antenna] - np.square(t_imag_sum[antenna]) / n_t_points[antenna]) / (n_t_points[antenna] - 1.0))
                 # apply final formula from sigma values
-                V_k['sigma'] = (sigma_k_real + 1j * sigma_k_imag) / norm_sigma_tmaverage
+                t_sigma = (t_sigma_real + 1j * t_sigma_imag) / norm_sigma_tavg
 
-                # Add antenna averaged data to output array V
-                V = np.ma.concatenate((V, V_k), axis=0)
+                v=np.ma.empty((1,), dtype=dtype)
+                v['antenna'] = antenna
+                v['t_avg'] = t_avg
+                v['t_sigma'] = t_sigma
+                v['f_avg'] = f_avg[antenna]
+                v['f_sigma'] = f_sigma[antenna]
+                v['flagged'] = n_t_points[antenna].mask.all() #flagg antenna if all points were flagged.
+                visibilities = np.ma.concatenate((visibilities,v),axis=0)
 
-        return MSWrapper(filename, scan, spw, None, corr_axis, freq_axis, V=V)
+        #Set up time axis
+        int_axis = np.array([i for i in range(int(ntstamps)) for ant in range(nant-1)])
+        time_axis = tstart + 1.0*int_axis
+
+        return MSWrapper(filename, scan, spw, None, corr_axis, freq_axis, int_axis, time_axis, V=visibilities)
 
     @staticmethod
-    def create_averages_from_combination(mswlist):
+    def create_averages_from_combination(mswlist,antennaids):
         """
         Calculate and return the average MSWrapper of the list of MSWrapper objects given as input.
         The 'sigma' column get filled with the standard error of the mean, by adding inverse squared variances
@@ -377,67 +382,70 @@ class MSWrapper(object):
                   dataset and SPW, otherwise a dummy object is returned.
         :return: MSWrapper object
         """
-        # Method added as part of PIPE-687
-        LOG.trace('MSWrapper.create_averages_from_combination(%r)', mswlist)
-
         # Get data from first MSWrapper element of the list, scan will be the list of scans
         # discard raw data if present
+        # eps = 1.e-6
         nscans = len(mswlist)
         scan = [mswlist[idxscan].scan for idxscan in range(nscans)]
         filename = mswlist[0].filename
         spw = mswlist[0].spw
         corr_axis = mswlist[0].corr_axis
         freq_axis = mswlist[0].freq_axis
-        (nant, npol, nchan) = np.shape(mswlist[0].V['corrected_data'])
-        # Check all elements of the list are compatible, if not, return dummy MSWrapper object
-        if not (np.all([mswlist[idxscan].spw == mswlist[0].spw for idxscan in range(nscans)]) and
-                np.all([mswlist[idxscan].filename == mswlist[0].filename for idxscan in range(nscans)]) and
-                np.all([mswlist[idxscan].corr_axis == mswlist[0].corr_axis for idxscan in range(nscans)]) and
-                np.all(
-                    [np.all([mswlist[idxscan].freq_axis['chan_freq'], mswlist[0].freq_axis['chan_freq']]) for idxscan in
-                     range(nscans)]) and
-                np.all(
-                    [np.all([mswlist[idxscan].freq_axis['resolution'], mswlist[0].freq_axis['resolution']]) for idxscan
-                     in range(nscans)])):
-            # TODO: Should we raise an error here?
-            LOG.warning('List of MSWrapper objects is not compatible. This task can only combine from same MS and SPW!')
-            return MSWrapper(None, None, None, None, None, None, V=None)
+        int_axis = mswlist[0].int_axis
+        time_axis = mswlist[0].time_axis
+        nant = len(antennaids)
+        npol = len(corr_axis)
+        nchan = len(freq_axis['chan_freq'])
 
-        # new numpy array to hold visibilities V
-        V = create_V_array(npol, nchan)
+        f_avg_max_length = mswlist[0].V['f_avg'].shape[2]
+
+        dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
+        visibilities=np.ma.empty((0,), dtype=dtype)
 
         # Average data
         for ant in range(nant):
-            # Compute time averaged visibilities (Vk arrays)
-            V_k = np.ma.empty((1,), dtype=V.data.dtype)
-            # add antenna and channel frequencies to the row for this antenna from first scan
-            V_k['antenna'] = ant
-            V_k['chan_freq'] = mswlist[0].V['chan_freq'][ant]
-            V_k['resolution'] = mswlist[0].V['resolution'][ant]
+            t_data = [mswlist[idxscan].V['t_avg'][ant, :, :] for idxscan in range(nscans)]
+            t_mean = np.ma.mean(t_data, axis=0)
+            t_invsigmasqreal = [1.0 / (mswlist[idxscan].V['t_sigma'][ant, :, :].real ** 2) for idxscan in range(nscans)]
+            t_invsigmasqimag = [1.0 / (mswlist[idxscan].V['t_sigma'][ant, :, :].imag ** 2) for idxscan in range(nscans)]
+            t_sigmameanreal = 1.0 / np.ma.sqrt(np.ma.sum(t_invsigmasqreal, axis=0))
+            t_sigmameanimag = 1.0 / np.ma.sqrt(np.ma.sum(t_invsigmasqimag, axis=0))
+            t_sigma = t_sigmameanreal + 1.j * t_sigmameanimag
 
-            # Calculate mean and sigma for this antenna
+            flags = [mswlist[idxscan].V['flagged'][ant] for idxscan in range(nscans)]
 
-            data = [mswlist[idxscan].V['corrected_data'][ant, :, :] for idxscan in range(nscans)]
-            datamean = np.ma.mean(data, axis=0)
-            invsigmasqreal = [1.0 / (mswlist[idxscan].V['sigma'][ant, :, :].real ** 2) for idxscan in range(nscans)]
-            invsigmasqimag = [1.0 / (mswlist[idxscan].V['sigma'][ant, :, :].imag ** 2) for idxscan in range(nscans)]
-            sigmameanreal = 1.0 / np.ma.sqrt(np.ma.sum(invsigmasqreal, axis=0))
-            sigmameanimag = 1.0 / np.ma.sqrt(np.ma.sum(invsigmasqimag, axis=0))
-            V_k['corrected_data'] = datamean
-            V_k['sigma'] = sigmameanreal + 1.j * sigmameanimag
+            dtype = average_visibility_dtype(npol,nchan,f_avg_max_length)
 
-            # Add antenna averaged data to output array V
-            V = np.ma.concatenate((V, V_k), axis=0)
+            v=np.ma.empty((1,), dtype=dtype)
+            v['antenna'] = ant
+            v['t_avg'] = t_mean
+            v['t_sigma'] = t_sigma
+            v['f_avg'] = None #f_mean
+            v['f_sigma'] = None #f_sigma
+            v['flagged'] = all(flags) #check this
+            visibilities = np.ma.concatenate((visibilities,v),axis=0)
 
-        return MSWrapper(filename, scan, spw, None, corr_axis, freq_axis, V=V)
+        return MSWrapper(filename, scan, spw, None, corr_axis, freq_axis,
+                         int_axis, time_axis, V=visibilities)
 
-    def __init__(self, filename, scan, spw, data, corr_axis, freq_axis, V=None):
+    def __init__(self, filename, scan=None, spw=None, data=None, corr_axis=None, freq_axis=None,
+                 int_axis=None, time_axis=None, V=None):
+        """
+        Create a new MSWrapper for the specified ms, scan and spw.
+        :param filename: measurement set filename
+        :param scan: integer scan ID
+        :param spw: integer spw ID
+        :param data: averaged visibilities in case they already exist
+        :return: MSWrapper instance
+        """
         self.filename = filename
         self.scan = scan
         self.spw = spw
         self.data = data
         self.corr_axis = corr_axis
         self.freq_axis = freq_axis
+        self.int_axis = int_axis
+        self.time_axis = time_axis
         self.V = V
 
     def __getitem__(self, key):
@@ -463,6 +471,36 @@ class MSWrapper(object):
                 raise KeyError('{} column {} value not found: {}'.format(self.filename, column, a))
             mask = (mask == 1) | (self[column] == a)
         return mask
+
+    def save(self, filename):
+        """
+        Save averaged visibilities into a pickle file.
+        :param filename: file where visibilities will be stored
+        :param scan: integer scan ID
+        :param spw: integer spw ID
+        :param data: averaged visibilities in format AVERAGED_VISBILITIES_TYPE
+        """
+
+        if (self.V is not None) or (self.data is not None):
+            pklfile = open(filename, 'wb')
+            print('Saving MSWrapper data arrays...')
+            pickle.dump((self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V), pklfile, protocol=2)
+            pklfile.close()
+        else:
+            print("Nothing to save.")
+
+    def load(self,filename):
+        """
+        load averaged visibilities into an MSWrapper object
+        :param filename: file where visibilities are stored
+        """
+        try:
+            with open(filename, 'rb') as f:
+                (self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V)=pickle.load(f)
+                f.close()
+                print('Loaded MSWrapper data arrays:')
+        except:
+            print("File not found")
 
 
 def get_dtype(data, column_name):
