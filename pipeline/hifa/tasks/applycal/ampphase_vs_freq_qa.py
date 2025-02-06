@@ -247,7 +247,7 @@ def stdListStr(thislist):
     return str(thislist).replace(' ', '').replace(',', '_').replace('[', '').replace(']', '')
 
 
-def score_all(all_fits, outlier_fn, flag_all: bool = False):
+def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
     """
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
@@ -282,13 +282,13 @@ def score_all(all_fits, outlier_fn, flag_all: bool = False):
     }
 
     outliers = []
+
     for k, v in score_definitions.items():
         threshold = 0.0 if flag_all else v[2]
-        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold)
+        scores = score_X_vs_freq_fits(all_fits, v[0], v[1], outlier_fn, threshold, unitfactor)
         outliers.extend(scores)
 
     return outliers
-
 
 def get_median_fit(all_fits, accessor):
     """
