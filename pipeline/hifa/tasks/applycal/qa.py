@@ -10,7 +10,7 @@ import itertools
 import math
 import operator
 import os
-from typing import Dict, Iterable, List, Reversible
+from typing import Dict, Iterable, List, Reversible, Optional
 
 import numpy as np
 
@@ -153,6 +153,195 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
         # pick the minimum score of all (flagging and outliers) as
         # representative, i.e. task score
         result.qa.representative = min(result.qa.pool, key=operator.attrgetter('score'))
+
+
+class QAScoreEvalFunc:
+    # Dictionary of minimum QA scores values accepted for each intent
+    INTENT_MINSCORE = {
+        'BANDPASS': 0.34,
+        'AMPLITUDE': 0.34,
+        'PHASE': 0.34,
+        'CHECK': 0.85,
+        'POLARIZATION': 0.34,
+        'AMP_SYM_OFFSET': 0.8
+    }
+
+    # Dictionaries necessary for the QAScoreEvalFunc class
+    # scores_thresholds holds the list of metrics to actually use for calculating the score, each pointing
+    # to the threholds used for them, so that the metric/threhold ratio can be calculated
+    SCORE_THRESHOLDS = {
+        'amp_vs_freq.slope': ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD,
+        'amp_vs_freq.intercept': ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD,
+        'phase_vs_freq.slope': ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD,
+        'phase_vs_freq.intercept': ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD
+    }
+
+    # Define constants for QA score evaluation
+    M4FACTORS = {
+        'amp_vs_freq.intercept': 100.0,
+        'amp_vs_freq.slope': 100.0 * 2.0,
+        'phase_vs_freq.intercept': 100.0 / 180.0,
+        'phase_vs_freq.slope': 100.0 * 2.0 / 180.0
+    }
+    QAEVALF_MIN = 0.33
+    QAEVALF_MAX = 1.0
+    QAEVALF_SCALE = 1.55
+
+    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: List[Outlier]):
+        """
+        QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
+        objects, generates an object that can be evaluated to obtain a QA score evaluation
+        for any subset of the dataset.
+
+
+        """
+        #Save basic data and MeasurementSet domain object
+        self.ms = ms
+
+        #Create the relevant vector array for QA scores evaluation, and save them
+        self.outliers = outliers
+        self.noutliers = len(outliers)
+        self.metricnames = np.array([list(o.reason)[0].replace('gt90deg_offset_','') for o in outliers])
+        self.gt90degoffset = np.array([('gt90deg_offset' in list(o.reason)[0]) for o in outliers])
+        self.metricscores = np.array([np.abs(o.num_sigma) for o in outliers])
+        self.delta_phys = np.array([np.abs(o.delta_physical) for o in outliers])
+        self.is_amp_sym_off = np.array([o.amp_freq_sym_off for o in outliers])
+        self.metricthresholds = np.array([self.SCORE_THRESHOLDS[m] if m in self.SCORE_THRESHOLDS.keys() else 9999.0 for m in self.metricnames])
+        self.mtratio = self.metricscores/self.metricthresholds
+        self.scan = np.array([list(o.scan)[0] for o in outliers])
+        self.spw = np.array([list(o.spw)[0] for o in outliers])
+        self.intent = np.array([list(o.intent)[0] for o in outliers])
+        self.ant = np.array([list(o.ant)[0] for o in outliers])
+        self.pol = np.array([list(o.pol)[0] for o in outliers])
+        # prototype operated on intents in ms, including all intents for scans with multiple intents
+        self.allintents = frozenset(intents).intersection(ms.intents)
+        self.long_msg = 'EVALUATE_TO_GET_LONGMSG'
+        self.short_msg = 'EVALUATE_TO_GET_SHORTMSG'
+        #Initialize metrics/data dictionary
+        self.qascoremetrics = {}
+
+        for intent in self.allintents:
+            self.qascoremetrics[intent] = {}
+            for spw in ms.get_spectral_windows(intent=','.join(intents)):
+                self.qascoremetrics[intent][spw.id] = {}
+                for metric in self.SCORE_THRESHOLDS:
+                    self.qascoremetrics[intent][spw.id][metric] = {}
+
+
+    def __call__(self, qascore: pqa.QAScore):
+
+        #If given a list of QA scores, evaluate them all and return an array of the results
+        if type(qascore) == list:
+            output = [self.__call__(q) for q in qascore]
+            return np.array(output)
+
+        mlist = self.SCORE_THRESHOLDS.keys()
+        #Get data selection from QA score
+        selscan = np.array(list(qascore.applies_to.scan))
+        selspw = np.array(list(qascore.applies_to.spw))
+        selintent = np.array(list(qascore.applies_to.intent))
+        selant = np.array(list(qascore.applies_to.ant))
+        selmetric = qascore.origin.metric_name
+
+        #Case of no data selected as outlier for this metric,
+        #fill values with default values for non-outlier QA scores
+        if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
+            for i in self.qascoremetrics:
+                self.qascoremetrics[i]['subscore'] = 1.0
+                for s in self.qascoremetrics[i]:
+                    for m in self.qascoremetrics[i][s]:
+                        self.qascoremetrics[i][s][m]['significance'] = 0.0
+                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
+                        self.qascoremetrics[i][s][m]['outliers'] = False
+            self.qascoremetrics['finalscore'] = 1.0
+            self.long_msg = qascore.longmsg
+            self.short_msg = qascore.shortmsg
+            return self.qascoremetrics['finalscore']
+
+        testspw = lambda x: x in selspw
+        testscan = lambda x: x in selscan
+        testintent = lambda x: x in selintent
+        testant = lambda x: x in selant
+        basesel = np.array(list(map(testspw, self.spw))) & np.array(list(map(testscan, self.scan))) & np.array(list(map(testintent, self.intent))) & np.array(list(map(testant, self.ant)))
+
+        for i in selintent:
+            for s in selspw:
+                for m in mlist:
+                    #For this metric, select the pool of outliers from the "applies_to" attribute
+                    sel = (basesel & (self.metricnames == m) & (self.mtratio > 1.0))
+                    nsel = np.sum(sel)
+                    if nsel > 0:
+                        idxmax = np.argsort(self.metricscores[sel])[-1]
+                        #Get ratio Metric/Threshold for maximum value -> significance
+                        self.qascoremetrics[i][s][m]['significance'] = self.mtratio[sel][idxmax]
+                        #Generate message for this max outlier
+                        thismaxoutlieridx = np.arange(self.noutliers)[sel][idxmax]
+                        thismaxoutlier = self.outliers[thismaxoutlieridx]
+                        thisqamsg = QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
+                        self.qascoremetrics[i][s][m]['long_msg'] = thisqamsg.full_message
+                        self.qascoremetrics[i][s][m]['short_msg'] = thisqamsg.short_message
+                        #copy the boolean is_amp_sym_offset from this QA scores
+                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = self.is_amp_sym_off[sel][idxmax]
+                        self.qascoremetrics[i][s][m]['outliers'] = True
+                    else:
+                        metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[m]
+                        # Correct capitalisation as we'll prefix the metric with 'No '
+                        metric_axes = metric_axes.lower()
+                        self.qascoremetrics[i][s][m]['short_msg'] = 'No {} outliers'.format(metric_axes)
+                        self.qascoremetrics[i][s][m]['long_msg'] = 'No {} {} detected for {}'.format(metric_axes, outlier_description, self.ms.basename)
+                        self.qascoremetrics[i][s][m]['significance'] = 0.0
+                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
+                        self.qascoremetrics[i][s][m]['outliers'] = False
+
+            longmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['long_msg'] for s in selspw])
+            shortmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['short_msg'] for s in selspw])
+            sig_subscores = np.array([self.qascoremetrics[i][s][selmetric]['significance'] for s in selspw])
+            is_amp_sym_off_subscores = np.array([self.qascoremetrics[i][s][selmetric]['is_amp_sym_off'] for s in selspw])
+            anyoutliers = any([self.qascoremetrics[i][s][selmetric]['outliers'] for s in selspw])
+            #combine metric factors into one for each
+            #Currently just using the maximum of each.
+            idxmax = np.argsort(sig_subscores)[-1]
+            #copy message from the outlier with maximum metric value
+            self.qascoremetrics[i]['long_msg'] = longmsgsubscores[idxmax]
+            self.qascoremetrics[i]['short_msg'] = shortmsgsubscores[idxmax]
+            significance = np.max(sig_subscores)
+            #Determine whether for this QA scores we set this boolean is_amp_symmetric_offset
+            #In order to be symmetric for all the data considered in the QA score,
+            #it needs to be symmetric for any outlier in the pool.
+            is_amp_sym_off_all = all(is_amp_sym_off_subscores)
+            if anyoutliers:
+                #Decide the minimum QA score for this subscore
+                #Unless it is a non-polarization intent with symmetric amplitude outliers,
+                #should be determined by the intent_minscore dictionary from the intent
+                if (selmetric == 'amp_vs_freq.intercept') and (i != 'POLARIZATION') and is_amp_sym_off_all:
+                    thisminscore = self.INTENT_MINSCORE['AMP_SYM_OFFSET']
+                else:
+                    thisminscore = self.INTENT_MINSCORE[i]
+                auxqascore = self.QAEVALF_MIN + 0.5*(self.QAEVALF_MAX-self.QAEVALF_MIN)*(1 + math.erf(-np.log10(significance/self.QAEVALF_SCALE)))
+                self.qascoremetrics[i]['subscore'] = max(thisminscore, auxqascore)
+            else:
+                self.qascoremetrics[i]['subscore'] = 1.0
+
+        #Obtain final QA score value for this QA score object
+        finalset = [self.qascoremetrics[i]['subscore'] for i in selintent]
+        if len(finalset) > 0:
+            self.qascoremetrics['finalscore'] = min(finalset)
+        else:
+            self.qascoremetrics['finalscore'] = 1.0
+        #Generate summary line
+        if len(selintent) == 1:
+            self.long_msg = self.qascoremetrics[selintent[0]]['long_msg']
+            self.short_msg = self.qascoremetrics[selintent[0]]['short_msg']
+        elif len(selintent) == 0:
+            self.long_msg = ''
+            self.short_msg = ''
+        else:
+            print('Multiple intents for this QAscore!!')
+            print(repr(qascore))
+            self.long_msg = ''
+            self.short_msg = ''
+
+        return self.qascoremetrics['finalscore']
 
 
 def get_qa_scores(ms: MeasurementSet, export_outliers: bool, outlier_score: float, flag_all: bool):
@@ -367,7 +556,12 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
     return formatted
 
 
-def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
+
+def summarise_scores(
+        all_scores: List[pqa.QAScore],
+        ms: MeasurementSet,
+        qaevalf: Optional[QAScoreEvalFunc] = None
+) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
     input scores with compressed representations intended for display in the
@@ -451,6 +645,15 @@ def summarise_scores(all_scores: List[pqa.QAScore], ms: MeasurementSet) -> Dict[
                                                                    sorted(score.applies_to.spw),
                                                                    sorted(score.applies_to.scan)))
         final_scores[destination] = sorted_scores
+
+    # Use continuum scoring function, if one is given.
+    if qaevalf is not None:
+        for scores in final_scores.values():
+            for fq in scores:
+                newscore = qaevalf(fq)
+                fq.score = newscore
+                fq.longmsg = qaevalf.long_msg
+                fq.shortmsg = qaevalf.short_msg
 
     return final_scores
 
@@ -656,192 +859,3 @@ def compress_data_selections(to_merge: DataSelectionToScores,
         keys_to_merge = list(to_merge.keys())
 
     return to_merge
-
-
-class QAScoreEvalFunc:
-    # Dictionary of minimum QA scores values accepted for each intent
-    INTENT_MINSCORE = {
-        'BANDPASS': 0.34,
-        'AMPLITUDE': 0.34,
-        'PHASE': 0.34,
-        'CHECK': 0.85,
-        'POLARIZATION': 0.34,
-        'AMP_SYM_OFFSET': 0.8
-    }
-
-    # Dictionaries necessary for the QAScoreEvalFunc class
-    # scores_thresholds holds the list of metrics to actually use for calculating the score, each pointing
-    # to the threholds used for them, so that the metric/threhold ratio can be calculated
-    SCORE_THRESHOLDS = {
-        'amp_vs_freq.slope': ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD,
-        'amp_vs_freq.intercept': ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD,
-        'phase_vs_freq.slope': ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD,
-        'phase_vs_freq.intercept': ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD
-    }
-
-    # Define constants for QA score evaluation
-    M4FACTORS = {
-        'amp_vs_freq.intercept': 100.0,
-        'amp_vs_freq.slope': 100.0 * 2.0,
-        'phase_vs_freq.intercept': 100.0 / 180.0,
-        'phase_vs_freq.slope': 100.0 * 2.0 / 180.0
-    }
-    QAEVALF_MIN = 0.33
-    QAEVALF_MAX = 1.0
-    QAEVALF_SCALE = 1.55
-
-    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: List[Outlier]):
-        """
-        QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
-        objects, generates an object that can be evaluated to obtain a QA score evaluation
-        for any subset of the dataset.
-
-
-        """
-        #Save basic data and MeasurementSet domain object
-        self.ms = ms
-
-        #Create the relevant vector array for QA scores evaluation, and save them
-        self.outliers = outliers
-        self.noutliers = len(outliers)
-        self.metricnames = np.array([list(o.reason)[0].replace('gt90deg_offset_','') for o in outliers])
-        self.gt90degoffset = np.array([('gt90deg_offset' in list(o.reason)[0]) for o in outliers])
-        self.metricscores = np.array([np.abs(o.num_sigma) for o in outliers])
-        self.delta_phys = np.array([np.abs(o.delta_physical) for o in outliers])
-        self.is_amp_sym_off = np.array([o.amp_freq_sym_off for o in outliers])
-        self.metricthresholds = np.array([self.SCORE_THRESHOLDS[m] if m in self.SCORE_THRESHOLDS.keys() else 9999.0 for m in self.metricnames])
-        self.mtratio = self.metricscores/self.metricthresholds
-        self.scan = np.array([list(o.scan)[0] for o in outliers])
-        self.spw = np.array([list(o.spw)[0] for o in outliers])
-        self.intent = np.array([list(o.intent)[0] for o in outliers])
-        self.ant = np.array([list(o.ant)[0] for o in outliers])
-        self.pol = np.array([list(o.pol)[0] for o in outliers])
-        # prototype operated on intents in ms, including all intents for scans with multiple intents
-        self.allintents = frozenset(intents).intersection(ms.intents)
-        self.long_msg = 'EVALUATE_TO_GET_LONGMSG'
-        self.short_msg = 'EVALUATE_TO_GET_SHORTMSG'
-        #Initialize metrics/data dictionary
-        self.qascoremetrics = {}
-
-        for intent in self.allintents:
-            self.qascoremetrics[intent] = {}
-            for spw in ms.get_spectral_windows(intent=','.join(intents)):
-                self.qascoremetrics[intent][spw.id] = {}
-                for metric in self.SCORE_THRESHOLDS:
-                    self.qascoremetrics[intent][spw.id][metric] = {}
-
-
-    def __call__(self, qascore: pqa.QAScore):
-
-        #If given a list of QA scores, evaluate them all and return an array of the results
-        if type(qascore) == list:
-            output = [self.__call__(q) for q in qascore]
-            return np.array(output)
-
-        mlist = self.SCORE_THRESHOLDS.keys()
-        #Get data selection from QA score
-        selscan = np.array(list(qascore.applies_to.scan))
-        selspw = np.array(list(qascore.applies_to.spw))
-        selintent = np.array(list(qascore.applies_to.intent))
-        selant = np.array(list(qascore.applies_to.ant))
-        selmetric = qascore.origin.metric_name
-
-        #Case of no data selected as outlier for this metric,
-        #fill values with default values for non-outlier QA scores
-        if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
-            for i in self.qascoremetrics:
-                self.qascoremetrics[i]['subscore'] = 1.0
-                for s in self.qascoremetrics[i]:
-                    for m in self.qascoremetrics[i][s]:
-                        self.qascoremetrics[i][s][m]['significance'] = 0.0
-                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
-                        self.qascoremetrics[i][s][m]['outliers'] = False
-            self.qascoremetrics['finalscore'] = 1.0
-            self.long_msg = qascore.longmsg
-            self.short_msg = qascore.shortmsg
-            return self.qascoremetrics['finalscore']
-
-        testspw = lambda x: x in selspw
-        testscan = lambda x: x in selscan
-        testintent = lambda x: x in selintent
-        testant = lambda x: x in selant
-        basesel = np.array(list(map(testspw, self.spw))) & np.array(list(map(testscan, self.scan))) & np.array(list(map(testintent, self.intent))) & np.array(list(map(testant, self.ant)))
-
-        for i in selintent:
-            for s in selspw:
-                for m in mlist:
-                    #For this metric, select the pool of outliers from the "applies_to" attribute
-                    sel = (basesel & (self.metricnames == m) & (self.mtratio > 1.0))
-                    nsel = np.sum(sel)
-                    if nsel > 0:
-                        idxmax = np.argsort(self.metricscores[sel])[-1]
-                        #Get ratio Metric/Threshold for maximum value -> significance
-                        self.qascoremetrics[i][s][m]['significance'] = self.mtratio[sel][idxmax]
-                        #Generate message for this max outlier
-                        thismaxoutlieridx = np.arange(self.noutliers)[sel][idxmax]
-                        thismaxoutlier = self.outliers[thismaxoutlieridx]
-                        thisqamsg = QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
-                        self.qascoremetrics[i][s][m]['long_msg'] = thisqamsg.full_message
-                        self.qascoremetrics[i][s][m]['short_msg'] = thisqamsg.short_message
-                        #copy the boolean is_amp_sym_offset from this QA scores
-                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = self.is_amp_sym_off[sel][idxmax]
-                        self.qascoremetrics[i][s][m]['outliers'] = True
-                    else:
-                        metric_axes, outlier_description, extra_description = REASONS_TO_TEXT[m]
-                        # Correct capitalisation as we'll prefix the metric with 'No '
-                        metric_axes = metric_axes.lower()
-                        self.qascoremetrics[i][s][m]['short_msg'] = 'No {} outliers'.format(metric_axes)
-                        self.qascoremetrics[i][s][m]['long_msg'] = 'No {} {} detected for {}'.format(metric_axes, outlier_description, self.ms.basename)
-                        self.qascoremetrics[i][s][m]['significance'] = 0.0
-                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
-                        self.qascoremetrics[i][s][m]['outliers'] = False
-
-            longmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['long_msg'] for s in selspw])
-            shortmsgsubscores = np.array([self.qascoremetrics[i][s][selmetric]['short_msg'] for s in selspw])
-            sig_subscores = np.array([self.qascoremetrics[i][s][selmetric]['significance'] for s in selspw])
-            is_amp_sym_off_subscores = np.array([self.qascoremetrics[i][s][selmetric]['is_amp_sym_off'] for s in selspw])
-            anyoutliers = any([self.qascoremetrics[i][s][selmetric]['outliers'] for s in selspw])
-            #combine metric factors into one for each
-            #Currently just using the maximum of each.
-            idxmax = np.argsort(sig_subscores)[-1]
-            #copy message from the outlier with maximum metric value
-            self.qascoremetrics[i]['long_msg'] = longmsgsubscores[idxmax]
-            self.qascoremetrics[i]['short_msg'] = shortmsgsubscores[idxmax]
-            significance = np.max(sig_subscores)
-            #Determine whether for this QA scores we set this boolean is_amp_symmetric_offset
-            #In order to be symmetric for all the data considered in the QA score,
-            #it needs to be symmetric for any outlier in the pool.
-            is_amp_sym_off_all = all(is_amp_sym_off_subscores)
-            if anyoutliers:
-                #Decide the minimum QA score for this subscore
-                #Unless it is a non-polarization intent with symmetric amplitude outliers,
-                #should be determined by the intent_minscore dictionary from the intent
-                if (selmetric == 'amp_vs_freq.intercept') and (i != 'POLARIZATION') and is_amp_sym_off_all:
-                    thisminscore = self.INTENT_MINSCORE['AMP_SYM_OFFSET']
-                else:
-                    thisminscore = self.INTENT_MINSCORE[i]
-                auxqascore = self.QAEVALF_MIN + 0.5*(self.QAEVALF_MAX-self.QAEVALF_MIN)*(1 + math.erf(-np.log10(significance/self.QAEVALF_SCALE)))
-                self.qascoremetrics[i]['subscore'] = max(thisminscore, auxqascore)
-            else:
-                self.qascoremetrics[i]['subscore'] = 1.0
-
-        #Obtain final QA score value for this QA score object
-        finalset = [self.qascoremetrics[i]['subscore'] for i in selintent]
-        if len(finalset) > 0:
-            self.qascoremetrics['finalscore'] = min(finalset)
-        else:
-            self.qascoremetrics['finalscore'] = 1.0
-        #Generate summary line
-        if len(selintent) == 1:
-            self.long_msg = self.qascoremetrics[selintent[0]]['long_msg']
-            self.short_msg = self.qascoremetrics[selintent[0]]['short_msg']
-        elif len(selintent) == 0:
-            self.long_msg = ''
-            self.short_msg = ''
-        else:
-            print('Multiple intents for this QAscore!!')
-            print(repr(qascore))
-            self.long_msg = ''
-            self.short_msg = ''
-
-        return self.qascoremetrics['finalscore']
