@@ -117,7 +117,11 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     nx = ElementTree.Element("Calibrator")
                     ElementTree.SubElement(nx, 'Name').text = calibrator["source"]
                     ElementTree.SubElement(nx, 'Fitorder').text = calibrator["fitorder"]
-                    ElementTree.SubElement(nx, 'FluxDensity').text = ','.join([str(fitflx) for fitflx in calibrator["fitflx"]])
+                    if isinstance(calibrator["fitflx"], list):
+                        ElementTree.SubElement(nx, 'FluxDensity').text = ','.join([str(fitflx) for fitflx in calibrator["fitflx"]])
+                    else:
+                        ElementTree.SubElement(nx, 'FluxDensity').text = str(calibrator["fitflx"])
+
                     ElementTree.SubElement(nx, 'SpectralIndex').text = str(calibrator["spix"])
                     root.append(nx)
 
