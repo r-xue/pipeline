@@ -136,28 +136,6 @@ This decorator is designed to address a wide variety of scenarios:
       return x * 2
   ```
 
-### 5.2 Condition Parameter
-
-The `condition` parameter determines whether serialization should occur when a function is called. It supports two types of input:
-
-1. **Callable Condition:**  
-     If a callable is provided, it is invoked with the keyword arguments (`kwargs`) of the function call. The callable must return `True` if serialization should occur, or `False` otherwise.
-   - **Example:**
-     ```python
-     def my_condition(args, kwargs) -> bool:
-         # Serialize only if the keyword argument 'spw' is 10 or 20.
-         return kwargs.get("spw") in (10, 20)
-     ```
-
-2. **Dictionary Condition:**  
-     If a dictionary is provided, the decorator checks that for each key in the dictionary, the corresponding keyword argument has a matching value. Serialization occurs only if all key-value pairs in the dictionary match the keyword arguments.
-   - **Example:**
-     ```python
-     # This condition will cause serialization only when the keyword argument 'spw' equals 10.
-     simple_condition = {'spw': 10}
-     ```
-
-
 ## 6. Helper Function Specifications and Use Cases
 
 ### 6.1 Dynamic Decoration Helper: `decorate_io_dumper`
