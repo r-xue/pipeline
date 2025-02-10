@@ -27,6 +27,9 @@ from .ampphase_vs_freq_qa import Outlier, score_all_scans
 LOG = logging.get_logger(__name__)
 
 
+# Size of the memory chunk when loading the MS (in GB)
+MEMORY_CHUNK_SIZE = 2.0
+
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
 REASONS_TO_TEXT = {
     'amp_vs_freq.intercept,amp.slope': ('Amp vs frequency', 'zero point and slope outliers', ''),
@@ -348,8 +351,8 @@ def get_qa_scores(
         ms: MeasurementSet,
         outlier_score: float=0.5,
         output_path: Path = Path(''),
-        memory_gb: str='2.0',
-        flag_all=False,
+        memory_gb: Optional[float] = MEMORY_CHUNK_SIZE,
+        flag_all: Optional[bool] = False,
 ):
     """
     Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
