@@ -519,7 +519,7 @@ def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) ->
 
     # For amp slope and amp intercept metric, get median flux to calculate %
     # or %/GHz
-    if metric in {'amp_slope', 'amp_intercept'}:
+    if metric in ('amp_slope', 'amp_intercept'):
         med_amp_accessor = operator.attrgetter('amp.intercept')
         for pol in pols:
             pol_fits = [f for f in all_fits if f.pol == pol]
@@ -529,7 +529,7 @@ def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) ->
     # For phase slope and phase intercept metrics, just include the factor in
     # the units dictionary. This leaves the "physical values" in deg/GHz and
     # deg, respectively.
-    elif metric in {'phase_slope', 'phase_intercept'}:
+    elif metric in ('phase_slope', 'phase_intercept'):
         for pol in pols:
             factors[pol] = unitfactor[spw][metric]
 
@@ -543,7 +543,7 @@ def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) ->
 
 def _get_metric_name_from_accessor(accessor: Callable) -> str:
     """Extracts metric name from accessor function."""
-    return ((accessor.__str__()).split("'")[1]).replace('.', '_')
+    return accessor.__str__().split("'")[1].replace('.', '_')
 
 
 def _detect_outliers(pols, ants, data_buffer, data_buffer_i, sigma_thresh, delta_lim, metric, outlier_fn):
