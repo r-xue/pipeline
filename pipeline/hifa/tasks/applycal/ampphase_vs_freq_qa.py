@@ -5,7 +5,7 @@ import operator
 import os
 import warnings
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Optional
 
 import numpy as np
 import scipy.optimize
@@ -15,7 +15,6 @@ from pipeline.domain import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from . import mswrapper, qa_utils
 
-MEMORY_CHUNK_SIZE = 8  # Size of the memory chunk when loading the MS (in GB)
 LOG = logging.get_logger(__name__)
 
 
@@ -65,9 +64,9 @@ DELTA_PHYSICAL_LIMIT = {
 def score_all_scans(
         ms: MeasurementSet,
         intent: str,
-        memory_gb: str = '2.0',
-        saved_visibilities: Path = Path(''),
-        flag_all: bool = False
+        memory_gb: float,
+        saved_visibilities: Optional[Path] = Path(''),
+        flag_all: Optional[bool] = False
 ) -> list[Outlier]:
     """
     Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
