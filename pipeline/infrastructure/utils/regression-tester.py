@@ -600,7 +600,7 @@ def test_13A_537__procedure_hifv__regression():
     pr = PipelineRegression(recipe='procedure_hifv.xml',
                             input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_dir=input_dir,
+                            expectedoutput_file=f'{input_dir}/13A-537.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt',
                             output_dir='13A_537__procedure_hifv__regression')
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -619,7 +619,7 @@ def test_13A_537__calibration__PPR__regression():
 
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_dir=input_dir, 
+                            expectedoutput_file=f'{input_dir}/13A-537.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt',
                             output_dir='13A_537__calibration__PPR__regression')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla', omp_num_threads=1)
