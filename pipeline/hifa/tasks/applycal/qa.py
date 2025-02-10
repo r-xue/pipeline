@@ -337,8 +337,7 @@ class QAScoreEvalFunc:
             self.long_msg = ''
             self.short_msg = ''
         else:
-            print('Multiple intents for this QAscore!!')
-            print(repr(qascore))
+            LOG.info('Multiple intents for this QAscore: %s', qascore)
             self.long_msg = ''
             self.short_msg = ''
 
@@ -369,7 +368,7 @@ def get_qa_scores(
         'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE'
     ]
 
-    print(f'Calculating scores for MS: {ms.basename}')
+    LOG.info(f'Calculating scores for MS: %s', ms.basename)
     #if there are any average visibilities saved, they are in buffer_folder
     buffer_folder = output_path / 'databuffer'
     #All outlier objects in this list
@@ -385,7 +384,7 @@ def get_qa_scores(
 
     #Go and process each of these intents
     for intent in intents2proc:
-        print('Processing intent '+str(intent))
+        LOG.debug('Processing intent %s', intent)
         outliers_for_intent = score_all_scans(ms, intent, memory_gb=memory_gb,
                                               saved_visibilities=buffer_folder, flag_all=flag_all)
         outliers.extend(outliers_for_intent)

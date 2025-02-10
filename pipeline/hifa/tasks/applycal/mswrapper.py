@@ -248,8 +248,8 @@ class MSWrapper(object):
             # the entire piece of data for this scan,spw
             niter = int(np.ceil(1.0 * scandatasize / memlim))
             nrowsbuffer = int(np.floor(1.0 * memlim / rowdatasize))
-            print('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(scan, nrows, 1.0*scandatasize/(1024.0**3), 1.0*memlim/(1024.0**3)))
-            print('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
+            LOG.debug('Scan {0:d} has {1:d} rows ({2:.3f} Gb), memory limit is set to {3:.3f} Gb'.format(scan, nrows, 1.0*scandatasize/(1024.0**3), 1.0*memlim/(1024.0**3)))
+            LOG.debug('reading data in {0:d} chunks of {1:d} rows'.format(niter, nrowsbuffer))
 
             norm_sigma_tavg = np.sqrt(ntstamps * (nant - 1.0))
             norm_sigma_favg = np.sqrt(nchan)
@@ -481,26 +481,21 @@ class MSWrapper(object):
         :param data: averaged visibilities in format AVERAGED_VISBILITIES_TYPE
         """
 
-        if (self.V is not None) or (self.data is not None):
-            pklfile = open(filename, 'wb')
-            print('Saving MSWrapper data arrays...')
-            pickle.dump((self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V), pklfile, protocol=2)
-            pklfile.close()
+        if self.V is not None or self.data is not None:
+            with open(filename, 'wb') as pklfile:
+                LOG.info('Saving MSWrapper data arrays...')
+                pickle.dump((self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V), pklfile, protocol=2)
         else:
-            print("Nothing to save.")
+            LOG.info("Nothing to save.")
 
     def load(self,filename):
         """
         load averaged visibilities into an MSWrapper object
         :param filename: file where visibilities are stored
         """
-        try:
-            with open(filename, 'rb') as f:
-                (self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V)=pickle.load(f)
-                f.close()
-                print('Loaded MSWrapper data arrays:')
-        except:
-            print("File not found")
+        with open(filename, 'rb') as f:
+            (self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V)=pickle.load(f)
+        LOG.info('Loaded MSWrapper data arrays')
 
 
 def get_dtype(data, column_name):

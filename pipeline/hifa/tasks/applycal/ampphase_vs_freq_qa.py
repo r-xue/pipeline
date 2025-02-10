@@ -99,11 +99,10 @@ def score_all_scans(
             # are there saved averaged visbilities?
             saved_visibility = saved_visibilities / f'buf.{ms.basename}.{int(scan.id)}.{spw.id}.pkl'
             if os.path.exists(saved_visibility):
-                print("loading visibilities")
                 wrapper = mswrapper.MSWrapper(ms, scan.id, spw.id)
                 wrapper.load(saved_visibility)
             else:
-                print('Creating averaged visibilities, since they do not exist yet...')
+                LOG.info('Creating averaged visibilities, since they do not exist yet...')
                 wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.basename, int(scan.id), spw.id, memory_gb)
                 wrapper.save(saved_visibility)
 
@@ -137,11 +136,11 @@ def score_all_scans(
         ddi = ms.get_data_description(spw=spw_id)
         pickle_file = saved_visibilities / f'buf.{ms.basename}.{all_scans}.{ddi.id}.pkl'
         if os.path.exists(pickle_file):
-            print('All-scan visibilities for ' + str(all_scans) + ' exist, reading them...')
+            LOG.info(f'All-scan visibilities for %s exist, reading them...', all_scans)
             all_scan_wrapper = mswrapper.MSWrapper(ms, all_scans, spw_id)
             all_scan_wrapper.load(pickle_file)
         else:
-            print('All-scan visibilities for ' + str(all_scans) + ' DO NOT exist, creating them...')
+            LOG.info('All-scan visibilities for %s  do not exist, creating them...', all_scans)
             all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(spw_wrappers, antenna_ids)
             all_scan_wrapper.save(pickle_file)
 
@@ -536,7 +535,7 @@ def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) ->
             factors[pol] = unitfactor[spw][metric]
 
     else:
-        print(f'Unknown metric: {metric}! Using unit factor 1.0')
+        LOG.warning('Unknown metric: %s! Using unit factor 1.0', metric)
         for pol in pols:
             factors[pol] = 1.0
 
