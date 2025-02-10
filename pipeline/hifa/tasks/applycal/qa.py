@@ -419,7 +419,7 @@ class QAMessage:
     that are of interest. full_message holds the text to be used when the
     message is the first to be printed. short_message holds the text to be
     used when this message is to be appended to the text of other QAMessages.
-    Naturally, this assumes the the calling code only concatenates messages
+    Naturally, this assumes the calling code only concatenates messages
     that originate from the same reason.
     """
 
