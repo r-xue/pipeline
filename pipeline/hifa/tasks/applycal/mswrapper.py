@@ -34,6 +34,8 @@ class MSWrapper(object):
     instance of a MSWrapper object.
     """
 
+
+    # TODO: this is only used in unit tests. Can it be removed?
     @staticmethod
     def create_from_ms(filename, scan, spw):
         """
@@ -85,44 +87,7 @@ class MSWrapper(object):
 
         return MSWrapper(filename, scan, spw, data, corr_axis, freq_axis)
 
-    def filter(self, antenna1=None, antenna2=None, **kwargs):
-        """
-        Return a new MSWrapper containing rows matching the column selection
-        criteria.
-
-        Data for rows meeting all the column criteria will be funnelled into
-        the new MSWrapper return object. A boolean AND is effectively
-        performed: e.g., antenna1=3 AND antenna2=5 will only return rows for
-        one baseline.
-
-        Data can be filtered on any column listed in the wrapper.data.dtype.
-        """
-        mask_args = dict(kwargs)
-
-        # create a mask that lets all data through for columns that are not
-        # specified as arguments, or just the specified values through for
-        # columns that are specified as arguments
-        def passthrough(k, column_name):
-            if k is None:
-                if column_name not in kwargs:
-                    mask_args[column_name] = np.ma.unique(self[column_name])
-            else:
-                mask_args[column_name] = k
-
-        for arg, column_name in [(antenna1, 'antenna1'), (antenna2, 'antenna2')]:
-            passthrough(arg, column_name)
-
-        # combine masks to create final data selection mask
-        mask = np.ones(len(self))
-        for k, v in mask_args.items():
-            mask = (mask == 1) & (self._get_mask(v, k) == 1)
-
-        # find data for the selection mask
-        data = self[mask]
-
-        # create new object for the filtered data
-        return MSWrapper(self.filename, self.scan, self.spw, data, self.corr_axis, self.freq_axis)
-
+    # TODO this function is used by functions that themselves are only used in unit tests
     def xor_filter(self, antenna1=None, antenna2=None, **kwargs):
         """
         Return a new MSWrapper containing rows matching the column selection
@@ -460,6 +425,7 @@ class MSWrapper(object):
     def __iter__(self):
         return (i for i in self.data)
 
+    # TODO only used indirectly in unit tests. remove?
     def _get_mask(self, allowed, column):
         try:
             iter(allowed)
@@ -498,6 +464,7 @@ class MSWrapper(object):
         LOG.info('Loaded MSWrapper data arrays')
 
 
+# TODO this function is used by functions that themselves are only used in unit tests
 def get_dtype(data, column_name):
     """
     Get the numpy data type for a CASA caltable column.
@@ -516,6 +483,7 @@ def get_dtype(data, column_name):
     return column_name, column_dtype, column_shape[1:]
 
 
+# TODO: this is only used in unit tests now. Can it be removed?
 def calc_vk(wrapper):
     """
     Return a NumPy array containing time-averaged visibilities for each
