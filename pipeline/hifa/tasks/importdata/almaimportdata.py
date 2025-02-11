@@ -1,5 +1,3 @@
-import os
-import re
 import ssl
 import urllib
 
@@ -23,42 +21,6 @@ __all__ = [
 ]
 
 LOG = infrastructure.get_logger(__name__)
-
-def validate_url(url):
-    # Define a regular expression for URL format validation
-    url_regex = re.compile(
-        r'^(https?:\/\/)?'  # HTTP or HTTPS
-        r'([\w.-]+)'        # Domain name or IP address
-        r'(:\d+)?'          # Optional port
-        r'(\/[^\s]*)?$',    # Optional path
-        re.IGNORECASE
-    )
-
-    # First, check basic structure with regex
-    if not url_regex.match(url):
-        return False
-
-    # Use urlparse to further validate the components
-    parsed = urllib.parse.urlparse(url)
-    return all([parsed.scheme, parsed.netloc])
-
-try:
-    FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
-    if not validate_url(FLUX_SERVICE_URL):
-        LOG.error(f"FLUX_SERVICE_URL {FLUX_SERVICE_URL} misconfigured.")
-        raise Exception
-except Exception as e:
-    FLUX_SERVICE_URL = "https://almascience.org/sc/flux"
-    LOG.info(f"Defaulting to {FLUX_SERVICE_URL} for flux query.")
-
-try:
-    FLUX_SERVICE_URL_BACKUP = os.environ['FLUX_SERVICE_URL_BACKUP']
-    if not validate_url(FLUX_SERVICE_URL_BACKUP):
-        LOG.error(f"FLUX_SERVICE_URL_BACKUP {FLUX_SERVICE_URL_BACKUP} misconfigured.")
-        raise Exception
-except Exception as e:
-    FLUX_SERVICE_URL_BACKUP = "https://asa.alma.cl/sc/flux"
-    LOG.info(f"Defaulting to {FLUX_SERVICE_URL_BACKUP} for flux query backup.")
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
@@ -189,35 +151,27 @@ class SerialALMAImportData(importdata.ImportData):
         if self.inputs.dbservice:
             testquery = '?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=1&NAME=J1427-4206&VERBOSE=1'
             # Test for service response
-            baseurl = FLUX_SERVICE_URL
-            url = baseurl + testquery
-            if baseurl == '':
-                url = ''
+            flux_url, backup_flux_url = dbfluxes.get_flux_urls()
+            url = flux_url + testquery
 
             try:
                 ssl_context = ssl.create_default_context(cafile=certifi.where())
-                LOG.info('Attempting test query at: {!s}'.format(url))
-                response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
+                LOG.info('Attempting test query at: %s', url)
+                urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                 xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                 fluxservice = 'FIRSTURL'
             except Exception as e:
                 try:
                     LOG.warning('Unable to execute initial test query with primary flux service.')
                     ssl_context = ssl.create_default_context(cafile=certifi.where())
-                    baseurl = FLUX_SERVICE_URL_BACKUP
-                    url = baseurl + testquery
-                    if baseurl == '':
-                        url = ''
-                    LOG.info('Attempting test query at backup: {!s}'.format(url))
-                    response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
+                    url = backup_flux_url + testquery
+                    LOG.info('Attempting test query at backup: %s', url)
+                    urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
                     xml_results, qastatus = dbfluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice='BACKUPURL'
                 except Exception as e2:
-                    if url == '':
-                        msg = 'Backup URL not defined for test query...'
-                    else:
-                        msg = 'Unable to execute backup test query with flux service.'
-                    LOG.warning(msg+'\nProceeding without using the online flux catalog service.')
+                    LOG.warning(('Unable to execute backup test query with flux service.\n'
+                                 'Proceeding without using the online flux catalog service.'))
                     xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
                     fluxservice = 'FAIL'
                     qastatus = None
