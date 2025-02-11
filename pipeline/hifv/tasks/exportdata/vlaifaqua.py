@@ -112,7 +112,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         mslist = context.observing_run.get_measurement_sets()
         root = ElementTree.Element("Calibrators")
         for ms in mslist:
-            if len(context.evla['msinfo'][ms.name].spindex_results) != 0 :
+            if ms.name.endswith("_targets.ms") |  ms.name.endswith("_targets_cont.ms") |  ms.name.endswith("_targets_line.ms"):
+                continue
+            if len(context.evla['msinfo'][ms.name].spindex_results) != 0:
                 for calibrator in context.evla['msinfo'][ms.name].spindex_results:
                     nx = ElementTree.Element("Calibrator")
                     ElementTree.SubElement(nx, 'Name').text = calibrator["source"]
