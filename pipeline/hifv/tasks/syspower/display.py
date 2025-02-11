@@ -45,7 +45,8 @@ class syspowerBoxChart(object):
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
         ant_dat_filtered = [ant_dat[i][~ant_dat.mask[i]] for i in range(dshape[0])]
         plt.boxplot(ant_dat_filtered, whis=10, sym='.')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=50)
+        plt.xticks(np.arange(0, len(antenna_names)), antenna_names)
         plt.ylim(clip_sp_template[0], clip_sp_template[1])
         plt.ylabel('Template Pdiff   {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
@@ -111,7 +112,8 @@ class syspowerBarChart(object):
         # fraction of flagged data in Pdiff template
         percent_flagged_by_antenna = [100. * np.sum(ant_dat.mask[i]) / ant_dat.mask[i].size for i in range(dshape[0])]
         plt.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=50)
+        plt.xticks(np.arange(0, len(antenna_names)), antenna_names)
         plt.ylabel('Fraction of Flagged Solutions (%)     {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
 
