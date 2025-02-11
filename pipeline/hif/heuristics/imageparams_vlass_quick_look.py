@@ -435,10 +435,11 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
     def threshold(self, iteration, threshold, hm_masking):
-
         return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+    def nsigma(
+        self, iteration: int, hm_nsigma: float, hm_masking: str, rms_multiplier: Optional[Union[int, float]] = None
+    ) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
