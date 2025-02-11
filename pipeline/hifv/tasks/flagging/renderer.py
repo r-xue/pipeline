@@ -1,6 +1,7 @@
 import collections
 import os
 import shutil
+from typing import Optional, List
 
 import pipeline.h.tasks.common.flagging_renderer_utils as flagutils
 import pipeline.h.tasks.common.displays.flagging as flagging
@@ -11,18 +12,18 @@ from . import displaycheckflag
 
 LOG = logging.get_logger(__name__)
 
+FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
+
 
 class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def __init__(self, uri='flagdetervla.mako',
                  description='VLA Deterministic flagging', always_rerender=False):
 
-        super(T2_4MDetailsFlagDeterVLARenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, result):
-        super_cls = super(T2_4MDetailsFlagDeterVLARenderer, self)
-        ctx = super_cls.get_display_context(context, result)
+        ctx = super().get_display_context(context, result)
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % result.stage_number)
@@ -80,12 +81,10 @@ class T2_4MDetailsFlagDeterVLARenderer(basetemplates.T2_4MDetailsDefaultRenderer
 class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='vlatargetflag.mako',
                  description='Targetflag (All targets through RFLAG)', always_rerender=False):
-        super(T2_4MDetailstargetflagRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailstargetflagRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
+        ctx = super().get_display_context(context, results)
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % results.stage_number)
@@ -110,12 +109,10 @@ class T2_4MDetailstargetflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 class T2_4MDetailscheckflagRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='checkflag.mako', description='Checkflag summary',
                  always_rerender=False):
-        super(T2_4MDetailscheckflagRenderer, self).__init__(uri=uri, description=description,
-                                                            always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailscheckflagRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
+        ctx = super().get_display_context(context, results)
 
         weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
 
@@ -212,39 +209,69 @@ class T2_4MDetailsFlagtargetsdataRenderer(basetemplates.T2_4MDetailsDefaultRende
     def __init__(self, uri='flagtargetsdata.mako',
                  description='Flagtargetsdata flagging', always_rerender=False):
 
-        super(T2_4MDetailsFlagtargetsdataRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, mako_context, pipeline_context, result):
-        weblog_dir = os.path.join(pipeline_context.report_dir,
-                                  'stage%s' % result.stage_number)
+    def get_display_context(self, context, results):
+        ctx = super().get_display_context(context, results)
+
+        weblog_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
+        results = results[0]
 
         flag_totals = {}
-        for r in result:
-            flag_totals = utils.dict_merge(flag_totals,
-                                           flagutils.flags_for_result(r, pipeline_context))
+        flagcmd_files = {}
+        for i, ms in enumerate(results.mses):
+            summary = results.summaries[i]
+            if summary:
+                flag_totals = utils.dict_merge(flag_totals,
+                                               self.flags_for_result(ms, summary))
+            flagcmds_filename = '%s-agent_flagcmds.txt' % ms.name
+            flagcmds_path = os.path.join(weblog_dir, flagcmds_filename)
+            flag_commands = results.flagcmds()[i]
+            with open(flagcmds_path, 'w') as flagcmds_file:
+                terminated = '\n'.join(flag_commands)
+                flagcmds_file.write(terminated)
+
+            flagcmd_files[ms.name] = flagcmds_path
+
+        ctx.update({'flags': flag_totals,
+                    'agents': ['before', 'template'],
+                    'dirname': weblog_dir,
+                    'flagcmds': flagcmd_files})
+
+        return ctx
+
+    def update_mako_context(self, mako_context, pipeline_context, results):
+        weblog_dir = os.path.join(pipeline_context.report_dir,
+                                  'stage%s' % results.stage_number)
+        results = results[0]
+
+        flag_totals = {}
+        flagcmd_files = {}
+        for i, ms in enumerate(results.mses):
+            summary = results.summaries[i]
+            if summary:
+                flag_totals = utils.dict_merge(flag_totals,
+                                               self.flags_for_result(ms, summary))
 
             # copy template files across to weblog directory
             toggle_to_filenames = {'template': 'filetemplate'}
 
-            inputs = r.inputs
+            inputs = results.inputs
             for toggle, filenames in toggle_to_filenames.items():
                 src = inputs[filenames]
                 if inputs[toggle] and os.path.exists(src):
                     LOG.trace('Copying %s to %s' % (src, weblog_dir))
                     shutil.copy(src, weblog_dir)
 
-        flagcmd_files = {}
-        for r in result:
             # write final flagcmds to a file
-            ms = pipeline_context.observing_run.get_ms(r.inputs['vis'])
-            flagcmds_filename = '%s-agent_flagcmds.txt' % ms.basename
+            flagcmds_filename = '%s-agent_flagcmds.txt' % ms.name
             flagcmds_path = os.path.join(weblog_dir, flagcmds_filename)
+            flag_commands = results.flagcmds()[i]
             with open(flagcmds_path, 'w') as flagcmds_file:
-                terminated = '\n'.join(r.flagcmds())
+                terminated = '\n'.join(flag_commands)
                 flagcmds_file.write(terminated)
 
-            flagcmd_files[ms.basename] = flagcmds_path
+            flagcmd_files[ms.name] = flagcmds_path
 
         # return all agents so we get ticks and crosses against each one
         agents = ['before', 'template']
@@ -254,3 +281,22 @@ class T2_4MDetailsFlagtargetsdataRenderer(basetemplates.T2_4MDetailsDefaultRende
             'agents': agents,
             'dirname': weblog_dir,
             'flagcmds': flagcmd_files})
+
+    def flags_for_result(self,
+                         ms,
+                         summary,
+                         intents_to_summarise: Optional[List[str]] = None,
+                         non_science_agents: Optional[List[str]] = None):
+        if intents_to_summarise is None:
+            intents_to_summarise = ['BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET']
+
+        if non_science_agents is None:
+            non_science_agents = []
+
+        by_intent = flagutils.flags_by_intent(ms, summary, intents_to_summarise)
+        by_spw = flagutils.flags_by_science_spws(ms, summary)
+        merged = utils.dict_merge(by_intent, by_spw)
+
+        adjusted = flagutils.adjust_non_science_totals(merged, non_science_agents)
+
+        return {ms.name: adjusted}

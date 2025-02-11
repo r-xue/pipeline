@@ -17,6 +17,8 @@ import astropy.units as u
 from astropy.coordinates import ICRS, Angle, SkyCoord
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.utils.conversion as conversion
+
 from pipeline.infrastructure import casa_tools
 from scipy.stats import linregress
 
@@ -359,11 +361,9 @@ def edit_pybdsf_islands(catalog_fits_file='', r_squared_threshold=0.99,
     rejected_islands = list(set.union(set(large_islands), set(linear_islands), set(numerous_islands)))
     LOG.info('rejected_islands: [%s]' % ', '.join(map(str, list(rejected_islands))))
     num_rejected_islands = len(list(rejected_islands))
-
-    rahrstr = phasecenter.split()[1] + ' hours'
-    declist = phasecenter.split()[2].split('.')
-    decdegstr = declist[0] + ':' + declist[1] + ':' + declist[2] + '.' + declist[3] + ' degrees'
-    phasecentcoord = SkyCoord(ra=Angle(rahrstr), dec=Angle(decdegstr), frame=ICRS)
+    # Replace 'j2000' (or 'J2000') with 'ICRS' as VLA treats 'j2000' (or 'J2000') as 'ICRS'
+    phasecenter = phasecenter.lower().replace("j2000", "ICRS") if "j2000" in phasecenter.lower() else phasecenter
+    phasecentcoord = conversion.phasecenter_to_skycoord(phasecenter)
     racat = catalog_dat['RA']   # degrees from FITS file column
     deccat = catalog_dat['DEC']  # degrees from FITS file column
     catalog = SkyCoord(ra=racat, dec=deccat, unit=(u.deg, u.deg), frame=ICRS)

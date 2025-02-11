@@ -411,7 +411,7 @@ def test_E2E6_1_00010_S__uid___A002_Xd0a588_X2239_regression():
     pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
                             input_dir=input_dir,
                             visname=['uid___A002_Xd0a588_X2239'],
-                            expectedoutput_dir=ref_directory)
+                            expectedoutput_file=f'{ref_directory}/uid___A002_Xd0a588_X2239.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt')
 
     pr.run()
 
@@ -600,7 +600,7 @@ def test_13A_537__procedure_hifv__regression():
     pr = PipelineRegression(recipe='procedure_hifv.xml',
                             input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_dir=input_dir,
+                            expectedoutput_file=f'{input_dir}/13A-537.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt',
                             output_dir='13A_537__procedure_hifv__regression')
 
     pr.run(telescope='vla', omp_num_threads=1)
@@ -619,7 +619,7 @@ def test_13A_537__calibration__PPR__regression():
 
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_dir=input_dir, 
+                            expectedoutput_file=f'{input_dir}/13A-537.casa-6.6.1-17-pipeline-2024.0.3.8.results.txt',
                             output_dir='13A_537__calibration__PPR__regression')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537.xml', telescope='vla', omp_num_threads=1)
