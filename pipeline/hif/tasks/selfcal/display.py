@@ -125,14 +125,19 @@ class SelfcalSummary(object):
             caltb_loc_prepass = os.path.splitext(caltb_loc)[0]+'.pre-pass.g'
             if self.slib[vis][solint].get('unflagged_lbs', False) and os.path.exists(caltb_loc_prepass):
                 figname = os.path.join(self.stage_dir, 'plot_fracflag_bl_'+gaintable+'.png')
-                LOG.debug('Creating the ')
+                LOG.debug('Creating the plot of flagged fraction vs. baseline %s', os.path.basename(figname))
                 unflag_failed_antennas(vis, caltb_loc_prepass, self.slib[vis][solint]['gaincal_return'],
                                        flagged_fraction=0.25, spwmap=self.slib[vis][solint]['unflag_spwmap'],
                                        plot=True, figname=figname)
-                fracflag_plots[vis] = logger.Plot(figname, parameters={})
-                fracflag_plots[vis].parameters['title'] = 'Frac. Flagged Sol. vs. Baseline'
-                fracflag_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
-                fracflag_plots[vis].parameters['group'] = 'Frac. Flagged Sol. vs. Baseline'
+                plot_wrapper = logger.Plot(figname, parameters={})
+                if os.path.exists(figname):
+                    fracflag_plots[vis] = plot_wrapper
+                    fracflag_plots[vis].parameters['title'] = 'Frac. Flagged Sol. vs. Baseline'
+                    fracflag_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
+                    fracflag_plots[vis].parameters['group'] = 'Frac. Flagged Sol. vs. Baseline'
+                else:
+                    fracflag_plots[vis] = None
+                    LOG.warning('Plot of flagged fraction vs. baseline %s not created', os.path.basename(figname))
             else:
                 fracflag_plots[vis] = None
 
