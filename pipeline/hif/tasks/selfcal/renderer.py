@@ -140,6 +140,8 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                             row_value = 'Combine SPW'
                         if fallback_mode == 'spwmap':
                             row_value = 'SPWMAP'
+                        if fallback_mode == 'combinespwpol':
+                            row_value = 'Combine SPW & Pol'
                     if slib['obstype'] == 'mosaic':
                         row_values = [row_value]*2
                     else:
