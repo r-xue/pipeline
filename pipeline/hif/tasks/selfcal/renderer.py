@@ -82,7 +82,10 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         # per-vis solution summary table
 
         nsol_rows = []
-        vis_row_names = ['N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.', 'Fallback Mode', 'Spwmap']
+        if slib['obstype'] == 'mosaic':
+            vis_row_names = ['', 'N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.', 'Fallback Mode', 'Spwmap']
+        else:
+            vis_row_names = ['N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.', 'Fallback Mode', 'Spwmap']
         vislist = slib['vislist']
         for vis in vislist:
             nsol_stats = antpos_plots[vis].parameters
@@ -103,15 +106,30 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             vis_desc = ' '.join(vis_desc)
 
             for row_name in vis_row_names:
+                if row_name == '':
+                    row_values = ['Initial', 'Final']
                 if row_name == 'N Sol.':
-                    row_values = [nsol_stats['nsols']]
-                if row_name == 'N Flagged Sol.':
-                    row_values = [nsol_stats['nflagged_sols']]
-                if row_name == 'Frac. Flagged Sol.':
-                    if nsol_stats['nsols'] > 0:
-                        row_values = ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [nsol_stats['nsols_predrop'], nsol_stats['nsols']]
                     else:
-                        row_values = ['-']
+                        row_values = [nsol_stats['nsols']]
+                if row_name == 'N Flagged Sol.':
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [nsol_stats['nflagged_sols_predrop'], nsol_stats['nflagged_sols']]
+                    else:
+                        row_values = [nsol_stats['nflagged_sols']]
+                if row_name == 'Frac. Flagged Sol.':
+                    row_values = []
+                    if slib['obstype'] == 'mosaic':
+                        if nsol_stats['nsols_predrop'] > 0:
+                            row_values += ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols_predrop'] /
+                                                                  nsol_stats['nsols_predrop']*100.)]
+                        else:
+                            row_values += ['-']
+                    if nsol_stats['nsols'] > 0:
+                        row_values += ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.)]
+                    else:
+                        row_values += ['-']
                 if row_name == 'Fallback Mode':
                     row_value = '-'
                     if solint == 'inf_EB' and 'fallback' in slib[vis][solint]:
@@ -122,12 +140,18 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                             row_value = 'Combine SPW'
                         if fallback_mode == 'spwmap':
                             row_value = 'SPWMAP'
-                    row_values = [row_value]
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [row_value]*2
+                    else:
+                        row_values = [row_value]
                 if row_name == 'Spwmap':
-                    row_values = [slib[vis][solint]['spwmap']]
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [slib[vis][solint]['spwmap']]*2
+                    else:
+                        row_values = [slib[vis][solint]['spwmap']]
                 nsol_rows.append([vis_desc]+[row_name]+row_values)
 
-        return utils.merge_td_columns(rows, vertical_align=True), utils.merge_td_columns(nsol_rows, vertical_align=True)
+        return utils.merge_td_columns(rows, vertical_align=True), utils.merge_td_rows(utils.merge_td_columns(nsol_rows, vertical_align=True))
 
 
 class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -401,7 +425,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for vis in vislist:
 
-            rows.append(['Measurement Set']+[vis]*len(solints))
+            rows.append(['<b>Measurement Set<b>']+['<b>'+vis+'<b>']*len(solints))
             if slib['obstype'] == 'mosaic':
                 row_names = ['Flagged Frac.<br>by antenna',
                              'N.Sols (initial)', 'N.Sols Flagged (initial)', 'Flagged Frac.']
