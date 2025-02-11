@@ -464,6 +464,8 @@ class Tclean(cleanbase.CleanBase):
                     self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
+                # PIPE-1984: add tolerance acceptance when comparing user-specified chanwidths with
+                # the intrinsic vis chanwidths.
                 channel_width_tolerance = 0.05
                 if abs(channel_width_manual) < channel_width_auto*(1-channel_width_tolerance):
                     LOG.error('User supplied channel width (%s GHz) smaller than native '

@@ -18,7 +18,8 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     The current version of the task exports the following products
 
     - an XML file containing the pipeline processing request
-    - a tar file per ASDM / MS containing the final flags version OR the MS if tarms is False
+    - a tar file per ASDM / MS containing the final flags version (exportmses=False)
+    - or, a tar file or MeasurementSets per EB (exportmses=True)
     - a text file per ASDM / MS containing the final calibration apply list
     - a FITS image for each selected calibrator source image
     - a FITS image for each selected science target source image
