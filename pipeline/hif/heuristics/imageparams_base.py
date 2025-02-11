@@ -2522,5 +2522,16 @@ class ImageParamsHeuristics(object):
         return None
 
     def get_nfrms_multiplier(self, iteration, intent, specmode, imagename) -> None:
-        """Determine the nfrms_multiplier parameter heuristics."""
+        """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
+
+        Args:
+            iteration (int): The iteration number.
+            intent (str): The intent.
+            specmode (str): The spectral mode.
+            imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
+
+        Returns:
+            float: The multiplier for the nfrms-based threshold.
+
+        """
         return None
