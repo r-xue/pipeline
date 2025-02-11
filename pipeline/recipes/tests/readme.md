@@ -8,7 +8,8 @@
 * SRDP-like procedures: no restoration / target-split / findcont for speeded-up testing; needs to be used with *_targets.ms, along with cont.dat
   * `test_procedure_hifa_image.xml` (with selfcal)
   * `test_procedure_hifv_contimage.xml` (with selfcal)
+  * `test_procedure_hifv_cubeimage.xml` (without selfcal)
 
-* Testing procedures for only testing the `hif_selfcal` task
-  * `test_procedure_hifv_selfcal.xml`
-  * `test_procedure_hifa_selfcal.xml`
+* Testing procedures primarily designed to test the `hif_selfcal` task from target-only calibrated data.
+  * `test_procedure_hifv_selfcal*.xml`
+  * `test_procedure_hifa_selfcal*.xml`
