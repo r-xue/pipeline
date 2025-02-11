@@ -194,7 +194,7 @@ def query_online_catalogue(flux_url, ms, spw, source):
 
     LOG.info("Input source name: %s    Input SPW: %s", str(source_name), str(spw.id))
 
-    utcnow = datetime.datetime.now(datetime.timezone.UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+    utcnow = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except Exception as e:
