@@ -322,6 +322,8 @@ class MakeImListInputs(vdp.StandardInputs):
 
             known_synthesized_beams:
 
+            allow_wproject: Allow the wproject heuristics for imaging
+
             scal:
 
         """

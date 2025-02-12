@@ -133,6 +133,8 @@ class MakeImagesInputs(vdp.StandardInputs):
 
             hm_cyclefactor: Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold
 
+            hm_nmajor: Controls the maximum number of major cycles to evaluate.
+
             hm_minpsffraction: PSF fraction that marks the max depth of cleaning in the minor cycle
 
             hm_maxpsffraction: PSF fraction that marks the minimum depth of cleaning in the minor cycle

@@ -201,6 +201,10 @@ class SelfcalInputs(vdp.StandardInputs):
 
                 default="cont.dat"
 
+            imsize: Image X and Y size in pixels or PB level for single fields.
+            
+            cell: Image X and Y cell sizes     
+
             n_solints: number of solution intervals to attempt for self-calibration. default: 4
 
             amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time between scans of a given target is < 150s,
@@ -247,6 +251,12 @@ class SelfcalInputs(vdp.StandardInputs):
                 the gaincal combine parameter will be set to 'scan'.
 
                 default=False
+            
+            usermask: User mask to be used for self-calibration imaging.
+            
+            usermodel: User model to be used for self-calibration imaging.                
+
+            allow_wproject: Allow the wproject heuristics for imaging.
 
             apply: Apply final selfcal solutions back to the input MeasurementSets. default = True
 
@@ -259,6 +269,11 @@ class SelfcalInputs(vdp.StandardInputs):
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
 
                 default = False
+
+            restore_only:   Only attempt to apply pre-existing selfcal calibration tables and would not run 
+                            the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
+                            default = False
+                            note: restore_only will take precedence over recal=True/False                
 
             restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify
                 the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred
