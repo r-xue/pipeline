@@ -446,26 +446,35 @@ class ExportData(basetask.StandardTaskTemplate):
     ) -> Tuple[List[str], List[str], List[List[str]], List[str]]:
         """Create the vis and sessions lists.
 
+        This method processes input parameters to generate lists of sessions, session names, 
+        visibility files, and measurement sets based on the provided context and flags.
+
         Args:
-            context (Any): The context object containing observing runs.
-            session (Any): The session object.
-            vis (Optional[Union[List[str], str]]): List of visibility files, single visibility file, or None.
-            imaging_only_mses (Optional[bool]): Flag to filter only imaging measurement sets, can be None (default is False).
+            context (Context): The Pipeline context object.
+            session (List[str]): Session names
+            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names, 
+                or None. If None, the method uses all measurement sets registered in the context.
+            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement 
+                sets based on imaging data:
+                True: Includes only measurement sets with imaging data.
+                False: Includes only those without imaging data.
+                None: Disables filtering, including all measurement sets.
 
         Returns:
-            Tuple[List[Any], List[str], List[List[str]], List[str]]:
-                - session_list: The list of session objects.
-                - session_names: The list of session names.
-                - session_vislists: The list of visibility files associated with each session.
-                - vislist: The list of visibility files.
+            session_list (List[str]): A list of session identifiers.
+            session_names (List[str]): A list of names corresponding to each session in session_list.
+            session_vislists (List[List[str]]): For each session, a list of visibility files associated
+                with that session.
+            vislist (List[str]): The final filtered list of visibility files.
         """
+        # process the 'vis' parameter and ensure vislist is a list
         vislist = vis
-
         if vislist is None:
             vislist = [ms.name for ms in context.observing_run.measurement_sets]
         if isinstance(vislist, str):
             vislist = [vislist]
 
+        # filter based on imaging_only_mses condition
         if isinstance(imaging_only_mses, bool):
             if imaging_only_mses:
                 vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
