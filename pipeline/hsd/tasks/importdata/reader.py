@@ -586,8 +586,8 @@ class MetaDataReader(object):
                     ephem_tables.update({field_id: ''})
                     LOG.info("FIELD_ID={} ({}) as NORMAL SOURCE".format(field_id, source_name))
 
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
-                                                                                                                     list(target_state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (utils.list_to_str(ddids),
+                                                                                                                     utils.list_to_str(target_state_ids))) as tb:
             # find the first onsrc for each ephemeris source and pack org_directions
             org_directions = {}
             nrow = tb.nrows()
@@ -630,8 +630,8 @@ class MetaDataReader(object):
                 else:
                     org_direction = None
 
-        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (list(ddids),
-                                                                                                                     list(state_ids))) as tb:
+        with TableSelector(name, 'ANTENNA1 == ANTENNA2 && FEED1 == FEED2 && DATA_DESC_ID IN %s && STATE_ID IN %s' % (utils.list_to_str(ddids),
+                                                                                                                     utils.list_to_str(state_ids))) as tb:
             nrow = tb.nrows()
             rows = tb.rownumbers()
             Texpt = tb.getcol('INTERVAL')

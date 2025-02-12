@@ -37,8 +37,37 @@ class FindContInputs(vdp.StandardInputs):
         # objects from the inputs' clean_list.
         return copy.deepcopy(self.context.clean_list_pending)
 
+    # docstring and type hints: supplements hif_findcont
     def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
                  hm_perchanweightdensity=None, hm_weighting=None, datacolumn=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            target_list: Dictionary specifying targets to be imaged; blank will read list from context.
+
+            hm_mosweight: Mosaic weighting. Defaults to '' to enable the automatic heuristics calculation.
+                Can be set to True or False manually.
+
+            hm_perchanweightdensity: Calculate the weight density for each channel independently.
+                Defaults to '' to enable the automatic heuristics calculation. Can be set to True or False manually.
+
+            hm_weighting: Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
+
+            datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
+
+            parallel: Use MPI cluster where possible.
+
+        """
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir

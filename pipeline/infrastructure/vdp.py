@@ -65,7 +65,7 @@ import os
 import pprint
 from inspect import signature
 
-from pipeline.domain import DataType
+from pipeline.domain.datatype import DataType
 
 from . import api
 from . import argmapper

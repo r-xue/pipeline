@@ -79,7 +79,24 @@ class MakecutoutimagesInputs(vdp.StandardInputs):
     def offsettrc(self):
         return []   # Units of arcseconds
 
+    # docstring and type hints: supplements hif_makecutoutimages
     def __init__(self, context, vis=None, offsetblc=None, offsettrc=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs,
+                or tar files of MSs.
+                If ASDM files are specified, they will be converted to
+                MS format.
+                example: vis=['X227.ms', 'asdms.tar.gz']
+
+            offsetblc: -x and -y offsets to the bottom lower corner (blc) in arcseconds
+
+            offsettrc: +x and +y offsets to the top right corner (trc) in arcseconds
+
+        """
         super(MakecutoutimagesInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -294,7 +311,7 @@ class Makecutoutimages(basetask.StandardTaskTemplate):
 
     def _do_stats(self, subimagenames):
         """Extract essential stats from images.
-        
+
         The return stats is a nested dictionary container: stats[spw_key][im_type][stats_type]
         """
         stats = collections.OrderedDict()

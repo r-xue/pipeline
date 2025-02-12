@@ -7,7 +7,6 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure.renderer.htmlrenderer import is_singledish_ms
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.callibrary import CalTo
 from . import common
@@ -355,7 +354,7 @@ class AntComposite(common.LeafComposite):
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, spw='', field='', intent='', **kwargs):
         # set the singledish flag for SD runs
-        self.singledish = is_singledish_ms( context )
+        self.singledish = utils.contains_single_dish(context)
 
         ms = context.observing_run.get_ms(calto.vis)
         antennas = [int(a.id) for a in ms.get_antenna(calto.antenna)]
@@ -1206,6 +1205,6 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
         plot_args.update(kwargs)
 
         # determine SD or not from context
-        self.singledish = is_singledish_ms( context )
+        self.singledish = utils.contains_single_dish(context)
         super(RealVsFrequencyDetailChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='real',
                                                          intent=intent, **plot_args)

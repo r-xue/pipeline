@@ -28,8 +28,44 @@ class UVcontSubInputs(vdp.StandardInputs):
     spw = vdp.VisDependentProperty(default='')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
+    # docstring and type hints: supplements hif_uvcontsub
     def __init__(self, context, output_dir=None, vis=None, field=None,
                  spw=None, intent=None, fitorder=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            field: The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.
+
+                Examples: '3C279', '3C279,M82'
+
+            spw: The list of spectral windows and channels for which uv continuum fits are computed.
+                '', Defaults to all science spectral windows.
+
+                Example: '11,13,15,17'
+
+            intent: A string containing a comma delimited list of intents against which the selected fields are matched.
+
+                '': Defaults to all data with TARGET intent.
+
+            fitorder: Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
+                spws. If an explicit dictionary is given then all unspecified
+                selections still default to 1.
+
+                Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
+
+            parallel: Execute using CASA HPC functionality, if available.
+
+        """
         self.context = context
         self.output_dir = output_dir
         self.vis = vis

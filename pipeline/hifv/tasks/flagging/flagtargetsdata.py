@@ -76,7 +76,7 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         if isinstance(value, str):
             return list(
                 value.replace('[', '').replace(']', '').replace("'", "").split(',')
-                )
+            )
         else:
             return value
 
@@ -85,25 +85,27 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         vis_root = sanitize_for_ms(self.vis)
         return os.path.join(self.output_dir, vis_root + '.flagtargetscmds.txt')
 
-    def __init__(
-            self,
-            context,
-            vis=None,
-            output_dir=None,
-            flagbackup=None,
-            template=None,
-            filetemplate=None
-            ):
-        """
-        Args:
-            vis (str): String name of the pre-split measurement set
-            output_dir (str):  Output directory
-            flagbackup (bool):  Back up flags or not
-            template (bool):  Used template or not
-            filetemplate (str):  String filename of the flagging template to use; flags
-              from template will be applied to all relevant MSes
-        """
+    # docstring and type hints: supplements hifv_flagtargetsdata
+    def __init__(self, context, vis=None, output_dir=None, flagbackup=None, template=None, filetemplate=None):
+        """Initialize Inputs.
 
+        Args:
+            context: Pipeline context.
+
+            vis (str): The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
+
+            output_dir (str): Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            flagbackup (bool): Back up any pre-existing flags.
+
+            template (bool): Apply flagging templates.
+
+            filetemplate(str): The name of a text file that contains the flagging template for issues with the science target data etc.
+                If the template flags files is undefined a name of the form 'msname_flagtargetstemplate.txt' is assumed.
+                Flags from template will be applied to all relevant MSes.
+
+        """
         super().__init__()
 
         self.context = context
@@ -166,6 +168,7 @@ class FlagtargetsdataResults(basetask.Results):
             Generates a human-readable string representation of the flagging results,
             summarizing the flagging statistics for each processed measurement set.
     """
+
     def __init__(self, summaries, flagcmds, mses=None):
         """
         Args:
@@ -290,7 +293,7 @@ class Flagtargetsdata(basetask.StandardTaskTemplate):
 
         return FlagtargetsdataResults(
             summaries=summaries, flagcmds=flag_cmds_list, mses=mses
-            )
+        )
 
     def analyse(self, results):
         """
