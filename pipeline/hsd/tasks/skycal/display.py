@@ -319,7 +319,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         return caltable
 
     @staticmethod
-    def get_solution_interval(caltable: str) -> float:
+    def get_solution_interval(caltable: str) -> Optional[float]:
         """Compute appropriate solution interval for caltable.
 
         The value should be given to solutionTimeThresholdSeconds
@@ -336,7 +336,8 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             caltable: Name of the caltable
 
         Returns:
-            Solution interval in seconds
+            Solution interval in seconds. Return value can be None
+            if no valid caltable rows exist.
         """
         with casa_tools.TableReader(caltable) as tb:
             valid_rows = tb.query('not all(FLAG)')
@@ -344,22 +345,37 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             valid_rows.close()
 
             antennas = numpy.unique(tb.getcol('ANTENNA1'))
-            timecol = []
+            unique_timestamps_per_antenna = []
             for a in antennas:
-                selected = tb.query(f'ANTENNA1 == {a}')
-                timecol.append(selected.getcol('TIME'))
+                selected = tb.query(f'ANTENNA1 == {a} && not all(FLAG)')
+                unique_timestamps_per_antenna.append(
+                    numpy.unique(selected.getcol('TIME'))
+                )
                 selected.close()
 
+        if len(intervalcol) == 0:
+            # return None if no valid caltable rows exist
+            return None
+
         max_interval = int(numpy.ceil(intervalcol.max()))
-        min_time_diff_per_antenna = map(
-            lambda x: numpy.diff(numpy.unique(x)).min(),
-            timecol
-        )
-        min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
+
+        # check if number of unique timestamps is less than 2
+        if numpy.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
+            # if True, skip evaluating min_time_diff since
+            # time difference cannot be calculated
+            min_time_diff = None
+        else:
+            # if False, evaluate min_time_diff as a minimum
+            # time difference between adjacent timestamps
+            min_time_diff_per_antenna = map(
+                lambda x: numpy.diff(x).min(),
+                unique_timestamps_per_antenna
+            )
+            min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
 
         LOG.info(f'max_interval is {max_interval}, min_time_diff is {min_time_diff}')
 
-        if max_interval < min_time_diff:
+        if min_time_diff is None or max_interval < min_time_diff:
             solution_interval = max_interval
         else:
             # The solution_interval should be shorter than min_time_diff.
@@ -384,10 +400,14 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         """
         caltable = self.get_caltable_from_result(result)
         solution_interval = self.get_solution_interval(caltable)
+        extra_options = {}
+        if solution_interval is not None:
+            extra_options['solutionTimeThresholdSeconds'] = solution_interval
+
         super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
             context, result, xaxis='freq', yaxis='amp',
             showatm=True, overlay='time',
-            solutionTimeThresholdSeconds=solution_interval)
+            **extra_options)
 
         self.init_with_field(context, result, field)
 
