@@ -168,7 +168,7 @@ class SelfcalInputs(vdp.StandardInputs):
     #   usermodel={'IRAS32':['IRAS32-model.tt0','IRAS32-model.tt1'], 'IRS5N':['IRS5N-model.tt0','IRS5N-model.tt1']}
     #   usermodel={'IRAS32':{'Band_6':['IRAS32-model.tt0','IRAS32-model.tt1']}, 'IRS5N':{'Band_6':['IRS5N-model.tt0','IRS5N-model.tt1']}}
     # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
-    
+
     allow_wproject = vdp.VisDependentProperty(default=False)
     restore_resources = vdp.VisDependentProperty(default=None)
 
@@ -808,7 +808,6 @@ class Selfcal(basetask.StandardTaskTemplate):
             # not supporting the target->band nest dictionary structure yet.
             scal_target['sc_usermask'] = usermask.get(scal_target['sc_field'], '')
             scal_target['sc_usermodel'] = usermodel.get(scal_target['sc_field'], '')
-          
 
         LOG.debug('scal_targets: %s', scal_targets)
 
@@ -827,7 +826,8 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
         # therefore len(mt_inputvis_list) represents the number of ms to be split out
-        mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype']) for target in scal_targets for vis in target['vis']]
+        mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype'])
+                            for target in scal_targets for vis in target['vis']]
 
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel

@@ -279,7 +279,7 @@ class SelfcalSummary(object):
         with casa_tools.TableReader(caltb_loc + '/ANTENNA') as table:
             ant_names = table.getcol('NAME')
         ant_names = [str(ant_names[idx]) for idx in ant_ids]
-                      
+
         phasefreq_plots = []
 
         with TaskQueue() as tq:

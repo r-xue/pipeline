@@ -582,8 +582,8 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['mosweight'] = mosweight
 
         tclean_job_parameters['nsigma'] = inputs.heuristics.nsigma(
-            iter, inputs.hm_nsigma, inputs.hm_masking, rms_multiplier=rms_multiplier
-        )
+            iter, inputs.hm_nsigma, inputs.hm_masking, rms_multiplier=rms_multiplier)
+
         tclean_job_parameters['wprojplanes'] = inputs.heuristics.wprojplanes(gridder=inputs.gridder, spwspec=inputs.spw)
         tclean_job_parameters['rotatepastep'] = inputs.heuristics.rotatepastep()
         tclean_job_parameters['smallscalebias'] = inputs.heuristics.smallscalebias()

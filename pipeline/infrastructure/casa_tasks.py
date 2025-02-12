@@ -259,6 +259,7 @@ def visstat(*v, **k) -> JobRequest:
 def rerefant(*v, **k) -> JobRequest:
     return JobRequest(casatasks.rerefant, *v, **k)
 
+
 @register_task
 def sdatmcor(*v, **k) -> JobRequest:
     """Wrap casatasks.sdatmcor

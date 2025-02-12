@@ -5,9 +5,10 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from hifa.tasks.exportdata.almaexportdata.ALMAExportDataInputs.__init__
 @utils.cli_wrapper
-def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, pprfile=None, calintents=None,
+def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None,
+                    pprfile=None, calintents=None,
                     calimages=None, targetimages=None, products_dir=None):
-    """Prepare interferometry data for export
+    """Prepare interferometry data for export.
 
     The hifa_exportdata task for ALMA CASA pipeline exports the data defined
     in the pipeline context and exports it to the data products directory,

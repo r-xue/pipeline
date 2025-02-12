@@ -7,7 +7,7 @@ from . import utils
 @utils.cli_wrapper
 def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None):
-    """Prepare interferometry data for export
+    """Prepare interferometry data for export.
 
     The hif_exportdata task exports the data defined in the pipeline context
     and exports it to the data products directory, converting and or
@@ -43,7 +43,6 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
         >>> hif_exportdata (products_dir='../products', calintents='*PHASE*')
 
     """
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #

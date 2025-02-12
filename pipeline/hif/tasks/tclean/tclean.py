@@ -1255,13 +1255,14 @@ class Tclean(cleanbase.CleanBase):
                                ignore='mask' if do_not_copy_mask else None)
 
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            
+
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
             if inputs.cyclefactor not in (None, -999):
                 cyclefactor = inputs.cyclefactor
             else:
-                cyclefactor = self.image_heuristics.cyclefactor(iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+                cyclefactor = self.image_heuristics.cyclefactor(
+                    iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)

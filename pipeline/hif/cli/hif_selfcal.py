@@ -13,7 +13,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None, cell
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                 usermask=None, usermodel=None, allow_wproject=None,
                 parallel=None):
-    """Determine and apply self-calibration with the science target data
+    """Determine and apply self-calibration with the science target data.
 
     Determine and apply self-calibration with the science target data
 
@@ -34,7 +34,6 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None, cell
         >>> hif_selfcal(delta_beam_thresh=0.15)
 
     """
-
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
     #  needed beyond this point.                                             #

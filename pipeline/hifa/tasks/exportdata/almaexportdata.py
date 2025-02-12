@@ -5,12 +5,11 @@ import shutil
 import traceback
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
-from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.renderer import stats_extractor
+
 from . import almaifaqua
 
 LOG = infrastructure.get_logger(__name__)

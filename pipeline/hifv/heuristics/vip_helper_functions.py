@@ -8,19 +8,16 @@ Unchanged functions can be found on the New Mexico nmpost cluster:
 """
 
 import time
-from glob import glob
-
-import numpy as np
 
 import astropy.io.fits as apfits
 import astropy.units as u
+import numpy as np
 from astropy.coordinates import ICRS, Angle, SkyCoord
+from scipy.stats import linregress
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils.conversion as conversion
-
 from pipeline.infrastructure import casa_tools
-from scipy.stats import linregress
 
 LOG = infrastructure.get_logger(__name__)
 

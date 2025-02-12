@@ -13,8 +13,7 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
                    robust=None, uvtaper=None, clearlist=None, per_eb=None,
                    per_session=None, calcsb=None, datatype=None, datacolumn=None,
                    allow_wproject=None, parallel=None):
-
-    """Compute list of clean images to be produced
+    """Compute list of clean images to be produced.
 
     Generate a list of images to be cleaned. By default, the list will include
     one image per science target per spw. Calibrator targets can be selected
@@ -51,8 +50,6 @@ def hif_makeimlist(vis=None, imagename=None, intent=None, field=None,
         >>> hif_makeimlist(intent='PHASE',spw='1',calmaxpix=50)
 
     """
-
-
     ##########################################################################
     #                                                                        #
     #  CASA task interface boilerplate code starts here. No edits should be  #
