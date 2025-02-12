@@ -532,7 +532,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Use only valid science spws
         fieldlist = inputs.ms.get_fields(task_arg=field)
-        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True))
+        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True, intent=intent))
         spw_ids = {spw.id for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)}
         spw_ids = ','.join(map(str, spw_ids))
 
