@@ -89,6 +89,7 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None, cell
                             default=False
     usermask                User mask to be used for self-calibration imaging.
     usermodel               User model to be used for self-calibration imaging.
+    allow_wproject          Allow the wproject heuristics for imaging.
     parallel                Use MPI cluster where possible, default='automatic'.
                             options: 'automatic', 'true', 'false', True, False
 
