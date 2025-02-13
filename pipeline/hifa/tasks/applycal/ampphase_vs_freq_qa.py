@@ -5,7 +5,7 @@ import operator
 import os
 import warnings
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable
 
 import numpy as np
 import scipy.optimize
@@ -64,9 +64,10 @@ DELTA_PHYSICAL_LIMIT = {
 def score_all_scans(
         ms: MeasurementSet,
         intent: str,
+        flag_all: bool,
         memory_gb: float,
-        saved_visibilities: Optional[Path] = Path(''),
-        flag_all: Optional[bool] = False
+        buffer_path: Path,
+        export_mswrappers: bool
 ) -> list[Outlier]:
     """
     Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
@@ -96,14 +97,14 @@ def score_all_scans(
             channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
 
             # are there saved averaged visbilities?
-            saved_visibility = saved_visibilities / f'buf.{ms.basename}.{int(scan.id)}.{spw.id}.pkl'
+            saved_visibility = buffer_path / f'buf.{ms.basename}.{int(scan.id)}.{spw.id}.pkl'
             if os.path.exists(saved_visibility):
                 wrapper = mswrapper.MSWrapper(ms, scan.id, spw.id)
                 wrapper.load(saved_visibility)
             else:
-                LOG.info('Creating averaged visibilities, since they do not exist yet...')
                 wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.basename, int(scan.id), spw.id, memory_gb)
-                wrapper.save(saved_visibility)
+                if export_mswrappers:
+                    wrapper.save(saved_visibility)
 
             wrappers.setdefault(spw.id, []).append(wrapper)
 
@@ -133,15 +134,14 @@ def score_all_scans(
 
         all_scans = '_'.join(str(scan.id) for scan in scans) #string with list of all scans separated by underscore
         ddi = ms.get_data_description(spw=spw_id)
-        pickle_file = saved_visibilities / f'buf.{ms.basename}.{all_scans}.{ddi.id}.pkl'
+        pickle_file = buffer_path / f'buf.{ms.basename}.{all_scans}.{ddi.id}.pkl'
         if os.path.exists(pickle_file):
-            LOG.info(f'All-scan visibilities for %s exist, reading them...', all_scans)
             all_scan_wrapper = mswrapper.MSWrapper(ms, all_scans, spw_id)
             all_scan_wrapper.load(pickle_file)
         else:
-            LOG.info('All-scan visibilities for %s  do not exist, creating them...', all_scans)
             all_scan_wrapper = mswrapper.MSWrapper.create_averages_from_combination(spw_wrappers, antenna_ids)
-            all_scan_wrapper.save(pickle_file)
+            if export_mswrappers:
+                all_scan_wrapper.save(pickle_file)
 
         spw = ms.get_spectral_window(spw_id)
         channel_frequencies = np.array([float((c.high + c.low).to_units(FrequencyUnits.HERTZ) / 2) for c in spw.channels])
