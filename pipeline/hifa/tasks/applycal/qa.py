@@ -21,14 +21,23 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
+from pipeline.infrastructure.pipelineqa import WebLogLocation
 from . import ampphase_vs_freq_qa, qa_utils
 from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
 LOG = logging.get_logger(__name__)
 
 
+# TODO: there should be ONE place that we get this info from!
+# This is replicated in field.py and measurementset.py, and now here too as
+# the info in those modules is not accessible. :(
+INTENTS = ['BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'POLARIZATION',
+           'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE']
+
+
 # Size of the memory chunk when loading the MS (in GB)
 MEMORY_CHUNK_SIZE = 2.0
+
 
 # Maps outlier reasons to a text snippet that can be used in a QAScore message
 REASONS_TO_TEXT = {
@@ -50,21 +59,23 @@ REASONS_TO_TEXT = {
 # PIPE356Switches is a struct used to hold various options for outlier
 # detection and reporting
 PIPE356Switches = collections.namedtuple(
-    'PIPE356Switches', 'calculate_metrics export_outliers export_messages include_scores outlier_score flag_all'
+    'PIPE356Switches',
+    'calculate_metrics export_outliers export_messages include_scores outlier_score flag_all export_mswrappers'
 )
+
 
 # PIPE356_MODES defines some preset modes for outlier detection and reporting
 PIPE356_MODES = {
     'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=False),
+                                          include_scores=True, outlier_score=0.5, flag_all=False, export_mswrappers=True),
     'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=True),
+                                          include_scores=True, outlier_score=0.5, flag_all=True, export_mswrappers=True),
     'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
-                          outlier_score=0.9, flag_all=False),
+                          outlier_score=0.5, flag_all=False, export_mswrappers=False),
     'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
-                             outlier_score=0.5, flag_all=False),
+                             outlier_score=0.5, flag_all=False, export_mswrappers=True),
     'OFF': PIPE356Switches(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
-                           outlier_score=0.5, flag_all=False)
+                           outlier_score=0.5, flag_all=False, export_mswrappers=False)
 }
 
 
@@ -136,11 +147,13 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
         # calculate the outliers and convert to scores
         if mode_switches.calculate_metrics:
             # calculate the raw QA scores
-            raw_qa_scores = get_qa_scores(
-                ms, mode_switches.export_outliers, mode_switches.outlier_score, mode_switches.flag_all
+            qa_scores = get_qa_scores(
+                ms=ms,
+                export_outliers=mode_switches.export_outliers,
+                outlier_score=mode_switches.outlier_score,
+                flag_all=mode_switches.flag_all,
+                export_mswrappers=mode_switches.export_mswrappers
             )
-            # group and summarise as required by PIPE-477
-            qa_scores = summarise_scores(raw_qa_scores, ms)
 
         # dump weblog messages to a separate file if requested
         if qa_scores and mode_switches.export_messages:
@@ -247,16 +260,18 @@ class QAScoreEvalFunc:
         selant = np.array(list(qascore.applies_to.ant))
         selmetric = qascore.origin.metric_name
 
-        #Case of no data selected as outlier for this metric,
-        #fill values with default values for non-outlier QA scores
+        # Case of no data selected as outlier for this metric,
+        # fill values with default values for non-outlier QA scores
         if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
-            for i in self.qascoremetrics:
-                self.qascoremetrics[i]['subscore'] = 1.0
-                for s in self.qascoremetrics[i]:
-                    for m in self.qascoremetrics[i][s]:
-                        self.qascoremetrics[i][s][m]['significance'] = 0.0
-                        self.qascoremetrics[i][s][m]['is_amp_sym_off'] = False
-                        self.qascoremetrics[i][s][m]['outliers'] = False
+            # if subscore is in the dict then we've processed this before
+            if 'finalscore' in self.qascoremetrics:
+                return self.qascoremetrics['finalscore']
+            d = dict(significance=0.0, is_amp_sym_off=False, outliers=False)
+            for s_dict in self.qascoremetrics.values():
+                for m_dict in [v for v in s_dict.values() if isinstance(v, dict)]:
+                    for m in m_dict.values():
+                        m.update(d)
+                s_dict['subscore'] = 1.0
             self.qascoremetrics['finalscore'] = 1.0
             self.long_msg = qascore.longmsg
             self.short_msg = qascore.shortmsg
@@ -326,13 +341,13 @@ class QAScoreEvalFunc:
             else:
                 self.qascoremetrics[i]['subscore'] = 1.0
 
-        #Obtain final QA score value for this QA score object
+        # Obtain final QA score value for this QA score object
         finalset = [self.qascoremetrics[i]['subscore'] for i in selintent]
         if len(finalset) > 0:
             self.qascoremetrics['finalscore'] = min(finalset)
         else:
             self.qascoremetrics['finalscore'] = 1.0
-        #Generate summary line
+        # Generate summary line
         if len(selintent) == 1:
             self.long_msg = self.qascoremetrics[selintent[0]]['long_msg']
             self.short_msg = self.qascoremetrics[selintent[0]]['short_msg']
@@ -349,10 +364,12 @@ class QAScoreEvalFunc:
 
 def get_qa_scores(
         ms: MeasurementSet,
-        outlier_score: float=0.5,
-        output_path: Path = Path(''),
+        export_outliers: bool,
+        outlier_score: float,
+        flag_all: bool,
+        export_mswrappers: bool,
+        output_path: Optional[Path] = Path(''),
         memory_gb: Optional[float] = MEMORY_CHUNK_SIZE,
-        flag_all: Optional[bool] = False,
 ):
     """
     Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
@@ -363,52 +380,66 @@ def get_qa_scores(
     converting the outlier descriptions to normalised QA
     scores.
     """
-    # TODO: there should be ONE place that we get this info from. This is
-    # replicated in field.py and measurementset.py, and now here as the info
-    # is not accessible from those two modules :(
-    pipe_intents = [
-        'BANDPASS', 'AMPLITUDE', 'PHASE', 'CHECK', 'POLARIZATION',
-        'DIFFGAINREF', 'DIFFGAINSRC', 'POLANGLE', 'POLLEAKAGE'
-    ]
-
-    LOG.info(f'Calculating scores for MS: %s', ms.basename)
-    #if there are any average visibilities saved, they are in buffer_folder
-    buffer_folder = output_path / 'databuffer'
-    #All outlier objects in this list
-    outliers = []
-    #all outlier scores objects will be saved here
+    # all outlier scores objects will be saved here
     all_scores = []
-    #Define debug filename
-    debug_path = output_path / f'PIPE356_outliers.pipe.txt'
 
-    #Define intents that need to be processed
-    #avoiding intents with repeated scans
-    intents2proc = qa_utils.get_intents_to_process(ms, pipe_intents)
+    # if there are any average visibilities saved, they are in buffer_folder
+    buffer_path = output_path / 'databuffer'
+    if export_mswrappers and not os.path.exists(buffer_path):
+        os.makedirs(buffer_path, exist_ok=True)
 
-    #Go and process each of these intents
+    # Define intents that need to be processed avoiding intents with repeated scans
+    intents2proc = qa_utils.get_intents_to_process(ms, INTENTS)
+    outliers = []
     for intent in intents2proc:
         LOG.debug('Processing intent %s', intent)
-        outliers_for_intent = score_all_scans(ms, intent, memory_gb=memory_gb,
-                                              saved_visibilities=buffer_folder, flag_all=flag_all)
+        outliers_for_intent = score_all_scans(
+            ms, intent,
+            flag_all=flag_all,
+            memory_gb=memory_gb,
+            buffer_path=buffer_path,
+            export_mswrappers=export_mswrappers
+        )
         outliers.extend(outliers_for_intent)
 
-        if not flag_all:
-            with open(debug_path, 'a') as debug_file:
-                for o in outliers:
-                    msg = (f'{o.vis} {o.intent} scan={o.scan} spw={o.spw} ant={o.ant} '
-                           f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma} '
-                           f'delta_physical={o.delta_physical} amp_freq_sym_off={o.amp_freq_sym_off}')
-                    debug_file.write('{}\n'.format(msg))
+    if export_outliers:
+        debug_path = 'applycalQA_outliers.txt'
+        with open(debug_path, 'a') as debug_file:
+            debug_file.write(f'AMPLITUDE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'PHASE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
 
-    #Create QA evaluation function
-    qaevalf = QAScoreEvalFunc(ms, pipe_intents, outliers)
+            for i,o in enumerate(outliers):
+                # Filter doubles from sources with multiple intents
+                duplicate_entry = any(
+                    o.vis == outliers[j].vis and
+                    o.scan == outliers[j].scan and
+                    o.spw == outliers[j].spw and
+                    o.ant == outliers[j].ant and
+                    o.pol == outliers[j].pol and
+                    o.reason == outliers[j].reason and
+                    o.num_sigma == outliers[j].num_sigma and
+                    o.delta_physical == outliers[j].delta_physical and
+                    o.amp_freq_sym_off == outliers[j].amp_freq_sym_off
+                    for j in range(i)
+                )
+                if duplicate_entry:
+                    continue
+                scan_msg = f'all' if o.scan == {-1} else o.scan
+                msg = (f'{o.vis} {o.intent} scan={scan_msg} spw={o.spw} ant={o.ant} '
+                       f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma} '
+                       f'delta_physical={o.delta_physical} amp_freq_sym_off={o.amp_freq_sym_off}')
+                debug_file.write(f'{msg}\n')
+
     # convert outliers to QA scores
     all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
 
-    #Get summary QA scores
-    final_scores = summarise_scores(all_scores, ms, qaevalf = qaevalf)
+    # Get summary QA scores
+    qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
+    final_scores = summarise_scores(all_scores, ms, qaevalf=qaevalf)
 
-    return all_scores, final_scores, qaevalf
+    return final_scores
 
 
 class QAMessage:
@@ -601,7 +632,7 @@ def summarise_scores(
     accordion_scores = []
     # Collect scores. The phase scores (normal and > 90 deg offset) should
     # get just one single 1.0 score in case of no outliers.
-    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq', 'gt90deg_offset_phase_vs_freq']]:
+    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq']]:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
@@ -633,7 +664,7 @@ def summarise_scores(
     final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     banner_scores = []
-    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq', 'gt90deg_offset_phase_vs_freq']:
+    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
         # erase several dimensions for banner messages. These messages outline
         # just the vis, spw, and intent. For specific info, people should look
         # at the accordion messages.
@@ -656,7 +687,9 @@ def summarise_scores(
 
     # Use continuum scoring function, if one is given.
     if qaevalf is not None:
-        for scores in final_scores.values():
+        for location, scores in final_scores.items():
+            if location == WebLogLocation.HIDDEN:
+                continue
             for fq in scores:
                 newscore = qaevalf(fq)
                 fq.score = newscore
