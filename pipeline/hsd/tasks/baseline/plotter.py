@@ -54,7 +54,7 @@ class PlotterPool(object):
                        declist: List[float],
                        direction_reference: Optional[str] = None,
                        brightnessunit: str = 'Jy/beam',
-                       freq_frame: str = 'TOPO') -> display.SDSparseMapPlotter:
+                       freq_frame: str = '') -> display.SDSparseMapPlotter:
         """Create plotter instance.
 
         Args:
@@ -64,7 +64,8 @@ class PlotterPool(object):
             declist: List of Dec values for labeling
             direction_reference: Directon reference string. Defaults to None.
             brightnessunit: Brightness unit string. Defaults to 'Jy/beam'.
-            freq_frame: Frequency reference frame. Defaults to 'TOPO'.
+            freq_frame: Frequency reference frame. Defaults to ''
+                (no frame information).
         Returns:
             Plotter instance
         """
@@ -855,7 +856,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]],
         in_rowmap: Optional[dict] = None,
-        freq_frame: str = 'TOPO'
+        freq_frame: str = ''
     ) -> Dict[str, Dict[int, str]]:
         """Create various type of plots.
 
