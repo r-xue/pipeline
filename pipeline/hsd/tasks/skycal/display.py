@@ -424,14 +424,13 @@ class SingleDishPlotmsLeaf(object):
         context: 'Context',
         result: 'SDSkyCalResults',
         calapp: 'CalApplication',
-        gainfield_name: List[str],
-        plotindex: int,
-        clearplots: bool,
         xaxis: str,
         yaxis: str,
         spw: str = '',
         ant: str = '',
         coloraxis: str = '',
+        plotindex: int = 0,
+        clearplots: bool = False,
         **kwargs: Any
     ) -> None:
         """Construct SingleDishPlotmsLeaf instance.
@@ -443,15 +442,14 @@ class SingleDishPlotmsLeaf(object):
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
-            gainfield_name: List of field names.
             xaxis: X-axis type of the plot.
             yaxis: Y-axis type of the plot.
-            spw: Spectral window selection. Defaults to '' (all spw).
-            ant: Antenna selection. Defaults to '' (all antenna).
-            coloraxis: Color axis type. Defaults to ''.
             plotindex: Indices from 0 to n (=len(calapp)-1).
             clearplots: Not output (True) the first field's data or output (False)
                         the others, if multiple fields exist.
+            spw: Spectral window selection. Defaults to '' (all spw).
+            ant: Antenna selection. Defaults to '' (all antenna).
+            coloraxis: Color axis type. Defaults to ''.
         Raises:
             RuntimeError: Invalid field selection in calapp
         """
@@ -476,13 +474,13 @@ class SingleDishPlotmsLeaf(object):
             raise RuntimeError(f'No match found for field "{self.field}".')
 
         self.field_id = fields[0].id
-        self.field_name = ", ".join(gainfield_name)
+        self.field_name = fields[0].clean_name
 
         LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
 
         self.antmap = dict((a.id, a.name) for a in ms.antennas)
         if len(self.antenna) == 0:
-            self.antenna_selection = 'summary'
+            self.antenna_selection = 'all'
         else:
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
@@ -580,13 +578,13 @@ class SingleDishPlotmsAntComposite(common.AntComposite):
     leaf_class = SingleDishPlotmsLeaf
 
 
-class SingleDishPlotmsSpwComposite(common.SpwComposite):
+class SingleDishPlotmsSpwComposite(common.SDSpwComposite):
     """Class to create a PlotLeaf for each spw."""
 
     leaf_class = SingleDishPlotmsLeaf
 
 
-class SingleDishPlotmsAntSpwComposite(common.AntSpwComposite):
+class SingleDishPlotmsAntSpwComposite(common.SDAntSpwComposite):
     """Class to create a PlotLeaf for each antenna and spw."""
 
     leaf_class = SingleDishPlotmsSpwComposite
@@ -599,18 +597,17 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication'], gainfield_name: List[str]) -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication']) -> None:
         """Initialize the class.
 
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
-            gainfield_name: List of field names.
         """
-        super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp, gainfield_name,
+        super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
                                                                     xaxis='time', yaxis='amp',
-                                                                    coloraxis='field')
+                                                                    coloraxis='fleld')
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
@@ -621,18 +618,17 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication'], gainfield_name: List[str]) -> None:
+    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication']) -> None:
         """Initialize the class.
 
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
-            gainfield_name: List of field names.
         """
-        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp, gainfield_name,
+        super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
-                                                                   coloraxis='corr')
+                                                                   coloraxis='field')
 
 
 class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):

@@ -93,12 +93,10 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             details_elev = []
             summaries_interval = []
             details_interval = []
-            gainfield_name = []
 
             for calapp in final_original:
                 result.final = [calapp]
                 gainfield = calapp.calfrom[0].gainfield
-                gainfield_name.append(ms.get_fields(field_id=int(gainfield))[0].clean_name)
 
                 # Amp vs. Freq: summary plots
                 summary_plotter = skycal_display.SingleDishSkyCalAmpVsFreqSummaryChart(context, result, gainfield)
@@ -126,11 +124,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                     reference_coords[vis][field_domain.name] = reference_coord
 
             # Amp vs. Time: summary plots
-            summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, final_original, gainfield_name)
+            summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, final_original)
             summaries_time.extend(summary_plotter.plot())
 
             # Amp vs. Time: detail plots
-            detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, final_original, gainfield_name)
+            detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, final_original)
             details_time.extend(detail_plotter.plot())
 
             result.final = final_original

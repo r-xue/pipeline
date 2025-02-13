@@ -172,7 +172,7 @@ def get_original_field_name(field_name, vis):
 	                        </a>
 	                    </h4>
 	                    ${vis}<br>
-                            Antenna: summary<br>
+                            Antenna: all<br>
                             Spw: ${spw}<br>
 	                </div>
 	            </div>
