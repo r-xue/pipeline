@@ -1072,7 +1072,7 @@ class TestSlowerRegression:
         pr.run(telescope='vla', omp_num_threads=1)
 
     @pytest.mark.vla
-    def test_13A_537__procedure_hifv__cont__cube__selfcal():
+    def test_13A_537__procedure_hifv__cont__cube__selfcal(self):
         """PIPE-2357: Run VLA calibration regression for standard procedure_hifv_calimage_cont_cube_selfcal.xml recipe.
 
         Recipe name:                procedure_hifv_calimage_cont_cube_selfcal.xml
