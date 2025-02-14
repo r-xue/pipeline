@@ -161,7 +161,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                     if slib['obstype'] == 'mosaic':
                         row_values = [' '.join(antpos_predrop_html), ' '.join(antpos_html)]
                     else:
-                        row_values = [antpos_html]
+                        row_values = [' '.join(antpos_html)]
                 if row_name == 'Frac. Flagged vs. Baseline':
                     if slib['obstype'] == 'mosaic':
                         row_values = [''.join(fracflag_html)]*2
