@@ -58,10 +58,11 @@ class SelfcalSummary(object):
         """Generate all plots for each QA page per target/band/solint combination."""
         LOG.info("Making Selfcal QA plots for weblog")
 
-        image_plots = []          # pre/post selfcal images
-        antpos_plots = {}         # solution flagged fraction at antenna positions, keyed by MS
-        phasefreq_plots = {}      # phase vs frequency per antenna, keyed by MS
-        fracflag_plots = {}       # flagging fraction vs. basedline, keyed by MS
+        image_plots = []           # pre/post selfcal images
+        antpos_plots = {}          # solution flagged fraction at antenna positions, keyed by MS
+        antpos_predrop_plots = {}  # solution flagged fraction at antenna positions, keyed by MS (predrop versions)
+        phasefreq_plots = {}       # phase vs frequency per antenna, keyed by MS
+        fracflag_plots = {}        # flagging fraction vs. basedline, keyed by MS
 
         im_post = self._im_solname(solint)+'_post.image.tt0'
         im_pre = self._im_solname(solint)+'.image.tt0'
@@ -91,29 +92,40 @@ class SelfcalSummary(object):
 
         vislist = self.slib['vislist']
         for vis in vislist:
+
             # only evaluate last gaintable not the pre-apply table
             gaintable = self.slib[vis][solint]['gaintable'][-1]
+
             figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable+'.png')
             ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
             self.plot_ants_flagging_colored(figname, ms, caltb_loc)
 
             nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc, ms)
-
-            # PIPE-2446: Check original gaincal table in mosaic cases before solint trials
-            caltb_loc_predrop = os.path.splitext(caltb_loc)[0]+'.pre-drop.g'
-            if os.path.exists(caltb_loc_predrop):
-                nflagged_sols_predrop, nsols_predrop = self.get_sols_flagged_solns(caltb_loc_predrop, ms)
-            else:
-                nflagged_sols_predrop = nsols_predrop = None
-
             antpos_plots[vis] = logger.Plot(figname, parameters={
-                                            'nflagged_sols': nflagged_sols, 'nsols': nsols,
-                                            'nflagged_sols_predrop': nflagged_sols_predrop, 'nsols_predrop': nsols_predrop})
+                                            'nflagged_sols': nflagged_sols, 'nsols': nsols})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
             antpos_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint}'
             antpos_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
 
+            # PIPE-2446: Check the original gaincal table in mosaic cases before mosaic heuristics manipulation
+
+            gaintable_predrop = os.path.splitext(gaintable)[0]+'.pre-drop.g'
+            caltb_loc_predrop = os.path.join(self.scal_dir, gaintable_predrop)
+            if os.path.exists(caltb_loc_predrop):
+                figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable_predrop+'.png')
+                self.plot_ants_flagging_colored(figname, ms, caltb_loc_predrop)
+                nflagged_sols_predrop, nsols_predrop = self.get_sols_flagged_solns(caltb_loc_predrop, ms)
+                antpos_predrop_plots[vis] = logger.Plot(figname, parameters={
+                    'nflagged_sols': nflagged_sols_predrop, 'nsols': nsols_predrop})
+                antpos_predrop_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna (pre-drop)'
+                antpos_predrop_plots[vis].parameters[
+                    'caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint} (pre-drop)'
+                antpos_predrop_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
+            else:
+                antpos_predrop_plots[vis] = None
+
+            # phase-vs-freq-per-ant plots
             vis_desc = ('<a class="anchor" id="{0}_byant"></a>'
                         '<a href="#{0}_summary" class="btn btn-link btn-sm">'
                         '  <span class="glyphicon glyphicon-th-list"></span>'
@@ -141,7 +153,7 @@ class SelfcalSummary(object):
             else:
                 fracflag_plots[vis] = None
 
-        return image_plots, antpos_plots, phasefreq_plots, fracflag_plots
+        return image_plots, antpos_plots, antpos_predrop_plots, phasefreq_plots, fracflag_plots
 
     @staticmethod
     def get_sols_flagged_solns(gaintable, ms):
@@ -279,7 +291,7 @@ class SelfcalSummary(object):
         with casa_tools.TableReader(caltb_loc + '/ANTENNA') as table:
             ant_names = table.getcol('NAME')
         ant_names = [str(ant_names[idx]) for idx in ant_ids]
-                      
+
         phasefreq_plots = []
 
         with TaskQueue() as tq:
