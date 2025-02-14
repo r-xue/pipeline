@@ -27,10 +27,10 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, valid_chars))
         self.rel_path = os.path.relpath(self.path, context.report_dir)
 
-        image_plots, antpos_plots, phasefreq_plots, fracflag_plots = display.SelfcalSummary(
+        image_plots, antpos_plots, antpos_predrop_plots, phasefreq_plots, fracflag_plots = display.SelfcalSummary(
             context, r, cleantarget).plot_qa(solint)
         summary_tab, nsol_tab = self.make_summary_table(
-            context, r, cleantarget, solint, image_plots, antpos_plots, fracflag_plots)
+            context, r, cleantarget, solint, image_plots, antpos_plots, antpos_predrop_plots, fracflag_plots)
 
         self.extra_data = {
             'summary_tab': summary_tab,
@@ -39,6 +39,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
             'band': band,
             'solint': solint,
             'antpos_plots': antpos_plots,
+            'antpos_predrop_plots': antpos_predrop_plots,
             'phasefreq_plots': phasefreq_plots,
             'fracflag_plots': fracflag_plots,
             'slib': slib}
@@ -46,7 +47,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
     def update_mako_context(self, mako_context):
         mako_context.update(self.extra_data)
 
-    def make_summary_table(self, context, r, cleantarget, solint, image_plots, antpos_plots, fracflag_plots):
+    def make_summary_table(self, context, r, cleantarget, solint, image_plots, antpos_plots, antpos_predrop_plots, fracflag_plots):
 
         slib = cleantarget['sc_lib']
 
@@ -82,15 +83,13 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         # per-vis solution summary table
 
         nsol_rows = []
-        if slib['obstype'] == 'mosaic':
-            vis_row_names = ['', 'N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.', 'Fallback Mode', 'Spwmap']
-        else:
-            vis_row_names = ['N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.', 'Fallback Mode', 'Spwmap']
         vislist = slib['vislist']
         for vis in vislist:
             nsol_stats = antpos_plots[vis].parameters
-
             antpos_html = utils.plots_to_html([antpos_plots[vis]], report_dir=context.report_dir)
+            if slib['obstype'] == 'mosaic':
+                nsol_stats_predrop = antpos_predrop_plots[vis].parameters
+                antpos_predrop_html = utils.plots_to_html([antpos_predrop_plots[vis]], report_dir=context.report_dir)
 
             if fracflag_plots[vis] is not None:
                 fracflag_html = utils.plots_to_html([fracflag_plots[vis]], report_dir=context.report_dir)
@@ -99,31 +98,38 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
 
             vis_desc = ('<a class="anchor" id="{0}_summary"></a>'
                         '<a href="#{0}_byant">'
-                        '   {0}'
+                        '   <b>{0}</b>'
                         '</a>'.format(vis))
 
-            vis_desc = [vis_desc]+antpos_html+fracflag_html
-            vis_desc = ' '.join(vis_desc)
+            vis_row_names = [vis_desc, 'N Sol.', 'N Flagged Sol.', 'Frac. Flagged Sol.',
+                             'Fallback Mode', 'Spwmap', 'Frac. Flagged <br> (per Ant)']
+            if fracflag_html:
+                vis_row_names += ['Frac. Flagged vs. Baseline']
 
             for row_name in vis_row_names:
                 if row_name == '':
                     row_values = ['Initial', 'Final']
+                if row_name == vis_desc:
+                    if slib['obstype'] == 'mosaic':
+                        row_values = ['<b>Initial</b>', '<b>Final</b>']
+                    else:
+                        row_values = [row_name]*2
                 if row_name == 'N Sol.':
                     if slib['obstype'] == 'mosaic':
-                        row_values = [nsol_stats['nsols_predrop'], nsol_stats['nsols']]
+                        row_values = [nsol_stats_predrop['nsols'], nsol_stats['nsols']]
                     else:
                         row_values = [nsol_stats['nsols']]
                 if row_name == 'N Flagged Sol.':
                     if slib['obstype'] == 'mosaic':
-                        row_values = [nsol_stats['nflagged_sols_predrop'], nsol_stats['nflagged_sols']]
+                        row_values = [nsol_stats_predrop['nflagged_sols'], nsol_stats['nflagged_sols']]
                     else:
                         row_values = [nsol_stats['nflagged_sols']]
                 if row_name == 'Frac. Flagged Sol.':
                     row_values = []
                     if slib['obstype'] == 'mosaic':
-                        if nsol_stats['nsols_predrop'] > 0:
-                            row_values += ['{:0.3f} &#37;'.format(nsol_stats['nflagged_sols_predrop'] /
-                                                                  nsol_stats['nsols_predrop']*100.)]
+                        if nsol_stats_predrop['nsols'] > 0:
+                            row_values += ['{:0.3f} &#37;'.format(nsol_stats_predrop['nflagged_sols'] /
+                                                                  nsol_stats_predrop['nsols']*100.)]
                         else:
                             row_values += ['-']
                     if nsol_stats['nsols'] > 0:
@@ -151,7 +157,18 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
                         row_values = [slib[vis][solint]['spwmap']]*2
                     else:
                         row_values = [slib[vis][solint]['spwmap']]
-                nsol_rows.append([vis_desc]+[row_name]+row_values)
+                if row_name == 'Frac. Flagged <br> (per Ant)':
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [' '.join(antpos_predrop_html), ' '.join(antpos_html)]
+                    else:
+                        row_values = [antpos_html]
+                if row_name == 'Frac. Flagged vs. Baseline':
+                    if slib['obstype'] == 'mosaic':
+                        row_values = [''.join(fracflag_html)]*2
+                    else:
+                        row_values = [''.join(fracflag_html)]
+
+                nsol_rows.append([row_name]+row_values)
 
         return utils.merge_td_columns(rows, vertical_align=True), utils.merge_td_rows(utils.merge_td_columns(nsol_rows, vertical_align=True))
 
@@ -439,15 +456,17 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 for solint in solints:
                     if solint in vis_keys:
                         nsol_stats = qa_extra_data[solint]['antpos_plots'][vis].parameters
+                        if slib['obstype'] == 'mosaic':
+                            nsol_stats_predrop = qa_extra_data[solint]['antpos_predrop_plots'][vis].parameters
                         if row_name == 'N.Sols':
                             row.append(nsol_stats['nsols'])
                         if row_name == 'N.Sols (initial)':
-                            row.append('{} ({})'.format(nsol_stats['nsols'], nsol_stats['nsols_predrop']))
+                            row.append('{} ({})'.format(nsol_stats['nsols'], nsol_stats_predrop['nsols']))
                         if row_name == 'N.Sols Flagged':
                             row.append(nsol_stats['nflagged_sols'])
                         if row_name == 'N.Sols Flagged (initial)':
                             row.append('{} ({})'.format(nsol_stats['nflagged_sols'],
-                                       nsol_stats['nflagged_sols_predrop']))
+                                       nsol_stats_predrop['nflagged_sols']))
                         if row_name == 'Flagged Frac.':
                             if nsol_stats['nsols'] > 0:
                                 row.append('{:0.3f} &#37;'.format(nsol_stats['nflagged_sols']/nsol_stats['nsols']*100.))
