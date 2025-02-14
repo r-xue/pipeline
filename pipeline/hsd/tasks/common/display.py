@@ -18,7 +18,9 @@ from matplotlib.dates import date2num, DateFormatter, MinuteLocator
 import matplotlib.gridspec as gridspec
 import numpy as np
 
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure as infrastructure
+from pipeline.h.tasks.common.displays import common as common
 import pipeline.infrastructure.displays.pointing as pointing
 from pipeline.infrastructure import casa_tools
 from pipeline.domain.singledish import MSReductionGroupDesc
@@ -1637,6 +1639,52 @@ class SDSparseMapPlotter(object):
         del self.axes
         fig.clf()
         del fig
+
+
+class SDSpwComposite(common.LeafComposite):
+    """
+    Create a PlotLeaf for each spw in the caltable or caltables.
+    """
+    # reference to the PlotLeaf class to call
+    leaf_class = None
+
+    def __init__(self, context, result, calapp: List[callibrary.CalApplication],
+                 xaxis, yaxis, ant='', pol='', **kwargs):
+
+        # Create a dictionary to keep track of which caltables have which spws.
+        dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
+        table_spws = sorted(dict_calapp_spws.keys())
+        children = []
+        for spw in table_spws:
+            plotindex = 0
+            clearplots = True
+            if len(calapp) == 1:
+                clearplots = False
+            children_field = []
+            for cal in calapp:
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, clearplots=clearplots, **kwargs)
+                children_field.append(item)
+                plotindex += 1
+                clearplots = False
+            children.extend(children_field)
+
+        super().__init__(children)
+
+
+class SDAntSpwComposite(common.LeafComposite):
+    """
+    Create a PlotLeaf for each spw and antenna in the caltable.
+    """
+    leaf_class = None
+
+    def __init__(self, context, result, calapp: List[callibrary.CalApplication], xaxis, yaxis, pol='', **kwargs):
+        dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
+        table_ants = sorted(dict_calapp_ants.keys())
+
+        children = [self.leaf_class(context, result, dict_calapp_ants[ant], xaxis, yaxis,
+                    ant=int(ant), pol=pol, **kwargs)
+                    for ant in table_ants]
+        super(SDAntSpwComposite, self).__init__(children)
 
 
 def ch_to_freq(ch: Union[float, List[float]], frequency: List[float]) -> Union[float, List[float]]:
