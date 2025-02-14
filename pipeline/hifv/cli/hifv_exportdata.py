@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.exportdata.vlaexportdata.VLAExportDataInputs.__init__
 @utils.cli_wrapper
 def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, exportcalprods=None,
     pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None,
@@ -24,41 +25,6 @@ def hifv_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     - a tar file per session containing the caltables for that session
     - a tar file containing the file web log
     - a text file containing the final list of CASA commands
-
-
-    Args:
-        vis: List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
-            pipeline context.
-            example: vis=['X227.ms', 'X228.ms']
-
-        session: List of sessions one per visibility file. Currently defaults to a single virtual session containing all the visibility files in vis.
-            In the future, this will default to the set of observing sessions defined
-            in the context.
-            example: session=['session1', 'session2']
-
-        imaging_products_only: Export science target imaging products only
-
-        exportmses: Export the final MeasurementSets instead of the final flags, calibration tables, and calibration instructions.
-
-        tarms: Tar final MeasurementSets
-
-        exportcalprods: Export flags and caltables in addition to MeasurementSets. this parameter is only valid when exportmses = True.
-
-        pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template 'PPR_*.xml'.
-            example: pprfile=['PPR_GRB021004.xml']
-
-        calintents: List of calibrator image types to be exported. Defaults to all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
-            example: 'PHASE'
-
-        calimages: List of calibrator images to be exported. Defaults to all calibrator images recorded in the pipeline context.
-            example: calimages=['3C454.3.bandpass', '3C279.phase']
-
-        targetimages: List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
-            example: targetimages=['NGC3256.band3', 'NGC3256.band6']
-
-        products_dir: Name of the data products subdirectory. Defaults to './' example: '../products'
-
-        gainmap: The value of ``gainmap`` parameter in hifv_restoredata task put in casa_piperestorescript.py
 
     Returns:
         The results object for the pipeline task is returned.

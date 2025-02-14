@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hif.tasks.findcont.findcont.FindContInputs.__init__
 @utils.cli_wrapper
 def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweightdensity=None, hm_weighting=None,
                  datacolumn=None, parallel=None):
@@ -28,25 +29,6 @@ def hif_findcont(vis=None, target_list=None, hm_mosweight=None, hm_perchanweight
     a priori ranges. For spws not listed in a pre-existing file, it will analyze them as
     normal and update the file. In either case, the cont.dat file is used by the subsequent
     hif_uvcontsub and hif_makeimages stages.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-        target_list: Dictionary specifying targets to be imaged; blank will read list from context.
-
-        hm_mosweight: Mosaic weighting. Defaults to '' to enable the automatic heuristics calculation.
-            Can be set to True or False manually.
-
-        hm_perchanweightdensity: Calculate the weight density for each channel independently. 
-            Defaults to '' to enable the automatic heuristics calculation. Can be set to True or False manually.
-
-        hm_weighting: Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
-
-        datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
-
-        parallel: Use MPI cluster where possible.
 
     Returns:
         The results object for the pipeline task is returned.

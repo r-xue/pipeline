@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.fluxscale.solint.SolintInputs.__init__
 @utils.cli_wrapper
 def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=None):
 
@@ -10,16 +11,6 @@ def hifv_solint(vis=None, limit_short_solint=None, refantignore=None, refant=Non
 
     The hifv_solint task determines different solution intervals. Note that the short solint value is switched to 'int' when
     the minimum solution interval corresponds to one integration.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
-
-        limit_short_solint: Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
-            Can be set to a string value of 'int'.
-
-        refantignore: String list of antennas to ignore Example:  refantignore='ea02, ea03'
-
-        refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
 
     Returns:
         The results object for the pipeline task is returned.
