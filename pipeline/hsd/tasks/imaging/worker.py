@@ -15,7 +15,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType
 from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.utils.conversion import get_spectral_reference_code_from_image
 
 from .. import common
 from ..common import direction_utils as dirutil
@@ -391,7 +390,6 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             image_item.antenna = ant_name  # name #(group name)
             outcome = {}
             outcome['image'] = image_item
-            outcome['freq_frame'] = get_spectral_reference_code_from_image(outfile)
             is_frequency_channel_reversed = not self.inputs.is_freq_axis_ascending
             result = resultobjects.SDImagingResultItem(task=None,
                                                        success=True,

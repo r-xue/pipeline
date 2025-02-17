@@ -8,6 +8,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils.conversion import get_spectral_reference_code_from_image
 from . import resultobjects
 from . import display
 from ..common import utils as sdutils
@@ -58,7 +59,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         for r in results:
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
-                freq_frame = r.outcome['freq_frame']
+                freq_frame = get_spectral_reference_code_from_image(image_item.imagename)
                 if 'freq_frame' not in ctx:
                     ctx['freq_frame'] = freq_frame
                 msid_list = r.outcome['file_index']

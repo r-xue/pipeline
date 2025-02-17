@@ -12,7 +12,6 @@ import pipeline.infrastructure.imagelibrary as imagelibrary
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from .resultobjects import SDImagingResultItem
-from pipeline.infrastructure.utils.conversion import get_spectral_reference_code_from_image
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -186,7 +185,6 @@ class SDImageCombine(basetask.StandardTaskTemplate):
 
             outcome = {
                 'image': image_item,
-                'freq_frame': get_spectral_reference_code_from_image(outfile)
             }
             result = SDImagingResultItem(task=None,
                                          success=True,
