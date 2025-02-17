@@ -210,6 +210,7 @@ if Do_MakeImages:
                     spw='{}'.format(spwID),
                     antenna='{}'.format(antenna),
                     intent='OBSERVE_TARGET#ON_SOURCE',
+                    specmode='cube',
                     mode=mode, outframe=outframe, veltype=veltype,
                     nchan=nchan, start=start, width=width,
                     gridfunction=gridfunction, convsupport=convsupport,
@@ -218,7 +219,7 @@ if Do_MakeImages:
                     cell=cell,
                     phasecenter=phasecenter,
                     restfreq=rest_frequencies[spwID],
-                    stokes='I',
+                    stokes='pseudoI',
                     overwrite=Overwrite_Products,
                     brightnessunit='K'
                 )
