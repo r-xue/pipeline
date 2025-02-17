@@ -340,18 +340,17 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             if no valid caltable rows exist.
         """
         with casa_tools.TableReader(caltable) as tb:
+            unique_timestamps_per_antenna = []
+            antennas = numpy.unique(tb.getcol('ANTENNA1'))
             valid_rows = tb.query('not all(FLAG)')
             intervalcol = valid_rows.getcol('INTERVAL')
-            valid_rows.close()
-
-            antennas = numpy.unique(tb.getcol('ANTENNA1'))
-            unique_timestamps_per_antenna = []
+            timecol = valid_rows.getcol('TIME')
+            antenna1col = valid_rows.getcol('ANTENNA1')
             for a in antennas:
-                selected = tb.query(f'ANTENNA1 == {a} && not all(FLAG)')
                 unique_timestamps_per_antenna.append(
-                    numpy.unique(selected.getcol('TIME'))
+                    numpy.unique(timecol[antenna1col == a])
                 )
-                selected.close()
+            valid_rows.close()
 
         if len(intervalcol) == 0:
             # return None if no valid caltable rows exist
