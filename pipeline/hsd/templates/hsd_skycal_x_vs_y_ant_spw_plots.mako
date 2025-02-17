@@ -1,6 +1,6 @@
 <%!
 rsc_path = ""
-SELECTORS = ['vis', 'ant', 'field', 'spw']
+SELECTORS = ['vis', 'ant', 'spw']
 %>
 <%inherit file="detail_plots_basetemplate.mako"/>
 
