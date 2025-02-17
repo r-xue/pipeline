@@ -499,8 +499,8 @@ class SingleDishPlotmsLeaf(object):
             ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
             ant=self.antenna_selection, spw=self.spw)
 
-        title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis=field'.format(
-            ant=self.antenna_selection, spw=self.spw)
+        title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
+            ant=self.antenna_selection, spw=self.spw, coloraxis=self.coloraxis)
         figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 
         task = self._create_task(title, figfile)
@@ -509,7 +509,7 @@ class SingleDishPlotmsLeaf(object):
                 LOG.debug('Returning existing plot')
             else:
                 task.execute()
-                plot_objects = [self._get_plot_object(figfile, task)]
+            plot_objects = [self._get_plot_object(figfile, task)]
         except Exception as e:
             LOG.error(str(e))
             LOG.debug(traceback.format_exc())
@@ -530,7 +530,8 @@ class SingleDishPlotmsLeaf(object):
         task_args = {'vis': self.caltable,
                      'xaxis': self.xaxis,
                      'yaxis': self.yaxis,
-                     'coloraxis': 'field',
+                     'coloraxis': self.coloraxis,
+#                     'coloraxis': 'field',
                      'showgui': False,
                      'field': self.field,
                      'spw': self.spw,
@@ -548,7 +549,7 @@ class SingleDishPlotmsLeaf(object):
 
         return casa_tasks.plotms(**task_args)
 
-    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
+    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> Optional[logger.Plot]:
         """Generate parameters and return logger.Plot.
 
         Args:
@@ -608,7 +609,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
         """
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
                                                                     xaxis='time', yaxis='amp',
-                                                                    coloraxis='fleld')
+                                                                    coloraxis='field')
 
 
 class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
