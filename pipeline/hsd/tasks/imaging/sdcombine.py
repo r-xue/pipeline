@@ -183,9 +183,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
 
-            outcome = {
-                'image': image_item,
-            }
+            outcome = {'image': image_item}
             result = SDImagingResultItem(task=None,
                                          success=True,
                                          outcome=outcome)
