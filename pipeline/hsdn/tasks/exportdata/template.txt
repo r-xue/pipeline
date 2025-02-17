@@ -203,27 +203,31 @@ if Do_MakeImages:
             _prefix = os.path.join(working_directory, '${source}')
             beamimagefiles = ['{}.NRO-BEAM{}.spw{}.I.sd.im'.format(_prefix, a, spwID) for a in antennalist]
             for antenna in antennalist:
-                tsdimaging(
-                    infiles=baseline_outputfile,
-                    outfile = beamimagefiles[antenna],
-                    field='0',
-                    spw='{}'.format(spwID),
-                    antenna='{}'.format(antenna),
-                    intent='OBSERVE_TARGET#ON_SOURCE',
-                    specmode='cube',
-                    mode=mode, outframe=outframe, veltype=veltype,
-                    nchan=nchan, start=start, width=width,
-                    gridfunction=gridfunction, convsupport=convsupport,
-                    truncate=truncate, gwidth=gwidth, jwidth=jwidth,
-                    imsize=imsize,
-                    cell=cell,
-                    phasecenter=phasecenter,
-                    restfreq=rest_frequencies[spwID],
-                    stokes='pseudoI',
-                    overwrite=Overwrite_Products,
-                    brightnessunit='K'
-                )
-                os.rename(beamimagefiles[antenna] + '.image', beamimagefiles[antenna])
+                try:
+                    tsdimaging(
+                        infiles=baseline_outputfile,
+                        outfile = beamimagefiles[antenna],
+                        field='0',
+                        spw='{}'.format(spwID),
+                        antenna='{}'.format(antenna),
+                        intent='OBSERVE_TARGET#ON_SOURCE',
+                        specmode='cube',
+                        mode=mode, outframe=outframe, veltype=veltype,
+                        nchan=nchan, start=start, width=width,
+                        gridfunction=gridfunction, convsupport=convsupport,
+                        truncate=truncate, gwidth=gwidth, jwidth=jwidth,
+                        imsize=imsize,
+                        cell=cell,
+                        phasecenter=phasecenter,
+                        restfreq=rest_frequencies[spwID],
+                        stokes='pseudoI',
+                        overwrite=Overwrite_Products,
+                        brightnessunit='K'
+                    )
+                except Exception:
+                    continue
+                else:
+                    os.rename(beamimagefiles[antenna] + '.image', beamimagefiles[antenna])
 
             weightimage = '{}.spw{}.I.sd.im.weight'.format(_prefix, spwID)
 
