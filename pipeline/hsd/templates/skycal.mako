@@ -37,7 +37,6 @@ def get_original_field_name(field_name, vis):
 % endif
 <li><a href="#ampfreqplots">Amp vs. Frequency Plots</a></li>
 <li><a href="#amptimeplots">Amp vs. Time Plots</a></li>
-<li><a href="#intervaltimeplots">Interval vs. Time Plots</a></li>
 <li><a href="#eldiffplots">Elevation Difference vs. Time Plots</a></li>
 </ul>
 
@@ -175,47 +174,6 @@ def get_original_field_name(field_name, vis):
 	                    </h4>
 
 	                    <p>Plot of sky level vs time for field ${original_field_name}, spw ${spw}.</p>
-	                </div>
-	            </div>
-	        </div>
-        % endif
-    % endfor
-	<div class="clearfix"></div><!--  flush plots, break to next row -->
-% endfor
-
-<h2 id="intervaltimeplots" class="jumptarget">Interval vs. Time Plots</h2>
-% for ms in get_mses():
-    <%
-        vis = ms.basename
-        subpage = os.path.join(dirname, interval_vs_time_subpages[vis])
-    %>
-    <h4><a class="replace" href="${subpage}" data-vis="${vis}">${vis}</a></h4>
-    % for plot in summary_interval_vs_time[vis]:
-        % if os.path.exists(plot.thumbnail):
-            <%
-                img_path = os.path.relpath(plot.abspath, pcontext.report_dir)
-                thumbnail_path = os.path.relpath(plot.thumbnail, pcontext.report_dir)
-                spw = plot.parameters['spw']
-                ant = plot.parameters['ant']
-                clean_field_name = plot.parameters['field']
-                original_field_name = get_original_field_name(clean_field_name, vis)
-            %>
- 	        <div class="col-md-3">
-	            <div class="thumbnail">
-	                <a href="${img_path}" data-fancybox="thumbs">
-	                    <img class="lazyload"
-                             data-src="${thumbnail_path}"
-	                         title="Interval Ratio (off-source/on-source) summary for Field ${original_field_name}, Ant ${ant}, SPW ${spw}">
-	                </a>
-	                <div class="caption">
-	                    <h4>
-	                        <a href="${subpage}" class="replace"
-	                           data-vis="${vis}" data-field="${clean_field_name}" data-ant="${ant}" data-spw="${spw}">
-	                           Field ${original_field_name} Antenna ${ant} SPW ${spw}
-	                        </a>
-	                    </h4>
-
-	                    <p>Plot of interval ratio (off-source/on-source) vs time for field ${original_field_name}, antenna ${ant}, spw ${spw}.</p>
 	                </div>
 	            </div>
 	        </div>

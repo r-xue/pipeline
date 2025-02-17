@@ -122,10 +122,6 @@ def merge_reduction_group(observing_run: ObservingRun,
             dictionary are group IDs and values are reduction group
             descriptions.
     """
-    if not hasattr(observing_run, 'ms_reduction_group'):
-        LOG.info('Adding ms_reduction_group to observing_run')
-        observing_run.ms_reduction_group = {}
-
     # merge reduction group
     for myid, mydesc in reduction_group.items():
         matched_id = -1

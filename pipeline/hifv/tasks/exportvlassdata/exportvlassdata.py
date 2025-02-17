@@ -61,8 +61,36 @@ class ExportvlassdataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+    # docstring and type hints: supplements hifv_exportvlassdata
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, gainmap=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            session:
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            exportmses:
+
+            pprfile:
+
+            calintents:
+
+            calimages:
+
+            targetimages:
+
+            products_dir:
+
+            gainmap:
+
+        """
         super(ExportvlassdataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
                                                     exportmses=exportmses, pprfile=pprfile, calintents=calintents,
                                                     calimages=calimages, targetimages=targetimages,
@@ -141,13 +169,7 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
             result.parameterlist = []
 
         imlist = self.inputs.context.subimlist.get_imlist()
-
-        # PIPE-592: find out imaging mode (stored in context by hif_editimlist)
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, alpha images will not be written.")
-            img_mode = None
+        img_mode = self.inputs.context.imaging_mode
 
         images_list = []
         for imageitem in imlist:
@@ -436,13 +458,8 @@ class Exportvlassdata(basetask.StandardTaskTemplate):
                     parameterlist_set.add(parameter_filename)
                     _ = self._export_parameterlist(context, parameter_filename, products_dir, oussid)
 
-        if hasattr(self.inputs.context, 'imaging_mode'):
-            img_mode = self.inputs.context.imaging_mode
-        else:
-            LOG.warning("imaging_mode property does not exist in context, SE Cont imaging products will not be exported")
-            img_mode = None
-
         # SE Cont imaging mode export for VLASS
+        img_mode = self.inputs.context.imaging_mode
         if type(img_mode) is str and img_mode.startswith('VLASS-SE-CONT'):
             # Identify self cal table
             selfcal_result = None
