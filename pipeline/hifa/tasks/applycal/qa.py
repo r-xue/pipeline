@@ -253,7 +253,7 @@ class QAScoreEvalFunc:
             return np.array(output)
 
         mlist = self.SCORE_THRESHOLDS.keys()
-        #Get data selection from QA score
+        # Get data selection from QA score
         selscan = np.array(list(qascore.applies_to.scan))
         selspw = np.array(list(qascore.applies_to.spw))
         selintent = np.array(list(qascore.applies_to.intent))
