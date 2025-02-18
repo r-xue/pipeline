@@ -1198,12 +1198,13 @@ class SDChannelMapDisplay(SDImageDisplay):
             is_lsb (bool): the flag whether the casaimage was LSB or not.
 
         Returns: Tuple of them (in order):
-            int: center index of a feature line detected by previous logics
-            List[int]: indice of vertical red lines on velocity plot
-            float: velocity value at the center of feature line
-            float: velocity value per a channel
-            int, int: indices of the both edges of the red lines
-            float, float: relative velocity values with respect to the window center at both edges of the red lines
+            int: the line center channel
+            List[int]: indices of vertical red lines on the integrated spectrum #2
+            float: velocity at the center of the line center channel
+            float: velocity per a channel
+            int, int: indices of the red lines on the integrated spectrum #1
+            float, float: relative velocities with respect to the window center
+                          at both edges of the red lines on the integrated spectrum #2
             bool: the flag whether the center of the feature line is at left side of the channel map
         
         throws:
