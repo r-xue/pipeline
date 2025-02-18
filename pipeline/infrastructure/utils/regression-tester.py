@@ -655,13 +655,13 @@ def test_13A_537__restore__post1553__PPR__regression():
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.6.1-17-pipeline-2024.1.1.7
+    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
                             expectedoutput_file=(f'{input_dir}/restore/' +
-                                            '13A-537.casa-6.6.1-17-pipeline-2024.1.1.7.restore.results.txt'),
+                                            '13A-537.casa-6.6.6-5-pipeline-2025.0.0.10.restore.results.txt'),
                             output_dir='13A_537__restore__post1553__PPR__regression')
 
     # copy files use restore task into products folder
