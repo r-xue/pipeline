@@ -1202,8 +1202,8 @@ class SDChannelMapDisplay(SDImageDisplay):
             List[int]: indice of vertical red lines on velocity plot
             float: velocity value at the center of feature line
             float: velocity value per a channel
-            int, int: indice of the both edges of the red lines
-            float, float: velocity values of the both edges of the red lines
+            int, int: indices of the both edges of the red lines
+            float, float: relative velocity values with respect to the window center at both edges of the red lines
             bool: the flag whether the center of the feature line is at left side of the channel map
         
         throws:
