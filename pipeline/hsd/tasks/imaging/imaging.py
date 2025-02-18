@@ -465,7 +465,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         )
 
     def _get_correlations_if_nro(self, cp: imaging_params.CommonParameters,
-                                  rgp: imaging_params.ReductionGroupParameters) -> Optional[str]:
+                                 rgp: imaging_params.ReductionGroupParameters) -> Optional[str]:
         """If data is from NRO, then get correlations.
 
         Args:
@@ -552,7 +552,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             return False  # no field name is included in in_field, skip
 
         rgp.member_list = list(common.get_valid_ms_members(rgp.group_desc, cp.ms_names, self.inputs.antenna,
-                                _field_sel, cp.args_spw))
+                               _field_sel, cp.args_spw))
         LOG.trace('group {}: member_list={}'.format(rgp.group_id, rgp.member_list))
 
         # skip this group if valid member list is empty
@@ -1191,7 +1191,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         return False
 
     def _execute_imaging(self, cp: imaging_params.CommonParameters,
-                          rgp: imaging_params.ReductionGroupParameters) -> bool:
+                         rgp: imaging_params.ReductionGroupParameters) -> bool:
         """Execute imaging per antenna, source.
 
         Args:
@@ -1704,7 +1704,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             BaseException : raises when it cannot find a Jy/K caltable applied.
         """
         if pp.brightnessunit == 'K':
-            jy_per_k = 1.0
+            _jy_per_k = 1.0
             LOG.info('No Jy/K conversion was performed to the image.')
         else:
             try:
@@ -1737,12 +1737,12 @@ class SDImaging(basetask.StandardTaskTemplate):
                 finally:
                     _t.close()
 
-                jy_per_k = (1. / tc.mean(axis=-1).real ** 2).mean()
-                LOG.info('Jy/K factor = {}'.format(jy_per_k))  # obtain Jy/k factor
-        return jy_per_k
+                _jy_per_k = (1. / tc.mean(axis=-1).real ** 2).mean()
+                LOG.info('Jy/K factor = {}'.format(_jy_per_k))  # obtain Jy/k factor
+        return _jy_per_k
 
     def _obtain_and_set_factors_by_convolution_function(self, pp: imaging_params.PostProcessParameters,
-                                                         tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
+                                                        tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
         """Obtain factors by convolution function, and set it into TIRP. A sub method of calculate_theoretical_image_rms().
 
         Args:
