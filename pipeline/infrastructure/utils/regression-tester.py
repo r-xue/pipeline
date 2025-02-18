@@ -573,7 +573,7 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
     """PIPE-2245: Run small ALMA cal+image regression to cover various heuristics
 
     Dataset:                    CSV-3899-EB2-small
-    Expected results version:   casa-6.6.1.17-pipeline-2024.1.1.7
+    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
 
     input_dir = 'pl-regressiontest/CSV-3899-EB2-small'
