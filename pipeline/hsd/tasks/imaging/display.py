@@ -1265,9 +1265,11 @@ class SDChannelMapDisplay(SDImageDisplay):
         # calculate the velocity value per channel
         velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[neighbor_channel])
 
-        # caluculate values of the both edges of vertical red lines for plotting
+        # calculate indices of the red lines on the integrated spectrum #1
         chan0 = max(i_idx_vertlines[0] - 1, 0)
         chan1 = min(i_idx_vertlines[-1], self.nchan - 1)
+        
+        # calculate relative velocities of both edges of red lines on the integrated spectrum #2
         V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
         V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
         
