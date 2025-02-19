@@ -1283,25 +1283,23 @@ class SDChannelMapDisplay(SDImageDisplay):
                 velocity_per_channel, chan0, chan1, V0, V1, is_leftside)
 
     def _calc_slice_width(self, line_width: float, line_center: float) -> int:
-        """Calculate width of a slice.
+        """
+        Calculate width of a slice.
 
         Args:
             line_width (float): width of the feature line
             line_center (float): the center index of the feature line
 
         Returns:
-            int: width of a slice
+            int: width of a slice. note that the minimum value is 0.
         """
         # adjust index of both side within channel
-        # width of the channels at left side of the center was narrower than a half width of the feature line
-        if line_center - line_width / 2 - .5 < 0:
-            return floor(abs(line_center * 2.0 / self.NUM_CHANNELMAP))
-        # width of the channels at right side of the center was narrower than a half width of the feature line
-        elif line_center + line_width / 2 > self.nchan - 1.5:
-            return floor(abs((self.nchan - 1 - line_center) * 2.0 / self.NUM_CHANNELMAP))
-        
-        # otherwise, return width to cover the feature line
-        return ceil(max(line_width / self.NUM_CHANNELMAP, 1.0))
+        # both side of the feature line is within the channel
+        if line_center - line_width/2 >= -0.5 and line_center + line_width/2 <= self.nchan - 0.5:
+            return ceil(max(line_width / self.NUM_CHANNELMAP, 1.0))
+        else:
+            # one side of the feature line is out of the channel
+            return floor(2.0 * min(line_center + 0.5, self.nchan - 0.5 - line_center) / self.NUM_CHANNELMAP)
 
     def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
         """
