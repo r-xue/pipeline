@@ -1220,7 +1220,7 @@ class SDChannelMapDisplay(SDImageDisplay):
         neighbor_channel = i_line_center - 1
 
         # The index of the first (left side) vertical red line
-        idx_1st_vertline = ceil((i_line_center + neighbor_channel) * 0.5 - slice_width * self.NUM_CHANNELMAP * 0.5 + 0.5)
+        idx_1st_vertline = ceil(i_line_center - slice_width * self.NUM_CHANNELMAP * 0.5)
 
         def _invert(x):
             return self.nchan - 1 - x
