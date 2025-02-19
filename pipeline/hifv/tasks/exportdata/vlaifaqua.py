@@ -156,8 +156,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             spwlist = ms.get_spectral_windows(science_windows_only=True)
             for spw in spwlist:
                 nx = ElementTree.Element("SPW")
-                chanfreq = [str(t) for t in spw.channels.chan_freqs]
-                ElementTree.SubElement(nx, 'Frequency').text = ",".join(chanfreq)
+                ElementTree.SubElement(nx, 'Channel0').text = str(spw.channels.chan_freqs.start)
+                ElementTree.SubElement(nx, 'ChannelWidth').text = str(spw.channels.chan_freqs.delta)
+                ElementTree.SubElement(nx, 'NChannels').text = str(spw.channels.chan_freqs.num_terms)
                 root.append(nx)
 
         return root
