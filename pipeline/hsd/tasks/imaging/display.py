@@ -895,7 +895,8 @@ class SDChannelMapDisplay(SDImageDisplay):
         plot_list = []
 
         is_lsb = False
-        if isinstance(self.inputs.result, SDImagingResultItem):
+        # SDImagingResultItem has frequency_channel_reversed attribute
+        if hasattr(self.inputs.result, 'frequency_channel_reversed'):
             is_lsb = self.inputs.result.frequency_channel_reversed
 
         # retrieve list of the valid feature lines from reduction group.
