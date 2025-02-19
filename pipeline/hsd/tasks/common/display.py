@@ -570,7 +570,7 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         Return list of channel ranges of valid spectral lines.
 
         Returns:
-            the list of lists have spectral lines
+            the list of valid spectral lines
         """
         group_desc = self.reduction_group
         ant_index = self.antennaid_list
