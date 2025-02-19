@@ -9,30 +9,6 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
 
     """Runs initial delay and bandpass calibration to setup for RFI flagging.
 
-    Runs initial delay and bandpass calibration to setup for RFI flagging
-
-    Output:
-
-    results -- The results object for the pipeline task is returned.
-    --------- parameter descriptions ---------------------------------------------
-
-    vis                  The list of input MeasurementSets. Defaults to the list of MeasurementSets
-                         specified in the h_init or hifv_importdata task.
-    weakbp               Activate weak bandpass heuristics
-    refantignore         String list of antennas to ignore
-                         Example:  refantignore='ea02,ea03'
-    doflagundernspwlimit If the number of bad spws is greater than zero, and the keyword is True, then spws are flagged individually.
-    flagbaddef           Enable/disable bad deformatter flagging. Default is True.
-    iglist               When flagbaddef is True, skip bad deformatter flagging for elements in the ignore list.
-                         Format: {antName:{band:{spw}}}
-                         Example: {'ea02': {'L': {0, 1, '10~13'}}}
-    refant               A csv string of reference antenna(s). When used, disables ``refantignore``.
-                         Example: refant = 'ea01, ea02'
-
-    --------- examples -----------------------------------------------------------
-
-
-    1. Initial delay calibration to set up heuristic flagging.
     Returns:
         The results object for the pipeline task is returned.
 
@@ -40,7 +16,6 @@ def hifv_testBPdcals(vis=None, weakbp=None, refantignore=None, doflagundernspwli
         1. Initial delay calibration to set up heuristic flagging:
 
         >>> hifv_testBPdcals()
-
     """
 
 
