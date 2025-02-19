@@ -227,6 +227,11 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             ElementTree.SubElement(nx, "Min").text = str(el_min)
             ElementTree.SubElement(nx, "Max").text = str(el_max)
             root.append(nx)
+
+            nx = ElementTree.Element("NAntennas")
+            nx.text = str(len(ms.antennas))
+            root.append(nx)
+
         return root
 
     def get_flagged_fraction(self, context):
