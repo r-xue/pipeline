@@ -432,6 +432,7 @@ class SingleDishPlotmsLeaf(object):
         coloraxis: str = '',
         plotindex: int = 0,
         clearplots: bool = False,
+        numfields: int = 0,
         **kwargs: Any
     ) -> None:
         """Construct SingleDishPlotmsLeaf instance.
@@ -445,12 +446,13 @@ class SingleDishPlotmsLeaf(object):
             calapp: CalApplication instance.
             xaxis: X-axis type of the plot.
             yaxis: Y-axis type of the plot.
-            plotindex: Indices from 0 to n (=len(calapp)-1).
-            clearplots: Not output (True) the first field's data or output (False)
-                        the others, if multiple fields exist.
             spw: Spectral window selection. Defaults to '' (all spw).
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
+            plotindex: Indices from 0 to numfields-1.
+            clearplots: Not output (True) the first field's data or output (False)
+                        the others, if multiple fields exist.
+            numfields: Number of fields.
         Raises:
             RuntimeError: Invalid field selection in calapp
         """
@@ -466,9 +468,9 @@ class SingleDishPlotmsLeaf(object):
         self.coloraxis = coloraxis
         self.plotindex = plotindex
         self.clearplots = clearplots
+        self.numfields = numfields
 
         ms = context.observing_run.get_ms(self.vis)
-        self.fieldids = [a.id for a in ms.get_fields(intent='TARGET')]
         fields = get_field_from_ms(ms, self.field)
         if len(fields) == 0:
             # failed to find field domain object with field
@@ -531,7 +533,6 @@ class SingleDishPlotmsLeaf(object):
                      'xaxis': self.xaxis,
                      'yaxis': self.yaxis,
                      'coloraxis': self.coloraxis,
-#                     'coloraxis': 'field',
                      'showgui': False,
                      'field': self.field,
                      'spw': self.spw,
@@ -542,9 +543,9 @@ class SingleDishPlotmsLeaf(object):
                      'averagedata': True,
                      'avgchannel': '1e8',
                      'plotindex': self.plotindex,
-                     'clearplots': self.clearplots
+                     'clearplots': self.clearplots,
                      }
-        if (self.plotindex+1) % (len(self.fieldids)) == 0:
+        if (self.plotindex+1) % self.numfields == 0:
             task_args['plotfile'] = figfile
 
         return casa_tasks.plotms(**task_args)
@@ -564,7 +565,7 @@ class SingleDishPlotmsLeaf(object):
                       'spw': self.spw,
                       'field': self.field_name}
 
-        if self.clearplots is False and (self.plotindex+1) % (len(self.fieldids)) == 0:
+        if (self.plotindex+1) % self.numfields == 0:
             return logger.Plot(figfile,
                                x_axis='Time',
                                y_axis='Amplitude',

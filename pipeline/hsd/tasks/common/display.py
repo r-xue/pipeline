@@ -1662,7 +1662,7 @@ class SDSpwComposite(common.LeafComposite):
                 clearplots = False
             children_field = []
             for cal in calapp:
-                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, clearplots=clearplots, **kwargs)
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, clearplots=clearplots, numfields=len(calapp), **kwargs)
                 children_field.append(item)
                 plotindex += 1
                 clearplots = False
@@ -1678,6 +1678,7 @@ class SDAntSpwComposite(common.LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp: List[callibrary.CalApplication], xaxis, yaxis, pol='', **kwargs):
+
         dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
         table_ants = sorted(dict_calapp_ants.keys())
 
