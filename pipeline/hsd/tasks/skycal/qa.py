@@ -50,7 +50,7 @@ class SDSkyCalListQAHandler(pqa.QAPlugin):
         """
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result]) 
+        collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
 
 aqua_exporter = aqua.xml_generator_for_metric('OnOffElevationDifference', '{:0.3f}deg')

@@ -25,6 +25,7 @@ LOG = infrastructure.get_logger(__name__)
 # Threshold of the elevation difference of QA score
 ELEVATION_DIFFERENCE_THRESHOLD = 3.0  # deg
 
+
 class SDSkyCalInputs(vdp.StandardInputs):
     """Inputs class for SDSkyCal task."""
     parallel = sessionutils.parallel_inputs_impl()
