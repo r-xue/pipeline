@@ -223,9 +223,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
             el_min = ms.compute_az_el_for_ms(min)[1]
             el_max = ms.compute_az_el_for_ms(max)[1]
-            el_range = el_max - el_min
-            nx = ElementTree.Element("ElevationRange")
-            nx.text = str(el_range)
+            nx = ElementTree.Element("Elevation")
+            ElementTree.SubElement(nx, "Min").text = str(el_min)
+            ElementTree.SubElement(nx, "Max").text = str(el_max)
             root.append(nx)
         return root
 
