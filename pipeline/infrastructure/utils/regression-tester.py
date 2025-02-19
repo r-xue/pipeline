@@ -584,7 +584,7 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
                             expectedoutput_dir=input_dir,
                             output_dir='csv_3899_eb2_small')
 
-    pr.run()
+    pr.run(omp_num_threads=1)
 
 
 @pytest.mark.skip(reason="Recent failure needs longer investigation")
