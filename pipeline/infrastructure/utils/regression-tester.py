@@ -18,6 +18,7 @@ from typing import Tuple, Optional, List
 
 import casatasks.private.tec_maps as tec_maps
 
+from pipeline.environment import casa_version_string, pipeline_revision
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.casa_tools as casa_tools
 import pipeline.recipereducer
@@ -29,6 +30,7 @@ from pipeline.infrastructure.utils import shutdown_plotms, get_casa_session_deta
 
 LOG = infrastructure.get_logger(__name__)
 
+
 class PipelineRegression(object):
     """Pipeline regression test class called from pytest."""
 
@@ -38,14 +40,15 @@ class PipelineRegression(object):
         """Constructor of PilelineRegression.
         
         Args:
-            recipe: recipe XML file name
-            input_dir: path to directory contains input files
-            visname: list of names of MeadurementSets
-            expectedoutput_file: path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
+            recipe (str, optional): recipe XML file name
+            input_dir (str, optional): path to directory contains input files
+            visname (List[str], optional): list of names of MeadurementSets
+            expectedoutput_file (str, optional): path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
                                  also specified.
-            expectedoutput_dir: path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file
+            output_dir (str, optional): path to directory to output. If None, it sets visname
+            project_id (str, optional): project ID; included at the beginning of the output_dir if provided
+            expectedoutput_dir (str, optional): path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file 
                                 is specified.
-            output_dir: path to directory to output. If None, it sets visname
         """
         self.recipe = recipe
         self.input_dir = input_dir
@@ -54,25 +57,11 @@ class PipelineRegression(object):
         if expectedoutput_file: 
             self.expectedoutput_file = casa_tools.utils.resolve(expectedoutput_file)
         else:
-            # Find the newest reference file in expectedoutput_dir and use that.
+            # Find the reference file in expectedoutput_dir that matches the current CASA version and use that.
             if expectedoutput_dir:
                 reference_data_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
                 if reference_data_files:
-                    # Pick the reference result file with the highest PL version number
-                    def pipeline_version_from_refdata(file_name): 
-                        regex_pattern = re.compile('.*pipeline-(.*\d).*results.txt')
-                        match = regex_pattern.match(file_name)
-                        if match:
-                            version_string = match.group(1)
-                            try:
-                                return version.parse(version_string)
-                            except:
-                                LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
-                                return version.parse("0.0")
-                        else: 
-                            LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
-                            return version.parse("0.0")
-                    self.expectedoutput_file = max(reference_data_files, key=pipeline_version_from_refdata)
+                    self.expectedoutput_file = self._pick_results_file(reference_data_files=reference_data_files)
                     LOG.info("Using {} for the reference value file.".format(self.expectedoutput_file))
                 else: 
                     LOG.warning("No reference file found in {}. Test will fail.".format(expectedoutput_dir))
@@ -96,12 +85,90 @@ class PipelineRegression(object):
         if not self.compare_only:
             self.__initialize_working_folder()
 
-
     def __initialize_working_folder(self):
         """Initialize a root folder for task execution."""
         if os.path.isdir(self.output_dir):
             shutil.rmtree(self.output_dir)
         os.mkdir(self.output_dir)
+
+    def _pick_results_file(self, reference_data_files):
+        """Picks results file based on the active CASA version from the given list of file_names
+
+        Args:
+            reference_data_files (list): results filenames to analyze for usage
+        Returns:
+            str: results filename determined to be most relevant for comparison
+        """
+        reference_dict = {}
+
+        for file_name in reference_data_files:
+            regex_casa_pattern = re.compile(r'.*casa-([\d.]+-\d+)')
+            regex_pipeline_pattern = re.compile(r'.*pipeline-(.*\d)')
+            casa_match = regex_casa_pattern.match(file_name)
+            pipeline_match = regex_pipeline_pattern.match(file_name)
+
+            if all([casa_match, pipeline_match]):
+                try:
+                    reference_dict[file_name] = {
+                        "CASA version": version.parse(casa_match.group(1)),
+                        "Pipeline version": version.parse(pipeline_match.group(1))
+                        }
+                except:
+                    LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
+            else:
+                LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
+
+        return self._results_file_heuristics(reference_dict=reference_dict)
+
+    def _results_file_heuristics(self, reference_dict):
+        """Analyze the relevant results files and pick the one that matches the closest to the current running versions
+
+        Current heuristics will reject any file with CASA or Pipeline versions that exceed the current running versions
+
+        Args:
+            reference_dict (dict): filenames as keys and dictionaries as values containing CASA and Pipeline versions 
+                extracted from the filenames
+        Returns:
+            best_match (str): results filename determined to be most relevant for comparison
+        """
+        current_versions = {}
+        current_versions["CASA version"] = version.parse(casa_version_string)
+        pipeline_revision_pattern = re.compile(r'([\d.]+)')
+        current_versions["Pipeline version"] = version.parse(pipeline_revision_pattern.match(pipeline_revision).group(1))
+
+        best_match = None
+        best_versions = None
+
+        for filename, versions in reference_dict.items():
+            # Filter out files that exceed any of the current software versions
+            if any(version > current_versions[software]
+                   for software, version in versions.items()):
+                continue  # Skip this file
+
+            if best_match is None:
+                best_match = filename
+                best_versions = versions
+                continue
+
+            # Compare against the current best, determining if it is a better match
+            better_match = False
+            for software in current_versions:
+                version = versions[software]
+                best_version = best_versions[software]
+                running_version = current_versions[software]
+
+                # Prefer a file with a version closer to, but not exceeding, the running version
+                if version > best_version and version <= running_version:
+                    better_match = True
+                elif version < best_version:  # If it's worse for any software, reject it
+                    better_match = False
+                    break
+
+        if better_match:
+            best_match = filename
+            best_versions = versions
+
+        return best_match
 
 
     def __sanitize_regression_string(self, instring: str) -> Tuple:
@@ -140,7 +207,6 @@ class PipelineRegression(object):
             tolerance = None
 
         return keystring, value, tolerance
-
 
     def run(self, ppr: Optional[str] = None, telescope: str = 'alma',
             default_relative_tolerance: float = 1e-7, omp_num_threads: Optional[int] = None):
