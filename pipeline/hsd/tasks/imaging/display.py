@@ -894,10 +894,13 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_lsb = False
-        # SDImagingResultItem has frequency_channel_reversed attribute
+        # Result Object should have the flag frequency_channel_reversed that shows the frequency channel order.
+        # All images of observations that pipeline could do reduction are either USB or LSB.
         if hasattr(self.inputs.result, 'frequency_channel_reversed'):
             is_lsb = self.inputs.result.frequency_channel_reversed
+        else:
+            raise Exception('Unexpected Result object; It should have the flag '
+                            'frequency_channel_reversed that shows the frequency channel order.')
 
         # retrieve list of the valid feature lines from reduction group.
         # key is antenna and spw id
