@@ -13,7 +13,7 @@ import os
 import platform
 import pytest
 import re
-from packaging import version
+from packaging.version import parse
 from typing import Tuple, Optional, List
 
 import casatasks.private.tec_maps as tec_maps
@@ -110,8 +110,8 @@ class PipelineRegression(object):
             if all([casa_match, pipeline_match]):
                 try:
                     reference_dict[file_name] = {
-                        "CASA version": version.parse(casa_match.group(1)),
-                        "Pipeline version": version.parse(pipeline_match.group(1))
+                        "CASA version": parse(casa_match.group(1)),
+                        "Pipeline version": parse(pipeline_match.group(1))
                         }
                 except:
                     LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
@@ -132,9 +132,9 @@ class PipelineRegression(object):
             best_match (str): results filename determined to be most relevant for comparison
         """
         current_versions = {}
-        current_versions["CASA version"] = version.parse(casa_version_string)
+        current_versions["CASA version"] = parse(casa_version_string)
         pipeline_revision_pattern = re.compile(r'([\d.]+)')
-        current_versions["Pipeline version"] = version.parse(pipeline_revision_pattern.match(pipeline_revision).group(1))
+        current_versions["Pipeline version"] = parse(pipeline_revision_pattern.match(pipeline_revision).group(1))
 
         best_match = None
         best_versions = None
