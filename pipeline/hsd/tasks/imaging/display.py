@@ -887,6 +887,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         Returns:
             List of Plot instances.
+        
+        Raises:
+            Exception: Unexpected Result object.
         """
         colormap = 'color'
         scale_max = False
