@@ -10,6 +10,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
+import pipeline.infrastructure.callibrary as callibrary
 from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -575,22 +576,56 @@ class SingleDishPlotmsLeaf(object):
             return
 
 
+class SingleDishPlotmsSpwComposite(common.LeafComposite):
+    """
+    Create a PlotLeaf for each spw in the caltable or caltables.
+    """
+    # reference to the PlotLeaf class to call
+    leaf_class = SingleDishPlotmsLeaf
+
+    def __init__(self, context, result, calapp: List[callibrary.CalApplication],
+                 xaxis, yaxis, ant='', pol='', **kwargs):
+
+        # Create a dictionary to keep track of which caltables have which spws.
+        dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
+        table_spws = sorted(dict_calapp_spws.keys())
+        children = []
+        for spw in table_spws:
+            plotindex = 0
+            clearplots = True
+            if len(calapp) == 1:
+                clearplots = False
+            children_field = []
+            for cal in calapp:
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, clearplots=clearplots, numfields=len(calapp), **kwargs)
+                children_field.append(item)
+                plotindex += 1
+                clearplots = False
+            children.extend(children_field)
+
+        super().__init__(children)
+
+
+class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
+    """Class to create a PlotLeaf for each antenna and spw."""
+
+    leaf_class = SingleDishPlotmsSpwComposite
+
+    def __init__(self, context, result, calapp: List[callibrary.CalApplication], xaxis, yaxis, pol='', **kwargs):
+
+        dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
+        table_ants = sorted(dict_calapp_ants.keys())
+
+        children = [self.leaf_class(context, result, dict_calapp_ants[ant], xaxis, yaxis,
+                    ant=int(ant), pol=pol, **kwargs)
+                    for ant in table_ants]
+        super(SingleDishPlotmsAntSpwComposite, self).__init__(children)
+
+
 class SingleDishPlotmsAntComposite(common.AntComposite):
     """Class to create a PlotLeaf for each antenna."""
 
     leaf_class = SingleDishPlotmsLeaf
-
-
-class SingleDishPlotmsSpwComposite(sd_display.SDSpwComposite):
-    """Class to create a PlotLeaf for each spw."""
-
-    leaf_class = SingleDishPlotmsLeaf
-
-
-class SingleDishPlotmsAntSpwComposite(sd_display.SDAntSpwComposite):
-    """Class to create a PlotLeaf for each antenna and spw."""
-
-    leaf_class = SingleDishPlotmsSpwComposite
 
 
 class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
