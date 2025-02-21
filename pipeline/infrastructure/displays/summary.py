@@ -1159,7 +1159,7 @@ class SpwIdVsFreqChart(object):
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         if len(targeted_scans) == 0:
-            LOG.warning(f'No TARGET scans found in MS {ms.name}. Cannot plot SPW ID vs. Frequency coverage.')  # PIPE-2284
+            LOG.warning(f'No TARGET scans found in MS {ms.name}. Skip generating SPW ID vs. Frequency coverage plot.')  # PIPE-2284
             return None
         antid = 0
         if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
