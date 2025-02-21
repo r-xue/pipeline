@@ -267,7 +267,7 @@ class PipelineRegression(object):
                     LOG.info(f'Comparing {oldval} to {newval} with a rel. tolerance of {tolerance}')
                     if oldval != pytest.approx(newval, rel=tolerance):
                         diff = oldval-newval
-                        percent_diff = (oldval-newval)/oldval * 100 
+                        percent_diff = (oldval-newval)/oldval * 100 if oldval != 0 else 100
                         if abs(diff) > abs(worst_diff[0]):
                             worst_diff = diff, oldkey
                         if abs(percent_diff) > abs(worst_percent_diff[0]):
@@ -539,7 +539,7 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
         recipe='procedure_hsdn_calimage.xml', input_dir='pl-regressiontest/mg2-20170525142607-180419',
         visname=['mg2-20170525142607-180419.ms'],
         expectedoutput_file=('pl-regressiontest/mg2-20170525142607-180419/' +
-                             'mg2-20170525142607-180419.casa-6.6.1-15-pipeline-2024.0.0.60.results.txt'))
+                             'mg2-20170525142607-180419.casa-6.6.6-6-pipeline-2024.2.0.3.results.txt'))
     pr.run()
 
 
@@ -557,7 +557,7 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     pr = PipelineRegression(
         input_dir=input_dir, visname=['mg2-20170525142607-180419.ms'],
         expectedoutput_file=(f'{input_dir}/' +
-                             'mg2-20170525142607-180419_PPR.casa-6.6.1-15-pipeline-2024.0.0.60.results.txt'),
+                             'mg2-20170525142607-180419_PPR.casa-6.6.6-6-pipeline-2024.2.0.3.results.txt'),
         output_dir='mg2-20170525142607-180419_PPR')
 
     # copy files use restore task into products folder
@@ -637,12 +637,35 @@ def test_13A_537__restore__PPR__regression():
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(input_dir=input_dir,
                             visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                            expectedoutput_file=(f'{input_dir}/' +
+                            expectedoutput_file=(f'{input_dir}/restore/' +
                                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
                             output_dir='13A_537__restore__PPR__regression')
 
     # copy files use restore task into products folder
     input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+    shutil.copytree(input_products, f'{pr.output_dir}/products')
+
+    pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
+
+
+@pytest.mark.vla
+@pytest.mark.fast
+def test_13A_537__restore__post1553__PPR__regression():
+    """Run VLA calibration restoredata regression with a PPR file
+
+    PPR name:                   PPR_13A-537_restore.xml
+    Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
+    """
+    input_dir = 'pl-regressiontest/13A-537'
+    pr = PipelineRegression(input_dir=input_dir,
+                            visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
+                            expectedoutput_file=(f'{input_dir}/restore/' +
+                                            '13A-537.casa-6.6.6-5-pipeline-2025.0.0.10.restore.results.txt'),
+                            output_dir='13A_537__restore__post1553__PPR__regression')
+
+    # copy files use restore task into products folder
+    input_products = casa_tools.utils.resolve(f'{input_dir}/post1553_products')
     shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
