@@ -437,7 +437,7 @@ def get_qa_scores(
 
     # Get summary QA scores
     qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
-    final_scores = summarise_scores(all_scores, ms, qaevalf=qaevalf)
+    final_scores = summarise_scores(all_scores, ms, qaevalf)
 
     return final_scores
 
@@ -599,7 +599,7 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
 def summarise_scores(
         all_scores: List[pqa.QAScore],
         ms: MeasurementSet,
-        qaevalf: Optional[QAScoreEvalFunc] = None
+        qaevalf: QAScoreEvalFunc
 ) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
@@ -661,6 +661,14 @@ def summarise_scores(
                                         metric_units='number of outliers')
             accordion_scores.append(score)
 
+    # Use continuum scoring function.
+    # This needs to happen *before* the banner scores are compiled, as the dimension
+    # erasure of banner scores leads to complaints from the QA evaluation function
+    for fq in accordion_scores:
+        newscore = qaevalf(fq)
+        fq.score = newscore
+        fq.longmsg = qaevalf.long_msg
+        fq.shortmsg = qaevalf.short_msg
     final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     banner_scores = []
@@ -684,17 +692,6 @@ def summarise_scores(
                                                                    sorted(score.applies_to.spw),
                                                                    sorted(score.applies_to.scan)))
         final_scores[destination] = sorted_scores
-
-    # Use continuum scoring function, if one is given.
-    if qaevalf is not None:
-        for location, scores in final_scores.items():
-            if location == WebLogLocation.HIDDEN:
-                continue
-            for fq in scores:
-                newscore = qaevalf(fq)
-                fq.score = newscore
-                fq.longmsg = qaevalf.long_msg
-                fq.shortmsg = qaevalf.short_msg
 
     return final_scores
 
