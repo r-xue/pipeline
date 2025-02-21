@@ -1239,9 +1239,9 @@ class SDChannelMapDisplay(SDImageDisplay):
             idx_1st_vertline = _idx - slice_width * self.NUM_CHANNELMAP + 1
 
         # The indices of all vertical red lines
-        i_idx_vertlines = [j for j in 
-                            [idx_1st_vertline + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
-                           if 0 <= j < self.nchan]
+        # The red lines are drawn at the boundaries of NUM_CHANNELMAP slices, so the number of them is NUM_CHANNELMAP + 1
+        i_idx_vertlines = [idx_1st_vertline + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
+        
         if len(i_idx_vertlines) < 2:
             raise ValueError('Too few red lines: %s' % i_idx_vertlines)
         
