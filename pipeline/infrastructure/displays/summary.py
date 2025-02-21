@@ -2,7 +2,7 @@ import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Generator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator, List, Tuple
 
 import matplotlib
 import matplotlib.dates as dates
@@ -1145,11 +1145,12 @@ class SpwIdVsFreqChart(object):
         for spwid_list in utils.get_spectralspec_to_spwid_map(scan_spws).values():
             yield spwid_list
 
-    def plot(self) -> Optional[logger.Plot]:
+    def plot(self) -> logger.Plot | None:
         """Create the plot.
 
         Returns:
             Plot object
+            Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
         if os.path.exists(filename):
