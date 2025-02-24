@@ -238,6 +238,22 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             ElementTree.SubElement(nx, "Min").text = str(el_min)
             ElementTree.SubElement(nx, "Max").text = str(el_max)
             root.append(nx)
+            target_elevation = {}
+            for sc in science_scans:
+                for field in sc.fields:
+                    if field.name not in target_elevation:
+                        target_elevation[field.name] = []
+                    target_elevation[field.name].append(ms.compute_az_el_to_field(field, sc.start_time)[1])
+                    target_elevation[field.name].append(ms.compute_az_el_to_field(field, sc.end_time)[1])
+
+            nx = ElementTree.Element("TargetElevation")
+            for target, elevation in target_elevation.items():
+                sub_element = ElementTree.SubElement(nx, "Target", name=target)
+                min_sub_element = ElementTree.SubElement(sub_element,"Min")
+                min_sub_element.text = str(min(elevation))
+                max_sub_element = ElementTree.SubElement(sub_element,"Max")
+                max_sub_element.text = str(max(elevation))
+            root.append(nx)
 
             nx = ElementTree.Element("NAntennas")
             nx.text = str(len(ms.antennas))
