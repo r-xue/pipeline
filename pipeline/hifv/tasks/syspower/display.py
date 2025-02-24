@@ -31,9 +31,13 @@ class syspowerBoxChart(object):
         figfile = self.get_figfile(prefix)
 
         antenna_names = [a.name for a in self.ms.antennas]
+        # Positions of the boxes; ticks and limits are automatically set to match.
+        # Defaults to range(1, N+1), where N is the number of boxes to be drawn.
+        # Reference: https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html
+        # Hence, adding 1 to antenna ids
         antenna_ids = [a.id+1 for a in self.ms.antennas]
         # box plot of Pdiff template
-        dat_common = self.dat_common # self.result.dat_common
+        dat_common = self.dat_common  # self.result.dat_common
         clip_sp_template = self.result.clip_sp_template
 
         LOG.info("Creating syspower box chart for {!s}-band...".format(self.band))
