@@ -1,3 +1,4 @@
+import datetime
 import operator
 import os
 import xml.etree.cElementTree as ElementTree
@@ -216,9 +217,19 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nx)
 
             science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-            time_on_science = utils.total_time_on_source(science_scans)
+            target_exposure = {}
+            for sc in science_scans:
+                for field in sc.fields:
+                    if field.name not in target_exposure:
+                        target_exposure[field.name] = datetime.timedelta(0)
+                    for spw in field.valid_spws:
+                        target_exposure[field.name] += sc.exposure_time(spw.id)
+
             nx = ElementTree.Element("TimeOnScienceTarget")
-            nx.text = str(time_on_science)
+            for target, exposure in target_exposure.items():
+                sub_element = ElementTree.SubElement(nx, "Target", name=target)
+                sub_element.text = str(exposure.seconds)
+
             root.append(nx)
 
             el_min = ms.compute_az_el_for_ms(min)[1]
