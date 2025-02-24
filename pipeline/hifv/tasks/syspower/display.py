@@ -31,7 +31,7 @@ class syspowerBoxChart(object):
         figfile = self.get_figfile(prefix)
 
         antenna_names = [a.name for a in self.ms.antennas]
-
+        antenna_ids = [a.id+1 for a in self.ms.antennas]
         # box plot of Pdiff template
         dat_common = self.dat_common # self.result.dat_common
         clip_sp_template = self.result.clip_sp_template
@@ -46,7 +46,7 @@ class syspowerBoxChart(object):
         ant_dat_filtered = [ant_dat[i][~ant_dat.mask[i]] for i in range(dshape[0])]
         plt.boxplot(ant_dat_filtered, whis=10, sym='.')
         plt.xticks(rotation=50)
-        plt.xticks(np.arange(0, len(antenna_names)), antenna_names)
+        plt.xticks(antenna_ids, antenna_names)
         plt.ylim(clip_sp_template[0], clip_sp_template[1])
         plt.ylabel('Template Pdiff   {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
