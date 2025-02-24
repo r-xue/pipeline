@@ -210,6 +210,12 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 for reason in dict_flagged_fraction[msname]:
                     ElementTree.SubElement(nx, reason).text = str(dict_flagged_fraction[msname][reason])
             root.append(nx)
+            dict_field_flagged_fraction = self.get_stwt_flagged_fraction(context)
+            nx = ElementTree.Element("FlaggedFractionSTWT")
+            for target, fraction in dict_field_flagged_fraction.items():
+                sub_element = ElementTree.SubElement(nx, "Target", name=target)
+                sub_element.text = str(fraction)
+            root.append(nx)
 
             time_on_source = utils.total_time_on_source(ms.scans)
             nx = ElementTree.Element("TimeOnSource")
@@ -249,9 +255,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             nx = ElementTree.Element("TargetElevation")
             for target, elevation in target_elevation.items():
                 sub_element = ElementTree.SubElement(nx, "Target", name=target)
-                min_sub_element = ElementTree.SubElement(sub_element,"Min")
+                min_sub_element = ElementTree.SubElement(sub_element, "Min")
                 min_sub_element.text = str(min(elevation))
-                max_sub_element = ElementTree.SubElement(sub_element,"Max")
+                max_sub_element = ElementTree.SubElement(sub_element, "Max")
                 max_sub_element.text = str(max(elevation))
             root.append(nx)
 
@@ -265,20 +271,20 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         """
         return flagged fraction
         """
-        applycal_results = []
+        flagdata_results = []
         output_dict = {}
 
         for result in context.results:
             objresult = result.read()
-            if objresult.taskname == "hifv_applycals":
-                applycal_results = objresult
+            if objresult.taskname == "hifv_flagdata":
+                flagdata_results = objresult
 
-        for applycal_result in applycal_results:
+        for flagdata_result in flagdata_results:
             intents_to_summarise = flagutils.intents_to_summarise(context)
             flag_table_intents = ['TOTAL', 'SCIENCE SPWS']
             flag_table_intents.extend(intents_to_summarise)
             flag_totals = {}
-            flag_totals = utils.dict_merge(flag_totals, flagutils.flags_for_result(applycal_result, context, intents_to_summarise=intents_to_summarise))
+            flag_totals = utils.dict_merge(flag_totals, flagutils.flags_for_result(flagdata_result, context, intents_to_summarise=intents_to_summarise))
             reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
 
             for ms in flag_totals:
@@ -292,6 +298,25 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                                 percentage = new/total * 100
                                 output_dict[ms][reason] = percentage
 
+        return output_dict
+
+    def get_stwt_flagged_fraction(self, context):
+        """
+            return flagged fraction in hifv_statwt task
+        """
+
+        output_dict = {}
+        statwt_results = []
+        for result in context.results:
+            objresult = result.read()
+            if objresult.taskname == "hifv_statwt":
+                statwt_results = objresult
+
+        for statwt_result in statwt_results:
+            for summary in statwt_result.summaries:
+                if summary["name"]=="statwt":
+                    for field in summary["field"]:
+                        output_dict[field] = float(summary["field"][field]['flagged']/summary["field"][field]["total"])*100.0
         return output_dict
 
     def get_project_structure(self, context):
