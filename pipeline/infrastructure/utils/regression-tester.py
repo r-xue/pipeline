@@ -102,21 +102,21 @@ class PipelineRegression(object):
         reference_dict = {}
 
         for file_name in reference_data_files:
-            regex_casa_pattern = re.compile(r'.*casa-([\d.]+-\d+)')
-            regex_pipeline_pattern = re.compile(r'.*pipeline-(.*\d)')
+            regex_casa_pattern = re.compile(r'.*casa-([\d.]+(?:-\d+)?)')
+            regex_pipeline_pattern = re.compile(r'.*pipeline-([\d.]+(?:\.\d+)*\d)(?=\b|[-_]|$)')
             casa_match = regex_casa_pattern.match(file_name)
             pipeline_match = regex_pipeline_pattern.match(file_name)
 
-            if all([casa_match, pipeline_match]):
+            if casa_match and pipeline_match:
                 try:
                     reference_dict[file_name] = {
                         "CASA version": parse(casa_match.group(1)),
                         "Pipeline version": parse(pipeline_match.group(1))
                         }
-                except:
-                    LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
+                except Exception as e:
+                    LOG.warning("Error parsing version from reference file '%s': %s. Skipping.", file_name, e)
             else:
-                LOG.warning("Couldn't determine pipeline version from reference file name. Skipping {}.".format(file_name))
+                LOG.warning("Couldn't determine version from reference file name. Skipping %s.", file_name)
 
         return self._results_file_heuristics(reference_dict=reference_dict)
 
@@ -164,9 +164,9 @@ class PipelineRegression(object):
                     better_match = False
                     break
 
-        if better_match:
-            best_match = filename
-            best_versions = versions
+            if better_match:
+                best_match = filename
+                best_versions = versions
 
         return best_match
 
