@@ -21,11 +21,16 @@ ORIGIN_DB = 'DB'
 
 def get_valid_url(env_var, default):
     """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
-    url = os.getenv(env_var, default)
-    if not utils.validate_url(url):
-        LOG.warning('%s %s misconfigured.', env_var, url)
-        LOG.info('Defaulting to %s.', default)
+    url = os.getenv(env_var)
+    if not url:
+        url = default
+        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
         return default
+    if not utils.validate_url(url):
+        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+        LOG.info('Switching to default %s.', default)
+        return default
+    LOG.info('Environment variable %s set to URL %s for ALMA flux service.', env_var, url)
     return url
 
 
