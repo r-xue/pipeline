@@ -518,6 +518,23 @@ class MeasurementSetReader(object):
 
         return (acs_software_version, acs_software_build_version)
 
+    @staticmethod
+    def get_history(ms: domain.MeasurementSet) -> numpy.ndarray:
+        """
+        Retrieve the MS history.
+
+        Returns:
+            A numpy array with the history messages.
+        """
+        try:
+            history_table = os.path.join(ms.name, 'HISTORY')
+            with casa_tools.TableReader(history_table) as ht:
+                msgs = ht.getcol('MESSAGE')
+            return msgs
+        except:
+            LOG.info(f"Unable to read HISTORY table for MS {_get_ms_basename(ms)}")
+            return None
+
 
 class SpectralWindowTable(object):
     @staticmethod
