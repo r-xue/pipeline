@@ -206,14 +206,14 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
             nx = ElementTree.Element("FlaggedFraction")
             dict_flagged_fraction = self.get_flagged_fraction(context)
+            nx_flagdata = ElementTree.SubElement(nx, "Flagdata")
             for msname in dict_flagged_fraction:
                 for reason in dict_flagged_fraction[msname]:
-                    ElementTree.SubElement(nx, reason).text = str(dict_flagged_fraction[msname][reason])
-            root.append(nx)
+                    ElementTree.SubElement(nx_flagdata, reason).text = str(dict_flagged_fraction[msname][reason])
             dict_field_flagged_fraction = self.get_stwt_flagged_fraction(context)
-            nx = ElementTree.Element("FlaggedFractionSTWT")
+            nx_statwt = ElementTree.SubElement(nx, "StatWt")
             for target, fraction in dict_field_flagged_fraction.items():
-                sub_element = ElementTree.SubElement(nx, "Target", name=target)
+                sub_element = ElementTree.SubElement(nx_statwt, "Target", name=target)
                 sub_element.text = str(fraction)
             root.append(nx)
 
@@ -285,8 +285,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             flag_table_intents.extend(intents_to_summarise)
             flag_totals = {}
             flag_totals = utils.dict_merge(flag_totals, flagutils.flags_for_result(flagdata_result, context, intents_to_summarise=intents_to_summarise))
-            reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before', 'template']
-
+            reasons_to_export = ['online', 'shadow', 'qa0', 'qa2', 'before',
+                                 'template', 'intents', 'autocorr', 'edgespw',
+                                 'clip', 'quack']
             for ms in flag_totals:
                 output_dict[ms] = {}
                 for reason in flag_totals[ms]:
@@ -297,6 +298,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                                 total = float(flag_totals[ms][reason][intent][1])
                                 percentage = new/total * 100
                                 output_dict[ms][reason] = percentage
+
 
         return output_dict
 
