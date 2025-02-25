@@ -336,7 +336,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             caltable: Name of the caltable
 
         Returns:
-            Solution interval in seconds. Return value can be None
+            Solution interval in seconds. Return value will be None
             if no valid caltable rows exist.
         """
         with casa_tools.TableReader(caltable) as tb:
