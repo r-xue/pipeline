@@ -4,7 +4,7 @@ from . import utils
 
 
 @utils.cli_wrapper
-def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
+def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None):
 
     """
@@ -18,7 +18,8 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     The current version of the task exports the following products
 
     - an XML file containing the pipeline processing request
-    - a tar file per ASDM / MS containing the final flags version
+    - a tar file per ASDM / MS containing the final flags version (exportmses=False)
+    - or, a tar file or MeasurementSets per EB (exportmses=True)
     - a text file per ASDM / MS containing the final calibration apply list
     - a FITS image for each selected calibrator source image
     - a FITS image for each selected science target source image
@@ -43,6 +44,7 @@ def h_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=
     exportmses            Export MeasurementSets defined in vis instead of flags,
                           caltables, and calibration instructions.
                           example: exportmses = True
+    tarms                 Tar final MeasurementSets, default: True                        
     pprfile               Name of the pipeline processing request to be exported. Defaults
                           to a file matching the template 'PPR_*.xml'.
                           example: pprfile=['PPR_GRB021004.xml']

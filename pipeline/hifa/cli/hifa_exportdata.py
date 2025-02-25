@@ -4,7 +4,7 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, pprfile=None, calintents=None,
+def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportmses=None, tarms=None, pprfile=None, calintents=None,
                     calimages=None, targetimages=None, products_dir=None):
     """
     hifa_exportdata ---- Prepare interferometry data for export
@@ -54,6 +54,7 @@ def hifa_exportdata(vis=None, session=None, imaging_products_only=None, exportms
     exportmses
                           Export the final MeasurementSets instead of the final flags,
                           calibration tables, and calibration instructions.
+    tarms                 Tar final MeasurementSets, default: True                          
     pprfile
                           Name of the pipeline processing request to be exported. Defaults
                           to a file matching the template 'PPR_*.xml'.

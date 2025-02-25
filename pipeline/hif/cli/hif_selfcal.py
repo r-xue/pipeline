@@ -4,12 +4,13 @@ import pipeline.h.cli.utils as utils
 
 
 @utils.cli_wrapper
-def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
-                apply=None, recal=None, refantignore=None, restore_resources=None,
+def hif_selfcal(vis=None, field=None, spw=None, contfile=None, imsize=None, cell=None,
+                apply=None, recal=None, restore_only=None, refantignore=None, restore_resources=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
                 dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
+                usermask=None, usermodel=None, allow_wproject=None,
                 parallel=None):
     """
     hif_selfcal  ---- Determine and apply self-calibration with the science target data
@@ -31,11 +32,17 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             "": Images will be computed for all science spectral windows.
     contfile                Name of file to specify line-free frequency ranges for selfcal continuum imaging.
                             default="cont.dat"
+    imsize                  Image X and Y size in pixels or PB level for single fields.
+    cell                    Image X and Y cell sizes                  
     apply                   Apply final selfcal solutions back to the input MeasurementSets.
                             default = True
     recal                   Always re-do self-calibration even solutions/caltables are found in the Pipeline
                             context or json restore file.
                             default = False
+    restore_only            Only attempt to apply pre-existing selfcal calibration tables and would not run 
+                            the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
+                            default = False
+                            note: restore_only will take precedence over recal=True/False
     refantignore            string list to be ignored as reference antennas.
                             example:  refantignore='ea02,ea03'
     restore_resources       Path to the restore resources from a standard run of hif_selfcal.
@@ -80,6 +87,9 @@ def hif_selfcal(vis=None, field=None, spw=None, contfile=None,
                             if True, the gaincal combine parameter will be set to 'scan,spw'; if False,
                             the gaincal combine parameter will be set to 'scan'.
                             default=False
+    usermask                User mask to be used for self-calibration imaging.
+    usermodel               User model to be used for self-calibration imaging.
+    allow_wproject          Allow the wproject heuristics for imaging.
     parallel                Use MPI cluster where possible, default='automatic'.
                             options: 'automatic', 'true', 'false', True, False
 
