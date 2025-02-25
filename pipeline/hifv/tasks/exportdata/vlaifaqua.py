@@ -73,6 +73,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         report.append(self.get_science_spws(context))
         report.append(self.get_scans(context))
         report.append(self.get_observation_summary(context))
+        report.append(self.get_sensitivity(context))
         return report
 
     def get_processing_environment(self):
@@ -298,8 +299,6 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                                 total = float(flag_totals[ms][reason][intent][1])
                                 percentage = new/total * 100
                                 output_dict[ms][reason] = percentage
-
-
         return output_dict
 
     def get_stwt_flagged_fraction(self, context):
@@ -316,7 +315,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
         for statwt_result in statwt_results:
             for summary in statwt_result.summaries:
-                if summary["name"]=="statwt":
+                if summary["name"] == "statwt":
                     for field in summary["field"]:
                         output_dict[field] = float(summary["field"][field]['flagged']/summary["field"][field]["total"])*100.0
         return output_dict
@@ -362,6 +361,59 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             xml_root.extend(sensitivity_xml)
 
         return xml_root
+
+    def get_sensitivity(self, context):
+        """
+            return xml for image sensitity
+        """
+
+        root = ElementTree.Element("Imaging")
+
+        for result in context.results:
+            topic = result.read()
+            if topic.taskname == "hif_makeimages":
+                sensitivities = topic.sensitivities_for_aqua
+                for sensitity in sensitivities:
+                    nx = ElementTree.Element("sensitity")
+                    ElementTree.SubElement(nx, "Array").text = str(sensitity['array'])
+                    ElementTree.SubElement(nx, "intent").text = str(sensitity['intent'])
+                    ElementTree.SubElement(nx, "field").text = str(sensitity['field'])
+                    ElementTree.SubElement(nx, "spw").text = str(sensitity['spw'])
+                    ElementTree.SubElement(nx, "is_representative").text = str(sensitity['is_representative'])
+                    ElementTree.SubElement(nx, "bwmode").text = str(sensitity['bwmode'])
+                    ElementTree.SubElement(nx, "cell").text = str(sensitity['cell'])
+                    ElementTree.SubElement(nx, "robust").text = str(sensitity['robust'])
+                    nx_bandwidth = ElementTree.SubElement(nx, "bandwidth")
+                    ElementTree.SubElement(nx_bandwidth, "unit").text = str(sensitity['bandwidth']["unit"])
+                    ElementTree.SubElement(nx_bandwidth, "value").text = str(sensitity['bandwidth']["value"])
+
+                    nx_beam = ElementTree.SubElement(nx, "beam")
+                    nx_beam_major = ElementTree.SubElement(nx_beam, "major")
+
+                    ElementTree.SubElement(nx_beam_major, "unit").text = str(sensitity['beam']["major"]["unit"])
+                    ElementTree.SubElement(nx_beam_major, "value").text = str(sensitity['beam']["major"]["value"])
+                    nx_beam_minor = ElementTree.SubElement(nx_beam, "minor")
+                    ElementTree.SubElement(nx_beam_minor, "unit").text = str(sensitity['beam']["minor"]["unit"])
+                    ElementTree.SubElement(nx_beam_minor, "value").text = str(sensitity['beam']["minor"]["value"])
+
+                    nx_sensitivity = ElementTree.SubElement(nx, "sensitivity")
+                    ElementTree.SubElement(nx_sensitivity, "unit").text = str(sensitity['sensitivity']["unit"])
+                    ElementTree.SubElement(nx_sensitivity, "value").text = str(sensitity['sensitivity']["value"])
+
+                    nx_effective_bw = ElementTree.SubElement(nx, "effective_bw")
+                    ElementTree.SubElement(nx_effective_bw, "unit").text = str(sensitity['sensitivity']["unit"])
+                    ElementTree.SubElement(nx_effective_bw, "value").text = str(sensitity['sensitivity']["value"])
+
+                    nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min")
+                    ElementTree.SubElement(nx_pbcor_image_min, "unit").text = str(sensitity['sensitivity']["unit"])
+                    ElementTree.SubElement(nx_pbcor_image_min, "value").text = str(sensitity['sensitivity']["value"])
+
+                    nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max")
+                    ElementTree.SubElement(nx_pbcor_image_max, "unit").text = str(sensitity['sensitivity']["unit"])
+                    ElementTree.SubElement(nx_pbcor_image_max, "value").text = str(sensitity['sensitivity']["value"])
+                    root.append(nx)
+
+        return root
 
     def get_imaging_topic(self, context, topic_results):
         """
