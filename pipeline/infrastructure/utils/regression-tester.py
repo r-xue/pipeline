@@ -109,14 +109,23 @@ class PipelineRegression(object):
 
             if casa_match and pipeline_match:
                 try:
+                    # remove '-' from version number in the CASA version for proper comparison
+                    casa_version = casa_match.group(1).replace("-", ".")
                     reference_dict[file_name] = {
-                        "CASA version": parse(casa_match.group(1)),
+                        "CASA version": parse(casa_version),
                         "Pipeline version": parse(pipeline_match.group(1))
                         }
                 except Exception as e:
                     LOG.warning("Error parsing version from reference file '%s': %s. Skipping.", file_name, e)
             else:
-                LOG.warning("Couldn't determine version from reference file name. Skipping %s.", file_name)
+                # Determine which one(s) failed to match
+                missing_parts = []
+                if not casa_match:
+                    missing_parts.append("CASA version")
+                if not pipeline_match:
+                    missing_parts.append("Pipeline version")
+
+                LOG.warning("Couldn't determine {} from reference file '{}'. Skipping.".format(" or ".join(missing_parts), file_name))
 
         return self._results_file_heuristics(reference_dict=reference_dict)
 
@@ -169,7 +178,6 @@ class PipelineRegression(object):
                 best_versions = versions
 
         return best_match
-
 
     def __sanitize_regression_string(self, instring: str) -> Tuple:
         """Sanitize to get numeric values, remove newline chars and change to float.
