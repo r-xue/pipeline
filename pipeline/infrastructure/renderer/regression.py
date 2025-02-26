@@ -997,30 +997,45 @@ def get_prefix(result:Results, task:StandardTaskTemplate) -> str:
     return prefix
 
 
-def extract_qa_score_regression(prefix:str, result:Results) -> OrderedDict:
-    """
-    Create QA strings are properties of result, and insert them to OrderedDict.
+def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
+    """Extracts QA scores from a TaskResults object and organizes them into a structured OrderedDict.
 
     Args:
-        prefix: Prefix string
-        result: Result object
+        prefix (str): Base string to prepend to each key in the output dictionary.
+        result (Results): TaskResults Object containing QA pool data to be processed.
 
     Returns:
-        OrderedDict
+        OrderedDict: Dictionary with formatted keys mapping to metric scores and values.
+            Keys follow the pattern: {prefix}.field_{field_id}.spw_{spw_id}.qa.{metric|score}.{metric_name}
+
+    Examples:
+        >>> result = Results(...)  # Assuming Results object with qa.pool
+        >>> scores = extract_qa_score_regression("test", result)
+        >>> # Resulting keys might look like: "test.field_data.spw_0.qa.metric.accuracy"
     """
+    # Initialize an ordered dictionary to maintain insertion order
     d = OrderedDict()
+
+    # Iterate through each QA score in the result's pool
     for qa_score in result.qa.pool:
+        # Extract and clean metric name for use in keys
         metric_name = qa_score.origin.metric_name
         # Remove all non-word characters (everything except numbers and letters)
         metric_name = re.sub(r"[^\w\s]", '', metric_name)
         # Replace all runs of whitespace with a single dash
         metric_name = re.sub(r"\s+", '-', metric_name)
 
-        metric_score = qa_score.origin.metric_score
-        score_value = qa_score.score
+        metric_score, score_value = qa_score.origin.metric_score, qa_score.score
 
-        d['{}.qa.metric.{}'.format(prefix, metric_name)] = metric_score
-        d['{}.qa.score.{}'.format(prefix, metric_name)] = score_value
+        data_select = "".join(
+            f".{key}_{value}"
+            for key, value in [("field", qa_score.origin.metric_field), ("spw", qa_score.origin.metric_spw)]
+            if value is not None  # Only include if value exists
+        )
+
+        # Add metric score and value to dictionary with formatted keys
+        d.update({f"{prefix}{data_select}.qa.metric.{metric_name}": metric_score,
+                  f"{prefix}{data_select}.qa.score.{metric_name}": score_value})
     return d
 
 

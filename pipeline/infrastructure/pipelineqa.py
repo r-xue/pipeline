@@ -25,7 +25,7 @@ import abc
 import collections
 import enum
 import operator
-from typing import Optional, Set, List
+from typing import Optional, Set, List, NamedTuple
 
 from . import eventbus
 from . import logging
@@ -34,12 +34,16 @@ LOG = logging.get_logger(__name__)
 
 
 # QAOrigin holds information to help understand how and from where the QA scores are derived
-QAOrigin = collections.namedtuple('QAOrigin', 'metric_name metric_score metric_units')
+class QAOrigin(NamedTuple):
+    metric_name: str = "Unknown metric"
+    metric_score: float | str = 'N/A'
+    metric_units: str = ''
+    metric_field: Optional[str] = None
+    metric_spw: Optional[str] = None
+
 
 # Default origin for QAScores that do not define their own origin
-NULL_ORIGIN = QAOrigin(metric_name='Unknown metric',
-                       metric_score='N/A',
-                       metric_units='')
+NULL_ORIGIN = QAOrigin()
 
 
 class WebLogLocation(enum.Enum):
