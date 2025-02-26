@@ -325,14 +325,12 @@ class Setjy(basetask.StandardTaskTemplate):
                         (inputs.field, inputs.ms.basename, inputs.intent))
             return result
 
-        # Get the spectral windows for the spw inputs argument
-        spws = [spw for spw in inputs.ms.get_spectral_windows(inputs.spw)]
+        # Preserve original input SpW selection.
+        orig_spw = inputs.spw
 
         # loop over fields so that we can use Setjy for sources with different
         # standards
-
         setjy_dicts = []
-
         for field_name in utils.safe_split(inputs.field):
             jobs = []
 
@@ -349,10 +347,20 @@ class Setjy(basetask.StandardTaskTemplate):
                 field_is_unique = True if len(fields) == 1 else False
 
             for field in fields:
+                # Determine the valid science spectral windows based on current
+                # field. PIPE-2458: in case of Band-to-Band observations,
+                # consider the correct SpWs that are appropriate for PHASE and
+                # CHECK intent fields.
+                if inputs.ms.is_band_to_band and 'PHASE' in field.intents:
+                    spws = [spw for spw in
+                            inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINREF')]
+                elif inputs.ms.is_band_to_band and 'CHECK' in field.intents:
+                    spws = [spw for spw in
+                            inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINSRC')]
+                else:
+                    spws = [spw for spw in inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True)]
 
-                # Determine the valid spws for that field
-                valid_spwids = [spw.id for spw in field.valid_spws]
-
+                # Determine field identifier (name if unique, otherwise ID).
                 field_identifier = field.name if field_is_unique else str(field.id)
                 # We're specifying field PLUS intent, so we're unlikely to
                 # have duplicate data selections. We ensure no duplicate
@@ -361,11 +369,14 @@ class Setjy(basetask.StandardTaskTemplate):
                 # is time dependent.
                 inputs.field = field_identifier
 
+                # Create separate setjy job for each valid SpW for current field.
                 for spw in spws:
-
-                    # Skip invalid spws
-                    if spw.id not in valid_spwids:
-                        continue
+                    # Override spw in inputs to current SpW. This is necessary
+                    # both for creating the SetJy job and for the subsequent
+                    # step to add the flux density to the result.measurements,
+                    # by ensuring that inputs.refspectra returns only the flux
+                    # for the relevant SpW (instead of a list of fluxes for all
+                    # SpWs).
                     inputs.spw = spw.id
 
                     orig_intent = inputs.intent
@@ -387,6 +398,10 @@ class Setjy(basetask.StandardTaskTemplate):
                     # Flux densities coming from a non-lookup are added to the
                     # results so that user-provided calibrator fluxes are
                     # committed back to the domain objects
+                    # NOTE: the following block expects inputs.refspectra to
+                    # return the reference flux values for a single SpW, and
+                    # therefore relies on inputs.spw being set to a single SpW
+                    # ID.
                     if inputs.refspectra[1] != -1:
                         try:
                             (I, Q, U, V) = inputs.refspectra[1]
