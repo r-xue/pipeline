@@ -101,7 +101,7 @@ def score_all_scans(
                 wrapper = mswrapper.MSWrapper(ms, scan.id, spw.id)
                 wrapper.load(saved_visibility)
             else:
-                wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.basename, int(scan.id), spw.id, memory_gb)
+                wrapper = mswrapper.MSWrapper.create_averages_from_ms(ms.name, int(scan.id), spw.id, memory_gb)
                 if export_mswrappers:
                     wrapper.save(saved_visibility)
 
