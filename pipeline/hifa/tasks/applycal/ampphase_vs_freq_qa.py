@@ -1,5 +1,4 @@
 import collections
-import copy
 import functools
 import operator
 import os
@@ -323,6 +322,7 @@ def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
         outliers.extend(scores)
 
     return outliers
+
 
 def get_median_fit(all_fits, accessor):
     """
@@ -779,85 +779,6 @@ def robust_stats(a):
     mu = np.median(a)
     sigma = (1.0 / bn) * madfactor * np.median(np.abs(a - mu))
     return mu, sigma
-
-
-def consolidate_data_selections(outliers):
-    """
-    Consolidate a list of Outliers into a smaller set of equivalent Outliers
-    by consolidating their data selection arguments.
-
-    This function works by merging Outliers that have the same list of
-    reasons.
-
-    :param outliers: an iterable of Outliers
-    :return: an equivalent consolidated list of Outliers
-    """
-    # dict mapping an reason hash to the reason itself:
-    hash_to_reason = {}
-    # dict mapping from object hash to corresponding list of Outliers
-    reason_hash_to_outliers = collections.defaultdict(list)
-
-    # create our maps of hashes, which we need to test for overlapping data
-    # selections
-    for outlier in outliers:
-        # create a tuple, as lists are not hashable
-        reason_hash = tuple([hash(reason) for reason in outlier.reason])
-        reason_hash_to_outliers[reason_hash].append(outlier)
-
-        if reason_hash not in hash_to_reason:
-            hash_to_reason[reason_hash] = outlier.reason
-
-    # dict that maps holds accepted data selections and their reasons
-    accepted = {}
-    for reason_hash, outliers in reason_hash_to_outliers.items():
-        # assemble the other outliers which we will compare for conflicts
-        other_outliers = []
-        for v in [v for k, v in reason_hash_to_outliers.items() if k != reason_hash]:
-            other_outliers.extend(v)
-
-        for outlier_to_merge in outliers:
-            if reason_hash not in accepted:
-                # first time round for this outlier, therefore it can always
-                # be added as there will be nothing to merge
-                accepted[reason_hash] = [copy.deepcopy(outlier_to_merge)]
-                continue
-
-            for existing_outlier in accepted[reason_hash]:
-                proposed_outlier = copy.deepcopy(existing_outlier)
-
-                proposed_outlier.vis.update(outlier_to_merge.vis)
-                proposed_outlier.intent.update(outlier_to_merge.intent)
-                proposed_outlier.spw.update(outlier_to_merge.spw)
-                proposed_outlier.scan.update(outlier_to_merge.scan)
-                proposed_outlier.ant.update(outlier_to_merge.ant)
-                proposed_outlier.pol.update(outlier_to_merge.pol)
-
-                # if the merged outlier does not conflict with any of the
-                # explicitly registered outliers that require a different
-                # reason, then it is safe to add the merged outlier and
-                # discard the unmerged data selection
-                if not any((data_selection_contains(proposed_outlier, other) for other in other_outliers)):
-                    LOG.trace('No conflicting outlier detected')
-                    LOG.trace('Accepting merged outlier: {!s}'.format(proposed_outlier))
-                    LOG.trace('Discarding unmerged outlier: {!s}'.format(outlier_to_merge))
-                    accepted[reason_hash] = [proposed_outlier]
-                    break
-
-            else:
-                # we get here if all of the proposed outliers conflict with
-                # the outlier in hand. In this case, it should be added as it
-                # stands, completely unaltered.
-                LOG.trace('Merged outlier conflicts with other registrations')
-                LOG.trace('Abandoning proposed outlier: {!s}'.format(proposed_outlier))
-                LOG.trace('Appending new unmerged outlier: {!s}'.format(outlier_to_merge))
-                unmergeable = outlier_to_merge
-                accepted[reason_hash].append(unmergeable)
-
-    # dict values are lists, which we need to flatten into a single list
-    result = []
-    for l in accepted.values():
-        result.extend(l)
-    return result
 
 
 def data_selection_contains(proposed, ds_args):
