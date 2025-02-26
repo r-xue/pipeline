@@ -298,13 +298,13 @@ class ImportData(basetask.StandardTaskTemplate):
             else:
                 # Check if there is data type information in the MS via the HISTORY table
                 ms_history = MeasurementSetReader.get_history(ms)
-                datatype_per_column, datatypes_per_source_and_spw = importdata_heuristics.get_ms_datatypes_from_history(ms_history)
-                if datatype_per_column:
+                data_type_per_column, data_types_per_source_and_spw = importdata_heuristics.get_ms_data_types_from_history(ms_history)
+                if data_type_per_column:
                     # Set the lookup dictionaries without writing new HISTORY entries as
                     # they already exist. Might want to use a dedicated method rather than
                     # manipulating attributes directly.
-                    ms.data_column = datatype_per_column
-                    ms.datatypes_per_source_and_spw = datatypes_per_source_and_spw
+                    ms.data_column = data_type_per_column
+                    ms.data_types_per_source_and_spw = data_types_per_source_and_spw
                 else:
                     # Fallback default datatypes
                     data_types = {'DATA': DataType.RAW}
