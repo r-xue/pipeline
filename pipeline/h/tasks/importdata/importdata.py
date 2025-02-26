@@ -10,6 +10,7 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.tablereader import MeasurementSetReader
+import pipeline.domain as domain
 from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -245,6 +246,8 @@ class ImportData(basetask.StandardTaskTemplate):
                 if correcteddatacolumn_name is not None:
                     # Default to standard calibrated IF MS if the corrected data column is present
                     data_types['CORRECTED'] = DataType.REGCAL_CONTLINE_ALL
+
+                self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
             else:
                 # Parse user defined datatype information via task parameter
 
@@ -297,14 +300,7 @@ class ImportData(basetask.StandardTaskTemplate):
                     LOG.error(msg)
                     raise ValueError(msg)
 
-            # Set data_type for DATA and CORRECTED_DATA columns if specified
-            if 'DATA' in data_types:
-                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].name}')
-                ms.set_data_column(data_types['DATA'], datacolumn_name)
-
-            if 'CORRECTED' in data_types:
-                ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name)
-                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].name}')
+                self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
@@ -478,10 +474,21 @@ class ImportData(basetask.StandardTaskTemplate):
                 tb.putcolkeywords('DIRECTION', x)
                 LOG.info(basename + ': changing coords from J2000 to ICRS in the SOURCE table')
 
+    def _set_column_data_types(self, ms: domain.MeasurementSet, data_types: dict, datacolumn_name: str, correcteddatacolumn_name: str) -> None:
+
+        # Set data_type for DATA and CORRECTED_DATA columns if specified
+        if 'DATA' in data_types:
+            LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].name}')
+            ms.set_data_column(data_types['DATA'], datacolumn_name)
+
+        if 'CORRECTED' in data_types:
+            ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name)
+            LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].name}')
+
 
 def get_datacolumn_name(msname: str) -> Optional[str]:
     """
-    Return a name of data column in MeasurementSet (MS).
+    Return a name of the data column in a MeasurementSet (MS).
 
     Args:
         msname: A path of MS
@@ -495,7 +502,7 @@ def get_datacolumn_name(msname: str) -> Optional[str]:
 
 def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
     """
-    Return name of corrected data column in MeasurementSet (MS).
+    Return name of the corrected data column in a MeasurementSet (MS).
 
     Args:
         msname: A path of MS
