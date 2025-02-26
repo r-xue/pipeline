@@ -1437,7 +1437,7 @@ class MeasurementSet(object):
         # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
         with casa_tools.MSReader(self.name) as ms:
             ms.writehistory(f'datatype_per_column = {dict((k.name, v) for k, v in self.data_column.items())}', origin='Datatype Handler')
-            ms.writehistory(f'datatype_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}', origin='Datatype Handler')
+            ms.writehistory(f'datatypes_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}', origin='Datatype Handler')
 
     def get_data_column(self, dtype: DataType, source: Optional[str] = None, spw: Optional[str] = None) -> Optional[str]:
         """

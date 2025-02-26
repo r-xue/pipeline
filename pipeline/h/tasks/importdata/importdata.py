@@ -16,6 +16,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline import environment
+from pipeline.h.heuristics import importdata as importdata_heuristics
 from . import fluxes
 
 __all__ = [
@@ -240,15 +241,7 @@ class ImportData(basetask.StandardTaskTemplate):
 
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
-            if inputs.datacolumns in (None, {}):
-                # Fallback default datatypes
-                data_types = {'DATA': DataType.RAW}
-                if correcteddatacolumn_name is not None:
-                    # Default to standard calibrated IF MS if the corrected data column is present
-                    data_types['CORRECTED'] = DataType.REGCAL_CONTLINE_ALL
-
-                self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
-            else:
+            if inputs.datacolumns not in (None, {}):
                 # Parse user defined datatype information via task parameter
 
                 data_types = {}
@@ -301,6 +294,25 @@ class ImportData(basetask.StandardTaskTemplate):
                     raise ValueError(msg)
 
                 self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
+
+            else:
+                # Check if there is data type information in the MS via the HISTORY table
+                ms_history = MeasurementSetReader.get_history(ms)
+                datatype_per_column, datatypes_per_source_and_spw = importdata_heuristics.get_ms_datatypes_from_history(ms_history)
+                if datatype_per_column:
+                    # Set the lookup dictionaries without writing new HISTORY entries as
+                    # they already exist. Might want to use a dedicated method rather than
+                    # manipulating attributes directly.
+                    ms.data_column = datatype_per_column
+                    ms.datatypes_per_source_and_spw = datatypes_per_source_and_spw
+                else:
+                    # Fallback default datatypes
+                    data_types = {'DATA': DataType.RAW}
+                    if correcteddatacolumn_name is not None:
+                        # Default to standard calibrated IF MS if the corrected data column is present
+                        data_types['CORRECTED'] = DataType.REGCAL_CONTLINE_ALL
+
+                    self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin

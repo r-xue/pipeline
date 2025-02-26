@@ -16,8 +16,8 @@ def get_ms_datatypes_from_history(msgs: numpy.ndarray) -> (dict, dict):
     # Define some dictionaries representing the datatypes as strings
     datatype_per_column_strtypes = {}
     found_datatype_per_column = False
-    datatype_per_source_and_spw_strtypes = {}
-    found_datatype_per_source_and_spw = False
+    datatypes_per_source_and_spw_strtypes = {}
+    found_datatypes_per_source_and_spw = False
 
     # Search backwards from latest messages since the datatype information is
     # written multiple times as new history entries throughout the pipeline processing.
@@ -25,10 +25,10 @@ def get_ms_datatypes_from_history(msgs: numpy.ndarray) -> (dict, dict):
         if not found_datatype_per_column and 'datatype_per_column' in item:
             datatype_per_column_strtypes = eval(item.split('=')[1])
             found_datatype_per_column = True
-        if not found_datatype_per_source_and_spw and 'datatype_per_source_and_spw' in item:
-            datatype_per_source_and_spw_strtypes = eval(item.split('=')[1])
-            found_datatype_per_source_and_spw = True
-        if found_datatype_per_column and found_datatype_per_source_and_spw:
+        if not found_datatypes_per_source_and_spw and 'datatypes_per_source_and_spw' in item:
+            datatypes_per_source_and_spw_strtypes = eval(item.split('=')[1])
+            found_datatypes_per_source_and_spw = True
+        if found_datatype_per_column and found_datatypes_per_source_and_spw:
             break
 
     # Make actual dictionaries with datatype enums
@@ -37,9 +37,9 @@ def get_ms_datatypes_from_history(msgs: numpy.ndarray) -> (dict, dict):
     else:
         datatype_per_column  = dict()
 
-    if datatype_per_source_and_spw_strtypes != {}:
-        datatype_per_source_and_spw = dict((k, [eval(f'DataType.{item}') for item in v]) for k, v in datatype_per_source_and_spw_strtypes.items())
+    if datatypes_per_source_and_spw_strtypes != {}:
+        datatypes_per_source_and_spw = dict((k, [eval(f'DataType.{item}') for item in v]) for k, v in datatypes_per_source_and_spw_strtypes.items())
     else:
-        datatype_per_source_and_spw  = dict()
+        datatypes_per_source_and_spw  = dict()
 
-    return datatype_per_column, datatype_per_source_and_spw
+    return datatype_per_column, datatypes_per_source_and_spw
