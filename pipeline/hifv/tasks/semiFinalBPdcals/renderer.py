@@ -123,9 +123,6 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 if spw in listspws:  # Science intents only
                     band2spw[band].append(str(spw))
 
-            bandlist = [band for band in band2spw.keys()]
-            # LOG.info("BAND LIST: " + ','.join(bandlist))
-
             plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSummaryChart(context, result, suffix=suffix)
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])

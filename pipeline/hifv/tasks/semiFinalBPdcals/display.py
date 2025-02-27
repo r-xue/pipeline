@@ -151,11 +151,9 @@ class DelaysPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -237,11 +235,9 @@ class semifinalphaseGainPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -342,11 +338,9 @@ class semifinalbpSolAmpPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -449,11 +443,9 @@ class semifinalbpSolAmpPerAntennaPerSpwChart(object):
                         plot_failed = False
 
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
                         if not os.path.exists(figfile):
                             try:
 
@@ -555,11 +547,9 @@ class semifinalbpSolPhasePerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -666,11 +656,9 @@ class semifinalbpSolPhasePerAntennaPerSpwChart(object):
                         plot_failed = False
 
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
 
                         if not os.path.exists(figfile):
                             try:

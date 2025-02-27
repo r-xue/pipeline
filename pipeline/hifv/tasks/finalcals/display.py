@@ -101,11 +101,9 @@ class finalDelaysPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -192,11 +190,9 @@ class finalphaseGainPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -262,7 +258,7 @@ class finalbpSolAmpPerAntennaChart(object):
                 band2spw[band].append(str(spw))
 
         for bandname, spwlist in band2spw.items():
-            maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpcaltable)
+            _, maxmaxamp = get_maxphase_maxamp(self.result.bpcaltable)
             ampplotmax = maxmaxamp
 
             LOG.info("Plotting amp bandpass solutions")
@@ -279,11 +275,9 @@ class finalbpSolAmpPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -354,8 +348,8 @@ class finalbpSolAmpPerAntennaPerSpwChart(object):
             if spw.specline_window:
                 for bandname, spwlist in band2spw.items():
                     if spw2band[spw.id] != bandname:
-                        continue                    
-                    maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpcaltable)
+                        continue
+                    _, maxmaxamp = get_maxphase_maxamp(self.result.bpcaltable)
                     ampplotmax = maxmaxamp
 
                     LOG.info("Plotting amp bandpass solutions")
@@ -373,11 +367,9 @@ class finalbpSolAmpPerAntennaPerSpwChart(object):
 
                         plot_failed = False
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
 
                         if not os.path.exists(figfile):
                             try:
@@ -466,11 +458,9 @@ class finalbpSolPhasePerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -542,7 +532,7 @@ class finalbpSolPhasePerAntennaPerSpwChart(object):
             if spw.specline_window:
                 for bandname, spwlist in band2spw.items():
                     if spw2band[spw.id] != bandname:
-                        continue                    
+                        continue
                     maxmaxphase, maxmaxamp = get_maxphase_maxamp(self.result.bpcaltable)
                     phaseplotmax = maxmaxphase
 
@@ -562,11 +552,9 @@ class finalbpSolPhasePerAntennaPerSpwChart(object):
                         plot_failed = False
 
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
                         if not os.path.exists(figfile):
                             try:
 
@@ -658,11 +646,9 @@ class finalbpSolPhaseShortPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -757,11 +743,9 @@ class finalAmpTimeCalPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -861,11 +845,9 @@ class finalAmpTimeCalPerAntennaPerSpwChart(object):
                         plot_failed = False
 
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
 
                         if not os.path.exists(figfile):
                             try:
@@ -958,11 +940,9 @@ class finalAmpFreqCalPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -1050,11 +1030,9 @@ class finalPhaseGainCalPerAntennaChart(object):
                 figfile = os.path.join(stage_dir, filename)
 
                 # Get antenna name
-                antName = antPlot
-                if antPlot != '':
-                    domain_antennas = self.ms.get_antenna(antPlot)
-                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                    antName = ','.join(idents)
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
 
                 if not os.path.exists(figfile):
                     try:
@@ -1146,11 +1124,9 @@ class finalPhaseGainCalPerAntennaPerSpwChart(object):
                         plot_failed = False
 
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
 
                         if not os.path.exists(figfile):
                             try:

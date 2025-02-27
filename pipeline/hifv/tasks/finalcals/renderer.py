@@ -142,9 +142,6 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 if spw in listspws:  # Science intents only
                     band2spw[band].append(str(spw))
 
-            bandlist = [band for band in band2spw.keys()]
-            # LOG.info("BAND LIST: " + ','.join(bandlist))
-
             # plotter = finalcalsdisplay.finalcalsSummaryChart(context, result)
             # plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
