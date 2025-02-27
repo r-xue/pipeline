@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.antpos.almaantpos.ALMAAntposInputs.__init__
 @utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
                 threshold=None):
@@ -19,12 +20,10 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     columns as shown below. This file should not include blank lines, including
     after the end of the last entry. The default name of this file is 'antennapos.csv'.
 
-    Example of contents for an 'antennapos.csv' file:
+    Example of contents for an 'antennapos.csv' file::
 
         ms,antenna,xoffset,yoffset,zoffset,comment
-
         uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,"No comment"
-
         uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,"No comment"
 
     The offset values in this file are in meters.
@@ -36,36 +35,6 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
 
     Note: the ``hm_antpos`` 'online' option will be implemented when the
     observing system provides an antenna position determination service.
-
-    Args:
-        vis: List of input MeasurementSets. Defaults to the list of
-            MeasurementSets specified in the pipeline context.
-            Example: vis=['ngc5921.ms']
-
-        caltable: List of names for the output calibration tables. Defaults
-            to the standard pipeline naming convention.
-            Example: caltable=['ngc5921.gcal']
-
-        hm_antpos: Heuristics method for retrieving the antenna position
-            corrections. The options are 'online' (not yet implemented),
-            'manual', and 'file'.
-            Example: hm_antpos='manual'
-
-        antenna: The list of antennas for which the positions are to be corrected
-            if ``hm_antpos`` is 'manual'.
-            Example: antenna='DV05,DV07'
-
-        offsets: The list of antenna offsets for each antenna in 'antennas'.
-            Each offset is a set of 3 floating point numbers separated by
-            commas, specified in the ITRF frame.
-            Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]
-
-        antposfile: The file(s) containing the antenna offsets. Used if
-            ``hm_antpos`` is 'file'.
-
-        threshold: Highlight antenna position offsets greater than this value in
-            the weblog. Units are wavelengths and the default is 1.0.
-            Example: threshold=1.0
 
     Returns:
         The results object for the pipeline task is returned.
