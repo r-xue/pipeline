@@ -445,13 +445,13 @@ class SingleDishPlotmsLeaf(object):
             context: Pipeline context.
             result: SDSkyCalResults instance.
             calapp: CalApplication instance.
-            xaxis: X-axis type of the plot.
-            yaxis: Y-axis type of the plot.
+            xaxis: The content of X-axis of the plot.
+            yaxis: The content of Y-axis of the plot.
             spw: Spectral window selection. Defaults to '' (all spw).
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
-            plotindex: Indices from 0 to numfields-1.
-            clearplots: Not output (True) the first field's data or output (False)
+            plotindex: Index of plot to show the field (actually calapp).
+            clearplots: Clear (True) plot of plotindex=0 or overplot (False)
                         the others, if multiple fields exist.
             numfields: Number of fields.
         Raises:
@@ -586,7 +586,7 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
     def __init__(self, context, result, calapp: List[callibrary.CalApplication],
                  xaxis, yaxis, ant='', pol='', **kwargs):
 
-        # Create a dictionary to keep track of which caltables have which spws.
+        # Create a dictionary to keep track of which caltable has which spws.
         dict_calapp_spws = self._create_calapp_contents_dict(calapp, 'SPECTRAL_WINDOW_ID')
         table_spws = sorted(dict_calapp_spws.keys())
         children = []
@@ -641,7 +641,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
-            calapp: CalApplication instance.
+            calapp: List of CalApplication instance.
         """
         super(SingleDishSkyCalAmpVsTimeSummaryChart, self).__init__(context, result, calapp,
                                                                     xaxis='time', yaxis='amp',
@@ -662,7 +662,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
         Args:
             context: Pipeline context.
             result: SDSkyCalResults instance.
-            calapp: CalApplication instance.
+            calapp: List of CalApplication instance.
         """
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
