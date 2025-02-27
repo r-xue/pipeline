@@ -8,7 +8,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils.conversion import get_spectral_reference_code_from_image
 from . import resultobjects
 from . import display
 from ..common import utils as sdutils
@@ -59,9 +58,6 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         for r in results:
             if isinstance(r, resultobjects.SDImagingResultItem):
                 image_item = r.outcome['image']
-                freq_frame = get_spectral_reference_code_from_image(image_item.imagename)
-                if 'freq_frame' not in ctx:
-                    ctx['freq_frame'] = freq_frame
                 msid_list = r.outcome['file_index']
                 imagemode = r.outcome['imagemode']
                 v_spwid = image_item.spwlist
@@ -72,6 +68,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 spw_type = 'TP' if imagemode.upper() == 'AMPCAL' else ref_ms.spectral_windows[ref_spw].type
                 task_cls = display.SDImageDisplayFactory(spw_type)
                 inputs = task_cls.Inputs(context, result=r)
+                if 'freq_frame' not in ctx:
+                    ctx['freq_frame'] = inputs.image.frequency_frame
                 task = task_cls(inputs)
                 plots.append(task.plot())
                 # RMS of combined image

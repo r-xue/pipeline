@@ -756,18 +756,3 @@ def refcode_to_skyframe(refcode):
         frame = 'fk4'
 
     return frame
-
-
-def get_spectral_reference_code_from_image(imagename: str) -> str:
-    """Get the spectral reference code from the image header.
-
-    Args:
-        imagename: The name of the image file.
-    Returns:
-        The spectral reference code.
-    """
-    with casa_tools.ImageReader(imagename) as ia:
-        cs = ia.coordsys()
-        refcode = cs.getconversiontype('spectral')
-        cs.done()
-        return refcode
