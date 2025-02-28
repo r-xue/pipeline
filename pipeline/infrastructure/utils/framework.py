@@ -5,6 +5,9 @@ The framework module contains:
  2. utility functions used by pipeline tasks to help process framework
     objects (Results, CalLibrary objects, etc.).
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import copy
 import errno
@@ -17,15 +20,18 @@ import os
 import pickle
 import string
 import uuid
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TYPE_CHECKING
 
 from .conversion import flatten, safe_split
 from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
-
+from pipeline.infrastructure.basetask import ResultsProxy
 from pipeline.infrastructure.jobrequest import JobRequest
 from pipeline.infrastructure.renderer.logger import Plot
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -183,10 +189,9 @@ def get_tracebacks(result):
 
 
 def get_qascores(result, lo=None, hi=None):
-    if isinstance(result, collections.abc.Iterable):
-        scores = flatten([get_qascores(r, lo, hi) for r in result])
-    else:
-        scores = [s for s in result.qa.pool if s.score not in ('', 'N/A', None)]
+
+    # PIPE-2178: collect QA scores from ResultsList.
+    scores = [s for s in result.qa.pool if s.score not in ('', 'N/A', None)]
 
     if lo is None and hi is None:
         matches = lambda score: True
@@ -266,7 +271,7 @@ def flatten_dict(d, join=operator.add, lift=lambda x: (x,)):
     def visit(subdict, results, partial_key):
         for k, v in subdict.items():
             new_key = lift(k) if partial_key is flag_first else join(partial_key, lift(k))
-            if isinstance(v, collections.Mapping):
+            if isinstance(v, collections.abc.Mapping):
                 visit(v, results, new_key)
             else:
                 results.append((new_key, v))
@@ -295,15 +300,29 @@ def get_origin_input_arg(calapp, attr):
     return values.pop()
 
 
-def contains_single_dish(context):
+def contains_single_dish(context: Context) -> bool:
     """
-    Return True if the context contains single-dish data.
+    Return True if the given context contains single-dish data.
 
-    :param context: the pipeline context
-    :return: True if SD data is present
+    Args:
+        context: The pipeline context.
+
+    Returns:
+        True if SD data is present in the pipeline context.
     """
-    return any([hasattr(context.observing_run, 'ms_reduction_group'),
-                hasattr(context.observing_run, 'ms_datatable_name')])
+    # importdata results
+    result0 = context.results[0]
+
+    # if ResultsProxy, read pickled result
+    if isinstance(result0, ResultsProxy):
+        result0 = result0.read()
+
+    # if RestoreDataResults, get importdata_results
+    if hasattr(result0, 'importdata_results'):
+        result0 = result0.importdata_results[0]
+
+    result_repr = str(result0)
+    return result_repr.find('SDImportDataResults') != -1
 
 
 def plotms_iterate(

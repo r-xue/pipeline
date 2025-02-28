@@ -56,11 +56,9 @@ class selfcalphaseGainPerAntennaChart(object):
             figfile = os.path.join(stage_dir, filename)
 
             # Get antenna name
-            antName = antPlot
-            if antPlot != '':
-                domain_antennas = self.ms.get_antenna(antPlot)
-                idents = [a.name if a.name else a.id for a in domain_antennas]
-                antName = ','.join(idents)
+            domain_antennas = self.ms.get_antenna(antPlot)
+            idents = [a.name if a.name else a.id for a in domain_antennas]
+            antName = ','.join(idents)
 
             if not os.path.exists(figfile):
                 try:

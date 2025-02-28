@@ -26,8 +26,7 @@ class T2_4MDetailsRenormRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         weblog_dir = os.path.join(pipeline_context.report_dir,
                                   'stage%s' % result.stage_number)
 
-        (table_rows,
-         mako_context['alerts_info']) = make_renorm_table(pipeline_context, result, weblog_dir)
+        table_rows = make_renorm_table(pipeline_context, result, weblog_dir)
 
         # Make a list of the plots to be plotted
         summary_plots = make_renorm_plots(result, weblog_dir)
@@ -51,7 +50,6 @@ TR = collections.namedtuple('TR', 'vis source spw max pdf')
 def make_renorm_table(context, results, weblog_dir):
     # Will hold all the input and output MS(s)
     rows = []
-    alert = []
 
     scale_factors = []
     # Loop over the results
@@ -59,10 +57,6 @@ def make_renorm_table(context, results, weblog_dir):
         threshold = result.threshold
         vis = os.path.basename(result.inputs['vis'])
 
-        if result.alltdm:
-            alert = ['No FDM spectral windows are present, '
-                     'so the amplitude scale does not need to be '
-                     'assessed for renormalization.']
         for source, source_stats in result.stats.items():
             for spw, spw_stats in source_stats.items():
 
@@ -115,7 +109,7 @@ def make_renorm_table(context, results, weblog_dir):
                         innermost_child.set('class','danger alert-danger')
                     merged_rows[row][col] = ET.tostring(innermost_child)
 
-    return merged_rows, alert
+    return merged_rows
 
 def getchild(el):
     if el.findall('td'):

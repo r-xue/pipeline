@@ -10,6 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import getCalFlaggedSoln
 from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
@@ -24,14 +25,27 @@ class semiFinalBPdcalsInputs(vdp.StandardInputs):
     """
     weakbp = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+    refant = vdp.VisDependentProperty(default='')
 
-    def __init__(self, context, vis=None, weakbp=None, refantignore=None):
-        """
+    # docstring and type hints: supplements hifv_semiFinalBPdcals
+    def __init__(self, context, vis=None, weakbp=None, refantignore=None, refant=None):
+        """Initialize Inputs.
+
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
-            weakbp(Boolean):  weak bandpass heuristics on/off - currently not used - see PIPE-104
-            refantignore(str):  csv string of reference antennas to ignore - 'ea24,ea15,ea08'
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            weakbp(Boolean): Activate weak bandpass heuristics.
+                Weak bandpass heuristics on/off - currently not used - see PIPE-104.
+
+            refantignore(str): String list of antennas to ignore.
+
+                Example: refantignore='ea24,ea15,ea08'
+
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
 
         """
         super(semiFinalBPdcalsInputs, self).__init__()
@@ -39,6 +53,7 @@ class semiFinalBPdcalsInputs(vdp.StandardInputs):
         self.vis = vis
         self._weakbp = weakbp
         self.refantignore = refantignore
+        self.refant = refant
 
 
 class semiFinalBPdcalsResults(basetask.Results):
@@ -193,11 +208,15 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='',
-                                                spw='', refantignore=refantignore)
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='',
+                                                    spw='', refantignore=refantignore)
 
-        RefAntOutput = refantobj.calculate()
+            RefAntOutput = refantobj.calculate()
+        else:
+            RefAntOutput = self.inputs.refant.split(",")
 
         self._do_gtype_delaycal(caltable=gtypecaltable, RefAntOutput=RefAntOutput, spwlist=spwlist)
 
@@ -274,7 +293,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         tst_delay_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         # need to add scan?
         # ref antenna string needs to be lower case for gaincal
@@ -336,7 +355,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
         delay_scan_select_string = self.inputs.context.evla['msinfo'][m.name].delay_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         # need to add scan?
         # ref antenna string needs to be lower case for gaincal
@@ -435,7 +454,7 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
         bandpass_scan_select_string = self.inputs.context.evla['msinfo'][m.name].bandpass_scan_select_string
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         # need to add scan?
         # ref antenna string needs to be lower case for gaincal
