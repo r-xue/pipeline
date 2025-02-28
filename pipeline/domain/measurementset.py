@@ -875,7 +875,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-
     def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
 
@@ -903,9 +902,9 @@ class MeasurementSet(object):
         """
 
         corrs = set()
-        for lspw in self.spectral_windows:
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
-                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
+        for dd in self.data_descriptions:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd.spw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[dd.pol_id].corr_type_string)
 
         return sorted(corrs)
 
