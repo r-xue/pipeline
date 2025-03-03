@@ -74,6 +74,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         report.append(self.get_scans(context))
         report.append(self.get_observation_summary(context))
         report.append(self.get_sensitivity(context))
+        report.append(self.get_checkproductsize(context))
         return report
 
     def get_processing_environment(self):
@@ -416,6 +417,37 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                         ElementTree.SubElement(nx, "TheoreticalSensitivity").text = str(topic.results[index].sensitivity)
                     root.append(nx)
 
+        return root
+
+    def get_checkproductsize(self, context):
+        """
+            return xml for data volume
+        """
+        root = ElementTree.Element("DataVolume")
+        for result in context.results:
+            result = result.read()
+            if result.taskname == "hif_checkproductsize":
+                nx = ElementTree.Element("AllowedMaxCubeSize")
+                nx.text = str(result.allowed_maxcubesize)
+                root.append(nx)
+                nx = ElementTree.Element("AllowedMaxCubeLimit")
+                nx.text = str(result.allowed_maxcubelimit)
+                root.append(nx)
+                nx = ElementTree.Element("PredictedMaxCubeSize")
+                nx.text = str(result.original_maxcubesize)
+                root.append(nx)
+                nx = ElementTree.Element("MitigatedMaxCubeSize")
+                nx.text = str(result.mitigated_maxcubesize)
+                root.append(nx)
+                nx = ElementTree.Element("AllowedMaxProductSize")
+                nx.text = str(result.allowed_productsize)
+                root.append(nx)
+                nx = ElementTree.Element("InitialProductSize")
+                nx.text = str(result.original_productsize)
+                root.append(nx)
+                nx = ElementTree.Element("MitigatedProductSize")
+                nx.text = str(result.mitigated_productsize)
+                root.append(nx)
         return root
 
     def get_imaging_topic(self, context, topic_results):
