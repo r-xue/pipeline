@@ -373,7 +373,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             topic = result.read()
             if topic.taskname == "hif_makeimages":
                 sensitivities = topic.sensitivities_for_aqua
-                for sensitity in sensitivities:
+                for index, sensitity in enumerate(sensitivities):
                     nx = ElementTree.Element("sensitity")
                     ElementTree.SubElement(nx, "Array").text = str(sensitity['array'])
                     ElementTree.SubElement(nx, "intent").text = str(sensitity['intent'])
@@ -411,6 +411,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max")
                     ElementTree.SubElement(nx_pbcor_image_max, "unit").text = str(sensitity['sensitivity']["unit"])
                     ElementTree.SubElement(nx_pbcor_image_max, "value").text = str(sensitity['sensitivity']["value"])
+
+                    if index < len(topic.results):
+                        ElementTree.SubElement(nx, "TheoreticalSensitivity").text = str(topic.results[index].sensitivity)
                     root.append(nx)
 
         return root

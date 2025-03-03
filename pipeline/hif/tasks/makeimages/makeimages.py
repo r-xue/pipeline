@@ -333,6 +333,12 @@ class MakeImages(basetask.StandardTaskTemplate):
         if heuristics.imaging_mode == 'ALMA':
             return clean_result.intent == 'TARGET'
 
+        # VLA pipeline
+        # note: Need to check are their any conditions to
+        # export image sensitivities for VLA
+        if heuristics.imaging_mode == 'VLA':
+            return True
+
         # Representative source and SpW
         _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
         if str(repr_spw) in clean_result.spw.split(',') and repr_source == utils.dequote(clean_result.sourcename):
