@@ -884,7 +884,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
+        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string if len(self.polarizations) and len(self.data_descriptions) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
