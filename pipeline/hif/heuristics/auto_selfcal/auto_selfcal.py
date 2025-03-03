@@ -2166,6 +2166,11 @@ class SelfcalHeuristics(object):
 
                             for fid in np.intersect1d(new_fields_to_selfcal, list(slib['sub-fields-fid_map'][vis].keys())):
                                 if solint == "scan_inf":
+                                    # For the 'scan_inf' solint, solutions are computed using combine='field,scan' or 'spw,field,scan' with 
+                                    # scan=scangroup, covering each scan group, and the results are incrementally aggregated into the same gain table.  
+                                    #   * The resulting table (before any modifications) has a row count of n_antenna * n_scangroup.  
+                                    #   * Note that a scangroup may consist of one or multiple scans.  
+                                    #   * The scan_number and field_id columns generally contain the first scan/field of the scangroup.  
                                     msmd.open(vis)
                                     scans_for_field = []
                                     cals_for_scan = []
@@ -2175,10 +2180,13 @@ class SelfcalHeuristics(object):
                                         fields_for_scans = msmd.fieldsforscans(scans_array)
 
                                         if slib['sub-fields-fid_map'][vis][fid] in fields_for_scans:
+                                            # because the gaintable SCAN_NUMBER column should only contain first entry of scan_array, or, 
+                                            # not intersect with scan_array at all, scans_for_field[-1] should contain either 0-element or 1-element.
                                             scans_for_field.append(np.intersect1d(scans_array, np.unique(scans)))
-                                            cals_for_scan.append(
-                                                (scans == scans_for_field[-1]).sum() if scans_for_field[-1] in scans else 0.)
-                                            # total_cals_for_scan.append(len(msmd.antennasforscan(scans_for_field[-1])))
+                                            if scans_for_field[-1].size>0 and scans_for_field[-1] in scans:
+                                                cals_for_scan.append((scans == scans_for_field[-1]).sum())
+                                            else:
+                                                cals_for_scan.append(0)
                                             total_cals_for_scan.append(len(msmd.antennanames()))
 
                                     if sum(cals_for_scan) / sum(total_cals_for_scan) < 0.75:
