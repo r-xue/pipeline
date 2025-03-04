@@ -567,6 +567,26 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
 
+@pytest.mark.fast
+@pytest.mark.alma
+def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
+    """PIPE-2245: Run small ALMA cal+image regression to cover various heuristics
+
+    Dataset:                    CSV-3899-EB2-small
+    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
+    """
+
+    input_dir = 'pl-regressiontest/CSV-3899-EB2-small'
+
+    pr = PipelineRegression(recipe='procedure_hifa_calimage.xml',
+                            input_dir=input_dir,
+                            visname=['uid___A002_X1181695_X1c6a4_8ant.ms'],
+                            expectedoutput_dir=input_dir,
+                            output_dir='csv_3899_eb2_small')
+
+    pr.run(omp_num_threads=1)
+
+
 @pytest.mark.skip(reason="Recent failure needs longer investigation")
 @pytest.mark.alma
 def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression():
