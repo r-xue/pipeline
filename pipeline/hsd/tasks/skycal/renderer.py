@@ -145,15 +145,8 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 field_id = name_id_map[field_name]
                 return field_id, spw_id
 
-            for summary_dict in (summary_amp_vs_freq,):
-                if vis not in summary_dict:
-                    continue
-
-                _plot_list = summary_dict[vis]
-
-                if len(_plot_list) == 0:
-                    continue
-
+            _plot_list = summary_amp_vs_freq.get(vis, [])
+            if len(_plot_list) > 0:
                 LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
                           (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
                 LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
