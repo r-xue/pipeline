@@ -855,7 +855,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                             #######################
                             # this string is important and appends the heuristics values for each heuristics
                             #######################
-                            note_platform_phsjump = 'Platform(PhaseJump)'+' '+yesorno+' max phs Jump: '+"%.6f"%(maxvalue)+' degree'+' max phs Step: '+"%.6f"%(maxvalue_ch)+' degree'+'  subb median RMS: '+"%.6f"%(bp_phs_rms)+ ' degree'+' ' 
+                            note_platform_phsjump = 'Platform(PhaseJump)'+' '+yesorno+' max phs Jump: '+"%.6f"%(maxvalue)+' degree'+' max phs Step: '+"%.6f"%(maxvalue_ch)+' degree'+'  subb diff RMS: '+"%.6f"%(bp_phs_rms)+ ' degree'+' ' 
                             note_platform_start+=note_platform_phsjump 
                             #######################
 
@@ -1161,16 +1161,16 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                             #######################
                             # this string is important and appends the heuristics values for each heuristics
                             #######################
-                            note_platform_ampjump = 'Platform(AmplitudeJump)'+' '+yesorno+' '+"%.6f"%(maxvalue)+' amp'+' '+"%.6f"%(maxvalue_ch)+' amp'+' '+"%.6f"%(bp_amp_rms)+ ' amp'+' ' 
+                            note_platform_ampjump = 'Platform(AmplitudeJump)'+' '+yesorno+' max amp Jump: '+"%.6f"%(maxvalue)+' amp'+' max amp Step: '+"%.6f"%(maxvalue_ch)+' amp'+' subb diff RMS: '+"%.6f"%(bp_amp_rms)+ ' amp'+' ' 
                            
                             ##############################
                             # after counting spikes acorss the subband (from 2 to N-1 th subbands)
                             # if more then one spikes, we report it
                             ##############################
                             if countsubspike>0:
-                                note_platform_subbspk = 'Platform(AmpSubbSpike)'+' '+'YES'+' '+"%.6f"%(subb_spike)+' amp'+' '+"%.6f"%(subb_base)+ ' amp'+' '+"%.6f"%(bp_amp_rms)+' amp'+' '
+                                note_platform_subbspk = 'Platform(AmpSubbSpike)'+' '+'YES'+' max amp Spike: '+"%.6f"%(subb_spike)+' amp'+' subb base: '+"%.6f"%(subb_base)+ ' amp'+' subb diff RMS: '+"%.6f"%(bp_amp_rms)+' amp'+' '
                             else:
-                                note_platform_subbspk = 'Platform(AmpSubbSpike)'+' '+'NO'+' '+"%.6f"%(subb_spike)+' amp'+' '+"%.6f"%(subb_base)+ ' amp'+' '+"%.6f"%(bp_amp_rms)+' amp'+' '
+                                note_platform_subbspk = 'Platform(AmpSubbSpike)'+' '+'NO'+' max amp Spike: '+"%.6f"%(subb_spike)+' amp'+' subb base: '+"%.6f"%(subb_base)+ ' amp'+' subb diff RMS: '+"%.6f"%(bp_amp_rms)+' amp'+' '
                             #############################
 
 
