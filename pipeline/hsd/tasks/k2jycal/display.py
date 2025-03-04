@@ -134,7 +134,7 @@ class K2JyBoxScatterDisplay(object):
                 for i, spw_id in enumerate(spw_ids):
                     ms_data = self.valid_factors[spw_id]["ms_dict"].get(ms, [])
                     if ms_data:
-                        y_vals = ms_data
+                        y_vals = [d[0] for d in ms_data]
                         x_vals = [positions[i]] * len(y_vals)
                         ax.scatter(x_vals, y_vals, marker=marker, color=color, alpha=1.0,
                                 label=process_label(self.ms_labels, ms) if i == 0 else "")
