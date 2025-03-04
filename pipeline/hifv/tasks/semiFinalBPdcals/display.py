@@ -11,59 +11,6 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 
-class semifinalBPdcalsSummaryChart(object):
-    def __init__(self, context, result, suffix=''):
-        self.context = context
-        self.result = result
-        self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        self.suffix = suffix
-        # self.caltable = result.final[0].gaintable
-
-    def plot(self):
-        # science_spws = self.ms.get_spectral_windows(science_windows_only=True)
-        plots = [self.get_plot_wrapper()]
-        return [p for p in plots if p is not None]
-
-    def create_plot(self):
-        figfile = self.get_figfile()
-
-        context = self.context
-        m = context.observing_run.measurement_sets[0]
-
-        corrstring = m.get_vla_corrstring()
-        calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
-
-        job = casa_tasks.plotms(vis=m.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                         scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True, avgtime='1e8',
-                         avgscan=False, transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
-                         plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
-                         plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
-
-        job.execute()
-
-    def get_figfile(self):
-        return os.path.join(self.context.report_dir,
-                            'stage%s' % self.result.stage_number,
-                            'semifinalcalibrated_' + self.suffix + '-%s-summary.png' % self.ms.basename)
-
-    def get_plot_wrapper(self):
-        figfile = self.get_figfile()
-        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
-                              parameters={'vis': self.ms.basename,
-                                          'type': 'semifinalcalibratedcals' + self.suffix,
-                                          'spw': ''})
-
-        if not os.path.exists(figfile):
-            LOG.trace('semifinalBPdcals summary plot not found. Creating new plot.')
-            try:
-                self.create_plot()
-            except Exception as ex:
-                LOG.error('Could not create plot.')
-                LOG.exception(ex)
-                return None
-        return wrapper
-
-
 class semifinalBPdcalsSpwSummaryChart(object):
     def __init__(self, context, result, suffix='', spw=None):
         self.context = context

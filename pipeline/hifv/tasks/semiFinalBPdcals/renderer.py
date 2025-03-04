@@ -7,6 +7,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
 from . import display as semifinalBPdcalsdisplay
+from pipeline.hifv.tasks.testBPdcals import display as BPdcalsdisplay
 
 LOG = logging.get_logger(__name__)
 
@@ -126,7 +127,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             bandlist = [band for band in band2spw.keys()]
             # LOG.info("BAND LIST: " + ','.join(bandlist))
 
-            plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSummaryChart(context, result, suffix=suffix)
+            plotter = BPdcalsdisplay.SummaryChart(context, result, suffix=suffix, taskname="semiFinalBPdcals")
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots

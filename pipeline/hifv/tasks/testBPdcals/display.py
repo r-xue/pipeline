@@ -11,79 +11,90 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 
-class testBPdcalsSummaryChart(object):
-    def __init__(self, context, result):
+class SummaryChart(object):
+    def __init__(self, context, result, suffix='', taskname=None):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        # self.caltable = result.final[0].gaintable
+        self.suffix = suffix
+        self.taskname = taskname
 
     def plot(self):
-        # science_spws = self.ms.get_spectral_windows(science_windows_only=True)
-        plots = [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')]
+        task_plots = {
+            "testBPdcals": [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')],
+            "semiFinalBPdcals": [self.get_plot_wrapper()]
+        }
+        plots = task_plots.get(self.taskname, [])
         return [p for p in plots if p is not None]
 
+    # see if prefix can be replaced by suffix
     def create_plot(self, prefix):
         figfile = self.get_figfile(prefix)
-
-        bandpass_field_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_field_select_string
+        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
         bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
         corrstring = self.ms.get_vla_corrstring()
-        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
+        plot_params = {
+                        'vis': self.ms.name,
+                        'xaxis': 'freq', 'yaxis': 'amp', 'ydatacolumn': 'corrected',
+                        'selectdata': True, 'averagedata': True, 'avgtime': '1e8', 'avgscan': True,
+                        'transform': False, 'extendflag': False, 'iteraxis': '', 'coloraxis': 'antenna2',
+                        'plotrange': [], 'title': '', 'xlabel': '', 'ylabel': '',
+                        'showmajorgrid': False, 'showminorgrid': False, 'plotfile': figfile,
+                        'overwrite': True, 'clearplots': True, 'showgui': False, 'correlation': corrstring
+                        }
+        plot_scan = None
+        if self.taskname == "testBPdcals":
+            if prefix == 'BPcal':
+                plot_scan = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
+            elif (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
+                plot_scan = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
+        elif self.taskname == "semiFinalBPdcals":
+            plot_scan = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
+            plot_params['avgscan'] = False
 
-        if prefix == 'BPcal':
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
-                                    selectdata=True,
-                                    field=bandpass_field_select_string, scan=bandpass_scan_select_string,
-                                    correlation=corrstring, averagedata=True, avgtime='1e8', avgscan=True,
-                                    transform=False,
-                                    extendflag=False, iteraxis='', coloraxis='antenna2', plotrange=[], title='',
-                                    xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False, plotfile=figfile,
-                                    overwrite=True, clearplots=True, showgui=False)
-
-        if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-            job = casa_tasks.plotms(vis=self.ms.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected',
-                                    selectdata=True,
-                                    scan=delay_scan_select_string, correlation=corrstring, averagedata=True,
-                                    avgtime='1e8', avgscan=True, transform=False, extendflag=False, iteraxis='',
-                                    coloraxis='antenna2', plotrange=[], title='', xlabel='', ylabel='',
-                                    showmajorgrid=False,
-                                    showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True,
-                                    showgui=False)
-
-        job.execute()
+        if plot_scan is not None:
+            job = casa_tasks.plotms(**{**plot_params, 'scan': plot_scan})
+            job.execute()
 
     def get_figfile(self, prefix):
-        return os.path.join(self.context.report_dir,
-                            'stage%s' % self.result.stage_number,
-                            'testcalibrated' + prefix + '-%s-summary.png' % self.ms.basename)
 
-    def get_plot_wrapper(self, prefix):
+        filename = ''
+        base_path = os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number)
+        if self.taskname == "testBPdcals":
+            filename = 'testcalibrated' + prefix
+        elif self.taskname == "semiFinalBPdcals":
+            filename = 'semifinalcalibrated_' + self.suffix
+        if filename:
+            filename = os.path.join(base_path, (filename + '-%s-summary.png' % self.ms.basename))
+        return filename
+
+    def get_plot_wrapper(self, prefix=''):
         figfile = self.get_figfile(prefix)
 
         bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
+        plot_type = ''
+        if self.taskname == "testBPdcals":
+            if prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal'):
+                plot_type = prefix
+        elif self.taskname == "semiFinalBPdcals":
+            plot_type = 'semifinalcalibratedcals' + self.suffix
 
-        if prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal'):
-            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
-                                  parameters={'vis': self.ms.basename,
-                                              'type': prefix,
-                                              'spw': ''})
+        if plot_type:
+            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename, 'type': plot_type, 'spw': ''})
 
-            if not os.path.exists(figfile):
-                LOG.trace('testBPdcals summary plot not found. Creating new '
-                          'plot.')
-                try:
-                    self.create_plot(prefix)
-                except Exception as ex:
-                    LOG.error('Could not create ' + prefix + ' plot.')
-                    LOG.exception(ex)
-                    return None
-
+        if not os.path.exists(figfile):
+            LOG.trace('testBPdcals summary plot not found. Creating new plot.')
+            try:
+                self.create_plot(prefix)
+            except Exception as ex:
+                LOG.error('Could not create ' + self.suffix + ' plot.')
+                LOG.exception(ex)
+                return None
+        if plot_type:
             return wrapper
-
         return None
-
+# ----------
 
 class testBPdcalsPerSpwSummaryChart(object):
     def __init__(self, context, result, spw):

@@ -128,7 +128,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             bandlist = [band for band in band2spw.keys()]
             # LOG.info("BAND LIST: " + ','.join(bandlist))
 
-            plotter = testBPdcalsdisplay.testBPdcalsSummaryChart(context, result)
+            plotter = testBPdcalsdisplay.SummaryChart(context, result, taskname="testBPdcals")
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
