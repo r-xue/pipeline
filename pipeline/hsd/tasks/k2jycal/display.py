@@ -5,7 +5,7 @@ import os
 
 from typing import Any, Dict, Generator, List, Sequence, Tuple, Union
 
-import numpy
+import numpy as np
 import itertools
      
 from matplotlib.figure import Figure
@@ -21,14 +21,15 @@ from pipeline.domain.measures import FrequencyUnits
 
 LOG = logging.get_logger(__name__)
 
-class K2JySingleScatterDisplay(object):
+class K2JyBoxScatterDisplay(object):
     """A display class to generate a scatter plot of Jy/K factors across all SPWs."""
     
     def __init__(
         self,
-        stage: str,
-        valid_factors: Dict[str, Dict[int, List[float]]],
-        spws: Dict[int, SpectralWindow],
+        stage_dir: str, 
+        valid_factors: Dict[Any, Any], 
+        ms_labels: List[str], 
+        spws: Dict[Any, Any] = None
     ) -> None:
         """Initialize K2JySingleHistDisplay instance.
 
@@ -41,9 +42,14 @@ class K2JySingleScatterDisplay(object):
         Raises:
             ValueError: unexpected type of valid_factors
         """
-        self.stage_dir = stage
+        self.stage_dir = stage_dir
         self.valid_factors = valid_factors
-        self.spws = spws
+        self.ms_labels = ms_labels
+        if spws is not None:   
+            self.spws = spws
+        else:
+            # Infer spw objects from valid_factors
+            self.spws = {spw_id: valid_factors[spw_id]["spw_obj"] for spw_id in valid_factors}
         
     def plot(self) -> List[logger.Plot]:
         """Generate scatter plot.
@@ -75,125 +81,145 @@ class K2JySingleScatterDisplay(object):
         return plot_obj
     
     def _plot(self) -> Generator[logger.Plot, None, None]:
-        """Create box plot"""
-        fig = Figure(figsize=(8, 6))  # Customize size as needed
+        """
+        Create a plot with:
+            - Primary x-axis: Centre Frequency (GHz)
+            - Secondary x-axis: SPW IDs
+
+        Plot style depends on the number of measurement sets (MS):
+            - If MS count is below a threshold, a scatter plot is used (each MS’s data from ms_dict).
+            - Otherwise, a boxplot is drawn (using all_factors) with manually overlaid outlier points.
+        """
+        MS_THRESHOLD = 5       # Use scatter plot if MS count is less than this threshold
+        ALPHA = 1.0            # Weight for blending uniform spacing with normalized frequency differences
+        LEGEND_LIMIT = 3         # If number of MS > LEGEND_LIMIT, shorten labels and add extra right-space.
+
+        # helper: shorten label if needed
+        def process_label(labels_list, label) -> str:
+            return label.split('_')[-1].split('.')[0] if len(labels_list) > LEGEND_LIMIT else label
+
+        # Extract and sort SPWs by centre frequency
+        spw_freq_pairs = []
+        for spw_id in list(self.valid_factors.keys()):
+            spw_obj = self.valid_factors[spw_id]["spw_obj"]
+            f = float(spw_obj.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+            spw_freq_pairs.append((spw_id, round(f, 1)))
+        spw_freq_pairs.sort(key=lambda pair: pair[1])
+        if spw_freq_pairs:
+            spw_ids, frequencies = zip(*spw_freq_pairs)
+            spw_ids = list(spw_ids)
+            frequencies = list(frequencies)
+        else:
+            spw_ids, frequencies = [], []
+        positions = self.__compute_x_positions(frequencies, ALPHA)
+
+        fig = Figure(figsize=(8, 6))
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111)
         ax.set_xlabel('Frequency (GHz)', fontsize=11)
         ax.set_ylabel('Jy/K factor', fontsize=11)
         ax.set_title('Jy/K Factors across Frequencies', fontsize=11, fontweight='bold')
-        
-        # Prepare labels for plotting
-        spw_ids = sorted(self.valid_factors.keys())
-        frequencies = []
-        box_data = []
-        for spw_id in spw_ids:
-            spw = self.valid_factors[spw_id]
-            frequencies.append(
-                np.round(float(
-                    spw["spw_obj"].centre_frequency.to_units(FrequencyUnits.GIGAHERTZ))
-                         , 1))
-            box_data.append(spw["all_factors"])
-      
-        if frequencies:
-            width_scale = max(frequencies) - min(frequencies) if len(frequencies) > 1 else 1
-            box_width = 0.5 * float(width_scale / max(1, len(frequencies)))
-            bp = ax.boxplot(
-                box_data,
-                positions=frequencies,
-                widths=box_width,
-                patch_artist=True,
-                showfliers=False  # outliers are handled manually below,
-            )
-            color_cycle = itertools.cycle(cm.get_cmap("tab10").colors)
-            for box in bp['boxes']:
-                c = next(color_cycle)
-                box.set_facecolor(c)
-                box.set_alpha(0.5)
-        
-            for freq in frequencies:
-                ax.axvline(freq, linestyle='--', color='lightgray', alpha=0.5)
 
-        # Corrected symbols_and_colours definition
-        symbols_and_colours = zip(
-            itertools.cycle('osDv^<>'),  # Cycle through marker symbols
-            itertools.cycle(cm.get_cmap('tab10').colors)  # Get colors from the 'tab10' colormap
-        )  # standard Tableau colormap
-        ms_styles = {}
-        for ms_lab, (marker, color) in zip(self.ms_labels, symbols_and_colours):
-            ms_styles[ms_lab] = (marker, color)
-      
-        # scatter outliers
-        handles = {}  # use a dictionary to store unique scatter handles by ms_label
-        for i, spw_id in enumerate(spw_ids):
-            freq = frequencies[i]
-            outlier_list = self.valid_factors[spw_id]["outliers"]
-            for ms_label, factor in outlier_list:
-                marker, color = ms_styles[ms_label]
-                scatter = ax.scatter(
-                    freq, factor,
-                    marker=marker,
-                    color=color,
-                    edgecolor="black",
-                    zorder=3,
-                    label=ms_label
-                )
-                if ms_label not in handles:
-                    handles[ms_label] = scatter
-        if handles:
-            ax.legend(
-                handles.values(),  # Use scatter handles
-                handles.keys(),    # Labels
-                title="EB with outliers",
-                loc="best"
-            )
-            
-        # adjust y-limits if range is too small
+        ms_count = len(self.ms_labels)
+        ms_styles = {
+            ms: (marker, color)
+            for ms, marker, color in zip(self.ms_labels, itertools.cycle('osDv^<>'),
+                                        itertools.cycle(cm.get_cmap('tab10').colors))
+        }
+
+        # CASE 1: Scatter Plot for MS count < MS_THRESHOLD
+        if ms_count < MS_THRESHOLD:
+            for ms in self.ms_labels:
+                marker, color = ms_styles[ms]
+                for i, spw_id in enumerate(spw_ids):
+                    ms_data = self.valid_factors[spw_id]["ms_dict"].get(ms, [])
+                    if ms_data:
+                        y_vals = ms_data
+                        x_vals = [positions[i]] * len(y_vals)
+                        ax.scatter(x_vals, y_vals, marker=marker, color=color, alpha=1.0,
+                                label=process_label(self.ms_labels, ms) if i == 0 else "")
+            if ms_count <= 20:
+                # Expand x-axis to add space for legend if needed.
+                lims = ax.get_xlim()
+                extra = (max(positions) - min(positions)) / (len(spw_ids)/2) if spw_ids else 0
+                if ms_count > LEGEND_LIMIT:
+                    ax.set_xlim((lims[0], lims[1] + extra))
+                ax.legend(title='MS', loc='best')
+
+     # CASE 2: Boxplot for MS count >= MS_THRESHOLD
+        else:
+            # Build boxplot data from all_factors for each SPW.
+            box_data = [self.valid_factors[spw_id]["all_factors"] for spw_id in spw_ids]
+            bp = ax.boxplot(box_data, positions=positions, patch_artist=True, showfliers=False)
+            for box in bp['boxes']:
+                box.set_facecolor('orange')
+                box.set_alpha(0.7)
+                
+            # Scatter outliers manually
+            handles = {}
+            for i, spw_id in enumerate(spw_ids):
+                outliers = self.valid_factors[spw_id]["outliers"]
+                for ms, factor in outliers:
+                    marker, color = ms_styles[ms]
+                    scatter = ax.scatter(positions[i], factor, marker=marker, color=color,
+                                            edgecolor="black", zorder=3, label=ms)
+                    if ms not in handles:
+                        handles[ms] = scatter
+
+                if handles and len(handles) <= 20:
+                    # Expand x-axis if needed.
+                    if (len(handles) > LEGEND_LIMIT):
+                        lims = ax.get_xlim()
+                        extra = (max(positions) - min(positions)) / (len(spw_ids)/2) if spw_ids else 0
+                        keys = [process_label(handles.keys(), key) for key in handles.keys()]
+                        ax.set_xlim((lims[0], lims[1] + extra))
+                    else:
+                        keys = handles.keys()
+
+                    ax.legend(list(handles.values()), keys,
+                            title="MS with outliers", loc="best")
+
+        # Adjust y-limits if needed.
         y_min, y_max = ax.get_ylim()
-        if (y_max - y_min) < 0.2:
-            ax.set_ylim(y_min - 0.1, y_max + 0.1)
-            
-        # Add secondary x-axis for SPW IDs
+        if (y_max - y_min) < 0.5:
+            ax.set_ylim(y_min - 0.25, y_max + 0.25)
+
         ax_top = ax.twiny()
-        ax_top.set_xlim(ax.get_xlim())  # Match the range of the main x-axis
-        ax_top.set_xticks(frequencies)  # Use the same tick positions as the main x-axis
-        ax_top.set_xticklabels(spw_ids)  # Map frequencies back to SPW IDs
-        ax_top.set_xlabel('SPW ID', fontsize=11)    
-        for freq in frequencies:
-            ax.axvline(freq, linestyle = '--', color = 'lightgray', alpha = 0.5)
+        ax_top.set_xlim(ax.get_xlim())
+        ax_top.set_xticks(positions)
+        ax_top.set_xticklabels(spw_ids)
+        ax_top.set_xlabel('SPW ID', fontsize=11)
+        ax.set_xticks(positions)
+        ax.set_xticklabels(frequencies) # for the main x-axis, display the original frequency values.
         ax.grid(True)
-        
-        # Save the plot
+
         plotfile = os.path.join(self.stage_dir, 'kjy_factors_across_frequencies.png')
         canvas.print_figure(plotfile, format='png', dpi=DPISummary)
-        # Create Plot object
         plot = self._create_plot(plotfile, 'Frequency (GHz)', 'Jy/K factor')
         yield plot
         
+    @staticmethod    
+    def __compute_x_positions(frequencies: List[float], alpha: float) -> np.ndarray:
+        """
+        The x-positions for SPWs plotting are computed as a blend between uniform spacing (by index) and
+        normalized frequency differences:
+            x = i + alpha * ((f - f_min) / (f_max - f_min))
+        ensuring that SPWs very close in frequency are evenly spaced while distant ones remain separated.
 
-def collect_dict_values(in_value: Union[dict, Sequence[Any], Any]) -> Tuple[bool, List[Any]]:
-    """Return a list of values in in_value.
+        Args:
+            frequencies: List of centre frequencies (in GHz) for the SPWs.
+            alpha: Weight for the normalized frequency term.
 
-    When in_value = dict(a=1, b=dict(c=2, d=4)), the method collects
-    all values in tips of branches and returns, [1, 2, 4].
-    When in_value is a simple number or an array, it returns a list
-    of the number or the array.
-
-    Args:
-        in_value: A dictionary, number or array to collect values and construct a list
-
-    Returns:
-        Tuple of True or False and the flat list of values contained in in_value.
-    """
-    if type(in_value) not in [dict, collections.defaultdict]:
-        if numpy.iterable(in_value) == 0:
-            in_value = [in_value]
-        return True, list(in_value)
-    out_factor = []
-    for value in in_value.values():
-        done = False
-        while not done:
-            done, value = collect_dict_values(value)
-        out_factor += value
-    return done, out_factor
-
+        Returns:
+            Numpy array of x-positions.
+        """
+        N = len(frequencies)
+        if N == 0:
+            return np.array([])
+        f_min, f_max = min(frequencies), max(frequencies)
+        if f_max - f_min > 0:
+            return np.array([i + alpha * ((f - f_min) / (f_max - f_min)) for i, f in enumerate(frequencies)])
+        return np.arange(N, dtype=float)
+        
+        
+        

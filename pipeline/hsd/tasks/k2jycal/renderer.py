@@ -136,7 +136,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         hist_plots = []
         any_factors = any(len(spw_info["ms_dict"]) > 0 for spw_info in spw_data.values())
         if any_factors:
-            task = display.K2JySingleScatterDisplay(stage_dir, spw_data, ms_list)
+            task = display.K2JyBoxScatterDisplay(stage_dir, spw_data, ms_list)
             hist_plots.extend(task.plot())
         
         # order table rows so that spw comes first
