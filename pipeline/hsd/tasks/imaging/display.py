@@ -1300,12 +1300,18 @@ class SDChannelMapDisplay(SDImageDisplay):
             int: width of a slice. note that the minimum value is 0.
         """
         # adjust index of both side within channel
-        # both side of the feature line is within the channel
-        if line_center - line_width/2 >= -0.5 and line_center + line_width/2 <= self.nchan - 0.5:
-            return ceil(max(line_width / self.NUM_CHANNELMAP, 1.0))
+        # candidate slice width based on the feature line width
+        _candidate_width = ceil(max(line_width / self.NUM_CHANNELMAP, 1))
+        # allowed max slice width based on the feature line center
+        _allowed_max_width = max(floor(2.0 * min(line_center + 0.5, self.nchan - line_center - 0.5) / self.NUM_CHANNELMAP), 1)
+
+        # both side of the feature line is within the channel, and the candidate width is allowed
+        if line_center - line_width * 0.5 >= -0.5 and line_center + line_width * 0.5 <= self.nchan - 0.5 \
+            and _candidate_width <= _allowed_max_width:
+            return _candidate_width
         else:
             # one side of the feature line is out of the channel
-            return floor(2.0 * min(line_center + 0.5, self.nchan - 0.5 - line_center) / self.NUM_CHANNELMAP)
+            return _allowed_max_width
 
     def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
         """
