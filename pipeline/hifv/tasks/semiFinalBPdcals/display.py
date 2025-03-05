@@ -7,136 +7,58 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.casa_tasks as casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.hifv.tasks.testBPdcals import baseDisplay
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class semifinalBPdcalsSpwSummaryChart(object):
-    def __init__(self, context, result, suffix='', spw=None):
-        self.context = context
-        self.result = result
-        self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        self.suffix = suffix
-        self.spw = str(spw)
+class semifinalBPdcalsSummaryChart(baseDisplay.SummaryChart):
+    def __init__(self, context, result, suffix='', taskname=None):
+        super().__init__(context, result, suffix, taskname)
 
     def plot(self):
-        plots = [self.get_plot_wrapper()]
-        return [p for p in plots if p is not None]
+        plots = super().plot()
+        return plots
 
-    def create_plot(self):
-        figfile = self.get_figfile()
+    def create_plot(self, prefix=''):
+        super().create_plot(prefix)
 
-        context = self.context
-        m = context.observing_run.measurement_sets[0]
+    def get_figfile(self, prefix=''):
+        filename = super().get_figfile(prefix)
+        return filename
 
-        corrstring = m.get_vla_corrstring()
-        calibrator_scan_select_string = context.evla['msinfo'][m.name].calibrator_scan_select_string
-
-        job = casa_tasks.plotms(vis=m.name, xaxis='freq', yaxis='amp', ydatacolumn='corrected', selectdata=True,
-                         scan=calibrator_scan_select_string, correlation=corrstring, averagedata=True, avgtime='1e8',
-                         spw=self.spw, avgscan=False, transform=False, extendflag=False, iteraxis='', coloraxis='antenna2',
-                         plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False, showminorgrid=False,
-                         plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
-
-        job.execute()
-
-    def get_figfile(self):
-        return os.path.join(self.context.report_dir,
-                            'stage%s' % self.result.stage_number,
-                            'semifinalcalibrated_per_spw_' + self.spw + '_' + self.suffix + '-%s-summary.png' % self.ms.basename)
-
-    def get_plot_wrapper(self):
-        figfile = self.get_figfile()
-        wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp',
-                              parameters={'vis': self.ms.basename,
-                                          'type': 'semifinalcalibratedcals per spw' + self.suffix,
-                                          'spw': self.spw})
-
-        if not os.path.exists(figfile):
-            LOG.trace('semifinalBPdcals per-spw summary plot not found. Creating new plot.')
-            try:
-                self.create_plot()
-            except Exception as ex:
-                LOG.error('Could not create plot.')
-                LOG.exception(ex)
-                return None
+    def get_plot_wrapper(self, prefix=''):
+        wrapper = super().get_plot_wrapper(prefix)
         return wrapper
 
 
-class DelaysPerAntennaChart(object):
-    def __init__(self, context, result, suffix=''):
-        self.context = context
-        self.result = result
-        self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        self.suffix = suffix
-        ms = self.ms
-
-        self.json = {}
-        self.json_filename = os.path.join(context.report_dir,
-                                          'stage%s' % result.stage_number,
-                                          'delays-' + self.suffix + '%s.json' % ms)
+class semifinalBPdcalsSpwSummaryChart(baseDisplay.PerSpwSummaryChart):
+    def __init__(self, context, result, spw=None, suffix='', taskname=None):
+        super().__init__(context, result, spw=spw, suffix=suffix, taskname=taskname)
 
     def plot(self):
-        context = self.context
-        result = self.result
-        m = context.observing_run.measurement_sets[0]
+        plots = super().plot()
+        return plots
 
-        nplots = len(m.antennas)
-        plots = []
+    def create_plot(self,  prefix=''):
+        super().create_plot(prefix)
 
-        LOG.info("Plotting semiFinal delays")
+    def get_figfile(self, prefix=''):
+        filename = super().get_figfile(prefix)
+        return filename
 
-        for bandname, ktypecaltablename in self.result.ktypecaltable.items():
-            for ii in range(nplots):
-                filename = 'delay' + str(ii) + '_' + self.suffix + '_' + bandname + '.png'
-                antPlot = str(ii)
+    def get_plot_wrapper(self, prefix=''):
+        wrapper = super().get_plot_wrapper(prefix)
+        return wrapper
 
-                stage = 'stage%s' % result.stage_number
-                stage_dir = os.path.join(context.report_dir, stage)
-                # construct the relative filename, eg. 'stageX/testdelay0.png'
 
-                figfile = os.path.join(stage_dir, filename)
+class DelaysPerAntennaChart(baseDisplay.PerAntennaChart):
+    def __init__(self, context, result, suffix='', taskname=None):
+        super().__init__(context, result, suffix, taskname)
 
-                if not os.path.exists(figfile):
-                    try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
-
-                        LOG.debug("Plotting semiFinal delays " + antName)
-
-                        job = casa_tasks.plotms(vis=ktypecaltablename, xaxis='freq', yaxis='amp', field='',
-                                         antenna=antPlot, spw='', timerange='',
-                                         plotrange=[], coloraxis='',
-                                         title='K table: delay.tbl   Antenna: {!s}  Band: {!s}'.format(antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='step')
-
-                        job.execute()
-
-                    except:
-                        LOG.warning("Unable to plot " + filename)
-                else:
-                    LOG.debug('Using existing ' + filename + ' plot.')
-
-                try:
-                    plot = logger.Plot(figfile, x_axis='Frequency', y_axis='Delay', field='',
-                                       parameters={'spw': '',
-                                                   'pol': '',
-                                                   'ant': antName,
-                                                   'bandname': bandname,
-                                                   'type': 'delay' + self.suffix,
-                                                   'file': os.path.basename(figfile)})
-                    plots.append(plot)
-                except:
-                    LOG.warning("Unable to add plot to stack")
-                    plots.append(None)
-
-        return [p for p in plots if p is not None]
+    def plot(self):
+        plots = super().plot()
+        return plots
 
 
 class semifinalphaseGainPerAntennaChart(object):

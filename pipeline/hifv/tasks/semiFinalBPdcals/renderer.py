@@ -7,7 +7,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.renderer.weblog as weblog
 from . import display as semifinalBPdcalsdisplay
-from pipeline.hifv.tasks.testBPdcals import display as BPdcalsdisplay
+
 
 LOG = logging.get_logger(__name__)
 
@@ -127,7 +127,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             bandlist = [band for band in band2spw.keys()]
             # LOG.info("BAND LIST: " + ','.join(bandlist))
 
-            plotter = BPdcalsdisplay.SummaryChart(context, result, suffix=suffix, taskname="semiFinalBPdcals")
+            plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSummaryChart(context, result, suffix=suffix, taskname="semiFinalBPdcals")
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
@@ -138,7 +138,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             per_spw_plots = []
             for spw in spws:
                 if spw.specline_window:
-                    plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSpwSummaryChart(context, result, suffix=suffix, spw=spw.id)
+                    plotter = semifinalBPdcalsdisplay.semifinalBPdcalsSpwSummaryChart(context, result, suffix=suffix, spw=spw.id, taskname="semiFinalBPdcals")
                     plots = plotter.plot()
                     per_spw_plots.extend(plots)
                     spwlist.append(str(spw.id))
@@ -148,7 +148,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 summary_plots_per_spw[ms].extend(per_spw_plots)
 
             # generate testdelay plots and JSON file
-            plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix, taskname="semiFinalBPdcals")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
