@@ -824,7 +824,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
-
         # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
         # therefore len(mt_inputvis_list) represents the number of ms to be split out
         mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype'])
@@ -834,10 +833,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
 
         inputvis_list = utils.deduplicate([m[0] for m in mt_inputvis_list])
-        inputvis_contline = utils.deduplicate([m[0] for m in mt_inputvis_list if m[1]])
         outputvis_list = []
 
-        self._flag_lines(inputvis_contline)
+        # PIPE-2497: Attempting line flagging for all input visibilities,
+        # regardless of whether the datatype is "CONTLINE" or "CONT".
+        self._flag_lines(inputvis_list)
 
         with utils.ignore_pointing(inputvis_list):
             with TaskQueue(parallel=taskqueue_parallel_request) as tq:
@@ -891,7 +891,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
 
-        self._restore_flags(inputvis_contline)
+        self._restore_flags(inputvis_list)
 
         for outputvis in outputvis_list:
             # Copy across requisite XML files.
