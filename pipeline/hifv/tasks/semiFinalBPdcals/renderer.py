@@ -148,7 +148,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 summary_plots_per_spw[ms].extend(per_spw_plots)
 
             # generate testdelay plots and JSON file
-            plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix, taskname="semiFinalBPdcals")
+            plotter = semifinalBPdcalsdisplay.DelaysPerAntennaChart(context, result, suffix=suffix, taskname="semiFinalBPdcals", plottype="delay")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -159,7 +159,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 delay_subpages[ms] = renderer.filename
 
             # generate phase Gain plots and JSON file
-            plotter = semifinalBPdcalsdisplay.semifinalphaseGainPerAntennaChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.semifinalphaseGainPerAntennaChart(context, result, suffix=suffix, taskname="semiFinalBPdcals", plottype="phasegain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -170,7 +170,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 phasegain_subpages[ms] = renderer.filename
 
             # generate amp bandpass solution plots and JSON file
-            plotter = semifinalBPdcalsdisplay.semifinalbpSolAmpPerAntennaChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.semifinalbpSolAmpPerAntennaChart(context, result, suffix=suffix, taskname="semiFinalBPdcals", plottype="bpsolamp")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -184,7 +184,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
                 bpsolamp_subpages[ms] = renderer.filename
 
             # generate phase bandpass solution plots and JSON file
-            plotter = semifinalBPdcalsdisplay.semifinalbpSolPhasePerAntennaChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.semifinalbpSolPhasePerAntennaChart(context, result, suffix=suffix,  taskname="semiFinalBPdcals", plottype="bpsolphase")
             plots = plotter.plot()
             json_path = plotter.json_filename
 

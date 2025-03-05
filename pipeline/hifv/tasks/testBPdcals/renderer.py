@@ -149,7 +149,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 summary_plots_per_spw[ms].extend(per_spw_plots)
 
             # generate testdelay plots and JSON file
-            plotter = testBPdcalsdisplay.testDelaysPerAntennaChart(context, result, taskname="testBPdcals")
+            plotter = testBPdcalsdisplay.testDelaysPerAntennaChart(context, result, taskname="testBPdcals", plottype="delay")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -160,7 +160,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 testdelay_subpages[ms] = renderer.filename
 
             # generate amp Gain plots and JSON file
-            plotter = testBPdcalsdisplay.ampGainPerAntennaChart(context, result)
+            plotter = testBPdcalsdisplay.ampGainPerAntennaChart(context, result, taskname="testBPdcals", plottype="ampgain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -171,7 +171,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 ampgain_subpages[ms] = renderer.filename
 
             # generate phase Gain plots and JSON file
-            plotter = testBPdcalsdisplay.phaseGainPerAntennaChart(context, result)
+            plotter = testBPdcalsdisplay.phaseGainPerAntennaChart(context, result, taskname="testBPdcals", plottype="phasegain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -182,7 +182,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 phasegain_subpages[ms] = renderer.filename
 
             # generate amp bandpass solution plots and JSON file
-            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaChart(context, result)
+            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaChart(context, result, taskname="testBPdcals", plottype="bpsolamp")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -197,7 +197,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 bpsolamp_subpages[ms] = renderer.filename
 
             # generate phase bandpass solution plots and JSON file
-            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaChart(context, result)
+            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaChart(context, result, taskname="testBPdcals", plottype="bpsolphase")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
