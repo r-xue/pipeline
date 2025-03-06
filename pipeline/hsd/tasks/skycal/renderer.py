@@ -54,7 +54,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
             os.mkdir(stage_dir)
 
         # threshold for elevation difference between ON and OFF
-        threshold = skycal_task.SerialSDSkyCal.ElevationDifferenceThreshold
+        threshold = skycal_task.ELEVATION_DIFFERENCE_THRESHOLD
 
         applications = []
         summary_amp_vs_freq = collections.defaultdict(list)

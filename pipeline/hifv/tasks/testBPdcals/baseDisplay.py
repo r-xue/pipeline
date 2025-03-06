@@ -343,8 +343,10 @@ class PerAntennaChart(Chart):
         maxtime = np.max(times)
         plotrange = []
         spws = []
+        spw2band = []
         if self.perSpwChart:
             spws = self.ms.get_spectral_windows(science_windows_only=True)
+            spw2band = self.ms.get_vla_spw2band()
         else:
             # adding a place holder if perSpwChart is false
             # This is just to ensure that loop executes atleast once if
@@ -353,6 +355,8 @@ class PerAntennaChart(Chart):
         for spw in spws:
             if not self.perSpwChart or spw.specline_window:
                 for bandname, tabitem in result_table.items():
+                    if self.perSpwChart and spw2band[spw.id] != bandname:
+                        continue
                     if self.plottype == "bpsolamp" or self.plottype == "bpsolphase" or self.plottype == "bpsolamp_perspw" or self.plottype == "bpsolphase_perspw":
                         maxmaxphase, maxmaxamp = self.get_maxphase_maxamp(self.result.bpdgain_touse[bandname], tabitem)
                         ampplotmax = maxmaxamp
@@ -401,11 +405,10 @@ class PerAntennaChart(Chart):
 
                         antPlot = str(ii)
                         # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
+
                         stage = 'stage%s' % self.result.stage_number
                         stage_dir = os.path.join(self.context.report_dir, stage)
                         # construct the relative filename, eg. 'stageX/testdelay0.png'

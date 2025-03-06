@@ -875,7 +875,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-
     def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
 
@@ -885,7 +884,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
+        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string if len(self.polarizations) and len(self.data_descriptions) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -903,9 +902,9 @@ class MeasurementSet(object):
         """
 
         corrs = set()
-        for lspw in self.spectral_windows:
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
-                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
+        for dd in self.data_descriptions:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd.spw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[dd.pol_id].corr_type_string)
 
         return sorted(corrs)
 
