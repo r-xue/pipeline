@@ -70,7 +70,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             mean = np.mean(spws_means)
             percentile_95 = np.percentile(spws_means, 95)
 
-            return (mean, percentile_95)
+            # PIPE-2370: convert np.float64 to a native float for better weblog presentations.
+            return (float(mean), float(percentile_95))
 
         if not field:
             field = ''
