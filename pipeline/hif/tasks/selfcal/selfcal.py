@@ -530,10 +530,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
                 else:
-                    LOG.info('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
+                    LOG.warning('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
                     for ms in mses_selfcal_contline:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.info('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
+                    LOG.warning('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
 
             if mses_regcal_line:
                 if not mses_selfcal_line:
@@ -543,10 +543,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
                 else:
-                    LOG.info('Found DataType:SELFCAL_LINE_SCIENCE.')
+                    LOG.warning('Found DataType:SELFCAL_LINE_SCIENCE.')
                     for ms in mses_selfcal_line:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+                    LOG.warning('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
         return SelfcalResults(
             scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
@@ -776,6 +776,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               hm_imsize=self.inputs.imsize,
                                               hm_cell=self.inputs.cell,
                                               allow_wproject=self.inputs.allow_wproject,
+                                              datatype='regcal',
                                               parallel=self.inputs.parallel)
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute()
