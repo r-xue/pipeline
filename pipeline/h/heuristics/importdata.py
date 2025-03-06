@@ -21,7 +21,7 @@ def get_ms_data_types_from_history(msgs: numpy.ndarray) -> (dict, dict):
 
     # Search backwards from latest messages since the datatype information is
     # written multiple times as new history entries throughout the pipeline processing.
-    for item in msgs[-1::-1]:
+    for item in reversed(msgs):
         if not found_data_type_per_column and 'data_type_per_column' in item:
             data_type_per_column_strtypes = eval(item.split('=')[1])
             found_data_type_per_column = True
