@@ -174,7 +174,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             plots = plotter.plot()
             json_path = plotter.json_filename
 
-            plotter = semifinalBPdcalsdisplay.semifinalbpSolAmpPerAntennaPerSpwChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.semifinalbpSolAmpPerAntennaPerSpwChart(context, result, suffix=suffix, taskname="semiFinalBPdcals", plottype="bpsolamp_perspw")
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -188,7 +188,7 @@ class T2_4MDetailssemifinalBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRend
             plots = plotter.plot()
             json_path = plotter.json_filename
 
-            plotter = semifinalBPdcalsdisplay.semifinalbpSolPhasePerAntennaPerSpwChart(context, result, suffix=suffix)
+            plotter = semifinalBPdcalsdisplay.semifinalbpSolPhasePerAntennaPerSpwChart(context, result, suffix=suffix, taskname="semiFinalBPdcals", plottype="bpsolphase_perspw")
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk

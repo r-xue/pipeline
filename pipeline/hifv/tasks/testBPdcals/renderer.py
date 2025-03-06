@@ -187,7 +187,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # generate amp bandpass solution per-spw plots
-            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaPerSpwChart(context, result)
+            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaPerSpwChart(context, result, taskname="testBPdcals", plottype="bpsolamp_perspw")
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -202,7 +202,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             json_path = plotter.json_filename
 
             # generate phase bandpass per spw solution plots
-            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaPerSpwChart(context, result)
+            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaPerSpwChart(context, result, taskname="testBPdcals", plottype="bpsolphase_perspw")
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
