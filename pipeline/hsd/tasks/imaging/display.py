@@ -1305,12 +1305,12 @@ class SDChannelMapDisplay(SDImageDisplay):
         # allowed max slice width based on the feature line center
         _allowed_max_width = max(floor(2.0 * min(line_center + 0.5, self.nchan - line_center - 0.5) / self.NUM_CHANNELMAP), 1)
 
-        # both side of the feature line is within the channel, and the candidate width is allowed
-        if line_center - line_width * 0.5 >= -0.5 and line_center + line_width * 0.5 <= self.nchan - 0.5 \
-            and _candidate_width <= _allowed_max_width:
+        # If both side of the vertical red lines is within nchan, then returns the candidate slice width
+        if line_center - _candidate_width * self.NUM_CHANNELMAP * 0.5 >= -0.5 and \
+           line_center + _candidate_width * self.NUM_CHANNELMAP * 0.5 <= self.nchan - 1 + 0.5:
             return _candidate_width
         else:
-            # one side of the feature line is out of the channel
+            # If one side of the lines is out of nchan, returns the allowed max slice width
             return _allowed_max_width
 
     def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
