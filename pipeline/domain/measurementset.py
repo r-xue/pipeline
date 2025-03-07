@@ -1335,6 +1335,22 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
+    def set_data_type_dicts(data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
+        """
+        Set the data type lookup dictionaries directly without writing new
+        MS HISTORY entries as they would already exist when calling this
+        method. Also do not auto-generate the per source and spw lookup
+        dictionary from the per column information since it might have a
+        sparse structure (e.g. selfcal use case).
+
+        Args:
+            data_type_per_column: Data type per column lookup dictionary
+            data_types_per_source_and_spw: Data type per source and spw
+                lookup dictionary.
+        """
+        self.data_column = data_type_per_column
+        self.data_types_per_source_and_spw = data_types_per_source_and_spw
+
     def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
                         overwrite: bool = False) -> None:
         """
