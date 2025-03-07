@@ -24,8 +24,8 @@ def id2name(spwid):
 <p>
 This plot shows the Jy/K factors across SPWs for different measurement sets.
 </p>
-% if jyperk_hist and len(jyperk_hist) > 0:
-    <% plot = jyperk_hist[0] %>
+% if jyperk_plot and len(jyperk_plot) > 0:
+    <% plot = jyperk_plot[0] %>
     % if plot is not None and os.path.exists(plot.thumbnail):
         <%
             fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)

@@ -22,7 +22,7 @@ from pipeline.domain.measures import FrequencyUnits
 LOG = logging.get_logger(__name__)
 
 class K2JyBoxScatterDisplay(object):
-    """A display class to generate a scatter plot of Jy/K factors across all SPWs."""
+    """A display class to generate a mixed box and scatter plot of Jy/K factors across all SPWs."""
     
     def __init__(
         self,
@@ -34,13 +34,16 @@ class K2JyBoxScatterDisplay(object):
         """Initialize K2JySingleHistDisplay instance.
 
         Args:
-            stage: Stage directory to which plots are exported
-            valid_factors: A dictionary mapping MS labels to SPW IDs and their Jy/K factors
-            spw_frequencies: A dictionary mapping SPW IDs to their centre frequencies
-            spw_band: A dictionary mapping SPW IDs to their observing bands
-
-        Raises:
-            ValueError: unexpected type of valid_factors
+            stage_dir: Stage directory to which plots are exported
+            valid_factors:  A dictionary where each key is an SPW ID and each value is another dictionary 
+                            containing:
+                                - "spw_obj": The spectral window object.
+                                - "all_factors": Jy/K factors for all MS associated with this SPW (for boxplots).
+                                - "ms_dict": Mapping of MS labels to Jy/K factors.
+                                - "outliers": List of (MS label, factor) tuples for outliers.
+            ms_labels: A list of MS labels corresponding to the valid_factors dataset.
+            spws: A dictionary mapping SPW IDs to their metadata. 
+                  If not provided, it is inferred from `valid_factors`.
         """
         self.stage_dir = stage_dir
         self.valid_factors = valid_factors
@@ -52,7 +55,7 @@ class K2JyBoxScatterDisplay(object):
             self.spws = {spw_id: valid_factors[spw_id]["spw_obj"] for spw_id in valid_factors}
         
     def plot(self) -> List[logger.Plot]:
-        """Generate scatter plot.
+        """Generate plot.
 
         Returns:
             List of plots.
@@ -85,6 +88,9 @@ class K2JyBoxScatterDisplay(object):
         Create a plot with:
             - Primary x-axis: Centre Frequency (GHz)
             - Secondary x-axis: SPW IDs
+            
+        Yields:
+            Plot instance
 
         Plot style depends on the number of measurement sets (MS):
             - If MS count is below a threshold, a scatter plot is used (each MS’s data from ms_dict).
@@ -95,6 +101,7 @@ class K2JyBoxScatterDisplay(object):
         LEGEND_LIMIT = 3         # If number of MS > LEGEND_LIMIT, shorten labels and add extra right-space.
 
         # helper: shorten label if needed
+        # e.g. process_label("uid___A002_X1234_X56.ms") will return "X56"
         def process_label(labels_list, label) -> str:
             return label.split('_')[-1].split('.')[0] if len(labels_list) > LEGEND_LIMIT else label
 
@@ -112,12 +119,15 @@ class K2JyBoxScatterDisplay(object):
         else:
             spw_ids, frequencies = [], []
         positions = self.__compute_x_positions(frequencies, ALPHA)
-
+        
+        xlabel_bottom = 'Frequency (GHz)'
+        ylabel = 'Jy/K factor'
+        
         fig = Figure(figsize=(8, 6))
         canvas = FigureCanvas(fig)
         ax = fig.add_subplot(111)
-        ax.set_xlabel('Frequency (GHz)', fontsize=11)
-        ax.set_ylabel('Jy/K factor', fontsize=11)
+        ax.set_xlabel(xlabel_bottom, fontsize=11)
+        ax.set_ylabel(ylabel, fontsize=11)
         ax.set_title('Jy/K Factors across Frequencies', fontsize=11, fontweight='bold')
 
         ms_count = len(self.ms_labels)
@@ -193,9 +203,9 @@ class K2JyBoxScatterDisplay(object):
         ax.set_xticklabels(frequencies) # for the main x-axis, display the original frequency values.
         ax.grid(True)
 
-        plotfile = os.path.join(self.stage_dir, 'kjy_factors_across_frequencies.png')
+        plotfile = os.path.join(self.stage_dir, 'k2jy_factors_across_frequencies.png')
         canvas.print_figure(plotfile, format='png', dpi=DPISummary)
-        plot = self._create_plot(plotfile, 'Frequency (GHz)', 'Jy/K factor')
+        plot = self._create_plot(plotfile, xlabel_bottom, ylabel)
         yield plot
         
     @staticmethod    
@@ -220,6 +230,3 @@ class K2JyBoxScatterDisplay(object):
         if f_max - f_min > 0:
             return np.array([i + alpha * ((f - f_min) / (f_max - f_min)) for i, f in enumerate(frequencies)])
         return np.arange(N, dtype=float)
-        
-        
-        

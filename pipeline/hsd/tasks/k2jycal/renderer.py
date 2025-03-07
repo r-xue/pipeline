@@ -138,14 +138,28 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         ctx.update({
             'jyperk_rows': utils.merge_td_columns(row_values),
             'reffile_list': reffile_copied,
-            'jyperk_hist': plots,
+            'jyperk_plot': plots,
             'dovirtual': dovirtual,
             'extra_logrecords': extra_logrecords
         })
 
     @staticmethod
     def __calculate_stats(values: list = [], r: float = 3) -> Dict[str, float]:
-        """ Helper to compute statistics """
+        """ Helper to compute statistical metrics for a given list of factors. 
+        
+        Args:
+            values: A list of numeric factor values.
+            r:  The threshold for defining outliers. 
+                Values beyond `mean ± r * std` are considered outliers. Defaults to 3.
+
+        Returns:
+            A dictionary containing:
+                - "upper_limit" (float): The mean + r * standard deviation.
+                - "lower_limit" (float): The mean - r * standard deviation.
+                - "mean" (float): The average of the values.
+                - "std" (float): The standard deviation of the values. If the list has 
+                                fewer than two values, this is set to 0.0.
+        """
         m = mean(values)
         s = std(values) if len(values) > 1 else 0.0
         return {
