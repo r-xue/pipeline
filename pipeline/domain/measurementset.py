@@ -1128,7 +1128,7 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> np.float:
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1181,11 +1181,11 @@ class MeasurementSet(object):
             science_field_ids = [
                 fid for fid in field_ids
                 if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
             science_state_ids = [
                 sid for sid in state_ids
                 if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
 
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
@@ -1198,15 +1198,17 @@ class MeasurementSet(object):
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
         spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
 
-        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
+            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
+            # PIPE-2370: convert np.float64 to a native float for better weblog presentations.
             if stat_type == "max":
-                return np.max(integration)
+                return float(np.max(integration))
             elif stat_type == "median":
-                return np.median(integration)
+                return float(np.median(integration))
 
     def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
