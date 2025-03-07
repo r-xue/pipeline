@@ -1335,7 +1335,7 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_type_dicts(data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
+    def set_data_type_dicts(self, data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
         """
         Set the data type lookup dictionaries directly without writing new
         MS HISTORY entries as they would already exist when calling this
