@@ -352,13 +352,11 @@ class Setjy(basetask.StandardTaskTemplate):
                 # consider the correct SpWs that are appropriate for PHASE and
                 # CHECK intent fields.
                 if inputs.ms.is_band_to_band and 'PHASE' in field.intents:
-                    spws = [spw for spw in
-                            inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINREF')]
+                    spws = inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINREF')
                 elif inputs.ms.is_band_to_band and 'CHECK' in field.intents:
-                    spws = [spw for spw in
-                            inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINSRC')]
+                    spws = inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True, intent='DIFFGAINSRC')
                 else:
-                    spws = [spw for spw in inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True)]
+                    spws = inputs.ms.get_spectral_windows(orig_spw, science_windows_only=True)
 
                 # Determine field identifier (name if unique, otherwise ID).
                 field_identifier = field.name if field_is_unique else str(field.id)
