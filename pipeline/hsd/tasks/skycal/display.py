@@ -432,7 +432,6 @@ class SingleDishPlotmsLeaf(object):
         ant: str = '',
         coloraxis: str = '',
         plotindex: int = 0,
-        clearplots: bool = False,
         numfields: int = 0,
         **kwargs: Any
     ) -> None:
@@ -451,8 +450,6 @@ class SingleDishPlotmsLeaf(object):
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
             plotindex: Index of plot to show the field (actually calapp).
-            clearplots: Clear (True) plot of plotindex=0 or overplot (False)
-                        the others, if multiple fields exist.
             numfields: Number of fields.
         Raises:
             RuntimeError: Invalid field selection in calapp
@@ -468,8 +465,8 @@ class SingleDishPlotmsLeaf(object):
         self.antenna = str(ant)
         self.coloraxis = coloraxis
         self.plotindex = plotindex
-        self.clearplots = clearplots
         self.numfields = numfields
+        self.clearplots = True if plotindex == 0 else False  # clearplots: set to True to clear a previously existing plot of an another measurementset or an another spw. Otherwise set to False to overplot.
 
         ms = context.observing_run.get_ms(self.vis)
         fields = get_field_from_ms(ms, self.field)
@@ -492,6 +489,7 @@ class SingleDishPlotmsLeaf(object):
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
+
     def plot(self) -> List[logger.Plot]:
         """Generate a sky calibration plot.
 
@@ -504,15 +502,21 @@ class SingleDishPlotmsLeaf(object):
 
         title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis=self.coloraxis)
-        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
 
-        task = self._create_task(title, figfile)
         try:
-            if os.path.exists(figfile):
-                LOG.debug('Returning existing plot')
+            if self.plotindex == self.numfields-1:
+                figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
+                task = self._create_task(title, figfile)
+                if os.path.exists(figfile):
+                    LOG.debug('Returning existing plot')
+                else:
+                    task.execute()
+                plot_objects = [self._get_plot_object(figfile, task)]
             else:
+                figfile = ""
+                task = self._create_task(title, figfile)
                 task.execute()
-            plot_objects = [self._get_plot_object(figfile, task)]
+                plot_objects = []
         except Exception as e:
             LOG.error(str(e))
             LOG.debug(traceback.format_exc())
@@ -545,13 +549,12 @@ class SingleDishPlotmsLeaf(object):
                      'avgchannel': '1e8',
                      'plotindex': self.plotindex,
                      'clearplots': self.clearplots,
+                     'plotfile': figfile
                      }
-        if (self.plotindex+1) % self.numfields == 0:
-            task_args['plotfile'] = figfile
 
         return casa_tasks.plotms(**task_args)
 
-    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> Optional[logger.Plot]:
+    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
         """Generate parameters and return logger.Plot.
 
         Args:
@@ -566,14 +569,11 @@ class SingleDishPlotmsLeaf(object):
                       'spw': self.spw,
                       'field': self.field_name}
 
-        if (self.plotindex+1) % self.numfields == 0:
-            return logger.Plot(figfile,
-                               x_axis='Time',
-                               y_axis='Amplitude',
-                               parameters=parameters,
-                               command=str(task))
-        else:
-            return
+        return logger.Plot(figfile,
+                           x_axis='Time',
+                           y_axis='Amplitude',
+                           parameters=parameters,
+                           command=str(task))
 
 
 class SingleDishPlotmsSpwComposite(common.LeafComposite):
@@ -591,16 +591,10 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         table_spws = sorted(dict_calapp_spws.keys())
         children = []
         for spw in table_spws:
-            plotindex = 0
-            clearplots = True
-            if len(calapp) == 1:
-                clearplots = False
             children_field = []
-            for cal in calapp:
-                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, clearplots=clearplots, numfields=len(calapp), **kwargs)
+            for plotindex, cal in enumerate(calapp):
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, numfields=len(calapp), **kwargs)
                 children_field.append(item)
-                plotindex += 1
-                clearplots = False
             children.extend(children_field)
 
         super().__init__(children)
