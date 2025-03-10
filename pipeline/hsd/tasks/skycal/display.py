@@ -489,7 +489,6 @@ class SingleDishPlotmsLeaf(object):
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
-
     def plot(self) -> List[logger.Plot]:
         """Generate a sky calibration plot.
 
