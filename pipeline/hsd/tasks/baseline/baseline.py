@@ -98,8 +98,8 @@ class SDBaselineInputs(vdp.StandardInputs):
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
-                 fitorder: Optional[int] = None,
-                 fitfunc: Optional[str] = None,
+                 fitfunc: Optional[Union[str, Dict[Union[int, str], str]]] = None,
+                 fitorder: Optional[Union[int, Dict[Union[int, str], int]]] = None,
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
                  deviationmask: Optional[bool] = None,
@@ -236,12 +236,24 @@ class SDBaselineInputs(vdp.StandardInputs):
                 Default: None (equivalent to True)
 
             fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline
-                ('spline' or 'cspline') or polynomial ('poly' or 'polynomial').
+                ('spline' or 'cspline'), polynomial ('poly' or 'polynomial'), or 'sinusoid' (future support).
+
+                Accepts:
+                - A string: Applies the same function to all spectral windows (SPWs).
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.
+
+                If an SPW ID is not present in the dictionary, 'cspline' will be used as the default.
 
                 Default: None (equivalent to 'cspline')
 
             fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how
-                much the spectrum is segmented into. If -1 is given, the task determines the order automatically.
+                much the spectrum is segmented into.
+
+                Accepts:
+                - An integer: Applies the same order to all SPWs. Valid values: -1 (automatic), 0, or any positive integer.
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.
+
+                If an SPW ID is not present in the dictionary, -1 will be used as the default, triggering automatic order selection.
 
                 Default: None (equivalent to -1)
 

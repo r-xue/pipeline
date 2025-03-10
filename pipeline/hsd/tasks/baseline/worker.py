@@ -192,12 +192,20 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
             plan: Set of metadata for baseline subtraction, or List of
                   the them. Defaults to None. The task may fail if None
                   is given.
-            fit_func: Fitting function for baseline subtraction. You can choose
-                      either cubic spline ('spline' or 'cspline') or polynomial
-                      ('poly' or 'polynomial'). Default is 'cspline'.
-            fit_order: Fitting order for polynomial. For cubic spline, it is used to determine
-                       how much the spectrum is segmented into. None is equivalent to 'automatic'.
-                       Default ('automatic') is to determine the order automatically.
+            fit_func: Fitting function for baseline subtraction. Accepts either 
+                      a single string or a dictionary mapping SPW IDs (int or str) 
+                      to a fitting function. Valid function options: cubic spline 
+                      ('spline' or 'cspline') or polynomial ('poly' or 'polynomial'). 
+                      Default is 'cspline'. If a string is given, it applies to all 
+                      spectral windows (SPWs). If a dictionary is given, each SPW 
+                      can have a different fitting function, with 'cspline' as the 
+                      default for missing SPWs.
+            fit_order: Fitting order for polynomial. Accepts either a single integer or a dictionary 
+                       mapping SPW IDs (int or str) to an integer.For cubic spline, it is used 
+                       to determine how much the spectrum is segmented into. Default (None, 'automatic' 
+                       or `-1`) triggers automatic order selection (heuristics); `0` or any positive 
+                       integer uses the specified order. If a dictionary is provided, each SPW can have 
+                       a different order, with `-1` as the default for missing SPWs.
             switchpoly: Whether to fall back the fits from cubic spline to 1st or
                         2nd order polynomial when large masks exist at the edges
                         of the spw. Condition for switching is as follows:
@@ -370,7 +378,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   spw_id_list)
 
         # If fit_order is None (or falsy), default to -1 for each spw (which triggers heuristics)
-        if not fit_order:
+        if not fit_order or fit_order == 'automatic':
             fit_order_dict = {spw_id: -1 for spw_id in spw_id_list}
         elif not isinstance(fit_order, dict):
             fit_order_dict = {spw_id: fit_order for spw_id in spw_id_list} # Single integer given: apply the same order to all spws
@@ -386,7 +394,6 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             for spw_id in spw_id_list:
                 if spw_id not in fit_order_dict:
                     fit_order_dict[spw_id] = -1
-
 
         # Default to 'cspline' if fit_func is None or falsy
         if not fit_func:
