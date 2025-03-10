@@ -2,7 +2,7 @@
 import numpy
 import os
 
-from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, List, Dict, Optional, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -173,8 +173,8 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
-        fit_func: Optional[str] = None,
-        fit_order: Optional[int] = None,
+        fit_func: Optional[Union[str, Dict[Union[int, str], str]]] = None,
+        fit_order: Optional[Union[int, Dict[Union[int, str], int]]] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
         deviationmask: Optional[Union[dict, List[dict]]] = None,
@@ -348,6 +348,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
         rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
+        fit_func = self.inputs.fit_func
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
         blparam = args['blparam']
@@ -368,8 +369,66 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   antenna_id_list,
                   spw_id_list)
 
-        # blparam heuristics
-        blparam_heuristic = BaselineFitParamConfig(fitfunc=self.inputs.fit_func, switchpoly=self.inputs.switchpoly)
+        # If fit_order is None (or falsy), default to -1 for each spw (which triggers heuristics)
+        if not fit_order:
+            fit_order_dict = {spw_id: -1 for spw_id in spw_id_list}
+        elif not isinstance(fit_order, dict):
+            fit_order_dict = {spw_id: fit_order for spw_id in spw_id_list} # Single integer given: apply the same order to all spws
+        else:
+            # Convert keys to int if possible, then fill in missing spws with default -1
+            fit_order_dict = {}
+            for k, v in fit_order.items():
+                try:
+                    key = int(k)
+                except Exception:
+                    key = k
+                fit_order_dict[key] = v
+            for spw_id in spw_id_list:
+                if spw_id not in fit_order_dict:
+                    fit_order_dict[spw_id] = -1
+
+
+        # Default to 'cspline' if fit_func is None or falsy
+        if not fit_func:
+            fit_func_value = 'cspline'
+        else:
+            fit_func_value = fit_func
+
+        if not isinstance(fit_func_value, dict):
+            # Single string: create one BaselineFitParamConfig instance and apply to all spws
+            blparam_heuristic = BaselineFitParamConfig(
+                fitfunc=fit_func_value,
+                switchpoly=self.inputs.switchpoly
+            )
+            spw_funcs_dict = {spw_id: blparam_heuristic for spw_id in spw_id_list}
+        else:
+            # Convert dictionary keys to int when possible
+            processed_fit_func = {}
+            for k, v in fit_func_value.items():
+                try:
+                    key = int(k)
+                except Exception:
+                    key = k
+                processed_fit_func[key] = v
+
+            # For each spw in spw_id_list, use the provided fit function,
+            # or default to 'cspline' if not specified.
+            unique_fit_funcs = {processed_fit_func.get(spw_id, 'cspline') for spw_id in spw_id_list}
+            unique_fit_funcs.add('cspline')  # ensure the default is always included
+
+            # Create one BaselineFitParamConfig instance per unique function string.
+            heuristics_map = {
+                func_str: BaselineFitParamConfig(
+                    fitfunc=func_str,
+                    switchpoly=self.inputs.switchpoly
+                )
+                for func_str in unique_fit_funcs
+            }
+            # Build a mapping from spw_id to the appropriate BaselineFitParamConfig.
+            spw_funcs_dict = {
+                spw_id: heuristics_map[processed_fit_func.get(spw_id, 'cspline')]
+                for spw_id in spw_id_list
+            } 
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -378,18 +437,21 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
-        # datatable = DataTable(context.observing_run.ms_datatable_name)
-
         for (field_id, antenna_id, spw_id) in process_list.iterate_id():
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
                 deviationmask = None
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
-                                            antenna_id, field_id, spw_id,
-                                            fit_order, formatted_edge,
-                                            deviationmask, blparam)
+            heuristic = spw_funcs_dict[spw_id]
+            current_fit_order = fit_order_dict.get(spw_id, -1)
+
+            out_blparam = heuristic(
+                self.datatable, ms, rowmap,
+                antenna_id, field_id, spw_id,
+                current_fit_order, formatted_edge,
+                deviationmask, blparam
+            )
             assert out_blparam == blparam
 
         # execute sdbaseline
