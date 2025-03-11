@@ -30,6 +30,6 @@ astropy==7.0.1                  # https://docs.astropy.org/en/stable/changelog.h
 docstring-inheritance==2.2.2    # https://pypi.org/project/docstring-inheritance/
 
 # Temporarily disabled packages
-# bdsf==1.11.1                  # Disabled due to compatibility issues with NumPy 2.x
+# bdsf==1.11.1                   # Disabled due to compatibility issues with NumPy 2.x
                                 # https://github.com/lofar-astron/PyBDSF/issues/247
                                 # Only required for the VLASS pipeline

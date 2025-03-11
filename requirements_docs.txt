@@ -1,19 +1,23 @@
-# WARNING: The dependency versions are not specified, so the CASA shipped-in modules could get upgraded accidentally.
-# One recommended solution is to use docs/pipeline_docs.yaml to construct an isolated/dedicated docs building environment.
+# WARNING: Dependency versions not specified; CASA shipped modules may be accidentally upgraded.
 
+# Core Dependencies
 future
 urllib3
+
+# Markdown and Jupyter Support
 myst-parser
 myst_nb
 linkify-it-py
 jupytext
-nbsphinx         # nbsphinx requires 'pandoc' (e.g. from macports/apt/conda-forge, not 'pandoc' from PyPI) to work properly.
-sphinx_rtd_theme # furo
-sphinxcontrib-bibtex
-sphinx-astrorefs # https://github.com/jobovy/sphinx-astrorefs
-sphinx-copybutton
-sphinx-markdown-tables # https://pypi.org/project/sphinx-markdown-tables/
+nbsphinx                # Requires 'pandoc' from macports/apt/conda-forge
 ipympl
 nodejs
+
+# Sphinx and Extensions
+sphinx_rtd_theme 
+sphinxcontrib-bibtex
+sphinx-astrorefs        # https://github.com/jobovy/sphinx-astrorefs
+sphinx-copybutton
+sphinx-markdown-tables  # https://pypi.org/project/sphinx-markdown-tables/
 sphinx-automodapi
 sphinx-autoapi
