@@ -458,7 +458,6 @@ class SingleDishPlotmsLeaf(object):
                                                                                ant=ant))
         self.xaxis = xaxis
         self.yaxis = yaxis
-        self.field = calapp.gainfield
         self.caltable = calapp.gaintable
         self.vis = calapp.vis
         self.spw = str(spw)
@@ -469,15 +468,10 @@ class SingleDishPlotmsLeaf(object):
         self.clearplots = True if plotindex == 0 else False  # clearplots: set to True to clear a previously existing plot of an another measurementset or an another spw. Otherwise set to False to overplot.
 
         ms = context.observing_run.get_ms(self.vis)
-        fields = get_field_from_ms(ms, self.field)
+        fields = get_field_from_ms(ms, calapp.gainfield)
         if len(fields) == 0:
             # failed to find field domain object with field
-            raise RuntimeError(f'No match found for field "{self.field}".')
-
-        self.field_id = fields[0].id
-        self.field_name = fields[0].clean_name
-
-        LOG.debug('field: ID %s Name \'%s\'' % (self.field_id, self.field_name))
+            raise RuntimeError(f'No match found for field "{calapp.gainfield}".')
 
         self.antmap = dict((a.id, a.name) for a in ms.antennas)
         if len(self.antenna) == 0:
@@ -538,7 +532,6 @@ class SingleDishPlotmsLeaf(object):
                      'yaxis': self.yaxis,
                      'coloraxis': self.coloraxis,
                      'showgui': False,
-                     'field': self.field,
                      'spw': self.spw,
                      'antenna': self.antenna,
                      'title': title,
@@ -565,8 +558,7 @@ class SingleDishPlotmsLeaf(object):
         """
         parameters = {'vis': os.path.basename(self.vis),
                       'ant': self.antenna_selection,
-                      'spw': self.spw,
-                      'field': self.field_name}
+                      'spw': self.spw}
 
         return logger.Plot(figfile,
                            x_axis='Time',
