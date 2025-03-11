@@ -1,5 +1,4 @@
 import collections
-import json
 import os
 import shutil
 import traceback
@@ -9,7 +8,6 @@ from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.infrastructure import task_registry
 from . import almaifaqua
 

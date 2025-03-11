@@ -105,12 +105,22 @@ class SDExportData(exportdata.ExportData):
             auxcaltables = None
             auxcalapplys = None
 
+        # Create and export the pipeline stats file
+        pipeline_stats_file = None
+        try:
+            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
+        except Exception as e:
+            LOG.info("Unable to output pipeline statistics file: {}".format(e))
+            LOG.debug(traceback.format_exc())
+            pass
+
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
         #    The calibrator source fluxes file
         #    The antenna positions file
         #    The continuum regions file
         #    The target flagging file
+        #    The pipeline statistics file (if it exists)
         recipe_name = self.get_recipename(self.inputs.context)
         if not recipe_name:
             prefix = oussid
@@ -119,7 +129,8 @@ class SDExportData(exportdata.ExportData):
         auxfproducts = \
             self._do_auxiliary_products(self.inputs.context, oussid,
                                         self.inputs.output_dir,
-                                        self.inputs.products_dir)
+                                        self.inputs.products_dir,
+                                        pipeline_stats_file)
 
         # Export the AQUA report
         pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
