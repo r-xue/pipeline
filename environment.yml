@@ -1,0 +1,30 @@
+name: pipeline
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - conda-ecosystem-user-package-isolation
+  - python=3.10
+  - ipython
+  - pip
+  - numpy
+  - matplotlib
+  - scipy
+  - openmpi
+  - mpi4py<4.0.0
+  - certifi
+  - protobuf=3.20 # casatplotms requires ver<=3.20 currently
+  - poppler # required for PL
+  - imagemagick # required for PL
+  - pandoc # required by nbsphinx; also available from macports/homebrew/apt; different from 'pandoc' on PyPI
+  - pip:
+      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
+      - casatools==6.6.6.*
+      - casatasks==6.6.6.*
+      - casashell==6.6.6.*
+      - casampi
+      - casaplotms
+      - casaplotserver
+      - -r requirements.txt
