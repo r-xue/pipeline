@@ -1,39 +1,67 @@
-#!/usr/bin/env python
-#
-# almahelpers.py
-#
-# History:
-#  v1.0 (scorder, gmoellen, jkern; 2012Apr26) == initial version
-#  v1.1 (gmoellen; 2013Mar07) Lots of improvements from Eric Villard
-#  v1.2 (gmoellen; 2013Apr09) Added fixsyscaltimes and calantsub methods
-#                             to handle Tsys irregularities
-#  v1.3 (dpetry; 2017Sept11) Added genImageName
-#  v1.4 (gmoellen; 2021Jul08) fixsyscaltimes now returns True if a fix 
-#                             was applied, otherwise returns False
-#
-# This script defines several functions useful for ALMA data processing.
-#
-# tsysspwmap  - generate an "applycal-ready" spwmap for TDM to FDM
-#                 transfer of Tsys
-# fixsyscaltimes - repairs the TIME and INTERVAL columns of the MS
-#                    SYSCAL subtable so that gencal properly generates
-#                    the Tsys caltable
-# calantsub - provides for substitution of cal solutions by antenna
-#
-# genImageName - generate canonical image file names
-#
-# To access these functions, type (at the CASA prompt):
-#
-# from recipes.almahelpers import *
-#
-# For more information about each function type
-#
-# help tsysspwmap
-# help fixsyscaltimes
-# help calantsub
-# help genImageName
-#
-#
+"""A helper module for ALMA data processing.
+
+This module provides a collection of utility functions/classes designed to assist in the
+processing and analysis of ALMA data.
+
+This module was originally part of the casarecipes package (specifically,
+casarecipes/almahelpers.py, up to CASA version 6.7.0-31). It was migrated into
+the `pipeline/extern/` directory via PIPE-2366. This relocation eliminates the pipeline's 
+dependency on the external "casarecipes" package, making the pipeline more self-contained.
+
+History:
+
+Before migrating to `pipeline/extern/almahelpers.py`
+
+    v1.0 (scorder, gmoellen, jkern; 2012Apr26) == initial version
+    v1.1 (gmoellen; 2013Mar07) Lots of improvements from Eric Villard
+    v1.2 (gmoellen; 2013Apr09) Added fixsyscaltimes and calantsub methods
+                                to handle Tsys irregularities
+    v1.3 (dpetry; 2017Sept11) Added genImageName
+    v1.4 (gmoellen; 2021Jul08) fixsyscaltimes now returns True if a fix
+                                was applied, otherwise returns False
+
+After migration
+
+    2025-03-11  update the module docstring; no changes were made to the code
+                itself from the original casarecipes/almahelpers.py.
+
+Functions:
+    tsysspwmap - Generate an "applycal-ready" spwmap for TDM to FDM
+                 transfer of Tsys calibration data.
+    fixsyscaltimes - Repair the TIME and INTERVAL columns of the MS
+                     SYSCAL subtable to ensure gencal functions properly.
+    calantsub - Substitute calibration solutions from one antenna to another.
+    genImageName - Generate canonical image file names based on ALMA archive conventions.
+    editIntentscsv - Reads a csv file to edit intent.
+    editIntents - Change the observation intents for a specified field in MS.
+
+
+Classes:
+    SpwMap - A data structure to hold information about spectral window mapping.
+    SpwInfo - A data structure to hold information about spectral window metadata.
+
+Usage:
+
+To access these functions, type (at the CASA prompt):
+
+    from pipeline.extern.almahelpers import *
+
+Or if in the older recipes folder:
+
+    from recipes.almahelpers import *
+
+For more information about each function type:
+
+    help(tsysspwmap)
+    help(fixsyscaltimes)
+    help(calantsub)
+    help(genImageName)
+    help(editIntentscsv)
+    help(editIntents)
+    help(SpwMap)
+    help(SpwInfo)
+"""
+
 import numpy
 from casatools import table as tbtool
 from casatools import quanta as qatool
