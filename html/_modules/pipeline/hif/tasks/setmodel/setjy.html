@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.setmodel.setjy &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -146,7 +146,7 @@
         <span class="n">field_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
 
         <span class="c1"># Fields with different intents may have the same name. Check for this</span>
-        <span class="c1"># and return the field ids rather than the names to resolve any </span>
+        <span class="c1"># and return the field ids rather than the names to resolve any</span>
         <span class="c1"># ambiguities.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">len</span><span class="p">(</span><span class="n">field_ids</span><span class="p">):</span>
             <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unique_field_names</span><span class="p">)</span>
@@ -158,7 +158,7 @@
     <span class="nd">@vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">refspectra</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="c1"># If flux density was explicitly set and is not equal to -1, which is </span>
+        <span class="c1"># If flux density was explicitly set and is not equal to -1, which is</span>
         <span class="c1"># hard-coded as the default value in the task interface return the</span>
         <span class="c1"># default tuple which is composed of the reference frequency, the</span>
         <span class="c1"># Stokes fluxdensity and the spectral index</span>
@@ -174,7 +174,7 @@
         <span class="c1">#     1) from file, unless it&#39;s a solar system object</span>
         <span class="c1">#     2) from CASA</span>
 
-        <span class="c1"># TODO: Replace with reading directly from the context </span>
+        <span class="c1"># TODO: Replace with reading directly from the context</span>
 
         <span class="c1"># Read the reference flux values from a file</span>
         <span class="n">ref_flux</span> <span class="o">=</span> <span class="p">[]</span>
@@ -223,7 +223,7 @@
         <span class="n">spw_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">)</span>
 
         <span class="c1"># In order to print flux densities in the same order as the fields, we</span>
-        <span class="c1"># must retrieve the flux density for each field in turn </span>
+        <span class="c1"># must retrieve the flux density for each field in turn</span>
         <span class="n">field_flux</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">field_arg</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
 
@@ -240,11 +240,11 @@
                     <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
 
             <span class="c1"># Find fluxes</span>
-            <span class="n">flux_by_spw</span> <span class="o">=</span> <span class="p">[]</span> 
+            <span class="n">flux_by_spw</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">spw_id</span> <span class="ow">in</span> <span class="n">spw_ids</span><span class="p">:</span>
                 <span class="n">reffreq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_window</span><span class="p">(</span><span class="n">spw_id</span><span class="p">)</span><span class="o">.</span><span class="n">centre_frequency</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normfluxes</span><span class="p">:</span>
-                    <span class="n">flux</span> <span class="o">=</span> <span class="p">[(</span><span class="n">reffreq</span><span class="p">,</span> <span class="p">[</span><span class="n">I</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">U</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">V</span><span class="o">/</span><span class="n">I</span><span class="p">],</span> <span class="n">spix</span><span class="p">)</span> 
+                    <span class="n">flux</span> <span class="o">=</span> <span class="p">[(</span><span class="n">reffreq</span><span class="p">,</span> <span class="p">[</span><span class="n">I</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">U</span><span class="o">/</span><span class="n">I</span><span class="p">,</span> <span class="n">V</span><span class="o">/</span><span class="n">I</span><span class="p">],</span> <span class="n">spix</span><span class="p">)</span>
                             <span class="k">for</span> <span class="p">(</span><span class="n">ref_field_id</span><span class="p">,</span> <span class="n">ref_spw_id</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">U</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">spix</span><span class="p">,</span> <span class="n">uvmin</span><span class="p">,</span> <span class="n">uvmax</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ref_flux</span>
                             <span class="k">if</span> <span class="p">(</span><span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_ids</span> <span class="ow">or</span> <span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ref_spw_id</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -253,7 +253,7 @@
                             <span class="k">if</span> <span class="p">(</span><span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_ids</span> <span class="ow">or</span> <span class="n">ref_field_id</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ref_spw_id</span> <span class="o">==</span> <span class="n">spw_id</span><span class="p">]</span>
 
                 <span class="c1"># No flux measurements found for the requested field/spws, so do</span>
-                <span class="c1"># either a CASA model look-up (-1) or reset the flux to 1.                </span>
+                <span class="c1"># either a CASA model look-up (-1) or reset the flux to 1.</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">flux</span><span class="p">:</span>
                     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">):</span>
                         <span class="n">flux</span> <span class="o">=</span> <span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spix</span><span class="p">)</span>
@@ -290,7 +290,7 @@
         <span class="n">heu_standard</span> <span class="o">=</span> <span class="n">standard</span><span class="o">.</span><span class="n">Standard</span><span class="p">()</span>
 
         <span class="c1"># The field may be an integer, but the standard heuristic operates on</span>
-        <span class="c1"># strings so determine the corresponding name of the fields </span>
+        <span class="c1"># strings so determine the corresponding name of the fields</span>
         <span class="n">field_names</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
@@ -303,6 +303,7 @@
         <span class="n">standards</span> <span class="o">=</span> <span class="p">[</span><span class="n">heu_standard</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">field_names</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">standards</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">standards</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">standards</span>
 
+    <span class="c1"># docstring and type hints: supplements hif_setjy</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scalebychan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxdensity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -310,7 +311,71 @@
                  <span class="c1">#    tuple containing reffreq, fluxdensity, spix</span>
                  <span class="n">refspectra</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">reffile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">normfluxes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</span>
+
+<span class="sd">            field: The list of field names or field ids for which the models are to be set. Defaults to all fields with intent &#39;`*AMPLITUDE*`&#39;.</span>
+
+<span class="sd">                Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
+
+<span class="sd">            intent: A string containing a comma delimited list of intents against which the selected fields are matched. Defaults to all data</span>
+<span class="sd">                with amplitude intent.</span>
+
+<span class="sd">                Example: intent=&#39;`*AMPLITUDE*`&#39;</span>
+
+<span class="sd">            spw: The list of spectral windows and channels for which bandpasses are computed. Defaults to all science spectral windows.</span>
+
+<span class="sd">                Example: spw=&#39;11,13,15,17&#39;</span>
+
+<span class="sd">            model: Model image for setting model visibilities. Not fully supported.</span>
+
+<span class="sd">                Example: see details in help for CASA setjy task</span>
+
+<span class="sd">            scalebychan: This determines whether the fluxdensity set in the model is calculated on a per channel basis. If False then only one fluxdensity</span>
+<span class="sd">                value is calculated per spw.</span>
+
+<span class="sd">            fluxdensity: Specified flux density [I,Q,U,V] in Jy. Uses [1,0,0,0] flux density for unrecognized sources, and standard flux densities for</span>
+<span class="sd">                ones recognized by &#39;standard&#39;, including 3C286, 3C48, 3C147, and several</span>
+<span class="sd">                planets, moons, and asteroids.</span>
+
+<span class="sd">                Example: [3.06,0.0,0.0,0.0]</span>
+
+<span class="sd">            spix: Spectral index for fluxdensity S = fluxdensity * (freq/reffreq)**spix Only used if fluxdensity is being used. If fluxdensity is positive, and</span>
+<span class="sd">                spix is nonzero, then reffreq must be set too. It is applied in the same</span>
+<span class="sd">                way to all polarizations, and does not account for Faraday rotation or</span>
+<span class="sd">                depolarization.</span>
+
+<span class="sd">            reffreq: The reference frequency for spix, given with units. Provided to avoid division by zero. If the flux density is being scaled by spectral</span>
+<span class="sd">                index, then reffreq must be set to whatever reference frequency is correct</span>
+<span class="sd">                for the given fluxdensity and spix. It cannot be determined from vis. On</span>
+<span class="sd">                the other hand, if spix is 0, then any positive frequency can be used and</span>
+<span class="sd">                will be ignored.</span>
+
+<span class="sd">                Example: reffreq=&#39;86.0GHz&#39;, reffreq=&#39;4.65e9Hz&#39;</span>
+
+<span class="sd">            standard: Flux density standard, used if fluxdensity[0] less than 0.0. The options are: &#39;Baars&#39;,&#39;Perley 90&#39;,&#39;Perley-Taylor 95&#39;, &#39;Perley-Taylor 99&#39;,</span>
+<span class="sd">                &#39;Perley-Butler 2010&#39; and &#39;Butler-JPL-Horizons 2010&#39;.</span>
+<span class="sd">                default: &#39;Butler-JPL-Horizons 2012&#39; for solar system object</span>
+<span class="sd">                &#39;Perley-Butler 2010&#39; otherwise</span>
+
+<span class="sd">            refspectra:</span>
+
+<span class="sd">            reffile: Path to a file containing flux densities for calibrators unknown to CASA. Values given in this file take precedence over the CASA-derived</span>
+<span class="sd">                values for all calibrators except solar system calibrators. By default the</span>
+<span class="sd">                path is set to the CSV file created by h_importdata, consisting of</span>
+<span class="sd">                catalogue fluxes extracted from the ASDM.</span>
+<span class="sd">                example: reffile=&#39;&#39;, reffile=&#39;working/flux.csv&#39;</span>
+
+<span class="sd">            normfluxes: Normalize lookup fluxes.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SetjyInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -369,13 +434,13 @@
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.hif.tasks.Setjy.html#pipeline.hif.tasks.Setjy.prepare">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span> 
+        <span class="n">result</span> <span class="o">=</span> <span class="n">commonfluxresults</span><span class="o">.</span><span class="n">FluxCalibrationResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
 
         <span class="c1"># Return early if the field has no data of the required intent. This</span>
         <span class="c1"># could be the case when given multiple MSes, one of which could be</span>
         <span class="c1"># without an amplitude calibrator for instance.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">):</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Field(s) </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> in </span><span class="si">%s</span><span class="s1"> have no data with intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> 
+            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Field(s) </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> in </span><span class="si">%s</span><span class="s1"> have no data with intent </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
                         <span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">result</span>
 
@@ -390,16 +455,16 @@
         <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">safe_split</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">field</span><span class="p">):</span>
             <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
 
-            <span class="c1"># Intent is now passed through to setjy, where the intents are </span>
-            <span class="c1"># AND&#39;ed to form the data selection. This causes problems when a </span>
-            <span class="c1"># field name resolves to two field IDs with disjoint intents: </span>
-            <span class="c1"># no data is selected. So, create our own OR data selection by </span>
-            <span class="c1"># looping over the individual fields, specifying just those </span>
+            <span class="c1"># Intent is now passed through to setjy, where the intents are</span>
+            <span class="c1"># AND&#39;ed to form the data selection. This causes problems when a</span>
+            <span class="c1"># field name resolves to two field IDs with disjoint intents:</span>
+            <span class="c1"># no data is selected. So, create our own OR data selection by</span>
+            <span class="c1"># looping over the individual fields, specifying just those</span>
             <span class="c1"># intents present in the field.</span>
             <span class="n">fields</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">field_name</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
                 <span class="n">field_is_unique</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">else</span><span class="p">:</span> 
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">field_is_unique</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">False</span>
 
             <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
@@ -410,12 +475,12 @@
                 <span class="n">field_identifier</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">field_is_unique</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                 <span class="c1"># We&#39;re specifying field PLUS intent, so we&#39;re unlikely to</span>
                 <span class="c1"># have duplicate data selections. We ensure no duplicate</span>
-                <span class="c1"># selections by using field ID at the expense of losing some </span>
+                <span class="c1"># selections by using field ID at the expense of losing some</span>
                 <span class="c1"># readability in the log. Also, this helps if the amplitude</span>
                 <span class="c1"># is time dependent.</span>
                 <span class="n">inputs</span><span class="o">.</span><span class="n">field</span> <span class="o">=</span> <span class="n">field_identifier</span>
 
-                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>  
+                <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">spws</span><span class="p">:</span>
 
                     <span class="c1"># Skip invalid spws</span>
                     <span class="k">if</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_spwids</span><span class="p">:</span>
@@ -423,14 +488,14 @@
                     <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span><span class="o">.</span><span class="n">id</span>
 
                     <span class="n">orig_intent</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span>
-                    <span class="k">try</span><span class="p">:</span>                
+                    <span class="k">try</span><span class="p">:</span>
                         <span class="c1"># The field may not have all intents, which leads to its</span>
                         <span class="c1"># deselection in the setjy data selection. Only list</span>
                         <span class="c1"># the target intents that are present in the field.</span>
-                        <span class="n">input_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span> 
+                        <span class="n">input_intents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">))</span>
                         <span class="n">targeted_intents</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">input_intents</span><span class="p">)</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="n">targeted_intents</span><span class="p">:</span>
-                            <span class="k">continue</span> 
+                            <span class="k">continue</span>
                         <span class="n">inputs</span><span class="o">.</span><span class="n">intent</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">targeted_intents</span><span class="p">)</span>
 
                         <span class="n">task_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
@@ -496,7 +561,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

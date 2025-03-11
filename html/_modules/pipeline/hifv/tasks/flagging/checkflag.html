@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.flagging.checkflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -141,7 +141,52 @@
     <span class="n">checkflagmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">overwrite_modelcol</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hifv_checkflag</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkflagmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_modelcol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">growflags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
+
+<span class="sd">            checkflagmode:</span>
+<span class="sd">                - Standard VLA modes with improved RFI flagging heuristics: &#39;bpd-vla&#39;, &#39;allcals-vla&#39;, &#39;target-vla&#39;</span>
+<span class="sd">                - blank string default use of rflag on bandpass and delay calibrators</span>
+<span class="sd">                - use string &#39;semi&#39; after hifv_semiFinalBPdcals() for executing rflag on calibrators</span>
+<span class="sd">                - use string &#39;bpd&#39;, for the bandpass and delay calibrators:</span>
+<span class="sd">                  execute rflag on all calibrated cross-hand corrected data;</span>
+<span class="sd">                  extend flags to all correlations</span>
+<span class="sd">                  execute rflag on all calibrated parallel-hand residual data;</span>
+<span class="sd">                  extend flags to all correlations</span>
+<span class="sd">                  execute tfcrop on all calibrated cross-hand corrected data,</span>
+<span class="sd">                  per visibility; extend flags to all correlations</span>
+<span class="sd">                  execute tfcrop on all calibrated parallel-hand corrected data,</span>
+<span class="sd">                  per visibility; extend flags to all correlations</span>
+<span class="sd">                - use string &#39;allcals&#39;, for all the other calibrators, with delays and BPcal applied:</span>
+<span class="sd">                  similar procedure as &#39;bpd&#39; mode, but uses corrected data throughout</span>
+<span class="sd">                - use string &#39;target&#39;, for the target data:</span>
+<span class="sd">                  similar procedure as &#39;allcals&#39; mode, but with a higher SNR cutoff</span>
+<span class="sd">                  for rflag to avoid flagging data due to source structure, and</span>
+<span class="sd">                  with an additional series of tfcrop executions to make up for</span>
+<span class="sd">                  the higher SNR cutoff in rflag</span>
+<span class="sd">                - VLASS specific modes include &#39;bpd-vlass&#39;, &#39;allcals-vlass&#39;, and &#39;target-vlass&#39;</span>
+<span class="sd">                  which calculate thresholds to use per spw/field/scan (action=&#39;calculate&#39;, then,</span>
+<span class="sd">                  per baseband/field/scan, replace all spw thresholds above the median with the median,</span>
+<span class="sd">                  before re-running rflag with the new thresholds.  This has the effect of</span>
+<span class="sd">                  lowering the thresholds for spws with RFI to be closer to the RFI-free</span>
+<span class="sd">                  thresholds, and catches more of the RFI.</span>
+<span class="sd">                - Mode &#39;vlass-imaging&#39; is similar to &#39;target-vlass&#39;, except that it executes on the split off target</span>
+<span class="sd">                  data, intent=&#39;*TARGET&#39;, datacolumn=&#39;data&#39; and uses a timedevscale of 4.0.</span>
+
+<span class="sd">            overwrite_modelcol: Always write the model column, even if it already exists.</span>
+
+<span class="sd">            growflags: Grow flags in time at the end of the following checkflagmodes:</span>
+
+<span class="sd">                - default=True, for &#39;bpd-vla&#39;, &#39;allcals-vla&#39;, &#39;bpd&#39;, and &#39;allcals.&#39;</span>
+<span class="sd">                - default=False, for &#39;&#39; and &#39;semi&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CheckflagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -195,7 +240,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Checkflag task: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">checkflagmode</span><span class="p">)))</span>
 
         <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">observing_run</span><span class="o">.</span><span class="n">get_ms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tint</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_vla_max_integration_time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tint</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_integration_time_stats</span><span class="p">(</span><span class="n">stat_type</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
 
         <span class="c1"># a list of strings representing polarizations from science spws</span>
         <span class="n">sci_spwlist</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -608,8 +653,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_select_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Selects data according to the specified checkflagmode.</span>
 
-<span class="sd">        This method constructs selection strings for fields, scans, and intents based on the </span>
-<span class="sd">        `checkflagmode` input. It also determines the appropriate data column to use </span>
+<span class="sd">        This method constructs selection strings for fields, scans, and intents based on the</span>
+<span class="sd">        `checkflagmode` input. It also determines the appropriate data column to use</span>
 <span class="sd">        (&#39;corrected&#39; or &#39;data&#39;).</span>
 
 <span class="sd">        Returns:</span>
@@ -993,7 +1038,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.tasks.fluxcalflag.fluxcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -159,11 +159,55 @@
 
     <span class="n">applyflags</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hifa_fluxcalflag</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">appendlines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linesfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">applyflags</span><span class="o">=</span><span class="kc">None</span>
                  <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">                MeasurementSets defined in the pipeline context.</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            field: The list of field names or field ids for which the models are</span>
+<span class="sd">                to be set. Defaults to all fields with intent &#39;AMPLITUDE&#39;.</span>
+
+<span class="sd">                Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
+
+<span class="sd">            spw: Spectral windows and channels for which bandpasses are</span>
+<span class="sd">                computed. Defaults to all science spectral windows.</span>
+
+<span class="sd">                Example: spw=&#39;11,13,15,17&#39;</span>
+
+<span class="sd">            intent: A string containing a comma delimited list of intents against</span>
+<span class="sd">                which the selected fields are matched. Defaults to all data</span>
+<span class="sd">                with amplitude intent.</span>
+
+<span class="sd">                Example: intent=&#39;AMPLITUDE&#39;</span>
+
+<span class="sd">            threshold: If the fraction of a spectral window occupied by line regions</span>
+<span class="sd">                is greater than this threshold value, then flag the entire</span>
+<span class="sd">                spectral window.</span>
+
+<span class="sd">            appendlines: Append user defined line regions to the line dictionary.</span>
+
+<span class="sd">            linesfile: Read in a file containing lines regions and append it to the</span>
+<span class="sd">                builtin dictionary. Blank lines and comments beginning with #</span>
+<span class="sd">                are skipped. The data is contained in 4 whitespace delimited</span>
+<span class="sd">                fields containing the solar system object field name, e.g.</span>
+<span class="sd">                &#39;Callisto&#39;, the molecular species name, e.g. &#39;13CO&#39;, and the</span>
+<span class="sd">                starting and ending frequency in GHz.</span>
+
+<span class="sd">            applyflags: Boolean for whether to apply the generated flag commands. (default True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FluxcalFlagInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># pipeline inputs</span>
@@ -194,7 +238,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">merge_with_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39; No results to merge &#39;</span><span class="p">)</span>
             <span class="k">return</span>
 
@@ -213,7 +257,7 @@
                 <span class="n">linelist</span> <span class="o">=</span> <span class="n">linelist</span> <span class="o">+</span> \
                     <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">field=</span><span class="si">%s</span><span class="s1"> line=</span><span class="si">%s</span><span class="s1"> spw=</span><span class="si">%d</span><span class="s1">:</span><span class="si">%d</span><span class="s1">~</span><span class="si">%d</span><span class="s1"> nchan=</span><span class="si">%d</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">%</span> \
                     <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">species</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">,</span> \
-                     <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                     <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">linelist</span>
 
 
@@ -245,7 +289,7 @@
             <span class="n">result</span><span class="o">.</span><span class="n">summaries</span> <span class="o">=</span> <span class="n">summaries</span>
             <span class="k">return</span> <span class="n">result</span>
 
-        <span class="c1"># Get the science spws. </span>
+        <span class="c1"># Get the science spws.</span>
         <span class="n">science_spws</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">task_arg</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">science_spws</span><span class="p">:</span>
             <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No science spw(s) specified for </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">inputs</span><span class="o">.</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">)</span>
@@ -281,7 +325,7 @@
             <span class="c1"># Skip if field not in solar system object line list</span>
             <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">UserSolarSystemLineList</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Searching field </span><span class="si">%s</span><span class="s1"> for spectral lines&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> 
+            <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Searching field </span><span class="si">%s</span><span class="s1"> for spectral lines&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
             <span class="c1"># Loop over the science spectral windows for that field</span>
             <span class="c1"># NOTE: Use in field.valid_spws() in future</span>
@@ -369,7 +413,7 @@
         <span class="k">return</span> <span class="n">result</span></div>
 
 
-    <span class="c1"># Read in a file containing lines regions and append it to </span>
+    <span class="c1"># Read in a file containing lines regions and append it to</span>
     <span class="c1"># the builtin dictionary.</span>
     <span class="c1">#    Blank lines and comments beginning with # are skipped</span>
     <span class="c1">#    The data is contained in 4 whitespace delimited fields</span>
@@ -403,7 +447,7 @@
                     <span class="c1">#    If not create new species list</span>
                     <span class="n">newspecies</span> <span class="o">=</span> <span class="kc">True</span>
                     <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">linedict</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
-                        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">species</span><span class="p">:</span> 
+                        <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">species</span><span class="p">:</span>
                             <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
                             <span class="n">newspecies</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">if</span> <span class="n">newspecies</span><span class="p">:</span>
@@ -426,21 +470,21 @@
                 <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="n">spwmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span>
                 <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmask</span>
             <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span> <span class="o">!=</span> <span class="n">prev_spwid</span><span class="p">:</span>
                 <span class="n">spwmask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
-                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span>
                 <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwmask</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">spwmask</span> <span class="o">=</span> <span class="n">maskarrays</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span>
-                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> 
+                <span class="n">spwmask</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">=</span> \
-                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span> 
+                    <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">spwmask</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">nchan</span><span class="p">)</span>
 
             <span class="n">prev_fieldname</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">fieldname</span>
             <span class="n">prev_spwid</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span>
@@ -479,12 +523,12 @@
                         <span class="n">flagged</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">if</span> <span class="n">svalue</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
                             <span class="n">flaggedspws</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
-                        <span class="k">else</span><span class="p">:</span> 
+                        <span class="k">else</span><span class="p">:</span>
                             <span class="n">unflaggedspws</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">flagged</span><span class="p">:</span>
                 <span class="n">unflaggedspws</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">spw</span>
 
-        <span class="c1"># None need be completely flagged. </span>
+        <span class="c1"># None need be completely flagged.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">flaggedspws</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
@@ -538,7 +582,7 @@
                 <span class="k">if</span> <span class="n">flagall</span> <span class="ow">and</span> <span class="n">flagstats</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">][</span><span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
                     <span class="k">pass</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># Note: the value of spw field is not closed by single quote, </span>
+                    <span class="c1"># Note: the value of spw field is not closed by single quote,</span>
                     <span class="c1"># for in case additional channel ranges are added.</span>
                     <span class="n">flagcmd</span> <span class="o">=</span> <span class="s2">&quot;mode=&#39;manual&#39; field=&#39;</span><span class="si">%s</span><span class="s2">&#39; intent=&#39;</span><span class="si">%s</span><span class="s2">&#39; spw=&#39;</span><span class="si">%d</span><span class="s2">:</span><span class="si">%d</span><span class="s2">~</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> \
                         <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">fieldname</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">obsmodes</span><span class="p">),</span> <span class="n">line</span><span class="o">.</span><span class="n">spwid</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="o">.</span><span class="n">chanrange</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -567,7 +611,7 @@
 <span class="sd">            vis - MS name</span>
 <span class="sd">        fieldid - field id of the observed field for reference frame \</span>
 <span class="sd">                  calculations</span>
-<span class="sd">          spwid - id of the spw </span>
+<span class="sd">          spwid - id of the spw</span>
 <span class="sd">        minfreq - minimum freq in Hz</span>
 <span class="sd">        maxfreq - maximum freq in Hz</span>
 <span class="sd">        refframe - frequency reference frame</span>
@@ -665,7 +709,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fieldname</span> <span class="o">=</span> <span class="n">fieldname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">species</span> <span class="o">=</span> <span class="n">species</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freqrange</span> <span class="o">=</span> <span class="n">freqrange</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span> <span class="o">=</span> <span class="n">spwid</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">spwid</span> <span class="o">=</span> <span class="n">spwid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chanrange</span> <span class="o">=</span> <span class="n">chanrange</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nchan</span> <span class="o">=</span> <span class="n">nchan</span>
 </pre></div>
@@ -677,7 +721,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

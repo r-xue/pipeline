@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.makecutoutimages.makecutoutimages &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -194,7 +194,24 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">offsettrc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[]</span>   <span class="c1"># Units of arcseconds</span>
 
+    <span class="c1"># docstring and type hints: supplements hif_makecutoutimages</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsetblc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offsettrc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs,</span>
+<span class="sd">                or tar files of MSs.</span>
+<span class="sd">                If ASDM files are specified, they will be converted to</span>
+<span class="sd">                MS format.</span>
+<span class="sd">                example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+
+<span class="sd">            offsetblc: -x and -y offsets to the bottom lower corner (blc) in arcseconds</span>
+
+<span class="sd">            offsettrc: +x and +y offsets to the top right corner (trc) in arcseconds</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MakecutoutimagesInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -417,7 +434,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_do_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subimagenames</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract essential stats from images.</span>
-<span class="sd">        </span>
+
 <span class="sd">        The return stats is a nested dictionary container: stats[spw_key][im_type][stats_type]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stats</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
@@ -482,7 +499,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

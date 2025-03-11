@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.baseline.baseline &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -201,6 +201,7 @@
     <span class="c1"># use common implementation for parallel inputs argument</span>
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">()</span>
 
+    <span class="c1"># docstring and type hints: supplements hsd_baseline</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
                  <span class="n">infiles</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -222,41 +223,172 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Pipeline context</span>
-<span class="sd">            infiles: Name of MS(s) to process. Defaults to all regirstered data if</span>
-<span class="sd">                     None is given.</span>
-<span class="sd">            antenna: Antenna selection. Defaults to all antennas if None is given.</span>
-<span class="sd">            spw: Spectral window selection. Defaults to all science spws if None is given.</span>
-<span class="sd">            pol: Polarization selection. Defaults to all polarizations if None is given.</span>
-<span class="sd">            field: Field selection. Defaults to all science fields if None is given.</span>
-<span class="sd">            linewindow: Manual line window. Defaults to None, which means that no user-defined</span>
-<span class="sd">                        line window is given.</span>
-<span class="sd">            linewindowmode: Line window handling mode. &#39;replace&#39; exclusively uses manual line window</span>
-<span class="sd">                            while &#39;merge&#39; merges manual line window into automatic line detection</span>
-<span class="sd">                            and validation result. Defaults to &#39;replace&#39; if None is given.</span>
-<span class="sd">            edge: Edge channels to exclude. Defaults to None, which means that all channels are processed.</span>
-<span class="sd">            broadline: Detect broadline component or not. Defaults to True if None is given.</span>
-<span class="sd">            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine</span>
-<span class="sd">                      how much the spectrum is segmented into. None is equivalent to -1.</span>
-<span class="sd">                      Default (-1) is to determine the order automatically.</span>
-<span class="sd">            fitfunc: Fitting function for baseline subtraction. You can choose</span>
-<span class="sd">                     either cubic spline (&#39;spline&#39; or &#39;cspline&#39;) or polynomial</span>
-<span class="sd">                     (&#39;poly&#39; or &#39;polynomial&#39;). Default is &#39;cspline&#39;.</span>
-<span class="sd">            switchpoly: Whether to fall back the fits from cubic spline to 1st or</span>
-<span class="sd">                        2nd order polynomial when large masks exist at the edges</span>
-<span class="sd">                        of the spw. Condition for switching is as follows:</span>
-<span class="sd">                            if nmask &gt; nchan/2      =&gt; 1st order polynomial</span>
-<span class="sd">                            else if nmask &gt; nchan/4 =&gt; 2nd order polynomial</span>
-<span class="sd">                            else                    =&gt; use fitfunc and fitorder</span>
-<span class="sd">                        where nmask is a number of channels for mask at edge while</span>
-<span class="sd">                        nchan is a number of channels of entire spectral window.</span>
-<span class="sd">                        Defaults to True if None is given.</span>
-<span class="sd">            clusteringalgorithm: Clustering algorithm to use. Choices are &#39;kmean&#39;, &#39;hierarchy&#39;,</span>
-<span class="sd">                                 or &#39;both&#39;, which merges results from two clustering algorithms.</span>
-<span class="sd">                                 Defaults to &#39;hierarchy&#39; if None is given.</span>
-<span class="sd">            deviationmask: Apply deviation mask or not. Defaults to True if None is given.</span>
-<span class="sd">            parallel: Turn on/off parallel execution. If &#39;true&#39;, baseline subtraction is performed</span>
-<span class="sd">                      in parallel if available. The &#39;automatic&#39; option use parallel execution</span>
-<span class="sd">                      only if it is available. Defaults to &#39;automatic&#39; if None is given.</span>
+
+<span class="sd">            infiles: List of data files. These must be a name of MeasurementSets that are</span>
+<span class="sd">                registered to context via hsd_importdata or hsd_restoredata task.</span>
+
+<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
+<span class="sd">                Default: None (process all registered MeasurementSets)</span>
+
+<span class="sd">            antenna: Data selection by antenna.</span>
+
+<span class="sd">                Example: &#39;1&#39; (select by ANTENNA_ID), &#39;PM03&#39; (select by antenna name), &#39;&#39; (all antennas)</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            spw: Data selection by spw.</span>
+
+<span class="sd">                Example: &#39;3,4&#39; (process spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second), &#39;&#39; (all spws)</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            pol: Data selection by polarizations.</span>
+
+<span class="sd">                Example: &#39;0&#39; (process pol 0), [&#39;0~1&#39;,&#39;0&#39;] (pol 0 and 1 for first data, only 0 for second), &#39;&#39; (all polarizations)</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            field: Data selection by field.</span>
+
+<span class="sd">                Example: &#39;1&#39; (select by FIELD_ID), &#39;M100*&#39; (select by field name), &#39;&#39; (all fields)</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            linewindow: Pre-defined line window. If this is set, specified line windows are used as</span>
+<span class="sd">                a line mask for baseline subtraction instead to determine masks based on line detection and</span>
+<span class="sd">                validation stage. Several types of format are acceptable. One is channel-based window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [min_chan, max_chan]</span>
+
+<span class="sd">                where min_chan and max_chan should be an integer. For multiple  windows, nested list is</span>
+<span class="sd">                also acceptable.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]</span>
+
+<span class="sd">                Another way is frequency-based window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [min_freq, max_freq]</span>
+
+<span class="sd">                where min_freq and max_freq should be either a float or a string. If float value is given,</span>
+<span class="sd">                it is interpreted as a frequency in Hz. String should be a quantity consisting</span>
+<span class="sd">                of &quot;value&quot; and &quot;unit&quot;, e.g., &#39;100GHz&#39;. Multiple windows are also supported.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]</span>
+
+<span class="sd">                Note that the specified frequencies are assumed to be the value in LSRK frame.</span>
+<span class="sd">                Note also that there is a limitation when multiple MSes are processed.</span>
+<span class="sd">                If native frequency frame of the data is not LSRK (e.g. TOPO), frequencies need to be</span>
+<span class="sd">                converted to that frame. As a result, corresponding channel range may vary</span>
+<span class="sd">                between MSes. However, current implementation is not able to handle such case.</span>
+<span class="sd">                Frequencies are converted to desired frame using representative MS (time, position,</span>
+<span class="sd">                direction).</span>
+
+<span class="sd">                In the above cases, specified line windows are applied to all science spws.</span>
+<span class="sd">                In case when line windows vary with spw, line windows can be specified by a dictionary whose</span>
+<span class="sd">                key is spw id while value is line window. For example, the following dictionary gives different</span>
+<span class="sd">                line windows to spws 17 and 19. Other spws, if available, will have an empty line window.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    {17: [[100, 200], [1200, 1400]], 19: [&#39;112115MHz&#39;, &#39;112116MHz&#39;]}</span>
+
+<span class="sd">                Furthermore, linewindow accepts MS selection string. The following string gives</span>
+<span class="sd">                [[100,200],[1200,1400]] for spw 17 while [1000,1500] for spw 21.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    &quot;17:100~200;1200~1400,21:1000~1500&quot;</span>
+
+<span class="sd">                The string also accepts frequency with units. Note, however, that frequency reference frame</span>
+<span class="sd">                in this case is not fixed to LSRK. Instead, the frame will be taken from the MS</span>
+<span class="sd">                (typically TOPO for ALMA). Thus, the following two frequency-based line windows</span>
+<span class="sd">                result different channel selections.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    {19: [&#39;112115MHz&#39;, &#39;112116MHz&#39;]} # frequency frame is LSRK</span>
+<span class="sd">                    &quot;19:11215MHz~11216MHz&quot; # frequency frame is taken from the data (TOPO for ALMA)</span>
+
+<span class="sd">                None is allowed as a value of dictionary input to indicate that no line detection/validation</span>
+<span class="sd">                is required even if manually specified line window does not exist. When None is given as a value</span>
+<span class="sd">                and if ``linewindowmode`` is &#39;replace&#39;, line detection/validation is not performed</span>
+<span class="sd">                for the corresponding spw. For example, suppose the following parameters are given for the data</span>
+<span class="sd">                with four science spws, 17, 19, 21, and 23.</span>
+<span class="sd">                ::</span>
+
+<span class="sd">                    linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}</span>
+<span class="sd">                    linewindowmode=&#39;replace&#39;</span>
+
+<span class="sd">                The task will use given line window for 17 and 19 while the task performs</span>
+<span class="sd">                line deteciton/validation for spw 23 because no line window is set.</span>
+<span class="sd">                On the other hand, line detection/validation is skipped for spw 21 due to the effect of None.</span>
+
+<span class="sd">                Example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz), [&#39;115GHz&#39;, &#39;115.1GHz&#39;] (see above for more examples)</span>
+
+<span class="sd">                Default: None</span>
+
+<span class="sd">            linewindowmode: Merge or replace given manual line window with line detection/validation result.</span>
+<span class="sd">                If &#39;replace&#39; is given, line detection and validation will not be performed.</span>
+<span class="sd">                On the other hand, when &#39;merge&#39; is specified, line detection/validation will be performed</span>
+<span class="sd">                and manually specified line windows are added to the result.</span>
+<span class="sd">                Note that this has no effect when linewindow for target spw is an empty list. In that case,</span>
+<span class="sd">                line detection/validation will be performed regardless of the value of linewindowmode.</span>
+<span class="sd">                In case if no linewindow nor line detection/validation are necessary, you should set</span>
+<span class="sd">                linewindowmode to &#39;replace&#39; and specify None as a value of the linewindow dictionary</span>
+<span class="sd">                for the spw to apply. See parameter description of ``linewindow`` for detail.</span>
+
+<span class="sd">            edge: Number of edge channels to be dropped from baseline subtraction.</span>
+<span class="sd">                The value must be a list with length of 2, whose values specify left and right edge channels,</span>
+<span class="sd">                respectively.</span>
+
+<span class="sd">                Example: [10,10]</span>
+
+<span class="sd">                Default: None</span>
+
+<span class="sd">            broadline: Try to detect broad component of spectral line if True.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline</span>
+<span class="sd">                (&#39;spline&#39; or &#39;cspline&#39;) or polynomial (&#39;poly&#39; or &#39;polynomial&#39;).</span>
+
+<span class="sd">                Default: None (equivalent to &#39;cspline&#39;)</span>
+
+<span class="sd">            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how</span>
+<span class="sd">                much the spectrum is segmented into. If -1 is given, the task determines the order automatically.</span>
+
+<span class="sd">                Default: None (equivalent to -1)</span>
+
+<span class="sd">            switchpoly: Whether to fall back the fits from cubic spline to 1st or 2nd order polynomial</span>
+<span class="sd">                when large masks exist at the edges of the spw. Condition for switching is as follows:</span>
+
+<span class="sd">                - if nmask &gt; nchan/2      =&gt; 1st order polynomial</span>
+<span class="sd">                - else if nmask &gt; nchan/4 =&gt; 2nd order polynomial</span>
+<span class="sd">                - else                    =&gt; use fitfunc and fitorder</span>
+
+<span class="sd">                where nmask is a number of channels for mask at edge while</span>
+<span class="sd">                nchan is a number of channels of entire spectral window.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            clusteringalgorithm: Selection of the algorithm used in the clustering analysis</span>
+<span class="sd">                to check the validity of detected line features. The &#39;kmean&#39; algorithm,</span>
+<span class="sd">                hierarchical clustering algorithm, &#39;hierarchy&#39;, and their combination (&#39;both&#39;)</span>
+<span class="sd">                are so far implemented.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;hierarchy&#39;)</span>
+
+<span class="sd">            deviationmask: Apply deviation mask in addition to masks determined by the automatic line detection.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+
+<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;automatic&#39;).</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDBaselineInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -845,7 +977,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

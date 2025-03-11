@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.restoredata.restoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -117,7 +117,7 @@
 <span class="sd">Restore task module for NRO data, based on h_restoredata.</span>
 
 <span class="sd">The restore data module provides a class for reimporting, reflagging, and</span>
-<span class="sd">recalibrating a subset of the ASDMs belonging to a member OUS, using pipeline</span>
+<span class="sd">recalibrating a subset of the MSes belonging to a member OUS, using pipeline</span>
 <span class="sd">flagging and calibration data products.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
@@ -141,10 +141,11 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">NRORestoreDataInputs</span><span class="p">(</span><span class="n">restoredata</span><span class="o">.</span><span class="n">RestoreDataInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;NRORestoreDataInputs manages the inputs for the NRORestoreData task.&quot;&quot;&quot;</span>
 
-    <span class="n">reffile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">reffile</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;nroscalefile.csv&#39;</span><span class="p">)</span>
     <span class="n">caltable</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">hm_rasterscan</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hsdn_retoredata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="p">:</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">reffile</span><span class="p">:</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">copytoraw</span><span class="p">:</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -154,14 +155,77 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: the pipeline Context state object</span>
-<span class="sd">            vis: the ASDMs(s) for which data is to be restored</span>
-<span class="sd">            caltable: VisDependentProperty object, calibration table data</span>
-<span class="sd">            reffile: VisDependentProperty object, a scale file</span>
-<span class="sd">            products_dir: the directory of archived pipeline products</span>
-<span class="sd">            copytoraw: copy the required data products from products_dir to rawdata_dir</span>
-<span class="sd">            rawdata_dir: the raw data directory for ASDM(s) and products</span>
+
+<span class="sd">            vis: List of raw visibility data files to be restored.</span>
+<span class="sd">                Assumed to be in the directory specified by rawdata_dir.</span>
+
+<span class="sd">                Example: vis=[&#39;mg2.ms&#39;]</span>
+
+<span class="sd">            caltable: Name of output gain calibration tables.</span>
+
+<span class="sd">                Example: caltable=&#39;ngc5921.gcal&#39;</span>
+
+<span class="sd">            reffile: Path to a file containing scaling factors between beams.</span>
+<span class="sd">                The format is equals to jyperk.csv with five fields:</span>
+
+<span class="sd">                    - MS name</span>
+<span class="sd">                    - beam name (instead of antenna name)</span>
+<span class="sd">                    - spectral window id</span>
+<span class="sd">                    - polarization string</span>
+<span class="sd">                    - the scaling factor</span>
+
+<span class="sd">                Example for the file is as follows::</span>
+
+<span class="sd">                    #MS,Beam,Spwid,Polarization,Factor</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM3,2,I,2.000000000</span>
+<span class="sd">                    mg2-20181016165248-181017.ms,NRO-BEAM3,3,I,2.000000000</span>
+
+<span class="sd">                If no file name is specified or specified file doesn&#39;t exist,</span>
+<span class="sd">                all the factors are set to 1.0.</span>
+
+<span class="sd">                Example: reffile=&#39;&#39;, reffile=&#39;nroscalefile.csv&#39;</span>
+
+<span class="sd">            products_dir: Name of the data products directory.</span>
+
+<span class="sd">                Example: products_dir=&#39;myproductspath&#39;</span>
+
+<span class="sd">                Default: None (equivalent to &#39;../products&#39;)</span>
+
+<span class="sd">            copytoraw: Copy calibration and flagging tables to</span>
+<span class="sd">                raw data directory.</span>
+
+<span class="sd">                Example: copytoraw=False</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            rawdata_dir: Name of the raw data directory.</span>
+
+<span class="sd">                Example: rawdata_dir=&#39;myrawdatapath&#39;</span>
+
+<span class="sd">                Default: None (equivalent to &#39;../rawdata&#39;)</span>
+
 <span class="sd">            output_dir: the working directory for the restored data</span>
-<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis</span>
+
+<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis.</span>
+<span class="sd">                Two analysis modes, time-domain analysis (&#39;time&#39;) and</span>
+<span class="sd">                direction analysis (&#39;direction&#39;), are available.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;time&#39;)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NRORestoreDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">,</span>
                                                    <span class="n">copytoraw</span><span class="o">=</span><span class="n">copytoraw</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="n">rawdata_dir</span><span class="p">,</span>
@@ -324,7 +388,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

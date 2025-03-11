@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_wvrgcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <h1>pipeline.hifa.cli.hifa_wvrgcalflag<a class="headerlink" href="#pipeline-hifa-cli-hifa-wvrgcalflag" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_wvrgcalflag">
-<span class="sig-name descname"><span class="pre">hifa_wvrgcalflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetstable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_toffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segsource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disperse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wvrflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxdistm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minnumants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mingoodfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa_bandpass_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accept_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_hi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi_minsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ants_with_wvr_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_wvrgcalflag.html#hifa_wvrgcalflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_wvrgcalflag" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hifa_wvrgcalflag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsetstable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_toffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toffset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segsource</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_tie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tie</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nsol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disperse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wvrflag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxdistm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minnumants</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mingoodfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qa_bandpass_intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accept_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flag_hi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fhi_minsample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ants_with_wvr_thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_wvrgcalflag.html#hifa_wvrgcalflag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_wvrgcalflag" title="Link to this definition"></a></dt>
 <dd><p>Generate a gain table based on Water Vapor Radiometer data, interpolating over
 antennas with bad radiometers.</p>
 <p>This task will first identify for each vis whether it includes at least 3
@@ -151,22 +151,25 @@ calibration.</p>
 is greater than the value in ‘accept_threshold’ then make available the
 wvr calibration file for merging into the context and use in the
 subsequent reduction.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dd class="field-odd"><ul>
 <li><p><strong>vis</strong> – List of input visibility files.
 Default: none, in which case the vis files to be used
-will be read from the context.
-Example: vis=[‘ngc5921.ms’]</p></li>
+will be read from the context.</p>
+<p>Example: vis=[‘ngc5921.ms’]</p>
+</li>
 <li><p><strong>caltable</strong> – List of output gain calibration tables.
 Default: none, in which case the names of the caltables
-will be generated automatically.
-Example: caltable=’ngc5921.wvr’</p></li>
+will be generated automatically.</p>
+<p>Example: caltable=’ngc5921.wvr’</p>
+</li>
 <li><p><strong>offsetstable</strong> – List of input temperature offsets table files to
 subtract from WVR measurements before calculating phase
 corrections.
-Default: none, in which case no offsets are applied.
-Example: offsetstable=[‘ngc5921.cloud_offsets’]</p></li>
+Default: none, in which case no offsets are applied.</p>
+<p>Example: offsetstable=[‘ngc5921.cloud_offsets’]</p>
+</li>
 <li><p><strong>hm_toffset</strong> – If ‘manual’, set the ‘toffset’ parameter to the user-specified
 value. If ‘automatic’, set the ‘toffset’ parameter according to the
 date of the MeasurementSet; toffset=-1 if before 2013-01-21T00:00:00
@@ -180,8 +183,9 @@ non-empty value by the user or by the automatic
 heuristic.</p></li>
 <li><p><strong>sourceflag</strong> – Flag the WVR data for these source(s) as bad and do not
 produce corrections for it. Requires
-<code class="docutils literal notranslate"><span class="pre">segsource</span></code> = True.
-Example: sourceflag=[‘3C273’]</p></li>
+<code class="docutils literal notranslate"><span class="pre">segsource</span></code> = True.</p>
+<p>Example: sourceflag=[‘3C273’]</p>
+</li>
 <li><p><strong>hm_tie</strong> – If ‘manual’, set the <code class="docutils literal notranslate"><span class="pre">tie</span></code> parameter to the
 user-specified value. If ‘automatic’, set the <code class="docutils literal notranslate"><span class="pre">tie</span></code>
 parameter to include with the target all calibrators
@@ -190,8 +194,9 @@ that close then <code class="docutils literal notranslate"><span class="pre">tie
 <li><p><strong>tie</strong> – Use the same atmospheric phase correction coefficients
 when calculating the WVR correction for all sources in
 the <code class="docutils literal notranslate"><span class="pre">tie</span></code>. If <code class="docutils literal notranslate"><span class="pre">tie</span></code> is not empty then <code class="docutils literal notranslate"><span class="pre">segsource</span></code>
-is forced to be True. Ignored unless <code class="docutils literal notranslate"><span class="pre">hm_tie</span></code> = ‘manual’.
-Example: tie=[‘3C273,NGC253’, ‘IC433,3C279’]</p></li>
+is forced to be True. Ignored unless <code class="docutils literal notranslate"><span class="pre">hm_tie</span></code> = ‘manual’.</p>
+<p>Example: tie=[‘3C273,NGC253’, ‘IC433,3C279’]</p>
+</li>
 <li><p><strong>nsol</strong> – Number of solutions for phase correction coefficients during this
 observation, evenly distributed in time throughout the observation. It
 is used only if segsource=False because if segsource=True then the
@@ -200,8 +205,9 @@ source (within the limits imposed by ‘tie’).</p></li>
 <li><p><strong>disperse</strong> – Apply correction for dispersion.
 (Deprecated; will be removed)</p></li>
 <li><p><strong>wvrflag</strong> – Flag the WVR data for these antenna(s) as bad and replace its data
-with interpolated values.
-Example: wvrflag=[‘DV03’,’DA05’,’PM02’]</p></li>
+with interpolated values.</p>
+<p>Example: wvrflag=[‘DV03’,’DA05’,’PM02’]</p>
+</li>
 <li><p><strong>hm_smooth</strong> – If ‘manual’ set the ‘smooth’ parameter to the user-specified value.
 If ‘automatic’, run the wvrgcal task with the range of ‘smooth’ parameters
 required to match the integration time of the WVR data to that of the
@@ -213,15 +219,19 @@ Ignored unless hm_smooth=’manual’.</p></li>
 from a flagged antenna.
 Default: -1 (automatically set to 100m if &gt;50% of
 antennas are 7m antennas without WVR and otherwise set
-to 500m).
-Example: maxdistm=550</p></li>
+to 500m).</p>
+<p>Example: maxdistm=550</p>
+</li>
 <li><p><strong>minnumants</strong> – Minimum number of nearby antennas (up to 3) used for
-interpolation from a flagged antenna.
-Example: minnumants=3</p></li>
-<li><p><strong>mingoodfrac</strong> – Minimum fraction of good data per antenna.
-Example: mingoodfrac=0.7</p></li>
-<li><p><strong>refant</strong> – Ranked comma delimited list of reference antennas.
-Example: refant=’DV02,DV06’</p></li>
+interpolation from a flagged antenna.</p>
+<p>Example: minnumants=3</p>
+</li>
+<li><p><strong>mingoodfrac</strong> – Minimum fraction of good data per antenna.</p>
+<p>Example: mingoodfrac=0.7</p>
+</li>
+<li><p><strong>refant</strong> – Ranked comma delimited list of reference antennas.</p>
+<p>Example: refant=’DV02,DV06’</p>
+</li>
 <li><p><strong>flag_intent</strong> – The data intent(s) on whose WVR correction results the
 search for bad WVR antennas is to be based.
 A ‘flagging view’ will be calculated for each specified
@@ -291,7 +301,7 @@ Example: ants_with_wvr_thresh=0.5</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

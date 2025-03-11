@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_blflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -122,7 +122,7 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
-
+<span class="c1"># docstring and type hints: inherits from hsd.tasks.baselineflag.baselineflag.SDBLFlagInputs.__init__</span>
 <div class="viewcode-block" id="hsd_blflag">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.cli.hsd_blflag.html#pipeline.hsd.cli.hsd_blflag">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -145,67 +145,6 @@
 
 <span class="sd">    In addition, the heuristics script creates many plots for each stage.</span>
 <span class="sd">    Those plots are included in the weblog.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        iteration: Number of iterations to perform sigma clipping to calculate threshold value of flagging.</span>
-
-<span class="sd">        edge: Number of channels to be dropped from the edge. The value must be a list of integer with length of one or</span>
-<span class="sd">            two. If list length is one, same number will be applied</span>
-<span class="sd">            both side of the band.</span>
-<span class="sd">            example: [10,20], [10]</span>
-
-<span class="sd">        flag_tsys: Activate (True) or deactivate (False) Tsys flag.</span>
-
-<span class="sd">        tsys_thresh: Threshold value for Tsys flag.</span>
-
-<span class="sd">        flag_prfre: Activate (True) or deactivate (False) flag by expected rms of pre-fit spectra.</span>
-
-<span class="sd">        prfre_thresh: Threshold value for flag by expected rms of pre-fit spectra.</span>
-
-<span class="sd">        flag_pofre: Activate (True) or deactivate (False) flag by expected rms of post-fit spectra.</span>
-
-<span class="sd">        pofre_thresh: Threshold value for flag by expected rms of post-fit spectra.</span>
-
-<span class="sd">        flag_prfr: Activate (True) or deactivate (False) flag by rms of pre-fit spectra.</span>
-
-<span class="sd">        prfr_thresh: Threshold value for flag by rms of pre-fit spectra.</span>
-
-<span class="sd">        flag_pofr: Activate (True) or deactivate (False) flag by rms of post-fit spectra.</span>
-
-<span class="sd">        pofr_thresh: Threshold value for flag by rms of post-fit spectra.</span>
-
-<span class="sd">        flag_prfrm: Activate (True) or deactivate (False) flag by running mean of pre-fit spectra.</span>
-
-<span class="sd">        prfrm_thresh: Threshold value for flag by running mean of pre-fit spectra.</span>
-
-<span class="sd">        prfrm_nmean: Number of channels for running mean of pre-fit spectra.</span>
-
-<span class="sd">        flag_pofrm: Activate (True) or deactivate (False) flag by running mean of post-fit spectra.</span>
-
-<span class="sd">        pofrm_thresh: Threshold value for flag by running mean of post-fit spectra.</span>
-
-<span class="sd">        pofrm_nmean: Number of channels for running mean of post-fit spectra.</span>
-
-<span class="sd">        plotflag: True to plot result of data flagging.</span>
-
-<span class="sd">        parallel: Execute using CASA HPC functionality, if available. Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
-<span class="sd">            Default: None (equivalent to &#39;automatic&#39;)</span>
-
-<span class="sd">        infiles: ASDM or MS files to be processed. This parameter behaves as data selection parameter. The name specified by</span>
-<span class="sd">            infiles must be registered to context before you run</span>
-<span class="sd">            hsd_blflag.</span>
-
-<span class="sd">        antenna: Data selection by antenna names or ids. example: &#39;PM03,PM04&#39;,</span>
-<span class="sd">            &#39;&#39; (all antennas).</span>
-
-<span class="sd">        field: Data selection by field names or ids. example: &#39;`*Sgr*,M100`&#39;,</span>
-<span class="sd">            &#39;&#39; (all fields).</span>
-
-<span class="sd">        spw: Data selection by spw ids. example: &#39;3,4&#39; (spw 3 and 4),</span>
-<span class="sd">            &#39;&#39; (all spws).</span>
-
-<span class="sd">        pol: Data selection by polarizations. example: &#39;XX,YY&#39; (correlation XX and YY),</span>
-<span class="sd">            &#39;&#39; (all polarizations).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -249,7 +188,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

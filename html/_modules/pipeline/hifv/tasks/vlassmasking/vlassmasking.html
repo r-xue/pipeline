@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.vlassmasking.vlassmasking &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -221,17 +221,27 @@
     <span class="n">maskingmode</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;vlass-se-tier-1&#39;</span><span class="p">)</span>
     <span class="n">catalog_search_size</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hifv_vlassmasking</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vlass_ql_database</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maskingmode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">catalog_search_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">            Args:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
 <span class="sd">            context (:obj:): Pipeline context</span>
-<span class="sd">            vis(str, optional): String name of the measurement set</span>
-<span class="sd">            vlass_ql_database(str): Path to a PyBDSF sky catalog in FITS format.</span>
-<span class="sd">                                    Default at AOC is &#39;/home/vlass/packages/VLASS1Q.fits&#39;</span>
-<span class="sd">            maskingmode(str): Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)</span>
-<span class="sd">            catalog_search_size (float): The half-width (in degrees) of the catalog search centered on the</span>
-<span class="sd">                                        image&#39;s reference pixel.</span>
+
+<span class="sd">            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.</span>
+
+<span class="sd">            vlass_ql_database(str): vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits.</span>
+<span class="sd">                Path to a PyBDSF sky catalog in FITS format.</span>
+<span class="sd">                Default at AOC is &#39;/home/vlass/packages/VLASS1Q.fits&#39;</span>
+
+<span class="sd">            maskingmode(str): maskingmode options are vlass-se-tier-1 or vlass-se-tier-2.</span>
+<span class="sd">                Two modes are: vlass-se-tier-1 (QL mask) and vlass-se-tier-2 (combined mask)</span>
+
+<span class="sd">            catalog_search_size(float): catalog_search_size in units of degrees.</span>
+<span class="sd">                The half-width (in degrees) of the catalog search centered on the</span>
+<span class="sd">                image&#39;s reference pixel.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -535,7 +545,7 @@
 <span class="sd">        Obtain the image name from the latest MakeImagesResult object in context.results. The iter parameter controlls</span>
 <span class="sd">        which iteration image name should be returned. In the current VLASS-SE-CONT workflow, iter=1.</span>
 
-<span class="sd">        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates </span>
+<span class="sd">        If hif_makimages result is not found, then construct image name from imagename_base argument. This replicates</span>
 <span class="sd">        the image name used in the VLASS Memo 15 VIP script.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -599,7 +609,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.infrastructure.utils.utils &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -133,9 +133,9 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tarfile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Collection</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">casaplotms</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
@@ -152,7 +152,7 @@
            <span class="s1">&#39;get_casa_quantity&#39;</span><span class="p">,</span> <span class="s1">&#39;get_si_prefix&#39;</span><span class="p">,</span> <span class="s1">&#39;absolute_path&#39;</span><span class="p">,</span> <span class="s1">&#39;relative_path&#39;</span><span class="p">,</span> <span class="s1">&#39;get_task_result_count&#39;</span><span class="p">,</span>
            <span class="s1">&#39;place_repr_source_first&#39;</span><span class="p">,</span> <span class="s1">&#39;shutdown_plotms&#39;</span><span class="p">,</span> <span class="s1">&#39;get_casa_session_details&#39;</span><span class="p">,</span> <span class="s1">&#39;get_obj_size&#39;</span><span class="p">,</span> <span class="s1">&#39;get_products_dir&#39;</span><span class="p">,</span>
            <span class="s1">&#39;export_weblog_as_tar&#39;</span><span class="p">,</span> <span class="s1">&#39;ensure_products_dir_exists&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore_pointing&#39;</span><span class="p">,</span> <span class="s1">&#39;request_omp_threading&#39;</span><span class="p">,</span>
-           <span class="s1">&#39;open_with_lock&#39;</span><span class="p">,</span> <span class="s1">&#39;nested_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;string_to_val&#39;</span><span class="p">,</span> <span class="s1">&#39;remove_trailing_string&#39;</span><span class="p">,</span> <span class="s1">&#39;list_to_str&#39;</span><span class="p">]</span>
+           <span class="s1">&#39;open_with_lock&#39;</span><span class="p">,</span> <span class="s1">&#39;nested_dict&#39;</span><span class="p">,</span> <span class="s1">&#39;string_to_val&#39;</span><span class="p">,</span> <span class="s1">&#39;remove_trailing_string&#39;</span><span class="p">,</span> <span class="s1">&#39;list_to_str&#39;</span><span class="p">,</span> <span class="s1">&#39;validate_url&#39;</span><span class="p">]</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">find_ranges</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1038,6 +1038,35 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validates whether a given URL is properly formatted.</span>
+
+<span class="sd">    This function checks if the URL follows a valid format using a regular expression.</span>
+<span class="sd">    It also ensures that the parsed URL contains both a scheme (e.g., &quot;http&quot; or &quot;https&quot;)</span>
+<span class="sd">    and a network location (netloc), which are required components for a valid URL.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        url (str): The URL to validate.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if the URL is valid, False otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url_regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;^(https?:\/\/)?&#39;</span>  <span class="c1"># HTTP or HTTPS</span>
+        <span class="sa">r</span><span class="s1">&#39;([\w.-]+)&#39;</span>        <span class="c1"># Domain name or IP address</span>
+        <span class="sa">r</span><span class="s1">&#39;(:\d+)?&#39;</span>          <span class="c1"># Optional port</span>
+        <span class="sa">r</span><span class="s1">&#39;(\/[^\s]*)?$&#39;</span><span class="p">,</span>    <span class="c1"># Optional path</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">url_regex</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">parsed</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">parsed</span><span class="o">.</span><span class="n">netloc</span><span class="p">])</span>
 </pre></div>
 
            </div>
@@ -1047,7 +1076,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

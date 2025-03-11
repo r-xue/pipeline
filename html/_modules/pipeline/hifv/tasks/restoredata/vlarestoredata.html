@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.restoredata.vlarestoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,9 +135,64 @@
     <span class="n">asis</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;Receiver CalAtmosphere&#39;</span><span class="p">)</span>
     <span class="n">gainmap</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hifv_restoredata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gainmap</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            copytoraw: Copy calibration and flagging tables from ``products_dir`` to ``rawdata_dir`` directory.</span>
+
+<span class="sd">                Default: True</span>
+
+<span class="sd">                Example: copytoraw=False.</span>
+
+<span class="sd">            products_dir: Name of the data products directory to copy calibration products from.</span>
+
+<span class="sd">                Default: &#39;../products&#39;</span>
+
+<span class="sd">                The parameter is effective only when ``copytoraw`` = True.</span>
+<span class="sd">                When ``copytoraw`` = False, calibration products in</span>
+<span class="sd">                ``rawdata_dir`` will be used.</span>
+
+<span class="sd">                Example: products_dir=&#39;myproductspath&#39;</span>
+
+<span class="sd">            rawdata_dir: Name of the raw data directory. Default: &#39;../rawdata&#39;</span>
+
+<span class="sd">                Example: rawdata_dir=&#39;myrawdatapath&#39;</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            session: List of sessions one per visibility file.</span>
+
+<span class="sd">                Example: session=[&#39;session_3&#39;]</span>
+
+<span class="sd">            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
+<span class="sd">                converted  to MS format.</span>
+
+<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+
+<span class="sd">            bdfflags: Set the BDF flags. Default: False</span>
+
+<span class="sd">            lazy: Use the lazy filler option. Default: False</span>
+
+<span class="sd">            asis: List of tables to import asis.</span>
+
+<span class="sd">                Default: &#39;Receiver CalAtmosphere&#39;</span>
+
+<span class="sd">            ocorr_mode: Correlation import mode.</span>
+
+<span class="sd">                Default: &#39;co&#39;</span>
+
+<span class="sd">            gainmap: If True, map gainfields to a particular list of scans when applying calibration tables.</span>
+
+<span class="sd">                Default: False</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">VLARestoreDataInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">copytoraw</span><span class="o">=</span><span class="n">copytoraw</span><span class="p">,</span>
                                                    <span class="n">products_dir</span><span class="o">=</span><span class="n">products_dir</span><span class="p">,</span> <span class="n">rawdata_dir</span><span class="o">=</span><span class="n">rawdata_dir</span><span class="p">,</span>
                                                    <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
@@ -331,7 +386,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

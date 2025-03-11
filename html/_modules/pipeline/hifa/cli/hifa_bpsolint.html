@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_bpsolint &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifa.tasks.bpsolint.bpsolint.BpSolintInputs.__init__</span>
 <div class="viewcode-block" id="hifa_bpsolint">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_bpsolint.html#pipeline.hifa.cli.hifa_bpsolint">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -190,61 +191,6 @@
 <span class="sd">      order to preserve enough frequency intervals to capture the atmospheric</span>
 <span class="sd">      line.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">            MeasurementSets specified in the pipeline context.</span>
-<span class="sd">            example: vis=[&#39;M82A.ms&#39;, &#39;M82B.ms&#39;]</span>
-
-<span class="sd">        field: The list of field names of sources to be used for</span>
-<span class="sd">            signal-to-noise estimation. Defaults to all fields with the</span>
-<span class="sd">            standard intent.</span>
-<span class="sd">            example: field=&#39;3C279&#39;</span>
-
-<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
-<span class="sd">            which the selected fields are matched. Defaults to</span>
-<span class="sd">            &#39;BANDPASS&#39;.</span>
-<span class="sd">            example: intent=&#39;PHASE&#39;</span>
-
-<span class="sd">        spw: The list of spectral windows and channels for which gain</span>
-<span class="sd">            solutions are computed. Defaults to all the science spectral</span>
-<span class="sd">            windows for which there are both &#39;intent&#39; and TARGET intents.</span>
-<span class="sd">            example: spw=&#39;13,15&#39;</span>
-
-<span class="sd">        phaseupsnr: The required phase-up gain time interval solution</span>
-<span class="sd">            signal-to-noise.</span>
-<span class="sd">            example: phaseupsnr=10.0</span>
-
-<span class="sd">        minphaseupints: The minimum number of time intervals in the phase-up gain</span>
-<span class="sd">            solution.</span>
-<span class="sd">            example: minphaseupints=4</span>
-
-<span class="sd">        evenbpints: Use a bandpass frequency solint that is an integer divisor of</span>
-<span class="sd">            the spw bandwidth, to prevent the occurrence of one narrower</span>
-<span class="sd">            fractional frequency interval.</span>
-
-<span class="sd">        bpsnr: The required bandpass frequency interval solution</span>
-<span class="sd">            signal-to-noise.</span>
-<span class="sd">            example: bpsnr=30.0</span>
-
-<span class="sd">        minbpsnr: The minimum required bandpass frequency interval solution</span>
-<span class="sd">            signal-to-noise when strong atmospheric lines exist in Tsys</span>
-<span class="sd">            spectra.</span>
-<span class="sd">            example: minbpsnr=10.0</span>
-
-<span class="sd">        minbpnchan: The minimum number of frequency intervals in the bandpass</span>
-<span class="sd">            solution.</span>
-<span class="sd">            example: minbpnchan=16</span>
-
-<span class="sd">        hm_nantennas: The heuristics for determines the number of antennas to use</span>
-<span class="sd">            in the signal-to-noise estimate. The options are &#39;all&#39; and</span>
-<span class="sd">            &#39;unflagged&#39;. The &#39;unflagged&#39; options is not currently</span>
-<span class="sd">            supported.</span>
-<span class="sd">            example: hm_nantennas=&#39;unflagged&#39;</span>
-
-<span class="sd">        maxfracflagged: The maximum fraction of an antenna that can be flagged before</span>
-<span class="sd">            it is excluded from the signal-to-noise estimate.</span>
-<span class="sd">            example: maxfracflagged=0.80</span>
-
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
 
@@ -287,7 +233,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

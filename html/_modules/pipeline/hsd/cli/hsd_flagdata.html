@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_flagdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hsd.tasks.flagging.flagdeteralmasd.FlagDeterALMASingleDishInputs.__init__</span>
 <div class="viewcode-block" id="hsd_flagdata">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.cli.hsd_flagdata.html#pipeline.hsd.cli.hsd_flagdata">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -138,59 +139,6 @@
 <span class="sd">    - shadowed antenna data flagging</span>
 <span class="sd">    - scan-based flagging by intent or scan number</span>
 <span class="sd">    - edge channel flagging</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.</span>
-
-<span class="sd">        autocorr: Flag autocorrelation data.</span>
-
-<span class="sd">        shadow: Flag shadowed antennas.</span>
-
-<span class="sd">        scan: Flag a list of scans and intents specified by scannumber and intents.</span>
-
-<span class="sd">        scannumber: A string containing a comma delimited list of scans to be flagged.</span>
-
-<span class="sd">        intents: A string containing a comma delimited list of intents against which the scans to be flagged are matched.</span>
-<span class="sd">            Example: `&#39;*BANDPASS*&#39;`.</span>
-
-<span class="sd">        edgespw: Flag the edge spectral window channels.</span>
-
-<span class="sd">        fracspw: Fraction of the baseline correlator TDM edge channels to be flagged.</span>
-
-<span class="sd">        fracspwfps: Fraction of the ACS correlator TDM edge channels to be flagged.</span>
-
-<span class="sd">        online: Apply the online flags.</span>
-
-<span class="sd">        fileonline: File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files</span>
-<span class="sd">            are undefined a name of the form &#39;msname.flagonline.txt&#39; is assumed.</span>
-
-<span class="sd">        template: Apply a flagging template.</span>
-
-<span class="sd">        filetemplate: The name of a text file that contains the flagging template for RFI, birdies, telluric lines, etc.  If the template flags files</span>
-<span class="sd">            is undefined a name of the form &#39;msname.flagtemplate.txt&#39; is assumed.</span>
-
-<span class="sd">        pointing: Apply a flagging template for pointing flag.</span>
-
-<span class="sd">        filepointing: The name of a text file that contains the flagging template for pointing flag. If the template flags files is undefined a name of</span>
-<span class="sd">            the form &#39;msname.flagpointing.txt&#39; is assumed.</span>
-
-<span class="sd">        incompleteraster: Apply commands to flag incomplete raster sequence. If this is False, relevant commands in filepointing are</span>
-<span class="sd">            simply commented out.</span>
-
-<span class="sd">        hm_tbuff: The heuristic for computing the default time interval padding parameter. The options are &#39;halfint&#39; and &#39;manual&#39;. In &#39;halfint&#39; mode tbuff is set to</span>
-<span class="sd">            half the maximum of the median integration time of the science and calibrator target</span>
-<span class="sd">            observations.</span>
-
-<span class="sd">        tbuff: The time in seconds used to pad flagging command time intervals if hm_tbuff=&#39;manual&#39;.</span>
-
-<span class="sd">        qa0: QA0 flags</span>
-
-<span class="sd">        qa2: QA2 flags</span>
-
-<span class="sd">        parallel: Execute using CASA HPC functionality, if available. Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False.</span>
-<span class="sd">            Default: None (equivalent to &#39;automatic&#39;).</span>
-
-<span class="sd">        flagbackup: Back up any pre-existing flags before applying new ones.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -239,7 +187,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

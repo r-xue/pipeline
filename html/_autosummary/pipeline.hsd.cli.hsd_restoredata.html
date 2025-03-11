@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_restoredata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <h1>pipeline.hsd.cli.hsd_restoredata<a class="headerlink" href="#pipeline-hsd-cli-hsd-restoredata" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_restoredata">
-<span class="sig-name descname"><span class="pre">hsd_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_rasterscan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_restoredata.html#hsd_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_restoredata" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hsd_restoredata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">products_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copytoraw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawdata_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bdfflags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ocorr_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">asis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hm_rasterscan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Results</span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_restoredata.html#hsd_restoredata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_restoredata" title="Link to this definition"></a></dt>
 <dd><p>Restore flagged and calibration single dish data from a pipeline run.</p>
 <p>The hsd_restoredata task restores flagged and calibrated MeasurementSets
 from archived ASDMs and pipeline flagging and calibration data products.</p>
@@ -161,40 +161,58 @@ conversion step is skipped, and the existing MS will be imported instead.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
-<li><p><strong>vis</strong> – List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.</p>
-<p>example: vis=[‘uid___A002_X30a93d_X43e’]</p>
+<li><p><strong>vis</strong> – List of raw visibility data files to be restored.
+Assumed to be in the directory specified by rawdata_dir.</p>
+<p>Example: vis=[‘uid___A002_X30a93d_X43e’]</p>
 </li>
-<li><p><strong>session</strong> – List of sessions one per visibility file.
-example: session=[‘session_3’]</p></li>
-<li><p><strong>products_dir</strong> – Name of the data products directory to copy calibration products from.
-Default: ‘../products’</p>
-<p>The parameter is effective only when <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = True.
+<li><p><strong>session</strong> – List of sessions one per visibility file.</p>
+<p>Example: session=[‘session_3’]</p>
+</li>
+<li><p><strong>products_dir</strong> – Name of the data products directory to copy
+calibration products from.
+The parameter is effective only when <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = True.
 When <code class="docutils literal notranslate"><span class="pre">copytoraw</span></code> = False, calibration products in
 <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> will be used.</p>
-<p>example: products_dir=’myproductspath’</p>
+<p>Example: products_dir=’myproductspath’</p>
+<p>Default: None (equivalent to ‘../products’)</p>
 </li>
-<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code> to <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> directory.
-Default: True.</p>
-<p>example: copytoraw=False</p>
+<li><p><strong>copytoraw</strong> – Copy calibration and flagging tables from <code class="docutils literal notranslate"><span class="pre">products_dir</span></code>
+to <code class="docutils literal notranslate"><span class="pre">rawdata_dir</span></code> directory.</p>
+<p>Example: copytoraw=False</p>
+<p>Default: None (equivalent to True)</p>
 </li>
-<li><p><strong>rawdata_dir</strong> – Name of the raw data directory. Default: ‘../rawdata’</p>
-<p>example: rawdata_dir=’myrawdatapath’</p>
+<li><p><strong>rawdata_dir</strong> – Name of the raw data directory.</p>
+<p>Example: rawdata_dir=’myrawdatapath’</p>
+<p>Default: None (equivalent to ‘../rawdata’)</p>
 </li>
-<li><p><strong>lazy</strong> – Use the lazy filler option Default: False.</p>
-<p>example: lazy=True</p>
+<li><p><strong>lazy</strong> – Use the lazy filler option.</p>
+<p>Example: lazy=True</p>
+<p>Default: None (equivalent to False)</p>
 </li>
-<li><p><strong>bdfflags</strong> – Set the BDF flags Default: True.</p>
-<p>example: bdfflags=False</p>
+<li><p><strong>bdfflags</strong> – Apply BDF flags on import.</p>
+<p>Example: bdfflags=False</p>
+<p>Default: None (equivalent to True)</p>
 </li>
-<li><p><strong>ocorr_mode</strong> – Set ocorr_mode. Default: ‘ao’.</p>
-<p>example: ocorr_mode=’ca’</p>
+<li><p><strong>ocorr_mode</strong> – Selection of baseline correlation to import.
+Valid only if input visibility is ASDM. See a document of CASA,
+casatasks::importasdm, for available options.</p>
+<p>Example: ocorr_mode=’ca’</p>
+<p>Default: None (equivalent to ‘ao’)</p>
 </li>
-<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
-Default: ‘SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR’.</p>
-<p>example: asis=’Source Receiver’</p>
+<li><p><strong>asis</strong> – Creates verbatim copies of the ASDM tables in the output MS.
+The value given to this option must be a list of table names
+separated by space characters. Default value, None, is equivalent
+to the following list.</p>
+<blockquote>
+<div><p>‘SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow’</p>
+</div></blockquote>
+<p>Example: asis=’Source Receiver’</p>
 </li>
-<li><p><strong>hm_rasterscan</strong> – Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis (‘time’) and direction analysis (‘direction’), are available.
-Default: ‘time’</p></li>
+<li><p><strong>hm_rasterscan</strong> – Heuristics method for raster scan analysis.
+Two analysis modes, time-domain analysis (‘time’) and
+direction analysis (‘direction’), are available.</p>
+<p>Default: None (equivalent to ‘time’)</p>
+</li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -223,7 +241,7 @@ Default: ‘time’</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

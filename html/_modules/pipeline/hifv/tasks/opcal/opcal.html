@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.opcal.opcal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -224,7 +224,9 @@
         <span class="n">plotweather_args</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;vis&#39;</span><span class="p">:</span> <span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="s1">&#39;seasonal_weight&#39;</span><span class="p">:</span> <span class="n">seasonal_weight</span><span class="p">,</span> <span class="s1">&#39;doPlot&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
         <span class="n">plotweather_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">plotweather</span><span class="p">(</span><span class="o">**</span><span class="n">plotweather_args</span><span class="p">)</span>
         <span class="n">opacities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_executor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">plotweather_job</span><span class="p">)</span>
-
+        <span class="c1"># PIPE-2370: plotweather returns tau as list[np.float64] instead of list[float].</span>
+        <span class="c1"># Convert it to list[float] for better weblog presentation and formatting in casa_commands.log.</span>
+        <span class="n">opacities</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">opacities</span><span class="p">]</span>
         <span class="n">inputs</span><span class="o">.</span><span class="n">parameter</span> <span class="o">=</span> <span class="n">opacities</span>
 
         <span class="n">inputs</span><span class="o">.</span><span class="n">spw</span><span class="p">,</span> <span class="n">center_frequencies</span> <span class="o">=</span> <span class="n">_find_spw</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">bands</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
@@ -269,7 +271,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

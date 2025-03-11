@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measurementset &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../_static/favicon-16x16.png"/>
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1031,140 +1031,6 @@
                         <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">latest</span><span class="o">.</span><span class="n">end_time</span>
 
-<div class="viewcode-block" id="MeasurementSet.get_vla_max_integration_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_max_integration_time">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_max_integration_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the integration time used by the original VLA scripts.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            int_time: int value of the max integration time used</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># with casa_tools.TableReader(vis + &#39;/FIELD&#39;) as table:</span>
-        <span class="c1">#     numFields = table.nrows()</span>
-        <span class="c1">#     field_positions = table.getcol(&#39;PHASE_DIR&#39;)</span>
-        <span class="c1">#     field_ids = range(numFields)</span>
-        <span class="c1">#     field_names = table.getcol(&#39;NAME&#39;)</span>
-
-        <span class="c1"># with casa_tools.TableReader(vis) as table:</span>
-        <span class="c1">#     scanNums = sorted(np.unique(table.getcol(&#39;SCAN_NUMBER&#39;)))</span>
-        <span class="c1">#     field_scans = []</span>
-        <span class="c1">#     for ii in range(0,numFields):</span>
-        <span class="c1">#         subtable = table.query(&#39;FIELD_ID==%s&#39;%ii)</span>
-        <span class="c1">#         field_scans.append(list(np.unique(subtable.getcol(&#39;SCAN_NUMBER&#39;))))</span>
-        <span class="c1">#         subtable.close()</span>
-
-        <span class="c1"># field_scans is now a list of lists containing the scans for each field.</span>
-        <span class="c1"># so, to access all the scans for the fields, you&#39;d:</span>
-        <span class="c1">#</span>
-        <span class="c1"># for ii in range(0,len(field_scans)):</span>
-        <span class="c1">#    for jj in range(0,len(field_scans[ii]))</span>
-        <span class="c1">#</span>
-        <span class="c1"># the jj&#39;th scan of the ii&#39;th field is in field_scans[ii][jj]</span>
-
-        <span class="c1"># Figure out integration time used</span>
-
-        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">MSReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">ms</span><span class="p">:</span>
-            <span class="n">scan_summary</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">getscansummary</span><span class="p">()</span>
-        <span class="c1"># startdate=float(ms_summary[&#39;BeginTime&#39;])</span>
-
-        <span class="n">integ_scan_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">scan</span> <span class="ow">in</span> <span class="n">scan_summary</span><span class="p">:</span>
-            <span class="n">integ_scan_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">scan</span><span class="p">))</span>
-        <span class="n">sorted_scan_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">integ_scan_list</span><span class="p">)</span>
-
-        <span class="c1"># find max and median integration times</span>
-        <span class="c1">#</span>
-        <span class="n">integration_times</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="n">sorted_scan_list</span><span class="p">:</span>
-            <span class="n">integration_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scan_summary</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">ii</span><span class="p">)][</span><span class="s1">&#39;0&#39;</span><span class="p">][</span><span class="s1">&#39;IntegrationTime&#39;</span><span class="p">])</span>
-
-        <span class="n">maximum_integration_time</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">integration_times</span><span class="p">)</span>
-        <span class="n">median_integration_time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">integration_times</span><span class="p">)</span>
-
-        <span class="n">int_time</span> <span class="o">=</span> <span class="n">maximum_integration_time</span>
-
-        <span class="k">return</span> <span class="n">int_time</span></div>
-
-
-<div class="viewcode-block" id="MeasurementSet.get_vla_datadesc">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_datadesc">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_datadesc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate VLA data description index</span>
-<span class="sd">            Use the original VLA buildscans function to return a dd index</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            ddindex: indexed list of dictionaries with VLA metadata</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cordesclist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Undefined&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;RR&#39;</span><span class="p">,</span> <span class="s1">&#39;RL&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;LL&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;XX&#39;</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">,</span> <span class="s1">&#39;YX&#39;</span><span class="p">,</span> <span class="s1">&#39;YY&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;RX&#39;</span><span class="p">,</span> <span class="s1">&#39;RY&#39;</span><span class="p">,</span> <span class="s1">&#39;LX&#39;</span><span class="p">,</span> <span class="s1">&#39;LY&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;XR&#39;</span><span class="p">,</span> <span class="s1">&#39;XL&#39;</span><span class="p">,</span> <span class="s1">&#39;YR&#39;</span><span class="p">,</span> <span class="s1">&#39;YL&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;PP&#39;</span><span class="p">,</span> <span class="s1">&#39;PQ&#39;</span><span class="p">,</span> <span class="s1">&#39;QP&#39;</span><span class="p">,</span> <span class="s1">&#39;QQ&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;RCircular&#39;</span><span class="p">,</span> <span class="s1">&#39;LCircular&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;Linear&#39;</span><span class="p">,</span> <span class="s1">&#39;Ptotal&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;Plinear&#39;</span><span class="p">,</span> <span class="s1">&#39;PFtotal&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;PFlinear&#39;</span><span class="p">,</span> <span class="s1">&#39;Pangle&#39;</span><span class="p">]</span>
-
-        <span class="c1"># From Steve Myers buildscans function</span>
-        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/DATA_DESCRIPTION&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-            <span class="n">ddspwarr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;SPECTRAL_WINDOW_ID&quot;</span><span class="p">)</span>
-            <span class="n">ddpolarr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;POLARIZATION_ID&quot;</span><span class="p">)</span>
-
-        <span class="n">ddspwlist</span> <span class="o">=</span> <span class="n">ddspwarr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">ddpollist</span> <span class="o">=</span> <span class="n">ddpolarr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">ndd</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ddspwlist</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/SPECTRAL_WINDOW&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-            <span class="n">nchanarr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NUM_CHAN&quot;</span><span class="p">)</span>
-            <span class="n">spwnamearr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">)</span>
-            <span class="n">reffreqarr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;REF_FREQUENCY&quot;</span><span class="p">)</span>
-
-        <span class="n">nspw</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nchanarr</span><span class="p">)</span>
-        <span class="n">spwlookup</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">isp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspw</span><span class="p">):</span>
-            <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nchanarr</span><span class="p">[</span><span class="n">isp</span><span class="p">]</span>
-            <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">spwnamearr</span><span class="p">[</span><span class="n">isp</span><span class="p">])</span>
-            <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reffreqarr</span><span class="p">[</span><span class="n">isp</span><span class="p">]</span>
-
-        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/POLARIZATION&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-            <span class="n">ncorarr</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;NUM_CORR&quot;</span><span class="p">)</span>
-            <span class="n">npols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ncorarr</span><span class="p">)</span>
-            <span class="n">polindex</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">poldescr</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">ip</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npols</span><span class="p">):</span>
-                <span class="n">cort</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s2">&quot;CORR_TYPE&quot;</span><span class="p">,</span> <span class="n">startrow</span><span class="o">=</span><span class="n">ip</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                <span class="p">(</span><span class="n">nct</span><span class="p">,</span> <span class="n">nr</span><span class="p">)</span> <span class="o">=</span> <span class="n">cort</span><span class="o">.</span><span class="n">shape</span>
-                <span class="n">cortypes</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">cordescs</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">ict</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nct</span><span class="p">):</span>
-                    <span class="n">cct</span> <span class="o">=</span> <span class="n">cort</span><span class="p">[</span><span class="n">ict</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">cde</span> <span class="o">=</span> <span class="n">cordesclist</span><span class="p">[</span><span class="n">cct</span><span class="p">]</span>
-                    <span class="n">cortypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cct</span><span class="p">)</span>
-                    <span class="n">cordescs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cde</span><span class="p">)</span>
-                <span class="n">polindex</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span> <span class="o">=</span> <span class="n">cortypes</span>
-                <span class="n">poldescr</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span> <span class="o">=</span> <span class="n">cordescs</span>
-
-        <span class="n">ddindex</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">ncorlist</span> <span class="o">=</span> <span class="n">ncorarr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">idd</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndd</span><span class="p">):</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">isp</span> <span class="o">=</span> <span class="n">ddspwlist</span><span class="p">[</span><span class="n">idd</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;spw&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">isp</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;spwname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;nchan&#39;</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">spwlookup</span><span class="p">[</span><span class="n">isp</span><span class="p">][</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span>
-            <span class="c1">#</span>
-            <span class="n">ipol</span> <span class="o">=</span> <span class="n">ddpollist</span><span class="p">[</span><span class="n">idd</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;ipol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipol</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;npol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ncorlist</span><span class="p">[</span><span class="n">ipol</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;corrtype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">polindex</span><span class="p">[</span><span class="n">ipol</span><span class="p">]</span>
-            <span class="n">ddindex</span><span class="p">[</span><span class="n">idd</span><span class="p">][</span><span class="s1">&#39;corrdesc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">poldescr</span><span class="p">[</span><span class="n">ipol</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">ddindex</span></div>
-
-
 <div class="viewcode-block" id="MeasurementSet.get_vla_corrstring">
 <a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_vla_corrstring">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_vla_corrstring</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1176,9 +1042,7 @@
         <span class="c1"># Prep string listing of correlations from dictionary created by method buildscans</span>
         <span class="c1"># For now, only use the parallel hands.  Cross hands will be implemented later.</span>
 
-        <span class="n">ddindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_datadesc</span><span class="p">()</span>
-
-        <span class="n">corrstring_list</span> <span class="o">=</span> <span class="n">ddindex</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;corrdesc&#39;</span><span class="p">]</span>
+        <span class="n">corrstring_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">pol_id</span><span class="p">]</span><span class="o">.</span><span class="n">corr_type_string</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="n">removal_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RL&#39;</span><span class="p">,</span> <span class="s1">&#39;LR&#39;</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">,</span> <span class="s1">&#39;YX&#39;</span><span class="p">]</span>
         <span class="n">corrstring_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">corrstring_list</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">removal_list</span><span class="p">)))</span>
         <span class="n">corrstring</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corrstring_list</span><span class="p">)</span>
@@ -1197,11 +1061,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            list: a list of correlation labels.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ddindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_datadesc</span><span class="p">()</span>
+
         <span class="n">corrs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="n">ddindex</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="s1">&#39;spw&#39;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
-                <span class="n">corrs</span> <span class="o">=</span> <span class="n">corrs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="s1">&#39;corrdesc&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_descriptions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">spw</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">spw</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">dd</span><span class="o">.</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="ow">in</span> <span class="n">spw</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)):</span>
+                <span class="n">corrs</span> <span class="o">=</span> <span class="n">corrs</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">polarizations</span><span class="p">[</span><span class="n">dd</span><span class="o">.</span><span class="n">pol_id</span><span class="p">]</span><span class="o">.</span><span class="n">corr_type_string</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">corrs</span><span class="p">)</span></div>
 
@@ -1237,36 +1101,22 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            spw2band: dictionary with each string key spw index giving a single letter string value of the band</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ddindex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_vla_datadesc</span><span class="p">()</span>
 
         <span class="n">spw2band</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">ddindex</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_windows</span><span class="p">:</span>
 
-            <span class="n">strelems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ddindex</span><span class="p">[</span><span class="n">spw</span><span class="p">][</span><span class="s1">&#39;spwname&#39;</span><span class="p">])</span>
+            <span class="n">strelems</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">spw</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">bandname</span> <span class="o">=</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">bandname</span> <span class="ow">in</span> <span class="s1">&#39;4PLSCXUKAQ&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
             <span class="c1"># Check for U / KU</span>
             <span class="k">if</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span> <span class="ow">and</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;U&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span>
+                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;U&#39;</span>
             <span class="k">if</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;K&#39;</span> <span class="ow">and</span> <span class="n">strelems</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
-                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+                <span class="n">spw2band</span><span class="p">[</span><span class="n">spw</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
 
         <span class="k">return</span> <span class="n">spw2band</span></div>
-
-
-<div class="viewcode-block" id="MeasurementSet.vla_minbaselineforcal">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.vla_minbaselineforcal">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">vla_minbaselineforcal</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Min baseline for cal</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Constant value</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Old determination before it was changed to a constant value of 4</span>
-        <span class="c1"># return max(4, int(len(self.antennas) / 2.0))</span>
-        <span class="k">return</span> <span class="mi">4</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_vla_field_spws">
@@ -1461,20 +1311,21 @@
             <span class="k">return</span> <span class="n">baseband_spws</span></div>
 
 
-<div class="viewcode-block" id="MeasurementSet.get_median_integration_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_median_integration_time">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_median_integration_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the median integration time used to get data for the given</span>
-<span class="sd">        intent.</span>
+<div class="viewcode-block" id="MeasurementSet.get_integration_time_stats">
+<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_integration_time_stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_integration_time_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">science_windows_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">stat_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;max&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the given statistcs of integration time.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            intent: The intent of the data of interest.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The median integration time used.</span>
+<span class="sd">            spw: spw string list - &#39;1,7,11,18&#39;.</span>
+<span class="sd">            science_windows_only: Use integration time of science spws only to compute the given statistics.</span>
+<span class="sd">            stat_type: Type of the statistics.</span>
+<span class="sd">        Returns</span>
+<span class="sd">            Computed statistics value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inefficiency - MSFlagger reading file to get integration &#39;</span>
-                  <span class="s1">&#39;time&#39;</span><span class="p">)</span>
+        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inefficiency - MSFlagger reading file to get median integration &#39;</span>
+                  <span class="s1">&#39;time for science targets&#39;</span><span class="p">)</span>
 
         <span class="c1"># get the field IDs and state IDs for fields in the measurement set,</span>
         <span class="c1"># filtering by intent if necessary</span>
@@ -1483,45 +1334,9 @@
                          <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
             <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span>
                          <span class="k">if</span> <span class="n">intent</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
-<span class="c1">#        if intent:</span>
-<span class="c1">#            re_intent = intent.replace(&#39;*&#39;, &#39;.*&#39;)</span>
-<span class="c1">#            re_intent = re.compile(re_intent)</span>
-<span class="c1">#            field_ids = [field.id for field in self.fields</span>
-<span class="c1">#                         if re_intent.match(str(field.intents))]</span>
-<span class="c1">#            state_ids = [state.id for state in self.states</span>
-<span class="c1">#                         if re_intent.match(str(state.intents))]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">field_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">]</span>
             <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">]</span>
-
-        <span class="c1"># VLA datasets have an empty STATE table; in the main table such rows</span>
-        <span class="c1"># have a state ID of -1.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">state_ids</span><span class="p">:</span>
-            <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-            <span class="n">taql</span> <span class="o">=</span> <span class="s1">&#39;(STATE_ID IN </span><span class="si">%s</span><span class="s1"> AND FIELD_ID IN </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">state_ids</span><span class="p">),</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">field_ids</span><span class="p">))</span>
-            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">))</span> <span class="k">as</span> <span class="n">subtable</span><span class="p">:</span>
-                <span class="n">integration</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">integration</span><span class="p">)</span></div>
-
-
-    <span class="c1"># FiXME: Investigate usage: intent argument unused, but method is called</span>
-    <span class="c1"># with specific values for intent.</span>
-<div class="viewcode-block" id="MeasurementSet.get_median_science_integration_time">
-<a class="viewcode-back" href="../../../_autosummary/pipeline.domain.observingrun.MeasurementSet.html#pipeline.domain.MeasurementSet.get_median_science_integration_time">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_median_science_integration_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the median integration time for science targets used to get data for the given</span>
-<span class="sd">        intent.</span>
-
-<span class="sd">        Keyword arguments:</span>
-<span class="sd">        intent  -- The intent of the data of interest.</span>
-<span class="sd">        spw     -- spw string list - &#39;1,7,11,18&#39;</span>
-
-<span class="sd">        Returns -- The median integration time used.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;inefficiency - MSFlagger reading file to get median integration &#39;</span>
-                  <span class="s1">&#39;time for science targets&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">spw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spws</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectral_windows</span>
@@ -1539,31 +1354,46 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Incorrect spw string format.&quot;</span><span class="p">)</span>
 
-        <span class="c1"># now get the science spws, those used for scientific intent</span>
-        <span class="n">science_spws</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">ispw</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span>
-            <span class="k">if</span> <span class="n">ispw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_num_chans</span>
-            <span class="ow">and</span> <span class="ow">not</span> <span class="n">ispw</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
-                                             <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
-        <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;science spws are: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">[</span><span class="n">ispw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">science_windows_only</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="c1"># now get the science spws, those used for scientific intent</span>
+            <span class="n">science_spws</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">ispw</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">spws</span>
+                <span class="k">if</span> <span class="n">ispw</span><span class="o">.</span><span class="n">num_channels</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude_num_chans</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">ispw</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span>
+                                                <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
+            <span class="n">LOG</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;science spws are: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">[</span><span class="n">ispw</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ispw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">])</span>
+            <span class="c1"># and the science fields/states</span>
+            <span class="n">science_field_ids</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">fid</span> <span class="k">for</span> <span class="n">fid</span> <span class="ow">in</span> <span class="n">field_ids</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">fid</span><span class="p">]</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+                                                                 <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
+            <span class="n">science_state_ids</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">sid</span> <span class="k">for</span> <span class="n">sid</span> <span class="ow">in</span> <span class="n">state_ids</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">sid</span><span class="p">]</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
+                                                                 <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
 
-        <span class="c1"># and the science fields/states</span>
-        <span class="n">science_field_ids</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">field</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
-                                                  <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
-        <span class="n">science_state_ids</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">state</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">states</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">intents</span><span class="p">)</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">([</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span>
-                                                  <span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="s1">&#39;TARGET&#39;</span><span class="p">])]</span>
+            <span class="n">science_spw_dd_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
 
-        <span class="n">science_spw_dd_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data_description</span><span class="p">(</span><span class="n">spw</span><span class="p">)</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">spw</span> <span class="ow">in</span> <span class="n">science_spws</span><span class="p">]</span>
+        <span class="c1"># VLA datasets have an empty STATE table; in the main table such rows</span>
+        <span class="c1"># have a state ID of -1.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">state_ids</span><span class="p">:</span>
+            <span class="n">state_ids</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">state_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_state_ids</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="n">state_ids</span><span class="p">)</span>
+        <span class="n">field_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_field_ids</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="n">field_ids</span><span class="p">)</span>
+        <span class="n">spw_str</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_spw_dd_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="n">taql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(STATE_ID IN </span><span class="si">{</span><span class="n">state_str</span><span class="si">}</span><span class="s2"> AND FIELD_ID IN </span><span class="si">{</span><span class="n">field_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span> \
+            <span class="p">(</span><span class="sa">f</span><span class="s2">&quot; AND DATA_DESC_ID IN </span><span class="si">{</span><span class="n">spw_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">if</span> <span class="n">science_windows_only</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 
         <span class="k">with</span> <span class="n">casa_tools</span><span class="o">.</span><span class="n">TableReader</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">as</span> <span class="n">table</span><span class="p">:</span>
-            <span class="n">taql</span> <span class="o">=</span> <span class="s1">&#39;(STATE_ID IN </span><span class="si">%s</span><span class="s1"> AND FIELD_ID IN </span><span class="si">%s</span><span class="s1"> AND DATA_DESC_ID in </span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_state_ids</span><span class="p">),</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_field_ids</span><span class="p">),</span> <span class="n">utils</span><span class="o">.</span><span class="n">list_to_str</span><span class="p">(</span><span class="n">science_spw_dd_ids</span><span class="p">))</span>
             <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">closing</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">taql</span><span class="p">))</span> <span class="k">as</span> <span class="n">subtable</span><span class="p">:</span>
                 <span class="n">integration</span> <span class="o">=</span> <span class="n">subtable</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="s1">&#39;INTERVAL&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">integration</span><span class="p">)</span></div>
+            <span class="c1"># PIPE-2370: convert np.float64 to a native float for better weblog presentations.</span>
+            <span class="k">if</span> <span class="n">stat_type</span> <span class="o">==</span> <span class="s2">&quot;max&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">integration</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">stat_type</span> <span class="o">==</span> <span class="s2">&quot;median&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">integration</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="MeasurementSet.get_times_on_source_per_field_id">
@@ -1663,7 +1493,7 @@
         <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;ms.update_reference_antennas for MS </span><span class="si">{}</span><span class="s1"> (</span><span class="si">{}</span><span class="s1">): previous list=</span><span class="si">{}</span><span class="s1">, removed=</span><span class="si">{}</span><span class="s1">, demoted=</span><span class="si">{}</span><span class="s1">, new list=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span>
                  <span class="nb">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span> <span class="n">previous_reference_antenna</span><span class="p">,</span>
                         <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_remove</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_remove</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_remove</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ants_to_demote</span><span class="p">))</span> <span class="k">if</span> <span class="n">ants_to_demote</span> <span class="k">else</span> <span class="s1">&#39;none&#39;</span><span class="p">,</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">reference_antenna</span><span class="p">))</span></div>
 
 
@@ -1915,7 +1745,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

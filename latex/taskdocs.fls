@@ -346,6 +346,7 @@ INPUT taskdocs.aux
 INPUT ./taskdocs.out
 INPUT ./taskdocs.out
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qhvb.pfb
 INPUT /usr/share/texmf/fonts/type1/public/tex-gyre/qhvbi.pfb

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -142,9 +142,91 @@
     <span class="n">specline_spws</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
     <span class="n">parallel</span> <span class="o">=</span> <span class="n">sessionutils</span><span class="o">.</span><span class="n">parallel_inputs_impl</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hifv_importdata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">process_caldevice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">specline_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
+<span class="sd">                converted  to MS format.</span>
+
+<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names</span>
+<span class="sd">                separated by space characters.</span>
+<span class="sd">                examples:</span>
+
+<span class="sd">                - asis=&#39;Receiver CalAtmosphere&#39;</span>
+<span class="sd">                - asis=&#39;Receiver&#39;, asis=&#39;&#39;</span>
+
+<span class="sd">            process_caldevice:</span>
+
+<span class="sd">            session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise</span>
+<span class="sd">                a session must be assigned to each vis file.</span>
+
+<span class="sd">                Example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
+
+<span class="sd">            overwrite: Overwrite existing files on import.</span>
+
+<span class="sd">            nocopy: When importing an MS, disable copying of the MS to the working directory.</span>
+
+<span class="sd">            bdfflags:</span>
+
+<span class="sd">            lazy:</span>
+
+<span class="sd">            save_flagonline:</span>
+
+<span class="sd">            createmms: Create a multi-MeasurementSet (&#39;true&#39;) ready for parallel processing, or a standard MeasurementSet (&#39;false&#39;). The default setting</span>
+<span class="sd">                (&#39;automatic&#39;) creates an MMS if running in a cluster environment.</span>
+
+<span class="sd">            ocorr_mode: Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).</span>
+
+<span class="sd">            datacolumns: Dictionary defining the data types of existing columns. The format is:</span>
+
+<span class="sd">                {&#39;data&#39;: &#39;data type 1&#39;}</span>
+
+<span class="sd">                or</span>
+
+<span class="sd">                {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+
+<span class="sd">                For ASDMs the data type can only be RAW and one</span>
+<span class="sd">                can only specify it for the data column.</span>
+<span class="sd">                For MSes one can define two different data types</span>
+<span class="sd">                for the DATA and CORRECTED_DATA columns and they</span>
+<span class="sd">                can be any of the known data types (RAW,</span>
+<span class="sd">                REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The</span>
+<span class="sd">                intent selection strings _ALL or _SCIENCE can be</span>
+<span class="sd">                skipped. In that case the task determines this</span>
+<span class="sd">                automatically by inspecting the existing intents</span>
+<span class="sd">                in the dataset.</span>
+<span class="sd">                Usually, a single datacolumns dictionary is used</span>
+<span class="sd">                for all datasets. If necessary, one can define a</span>
+<span class="sd">                list of dictionaries, one for each EB, with</span>
+<span class="sd">                different setups per EB.</span>
+<span class="sd">                If no types are specified,</span>
+<span class="sd">                {&#39;data&#39;:&#39;raw&#39;,&#39;corrected&#39;:&#39;regcal_contline&#39;}</span>
+<span class="sd">                or {&#39;data&#39;:&#39;raw&#39;} will be assumed, depending on</span>
+<span class="sd">                whether the corrected column exists or not.</span>
+
+<span class="sd">            specline_spws: String indicating how the pipeline should determine whether a spw should be processed as a spectral line window or continuum. The default setting of</span>
+<span class="sd">                &#39;auto&#39; will use defined heuristics to determine this definition. Accepted</span>
+<span class="sd">                values are &#39;auto&#39;, &#39;none&#39; (no spws will be defined as spectral line), or</span>
+<span class="sd">                a string of spw definitions in the CASA format.</span>
+
+<span class="sd">                Example: specline_spws=&#39;2, 3, 4~9, 23&#39;</span>
+
+<span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="n">asis</span><span class="p">,</span>
                          <span class="n">process_caldevice</span><span class="o">=</span><span class="n">process_caldevice</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span>
                          <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="n">nocopy</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="n">bdfflags</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="n">lazy</span><span class="p">,</span>
@@ -334,7 +416,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

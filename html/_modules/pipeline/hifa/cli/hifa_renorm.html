@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_renorm &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifa.tasks.renorm.renorm.RenormInputs.__init__</span>
 <div class="viewcode-block" id="hifa_renorm">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_renorm.html#pipeline.hifa.cli.hifa_renorm">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -131,57 +132,6 @@
 
 <span class="sd">    For a full description of the effects of bright emission lines and the</span>
 <span class="sd">    correction heuristics used in this task, please see the Pipeline User Guide.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">            MeasurementSets specified in the pipeline context.</span>
-<span class="sd">            Example: vis=[&#39;ngc5921.ms&#39;]</span>
-
-<span class="sd">        createcaltable: Boolean to select whether to create the renormalization</span>
-<span class="sd">            correction cal table (True), or only run the assessment</span>
-<span class="sd">            (False, default).</span>
-<span class="sd">            Example: createcaltable=True</span>
-
-<span class="sd">        threshold: Apply correction if max correction is above this threshold</span>
-<span class="sd">            value and ``apply`` = True. Default is 1.02 (i.e. 2%).</span>
-<span class="sd">            Example: threshold=1.02</span>
-
-<span class="sd">        spw: The list of real (not virtual - i.e. the actual spwIDs in</span>
-<span class="sd">            the MS) spectral windows to evaluate.</span>
-<span class="sd">            Set to spw=&#39;&#39; by default, which means the task will select</span>
-<span class="sd">            all relevant (science FDM) spectral windows.</span>
-<span class="sd">            Note that for data with multiple MSs, a list with the</span>
-<span class="sd">            correct spectral window selection for each MS can be</span>
-<span class="sd">            provided.</span>
-
-<span class="sd">            Examples:</span>
-
-<span class="sd">            - spw=&quot;11,13,15,17&quot;</span>
-<span class="sd">            - spw=[&quot;11,13,15,17&quot;, &quot;5,7,11,13&quot;]</span>
-
-<span class="sd">        excludechan: Channels to exclude in either channel or frequency space</span>
-<span class="sd">            (TOPO, GHz), specifying the real (not virtual) spectral</span>
-<span class="sd">            window per selection.</span>
-<span class="sd">            Note that for data with multiple MSs, a list of</span>
-<span class="sd">            dictionaries with the correct selection for each MS can be</span>
-<span class="sd">            provided.</span>
-<span class="sd">            Examples:</span>
-<span class="sd">            </span>
-<span class="sd">            - excludechan={&#39;22&#39;:&#39;100~150;800~850&#39;, &#39;24&#39;:&#39;100~200&#39;}</span>
-<span class="sd">            - excludechan={&#39;22&#39;:&#39;230.1GHz~230.2GHz&#39;}</span>
-<span class="sd">            - excludechan=[{&#39;22&#39;:&#39;100~150&#39;}, {&#39;15&#39;:&#39;100~150&#39;}]</span>
-
-<span class="sd">        atm_auto_exclude: Automatically find and exclude regions with atmospheric</span>
-<span class="sd">            features. Default is False</span>
-
-<span class="sd">        bwthreshspw: Bandwidth beyond which a SPW is split into chunks to fit</span>
-<span class="sd">            separately. The default value for all SPWs is 120e6, and</span>
-<span class="sd">            this parameter allows one to override it for specific SPWs,</span>
-<span class="sd">            due to needing potentially various &#39;nsegments&#39; when EBs</span>
-<span class="sd">            have very different SPW bandwidths.</span>
-<span class="sd">            Example: bwthreshspw={&#39;16: 64e6, &#39;22: 64e6}</span>
-
-<span class="sd">        parallel: Execute using CASA HPC functionality, if available.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -229,7 +179,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

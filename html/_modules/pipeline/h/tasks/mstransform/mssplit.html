@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.mstransform.mssplit &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -135,7 +135,7 @@
 
 <span class="c1"># Define the minimum set of parameters required to split out</span>
 <span class="c1"># the requested data (defined by field, spw, intent) from the</span>
-<span class="c1"># original MS and optionally average in time and channel.  </span>
+<span class="c1"># original MS and optionally average in time and channel.</span>
 <span class="c1">#</span>
 <span class="c1"># If replace is True replace the parameter MS with the transformed</span>
 <span class="c1"># one on disk and in the context</span>
@@ -154,8 +154,45 @@
         <span class="n">vis_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vis</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">vis_root</span> <span class="o">+</span> <span class="s1">&#39;_split.ms&#39;</span>
 
+    <span class="c1"># docstring and type hints: supplements h_mssplit</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">intent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chanbin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets to be transformed. Defaults to the list of MeasurementSets specified in the pipeline import data task.</span>
+<span class="sd">                default &#39;&#39;: Split all MeasurementSets in the context.</span>
+<span class="sd">                example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            outputvis: The list of output split MeasurementSets. The output list must be the same length as the input list and the output names must be different</span>
+<span class="sd">                from the input names.</span>
+<span class="sd">                default &#39;&#39;, The output name defaults to &lt;msrootname&gt;_split.ms</span>
+<span class="sd">                example: &#39;ngc5921.ms&#39;, [&#39;ngc5921a.ms&#39;, ngc5921b.ms&#39;, &#39;ngc5921c.ms&#39;]</span>
+
+<span class="sd">            field: Set of data selection field names or ids, &#39;&#39; for all</span>
+
+<span class="sd">            intent: Select intents to split default: &#39;&#39;, All data is selected.</span>
+<span class="sd">                example: &#39;TARGET&#39;</span>
+
+<span class="sd">            spw: Select spectral windows to split. default: &#39;&#39;, All spws are selected</span>
+<span class="sd">                example: &#39;9&#39;, &#39;9,13,15&#39;</span>
+
+<span class="sd">            datacolumn: Select spectral windows to split. The standard CASA options are supported.</span>
+<span class="sd">                example: &#39;corrected&#39;, &#39;model&#39;</span>
+
+<span class="sd">            chanbin: The channel binning factor. 1 for no binning, otherwise 2, 4, 8, or 16.</span>
+<span class="sd">                example: 2, 4</span>
+
+<span class="sd">            timebin: The time binning factor. &#39;0s&#39; for no binning.</span>
+<span class="sd">                example: &#39;10s&#39; for 10 second binning</span>
+
+<span class="sd">            replace: If a split was performed delete the parent MS and remove it from the context.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">MsSplitInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -211,7 +248,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">MsSplitResults</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">vis</span><span class="p">,</span> <span class="n">outputvis</span><span class="o">=</span><span class="n">inputs</span><span class="o">.</span><span class="n">outputvis</span><span class="p">)</span>
 
         <span class="c1"># Run CASA task</span>
-        <span class="c1">#    Does this need a try / except block </span>
+        <span class="c1">#    Does this need a try / except block</span>
 
         <span class="n">mstransform_args</span> <span class="o">=</span> <span class="n">inputs</span><span class="o">.</span><span class="n">to_casa_args</span><span class="p">()</span>
         <span class="n">mstransform_job</span> <span class="o">=</span> <span class="n">casa_tasks</span><span class="o">.</span><span class="n">mstransform</span><span class="p">(</span><span class="o">**</span><span class="n">mstransform_args</span><span class="p">)</span>
@@ -223,7 +260,7 @@
 <div class="viewcode-block" id="MsSplit.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.MsSplit.html#pipeline.h.tasks.MsSplit.analyse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
-        <span class="c1"># Check for existence of the output vis. </span>
+        <span class="c1"># Check for existence of the output vis.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">outputvis</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">result</span>
 
@@ -341,7 +378,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

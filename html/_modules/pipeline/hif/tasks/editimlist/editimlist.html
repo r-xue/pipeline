@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.editimlist.editimlist &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -292,6 +292,7 @@
         <span class="c1"># Use str() method to catch single spwid case via PPR which maps to int.</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hif_editimlist</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">search_radius_arcsec</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cfcache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conjbeams</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cyclefactor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cycleniter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nmajor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deconvolver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -304,6 +305,128 @@
                  <span class="n">uvtaper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">uvrange</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sensitivity</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clean_no_mask_selfcal_image</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">vlass_plane_reject_ms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">cycleniter_final_image_nomask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            vis: List of input visibility files.</span>
+
+<span class="sd">            search_radius_arcsec: Size of the field finding beam search radius in arcsec.</span>
+
+<span class="sd">            cell: Image X and Y cell size(s) with units or pixels per beam. Single value same for both. &#39;&lt;number&gt;ppb&#39; for pixels per beam.</span>
+<span class="sd">                Compute cell size based on the UV coverage of all the fields</span>
+<span class="sd">                to be imaged and use a 5 pix per beam sampling.</span>
+<span class="sd">                The pix per beam specification uses the above default cell size</span>
+<span class="sd">                (&#39;5ppb&#39;) and scales it accordingly.</span>
+
+<span class="sd">                Example: [&#39;0.5arcsec&#39;, &#39;0.5arcsec&#39;] &#39;3ppb&#39;</span>
+
+<span class="sd">            cfcache: Convolution function cache directory name</span>
+
+<span class="sd">            conjbeams: Use conjugate frequency in tclean for wideband A-terms.</span>
+
+<span class="sd">            cyclefactor: Controls the depth of clean in minor cycles based on PSF.</span>
+
+<span class="sd">            cycleniter: Controls max number of minor cycle iterations in a single major cycle.</span>
+
+<span class="sd">            nmajor: Controls the maximum number of major cycles to evaluate.</span>
+
+<span class="sd">            datatype: Data type(s) to image. The default &#39;&#39; selects the best available data type (e.g. selfcal over regcal) with</span>
+<span class="sd">                an automatic fallback to the next available data type.</span>
+<span class="sd">                With the ``datatype`` parameter of &#39;regcal&#39; or &#39;selfcal&#39;, one</span>
+<span class="sd">                can force the use of only given data type(s).</span>
+<span class="sd">                Note that this parameter is only for non-VLASS data when the datacolumn</span>
+<span class="sd">                is not explictly set by user or imaging heuristics.</span>
+
+<span class="sd">            datacolumn: Data column to image; this will take precedence over the datatype parameter.</span>
+
+<span class="sd">            deconvolver: Minor cycle algorithm (multiscale or mtmfs)</span>
+
+<span class="sd">            editmode: The edit mode of the task (&#39;add&#39; or &#39;replace&#39;). Defaults to &#39;add&#39;.</span>
+
+<span class="sd">            field: Set of data selection field names or ids.</span>
+
+<span class="sd">            imaging_mode: Identity of product type (e.g. VLASS quick look) desired.  This will determine the heuristics used.</span>
+
+<span class="sd">            imagename: Prefix for output image names.</span>
+
+<span class="sd">            imsize: Image X and Y size(s) in pixels or PB level (single fields), &#39;&#39; for default. Single value same for both. &#39;&lt;number&gt;pb&#39; for PB level.</span>
+
+<span class="sd">            intent: Set of data selection intents</span>
+
+<span class="sd">            gridder: Name of the gridder to use with tclean</span>
+
+<span class="sd">            mask: Used to declare whether to use a predefined mask for tclean.</span>
+
+<span class="sd">            pbmask: Used to declare primary beam gain level for cleaning with primary beam mask (usemask=&#39;pb&#39;), used only for VLASS-SE-CONT imaging mode.</span>
+
+<span class="sd">            nbin: Channel binning factor.</span>
+
+<span class="sd">            nchan: Number of channels, -1 = all</span>
+
+<span class="sd">            niter: The max total number of minor cycle iterations allowed for tclean</span>
+
+<span class="sd">            nterms: Number of Taylor coefficients in the spectral model</span>
+
+<span class="sd">            parameter_file: keyword=value text file as alternative method of input parameters</span>
+
+<span class="sd">            pblimit: PB gain level at which to cut off normalizations</span>
+
+<span class="sd">            phasecenter: The default phase center is set to the mean of the field directions of all fields that are to be image together.</span>
+
+<span class="sd">                Example: 0, &#39;J2000 19h30m00 -40d00m00&#39;</span>
+
+<span class="sd">            reffreq: Reference frequency of the output image coordinate system</span>
+
+<span class="sd">            restfreq: List of rest frequencies or a rest frequency in a string for output image.</span>
+
+<span class="sd">            robust: Briggs robustness parameter for tclean</span>
+
+<span class="sd">            scales: The scales for multi-scale imaging.</span>
+
+<span class="sd">            specmode: Spectral gridding type (mfs, cont, cube, &#39;&#39; for default)</span>
+
+<span class="sd">            spw: Set of data selection spectral window/channels, &#39;&#39; for all</span>
+
+<span class="sd">            start: First channel for frequency mode images. Starts at first input channel of the spw.</span>
+
+<span class="sd">                Example: &#39;22.3GHz&#39;</span>
+
+<span class="sd">            stokes: Stokes Planes to make</span>
+
+<span class="sd">            threshold: Stopping threshold (number in units of Jy, or string)</span>
+
+<span class="sd">            nsigma: Multiplicative factor for rms-based threshold stopping</span>
+
+<span class="sd">            uvtaper: Used to set a uv-taper during clean.</span>
+
+<span class="sd">            uvrange: Set of data selection uv ranges, &#39;&#39; for all.</span>
+
+<span class="sd">            width: Channel width</span>
+
+<span class="sd">            sensitivity: Theoretical sensitivity (override internal calculation)</span>
+
+<span class="sd">            clean_no_mask_selfcal_image:</span>
+
+<span class="sd">            vlass_plane_reject_ms: Only used for the &#39;VLASS-SE-CUBE&#39; imaging mode. default: True If True, reject VLASS Coarse Cube planes with high flagging percentages (see the heuristics details below)</span>
+<span class="sd">                If False, do not perform flagging-based VLASS Coarse Cube plane rejection.</span>
+<span class="sd">                If the input value is a dictionary, the plane rejection heuristics will be performed with custom thresholds.</span>
+<span class="sd">                The optional keys are:</span>
+
+<span class="sd">                - exclude_spw, default: &#39;&#39;</span>
+<span class="sd">                  Spectral windows to be excluded from the VLASS Coarse Cube plane rejection consideration, i.e. always preserve.</span>
+<span class="sd">                - flagpct_thresh, default: 0.9</span>
+<span class="sd">                  Flagging percentage threshold per field for the plane rejection.</span>
+<span class="sd">                - nfield_thresh: default: 12</span>
+<span class="sd">                  A minimal number of fields above the flagging percentage threshold is required for the plane rejection.</span>
+
+<span class="sd">            cycleniter_final_image_nomask:</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">super</span><span class="p">(</span><span class="n">EditimlistInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -521,7 +644,7 @@
         <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">stokes</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;stokes&#39;</span><span class="p">]</span>
         <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">conjbeams</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;conjbeams&#39;</span><span class="p">]</span>
         <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">reffreq</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;reffreq&#39;</span><span class="p">]</span>
-        
+
         <span class="c1"># niter_correction is run again in tclean.py</span>
         <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">niter</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span> <span class="k">else</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;niter&#39;</span><span class="p">]</span>
         <span class="n">imlist_entry</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inpdict</span><span class="p">[</span><span class="s1">&#39;cyclefactor&#39;</span><span class="p">]</span>
@@ -798,13 +921,13 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_add_vlasscube_targets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">imlist_entry</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add multiple clean targets for the VLASS-SE-CUBE mode.</span>
-<span class="sd">        </span>
+
 <span class="sd">        For the &quot;coarse cube&quot; mode, we perform the following operations:</span>
 <span class="sd">            - loop over individual spw groups</span>
 <span class="sd">            - generate corresponding clean target using a modified copy of the base CleanTarget object template</span>
 <span class="sd">            - aggregate clean targets list after the VLASS-SE-CUBE plane rejection criteria is applied.</span>
 <span class="sd">        note: the initial &#39;spw&#39; from the base CleanTarget object template, i.e., imlist_entry[&#39;spw&#39;], is expected to be a list here.</span>
-<span class="sd">        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.        </span>
+<span class="sd">        For VLASS-SE-CUBE, we add additional attributes so the template can render the target-specific parameters properly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">vlass_plane_reject_keys_allowed</span> <span class="o">=</span> <span class="p">[</span>
@@ -838,7 +961,7 @@
             <span class="n">flagpct</span> <span class="o">=</span> <span class="n">th</span><span class="o">.</span><span class="n">flagpct_spwgroup</span><span class="p">(</span><span class="n">results_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">results</span><span class="p">,</span> <span class="n">spw_selection</span><span class="o">=</span><span class="n">spw</span><span class="p">)</span>
             <span class="c1"># PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.</span>
             <span class="c1"># We hardcode the value to 1.0 which means we reject any spw that is completely flagged.</span>
-            <span class="c1"># Note that this is different from vlass_plane_reject_ms[&#39;flagpct_thresh&#39;] which is a per-field flagging threshold to </span>
+            <span class="c1"># Note that this is different from vlass_plane_reject_ms[&#39;flagpct_thresh&#39;] which is a per-field flagging threshold to</span>
             <span class="c1"># define &quot;bad&quot; fields.</span>
             <span class="n">flagpct_threshold</span> <span class="o">=</span> <span class="mf">1.0</span>
 
@@ -945,7 +1068,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

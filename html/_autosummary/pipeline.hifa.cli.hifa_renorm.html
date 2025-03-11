@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_renorm &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <h1>pipeline.hifa.cli.hifa_renorm<a class="headerlink" href="#pipeline-hifa-cli-hifa-renorm" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_renorm">
-<span class="sig-name descname"><span class="pre">hifa_renorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_auto_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_renorm.html#hifa_renorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_renorm" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hifa_renorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">createcaltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excludechan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atm_auto_exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwthreshspw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_renorm.html#hifa_renorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_renorm" title="Link to this definition"></a></dt>
 <dd><p>ALMA renormalization task</p>
 <p>This task makes an assessment, and optionally applies a correction, to data
 suffering from incorrect amplitude normalization caused by bright
@@ -131,15 +131,18 @@ correction heuristics used in this task, please see the Pipeline User Guide.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul>
 <li><p><strong>vis</strong> – List of input MeasurementSets. Defaults to the list of
-MeasurementSets specified in the pipeline context.
-Example: vis=[‘ngc5921.ms’]</p></li>
+MeasurementSets specified in the pipeline context.</p>
+<p>Example: vis=[‘ngc5921.ms’]</p>
+</li>
 <li><p><strong>createcaltable</strong> – Boolean to select whether to create the renormalization
 correction cal table (True), or only run the assessment
-(False, default).
-Example: createcaltable=True</p></li>
+(False, default).</p>
+<p>Example: createcaltable=True</p>
+</li>
 <li><p><strong>threshold</strong> – Apply correction if max correction is above this threshold
-value and <code class="docutils literal notranslate"><span class="pre">apply</span></code> = True. Default is 1.02 (i.e. 2%).
-Example: threshold=1.02</p></li>
+value and <code class="docutils literal notranslate"><span class="pre">apply</span></code> = True. Default is 1.02 (i.e. 2%).</p>
+<p>Example: threshold=1.02</p>
+</li>
 <li><p><strong>spw</strong> – The list of real (not virtual - i.e. the actual spwIDs in
 the MS) spectral windows to evaluate.
 Set to spw=’’ by default, which means the task will select
@@ -158,8 +161,8 @@ provided.</p>
 window per selection.
 Note that for data with multiple MSs, a list of
 dictionaries with the correct selection for each MS can be
-provided.
-Examples:</p>
+provided.</p>
+<p>Examples:</p>
 <ul class="simple">
 <li><p>excludechan={‘22’:’100~150;800~850’, ‘24’:’100~200’}</p></li>
 <li><p>excludechan={‘22’:’230.1GHz~230.2GHz’}</p></li>
@@ -172,8 +175,9 @@ features. Default is False</p></li>
 separately. The default value for all SPWs is 120e6, and
 this parameter allows one to override it for specific SPWs,
 due to needing potentially various ‘nsegments’ when EBs
-have very different SPW bandwidths.
-Example: bwthreshspw={‘16: 64e6, ‘22: 64e6}</p></li>
+have very different SPW bandwidths.</p>
+<p>Example: bwthreshspw={‘16: 64e6, ‘22: 64e6}</p>
+</li>
 <li><p><strong>parallel</strong> – Execute using CASA HPC functionality, if available.</p></li>
 </ul>
 </dd>
@@ -207,7 +211,7 @@ and apply this correction if it exceeds a threshold of 3% (1.03).</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

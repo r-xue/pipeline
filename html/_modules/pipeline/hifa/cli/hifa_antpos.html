@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_antpos &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifa.tasks.antpos.almaantpos.ALMAAntposInputs.__init__</span>
 <div class="viewcode-block" id="hifa_antpos">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_antpos.html#pipeline.hifa.cli.hifa_antpos">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -136,12 +137,10 @@
 <span class="sd">    columns as shown below. This file should not include blank lines, including</span>
 <span class="sd">    after the end of the last entry. The default name of this file is &#39;antennapos.csv&#39;.</span>
 
-<span class="sd">    Example of contents for an &#39;antennapos.csv&#39; file:</span>
+<span class="sd">    Example of contents for an &#39;antennapos.csv&#39; file::</span>
 
 <span class="sd">        ms,antenna,xoffset,yoffset,zoffset,comment</span>
-
 <span class="sd">        uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,&quot;No comment&quot;</span>
-
 <span class="sd">        uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,&quot;No comment&quot;</span>
 
 <span class="sd">    The offset values in this file are in meters.</span>
@@ -153,36 +152,6 @@
 
 <span class="sd">    Note: the ``hm_antpos`` &#39;online&#39; option will be implemented when the</span>
 <span class="sd">    observing system provides an antenna position determination service.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">            MeasurementSets specified in the pipeline context.</span>
-<span class="sd">            Example: vis=[&#39;ngc5921.ms&#39;]</span>
-
-<span class="sd">        caltable: List of names for the output calibration tables. Defaults</span>
-<span class="sd">            to the standard pipeline naming convention.</span>
-<span class="sd">            Example: caltable=[&#39;ngc5921.gcal&#39;]</span>
-
-<span class="sd">        hm_antpos: Heuristics method for retrieving the antenna position</span>
-<span class="sd">            corrections. The options are &#39;online&#39; (not yet implemented),</span>
-<span class="sd">            &#39;manual&#39;, and &#39;file&#39;.</span>
-<span class="sd">            Example: hm_antpos=&#39;manual&#39;</span>
-
-<span class="sd">        antenna: The list of antennas for which the positions are to be corrected</span>
-<span class="sd">            if ``hm_antpos`` is &#39;manual&#39;.</span>
-<span class="sd">            Example: antenna=&#39;DV05,DV07&#39;</span>
-
-<span class="sd">        offsets: The list of antenna offsets for each antenna in &#39;antennas&#39;.</span>
-<span class="sd">            Each offset is a set of 3 floating point numbers separated by</span>
-<span class="sd">            commas, specified in the ITRF frame.</span>
-<span class="sd">            Example: offsets=[0.01, 0.02, 0.03, 0.03, 0.02, 0.01]</span>
-
-<span class="sd">        antposfile: The file(s) containing the antenna offsets. Used if</span>
-<span class="sd">            ``hm_antpos`` is &#39;file&#39;.</span>
-
-<span class="sd">        threshold: Highlight antenna position offsets greater than this value in</span>
-<span class="sd">            the weblog. Units are wavelengths and the default is 1.0.</span>
-<span class="sd">            Example: threshold=1.0</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -232,7 +201,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

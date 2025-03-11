@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.flagging.flagdeteralmasd &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -193,6 +193,7 @@
     <span class="n">qa0</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">qa2</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hsd_flagdata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
                  <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -222,56 +223,103 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Pipeline context.</span>
-<span class="sd">            vis: The list of input MeasurementSets. Defaults to the</span>
-<span class="sd">                 list of MeasurementSets defined in the pipeline context.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of</span>
+<span class="sd">                MeasurementSets defined in the pipeline context.</span>
+
 <span class="sd">            output_dir: Output directory.</span>
-<span class="sd">            flagbackup: Back up any pre-existing flags before applying</span>
-<span class="sd">                        new ones. Defaults to True.</span>
-<span class="sd">            autocorr: Flag autocorrelation data. Defaults to False.</span>
-<span class="sd">            shadow: Flag shadowed antennas. Defaults to True.</span>
-<span class="sd">            scan: Flag a list of scans specified by scannumber.</span>
-<span class="sd">                  Defaults to True.</span>
-<span class="sd">            scannumber: A string containing a comma delimited list of scans to be</span>
-<span class="sd">                        flagged. Defaults to &#39;&#39; (no scans are flagged).</span>
-<span class="sd">            intents: A string containing a comma delimited list of intents against</span>
-<span class="sd">                     which the scans to be flagged are matched. Defaults to</span>
-<span class="sd">                     intents that are not relevant to pipeline processing.</span>
-<span class="sd">            edgespw: Flag the edge spectral window channels. Defaults to True.</span>
-<span class="sd">            fracspw: Fraction of the baseline correlator TDM edge channels</span>
-<span class="sd">                     to be flagged. Defaults to &#39;1.875GHz&#39;.</span>
-<span class="sd">            fracspwfps: Fraction of the ACS correlator TDM edge channels</span>
-<span class="sd">                        to be flagged. Defaults to 0.048387.</span>
-<span class="sd">            online: Apply the online flags. Defaults to True.</span>
+
+<span class="sd">            flagbackup: Back up any pre-existing flags before applying new ones.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            autocorr: Flag autocorrelation data.</span>
+
+<span class="sd">                Default: None (equivalent to False)</span>
+
+<span class="sd">            shadow: Flag shadowed antennas.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            scan: Flag a list of scans and intents specified by scannumber and intents.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            scannumber: A string containing a comma delimited list of scans to be flagged.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            intents: A string containing a comma delimited list of intents</span>
+<span class="sd">                against which the scans to be flagged are matched.</span>
+<span class="sd">                Defaults to intents that are not relevant to pipeline processing.</span>
+
+<span class="sd">                Example: `&#39;*BANDPASS*&#39;`</span>
+
+<span class="sd">            edgespw: Flag the edge spectral window channels.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            fracspw: Fraction of the baseline correlator TDM edge channels to be flagged.</span>
+
+<span class="sd">                Default: None (equivalent to 0.03125)</span>
+
+<span class="sd">            fracspwfps: Fraction of the ACA correlator TDM edge channels to be flagged.</span>
+
+<span class="sd">                Default: None (equivalent to 0.048387)</span>
+
+<span class="sd">            online: Apply the online flags.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
 <span class="sd">            fileonline: File containing the online flags. These are computed</span>
-<span class="sd">                        by the h_init or hif_importdata data tasks. If the</span>
-<span class="sd">                        online flags files are undefined a name of the form</span>
-<span class="sd">                        &#39;msname.flagonline.txt&#39; is assumed.</span>
-<span class="sd">            template: Apply a flagging template. Defaults to True.</span>
+<span class="sd">                by the h_init or hif_importdata data tasks. If the online flags files</span>
+<span class="sd">                are undefined a name of the form &#39;msname.flagonline.txt&#39; is assumed.</span>
+
+<span class="sd">            template: Apply a flagging template.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
 <span class="sd">            filetemplate: The name of a text file that contains the flagging</span>
-<span class="sd">                          template for RFI, birdies, telluric lines, etc.</span>
-<span class="sd">                          If the template flags files is undefined a name of</span>
-<span class="sd">                          the form &#39;msname.flagtemplate.txt&#39; is assumed.</span>
+<span class="sd">                template for RFI, birdies, telluric lines, etc.  If the</span>
+<span class="sd">                template flags files is undefined a name of the form</span>
+<span class="sd">                &#39;msname.flagtemplate.txt&#39; is assumed.</span>
+
 <span class="sd">            pointing: Apply a flagging template for pointing flag.</span>
-<span class="sd">                      Defaults to True.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
 <span class="sd">            filepointing: The name of a text file that contains the flagging</span>
-<span class="sd">                          template for pointing flag. If the template flags</span>
-<span class="sd">                          files is undefined a name of the form</span>
-<span class="sd">                          &#39;msname.flagpointing.txt&#39; is assumed.</span>
+<span class="sd">                template for pointing flag. If the template flags files is</span>
+<span class="sd">                undefined a name of the form &#39;msname.flagpointing.txt&#39; is assumed.</span>
+
 <span class="sd">            incompleteraster: Apply commands to flag incomplete raster sequence.</span>
-<span class="sd">                              If this is False, relevant commands in filepointing</span>
-<span class="sd">                              are simply commented out. Defualts to True.</span>
+<span class="sd">                If this is False, relevant commands in filepointing are</span>
+<span class="sd">                simply commented out.</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
 <span class="sd">            hm_tbuff: The heuristic for computing the default time interval</span>
-<span class="sd">                      padding parameter. The options are &#39;halfint&#39; and &#39;manual&#39;.</span>
-<span class="sd">                      In &#39;halfint&#39; mode tbuff is set to half the maximum of the</span>
-<span class="sd">                      median integration time of the science and calibrator target</span>
-<span class="sd">                      observations.</span>
-<span class="sd">            tbuff: The time in seconds used to pad flagging command time intervals</span>
-<span class="sd">                   if hm_tbuff=&#39;manual&#39;. Defaults to 0.0.</span>
-<span class="sd">            qa0: Apply QA0 flags. Defaults to True.</span>
-<span class="sd">            qa2: Apply QA2 flags. Defaults to True.</span>
+<span class="sd">                padding parameter. The options are &#39;halfint&#39; and &#39;manual&#39;.</span>
+<span class="sd">                In &#39;halfint&#39; mode tbuff is set to half the maximum of the</span>
+<span class="sd">                median integration time of the science and calibrator target</span>
+<span class="sd">                observations.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;halfint&#39;)</span>
+
+<span class="sd">            tbuff: The time in seconds used to pad flagging command time</span>
+<span class="sd">                intervals if hm_tbuff=&#39;manual&#39;.</span>
+
+<span class="sd">                Default: None (equivalent to 0.0)</span>
+
+<span class="sd">            qa0: QA0 flags</span>
+
+<span class="sd">            qa2: QA2 flags</span>
+
 <span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
-<span class="sd">                      Default is None, which intends to turn on parallel</span>
-<span class="sd">                      processing if possible.</span>
+
+<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+
+<span class="sd">                Default: None (equivalent to &#39;automatic&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="n">flagbackup</span><span class="p">,</span> <span class="n">autocorr</span><span class="o">=</span><span class="n">autocorr</span><span class="p">,</span> <span class="n">shadow</span><span class="o">=</span><span class="n">shadow</span><span class="p">,</span> <span class="n">scan</span><span class="o">=</span><span class="n">scan</span><span class="p">,</span>
@@ -595,7 +643,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

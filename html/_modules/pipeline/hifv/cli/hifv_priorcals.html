@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifv.cli.hifv_priorcals &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifv.tasks.priorcals.priorcals.PriorcalsInputs.__init__</span>
 <div class="viewcode-block" id="hifv_priorcals">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifv.cli.hifv_priorcals.html#pipeline.hifv.cli.hifv_priorcals">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -125,29 +126,6 @@
                    <span class="n">apply_antpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_swpowcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">swpow_spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ant_pos_time_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Runs gaincurves, opacities, requantizer gains, antenna position corrections, tec_maps, switched power.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
-<span class="sd">            converted  to MS format.</span>
-<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
-
-<span class="sd">        show_tec_maps: Plot tec maps.</span>
-
-<span class="sd">        apply_tec_correction: Apply tec correction.</span>
-
-<span class="sd">        apply_gaincurves: Apply gain curves correction, default True.</span>
-
-<span class="sd">        apply_opcal: Apply opacities correction, default True.</span>
-
-<span class="sd">        apply_rqcal: Apply requantizer gains correction, default True.</span>
-
-<span class="sd">        apply_antpos: Apply antenna position corrections, default True.</span>
-
-<span class="sd">        apply_swpowcal: Apply switched power table, default False.  If set True, ``apply_rqcal`` is ignored and no requantizer gain correction will be applied.</span>
-
-<span class="sd">        swpow_spw: Spectral-window(s) for plotting: &quot;&quot; ==&gt;all, spw=&quot;6, 14&quot;</span>
-
-<span class="sd">        ant_pos_time_limit: Antenna position time limit in days, default to 150 days.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -190,7 +168,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

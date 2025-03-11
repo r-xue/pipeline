@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_applycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hif.tasks.applycal.ifapplycal.IFApplycalInputs.__init__</span>
 <div class="viewcode-block" id="hif_applycal">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.cli.hif_applycal.html#pipeline.hif.cli.hif_applycal">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -134,47 +135,6 @@
 
 <span class="sd">    Users can interact with the pipeline calibration state using the tasks</span>
 <span class="sd">    h_export_calstate and h_import_calstate.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.</span>
-<span class="sd">            example: [&#39;X227.ms&#39;]</span>
-
-<span class="sd">        field: A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline</span>
-<span class="sd">            context.</span>
-<span class="sd">            example: &#39;3C279&#39;, &#39;3C279, M82&#39;</span>
-
-<span class="sd">        intent: A string containing the list of intents against which the selected fields will be matched. Defaults to all supported intents</span>
-<span class="sd">            in the pipeline context.</span>
-<span class="sd">            example: `&#39;*TARGET*&#39;`</span>
-
-<span class="sd">        spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline</span>
-<span class="sd">            context.</span>
-<span class="sd">            example: &#39;17&#39;, &#39;11, 15&#39;</span>
-
-<span class="sd">        antenna: The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.</span>
-
-<span class="sd">        parang: Apply parallactic angle correction</span>
-
-<span class="sd">        applymode: Calibration apply mode &#39;calflag&#39;: calibrate data and apply flags from solutions</span>
-<span class="sd">            &#39;calflagstrict&#39;: (default) same as above except flag spws for which calibration is</span>
-<span class="sd">            unavailable in one or more tables (instead of allowing them to pass</span>
-<span class="sd">            uncalibrated and unflagged)</span>
-<span class="sd">            &#39;trial&#39;: report on flags from solutions, dataset entirely unchanged</span>
-<span class="sd">            &#39;flagonly&#39;: apply flags from solutions only, data not calibrated</span>
-<span class="sd">            &#39;flagonlystrict&#39;: same as above except flag spws for which calibration is</span>
-<span class="sd">            unavailable in one or more tables</span>
-<span class="sd">            &#39;calonly&#39;: calibrate data only, flags from solutions NOT applied</span>
-
-<span class="sd">        calwt: Calibrate the weights as well as the data</span>
-
-<span class="sd">        flagbackup: Backup the flags before the apply</span>
-
-<span class="sd">        flagsum: Compute before and after flagging summary statistics</span>
-
-<span class="sd">        flagdetailedsum: Compute detailed before and after flagging statistics summaries. Parameter available only when if flagsum is True.</span>
-
-<span class="sd">        parallel: Execute using CASA HPC functionality, if available. options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
-<span class="sd">            default: None (equivalent to False)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -218,7 +178,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

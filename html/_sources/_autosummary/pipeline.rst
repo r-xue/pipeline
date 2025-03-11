@@ -17,6 +17,7 @@
    
       cli_interface
       find_frame
+      inherit_docstring_and_type_hints
       initcli
       log_host_environment
       show_weblog

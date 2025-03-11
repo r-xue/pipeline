@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_tsysflagcontamination &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,7 +120,7 @@
 <h1>pipeline.hifa.cli.hifa_tsysflagcontamination<a class="headerlink" href="#pipeline-hifa-cli-hifa-tsysflagcontamination" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hifa.cli.hifa_tsysflagcontamination">
-<span class="sig-name descname"><span class="pre">hifa_tsysflagcontamination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_n_extreme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_detection_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagnostic_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continue_on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_tsysflagcontamination.html#hifa_tsysflagcontamination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_tsysflagcontamination" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hifa_tsysflagcontamination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filetemplate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_n_extreme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relative_detection_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagnostic_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continue_on_failure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">Results</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hifa/cli/hifa_tsysflagcontamination.html#hifa_tsysflagcontamination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hifa.cli.hifa_tsysflagcontamination" title="Link to this definition"></a></dt>
 <dd><p>Flag line contamination in ALMA interferometric Tsys caltables</p>
 <p>This task flags all line contamination detected through an analysis of the
 Tsys and bandpass caltables.</p>
@@ -129,25 +129,30 @@ appear in the Tsys calibration tables of the scans taken in the vicinity
 of the source field in comparison with the Tsys calibration tables of the
 scans taken toward the bandpass. The bandpass scan should be clean of
 astrophysical line features.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
+<dd class="field-odd"><ul>
 <li><p><strong>vis</strong> – List of input MeasurementSets (Not used).</p></li>
 <li><p><strong>caltable</strong> – List of input Tsys calibration tables.
-Default: [] - Use the table currently stored in the pipeline context.
-Example: caltable=[‘X132.ms.tsys.s2.tbl’]</p></li>
+Default: [] - Use the table currently stored in the pipeline context.</p>
+<p>Example: caltable=[‘X132.ms.tsys.s2.tbl’]</p>
+</li>
 <li><p><strong>filetemplate</strong> – output file to which regions to flag will be written</p></li>
 <li><p><strong>logpath</strong> – output file to which heuristic log statements will be
 written</p></li>
-<li><p><strong>remove_n_extreme</strong> – expert parameter for contamination heuristic
-Default: 2</p></li>
-<li><p><strong>relative_detection_factor</strong> – expert parameter for contamination detection heuristic
-Default: 0.005</p></li>
-<li><p><strong>diagnostic_plots</strong> – create diagnostic plots for the line contamination heuristic
-Default: True</p></li>
+<li><p><strong>remove_n_extreme</strong> – expert parameter for contamination heuristic</p>
+<p>Default: 2</p>
+</li>
+<li><p><strong>relative_detection_factor</strong> – expert parameter for contamination detection heuristic</p>
+<p>Default: 0.005</p>
+</li>
+<li><p><strong>diagnostic_plots</strong> – create diagnostic plots for the line contamination heuristic</p>
+<p>Default: True</p>
+</li>
 <li><p><strong>continue_on_failure</strong> – controls whether pipeline execution continues if a failure
-occurs in the underlying contamination detection heuristic.
-Default: True</p></li>
+occurs in the underlying contamination detection heuristic.</p>
+<p>Default: True</p>
+</li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -182,7 +187,7 @@ Default: True</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

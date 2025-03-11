@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.cli.hsdn_importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hsdn.tasks.importdata.importdata.NROImportDataInputs.__init__</span>
 <div class="viewcode-block" id="hsdn_importdata">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hsdn.cli.hsdn_importdata.html#pipeline.hsdn.cli.hsdn_importdata">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -130,73 +131,28 @@
 <span class="sd">    The hsdn_importdata task loads the specified visibility data into the pipeline</span>
 <span class="sd">    context unpacking and / or converting it as necessary.</span>
 
-<span class="sd">    If the ``overwrite`` input parameter is set to False and the task is asked to</span>
-<span class="sd">    convert an input ASDM input to an MS, then when the output MS already exists in</span>
-<span class="sd">    the output directory, the importasdm conversion step is skipped, and the</span>
-<span class="sd">    existing MS will be imported instead.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be</span>
-<span class="sd">            converted to MS format.</span>
-<span class="sd">            example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
-
-<span class="sd">        session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise</span>
-<span class="sd">            a session must be assigned to each vis file.</span>
-<span class="sd">            example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
-
-<span class="sd">        hm_rasterscan: Heuristics method for raster scan analysis. Two analysis modes, time-domain analysis (&#39;time&#39;) and direction analysis (&#39;direction&#39;), are available.</span>
-<span class="sd">            Default is &#39;time&#39;.</span>
-
-<span class="sd">        datacolumns: Dictionary defining the data types of existing columns. The format is:</span>
-<span class="sd">            {&#39;data&#39;: &#39;data type 1&#39;}</span>
-<span class="sd">            or</span>
-<span class="sd">            {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}.</span>
-<span class="sd">            For ASDMs the data type can only be RAW and one</span>
-<span class="sd">            can only specify it for the data column.</span>
-<span class="sd">            For MSes one can define two different data types</span>
-<span class="sd">            for the DATA and CORRECTED_DATA columns and they</span>
-<span class="sd">            can be any of the known data types (RAW,</span>
-<span class="sd">            REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
-<span class="sd">            SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
-<span class="sd">            SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR). The</span>
-<span class="sd">            intent selection strings _ALL or _SCIENCE can be</span>
-<span class="sd">            skipped. In that case the task determines this</span>
-<span class="sd">            automatically by inspecting the existing intents</span>
-<span class="sd">            in the dataset.</span>
-<span class="sd">            Usually, a single datacolumns dictionary is used</span>
-<span class="sd">            for all datasets. If necessary, one can define a</span>
-<span class="sd">            list of dictionaries, one for each EB, with</span>
-<span class="sd">            different setups per EB.</span>
-<span class="sd">            If no type is specified, {&#39;data&#39;:&#39;raw&#39;} will</span>
-<span class="sd">            be assumed.</span>
-
-<span class="sd">        overwrite: Overwrite existing files on import. When converting ASDM to MS, if overwrite=False and the MS already</span>
-<span class="sd">            exists in output directory, then this existing MS dataset will be used</span>
-<span class="sd">            instead.</span>
-
-<span class="sd">        nocopy: Disable copying of MS to working directory.</span>
-
-<span class="sd">        createmms: Create an MMS</span>
+<span class="sd">    If the ``overwrite`` input parameter is set to False, then when the output MS</span>
+<span class="sd">    already exists in the output directory, the existing MS will be imported instead.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
 
 <span class="sd">    Examples:</span>
-<span class="sd">        1. Load an ASDM list in the ../rawdata subdirectory into the context:</span>
+<span class="sd">        1. Load MS list in the ../rawdata subdirectory into the context:</span>
 
-<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e&#39;, &#39;../rawdata/uid_A002_x30a93d_X44e&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;../rawdata/mg2-1.ms&#39;, &#39;../rawdata/mg2-2.ms&#39;])</span>
 
 <span class="sd">        2. Load an MS in the current directory into the context:</span>
 
-<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;uid___A002_X30a93d_X43e.ms&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;mg2.ms&#39;])</span>
 
-<span class="sd">        3. Load a tarred ASDM in ../rawdata into the context:</span>
+<span class="sd">        3. Load a tarred MS in ../rawdata into the context:</span>
 
-<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;../rawdata/uid___A002_X30a93d_X43e.tar.gz&#39;])</span>
+<span class="sd">        &gt;&gt;&gt; hsdn_importdata (vis=[&#39;../rawdata/mg2.tar.gz&#39;])</span>
 
 <span class="sd">        4. Import a list of MeasurementSets:</span>
 
-<span class="sd">        &gt;&gt;&gt; myvislist = [&#39;uid___A002_X30a93d_X43e.ms&#39;, &#39;uid_A002_x30a93d_X44e.ms&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; myvislist = [&#39;mg2-1.ms&#39;, &#39;mg2-2.ms&#39;]</span>
 <span class="sd">        &gt;&gt;&gt; hsdn_importdata(vis=myvislist)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -233,7 +189,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

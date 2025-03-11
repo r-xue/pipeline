@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_flagdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifa.tasks.flagging.flagdeteralma.FlagDeterALMAInputs.__init__</span>
 <div class="viewcode-block" id="hifa_flagdata">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_flagdata.html#pipeline.hifa.cli.hifa_flagdata">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -157,82 +158,6 @@
 <span class="sd">      both sides of the spectral window, and thus are always flagged on both sides</span>
 <span class="sd">      in order to achieve 1875 MHz bandwidth (in effect, they are flagged by</span>
 <span class="sd">      62.5 MHz on each side), and thus no warning is generated.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">            MeasurementSets defined in the pipeline context.</span>
-
-<span class="sd">        autocorr: Flag autocorrelation data.</span>
-
-<span class="sd">        shadow: Flag shadowed antennas.</span>
-
-<span class="sd">        tolerance: Amount of antenna shadowing tolerated, in meters. A positive number</span>
-<span class="sd">            allows antennas to overlap in projection. A negative number forces antennas</span>
-<span class="sd">            apart in projection. Zero implies a distance of radius_1+radius_2 between</span>
-<span class="sd">            antenna centers.</span>
-
-<span class="sd">        scan: Flag a list of specified scans.</span>
-
-<span class="sd">        scannumber: A string containing a comma delimited list of scans to be</span>
-<span class="sd">            flagged.</span>
-<span class="sd">            Example: scannumber=&#39;3,5,6&#39;</span>
-
-<span class="sd">        intents: A string containing a comma delimited list of intents against</span>
-<span class="sd">            which the scans to be flagged are matched.</span>
-<span class="sd">            Example: intents=&#39;`*BANDPASS*`&#39;</span>
-
-<span class="sd">        edgespw: Flag the edge spectral window channels.</span>
-
-<span class="sd">        fracspw: Fraction of channels to flag at both edges of TDM spectral windows.</span>
-
-<span class="sd">        fracspwfps: Fraction of channels to flag at both edges of ACA TDM</span>
-<span class="sd">            spectral windows that were created with the earlier (original)</span>
-<span class="sd">            implementation of the frequency profile synthesis (FPS) algorithm.</span>
-
-<span class="sd">        online: Apply the online flags.</span>
-
-<span class="sd">        partialpol: Identify integrations in multi-polarisation data where part</span>
-<span class="sd">            of the polarization products are already flagged, and flag the other</span>
-<span class="sd">            polarization products in those integrations.</span>
-
-<span class="sd">        lowtrans: Flag spectral windows for which a significant fraction of</span>
-<span class="sd">            the channels have atmospheric transmission below the</span>
-<span class="sd">            threshold (``mintransrepspw``, ``mintransnonrepspws``).</span>
-
-<span class="sd">        mintransnonrepspws: This atmospheric transmissivity threshold is used to flag</span>
-<span class="sd">            a non-representative science spectral window when more than 60% of</span>
-<span class="sd">            its channels have a transmissivity below this level.</span>
-
-<span class="sd">        mintransrepspw: This atmospheric transmissivity threshold is used to flag the</span>
-<span class="sd">            representative science spectral window when more than 60% of its channels</span>
-<span class="sd">            have a transmissivity below this level.</span>
-
-<span class="sd">        fileonline: File containing the online flags. These are computed by the</span>
-<span class="sd">            h_init or hif_importdata data tasks. If the online flags files</span>
-<span class="sd">            are undefined a name of the form &#39;msname.flagonline.txt&#39; is assumed.</span>
-
-<span class="sd">        template: Apply flagging templates</span>
-
-<span class="sd">        filetemplate: The name of a text file that contains the flagging template</span>
-<span class="sd">            for RFI, birdies, telluric lines, etc. If the template flags files</span>
-<span class="sd">            is undefined a name of the form &#39;msname.flagtemplate.txt&#39; is assumed.</span>
-
-<span class="sd">        hm_tbuff: The heuristic for computing the default time interval padding</span>
-<span class="sd">            parameter. The options are &#39;halfint&#39; and &#39;manual&#39;. In &#39;halfint&#39; mode tbuff</span>
-<span class="sd">            is set to half the maximum of the median integration time of the science</span>
-<span class="sd">            and calibrator target observations. The value of 0.048 seconds is</span>
-<span class="sd">            subtracted from the lower time limit to accommodate the behavior of the</span>
-<span class="sd">            ALMA Control system.</span>
-
-<span class="sd">        tbuff: The time in seconds used to pad flagging command time</span>
-<span class="sd">            intervals if ``hm_tbuff`` = &#39;manual&#39;. The default in</span>
-<span class="sd">            manual mode is no flagging.</span>
-
-<span class="sd">        qa0: QA0 flags.</span>
-
-<span class="sd">        qa2: QA2 flags.</span>
-
-<span class="sd">        flagbackup: Back up any pre-existing flags.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -279,7 +204,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

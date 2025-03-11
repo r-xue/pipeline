@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsdn.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -143,6 +143,7 @@
 <span class="sd">    This class extends importdata.ImportDataInputs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="c1"># docstring and type hints: supplements hsdn_importdata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">vis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">datacolumns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">hm_rasterscan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -150,13 +151,55 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: pipeline context</span>
-<span class="sd">            vis: list of input visibility data</span>
+
+<span class="sd">            vis: List of visibility data files. These may be MSes,</span>
+<span class="sd">                or tar files of MSes.</span>
+
+<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;anyms.tar.gz&#39;]</span>
+
 <span class="sd">            output_dir: path of output directory</span>
-<span class="sd">            session: list of visibility data sessions</span>
-<span class="sd">            overwrite: flag of overwrite existing files on import</span>
-<span class="sd">            nocopy: flag of disable copying of MS to working directory</span>
-<span class="sd">            createmms: operation string to create an MMS</span>
-<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis</span>
+
+<span class="sd">            session: List of sessions to which the visibility files belong.</span>
+<span class="sd">                Defaults to a single session containing all the visibility</span>
+<span class="sd">                files, otherwise a session must be assigned to each vis file.</span>
+
+<span class="sd">                Example: session=[&#39;Session_1&#39;, &#39;Sessions_2&#39;]</span>
+
+<span class="sd">            datacolumns: Dictionary defining the data types of existing columns.</span>
+<span class="sd">                The format is:</span>
+
+<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;}</span>
+
+<span class="sd">                or</span>
+
+<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+
+<span class="sd">                For MSes one can define two different data types for the DATA and</span>
+<span class="sd">                CORRECTED_DATA columns and they can be any of the known data types</span>
+<span class="sd">                (RAW, REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR).</span>
+<span class="sd">                The intent selection strings _ALL or _SCIENCE can be skipped.</span>
+<span class="sd">                In that case the task determines this automatically by inspecting</span>
+<span class="sd">                the existing intents in the dataset.</span>
+<span class="sd">                Usually, a single datacolumns dictionary is used for all datasets.</span>
+<span class="sd">                If necessary, one can define a list of dictionaries, one for each MS,</span>
+<span class="sd">                with different setups per MS.</span>
+<span class="sd">                If no type is specified, {&#39;data&#39;:&#39;raw&#39;} will be assumed.</span>
+
+<span class="sd">            overwrite: Overwrite existing files on import.</span>
+<span class="sd">                If overwrite=False and the MS already exists in output directory,</span>
+<span class="sd">                then this existing MS dataset will be used instead.</span>
+
+<span class="sd">            nocopy: Disable copying of MS to working directory.</span>
+
+<span class="sd">            createmms: Create an MMS</span>
+
+<span class="sd">            hm_rasterscan: Heuristics method for raster scan analysis.</span>
+<span class="sd">                Two analysis modes, time-domain analysis (&#39;time&#39;) and</span>
+<span class="sd">                direction analysis (&#39;direction&#39;), are available.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;time&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># no-op parameters for MS</span>
         <span class="n">asis</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -283,7 +326,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

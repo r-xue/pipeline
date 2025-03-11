@@ -34,8 +34,7 @@ MeasurementSet
       ~MeasurementSet.get_data_type
       ~MeasurementSet.get_diffgain_mode
       ~MeasurementSet.get_fields
-      ~MeasurementSet.get_median_integration_time
-      ~MeasurementSet.get_median_science_integration_time
+      ~MeasurementSet.get_integration_time_stats
       ~MeasurementSet.get_original_intent
       ~MeasurementSet.get_representative_source_spw
       ~MeasurementSet.get_scans
@@ -48,15 +47,12 @@ MeasurementSet
       ~MeasurementSet.get_vla_corrlist_from_spw
       ~MeasurementSet.get_vla_corrstring
       ~MeasurementSet.get_vla_critfrac
-      ~MeasurementSet.get_vla_datadesc
       ~MeasurementSet.get_vla_field_spws
-      ~MeasurementSet.get_vla_max_integration_time
       ~MeasurementSet.get_vla_numchan
       ~MeasurementSet.get_vla_spw2band
       ~MeasurementSet.get_vla_tst_bpass_spw
       ~MeasurementSet.set_data_column
       ~MeasurementSet.update_reference_antennas
-      ~MeasurementSet.vla_minbaselineforcal
 
    .. rubric:: Attributes Documentation
 
@@ -82,8 +78,7 @@ MeasurementSet
    .. automethod:: get_data_type
    .. automethod:: get_diffgain_mode
    .. automethod:: get_fields
-   .. automethod:: get_median_integration_time
-   .. automethod:: get_median_science_integration_time
+   .. automethod:: get_integration_time_stats
    .. automethod:: get_original_intent
    .. automethod:: get_representative_source_spw
    .. automethod:: get_scans
@@ -96,12 +91,9 @@ MeasurementSet
    .. automethod:: get_vla_corrlist_from_spw
    .. automethod:: get_vla_corrstring
    .. automethod:: get_vla_critfrac
-   .. automethod:: get_vla_datadesc
    .. automethod:: get_vla_field_spws
-   .. automethod:: get_vla_max_integration_time
    .. automethod:: get_vla_numchan
    .. automethod:: get_vla_spw2band
    .. automethod:: get_vla_tst_bpass_spw
    .. automethod:: set_data_column
    .. automethod:: update_reference_antennas
-   .. automethod:: vla_minbaselineforcal

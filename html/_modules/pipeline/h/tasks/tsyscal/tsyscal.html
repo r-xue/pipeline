@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.tsyscal.tsyscal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -115,7 +115,6 @@
   <h1>Source code for pipeline.h.tasks.tsyscal.tsyscal</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">operator</span><span class="w"> </span><span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">infrastructure</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.infrastructure.basetask</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">basetask</span>
@@ -156,7 +155,29 @@
         <span class="n">casa_args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_task_args</span><span class="p">(</span><span class="n">ignore</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;caltable&#39;</span><span class="p">,))</span>
         <span class="k">return</span> <span class="n">namer</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">output_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="o">**</span><span class="n">casa_args</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements h_tsyscal</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">caltable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chantol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            vis: List of input visibility files.</span>
+
+<span class="sd">                Example: vis=[&#39;ngc5921.ms&#39;]</span>
+
+<span class="sd">            caltable: Name of output gain calibration tables.</span>
+
+<span class="sd">                Example: caltable=&#39;ngc5921.gcal&#39;</span>
+
+<span class="sd">            chantol: The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).</span>
+
+<span class="sd">                Example: chantol=5</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TsyscalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="c1"># pipeline inputs</span>
@@ -188,7 +209,7 @@
 
 <div class="viewcode-block" id="Tsyscal.prepare">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal.prepare">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span>
 
         <span class="c1"># make a note of the current inputs state before we start fiddling</span>
@@ -216,7 +237,7 @@
 
 <div class="viewcode-block" id="Tsyscal.analyse">
 <a class="viewcode-back" href="../../../../../_automodapi/pipeline.h.tasks.Tsyscal.html#pipeline.h.tasks.Tsyscal.analyse">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">analyse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="p">:</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">resultobjects</span><span class="o">.</span><span class="n">TsyscalResults</span><span class="p">:</span>
         <span class="c1"># double-check that the caltable was actually generated</span>
         <span class="n">on_disk</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca</span> <span class="k">for</span> <span class="n">ca</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">pool</span> <span class="k">if</span> <span class="n">ca</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
         <span class="n">result</span><span class="o">.</span><span class="n">final</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">on_disk</span>
@@ -234,23 +255,26 @@
 <span class="n">GainfieldMapping</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;GainfieldMapping&#39;</span><span class="p">,</span> <span class="s1">&#39;intent preferred fallback&#39;</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">GainfieldMapping</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get gainfield solution map. Different solution maps are returned for</span>
 <span class="sd">    single dish and interferometric data.</span>
 
-<span class="sd">    :param ms: MS to analyse</span>
-<span class="sd">    :param is_single_dish: True if MS is single dish data</span>
-<span class="sd">    :return: list of GainfieldMappings</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MS to analyse.</span>
+<span class="sd">        is_single_dish: True if MS is single dish data.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of GainfieldMappings.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># define function to get Tsys fields for intent</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">intent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="n">exclude</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="n">intent</span><span class="p">:</span>
             <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="c1"># the &#39;if o&#39; test filters out results for intents that do not have</span>
             <span class="c1"># fields, e.g., PHASE for SD data</span>
-            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">head</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">tail</span><span class="p">))</span> <span class="k">if</span> <span class="n">o</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">))</span>
+            <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">),</span> <span class="n">f</span><span class="p">(</span><span class="n">tail</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">))</span> <span class="k">if</span> <span class="n">o</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">intent</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="o">=</span><span class="n">exclude</span><span class="p">))</span>
 
     <span class="c1"># return different gainfield maps for single dish and interferometric</span>
     <span class="k">if</span> <span class="n">is_single_dish</span><span class="p">:</span>
@@ -262,28 +286,50 @@
         <span class="p">]</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># Intent mapping extracted from CAS-12213 ticket.</span>
+        <span class="c1"># CAS-12213: original intent mapping.</span>
         <span class="c1"># PIPE-2080: updated to add mapping for DIFFGAINREF, DIFFGAINSRC intent.</span>
+        <span class="c1"># PIPE-2394: updated mapping for PHASE, TARGET, CHECK</span>
         <span class="c1">#</span>
-        <span class="c1"># ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse</span>
-        <span class="c1"># BANDPASS cal 	        all BANDPASS cals 	fallback to &#39;nearest&#39;</span>
-        <span class="c1"># FLUX cal 	            all FLUX cals 	    fallback to &#39;nearest&#39;</span>
-        <span class="c1"># DIFFGAIN[REF|SRC]     all DIFFGAIN cals 	fallback to BANDPASS</span>
-        <span class="c1"># PHASE cal 	        all PHASE cals 	    all TARGETs</span>
-        <span class="c1"># TARGET 	            all TARGETs 	    all PHASE cals</span>
-        <span class="c1"># CHECK_SOURCE        	all TARGETs     	all PHASE cals</span>
+        <span class="c1"># Intent to be calibrated:</span>
+        <span class="c1"># - BANDPASS cal</span>
+        <span class="c1">#   * Preferred: all BANDPASS cals.</span>
+        <span class="c1">#   * Fallback: &#39;nearest&#39;.</span>
+        <span class="c1"># - FLUX cal</span>
+        <span class="c1">#   * Preferred: all FLUX cals.</span>
+        <span class="c1">#   * Fallback: &#39;nearest&#39;.</span>
+        <span class="c1"># - DIFFGAIN[REF|SRC]</span>
+        <span class="c1">#   * Preferred: all DIFFGAIN cals.</span>
+        <span class="c1">#   * Fallback to BANDPASS.</span>
+        <span class="c1"># - PHASE cal</span>
+        <span class="c1">#   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and TARGET.</span>
+        <span class="c1">#   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.</span>
+        <span class="c1"># - TARGET</span>
+        <span class="c1">#   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and PHASE.</span>
+        <span class="c1">#   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.</span>
+        <span class="c1"># - CHECK_SOURCE</span>
+        <span class="c1">#   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and PHASE.</span>
+        <span class="c1">#   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.</span>
+
+        <span class="c1"># PIPE-2394: typical calibrator intents to avoid (all but PHASE)</span>
+        <span class="c1"># matching searching for nearby Tsys field for PHASE, TARGET, and/or</span>
+        <span class="c1"># CHECK.</span>
+        <span class="n">exclude_intents</span> <span class="o">=</span> <span class="s1">&#39;AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE&#39;</span>
+
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;AMPLITUDE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">),</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;DIFFGAINREF&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)),</span>
             <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;DIFFGAINSRC&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;BANDPASS&#39;</span><span class="p">)),</span>
-            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">)),</span>
-            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
-            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;TARGET&#39;</span><span class="p">),</span> <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;PHASE&#39;</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;PHASE&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exclude_intents</span><span class="si">}</span><span class="s1">,TARGET&#39;</span><span class="p">),</span>
+                             <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude_intents</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;TARGET&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exclude_intents</span><span class="si">}</span><span class="s1">,PHASE&#39;</span><span class="p">),</span>
+                             <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude_intents</span><span class="p">)),</span>
+            <span class="n">GainfieldMapping</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="s1">&#39;CHECK&#39;</span><span class="p">,</span> <span class="n">preferred</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exclude_intents</span><span class="si">}</span><span class="s1">,PHASE&#39;</span><span class="p">),</span>
+                             <span class="n">fallback</span><span class="o">=</span><span class="n">f</span><span class="p">(</span><span class="s1">&#39;ATMOSPHERE&#39;</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="n">exclude_intents</span><span class="p">)),</span>
         <span class="p">]</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the mapping of observing intent to gainfield parameter for a</span>
 <span class="sd">    measurement set.</span>
@@ -291,11 +337,13 @@
 <span class="sd">    The mapping follows the observing intent to gainfield intent defined in</span>
 <span class="sd">    CAS-12213.</span>
 
-<span class="sd">    :param ms: MS to analyse</span>
-<span class="sd">    :param is_single_dish: boolean for if SD data or not</span>
-<span class="sd">    :return: dict of {observing intent: gainfield}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MS to analyse.</span>
+<span class="sd">        is_single_dish: boolean for if SD data or not.</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary of {observing intent: gainfield}.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">soln_map</span> <span class="o">=</span> <span class="n">get_solution_map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">)</span>
     <span class="n">final_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">s</span><span class="o">.</span><span class="n">intent</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">preferred</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">preferred</span> <span class="k">else</span> <span class="n">s</span><span class="o">.</span><span class="n">fallback</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">soln_map</span><span class="p">}</span>
 
@@ -315,13 +363,19 @@
     <span class="k">return</span> <span class="n">converted</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tsys_fields_for_intent</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">intent</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exclude_intents</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the identity of the Tsys field(s) for an intent.</span>
 
-<span class="sd">    :param ms: MS to analyse</span>
-<span class="sd">    :param intent: intent to retrieve fields for.</span>
-<span class="sd">    :return: set of field identifiers corresponding to intent</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MS to analyse.</span>
+<span class="sd">        intent: Intent to retrieve fields for.</span>
+<span class="sd">        exclude_intents: String of intent(s) (comma-separated) that should not</span>
+<span class="sd">            be covered by the Tsys field.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Set of field identifiers corresponding to given intent, while not</span>
+<span class="sd">        associated with intents (optionally) given by ``exclude_intents``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># In addition to the science intent scan, a field must also have a Tsys</span>
     <span class="c1"># scan observed for a Tsys solution to be considered present. The</span>
@@ -332,6 +386,11 @@
     <span class="c1"># us handle single field, single pointing science targets alongside mosaic</span>
     <span class="c1"># targets mixed together in the same EB. Theoretically, at least...</span>
     <span class="n">intent_fields</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">intent</span><span class="o">=</span><span class="n">intent</span><span class="p">)</span>
+
+    <span class="c1"># PIPE-2394: If requested, avoid matching fields that cover any of the</span>
+    <span class="c1"># intents that are to be excluded.</span>
+    <span class="k">if</span> <span class="n">exclude_intents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">intent_fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">intent_fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">exclude_intents</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)))]</span>
 
     <span class="c1"># contains fields of this intent that also have a companion Tsys scan</span>
     <span class="n">intent_fields_with_tsys</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">intent_fields</span> <span class="k">if</span> <span class="s1">&#39;ATMOSPHERE&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">intents</span><span class="p">]</span>
@@ -368,8 +427,8 @@
     <span class="k">return</span> <span class="p">{</span><span class="n">field_identifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">r</span><span class="p">}</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
-                        <span class="n">spw_map</span><span class="p">:</span> <span class="n">List</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_calapplications</span><span class="p">(</span><span class="n">ms</span><span class="p">:</span> <span class="n">MeasurementSet</span><span class="p">,</span> <span class="n">tsys_table</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">calfrom_defaults</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="n">callibrary</span><span class="o">.</span><span class="n">CalAppOrigin</span><span class="p">,</span>
+                        <span class="n">spw_map</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">callibrary</span><span class="o">.</span><span class="n">CalApplication</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a list of CalApplications that apply a Tsys caltable to a measurement</span>
 <span class="sd">    set using the gainfield mapping defined in CAS-12213.</span>
@@ -378,13 +437,16 @@
 <span class="sd">    constructor. Any other required CalFrom constructor arguments should be</span>
 <span class="sd">    provided to this function via the calfrom_defaults parameter.</span>
 
-<span class="sd">    :param ms: MeasurementSet to apply calibrations to</span>
-<span class="sd">    :param tsys_table: name of Tsys table</span>
-<span class="sd">    :param calfrom_defaults: dict of CalFrom constructor arguments</span>
-<span class="sd">    :param origin: CalOrigin for the created CalApplications</span>
-<span class="sd">    :param spw_map: Tsys SpW map</span>
-<span class="sd">    :param is_single_dish: boolean declaring if current MS is for Single-Dish</span>
-<span class="sd">    :return: list of CalApplications</span>
+<span class="sd">    Args:</span>
+<span class="sd">        ms: MeasurementSet to apply calibrations to.</span>
+<span class="sd">        tsys_table: name of Tsys table.</span>
+<span class="sd">        calfrom_defaults: dict of CalFrom constructor arguments.</span>
+<span class="sd">        origin: CalOrigin for the created CalApplications.</span>
+<span class="sd">        spw_map: Tsys SpW map.</span>
+<span class="sd">        is_single_dish: boolean declaring if current MS is for Single-Dish.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of CalApplications.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Get the map of intent:gainfield</span>
     <span class="n">soln_map</span> <span class="o">=</span> <span class="n">get_gainfield_map</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="n">is_single_dish</span><span class="p">)</span>
@@ -504,7 +566,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

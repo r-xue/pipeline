@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hifa.cli.hifa_fluxcalflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hifa.tasks.fluxcalflag.fluxcalflag.FluxcalFlagInputs.__init__</span>
 <div class="viewcode-block" id="hifa_fluxcalflag">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hifa.cli.hifa_fluxcalflag.html#pipeline.hifa.cli.hifa_fluxcalflag">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -128,38 +129,6 @@
 <span class="sd">    Search the built-in solar system flux calibrator line catalog for overlaps with</span>
 <span class="sd">    the science spectral windows. Generate a list of line overlap regions and</span>
 <span class="sd">    flagging commands.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: The list of input MeasurementSets. Defaults to the list of</span>
-<span class="sd">            MeasurementSets defined in the pipeline context.</span>
-
-<span class="sd">        field: The list of field names or field ids for which the models are</span>
-<span class="sd">            to be set. Defaults to all fields with intent &#39;AMPLITUDE&#39;.</span>
-<span class="sd">            Example: field=&#39;3C279&#39;, field=&#39;3C279, M82&#39;</span>
-
-<span class="sd">        intent: A string containing a comma delimited list of intents against</span>
-<span class="sd">            which the selected fields are matched. Defaults to all data</span>
-<span class="sd">            with amplitude intent.</span>
-<span class="sd">            Example: intent=&#39;AMPLITUDE&#39;</span>
-
-<span class="sd">        spw: Spectral windows and channels for which bandpasses are</span>
-<span class="sd">            computed. Defaults to all science spectral windows.</span>
-<span class="sd">            Example: spw=&#39;11,13,15,17&#39;</span>
-
-<span class="sd">        threshold: If the fraction of a spectral window occupied by line regions</span>
-<span class="sd">            is greater than this threshold value, then flag the entire</span>
-<span class="sd">            spectral window.</span>
-
-<span class="sd">        appendlines: Append user defined line regions to the line dictionary.</span>
-
-<span class="sd">        linesfile: Read in a file containing lines regions and append it to the</span>
-<span class="sd">            builtin dictionary. Blank lines and comments beginning with #</span>
-<span class="sd">            are skipped. The data is contained in 4 whitespace delimited</span>
-<span class="sd">            fields containing the solar system object field name, e.g.</span>
-<span class="sd">            &#39;Callisto&#39;, the molecular species name, e.g. &#39;13CO&#39;, and the</span>
-<span class="sd">            starting and ending frequency in GHz.</span>
-
-<span class="sd">        applyflags: Boolean for whether to apply the generated flag commands. (default True)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -201,7 +170,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

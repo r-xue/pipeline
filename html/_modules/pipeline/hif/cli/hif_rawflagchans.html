@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.cli.hif_rawflagchans &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hif.tasks.rawflagchans.rawflagchans.RawflagchansInputs.__init__</span>
 <div class="viewcode-block" id="hif_rawflagchans">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hif.cli.hif_rawflagchans.html#pipeline.hif.cli.hif_rawflagchans">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -163,40 +164,6 @@
 <span class="sd">    Suspect points are not flagged unless as part of a bad antenna or</span>
 <span class="sd">    baseline quadrant.</span>
 
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline</span>
-<span class="sd">            context.</span>
-
-<span class="sd">        spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline</span>
-<span class="sd">            context.</span>
-<span class="sd">            example: spw=&#39;17&#39;, spw=&#39;11, 15&#39;</span>
-
-<span class="sd">        intent: A string containing the list of intents to be checked for antennas with deviant gains. The default is blank, which causes the task to select</span>
-<span class="sd">            the &#39;BANDPASS&#39; intent.</span>
-<span class="sd">            example: intent=&#39;`*BANDPASS*`&#39;</span>
-
-<span class="sd">        flag_hilo: True to flag channel/baseline data further from the view median than fhl_limit * MAD.</span>
-
-<span class="sd">        fhl_limit: If flag_hilo is True then flag channel/baseline data further from the view median than fhl_limit * MAD.</span>
-
-<span class="sd">        fhl_minsample: Do no flagging if the view median and MAD are derived from fewer than fhl_minsample view pixels.</span>
-
-<span class="sd">        flag_bad_quadrant: True to search for and flag bad antenna quadrants and baseline quadrants. Here a /&#39;quadrant/&#39; is one</span>
-<span class="sd">            quarter of the channel axis.</span>
-
-<span class="sd">        fbq_hilo_limit: If flag_bad_quadrant is True then channel/baselines further from the view median than fbq_hilo_limit * MAD will be noted as</span>
-<span class="sd">            &#39;suspect&#39;. If there are enough of them to indicate that an antenna or</span>
-<span class="sd">            baseline quadrant is bad then all channel/baselines in that quadrant will</span>
-<span class="sd">            be flagged.</span>
-
-<span class="sd">        fbq_antenna_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular antenna/quadrant exceeds</span>
-<span class="sd">            fbq_antenna_frac_limit then all data for that antenna/quadrant will</span>
-<span class="sd">            be flagged.</span>
-
-<span class="sd">        fbq_baseline_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular baseline/quadrant exceeds</span>
-<span class="sd">            fbq_baseline_frac_limit then all data for that baseline/quadrant will</span>
-<span class="sd">            be flagged.</span>
-
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
 
@@ -207,7 +174,7 @@
 
 <span class="sd">        equivalent to:</span>
 
-<span class="sd">        &gt;&gt;&gt; hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8, </span>
+<span class="sd">        &gt;&gt;&gt; hif_rawflagchans(flag_hilo=True, fhl_limit=20, flag_bad_quadrant=True, fbq_hilo_limit=8,</span>
 <span class="sd">        ...                  fbq_antenna_frac_limit=0.2, fbq_baseline_frac_limit=1.0)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -244,7 +211,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

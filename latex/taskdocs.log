@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.22)  22 JAN 2025 17:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.3.11)  11 MAR 2025 02:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -890,7 +890,7 @@ File: ts1qtm.fd 2009/09/25 v1.2 font definition file for TS1/qtm
 
 {/usr/share/texmf/fonts/enc/dvips/tex-gyre/q-ts1.enc}]
 LaTeX Font Info:    Trying to load font information for TS1+txtt on input line 
-401.
+422.
 
 (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 File: ts1txtt.fd 2000/12/15 v3.1
@@ -913,9 +913,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 606--608
-[]\T1/qtm/b/n/10 prod-ucts_dir \T1/qtm/m/n/10 ^^U Name of the data prod-ucts su
-b-di-rec-tory. ex-am-ple: prod-
+Underfull \hbox (badness 10000) in paragraph at lines 648--651
+[]\T1/qtm/m/n/10 Ex-am-ple: tar-ge-tim-ages=[`NGC3256.band3', `NGC3256.band6'],
+ tar-ge-tim-
  []
 
 
@@ -945,17 +945,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [7]
-Overfull \hbox (13.94693pt too wide) in paragraph at lines 1025--1028
-[]\T1/qtm/m/n/10 a com-pressed tar file of the fi-nal flagver-sions file, e.g.,
- uid___A002_X30a93d_X43e.ms.flagversions.tar.gz 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1035--1038
-[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
--ent ses-sion, e.g.,
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -965,9 +954,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 1104--1106
-[]\T1/qtm/b/n/10 raw-data_dir \T1/qtm/m/n/10 ^^U Path to the raw-data sub-di-re
-c-tory. ex-am-ple: raw-
+Overfull \hbox (13.94693pt too wide) in paragraph at lines 1079--1082
+[]\T1/qtm/m/n/10 a com-pressed tar file of the fi-nal flagver-sions file, e.g.,
+ uid___A002_X30a93d_X43e.ms.flagversions.tar.gz 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1089--1092
+[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
+-ent ses-sion, e.g.,
  []
 
 
@@ -997,35 +992,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [11]
-Chapter 2.
-
-Underfull \hbox (badness 10000) in paragraph at lines 1584--1584
-[]|\T1/qtm/m/n/10 Ex-tract spec-tral in-dex from in-ten-sity peak in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1584--1584
-[]|\T1/qtm/m/n/10 Add to a list of im-ages to be pro-duced with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1584--1584
-[]|\T1/qtm/m/n/10 Ex-tract spec-tral in-dex from in-ten-sity peak in
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1584--1584
-[]|\T1/qtm/m/n/10 Add to a list of im-ages to be pro-duced with
- []
-
-[12
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 1686--1690
-[]\T1/qtm/m/n/10 ms,antenna,xoffset,yoffset,zoffset,comment uid___A002_X30a93d_
-X43e.ms,DV11,0.000,0.010,0.000,^^QNo
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1034,7 +1000,31 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-[13]
+[12]
+Chapter 2.
+
+Underfull \hbox (badness 10000) in paragraph at lines 1670--1670
+[]|\T1/qtm/m/n/10 Ex-tract spec-tral in-dex from in-ten-sity peak in
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1670--1670
+[]|\T1/qtm/m/n/10 Add to a list of im-ages to be pro-duced with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1670--1670
+[]|\T1/qtm/m/n/10 Ex-tract spec-tral in-dex from in-ten-sity peak in
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1670--1670
+[]|\T1/qtm/m/n/10 Add to a list of im-ages to be pro-duced with
+ []
+
+[13
+
+]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1098,11 +1088,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [20]
-Overfull \hbox (93.0348pt too wide) in paragraph at lines 2527--2529
-[]\T1/qtm/b/n/10 hm_weighting \T1/qtm/m/n/10 ^^U Weight-ing scheme (nat-u-ral,u
-niform,briggs,briggsabs[experimental],briggsbwtaper[experimental]) 
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1112,6 +1097,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [21]
+Overfull \hbox (93.0348pt too wide) in paragraph at lines 2685--2687
+[]\T1/qtm/b/n/10 hm_weighting \T1/qtm/m/n/10 ^^U Weight-ing scheme (nat-u-ral,u
+niform,briggs,briggsabs[experimental],briggsbwtaper[experimental]) 
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1139,11 +1129,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [24]
-Overfull \hbox (93.0348pt too wide) in paragraph at lines 2974--2976
-[]\T1/qtm/b/n/10 hm_weighting \T1/qtm/m/n/10 ^^U Weight-ing scheme (nat-u-ral,u
-niform,briggs,briggsabs[experimental],briggsbwtaper[experimental]) 
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1162,8 +1147,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [26]
-Underfull \hbox (badness 10000) in paragraph at lines 3263--3281
-\T1/qtm/m/n/10 `REG-CAL_CONTLINE_SCIENCE', `SELF-CAL_CONTLINE_SCIENCE', `REG-
+Overfull \hbox (93.0348pt too wide) in paragraph at lines 3152--3154
+[]\T1/qtm/b/n/10 hm_weighting \T1/qtm/m/n/10 ^^U Weight-ing scheme (nat-u-ral,u
+niform,briggs,briggsabs[experimental],briggsbwtaper[experimental]) 
  []
 
 
@@ -1184,6 +1170,21 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [28]
+Underfull \hbox (badness 10000) in paragraph at lines 3455--3471
+\T1/qtm/m/n/10 `REG-CAL_CONTLINE_SCIENCE', `SELF-CAL_CONTLINE_SCIENCE', `REG-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3455--3471
+\T1/qtm/m/n/10 CAL_LINE_SCIENCE', `SELF-CAL_LINE_SCIENCE'. The short-cuts `reg-
+cal' and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3472--3475
+[]\T1/qtm/m/n/10 Ex-am-ples: `self-cal', `reg-cal, `self-cal,regcal', `REG-
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1211,11 +1212,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [31]
-Underfull \hbox (badness 6380) in paragraph at lines 3782--3787
-[]\T1/qtm/b/n/10 am-pli-tude_selfcal \T1/qtm/m/n/10 ^^U At-tempt am-pli-tude se
-lf-calibration fol-low-ing phase-only self-
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1243,6 +1239,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [34]
+Underfull \hbox (badness 6380) in paragraph at lines 4013--4017
+[]\T1/qtm/b/n/10 am-pli-tude_selfcal \T1/qtm/m/n/10 ^^U At-tempt am-pli-tude se
+lf-calibration fol-low-ing phase-only self-
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1270,10 +1271,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [37]
-Chapter 3.
-[38
 
-]
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[38]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1292,15 +1298,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [40]
+Chapter 3.
+[41
 
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.87502pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.87502pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
-
-[41]
+]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1409,22 +1410,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [53]
-Underfull \hbox (badness 10000) in paragraph at lines 6278--6283
-[]\T1/qtm/b/n/10 transin-tent \T1/qtm/m/n/10 ^^U A string con-tain-ing a comma 
-de-lim-ited list
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 6278--6283
-\T1/qtm/m/n/10 of in-tents defin-ing the trans-fer cal-i-bra-tors. De-faults to
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 6278--6283
-\T1/qtm/m/n/10 `PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE'. Ex-
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1470,6 +1455,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [58]
+Underfull \hbox (badness 10000) in paragraph at lines 6738--6742
+[]\T1/qtm/b/n/10 transin-tent \T1/qtm/m/n/10 ^^U A string con-tain-ing a comma 
+de-lim-ited list
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 6738--6742
+\T1/qtm/m/n/10 of in-tents defin-ing the trans-fer cal-i-bra-tors. De-faults to
+
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1497,11 +1493,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [61]
-Underfull \hbox (badness 10000) in paragraph at lines 7177--7180
-[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
--ent ses-sion, e.g.
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1511,6 +1502,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [62]
+Underfull \hbox (badness 5519) in paragraph at lines 7203--7224
+\T1/qtm/m/n/10 the data col-umn. For MSes one can de-fine two dif-fer-ent data 
+types for the
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1556,9 +1552,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [67]
-Underfull \hbox (badness 7832) in paragraph at lines 7981--7984
-[]\T1/qtm/b/n/10 fb_sharps_limit \T1/qtm/m/n/10 ^^U Flag chan-nels brack-et-ing
- a chan-nel to chan-nel dif-fer-ence >
+Underfull \hbox (badness 10000) in paragraph at lines 7722--7725
+[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
+-ent ses-sion, e.g.
  []
 
 
@@ -1588,11 +1584,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [70]
-Underfull \hbox (badness 6575) in paragraph at lines 8356--8359
-[]\T1/qtm/b/n/10 re-fant \T1/qtm/m/n/10 ^^U Ranked comma de-lim-ited list of re
-f-er-ence an-ten-nas. Ex-am-ple: re-
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1620,11 +1611,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [73]
-Underfull \hbox (badness 6575) in paragraph at lines 8604--8607
-[]\T1/qtm/b/n/10 re-fant \T1/qtm/m/n/10 ^^U Ranked comma de-lim-ited list of re
-f-er-ence an-ten-nas. Ex-am-ple: re-
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1634,10 +1620,20 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [74]
-Chapter 4.
-[75
 
-]
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[75]
+Underfull \hbox (badness 7832) in paragraph at lines 8624--8627
+[]\T1/qtm/b/n/10 fb_sharps_limit \T1/qtm/m/n/10 ^^U Flag chan-nels brack-et-ing
+ a chan-nel to chan-nel dif-fer-ence >
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1674,11 +1670,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [79]
-Underfull \hbox (badness 10000) in paragraph at lines 9454--9456
-[]\T1/qtm/b/n/10 gain-map \T1/qtm/m/n/10 ^^U The value of []\T1/txtt/m/n/10 gai
-nmap[] \T1/qtm/m/n/10 pa-ram-e-ter in hifv_restoredata task put in
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1715,15 +1706,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [83]
+Chapter 4.
+[84
 
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.87502pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.87502pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
-
-[84]
+]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1733,11 +1719,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [85]
-Underfull \hbox (badness 5519) in paragraph at lines 10146--10167
-\T1/qtm/m/n/10 the data col-umn. For MSes one can de-fine two dif-fer-ent data 
-types for the
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1765,6 +1746,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [88]
+Underfull \hbox (badness 10000) in paragraph at lines 10158--10160
+[]\T1/qtm/b/n/10 gain-map \T1/qtm/m/n/10 ^^U The value of []\T1/txtt/m/n/10 gai
+nmap[] \T1/qtm/m/n/10 pa-ram-e-ter in hifv_restoredata task put in
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1774,11 +1760,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [89]
-Underfull \hbox (badness 10000) in paragraph at lines 10631--10634
-[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
--ent ses-sion, e.g.
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1824,6 +1805,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [94]
+Underfull \hbox (badness 5519) in paragraph at lines 10881--10902
+\T1/qtm/m/n/10 the data col-umn. For MSes one can de-fine two dif-fer-ent data 
+types for the
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1842,9 +1828,9 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [96]
-Underfull \hbox (badness 10000) in paragraph at lines 11507--11509
-[]\T1/qtm/b/n/10 vlass_ql_database \T1/qtm/m/n/10 ^^U vlass_ql_database - us-ag
-e in So-corro:
+Underfull \hbox (badness 6268) in paragraph at lines 11054--11058
+[]\T1/qtm/m/n/10 Ex-am-ples: - out-putvis_for_line='ngc5921.ms', - out-putvis_f
+or_line=[`ngc5921a.ms',
  []
 
 
@@ -1856,10 +1842,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [97]
-Chapter 5.
-[98
 
-]
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[98]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1869,6 +1860,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [99]
+Underfull \hbox (badness 10000) in paragraph at lines 11392--11395
+[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
+-ent ses-sion, e.g.
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1914,17 +1910,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [104]
-Underfull \hbox (badness 5119) in paragraph at lines 12427--12430
-[]\T1/qtm/b/n/10 tar-ge-tim-ages \T1/qtm/m/n/10 ^^U List of sci-ence tar-get im
--ages to be ex-ported. De-faults to all
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12427--12430
-\T1/qtm/m/n/10 sci-ence tar-get im-ages recorded in the pipeline con-text. ex-a
-m-ple: tar-ge-tim-
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1934,11 +1919,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [105]
-Underfull \hbox (badness 5637) in paragraph at lines 12576--12578
-[]\T1/qtm/b/n/10 tbuff \T1/qtm/m/n/10 ^^U The time in sec-onds used to pad flag
--ging com-mand time in-ter-vals if
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1948,6 +1928,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [106]
+Underfull \hbox (badness 10000) in paragraph at lines 12316--12320
+[]\T1/qtm/b/n/10 vlass_ql_database \T1/qtm/m/n/10 (\T1/qtm/m/it/10 str\T1/qtm/m
+/n/10 ) ^^U vlass_ql_database - us-age in So-corro:
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -1957,97 +1942,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [107]
-Underfull \hbox (badness 10000) in paragraph at lines 12818--12820
-[]\T1/qtm/b/n/10 with_pointing_correction \T1/qtm/m/n/10 ^^U add (ASDM::Pointin
-g::encoder -
- []
+Chapter 5.
+[108
 
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 22.87502pt, for example:
-(fancyhdr)                \setlength{\headheight}{22.87502pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-
-(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
-
-[108]
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 MS,Antenna,Spwid,Polarization,Factor uid___A002_X316307_X6f.ms,C
-M03,5,XX,10.0
- []
-
-
-Overfull \hbox (28.43497pt too wide) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 uid___A002_X316307_X6f.ms,CM03,5,YY,12.0 uid___A002_X316307_X6f.
-ms,PM04,5,XX,2.0
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 #ses-sionID,ObservationStartDate(UTC),ObservationEndDate(UTC), A
-n-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 tenna,BandCenter(MHz),BandWidth(MHz),POL,Factor 1,2011-11-11 01:
-00:00,2011-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11-11 01:30:00,CM02,86243.0,500.0,I,10.0 1,2011-11-11 01:00:00,2
-011-11-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11 01:30:00,CM02,86243.0,1000.0,I,30.0 1,2011-11-11 01:00:00,201
-1-11-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11 01:30:00,CM03,86243.0,500.0,I,50.0 1,2011-11-11 01:00:00,2011
--11-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11 01:30:00,CM03,86243.0,1000.0,I,70.0 1,2011-11-11 01:00:00,201
-1-11-11
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 01:30:00,ANONY-MOUS,86243.0,500.0,I,30.0 1,2011-11-11 01:00:00,2
-011-11-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11 01:30:00,ANONY-MOUS,86243.0,1000.0,I,50.0 2,2011-11-13 01:45:
-00,2011-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 11-13 02:15:00,PM04,86243.0,500.0,I,90.0 2,2011-11-13 01:45:00,2
-011-11-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 13 02:15:00,PM04,86243.0,1000.0,I,110.0 2,2011-11-13 01:45:00,20
-11-11-13
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 12915--12958
-\T1/qtm/m/n/10 02:15:00,ANONY-MOUS,86243.0,500.0,I,90.0 2,2011-11-13 01:45:00,2
-011-11-13
- []
-
+]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2057,11 +1955,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [109]
-Underfull \hbox (badness 10000) in paragraph at lines 13043--13046
-[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
--ent ses-sion, e.g.
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2089,6 +1982,11 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [112]
+Underfull \hbox (badness 5741) in paragraph at lines 12978--12980
+[]\T1/qtm/m/n/10 Ex-am-ple: [100,200] (chan-nel), [115e9, 115.1e9] (fre-quency 
+in Hz), [`115GHz',
+ []
+
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2098,11 +1996,6 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [113]
-Underfull \hbox (badness 7832) in paragraph at lines 13434--13436
-[]\T1/qtm/b/n/10 fb_sharps_limit \T1/qtm/m/n/10 ^^U Flag chan-nels brack-et-ing
- a chan-nel to chan-nel dif-fer-ence >
- []
-
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2112,22 +2005,15 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [114]
-Chapter 6.
 
-Underfull \hbox (badness 5119) in paragraph at lines 13586--13589
-[]\T1/qtm/b/n/10 tar-ge-tim-ages \T1/qtm/m/n/10 ^^U List of sci-ence tar-get im
--ages to be ex-ported. De-faults to all
- []
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
 
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-Underfull \hbox (badness 10000) in paragraph at lines 13586--13589
-\T1/qtm/m/n/10 sci-ence tar-get im-ages recorded in the pipeline con-text. ex-a
-m-ple: tar-ge-tim-
- []
-
-[115
-
-]
+[115]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2137,7 +2023,90 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
 [116]
-Underfull \hbox (badness 10000) in paragraph at lines 13811--13814
+Underfull \hbox (badness 10000) in paragraph at lines 13415--13418
+[]\T1/qtm/m/n/10 Ex-am-ple: tar-ge-tim-ages=[`NGC3256.band3', `NGC3256.band6'],
+ tar-ge-tim-
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[117]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[118]
+Underfull \hbox (badness 5637) in paragraph at lines 13616--13619
+[]\T1/qtm/b/n/10 tbuff \T1/qtm/m/n/10 ^^U The time in sec-onds used to pad flag
+-ging com-mand time in-ter-vals if
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[119]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[120]
+Underfull \hbox (badness 5519) in paragraph at lines 13914--13929
+\T1/qtm/m/n/10 the data col-umn. For MSes one can de-fine two dif-fer-ent data 
+types for the
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[121]
+Underfull \hbox (badness 10000) in paragraph at lines 13938--13942
+[]\T1/qtm/b/n/10 with_pointing_correction \T1/qtm/m/n/10 ^^U Ap-ply point-ing c
+or-rec-tion to DI-REC-TION. Add
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[122]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[123]
+Underfull \hbox (badness 10000) in paragraph at lines 14198--14201
 []\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
 -ent ses-sion, e.g.
  []
@@ -2150,99 +2119,46 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-[117]
-Underfull \hbox (badness 7522) in paragraph at lines 13866--13891
-[]\T1/qtm/b/n/10 ref-file \T1/qtm/m/n/10 ^^U Path to a file con-tain-ing scal-i
-ng fac-tors be-tween beams. The for-
- []
+[124]
 
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
 
-Underfull \hbox (badness 6792) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 mat is equals to jyperk.csv with five fields: MS name, beam name
- (in-stead
- []
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
+[125]
 
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 tor. Ex-am-ple for the file is as fol-lows: #MS,Beam,Spwid,Polar
-ization,Factor
- []
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
 
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 mg2-20181016165248-181017.ms,NRO-BEAM0,0,I,1.000000000 mg2-
- []
+[126]
 
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
 
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM0,1,I,1.000000000 mg2-
- []
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
+[127]
 
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM0,2,I,1.000000000 mg2-
- []
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
 
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM0,3,I,1.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM1,0,I,3.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM1,1,I,3.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM1,2,I,3.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM1,3,I,3.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM2,0,I,0.500000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM2,1,I,0.500000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM2,2,I,0.500000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM2,3,I,0.500000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM3,0,I,2.000000000 mg2-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 20181016165248-181017.ms,NRO-BEAM3,1,I,2.000000000 mg2-201810161
-65248-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13866--13891
-\T1/qtm/m/n/10 181017.ms,NRO-BEAM3,2,I,2.000000000 mg2-20181016165248-181017.ms
-,NRO-
+[128]
+Underfull \hbox (badness 7832) in paragraph at lines 14716--14719
+[]\T1/qtm/b/n/10 fb_sharps_limit \T1/qtm/m/n/10 ^^U Flag chan-nels brack-et-ing
+ a chan-nel to chan-nel dif-fer-ence >
  []
 
 
@@ -2253,7 +2169,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-[118]
+[129]
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
@@ -2262,11 +2178,71 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-[119]
+[130]
+Chapter 6.
+
+Underfull \hbox (badness 10000) in paragraph at lines 14903--14906
+[]\T1/qtm/m/n/10 Ex-am-ple: tar-ge-tim-ages=[`NGC3256.band3', `NGC3256.band6'],
+ tar-ge-tim-
+ []
+
+[131
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 15007--15020
+\T1/qtm/m/n/10 REG-CAL_CONTLINE_SCIENCE, SELF-CAL_CONTLINE_SCIENCE, REG-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 15007--15020
+\T1/qtm/m/n/10 CAL_LINE_SCIENCE, SELF-CAL_LINE_SCIENCE, BASE-LINED, ATM-CORR).
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[132]
+Underfull \hbox (badness 10000) in paragraph at lines 15146--15149
+[]\T1/qtm/m/n/10 a com-pressed tar file con-tain-ing the calta-bles for the par
+-ent ses-sion, e.g.
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[133]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[134]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 22.87502pt, for example:
+(fancyhdr)                \setlength{\headheight}{22.87502pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+
+(fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
+
+[135]
 Chapter 7.
-[120
+[136
 
-] [121
+] [137
 
 
 
@@ -2288,7 +2264,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 72--73
 mod-ule
  []
 
-[122
+[138
 
 
 
@@ -2299,6 +2275,12 @@ d-ule
  []
 
 
+Underfull \hbox (badness 5504) in paragraph at lines 105--106
+[]\T1/txtt/m/n/10 hifv_vlassmasking() \T1/qtm/m/n/10 (\T1/qtm/m/it/10 in mod-ul
+e pipeline.hifv.cli\T1/qtm/m/n/10 ),
+ []
+
+
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 22.87502pt, for example:
 (fancyhdr)                \setlength{\headheight}{22.87502pt}.
@@ -2306,7 +2288,7 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 
 (fancyhdr)                \addtolength{\topmargin}{-10.87502pt}.
 
-[123]) (./taskdocs.aux)
+[139]) (./taskdocs.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -2315,27 +2297,28 @@ Package rerunfilecheck Info: File `taskdocs.out' has not changed.
 (rerunfilecheck)             Checksum: DAEC7907493733A6E4C90405AB87367D;25290.
  ) 
 Here is how much of TeX's memory you used:
- 18078 strings out of 476182
- 318900 string characters out of 5795595
- 1956975 words of memory out of 5000000
- 39190 multiletter control sequences out of 15000+600000
+ 18086 strings out of 476182
+ 318762 string characters out of 5795595
+ 1964975 words of memory out of 5000000
+ 39182 multiletter control sequences out of 15000+600000
  604583 words of font info for 78 fonts, out of 8000000 for 9000
  15 hyphenation exceptions out of 8191
- 72i,12n,83p,3817b,796s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,12n,83p,6464b,798s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/
-texmf/fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/type1/public
-/tex-gyre/qhvbi.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qhvr.pfb></us
-r/share/texmf/fonts/type1/public/tex-gyre/qtmb.pfb></usr/share/texmf/fonts/type
-1/public/tex-gyre/qtmr.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmri.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-di
-st/fonts/type1/public/txfonts/tcxtt.pfb>
-Output written on taskdocs.pdf (127 pages, 566413 bytes).
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texmf/
+fonts/type1/public/tex-gyre/qhvb.pfb></usr/share/texmf/fonts/type1/public/tex-g
+yre/qhvbi.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qhvr.pfb></usr/shar
+e/texmf/fonts/type1/public/tex-gyre/qtmb.pfb></usr/share/texmf/fonts/type1/publ
+ic/tex-gyre/qtmr.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmri.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/share/
+texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/txfonts/tcxtt.pfb>
+Output written on taskdocs.pdf (143 pages, 596214 bytes).
 PDF statistics:
- 1918 PDF objects out of 2073 (max. 8388607)
- 1667 compressed objects within 17 object streams
- 504 named destinations out of 1000 (max. 500000)
+ 1993 PDF objects out of 2073 (max. 8388607)
+ 1724 compressed objects within 18 object streams
+ 520 named destinations out of 1000 (max. 500000)
  989 words of extra memory for PDF output out of 10000 (max. 10000000)
 

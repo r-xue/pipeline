@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_tsysflag &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../_static/favicon-16x16.png"/>
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -118,6 +118,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pipeline.h.cli.utils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">utils</span>
 
 
+<span class="c1"># docstring and type hints: inherits from hsd.tasks.tsysflag.tsysflag.TsysflagInputs.__init__</span>
 <div class="viewcode-block" id="hsd_tsysflag">
 <a class="viewcode-back" href="../../../../_autosummary/pipeline.hsd.cli.hsd_tsysflag.html#pipeline.hsd.cli.hsd_tsysflag">[docs]</a>
 <span class="nd">@utils</span><span class="o">.</span><span class="n">cli_wrapper</span>
@@ -158,55 +159,6 @@
 <span class="sd">        a threshold, and flag Tsys spectra for all antennas and all timestamps</span>
 <span class="sd">        in a spw, if proportion of antennas that are already entirely flagged</span>
 <span class="sd">        in all timestamps exceeds a threshold.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        vis: List of input MeasurementSets (Not used)</span>
-
-<span class="sd">        caltable: List of input Tsys calibration tables.</span>
-<span class="sd">            default: [] - Use the table currently stored in the pipeline context.</span>
-<span class="sd">            example: caltable=[&#39;X132.ms.tsys.s2.tbl&#39;]</span>
-
-<span class="sd">        flag_nmedian: True to flag Tsys spectra with high median value.</span>
-
-<span class="sd">        fnm_limit: Flag spectra with median value higher than fnm_limit * median of this measure over all spectra.</span>
-
-<span class="sd">        fnm_byfield: Evaluate the nmedian metric separately for each field.</span>
-
-<span class="sd">        flag_derivative: True to flag Tsys spectra with high median derivative.</span>
-
-<span class="sd">        fd_max_limit: Flag spectra with median derivative higher than fd_max_limit * median of this measure over all spectra.</span>
-
-<span class="sd">        flag_edgechans: True to flag edges of Tsys spectra.</span>
-
-<span class="sd">        fe_edge_limit: Flag channels whose channel to channel difference &gt; fe_edge_limit * median across spectrum.</span>
-
-<span class="sd">        flag_fieldshape: True to flag Tsys spectra with a radically different shape to those of the ff_refintent.</span>
-
-<span class="sd">        ff_refintent: Data intent that provides the reference shape for &#39;flag_fieldshape&#39;.</span>
-
-<span class="sd">        ff_max_limit: Flag Tsys spectra with &#39;fieldshape&#39; metric values &gt; ff_max_limit.</span>
-
-<span class="sd">        flag_birdies: True to flag channels covering sharp spectral features.</span>
-
-<span class="sd">        fb_sharps_limit: Flag channels bracketing a channel to channel difference &gt; fb_sharps_limit.</span>
-
-<span class="sd">        flag_toomany: True to flag Tsys spectra for which a proportion of antennas for given timestamp and/or proportion of antennas that are</span>
-<span class="sd">            entirely flagged in all timestamps exceeds their respective thresholds.</span>
-
-<span class="sd">        tmf1_limit: Flag Tsys spectra for all antennas in a timestamp and spw if proportion of antennas already flagged in this timestamp and spw exceeds</span>
-<span class="sd">            tmf1_limit.</span>
-
-<span class="sd">        tmef1_limit: Flag Tsys spectra for all antennas and all timestamps in a spw, if proportion of antennas that are already entirely flagged</span>
-<span class="sd">            in all timestamps exceeds tmef1_limit.</span>
-
-<span class="sd">        metric_order: Order in which to evaluate the flagging metrics that are enabled. Disabled metrics are skipped.</span>
-
-<span class="sd">        normalize_tsys: True to create a normalized Tsys table that is used to evaluate the Tsys flagging metrics. All newly found flags are also applied</span>
-<span class="sd">            to the original Tsys caltable that continues to be used for subsequent</span>
-<span class="sd">            calibration.</span>
-
-<span class="sd">        filetemplate: The name of a text file that contains the manual Tsys flagging template. If the template flags file is undefined, a name of the form</span>
-<span class="sd">            &#39;msname.flagtsystemplate.txt&#39; is assumed.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The results object for the pipeline task is returned.</span>
@@ -255,7 +207,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

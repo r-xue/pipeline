@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.domain.measurementset.MeasurementSet &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -287,74 +287,62 @@ spectral windows; used in subsequent calibration tasks
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_fields" title="pipeline.domain.measurementset.MeasurementSet.get_fields"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_fields</span></code></a></p></td>
 <td><p>Get Fields from this MeasurementSet matching the given criteria.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_median_integration_time" title="pipeline.domain.measurementset.MeasurementSet.get_median_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_integration_time</span></code></a></p></td>
-<td><p>Get the median integration time used to get data for the given intent.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_integration_time_stats" title="pipeline.domain.measurementset.MeasurementSet.get_integration_time_stats"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_integration_time_stats</span></code></a></p></td>
+<td><p>Get the given statistcs of integration time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_median_science_integration_time" title="pipeline.domain.measurementset.MeasurementSet.get_median_science_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_median_science_integration_time</span></code></a></p></td>
-<td><p>Get the median integration time for science targets used to get data for the given intent.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_original_intent" title="pipeline.domain.measurementset.MeasurementSet.get_original_intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_original_intent</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_original_intent" title="pipeline.domain.measurementset.MeasurementSet.get_original_intent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_original_intent</span></code></a></p></td>
 <td><p>Get the original obs_modes that correspond to the given pipeline observing intent(s).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_representative_source_spw" title="pipeline.domain.measurementset.MeasurementSet.get_representative_source_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_source_spw</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_representative_source_spw" title="pipeline.domain.measurementset.MeasurementSet.get_representative_source_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_representative_source_spw</span></code></a></p></td>
 <td><p>Get the representative target source object:</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_scans" title="pipeline.domain.measurementset.MeasurementSet.get_scans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scans</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_scans" title="pipeline.domain.measurementset.MeasurementSet.get_scans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_scans</span></code></a></p></td>
 <td><p>Return Scan(s) in MeasurementSet matching the given criteria (ID, intent, field, and/or spectral window).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_specs" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_specs</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_specs" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_specs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_specs</span></code></a></p></td>
 <td><p>Return list of all spectral specs used in the MS.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_window" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_window</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_window" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_window"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_window</span></code></a></p></td>
 <td><p>Return the SpectralWindow object matching the given identifier.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_windows" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_windows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_windows</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_spectral_windows" title="pipeline.domain.measurementset.MeasurementSet.get_spectral_windows"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_spectral_windows</span></code></a></p></td>
 <td><p>Return spectral windows matching given criteria.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_state" title="pipeline.domain.measurementset.MeasurementSet.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_state" title="pipeline.domain.measurementset.MeasurementSet.get_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_state</span></code></a></p></td>
 <td><p>Return State in MeasurementSet matching the given identifier.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_times_on_source_per_field_id" title="pipeline.domain.measurementset.MeasurementSet.get_times_on_source_per_field_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_times_on_source_per_field_id</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_times_on_source_per_field_id" title="pipeline.domain.measurementset.MeasurementSet.get_times_on_source_per_field_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_times_on_source_per_field_id</span></code></a></p></td>
 <td><p>Return on-source time for given field ID(s) and intent(s).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_baseband_spws" title="pipeline.domain.measurementset.MeasurementSet.get_vla_baseband_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_baseband_spws</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_baseband_spws" title="pipeline.domain.measurementset.MeasurementSet.get_vla_baseband_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_baseband_spws</span></code></a></p></td>
 <td><p>Get the SPW information from individual VLA band/baseband.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_corrlist_from_spw" title="pipeline.domain.measurementset.MeasurementSet.get_vla_corrlist_from_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrlist_from_spw</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_corrlist_from_spw" title="pipeline.domain.measurementset.MeasurementSet.get_vla_corrlist_from_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrlist_from_spw</span></code></a></p></td>
 <td><p>Get all VLA correlation labels as a list of string from selected spw(s).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_corrstring" title="pipeline.domain.measurementset.MeasurementSet.get_vla_corrstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrstring</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_corrstring" title="pipeline.domain.measurementset.MeasurementSet.get_vla_corrstring"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_corrstring</span></code></a></p></td>
 <td><p>Get correlation string for VLA</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_critfrac" title="pipeline.domain.measurementset.MeasurementSet.get_vla_critfrac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_critfrac</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_critfrac" title="pipeline.domain.measurementset.MeasurementSet.get_vla_critfrac"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_critfrac</span></code></a></p></td>
 <td><p>Identify bands/basebands/spws</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_datadesc" title="pipeline.domain.measurementset.MeasurementSet.get_vla_datadesc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_datadesc</span></code></a></p></td>
-<td><p>Generate VLA data description index</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_field_spws" title="pipeline.domain.measurementset.MeasurementSet.get_vla_field_spws"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_field_spws</span></code></a></p></td>
 <td><p>Find field spws for VLA</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_max_integration_time" title="pipeline.domain.measurementset.MeasurementSet.get_vla_max_integration_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_max_integration_time</span></code></a></p></td>
-<td><p>Get the integration time used by the original VLA scripts.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_numchan" title="pipeline.domain.measurementset.MeasurementSet.get_vla_numchan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_numchan</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_numchan" title="pipeline.domain.measurementset.MeasurementSet.get_vla_numchan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_numchan</span></code></a></p></td>
 <td><p>Get number of channels for VLA</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_spw2band" title="pipeline.domain.measurementset.MeasurementSet.get_vla_spw2band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_spw2band</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_spw2band" title="pipeline.domain.measurementset.MeasurementSet.get_vla_spw2band"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_spw2band</span></code></a></p></td>
 <td><p>Find field spws for VLA</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_tst_bpass_spw" title="pipeline.domain.measurementset.MeasurementSet.get_vla_tst_bpass_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_tst_bpass_spw</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_tst_bpass_spw" title="pipeline.domain.measurementset.MeasurementSet.get_vla_tst_bpass_spw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vla_tst_bpass_spw</span></code></a></p></td>
 <td><p>Get VLA test bandpass or delay spws</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.set_data_column" title="pipeline.domain.measurementset.MeasurementSet.set_data_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_column</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.set_data_column" title="pipeline.domain.measurementset.MeasurementSet.set_data_column"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_data_column</span></code></a></p></td>
 <td><p>Set data type and column.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.update_reference_antennas" title="pipeline.domain.measurementset.MeasurementSet.update_reference_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_reference_antennas</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.update_reference_antennas" title="pipeline.domain.measurementset.MeasurementSet.update_reference_antennas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_reference_antennas</span></code></a></p></td>
 <td><p>Update the reference antenna list for this MS to demote/remove specified antennas.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pipeline.domain.measurementset.MeasurementSet.vla_minbaselineforcal" title="pipeline.domain.measurementset.MeasurementSet.vla_minbaselineforcal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vla_minbaselineforcal</span></code></a></p></td>
-<td><p>Min baseline for cal</p></td>
 </tr>
 </tbody>
 </table>
@@ -607,29 +595,23 @@ intents in the measurement set.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_median_integration_time">
-<span class="sig-name descname"><span class="pre">get_median_integration_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_median_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_median_integration_time" title="Link to this definition"></a></dt>
-<dd><p>Get the median integration time used to get data for the given
-intent.</p>
+<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_integration_time_stats">
+<span class="sig-name descname"><span class="pre">get_integration_time_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">science_windows_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_integration_time_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_integration_time_stats" title="Link to this definition"></a></dt>
+<dd><p>Get the given statistcs of integration time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>intent</strong> – The intent of the data of interest.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The median integration time used.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>intent</strong> – The intent of the data of interest.</p></li>
+<li><p><strong>spw</strong> – spw string list - ‘1,7,11,18’.</p></li>
+<li><p><strong>science_windows_only</strong> – Use integration time of science spws only to compute the given statistics.</p></li>
+<li><p><strong>stat_type</strong> – Type of the statistics.</p></li>
+</ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_median_science_integration_time">
-<span class="sig-name descname"><span class="pre">get_median_science_integration_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spw</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_median_science_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_median_science_integration_time" title="Link to this definition"></a></dt>
-<dd><p>Get the median integration time for science targets used to get data for the given
-intent.</p>
-<p>Keyword arguments:
-intent  – The intent of the data of interest.
-spw     – spw string list - ‘1,7,11,18’</p>
-<p>Returns – The median integration time used.</p>
+<dl class="simple">
+<dt>Returns</dt><dd><p>Computed statistics value.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -857,23 +839,6 @@ baseband_spws_list: spw_list of individual basebands</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_vla_datadesc">
-<span class="sig-name descname"><span class="pre">get_vla_datadesc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_datadesc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_datadesc" title="Link to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Generate VLA data description index</dt><dd><p>Use the original VLA buildscans function to return a dd index</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>indexed list of dictionaries with VLA metadata</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>ddindex</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_vla_field_spws">
 <span class="sig-name descname"><span class="pre">get_vla_field_spws</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spwlist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_field_spws"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_field_spws" title="Link to this definition"></a></dt>
 <dd><p>Find field spws for VLA</p>
@@ -886,20 +851,6 @@ baseband_spws_list: spw_list of individual basebands</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>field_spws</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.get_vla_max_integration_time">
-<span class="sig-name descname"><span class="pre">get_vla_max_integration_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.get_vla_max_integration_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.get_vla_max_integration_time" title="Link to this definition"></a></dt>
-<dd><p>Get the integration time used by the original VLA scripts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int value of the max integration time used</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>int_time</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1036,17 +987,6 @@ column, the function raises ValueError.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="pipeline.domain.measurementset.MeasurementSet.vla_minbaselineforcal">
-<span class="sig-name descname"><span class="pre">vla_minbaselineforcal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/pipeline/domain/measurementset.html#MeasurementSet.vla_minbaselineforcal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.domain.measurementset.MeasurementSet.vla_minbaselineforcal" title="Link to this definition"></a></dt>
-<dd><p>Min baseline for cal</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Constant value</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -1062,7 +1002,7 @@ column, the function raises ValueError.</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

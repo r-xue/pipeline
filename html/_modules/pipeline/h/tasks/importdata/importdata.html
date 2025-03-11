@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.h.tasks.importdata.importdata &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -154,9 +154,76 @@
     <span class="n">save_flagonline</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">session</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;session_1&#39;</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements h_importdata</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">asis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">process_caldevice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nocopy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">save_flagonline</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bdfflags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">createmms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ocorr_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">datacolumns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be</span>
+<span class="sd">                converted to MS format.</span>
+<span class="sd">                example: vis=[&#39;X227.ms&#39;, &#39;asdms.tar.gz&#39;]</span>
+
+<span class="sd">            output_dir: Output directory.</span>
+<span class="sd">                Defaults to None, which corresponds to the current working directory.</span>
+
+<span class="sd">            asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names</span>
+<span class="sd">                separated by space characters.</span>
+<span class="sd">                default: &#39;Antenna Station Receiver CalAtmosphere&#39;</span>
+<span class="sd">                example: &#39;Receiver&#39;, &#39;&#39;</span>
+
+<span class="sd">            process_caldevice: Ingest the ASDM caldevice table.</span>
+
+<span class="sd">            session: List of sessions to which the visibility files belong. Defaults to a single session containing all the visibility files, otherwise</span>
+<span class="sd">                a session must be assigned to each vis file.</span>
+<span class="sd">                example: session=[&#39;session_1&#39;, &#39;session_2&#39;]</span>
+
+<span class="sd">            overwrite: Overwrite existing files on import. When converting ASDM to MS, if overwrite=False and the MS</span>
+<span class="sd">                already exists in output directory, then this existing MS</span>
+<span class="sd">                dataset will be used instead.</span>
+
+<span class="sd">            nocopy: When importing an MS, disable copying of the MS to the working directory.</span>
+
+<span class="sd">            save_flagonline: Save flag commands, flagging template, imaging targets, to text files。</span>
+
+<span class="sd">                Default: None (equivalent to True)</span>
+
+<span class="sd">            bdfflags: Apply BDF flags on import.</span>
+
+<span class="sd">            lazy: Use the lazy import option.</span>
+
+<span class="sd">            createmms: Create a multi-MeasurementSet (&#39;true&#39;) ready for parallel processing, or a standard MeasurementSet (&#39;false&#39;). The default setting</span>
+<span class="sd">                (&#39;automatic&#39;) creates an MMS if running in a cluster environment.</span>
+
+<span class="sd">            ocorr_mode: Read in cross- and auto-correlation data(ca), cross- correlation data only (co), or autocorrelation data only (ao).</span>
+
+<span class="sd">            datacolumns: Dictionary defining the data types of existing columns.</span>
+<span class="sd">                The format is:</span>
+
+<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;}</span>
+
+<span class="sd">                or</span>
+
+<span class="sd">                    {&#39;data&#39;: &#39;data type 1&#39;, &#39;corrected&#39;: &#39;data type 2&#39;}</span>
+
+<span class="sd">                For ASDMs the data type can only be RAW and one can only specify</span>
+<span class="sd">                it for the data column.</span>
+<span class="sd">                For MSes one can define two different data types for the DATA and</span>
+<span class="sd">                CORRECTED_DATA columns and they can be any of the known data types</span>
+<span class="sd">                (RAW, REGCAL_CONTLINE_ALL, REGCAL_CONTLINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_CONTLINE_SCIENCE, REGCAL_LINE_SCIENCE,</span>
+<span class="sd">                SELFCAL_LINE_SCIENCE, BASELINED, ATMCORR).</span>
+<span class="sd">                The intent selection strings _ALL or _SCIENCE can be skipped.</span>
+<span class="sd">                In that case the task determines this automatically by inspecting</span>
+<span class="sd">                the existing intents in the dataset.</span>
+<span class="sd">                Usually, a single datacolumns dictionary is used for all datasets.</span>
+<span class="sd">                If necessary, one can define a list of dictionaries, one for each EB,</span>
+<span class="sd">                with different setups per EB. If no type is specified, {&#39;data&#39;:&#39;raw&#39;}</span>
+<span class="sd">                will be assumed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
@@ -653,13 +720,13 @@
 <span class="s1"># Note: Do not put spaces inside the reason string !</span>
 <span class="s1">#</span>
 <span class="s1"># mode=&#39;manual&#39; antenna=&#39;DV02;DV03&amp;DA51&#39; spw=&#39;22,24:150~175&#39; reason=&#39;QA2:applycal_amplitude_frequency&#39;</span>
-<span class="s1"># </span>
-<span class="s1"># mode=&#39;manual&#39; spw=&#39;22&#39; field=&#39;1&#39; timerange=&#39;2018/02/10/00:01:01.0959~2018/02/10/00:01:01.0961&#39; reason=&#39;QA2:timegaincal_phase_time&#39;</span>
-<span class="s1"># </span>
-<span class="s1"># TP flagging: The &#39;other&#39; option is intended for bad TP pointing</span>
-<span class="s1"># mode=&#39;manual&#39; antenna=&#39;PM01&amp;&amp;PM01&#39; reason=&#39;QA2:other_bad_pointing&#39; </span>
 <span class="s1">#</span>
-<span class="s1"># Tsys flagging: </span>
+<span class="s1"># mode=&#39;manual&#39; spw=&#39;22&#39; field=&#39;1&#39; timerange=&#39;2018/02/10/00:01:01.0959~2018/02/10/00:01:01.0961&#39; reason=&#39;QA2:timegaincal_phase_time&#39;</span>
+<span class="s1">#</span>
+<span class="s1"># TP flagging: The &#39;other&#39; option is intended for bad TP pointing</span>
+<span class="s1"># mode=&#39;manual&#39; antenna=&#39;PM01&amp;&amp;PM01&#39; reason=&#39;QA2:other_bad_pointing&#39;</span>
+<span class="s1">#</span>
+<span class="s1"># Tsys flagging:</span>
 <span class="s1"># mode=&#39;manual&#39; antenna=&#39;DV02;DV03&amp;DA51&#39; spw=&#39;22,24&#39; reason=&#39;QA2:tsysflag_tsys_frequency&#39;</span>
 <span class="s1">&#39;&#39;&#39;</span>
 </pre></div>
@@ -671,7 +738,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

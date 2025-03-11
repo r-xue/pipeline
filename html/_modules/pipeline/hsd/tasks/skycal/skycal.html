@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.tasks.skycal.skycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -137,6 +137,9 @@
 
 <span class="n">LOG</span> <span class="o">=</span> <span class="n">infrastructure</span><span class="o">.</span><span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="c1"># Threshold of the elevation difference of QA score</span>
+<span class="n">ELEVATION_DIFFERENCE_THRESHOLD</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># deg</span>
+
 
 <span class="k">class</span><span class="w"> </span><span class="nc">SDSkyCalInputs</span><span class="p">(</span><span class="n">vdp</span><span class="o">.</span><span class="n">StandardInputs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inputs class for SDSkyCal task.&quot;&quot;&quot;</span>
@@ -172,6 +175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">value</span>
 
+    <span class="c1"># docstring and type hints: supplements hsd_skycal</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
             <span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span>
@@ -192,22 +196,85 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            context: Pipeline context.</span>
+
 <span class="sd">            calmode: Calibration mode.</span>
-<span class="sd">            fraction: Value of fraction of OFF scan data against total data number.</span>
-<span class="sd">            noff: Number of OFF scan data.</span>
-<span class="sd">            width: Value of pixel width, e.g., a median spatial separation between</span>
-<span class="sd">            neighboring two data in time.</span>
-<span class="sd">            elongated: Whether observed area is elongated in one direction (True)</span>
-<span class="sd">            or not (False).</span>
+<span class="sd">                Available options are &#39;auto&#39; (default), &#39;ps&#39;, &#39;otf&#39;, and</span>
+<span class="sd">                &#39;otfraster&#39;. When &#39;auto&#39; is set, the task will use preset</span>
+<span class="sd">                calibration mode that is determined by inspecting data.</span>
+<span class="sd">                &#39;ps&#39; mode is simple position switching using explicit reference</span>
+<span class="sd">                scans. Other two modes, &#39;otf&#39; and &#39;otfraster&#39;, will generate</span>
+<span class="sd">                reference data from scans at the edge of the map. Those modes</span>
+<span class="sd">                are intended for OTF observation and the former is defined for</span>
+<span class="sd">                generic scanning pattern such as Lissajous, while the latter is</span>
+<span class="sd">                specific use for raster scan.</span>
+
+<span class="sd">                Options: &#39;auto&#39;, &#39;ps&#39;, &#39;otf&#39;, &#39;otfraster&#39;</span>
+
+<span class="sd">                Default: None (equivalent to &#39;auto&#39;)</span>
+
+<span class="sd">            fraction: Sub-parameter for calmode. Edge marking parameter for</span>
+<span class="sd">                &#39;otf&#39; and &#39;otfraster&#39; mode. It specifies a number of OFF scans</span>
+<span class="sd">                as a fraction of total number of data points.</span>
+
+<span class="sd">                Options: String style like &#39;20%&#39;, or float value less than 1.0.</span>
+<span class="sd">                    For &#39;otfraster&#39; mode, you can also specify &#39;auto&#39;.</span>
+
+<span class="sd">                Default: None (equivalent to &#39;10%&#39;)</span>
+
+<span class="sd">            noff: Sub-parameter for calmode. Edge marking parameter for</span>
+<span class="sd">                &#39;otfraster&#39; mode. It is used to specify a number of OFF scans</span>
+<span class="sd">                near edge directly instead to specify it by fractional</span>
+<span class="sd">                number by &#39;fraction&#39;. If it is set, the value will come</span>
+<span class="sd">                before setting by &#39;fraction&#39;.</span>
+
+<span class="sd">                Options: any positive integer value</span>
+
+<span class="sd">                Default: None (equivalent to &#39;&#39;)</span>
+
+<span class="sd">            width: Sub-parameter for calmode. Edge marking parameter for</span>
+<span class="sd">                &#39;otf&#39; mode. It specifies pixel width with respect to</span>
+<span class="sd">                a median spatial separation between neighboring two data</span>
+<span class="sd">                in time. Default will be fine in most cases.</span>
+
+<span class="sd">                Options: any float value</span>
+
+<span class="sd">                Default: None (equivalent to 0.5)</span>
+
+<span class="sd">            elongated: Sub-parameter for calmode. Edge marking parameter</span>
+<span class="sd">                for &#39;otf&#39; mode. Please set True only if observed area is</span>
+<span class="sd">                elongated in one direction.</span>
+
+<span class="sd">                Default: None (equivalent to False)</span>
+
 <span class="sd">            output_dir: Name of output directory.</span>
-<span class="sd">            infiles: Name of MS or list of names.</span>
+
+<span class="sd">            infiles: List of data files. These must be a name of</span>
+<span class="sd">                MeasurementSets that are registered to context</span>
+<span class="sd">                via hsd_importdata or hsd_restoredata task.</span>
+
+<span class="sd">                Example: vis=[&#39;X227.ms&#39;, &#39;X228.ms&#39;]</span>
+
 <span class="sd">            outfile: Name of the output file.</span>
-<span class="sd">            field: Field selection.</span>
-<span class="sd">            spw: Spectral window (spw) selection.</span>
-<span class="sd">            scan: Scan selection.</span>
+
+<span class="sd">            field: Data selection by field name.</span>
+
+<span class="sd">            spw: Data selection by spw.</span>
+
+<span class="sd">                Example: &#39;3,4&#39; (generate caltable for spw 3 and 4), [&#39;0&#39;,&#39;2&#39;] (spw 0 for first data, 2 for second)</span>
+
+<span class="sd">                Default: None (process all science spws)</span>
+
+<span class="sd">            scan: Data selection by scan number. (default all scans)</span>
+
+<span class="sd">                Example: &#39;22,23&#39; (use scan 22 and 23 for calibration), [&#39;22&#39;,&#39;24&#39;] (scan 22 for first data, 24 for second)</span>
+
+<span class="sd">                Default: None (process all scans)</span>
+
 <span class="sd">            parallel: Execute using CASA HPC functionality, if available.</span>
-<span class="sd">                      Default is None, which intends to turn on parallel</span>
-<span class="sd">                      processing if possible.</span>
+
+<span class="sd">                Options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+
+<span class="sd">                Default: None (equivalent to &#39;automatic&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SDSkyCalInputs</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -301,7 +368,6 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate sky calibration table.&quot;&quot;&quot;</span>
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDSkyCalInputs</span>
-    <span class="n">ElevationDifferenceThreshold</span> <span class="o">=</span> <span class="mf">3.0</span>  <span class="c1"># deg</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SDSkyCalResults</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare arguments for CASA job and execute it.</span>
@@ -427,40 +493,6 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            Updated SDSkyCalResults instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># compute elevation difference between ON and OFF and</span>
-        <span class="c1"># warn if it exceeds elevation threshold</span>
-        <span class="n">threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ElevationDifferenceThreshold</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">context</span>
-        <span class="n">resultdict</span> <span class="o">=</span> <span class="n">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
-        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">ms</span>
-
-        <span class="n">spectralspecs</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_specs</span><span class="p">()</span>
-        <span class="n">spectralspecs_spwids</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">spectralspecs</span><span class="p">:</span>
-            <span class="n">spw_ss</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">spectralspecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ss</span><span class="p">])</span>
-            <span class="n">list_spwids</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">spw_ss</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_spwids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">spectralspecs_spwids</span><span class="p">[</span><span class="n">ss</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_spwids</span>
-
-        <span class="k">for</span> <span class="n">list_spwids</span> <span class="ow">in</span> <span class="n">spectralspecs_spwids</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">spwid0</span> <span class="o">=</span> <span class="n">list_spwids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">field_id</span><span class="p">,</span> <span class="n">eldfield</span> <span class="ow">in</span> <span class="n">resultdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">antenna_id</span><span class="p">,</span> <span class="n">eldant</span> <span class="ow">in</span> <span class="n">eldfield</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">assert</span> <span class="n">spwid0</span> <span class="ow">in</span> <span class="n">eldant</span>
-                    <span class="n">eldiff0</span> <span class="o">=</span> <span class="n">eldant</span><span class="p">[</span><span class="n">spwid0</span><span class="p">]</span><span class="o">.</span><span class="n">eldiff0</span>
-                    <span class="n">eldiff1</span> <span class="o">=</span> <span class="n">eldant</span><span class="p">[</span><span class="n">spwid0</span><span class="p">]</span><span class="o">.</span><span class="n">eldiff1</span>
-                    <span class="n">eldiff</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">eldiff0</span><span class="p">,</span> <span class="n">eldiff1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eldiff</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">eldmax</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">eldiff</span><span class="p">))</span>
-                        <span class="k">if</span> <span class="n">eldmax</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
-                            <span class="n">field_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
-                            <span class="n">antenna_name</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">[</span><span class="n">antenna_id</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
-                            <span class="n">LOG</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Elevation difference between ON and OFF for </span><span class="si">{}</span><span class="s1"> field </span><span class="si">{}</span><span class="s1"> antenna </span><span class="si">{}</span><span class="s1"> spw </span><span class="si">{}</span><span class="s1"> was </span><span class="si">{}</span><span class="s1">deg&#39;</span>
-                                        <span class="s1">&#39; exceeding the threshold of </span><span class="si">{}</span><span class="s1">deg&#39;</span>
-                                        <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ms</span><span class="o">.</span><span class="n">basename</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">antenna_name</span><span class="p">,</span> <span class="n">list_spwids</span><span class="p">,</span> <span class="n">eldmax</span><span class="p">,</span> <span class="n">threshold</span><span class="p">))</span>
-
         <span class="k">return</span> <span class="n">result</span>
 
 
@@ -473,7 +505,6 @@
 
     <span class="n">Inputs</span> <span class="o">=</span> <span class="n">SDSkyCalInputs</span>
     <span class="n">Task</span> <span class="o">=</span> <span class="n">SerialSDSkyCal</span></div>
-
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_elevation_difference</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="s1">&#39;Context&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">:</span> <span class="n">SDSkyCalResults</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
@@ -511,22 +542,9 @@
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
             <span class="n">field_id_on</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
 
-        <span class="c1">#if ms.basename not in resultdict:</span>
-        <span class="c1">#    resultdict[ms.basename] = {}</span>
-
         <span class="n">antenna_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">ant</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">ant</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">antennas</span><span class="p">]</span>
 
-        <span class="c1"># representative spw</span>
         <span class="n">science_spw</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">get_spectral_windows</span><span class="p">(</span><span class="n">science_windows_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1">#         # choose representative spw based on representative frequency if it is available</span>
-<span class="c1">#         if hasattr(ms, &#39;representative_target&#39;) and ms.representative_target[1] is not None:</span>
-<span class="c1">#             qa = casa_tools.quanta</span>
-<span class="c1">#             rep_freq = ms.representative_target[1]</span>
-<span class="c1">#             centre_freqs = [qa.quantity(spw.centre_frequency.str_to_precision(16)) for spw in science_spw]</span>
-<span class="c1">#             freq_diffs = [abs(qa.sub(cf, rep_freq).convert(&#39;Hz&#39;)[&#39;value&#39;]) for cf in centre_freqs]</span>
-<span class="c1">#             spw_id = science_spw[numpy.argmin(freq_diffs)].id</span>
-<span class="c1">#         else:</span>
-<span class="c1">#             spw_id = science_spw[0].id</span>
 
         <span class="n">calfroms</span> <span class="o">=</span> <span class="n">calapp</span><span class="o">.</span><span class="n">calfrom</span>
 
@@ -620,7 +638,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hif.tasks.selfcal.selfcal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -19,7 +19,7 @@
     <link rel="shortcut icon" href="../../../../../_static/favicon-16x16.png"/>
       <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../../../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../../../../../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -261,11 +261,101 @@
     <span class="n">refantignore</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
     <span class="n">restore_resources</span> <span class="o">=</span> <span class="n">vdp</span><span class="o">.</span><span class="n">VisDependentProperty</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
+    <span class="c1"># docstring and type hints: supplements hif_selfcal</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">vis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">spw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_solints</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">amplitude_selfcal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gaincal_minsnr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refantignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">minsnr_to_proceed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta_beam_thresh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">apply_cal_mode_default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">rel_thresh_scaling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dividing_factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_all_spws</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inf_EB_gaincal_combine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">apply</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">recal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">restore_resources</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize Inputs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            context: Pipeline context.</span>
+
+<span class="sd">            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.</span>
+
+<span class="sd">                default = &quot;&quot;: use all MeasurementSets in the context</span>
+
+<span class="sd">            field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is</span>
+<span class="sd">                specified only fields with data matching the intent will be</span>
+<span class="sd">                selected. The fields will be selected from MeasurementSets in</span>
+<span class="sd">                &quot;vis&quot;.</span>
+
+<span class="sd">                default= &quot;&quot; Fields matching intent, one image per target source.</span>
+
+<span class="sd">            spw: Select spectral windows to image. &quot;&quot;: Images will be computed for all science spectral windows.</span>
+
+<span class="sd">            contfile: Name of file to specify line-free frequency ranges for selfcal continuum imaging.</span>
+
+<span class="sd">                default=&quot;cont.dat&quot;</span>
+
+<span class="sd">            n_solints: number of solution intervals to attempt for self-calibration. default: 4</span>
+
+<span class="sd">            amplitude_selfcal: Attempt amplitude self-calibration following phase-only self-calibration; if median time between scans of a given target is &lt; 150s,</span>
+<span class="sd">                solution intervals of 300s and inf will be attempted, otherwise just</span>
+<span class="sd">                inf will be attempted.</span>
+
+<span class="sd">                default = False</span>
+
+<span class="sd">            gaincal_minsnr: Minimum S/N for a solution to not be flagged by gaincal. default = 2.0</span>
+
+<span class="sd">            refantignore: string list to be ignored as reference antennas. example:  refantignore=&#39;ea02,ea03&#39;</span>
+
+<span class="sd">            minsnr_to_proceed: Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.</span>
+
+<span class="sd">                default = 3.0</span>
+
+<span class="sd">            delta_beam_thresh: Allowed fractional change in beam size for selfcalibration to accept results of a solution interval.</span>
+
+<span class="sd">                default = 0.05</span>
+
+<span class="sd">            apply_cal_mode_default: Apply mode to use for applycal task during self-calibration; same options as applycal.</span>
+
+<span class="sd">                default = &#39;calflag&#39;</span>
+
+<span class="sd">            rel_thresh_scaling: Scaling type to determine how clean thresholds per solution interval should be determined going from the starting</span>
+<span class="sd">                clean threshold to 3.0 * RMS for the final solution interval.</span>
+
+<span class="sd">                default=&#39;log10&#39;</span>
+
+<span class="sd">                options: &#39;linear&#39;, &#39;log10&#39;, or &#39;loge&#39; (natural log)</span>
+
+<span class="sd">            dividing_factor: Scaling factor to determine clean threshold for first self-calibration solution interval.</span>
+<span class="sd">                Equivalent to (Peak S/N / dividing_factor) *RMS = First clean threshold;</span>
+<span class="sd">                however, if (Peak S/N / dividing_factor) *RMS is &lt; 5.0; a value of 5.0</span>
+<span class="sd">                is used for the first clean threshold.</span>
+
+<span class="sd">                default = 40 for &lt; 8 GHz; 15 for &gt; 8 GHz</span>
+
+<span class="sd">            check_all_spws: If True, the S/N of mfs images created on a per-spectral-window basis will be compared at the initial stages final self-calibration.</span>
+
+<span class="sd">                default=False</span>
+
+<span class="sd">            inf_EB_gaincal_combine: change gain solution combination parameters for the inf_EB solution interval. if True, the gaincal combine parameter will be set to &#39;scan,spw&#39;; if False,</span>
+<span class="sd">                the gaincal combine parameter will be set to &#39;scan&#39;.</span>
+
+<span class="sd">                default=False</span>
+
+<span class="sd">            apply: Apply final selfcal solutions back to the input MeasurementSets. default = True</span>
+
+<span class="sd">            parallel: Use MPI cluster where possible.</span>
+
+<span class="sd">                default=&#39;automatic&#39;</span>
+
+<span class="sd">                options: &#39;automatic&#39;, &#39;true&#39;, &#39;false&#39;, True, False</span>
+
+<span class="sd">            recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.</span>
+
+<span class="sd">                default = False</span>
+
+<span class="sd">            restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify</span>
+<span class="sd">                the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred</span>
+<span class="sd">                in selfcal.json, starting from working/, to products/ and rawdata/.</span>
+<span class="sd">                If restore_resources is specified, this file path will be evaluated first</span>
+<span class="sd">                before the pre-defined exhaustive search list.</span>
+<span class="sd">                The value can be the file path of *auxproducts.tgz file or *selfcal.json file.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">vis</span> <span class="o">=</span> <span class="n">vis</span>
@@ -939,7 +1029,7 @@
 
             <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">lines_sel</span> <span class="ow">in</span> <span class="n">lines_sel_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">LOG</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Flagging lines in field </span><span class="si">{}</span><span class="s2"> with the spw selection </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">lines_sel</span><span class="p">))</span>
-                <span class="c1"># lines_sel_dict is keyed with original field names, which might not be safe for CASA/field </span>
+                <span class="c1"># lines_sel_dict is keyed with original field names, which might not be safe for CASA/field</span>
                 <span class="c1"># selections.</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_executable</span><span class="o">.</span><span class="n">flagdata</span><span class="p">(</span><span class="n">vis</span><span class="o">=</span><span class="n">vis</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">fieldname_for_casa</span><span class="p">(</span><span class="n">field</span><span class="p">),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;manual&#39;</span><span class="p">,</span>
                                           <span class="n">spw</span><span class="o">=</span><span class="n">lines_sel</span><span class="p">,</span> <span class="n">flagbackup</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;apply&#39;</span><span class="p">)</span></div>
@@ -953,7 +1043,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

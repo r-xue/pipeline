@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pipeline.hsd.cli.hsd_k2jycal &mdash; Pipeline 
- (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
+ (2024.2.0.4) 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -20,7 +20,7 @@
     <link rel="shortcut icon" href="../_static/favicon-16x16.png"/>
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=6c3375ce"></script>
+      <script src="../_static/documentation_options.js?v=1a7a0ad8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
       <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -120,45 +120,55 @@
 <h1>pipeline.hsd.cli.hsd_k2jycal<a class="headerlink" href="#pipeline-hsd-cli-hsd-k2jycal" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="pipeline.hsd.cli.hsd_k2jycal">
-<span class="sig-name descname"><span class="pre">hsd_k2jycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_k2jycal.html#hsd_k2jycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_k2jycal" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">hsd_k2jycal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbservice</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reffile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caltable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ResultsList</span><span class="p"><span class="pre">[</span></span><span class="pre">SDK2JyCalResults</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/pipeline/hsd/cli/hsd_k2jycal.html#hsd_k2jycal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pipeline.hsd.cli.hsd_k2jycal" title="Link to this definition"></a></dt>
 <dd><p>Derive Kelvin to Jy calibration tables.</p>
 <p>Derive the Kelvin to Jy calibration for list of MeasurementSets.</p>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dbservice</strong> – Whether or not accessing Jy/K DB to retrieve conversion factors.</p></li>
-<li><p><strong>endpoint</strong> – Which endpoints to use for query. Options: ‘asdm’, ‘model-fit’, ‘interpolation’.</p></li>
-<li><p><strong>reffile</strong> – Path to a file containing Jy/K factors for science data, which must be provided by associating calibrator reduction or the observatory
+<dd class="field-odd"><ul>
+<li><p><strong>dbservice</strong> – Whether or not accessing Jy/K DB to retrieve conversion factors.</p>
+<p>Default: None (equivalent to True)</p>
+</li>
+<li><p><strong>endpoint</strong> – Which endpoints to use for query.</p>
+<p>Options: ‘asdm’, ‘model-fit’, ‘interpolation’</p>
+<p>Default: None (equivalent to ‘asdm’)</p>
+</li>
+<li><p><strong>reffile</strong> – Path to a file containing Jy/K factors for science data,
+which must be provided by associating calibrator reduction or the observatory
 measurements. Jy/K factor must take into account all efficiencies, i.e.,
 it must be a direct conversion factor from Ta* to Jy. The file must be
 in either MS-based or session-based format. The MS-based format must
 be in an CSV format with five fields: MS name, antenna name, spectral
 window id, polarization string, and Jy/K conversion factor. Example for
-the file is as follows:
-MS,Antenna,Spwid,Polarization,Factor
-uid___A002_X316307_X6f.ms,CM03,5,XX,10.0
-uid___A002_X316307_X6f.ms,CM03,5,YY,12.0
-uid___A002_X316307_X6f.ms,PM04,5,XX,2.0
-uid___A002_X316307_X6f.ms,PM04,5,YY,5.0
-The first line in the above example is a header which may or may not
-exist. Example for the session-based format is as follows:
-#OUSID=XXXXXX
-#OBJECT=Uranus
-#FLUXJY=yy,zz,aa
-#FLUXFREQ=YY,ZZ,AA
-#sessionID,ObservationStartDate(UTC),ObservationEndDate(UTC),
-Antenna,BandCenter(MHz),BandWidth(MHz),POL,Factor
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,500.0,I,10.0
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM02,86243.0,1000.0,I,30.0
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM03,86243.0,500.0,I,50.0
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,CM03,86243.0,1000.0,I,70.0
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,ANONYMOUS,86243.0,500.0,I,30.0
-1,2011-11-11 01:00:00,2011-11-11 01:30:00,ANONYMOUS,86243.0,1000.0,I,50.0
-2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,500.0,I,90.0
-2,2011-11-13 01:45:00,2011-11-13 02:15:00,PM04,86243.0,1000.0,I,110.0
-2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,500.0,I,90.0
-2,2011-11-13 01:45:00,2011-11-13 02:15:00,ANONYMOUS,86243.0,1000.0,I,110.0
-Lines starting with ‘#’ are meta data and header.
+the file is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MS</span><span class="p">,</span><span class="n">Antenna</span><span class="p">,</span><span class="n">Spwid</span><span class="p">,</span><span class="n">Polarization</span><span class="p">,</span><span class="n">Factor</span>
+<span class="n">uid___A002_X316307_X6f</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">CM03</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">XX</span><span class="p">,</span><span class="mf">10.0</span>
+<span class="n">uid___A002_X316307_X6f</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">CM03</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="mf">12.0</span>
+<span class="n">uid___A002_X316307_X6f</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">PM04</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">XX</span><span class="p">,</span><span class="mf">2.0</span>
+<span class="n">uid___A002_X316307_X6f</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span><span class="n">PM04</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="n">YY</span><span class="p">,</span><span class="mf">5.0</span>
+</pre></div>
+</div>
+<p>The first line in the above example is a header which may or may not
+exist. Example for the session-based format is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#OUSID=XXXXXX</span>
+<span class="c1">#OBJECT=Uranus</span>
+<span class="c1">#FLUXJY=yy,zz,aa</span>
+<span class="c1">#FLUXFREQ=YY,ZZ,AA</span>
+<span class="c1">#sessionID,ObservationStartDate(UTC),ObservationEndDate(UTC),</span>
+<span class="n">Antenna</span><span class="p">,</span><span class="n">BandCenter</span><span class="p">(</span><span class="n">MHz</span><span class="p">),</span><span class="n">BandWidth</span><span class="p">(</span><span class="n">MHz</span><span class="p">),</span><span class="n">POL</span><span class="p">,</span><span class="n">Factor</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">CM02</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">500.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">10.0</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">CM02</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">30.0</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">CM03</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">500.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">50.0</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">CM03</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">70.0</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">ANONYMOUS</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">500.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">30.0</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">11</span> <span class="mi">01</span><span class="p">:</span><span class="mi">30</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">ANONYMOUS</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">50.0</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">01</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">02</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">PM04</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">500.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">90.0</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">01</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">02</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">PM04</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">110.0</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">01</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">02</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">ANONYMOUS</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">500.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">90.0</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">01</span><span class="p">:</span><span class="mi">45</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="mi">2011</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">13</span> <span class="mi">02</span><span class="p">:</span><span class="mi">15</span><span class="p">:</span><span class="mi">00</span><span class="p">,</span><span class="n">ANONYMOUS</span><span class="p">,</span><span class="mf">86243.0</span><span class="p">,</span><span class="mf">1000.0</span><span class="p">,</span><span class="n">I</span><span class="p">,</span><span class="mf">110.0</span>
+</pre></div>
+</div>
+<p>Lines starting with ‘#’ are meta data and header.
 The header must exist. The factor to apply is identified by matching the
 session ID, antenna name, frequency and polarization of data in each line of
 the file. Note the observation date is supplementary information and not used
@@ -168,12 +178,16 @@ example, if science observation of session 1 contains the antenna PM04, Jy/K
 factor for ANONYMOUS antenna will be applied since there is no measurement for
 PM04 in session 1.
 If no file name is specified or specified file doesn’t exist, all Jy/K factors
-are set to 1.0.
-example: reffile=’’, reffile=’working/jyperk.csv’</p></li>
-<li><p><strong>infiles</strong> – List of input MeasurementSets.
-example: vis=’ngc5921.ms’</p></li>
+are set to 1.0.</p>
+<p>Example: reffile=’’, reffile=’working/jyperk.csv’</p>
+</li>
+<li><p><strong>infiles</strong> – List of input MeasurementSets.</p>
+<p>Example: vis=’ngc5921.ms’</p>
+</li>
 <li><p><strong>caltable</strong> – Name of output gain calibration tables.
-example: caltable=’ngc5921.gcal’</p></li>
+Name is automatically created from infiles if None is given.</p>
+<p>Example: caltable=’ngc5921.gcal’</p>
+</li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -202,7 +216,7 @@ example: caltable=’ngc5921.gcal’</p></li>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-209-g1b7ea9644d-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
+    <p>&#169; Copyright 2020–2025, Pipeline Dev. Team, build: 2024.2.0.4+PIPE-2361-1-404-ge3c6e4693b-PIPE-1669-run-dev-pipeline-with-modular-casa6.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
