@@ -5,7 +5,6 @@ import pickle
 import re
 
 import numpy as np
-
 from casatools import atmosphere as attool
 from casatools import measures as metool
 from casatools import ms as mstool
