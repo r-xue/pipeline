@@ -51,6 +51,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
+           'score_missing_bandpass_phaseup',                  # ALMA specific
+           'score_bandpass_phaseup_combine',                  # ALMA specific
            'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_decoherence_assessment',                    # ALMA specific
@@ -2043,6 +2045,66 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
     applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_missing_bandpass_phaseup(ms, hm_phaseup) -> pqa.QAScore:
+    """
+    Generate simple QA score for when bandpass phase-up is missing.
+
+    Returns:
+        QAScore object.
+    """
+    score = 1.0
+    # Adjust QA message based on whether it is intentional that the phase-up
+    # solution is missing.
+    if hm_phaseup == '':
+        shortmsg = f"No phase-up computed"
+        longmsg = f"{ms.basename}: skipped bandpass phase-up solution (disabled with hm_phaseup='')."
+    else:
+        shortmsg = f"No phase-up found"
+        longmsg = (f"{ms.basename}: bandpass phase-up solution missing from results, even though it should have"
+                   f" been computed (hm_phaseup = {hm_phaseup}).")
+    origin = pqa.QAOrigin(metric_name='score_missing_bandpass_phaseup',
+                          metric_score=score,
+                          metric_units='Score based on whether bandpass phase-up is missing.')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_bandpass_phaseup_combine(phaseup_results) -> list[pqa.QAScore]:
+    """
+    Compute QA score based on whether phase-up solution for bandpass
+    calibrator used spectral window combination.
+
+    Returns:
+        List of QA scores.
+    """
+    # Step through every CalApp to find and score the phase-up caltable.
+    scores = []
+    for phaseup_result in phaseup_results:
+        for calapp in phaseup_result:
+            # Skip the phase-offset tables (that used solint='inf').
+            if utils.get_origin_input_arg(calapp, 'solint') == 'inf':
+                continue
+
+            # Evaluate whether CalApp used spw combination.
+            combine = utils.get_origin_input_arg(calapp, 'combine')
+            # If SpW combination was used, turn this into a blue QA score.
+            if combine == 'spw':
+                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+                shortmsg = f"Spw combination used in phase-up"
+                longmsg = f"{calapp.vis}: Spectral window combination used to improve phase-up solution SNR."
+            else:
+                score = 1.0
+                shortmsg = f"No spw combination used in phase-up"
+                longmsg = f"{calapp.vis}: No spectral window combination necessary for phase-up solution."
+            origin = pqa.QAOrigin(metric_name='score_bandpass_phaseup_combine',
+                                  metric_score=score,
+                                  metric_units='Score based on whether bandpass phaseup used combine')
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return scores
 
 
 @log_qa

@@ -6,6 +6,7 @@ import tempfile
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+import pipeline.qa.scorecalculator as qacalc
 import pipeline.qa.bpcal as bpcal
 from . import common
 
@@ -100,6 +101,9 @@ class BandpassQAHandler(pqa.QAPlugin):
         vis = result.inputs['vis']
         ms = context.observing_run.get_ms(vis)
         if result.final and not result.applies_adopted:
+            # First compute QA scores based on contents of the bandpass caltable
+            # using heuristics defined in the bpcal module.
+            # This step replaces the standard result.qa with a BandpassQAPool.
             qa_dir = tempfile.mkdtemp()
             try:
                 for calapp in result.final:
@@ -124,6 +128,14 @@ class BandpassQAHandler(pqa.QAPlugin):
                 if os.path.exists(qa_dir):
                     shutil.rmtree(qa_dir)
 
+            # If bandpass phase-up results are available, then score these and
+            # add to the pool.
+            if result.preceding:
+                # Compute QA score based on whether phase-up used SpW combination.
+                result.qa.pool.extend(qacalc.score_bandpass_phaseup_combine(result.preceding))
+            # Otherwise return a simple score noting that phase-up was missing.
+            else:
+                result.qa.pool.append(qacalc.score_missing_bandpass_phaseup(ms, result.inputs['hm_phaseup']))
         else:
             result.qa = pqa.QAScorePool()
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='No bandpass solution', shortmsg='No solution', vis=vis)]
