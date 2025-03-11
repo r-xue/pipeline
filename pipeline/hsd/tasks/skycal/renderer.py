@@ -168,7 +168,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         # Sky Level vs Time
         flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
-        renderer = basetemplates.JsonPlotRenderer(uri='hsd_skycal_x_vs_y_ant_spw_plots.mako',
+        renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_spw_plots.mako',
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
