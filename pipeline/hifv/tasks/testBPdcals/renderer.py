@@ -125,7 +125,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 if spw in listspws:  # Science intents only
                     band2spw[band].append(str(spw))
 
-            plotter = testBPdcalsdisplay.testBPdcalsSummaryChart(context, result, taskname="testBPdcals")
+            plotter = testBPdcalsdisplay.SummaryChart(context, result, taskname="testBPdcals")
             plots = plotter.plot()
             ms = os.path.basename(result.inputs['vis'])
             summary_plots[ms] = plots
@@ -136,7 +136,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             per_spw_plots = []
             for spw in spws:
                 if spw.specline_window:
-                    plotter = testBPdcalsdisplay.testBPdcalsPerSpwSummaryChart(context, result, spw=spw.id, taskname="testBPdcals")
+                    plotter = testBPdcalsdisplay.SummaryChart(context, result, spw=spw.id, taskname="testBPdcals")
                     plots = plotter.plot()
                     per_spw_plots.extend(plots)
                     spwlist.append(str(spw.id))
@@ -146,7 +146,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 summary_plots_per_spw[ms].extend(per_spw_plots)
 
             # generate testdelay plots and JSON file
-            plotter = testBPdcalsdisplay.testDelaysPerAntennaChart(context, result, taskname="testBPdcals", plottype="delay")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="delay")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -157,7 +157,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 testdelay_subpages[ms] = renderer.filename
 
             # generate amp Gain plots and JSON file
-            plotter = testBPdcalsdisplay.ampGainPerAntennaChart(context, result, taskname="testBPdcals", plottype="ampgain")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="ampgain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -168,7 +168,7 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 ampgain_subpages[ms] = renderer.filename
 
             # generate phase Gain plots and JSON file
-            plotter = testBPdcalsdisplay.phaseGainPerAntennaChart(context, result, taskname="testBPdcals", plottype="phasegain")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="phasegain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -179,12 +179,12 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 phasegain_subpages[ms] = renderer.filename
 
             # generate amp bandpass solution plots and JSON file
-            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaChart(context, result, taskname="testBPdcals", plottype="bpsolamp")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="bpsolamp")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
             # generate amp bandpass solution per-spw plots
-            plotter = testBPdcalsdisplay.bpSolAmpPerAntennaPerSpwChart(context, result, taskname="testBPdcals", plottype="bpsolamp_perspw")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="bpsolamp_perspw", perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -194,12 +194,12 @@ class T2_4MDetailstestBPdcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 bpsolamp_subpages[ms] = renderer.filename
 
             # generate phase bandpass solution plots and JSON file
-            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaChart(context, result, taskname="testBPdcals", plottype="bpsolphase")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="bpsolphase")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
             # generate phase bandpass per spw solution plots
-            plotter = testBPdcalsdisplay.bpSolPhasePerAntennaPerSpwChart(context, result, taskname="testBPdcals", plottype="bpsolphase_perspw")
+            plotter = testBPdcalsdisplay.AntennaChart(context, result, taskname="testBPdcals", plottype="bpsolphase_perspw", perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk

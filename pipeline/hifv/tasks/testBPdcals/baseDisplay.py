@@ -72,74 +72,6 @@ class Chart(object):
 
 
 class SummaryChart(Chart):
-    def __init__(self, context, result, suffix='', taskname=None):
-        self.context = context
-        self.result = result
-        self.ms = context.observing_run.get_ms(result.inputs['vis'])
-        self.suffix = suffix
-        self.taskname = taskname
-
-    def create_plot(self, prefix=''):
-        figfile = self.get_figfile(prefix)
-        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
-        bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-
-        plot_params = super().get_plot_params(figfile)
-        plot_scan = None
-        if self.taskname == "testBPdcals":
-            if prefix == 'BPcal':
-                plot_scan = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-            elif (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
-                plot_scan = delay_scan_select_string
-        elif self.taskname == "semiFinalBPdcals":
-            plot_scan = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
-            plot_params['avgscan'] = False
-
-        if plot_scan is not None:
-            job = casa_tasks.plotms(**{**plot_params, 'scan': plot_scan})
-            job.execute()
-
-    def get_figfile(self, prefix=''):
-
-        filename = ''
-        base_path = os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number)
-        if self.taskname == "testBPdcals":
-            filename = 'testcalibrated' + prefix
-        elif self.taskname == "semiFinalBPdcals":
-            filename = 'semifinalcalibrated_' + self.suffix
-        if filename:
-            filename = os.path.join(base_path, (filename + '-%s-summary.png' % self.ms.basename))
-        return filename
-
-    def get_plot_wrapper(self, prefix=''):
-        figfile = self.get_figfile(prefix=prefix)
-
-        bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-        delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
-        plot_type = ''
-        if self.taskname == "testBPdcals":
-            if prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal'):
-                plot_type = prefix
-        elif self.taskname == "semiFinalBPdcals":
-            plot_type = 'semifinalcalibratedcals' + self.suffix
-
-        if plot_type:
-            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename, 'type': plot_type, 'spw': ''})
-
-        if not os.path.exists(figfile):
-            LOG.trace('Summary plot not found. Creating new plot.')
-            try:
-                self.create_plot(prefix)
-            except Exception as ex:
-                LOG.error('Could not create ' + self.suffix + ' plot.')
-                LOG.exception(ex)
-                return None
-        if plot_type:
-            return wrapper
-        return None
-
-
-class PerSpwSummaryChart(Chart):
     def __init__(self, context, result, spw=None, suffix='', taskname=None):
         self.context = context
         self.result = result
@@ -156,12 +88,14 @@ class PerSpwSummaryChart(Chart):
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
         calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
         plot_params = super().get_plot_params(figfile)
-        plot_params['spw'] = self.spw
+        if self.spw is not None:
+            plot_params['spw'] = self.spw
         plot_scan = None
         if self.taskname == "testBPdcals":
             if prefix == 'BPcal':
                 plot_scan = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
-                plot_params['field'] = bandpass_field_select_string
+                if self.spw is not None:
+                    plot_params['field'] = bandpass_field_select_string
 
             if (delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal':
                 plot_scan = delay_scan_select_string
@@ -178,9 +112,16 @@ class PerSpwSummaryChart(Chart):
         filename = ''
         base_path = os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number)
         if self.taskname == "testBPdcals":
-            filename = 'testcalibrated_per_spw_' + self.spw + '_' + prefix
+            if self.spw is not None:
+                filename = 'testcalibrated_per_spw_' + self.spw + '_' + prefix
+            else:
+                filename = 'testcalibrated' + prefix
         elif self.taskname == "semiFinalBPdcals":
-            filename = 'semifinalcalibrated_per_spw_' + self.spw + '_' + self.suffix
+            if self.spw is not None:
+                filename = 'semifinalcalibrated_per_spw_' + self.spw + '_' + self.suffix
+            else:
+                filename = 'semifinalcalibrated_' + self.suffix
+
         if filename:
             filename = os.path.join(base_path, (filename + '-%s-summary.png' % self.ms.basename))
         return filename
@@ -195,10 +136,16 @@ class PerSpwSummaryChart(Chart):
             if prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal'):
                 plot_type = prefix
         elif self.taskname == "semiFinalBPdcals":
-            plot_type = 'semifinalcalibratedcals per spw' + self.suffix
+            if self.spw is not None:
+                plot_type = 'semifinalcalibratedcals per spw' + self.suffix
+            else:
+                plot_type = 'semifinalcalibratedcals' + self.suffix
 
         if plot_type:
-            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters={'vis': self.ms.basename, 'type': plot_type, 'spw': self.spw})
+            params = {'vis': self.ms.basename, 'type': plot_type}
+            if self.spw is not None:
+                params['spw'] = self.spw
+            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters=params)
 
         if not os.path.exists(figfile):
             LOG.trace('Summary plot not found. Creating new plot.')
