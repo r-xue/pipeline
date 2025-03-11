@@ -13,7 +13,7 @@ import os
 import platform
 import pytest
 import re
-from packaging.version import parse
+from packaging.version import parse, Version
 from typing import Tuple, Optional, List
 
 import casatasks.private.tec_maps as tec_maps
@@ -40,14 +40,14 @@ class PipelineRegression(object):
         """Constructor of PilelineRegression.
         
         Args:
-            recipe (str, optional): recipe XML file name
-            input_dir (str, optional): path to directory contains input files
-            visname (List[str], optional): list of names of MeadurementSets
-            expectedoutput_file (str, optional): path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
+            recipe: recipe XML file name
+            input_dir: path to directory contains input files
+            visname: list of names of MeadurementSets
+            expectedoutput_file: path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
                                  also specified.
-            output_dir (str, optional): path to directory to output. If None, it sets visname
-            project_id (str, optional): project ID; included at the beginning of the output_dir if provided
-            expectedoutput_dir (str, optional): path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file 
+            output_dir: path to directory to output. If None, it sets visname
+            project_id: project ID; included at the beginning of the output_dir if provided
+            expectedoutput_dir: path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file 
                                 is specified.
         """
         self.recipe = recipe
@@ -62,9 +62,15 @@ class PipelineRegression(object):
                 reference_data_files = glob.glob(casa_tools.utils.resolve(expectedoutput_dir)+'/*.results.txt')
                 if reference_data_files:
                     self.expectedoutput_file = self._pick_results_file(reference_data_files=reference_data_files)
-                    LOG.info("Using {} for the reference value file.".format(self.expectedoutput_file))
+                    if self.expectedoutput_file:
+                        LOG.info("Using %s for the reference value file.", self.expectedoutput_file)
+                    else:
+                        LOG.warning(
+                            "None of the reference files in %s match the current CASA/Pipeline version. This test will fail.",
+                            expectedoutput_dir
+                            )
                 else: 
-                    LOG.warning("No reference file found in {}. Test will fail.".format(expectedoutput_dir))
+                    LOG.warning("No reference files found in %s. This test will fail.", expectedoutput_dir)
 
         self.testinput = [f'{input_dir}/{vis}' for vis in self.visname] 
         self.current_path = os.getcwd()
@@ -91,13 +97,13 @@ class PipelineRegression(object):
             shutil.rmtree(self.output_dir)
         os.mkdir(self.output_dir)
 
-    def _pick_results_file(self, reference_data_files):
+    def _pick_results_file(self, reference_data_files: list[str]) -> str | None:
         """Picks results file based on the active CASA version from the given list of file_names
 
         Args:
-            reference_data_files (list): results filenames to analyze for usage
+            reference_data_files: results filenames to analyze for usage
         Returns:
-            str: results filename determined to be most relevant for comparison
+            results filename determined to be most relevant for comparison
         """
         reference_dict = {}
 
@@ -125,20 +131,20 @@ class PipelineRegression(object):
                 if not pipeline_match:
                     missing_parts.append("Pipeline version")
 
-                LOG.warning("Couldn't determine {} from reference file '{}'. Skipping.".format(" or ".join(missing_parts), file_name))
+                LOG.warning("Couldn't determine %s from reference file '%s'. Skipping.", " or ".join(missing_parts), file_name)
 
         return self._results_file_heuristics(reference_dict=reference_dict)
 
-    def _results_file_heuristics(self, reference_dict):
+    def _results_file_heuristics(self, reference_dict: dict[str, dict[str, Version]]) -> str | None:
         """Analyze the relevant results files and pick the one that matches the closest to the current running versions
 
         Current heuristics will reject any file with CASA or Pipeline versions that exceed the current running versions
 
         Args:
-            reference_dict (dict): filenames as keys and dictionaries as values containing CASA and Pipeline versions 
+            reference_dict: filenames as keys and dictionaries as values containing CASA and Pipeline versions 
                 extracted from the filenames
         Returns:
-            best_match (str): results filename determined to be most relevant for comparison
+            best_match: results filename determined to be most relevant for comparison
         """
         current_versions = {}
         current_versions["CASA version"] = parse(casa_version_string)
@@ -425,7 +431,8 @@ class PipelineRegression(object):
         LOG.warning("Running without Pipeline Processing Request (PPR).  Using recipereducer instead.")
         pipeline.recipereducer.reduce(vis=input_vis, procedure=self.recipe)
 
-    def __reset_logfiles(self, casacalls_logfile=None, casa_logfile=None, prepend=False):
+    def __reset_logfiles(self, casacalls_logfile: Optional[str] = None, casa_logfile: Optional[str] = None,
+                         prepend: Optional[bool] = False):
         """Put CASA/Pipeline logfiles into the test working directory."""
 
         # reset casacalls-*.txt
@@ -433,11 +440,11 @@ class PipelineRegression(object):
             casacalls_logfile = 'casacalls-{!s}.txt'.format(platform.node().split('.')[0])
         else:
             casacalls_logfile = casacalls_logfile
-        _ = logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
-                               filename=casacalls_logfile)
+        logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
+                           filename=casacalls_logfile)
         # reset casa-*.log
         if casa_logfile is None:
-            now_str = datetime.datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+            now_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")
             casa_logfile = os.path.abspath(f'casa-{now_str}.log')
         else:
             casa_logfile = os.path.abspath(casa_logfile)
@@ -449,8 +456,6 @@ class PipelineRegression(object):
             with open(last_casa_logfile, 'r') as infile:
                 with open(casa_logfile, 'a') as outfile:
                     outfile.write(infile.read())
-
-        return
 
 
 # The methods below are test methods called from pytest.
