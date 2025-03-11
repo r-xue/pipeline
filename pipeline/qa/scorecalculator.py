@@ -4023,72 +4023,57 @@ def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
 @log_qa
 def score_fluxservice(result):
     """
-    If the primary FS query fails and the backup is invoked,
-    the severity level should be BLUE (below standard; numerically, on its own, 0.9).
-    If the backup FS query also fails, the warning should be YELLOW (WARNING; numerically, on its own, 0.6).
-    But it should keep running as it currently does.
+    Determines the score based on the flux catalog service usage and flux origin.
+    If the primary flux service query fails and the backup is invoked, the severity level is BLUE (0.9).
+    If the backup also fails, the severity level is YELLOW (0.6).
+    If neither service is used and Source.xml is the origin, the severity is RED (0.3).
+    If flux service is used but the age of the nearest monitoring point exceeds 14 days, the score is 0.5.
     """
 
-    if result.inputs['dbservice'] is False:
-        score = 1.0
-        msg = "Flux catalog service not used."
-        for setjy_result in result.setjy_results:
-            measurements = setjy_result.measurements
-            for measurement in measurements.items():
-                try:
-                    fluxorigin = measurement[1][0].origin
-                    if fluxorigin == 'Source.xml':
-                        score = 0.3
-                        msg = "Flux catalog service not used.  Source.xml is the origin."
-                except Exception as e:
-                    LOG.debug("Skip since there is not a flux measurement")
+    score = 1.0
+    msg = "Flux catalog service not used."
 
-        origin = pqa.QAOrigin(metric_name='score_fluxservice',
-                              metric_score=score,
-                              metric_units='flux service')
-        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
-    elif result.inputs['dbservice'] is True:
-        msg = ""
-        if result.fluxservice == 'FIRSTURL':
-            msg += "Flux catalog service used.  "
-            score = 1.0
-        elif result.fluxservice == 'BACKUPURL':
-            msg += "Backup flux catalog service used.  "
-            score = 0.9
-        elif result.fluxservice == 'FAIL':
-            msg += "Neither primary or backup flux service could be queried.  ASDM values used."
-            score = 0.3
+    # Check flux service usage
+    if result.fluxservice == 'FIRSTURL':
+        msg = "Flux catalog service used."
+    elif result.fluxservice == 'BACKUPURL':
+        msg = "Backup flux catalog service used."
+        score = 0.9
+    elif result.fluxservice == 'FAIL':
+        msg = "Neither primary nor backup flux service could be queried. ASDM values used."
+        score = 0.3
 
+    # Check flux origin
+    for setjy_result in result.setjy_results:
+        for measurement in setjy_result.measurements.values():
+            try:
+                fluxorigin = measurement[0].origin
+                if fluxorigin == 'Source.xml':
+                    score = 0.3
+                    msg = "Source.xml is the flux origin. Flux catalog service not used."
+            except Exception:
+                LOG.debug("Skipping measurement due to missing flux origin.")
+
+    # Check age of nearest monitoring point if flux service was used
+    if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
         agecounter = 0
-        if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
-            for setjy_result in result.setjy_results:
-                measurements = setjy_result.measurements
-                for measurement in measurements.items():
-                    try:
-                        fieldid = measurement[0]
-                        mm = result.mses[0]
-                        fieldobjs = mm.get_fields(field_id=fieldid)
-                        intentlist = []
-                        for fieldobj in fieldobjs:
-                            intentlist.append(fieldobj.intents)
+        for setjy_result in result.setjy_results:
+            for fieldid, measurement in setjy_result.measurements.items():
+                try:
+                    fieldobjs = result.mses[0].get_fields(field_id=fieldid)
+                    if any('AMPLITUDE' in fieldobj.intents for fieldobj in fieldobjs):
+                        age = measurement[0].age
+                        if int(abs(age)) > 14:
+                            agecounter += 1
+                except IndexError:
+                    LOG.debug("Skipping measurement due to missing age data.")
 
-                        # PIPE-1124.  Only determine QA age scoring if 'AMPLITUDE' intent is present for a source.
-                        if 'AMPLTIUDE' in intentlist:
-                            age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
-                            if int(abs(age)) > 14:
-                                agecounter = agecounter + 1
-                    except IndexError:
-                        LOG.debug("Skip since there is no age present")
+        if agecounter > 0:
+            score = 0.5
+            msg += " Age of nearest monitor point is greater than 14 days."
 
-            # Any sources with age of nearest monitoring point greater than 14 days?
-            if agecounter > 0:
-                score = 0.5
-                msg += "Age of nearest monitor point is greater than 14 days."
-
-        origin = pqa.QAOrigin(metric_name='score_fluxservice',
-                              metric_score=score,
-                              metric_units='flux service')
-        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+    origin = pqa.QAOrigin(metric_name='score_fluxservice', metric_score=score, metric_units='flux service')
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
 @log_qa
