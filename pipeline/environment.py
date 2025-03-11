@@ -167,54 +167,8 @@ class EnvironmentFactory:
     """
     EnvironmentFactory returns the Environment appropriate to the host.
     """
-    system = platform.system()
-    if system == 'Linux':
-        return _linux_os_release()
-    elif system == 'Darwin':
-        return 'macOS {!s}'.format(platform.mac_ver()[0])
-    else:
-        raise NotImplemented('Could not get host OS for system {!s}'.format(system))
-
-
-def _linux_os_release():
-    """Get the Linux distribution name.
-
-    Note: verified on CentOS/RHEL/Ubuntu/Fedora
-    """
-    try:
-        os_release = {}
-        with open('/etc/os-release') as f:
-            for line in f:
-                line_split = line.split('=')
-                if len(line_split) == 2:
-                    os_release[line_split[0].upper()] = line_split[1].strip().strip('"')
-        linux_dist = '{NAME} {VERSION}'.format(**os_release)
-    except Exception as e:
-        linux_dist = 'Linux (unknown distribution)'
-
-    return linux_dist
-
-
-def _hostname():
-    """
-    Get the FQDN for this machine.
-
-    :return: FQDN of this machine
-    """
-    return platform.node()
-
-
-def _memory_size():
-    """
-    Get the amount of memory on this machine.
-
-    :return: memory size, in bytes
-    :rtype: int
-    """
-    try:
-        return os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
-    except ValueError:
-        # SC_PHYS_PAGES doesn't always exist on OS X
+    @staticmethod
+    def create() -> Environment:
         system = platform.system()
         if system == 'Linux':
             return LinuxEnvironment()

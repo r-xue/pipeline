@@ -27,7 +27,7 @@ from .. import jobrequest
 from .. import logging
 from .. import mpihelpers
 from .. import daskhelpers
-
+from pipeline.infrastructure.basetask import ResultsProxy
 from pipeline.infrastructure.jobrequest import JobRequest
 from pipeline.infrastructure.renderer.logger import Plot
 
