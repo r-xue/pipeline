@@ -24,11 +24,17 @@ class HanningInputs(vdp.StandardInputs):
     maser_detection = vdp.VisDependentProperty(default=True)
     spws_to_smooth = vdp.VisDependentProperty(default=None)
 
+    # docstring and type hints: supplements hifv_hanning
     def __init__(self, context, vis=None, maser_detection=None, spws_to_smooth=None):
         """
         Args:
             context (:obj:): Pipeline context
-            vis(str, optional): String name of the measurement set
+
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            maser_detection: Run maser detect algorithm on spectral line windows. Defaults to True.
+
+            spws_to_smooth:
 
         """
         super(HanningInputs, self).__init__()
@@ -238,7 +244,7 @@ class Hanning(basetask.StandardTaskTemplate):
         for ms in self.inputs.context.observing_run.measurement_sets:
             if ms.name == self.inputs.vis:
                 ms_info = ms
-        
+
         spw_info = ms_info.get_spectral_window(spw)
         freq_low = spw_info._min_frequency.convert_to(newUnits=FrequencyUnits.HERTZ).value
         freq_high = spw_info._max_frequency.convert_to(newUnits=FrequencyUnits.HERTZ).value

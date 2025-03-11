@@ -18,9 +18,9 @@ import pickle
 import re
 import shutil
 import string
-import sys
 import tarfile
 from typing import Collection, Dict, List, Optional, Sequence, Tuple, Union
+from urllib.parse import urlparse
 
 import casaplotms
 import numpy as np
@@ -37,7 +37,7 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'list_to_str']
+           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'list_to_str', 'validate_url']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -917,3 +917,32 @@ def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
     else:
         ret = str(value)
     return ret
+
+
+def validate_url(url: str) -> bool:
+    """Validates whether a given URL is properly formatted.
+
+    This function checks if the URL follows a valid format using a regular expression.
+    It also ensures that the parsed URL contains both a scheme (e.g., "http" or "https")
+    and a network location (netloc), which are required components for a valid URL.
+
+    Args:
+        url (str): The URL to validate.
+
+    Returns:
+        bool: True if the URL is valid, False otherwise.
+    """
+    url_regex = re.compile(
+        r'^(https?:\/\/)?'  # HTTP or HTTPS
+        r'([\w.-]+)'        # Domain name or IP address
+        r'(:\d+)?'          # Optional port
+        r'(\/[^\s]*)?$',    # Optional path
+        re.IGNORECASE
+    )
+
+    if not url_regex.match(url):
+        return False
+
+    parsed = urlparse(url)
+
+    return all([parsed.scheme, parsed.netloc])

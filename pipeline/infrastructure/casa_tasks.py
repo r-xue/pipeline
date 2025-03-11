@@ -300,11 +300,6 @@ def sdcal(*v, **k) -> JobRequest:
 
 
 @register_task
-def sdimaging(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdimaging, *v, **k)
-
-
-@register_task
 def tsdimaging(*v, **k) -> JobRequest:
     return JobRequest(casatasks.tsdimaging, *v, **k)
 

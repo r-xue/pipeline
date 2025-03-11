@@ -54,7 +54,19 @@ class MakermsimagesInputs(vdp.StandardInputs):
     # Search order of input vis
     processing_data_type = [DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
+    # docstring and type hints: supplements hif_makermsimages
     def __init__(self, context, vis=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSs, or tar files of MSs, If ASDM files are specified, they will be
+                converted  to MS format.
+
+                Example: vis=['X227.ms', 'asdms.tar.gz']
+
+        """
         super().__init__()
         # set the properties to the values given as input arguments
         self.context = context
