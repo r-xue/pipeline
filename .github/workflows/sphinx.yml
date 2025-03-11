@@ -21,8 +21,8 @@ jobs:
           fetch-tags: true
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          activate-environment: pipe1669
-          environment-file: pipe1669.yaml
+          activate-environment: pipeline
+          environment-file: environment.yml
           channel-priority: strict
           use-only-tar-bz2: true
           show-channel-urls: true

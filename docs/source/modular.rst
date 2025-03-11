@@ -31,40 +31,40 @@ Setup the environment -  step-by-step
 
     .. code-block:: bash
 
-      conda env create --file=pipe1669.yaml
+      conda env create --file=pipeline.yml
 
     or
 
     .. code-block:: bash
 
-      conda create -n pipe1669
-      conda env update --file=pipe1669.yaml
+      conda create -n pipeline
+      conda env update --file=pipeline.yml
 
-    This will set up a Conda environment named 'pipe1669'.  
+    This will set up a Conda environment named 'pipeline'.  
     You might also update an existing environment:
 
     .. code-block:: bash
 
-      conda update -n pipe1669 --all
-      conda env update --file=pipe1669.yaml
+      conda update -n pipeline --all
+      conda env update --file=pipeline.yml
 
     To clean up an existing environment and start fresh:
 
     .. code-block:: bash
 
-      conda env remove -n pipe1669
+      conda env remove -n pipeline
 
     If you just want to remove one component:
 
     .. code-block:: bash
 
-      conda remove -n pipe1669 mpi4py
+      conda remove -n pipeline mpi4py
 
   - Dev install `Pipeline`_:
 
     .. code-block:: bash
 
-      conda activate pipe1669
+      conda activate pipeline
       pip install -e .
 
     or to use an add-on library for development and experimental purposes, try:
@@ -75,10 +75,10 @@ Setup the environment -  step-by-step
 
 .. note::
 
-  **``pipe1669.yaml`` vs. ``requirements.txt``**
+  **``pipeline.yml`` vs. ``requirements.txt``**
   
 
-  - The scope of ``pipe1669.yaml`` is to create a pseudo-monolithic CASA6-like Python environment.
+  - The scope of ``pipeline.yml`` is to create a pseudo-monolithic CASA6-like Python environment.
   - The ``pyproject.toml`` + ``requirements.txt`` handle `Pipeline`_ installation within that environment and are designed to work for both monolithic and modular `CASA6`_ cases.
 
 Run `Pipeline`_
@@ -88,7 +88,7 @@ Typical use pattern (see more details below):
 
 .. code-block:: bash
 
-    conda activate pipe1669
+    conda activate pipeline
     xvfb-run -a python run_pipeline.py
 
 ``run_pipeline.py`` is a demo script. An example context could be:
@@ -205,7 +205,7 @@ As reported in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`, to avo
 
       * If your local **Conda installation architecture** is "x86_64" (either an Intel Macs or Apple Silicon Macs with the Rosetta 2 emulation layer),
       you can keep using the "python=3.8" in the Conda environment for full compatibility and support of all Pipeline features. Note one might need to set
-      an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because `Conda/Python3.8 <https://github.com/pypa/packaging/pull/319>`_ is too old for pip to recognize the macOS version labels. If you local Conda architetuere is "arm64" (native on Apple Silicon Macs), please choose the Python 3.10 setup (as specified in the latest `pipe1669.yaml``).
+      an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because `Conda/Python3.8 <https://github.com/pypa/packaging/pull/319>`_ is too old for pip to recognize the macOS version labels. If you local Conda architetuere is "arm64" (native on Apple Silicon Macs), please choose the Python 3.10 setup (as specified in the latest `pipeline.yml``).
       The support of CPU architectures from `miniforge`_ can be found `here <https://github.com/conda-forge/miniforge?tab=readme-ov-file#miniforge3>`_
 
 
@@ -216,7 +216,7 @@ Useful aliases/shortcuts to emulate monolithic CASA executables:
 
 .. code-block:: bash
 
-    conda activate pipe1669
+    conda activate pipeline
 
     export casa_omp_num_threads=4
     export casa_mpi_nproc=4
