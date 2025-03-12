@@ -1,7 +1,7 @@
 import os
 import collections
 import shutil
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
+from typing import List, Dict
 from collections import defaultdict
 import numpy as np
 
@@ -230,7 +230,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 if self.inputs.flagbaddef:
                     LOG.debug("    RUNNING SECOND PART BADDEFORMATTERS    ")
                     result_amp_perband, result_phase_perband, amp_collection_perband, phase_collection_perband, \
-                    num_antennas_perband, amp_job, phase_job = self._run_baddeformatters(bpcaltablename)
+                        num_antennas_perband, amp_job, phase_job = self._run_baddeformatters(bpcaltablename)
 
                     pct_amp_ant = len(result_amp_perband) / num_antennas_perband
                     pct_phase_ant = len(result_phase_perband) / num_antennas_perband
@@ -943,7 +943,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                 trrx = rrx.replace("EVLA_", "") if "EVLA_" in rrx else rrx
                 # PIPE-1183, antenna name and band provided in ignore list so
                 # skip bad deformatter flagging for spws corresponding to that antenna and band
-                isBandIgnored = True if isAntIgnored and  trrx in iglist[antName].keys() else False
+                isBandIgnored = True if isAntIgnored and trrx in iglist[antName].keys() else False
                 if isBandIgnored and len(iglist[antName][trrx]) == 0:
                     LOG.info("Skipping bad deformatter flagging for all spws corresponding to {!s} band and {!s} antenna".format(rrx, antName))
                     continue
@@ -962,10 +962,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                      (str(iant), antName, rrx, bband, str(spwl)))
                         if isBandIgnored:
                             for ispw in iglist[antName][trrx]:
-                                if "~" not in str(ispw):
-                                    ignoredSPWs.append(ispw)
-                                else:
-                                    ignoredSPWs.append(utils.range_to_list(ispw))
+                                ignoredSPWs.append(utils.range_to_list(ispw))
 
                         # PIPE-1183, skip bad deformatter flagging for SPWs in ignore list
                         for ispw in spwl:
