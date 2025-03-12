@@ -3,18 +3,13 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.polcalflag.polcalflag.PolcalflagInputs.__init__
 @utils.cli_wrapper
 def hifa_polcalflag(vis=None):
     """Flag polarization calibrators
 
     This task flags corrected visibility outliers in the polarization calibrator
     data using the hif_correctedampflag heuristics.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of
-            MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
     Returns:
         The results object for the pipeline task is returned.

@@ -3,6 +3,7 @@ import sys
 from . import utils
 
 
+# docstring and type hints: inherits from h.tasks.restoredata.restoredata.RestoreDataInputs.__init__
 @utils.cli_wrapper
 def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None, bdfflags=None,
                   ocorr_mode=None, asis=None):
@@ -40,31 +41,6 @@ def h_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, raw
     When importing the ASDM and converting it to a Measurement Set (MS), if the
     output MS already exists in the output directory, then the importasdm
     conversion step is skipped, and the existing MS will be imported instead.
-
-    Args:
-        vis: List of raw visibility data files to be restored. Assumed to be in the directory specified by rawdata_dir.
-            Example: vis=['uid___A002_X30a93d_X43e']
-
-        session: List of sessions, one per visibility file. Example: session=['session_3']
-
-        products_dir: Path to the data products directory, used to copy calibration products from. The parameter is effective only when
-            copytoraw=True. When copytoraw=False, calibration products in
-            rawdata_dir will be used.
-            Example: products_dir='/path/to/my/products'
-
-        copytoraw: Copy calibration and flagging tables from products_dir to rawdata_dir directory.
-            Example: copytoraw=False
-
-        rawdata_dir: Path to the rawdata subdirectory. example: rawdata_dir='/path/to/my/rawdata'
-
-        lazy: Use the lazy filler option. Example: lazy=True
-
-        bdfflags: Set the BDF flags. Example: bdfflags=False
-
-        ocorr_mode: Set correlation import mode. Example: ocorr_mode='ca'
-
-        asis: Creates verbatim copies of the ASDM tables in the output MS. The value given to this option must be a list of table names separated by space characters.
-            example: ocorr_mode='Source Receiver'
 
     Returns:
         The results object for the pipeline task is returned.
