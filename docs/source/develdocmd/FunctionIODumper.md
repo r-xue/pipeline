@@ -56,7 +56,7 @@ This decorator is designed to address a wide variety of scenarios:
     ---
     **Practical Example**: regenerating a part of weblog faster
 
-    First, decorate update_mako_context() of a Renderer class. For example, the following code is for imaging of SingleDish (stage 13). When it run, the decorator serializes three files: ctx.pickle, context.pickle, and results.pickle.
+    First, decorate update_mako_context() of a Renderer class. For example, the following code is for imaging of SingleDish (stage 13). When it run, the decorator serializes three files: ctx.pickle, context.pickle, and results.pickle into the directory  'update_mako_context.[TimeStamp]' named as the function name.
 
     ```python
     class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -64,7 +64,7 @@ This decorator is designed to address a wide variety of scenarios:
         @function_io_dumper()
         def update_mako_context(self, ctx, context, results):
     ```
-    Next, run the code below in the working directory, then it regenerates PNG images of the stage 13 only:
+    Next, disable the decorator (to avoid creating pickles during the re-run of the decorated step), and copy pickle files from dumped directory to the current, then run the code below in the working directory, then it regenerates PNG images of the stage 13 only:
     ```python
     import pickle
     from pipeline.hsd.tasks.imaging.renderer import T2_4MDetailsSingleDishImagingRenderer
