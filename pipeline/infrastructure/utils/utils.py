@@ -983,7 +983,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
 
             except pickle.PicklingError as e:
                 exec_dumpargs = False
-                LOG.warning(f'Contained unpicklable object: {e}')
+                LOG.warning(f'Contained unpickleable object: {e}')
             except Exception as e:
                 exec_dumpargs = False
                 LOG.warning(f'Exception occurred: {e}')
