@@ -39,7 +39,7 @@ class syspowerBoxChart(object):
         LOG.info("Creating syspower box chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
-        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
+        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.prod(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
         ant_dat.mask = np.ma.getmaskarray(ant_dat)
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
@@ -103,7 +103,7 @@ class syspowerBarChart(object):
         LOG.info("Creating syspower bar chart for {!s}-band...".format(self.band))
         plt.clf()
         dshape = dat_common.shape
-        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.product(dshape[1:])))
+        ant_dat = np.reshape(dat_common, newshape=(dshape[0], np.prod(dshape[1:])))
         ant_dat = np.ma.array(ant_dat)
         ant_dat.mask = np.ma.getmaskarray(ant_dat)
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
@@ -480,14 +480,13 @@ class syspowerPerAntennaChart(object):
                 clip_sp_template = self.result.clip_sp_template
                 plotrange = [-1, -1, clip_sp_template[0], clip_sp_template[1]]
 
+            # Get antenna name
+            domain_antennas = self.ms.get_antenna(antPlot)
+            idents = [a.name if a.name else a.id for a in domain_antennas]
+            antName = ','.join(idents)
+
             if not os.path.exists(figfile):
                 try:
-                    # Get antenna name
-                    antName = antPlot
-                    if antPlot != '':
-                        domain_antennas = self.ms.get_antenna(antPlot)
-                        idents = [a.name if a.name else a.id for a in domain_antennas]
-                        antName = ','.join(idents)
 
                     LOG.debug("Sys Power Plot, using antenna={!s}".format(antName))
 
@@ -518,10 +517,10 @@ class syspowerPerAntennaChart(object):
                                                 clearplots=cplots[pindex],
                                                 title='Sys Power ' + tabletype +
                                                       '.tbl  Antenna: {!s}  {!s}-band  {!s}  spw: {!s}   {!s}'.format(antName,
-                                                                                                         self.band,
-                                                                                                         baseband,
-                                                                                                         spwtouse,
-                                                                                                         mean_freq),
+                                                                                                                      self.band,
+                                                                                                                      baseband,
+                                                                                                                      spwtouse,
+                                                                                                                      mean_freq),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile, scan=self.science_scan_ids)
 
                         job.execute()

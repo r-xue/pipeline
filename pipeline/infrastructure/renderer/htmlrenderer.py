@@ -211,27 +211,13 @@ def get_plot_dir(context, stage_number):
     return plots_dir
 
 
-def is_singledish_ms(context):
-    # importdata results
-    result0 = context.results[0]
-
-    # if ResultsProxy, read pickled result
-    if isinstance(result0, basetask.ResultsProxy):
-        result0 = result0.read()
-
-    # if RestoreDataResults, get importdata_results
-    if hasattr(result0, 'importdata_results'):
-        result0 = result0.importdata_results[0]
-
-    result_repr = str(result0)
-    return result_repr.find('SDImportDataResults') != -1
-
 def scan_has_intent(scans, intent):
     """Returns True if the list of scans includes a specified intent"""
     for s in scans:
         if intent in s.intents:
             return True
     return False
+
 
 class Session(object):
     def __init__(self, mses=None, name='Unnamed Session'):
@@ -358,7 +344,7 @@ class T1_1Renderer(RendererBase):
 
         def description(self, ctx):
             if self is self.CASA_MEMORY:
-                return f'Memory available to {"pipeline" if is_singledish_ms(ctx) else "tclean"}'
+                return f'Memory available to {"pipeline" if utils.contains_single_dish(ctx) else "tclean"}'
             return self.value
 
     class EnvironmentTable:
@@ -379,7 +365,7 @@ class T1_1Renderer(RendererBase):
             ):
 
             # 'memory available to pipeline' should not be presented for SD data
-            if is_singledish_ms(ctx):
+            if utils.contains_single_dish(ctx):
                 rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
 
             # getNumCPUs is confusing when run in an MPI context, giving the
@@ -459,7 +445,7 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            is_single_dish_data = is_singledish_ms(context)
+            is_single_dish_data = utils.contains_single_dish(context)
             if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
                 time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
@@ -910,7 +896,7 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        is_single_dish_data = is_singledish_ms(context)
+        is_single_dish_data = utils.contains_single_dish(context)
         if scan_has_intent(science_scans, 'REFERENCE') or is_single_dish_data:
             # target scans have OFF-source integrations or Single Dish Data. Need to do harder way.
             time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
@@ -962,7 +948,7 @@ class T2_1DetailsRenderer(object):
 
             vla_basebands = '<tr><th>VLA Bands: Basebands:  Freq range: [spws]</th><td>'+'<br>'.join(vla_basebands)+'</td></tr>'
 
-        if is_singledish_ms(context):
+        if utils.contains_single_dish(context):
             # Single dish specific 
             # to get thumbnail for representative pointing plot
             antenna = ms.antennas[0]
@@ -1001,7 +987,7 @@ class T2_1DetailsRenderer(object):
             'pwv_plot'        : pwv_plot,
             'azel_plot'       : azel_plot,
             'el_vs_time_plot' : el_vs_time_plot,
-            'is_singledish'   : is_singledish_ms(context),
+            'is_singledish'   : utils.contains_single_dish(context),
             'pointing_plot'   : pointing_plot,
             'el_min'          : el_min,
             'el_max'          : el_max,
@@ -1283,7 +1269,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
 
     @classmethod
     def render(cls, context):
-        if is_singledish_ms(context):
+        if utils.contains_single_dish(context):
             super(T2_2_7Renderer, cls).render(context)
 
     @staticmethod
@@ -1301,7 +1287,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
         whole_pointings = []
         offset_pointings = []
         task = pointing.SingleDishPointingChart(context, ms)
-        if is_singledish_ms(context):
+        if utils.contains_single_dish(context):
             for antenna in ms.antennas:
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))

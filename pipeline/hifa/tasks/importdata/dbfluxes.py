@@ -16,31 +16,29 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
-
-try:
-    FLUX_SERVICE_URL = os.environ['FLUX_SERVICE_URL']
-    if FLUX_SERVICE_URL == '':
-        LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.')
-    else:
-        LOG.info('Using ALMA flux service URL: {!s}'.format(FLUX_SERVICE_URL))
-except Exception as e:
-    LOG.info('Environment variable FLUX_SERVICE_URL not defined.  Switching to backup url.')
-    FLUX_SERVICE_URL = ''
-    # FLUX_SERVICE_URL = 'https://almascience.eso.org/sc/flux'
-    # FLUX_SERVICE_URL = 'https://osf-sourcecat-2019jul.asa-test.alma.cl/sc/'
-
-try:
-    FLUX_SERVICE_URL_BACKUP = os.environ['FLUX_SERVICE_URL_BACKUP']
-    if FLUX_SERVICE_URL_BACKUP == '':
-        LOG.info('Environment variable FLUX_SERVICE_URL_BACKUP not defined.')
-    else:
-        LOG.info('Backup URL defined at: {!s}'.format(FLUX_SERVICE_URL_BACKUP))
-    # 'https://2019jul.asa-test.alma.cl/sc/flux'
-except Exception as e:
-    LOG.info('Environment variable FLUX_SERVICE_URL_BACKUP not defined.')
-    FLUX_SERVICE_URL_BACKUP = ''
-
 ORIGIN_DB = 'DB'
+
+
+def get_valid_url(env_var, default):
+    """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
+    url = os.getenv(env_var)
+    if not url:
+        url = default
+        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
+        return default
+    if not utils.validate_url(url):
+        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+        LOG.info('Switching to default %s.', default)
+        return default
+    LOG.info('Environment variable %s set to URL %s for ALMA flux service.', env_var, url)
+    return url
+
+
+def get_flux_urls():
+    """Returns the primary and backup flux service URLs."""
+    flux_url = get_valid_url('FLUX_SERVICE_URL', 'https://almascience.org/sc/flux')
+    backup_flux_url = get_valid_url('FLUX_SERVICE_URL_BACKUP', 'https://asa.alma.cl/sc/flux')
+    return flux_url, backup_flux_url
 
 
 def get_setjy_results(mses):
@@ -109,12 +107,12 @@ def buildurl(service_url, obs_time, frequency, sourcename):
     # https://almascience.eso.org/sc/flux?DATE=10-August-2017&FREQUENCY=232101563000.0&NAME=J1924-2914&WEIGHTED=true&RESULT=1&CATALOGUE=5
     # New Example May 2019:
     # https://osf-sourcecat-2019apr.asa-test.alma.cl/sc/flux?DATE=27-March-2013&FREQUENCY=86837309056.169219970703125&WEIGHTED=true&RESULT=0&NAME=J1427-4206
-    date = '{!s}-{!s}-{!s}'.format(str(obs_time.day).zfill(2), obs_time.strftime('%B'), obs_time.year)
+    date = f"{str(obs_time.day).zfill(2)}-{obs_time.strftime('%B')}-{obs_time.year}"
     sourcename = sanitize_string(sourcename)
     urlparams = buildparams(sourcename, date, frequency)
 
-    url = '{!s}?{!s}'.format(service_url, urlparams)
-    LOG.debug("SC URL: {}".format(url))
+    url = f'{service_url}?{urlparams}'
+    LOG.debug("SC URL: %s", url)
 
     return url
 
@@ -129,14 +127,14 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
     """
 
     url = buildurl(service_url, obs_time, frequency, sourcename)
-    LOG.info('Attempting query {!s}'.format(url))
+    LOG.info('Attempting query %s', url)
 
     ssl_context = ssl.create_default_context(cafile=certifi.where())
 
     try:
         response = urllib.request.urlopen(url, context=ssl_context, timeout=60.0)
     except IOError:
-        LOG.warning('Problem contacting flux service at: <a href="{!s}">{!s}</a>'.format(url, url))
+        LOG.warning('Problem contacting flux service at: <a href="%s">%s</a>', url, url)
         raise
 
     try:
@@ -166,7 +164,6 @@ def fluxservice(service_url, obs_time, frequency, sourcename):
         rowdict['spectralindexerror'] = row[rl-5].childNodes[0].nodeValue
         rowdict['dataconditions'] = row[rl-4].childNodes[0].nodeValue
         rowdict['ageOfNearestMonitorPoint'] = row[rl-3].childNodes[0].nodeValue
-        # rowdict['verbose'] = row[rl-2].childNodes[0].nodeValue
         rowdict['version'] = row[rl-1].childNodes[0].nodeValue
         rowdict['url'] = url
 
@@ -200,9 +197,9 @@ def query_online_catalogue(flux_url, ms, spw, source):
     freq_hz = str(spw.centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
     obs_time = utils.get_epoch_as_datetime(ms.start_time)
 
-    LOG.info("Input source name: "+str(source_name)+"    Input SPW: "+str(spw.id))
+    LOG.info("Input source name: %s    Input SPW: %s", str(source_name), str(spw.id))
 
-    utcnow = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    utcnow = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
     try:
         fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
     except Exception as e:
@@ -237,12 +234,10 @@ def add_catalogue_fluxes(measurements, ms):
     freq_hz = '86837309056.169219970703125'
     source_name = 'J1427-4206'
     contact_fail = False
-    backup_url = FLUX_SERVICE_URL_BACKUP
-    # 'https://2019jul.asa-test.alma.cl/sc/flux'
-    flux_url = FLUX_SERVICE_URL
+    flux_url, backup_url = get_flux_urls()
     try:
         LOG.info("Test query...")
-        fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
+        fluxservice(flux_url, obs_time, freq_hz, source_name)
     except IOError:
         # error contacting service
         # LOG.warning("Could not contact the primary flux service at {!s}".format(flux_url))
@@ -260,7 +255,7 @@ def add_catalogue_fluxes(measurements, ms):
             # Try the backup URL at JAO
             LOG.warning("Switching to backup url at: {!s}".format(flux_url))
             LOG.info("Test query...")
-            fluxdict = fluxservice(flux_url, obs_time, freq_hz, source_name)
+            fluxservice(flux_url, obs_time, freq_hz, source_name)
         except IOError:
             # LOG.error("Could not contact the backup flux service URL.")
             return results
@@ -323,24 +318,23 @@ def log_result(source, spw, asdm_I, catalogue_I, spix, age, url, version, status
     # "dual-band data? " yes/no; "measurements bracketed in time? " yes/no.
     decision = {'0': 'No', '1': 'Yes'}
 
-    LOG.info('Source: {!s} spw: {!s}    ASDM flux: {!s}    Catalogue flux: {!s}'.format(source.name, spw.id,
-                                                                                        asdm_I, catalogue_I))
-    LOG.info('         Online catalog Spectral Index: {!s}'.format(spix))
-    LOG.info('         ageOfNearestMonitorPoint: {!s}'.format(age))
-    LOG.info('         {!s}'.format(codedict[int(status_code)]))
+    LOG.info('Source: %s spw: %s    ASDM flux: %s    Catalogue flux: %s', source.name, spw.id, asdm_I, catalogue_I)
+    LOG.info('         Online catalog Spectral Index: %s', spix)
+    LOG.info('         ageOfNearestMonitorPoint: %s', age)
+    LOG.info('         %s', codedict[int(status_code)])
     if data_conditions:
-        LOG.info('         Number of measurements = {!s}'.format(str(data_conditions)[0]))
-        LOG.info('         Dual-band data? {!s}'.format(decision[str(data_conditions)[1]]))
-        LOG.info('         Measurements bracketed in time? {!s}'.format(decision[str(data_conditions)[2]]))
+        LOG.info('         Number of measurements = %s', str(data_conditions)[0])
+        LOG.info('         Dual-band data? %s', decision[str(data_conditions)[1]])
+        LOG.info('         Measurements bracketed in time? %s', decision[str(data_conditions)[2]])
     else:
-        LOG.info('         Number of measurements = {!s}'.format('N/A'))
-        LOG.info('         Dual-band data? {!s}'.format('N/A'))
-        LOG.info('         Measurements bracketed in time? {!s}'.format('N/A'))
+        LOG.info('         Number of measurements = N/A')
+        LOG.info('         Dual-band data? N/A')
+        LOG.info('         Measurements bracketed in time? N/A')
 
-    LOG.info('         URL: {!s}'.format(url))
-    LOG.info('         Version: {!s}'.format(version))
+    LOG.info('         URL: %s', url)
+    LOG.info('         Version: %s', version)
     if clarification:
-        LOG.info('         WARNING message returned: {!s}'.format(clarification))
+        LOG.info('         WARNING message returned: %s', clarification)
     if catalogue_I == 'N/A':
         LOG.warning('         **No flux returned from the flux catalogue service.**')
     LOG.info("---------------------------------------------")

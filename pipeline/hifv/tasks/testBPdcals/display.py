@@ -189,23 +189,22 @@ class testDelaysPerAntennaChart(object):
 
                 figfile = os.path.join(stage_dir, filename)
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
 
                         LOG.debug("Plotting test delays {!s}".format(antName))
 
                         job = casa_tasks.plotms(vis=ktypecaltablename, xaxis='freq', yaxis='amp', field='',
-                                         antenna=antPlot, spw='', timerange='', plotrange=[], coloraxis='',
-                                         title='K table: {!s}   Antenna: {!s} Band: {!s}'.format(ktypecaltablename, antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='step')
+                                                antenna=antPlot, spw='', timerange='', plotrange=[], coloraxis='',
+                                                title='K table: {!s}   Antenna: {!s} Band: {!s}'.format(
+                                                    ktypecaltablename, antName, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector='step')
 
                         job.execute()
 
@@ -276,24 +275,23 @@ class ampGainPerAntennaChart(object):
 
                 figfile = os.path.join(stage_dir, filename)
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
 
                         LOG.debug("Plotting amplitude gain solutions " + antName)
 
                         job = casa_tasks.plotms(vis=bpdgain_touse, xaxis='time', yaxis='amp', field='',
-                                         antenna=antPlot, spw='', timerange='',
-                                         plotrange=[mintime, maxtime, 0.0, plotmax], coloraxis='',
-                                         title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='line')
+                                                antenna=antPlot, spw='', timerange='',
+                                                plotrange=[mintime, maxtime, 0.0, plotmax], coloraxis='',
+                                                title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(
+                                                    bpdgain_touse, antName, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector='line')
 
                         job.execute()
 
@@ -366,15 +364,13 @@ class phaseGainPerAntennaChart(object):
 
                 figfile = os.path.join(stage_dir, filename)
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
 
                         LOG.debug("Plotting phase gain solutions {!s}".format(antName))
 
@@ -382,7 +378,8 @@ class phaseGainPerAntennaChart(object):
                                                 antenna=antPlot, spw='', timerange='',
                                                 coloraxis='', plotrange=[mintime, maxtime, -180, 180],
                                                 symbolshape='circle',
-                                                title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpdgain_touse, antName, bandname),
+                                                title='G table: {!s}   Antenna: {!s}  Band: {!s}'.format(
+                                                    bpdgain_touse, antName, bandname),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='line')
 
@@ -445,24 +442,23 @@ class bpSolAmpPerAntennaChart(object):
 
                 figfile = os.path.join(stage_dir, filename)
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
 
                         LOG.debug("Plotting amp bandpass solutions " + antName)
 
                         job = casa_tasks.plotms(vis=bpcaltablename, xaxis='freq', yaxis='amp', field='',
-                                         antenna=antPlot, spw='', timerange='',
-                                         coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
-                                         title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpcaltablename, antName, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector='step')
+                                                antenna=antPlot, spw='', timerange='',
+                                                coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(
+                                                    bpcaltablename, antName, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector='step')
 
                         job.execute()
 
@@ -507,9 +503,12 @@ class bpSolAmpPerAntennaPerSpwChart(object):
         plots = []
 
         spws = self.ms.get_spectral_windows(science_windows_only=True)
+        spw2band = self.ms.get_vla_spw2band()
         for spw in spws:
             if spw.specline_window:
                 for bandname, bpcaltablename in self.result.bpcaltable.items():
+                    if spw2band[spw.id] != bandname:
+                        continue
                     _, maxmaxamp = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
                     ampplotmax = maxmaxamp
 
@@ -527,25 +526,25 @@ class bpSolAmpPerAntennaPerSpwChart(object):
                         figfile = os.path.join(stage_dir, filename)
 
                         plot_failed = False
+
+                        # Get antenna name
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
+
                         if not os.path.exists(figfile):
                             try:
-
-                                # Get antenna name
-                                antName = antPlot
-                                if antPlot != '':
-                                    domain_antennas = self.ms.get_antenna(antPlot)
-                                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                                    antName = ','.join(idents)
 
                                 LOG.debug("Plotting amp bandpass solutions " + antName)
 
                                 job = casa_tasks.plotms(vis=bpcaltablename, xaxis='freq', yaxis='amp', field='',
-                                                antenna=antPlot, timerange='',
-                                                spw=str(spw.id),
-                                                coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
-                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(bpcaltablename, antName, bandname, str(spw.id)),
-                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                                xconnector='step')
+                                                        antenna=antPlot, timerange='',
+                                                        spw=str(spw.id),
+                                                        coloraxis='', plotrange=[0, 0, 0, ampplotmax], symbolshape='circle',
+                                                        title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(
+                                                            bpcaltablename, antName, bandname, str(spw.id)),
+                                                        titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                        xconnector='step')
 
                                 job.execute()
 
@@ -609,22 +608,21 @@ class bpSolPhasePerAntennaChart(object):
 
                 figfile = os.path.join(stage_dir, filename)
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antName = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
-
-                        # Get antenna name
-                        antName = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antName = ','.join(idents)
 
                         LOG.debug("Plotting phase bandpass solutions " + antName)
 
                         job = casa_tasks.plotms(vis=bpcaltablename, xaxis='freq', yaxis='phase', field='',
                                                 antenna=antPlot, spw='', timerange='', coloraxis='',
                                                 plotrange=[0, 0, -phaseplotmax, phaseplotmax], symbolshape='circle',
-                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(bpcaltablename, antName, bandname),
+                                                title='B table: {!s}   Antenna: {!s}  Band: {!s}'.format(
+                                                    bpcaltablename, antName, bandname),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                 xconnector='step')
 
@@ -671,9 +669,12 @@ class bpSolPhasePerAntennaPerSpwChart(object):
         plots = []
 
         spws = self.ms.get_spectral_windows(science_windows_only=True)
+        spw2band = self.ms.get_vla_spw2band()
         for spw in spws:
             if spw.specline_window:
                 for bandname, bpcaltablename in self.result.bpcaltable.items():
+                    if spw2band[spw.id] != bandname:
+                        continue
                     maxmaxphase, _ = get_maxphase_maxamp(self.result.bpdgain_touse[bandname], bpcaltablename)
                     phaseplotmax = maxmaxphase
 
@@ -691,15 +692,14 @@ class bpSolPhasePerAntennaPerSpwChart(object):
                         figfile = os.path.join(stage_dir, filename)
 
                         plot_failed = False
+
+                        # Get antenna name
+                        domain_antennas = self.ms.get_antenna(antPlot)
+                        idents = [a.name if a.name else a.id for a in domain_antennas]
+                        antName = ','.join(idents)
+
                         if not os.path.exists(figfile):
                             try:
-
-                                # Get antenna name
-                                antName = antPlot
-                                if antPlot != '':
-                                    domain_antennas = self.ms.get_antenna(antPlot)
-                                    idents = [a.name if a.name else a.id for a in domain_antennas]
-                                    antName = ','.join(idents)
 
                                 LOG.debug("Plotting phase bandpass solutions " + antName)
 
@@ -707,7 +707,8 @@ class bpSolPhasePerAntennaPerSpwChart(object):
                                                         antenna=antPlot, timerange='', coloraxis='',
                                                         spw=str(spw.id),
                                                         plotrange=[0, 0, -phaseplotmax, phaseplotmax], symbolshape='circle',
-                                                        title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(bpcaltablename, antName, bandname, str(spw.id)),
+                                                        title='B table: {!s}   Antenna: {!s}  Band: {!s}  Spw: {!s}'.format(
+                                                            bpcaltablename, antName, bandname, str(spw.id)),
                                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
                                                         xconnector='step')
 
