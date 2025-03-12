@@ -986,7 +986,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
                 LOG.warning(f'Contained unpicklable object: {e}')
             except Exception as e:
                 exec_dumpargs = False
-                LOG.warning(f'Exception occured: {e}')
+                LOG.warning(f'Exception occurred: {e}')
 
             result = func(*args, **kwargs)
 
