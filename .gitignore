@@ -167,3 +167,6 @@ _version.py
 docs/source/references/pipeline-resolved.bib
 
 **/.DS_Store
+
+# Ruff cache
+.ruff_cache
