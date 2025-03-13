@@ -1,5 +1,4 @@
-"""Pipeline software package
-"""
+"""Pipeline software package."""
 import atexit
 import decimal
 import http.server
@@ -11,25 +10,10 @@ import webbrowser
 from astropy.utils.iers import conf as iers_conf
 import pkg_resources
 
-# customize casaconfig/pipeconfig etc, if valid pipeline CLI opts are specified.
-from .config import cli_interface
-_, session_config = cli_interface()
-
-try:
-    # update the casaconfig attributes before importing the casatasks module
-    from casaconfig import config as casa_config
-    for key, value in session_config.get('casaconfig', {}).items():
-        if hasattr(casa_config, key) and value is not None:
-            if 'path' in key:
-                value = os.path.expanduser(value)
-            print(key, value)
-            setattr(casa_config, key, value)
-except ImportError:
-    pass
 
 from . import domain, environment, infrastructure
 from .domain import measures
-from .infrastructure import Context, Pipeline, logging
+from .infrastructure import Context, Pipeline
 
 
 from . import h
@@ -41,18 +25,13 @@ from . import hsdn
 
 from casatasks import casalog
 from casashell.private.stack_manip import find_frame
+from casatasks import casalog
 
 # adjust the log filtering level for casalogsink
 # by default, modify filter to get INFO1 message which the pipeline
 # treats as ATTENTION level.
-casaloglevel = 'INFO1'
-if 'pipeconfig' not in session_config:
-    session_config['pipeconfig'] = {}
-loglevel = session_config['pipeconfig'].get('loglevel', 'info')
-# if loglevel is not None:
-#    casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
-casalog.filter(casaloglevel)
-session_config['pipeconfig']['logfile']=casalog.logfile()
+casa_loglevel = 'INFO1'
+casalog.filter(casa_loglevel)
 
 
 __version__ = revision = environment.pipeline_revision

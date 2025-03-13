@@ -1,10 +1,11 @@
-### PL Development, Testing, and Debugging Tools
+### Pipeline Development, Testing, and Debugging Tools ###
 
 # Testing Framework
 pytest                  # Core testing framework
 pytest-xdist            # https://github.com/pytest-dev/pytest-xdist
 pytest-cov              # https://github.com/pytest-dev/pytest-cov
 pytest-html             # https://pypi.org/project/pytest-html/
+pytest-benchmark        # https://pytest-benchmark.readthedocs.io/en/latest/
 junit2html              # https://github.com/inorton/junit2html, requires jinja2
 
 # Code Quality & Style
@@ -29,6 +30,3 @@ line_profiler           # https://github.com/pyutils/line_profiler
 
 # Dependency Analysis
 johnnydep               # https://pypi.org/project/johnnydep
-
-# Compatibility
-future                  # Python 2/3 compatibility library

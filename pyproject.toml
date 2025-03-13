@@ -18,9 +18,6 @@ classifiers = [
 Documentation = "https://almascience.nrao.edu/processing/science-pipeline"
 Repository = "https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline"
 
-[project.scripts]
-paris = "pipeline.__main__:cli_interface"
-
 [tool.setuptools.packages.find]
 include = ["pipeline*"]
 
