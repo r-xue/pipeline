@@ -2940,20 +2940,16 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                     'Found deviation mask with no overlap. '
                     'Set deviation mask QA score to %s', score
                 )
-            elif Overlap.PARTIAL in is_overlaps:
-                # TBD: tentatively set 0.65
-                score = 0.65
-                LOG.debug(
-                    'Found deviation mask with partial overlap. '
-                    'Set deviation mask QA score to %s', score
-                )
-            elif Overlap.FULL in is_overlaps:
-                # if deviation mask fully overlaps with line, score is 0.88
+            elif is_overlaps.intersection({Overlap.PARTIAL, Overlap.FULL}):
+                # score is 0.88 if all deviation masks partially/fullly
+                # overlap with detected line
                 score = 0.88
                 LOG.debug(
-                    'All deviation masks fully overlap with lines. '
+                    'All deviation masks overlap with lines. '
                     'Set deviation mask QA score to %s', score
                 )
+            else:
+                raise ValueError('Unexpected overlap status')
 
             msg = 'Deviation mask was triggered'
             shortmsg = f'{msg}.'
