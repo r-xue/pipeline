@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 LOG = logging.get_logger(__name__)
 
-ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name range width theoretical_rms observed_rms')
+ImageRMSTR = collections.namedtuple('ImageRMSTR', 'name frame range width theoretical_rms observed_rms')
 
 
 class SingleDishMomentMapPlotRenderer(basetemplates.JsonPlotRenderer):
@@ -68,8 +68,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                 spw_type = 'TP' if imagemode.upper() == 'AMPCAL' else ref_ms.spectral_windows[ref_spw].type
                 task_cls = display.SDImageDisplayFactory(spw_type)
                 inputs = task_cls.Inputs(context, result=r)
-                if 'freq_frame' not in ctx:
-                    ctx['freq_frame'] = inputs.image.frequency_frame
+                freq_frame = inputs.image.frequency_frame
                 task = task_cls(inputs)
                 plots.append(task.plot())
                 # RMS of combined image
@@ -80,7 +79,7 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                     bw = cqa.tos(cqa.convert(sensitivity['bandwidth'], 'kHz'))
                     trms = cqa.tos(theoretical_rms) if theoretical_rms['value'] >= 0 else 'n/a'
                     irms = cqa.tos(sensitivity['sensitivity']) if cqa.getvalue(sensitivity['sensitivity']) >= 0 else 'n/a'
-                    tr = ImageRMSTR(image_item.imagename, rms_info.frequency_range, bw, trms, irms)
+                    tr = ImageRMSTR(image_item.imagename, freq_frame, rms_info.frequency_range, bw, trms, irms)
                     if image_item.sourcename == ref_ms.representative_target[0]:
                         image_rms.append(tr)
                     else:
