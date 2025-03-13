@@ -1291,7 +1291,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         image_rms_freq_range = []
         channelmap_range = []
-        # LOG.info("#####Raw chanmap_range={}".format(str(_rgp.chanmap_range_list)))
+        # LOG.info("#####Raw chanmap_range={}".format(str(rgp.chanmap_range_list)))
         for chanmap_range in rgp.chanmap_range_list:
             for map_range in chanmap_range:
                 if map_range[2]:
