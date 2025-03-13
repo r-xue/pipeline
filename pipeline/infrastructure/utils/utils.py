@@ -983,10 +983,10 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
 
             except pickle.PicklingError as e:
                 exec_dumpargs = False
-                LOG.warning(f'Contained unpicklable object: {e}')
+                LOG.warning(f'Contained unpickleable object: {e}')
             except Exception as e:
                 exec_dumpargs = False
-                LOG.warning(f'Exception occured: {e}')
+                LOG.warning(f'Exception occurred: {e}')
 
             result = func(*args, **kwargs)
 
@@ -997,9 +997,9 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
                         json_dict = object_to_dict({_name:result}, max_depth=json_max_depth)
                     _dump({_name:result}, output_folder_name, _name, dump_pickle=to_pickle, dump_json=to_json, json_dict=json_dict)
                 except pickle.PicklingError as e:
-                    LOG.warning(f'Contained unpicklable object: {e}')
+                    LOG.warning(f'Contained unpickleable object: {e}')
                 except Exception as e:
-                    LOG.warning(f'Exception occured: {e}')
+                    LOG.warning(f'Exception occurred: {e}')
 
             return result
         return wrapper
