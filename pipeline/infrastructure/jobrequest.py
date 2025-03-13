@@ -8,28 +8,12 @@ import re
 import types
 from inspect import signature
 
-import casatasks
 import casaplotms
+import casatasks
 
 from . import logging, utils
 
 LOG = logging.get_logger(__name__)
-
-# PIPE-2099: add the forward compatibility with the 'wvrgcal' task change from CAS-14218
-if not hasattr(casatasks, 'wvrgcal'):
-    # wvrgcal is being migrated into the casatasks package via CAS-14218.
-    # before CAS-14218/ver6.6.4, the task wvrgcal is under the "almatasks" package.
-    try:
-        import almatasks
-        casatasks.wvrgcal = almatasks.wvrgcal
-    except ImportError:
-        LOG.warning("CASA/wvrgcal is not installed, and the ALMA Pipeline task hifa_wvrgcal() will not work properly.")
-
-        def mock_wvrgcal(*args, **kwagrs):
-            LOG.warning("CASA/wvrgcal is not installed, and hifa_wvrgcal() will not work properly for ALMA-12m data "
-                        "because casatasks.wvrgcal is a dummy function and return None.")
-            return
-        casatasks.wvrgcal = mock_wvrgcal
 
 
 # logger for keeping a trace of CASA task and CASA tool calls.
