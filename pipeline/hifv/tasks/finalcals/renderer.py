@@ -152,7 +152,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             spwlist = [str(spw.id) for spw in spws if spw.specline_window]
 
             # generate testdelay plots and JSON file
-            plotter = finalcalsdisplay.finalDelaysPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="delay")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -163,7 +163,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 finaldelay_subpages[ms] = renderer.filename
 
             # generate phase Gain plots and JSON file
-            plotter = finalcalsdisplay.finalphaseGainPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="phasegain")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -174,7 +174,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 phasegain_subpages[ms] = renderer.filename
 
             # generate amp bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolAmpPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="bpsolamp")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -189,7 +189,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 bpsolamp_subpages[ms] = renderer.filename
 
             # generate phase bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolPhasePerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="bpsolphase")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -204,7 +204,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 bpsolphase_subpages[ms] = renderer.filename
 
             # generate phase short bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolPhaseShortPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="finalbpsolphaseshort")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -215,7 +215,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 bpsolphaseshort_subpages[ms] = renderer.filename
 
             # generate final amp time cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalAmpTimeCalPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="finalamptimecal")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -229,7 +229,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 finalamptimecal_subpages[ms] = renderer.filename
 
             # generate final amp freq cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalAmpFreqCalPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="finalampfreqcal")
             plots = plotter.plot()
             json_path = plotter.json_filename
 
@@ -240,7 +240,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 finalampfreqcal_subpages[ms] = renderer.filename
 
             # generate final phase gain cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalPhaseGainCalPerAntennaChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="finalphasegaincal")
             plots = plotter.plot()
             json_path = plotter.json_filename
 

@@ -13,30 +13,35 @@ class Chart(object):
     def plot(self):
         task_plots = {
             "testBPdcals": [self.get_plot_wrapper('BPcal'), self.get_plot_wrapper('delaycal')],
-            "semiFinalBPdcals": [self.get_plot_wrapper()]
+            "semiFinalBPdcals": [self.get_plot_wrapper()],
+            "finalcals": [self.get_plot_wrapper()]
         }
         plots = task_plots.get(self.taskname, [])
         return [p for p in plots if p is not None]
 
-    def get_plot_params(self, figfile):
+    def get_plot_params(self, figfile, taskname=None):
         corrstring = self.ms.get_vla_corrstring()
+
         plot_params = {
-                'vis': self.ms.name,
-                'xaxis': 'freq', 'yaxis': 'amp', 'ydatacolumn': 'corrected',
-                'selectdata': True, 'averagedata': True, 'avgtime': '1e8', 'avgscan': True,
-                'transform': False, 'extendflag': False, 'iteraxis': '', 'coloraxis': 'antenna2',
-                'plotrange': [], 'title': '', 'xlabel': '', 'ylabel': '',
-                'showmajorgrid': False, 'showminorgrid': False, 'plotfile': figfile,
-                'overwrite': True, 'clearplots': True, 'showgui': False, 'correlation': corrstring
-                }
+            'xaxis': 'freq', 'yaxis': 'amp', 'plotrange': [], 'title': '', 'xlabel': '', 'ylabel': '',
+            'showmajorgrid': False, 'showminorgrid': False, 'plotfile': figfile, 'overwrite': True,
+            'clearplots': True, 'showgui': False,
+            }
+        if taskname == "testBPdcals" or "semiFinalBPdcals":
+            plot_params.update({'vis': self.ms.name, 'ydatacolumn': 'corrected', 'selectdata': True, 'averagedata': True,
+                                'avgtime': '1e8', 'avgscan': True, 'transform': False, 'extendflag': False, 'iteraxis': '',
+                                'coloraxis': 'antenna2', 'correlation': corrstring})
+        elif taskname == "finalcals":
+            plot_params.update({'vis': self.result.ktypecaltable, 'field': '', 'antenna': '0~2', 'spw': '', 'timerange': '',
+                                'coloraxis': 'spw', 'titlefont': 8, 'xaxisfont': 7, 'yaxisfont': 7})
+            # 'title': 'K table: finaldelay.tbl   Antenna: {!s}'.format('0~2'),
         return plot_params
 
-    def get_maxphase_maxamp(self, bpdgain_touse, bpcaltablename):
+    def get_maxphase_maxamp(self, bpcaltablename):
         """
         Calculates the maximum amplitude and phase values from the bandpass calibration table.
 
         Args:
-            bpdgain_touse (str): The path to the bandpass calibration table.
             bpcaltablename (str): The name of the bandpass calibration table.
 
         Returns:
@@ -47,7 +52,6 @@ class Chart(object):
             flagVarCol = tb.getvarcol('FLAG')
 
         rowlist = list(dataVarCol.keys())
-        nrows = len(rowlist)
         maxmaxamp = 0.0
         maxmaxphase = 0.0
         for rrow in rowlist:
@@ -87,7 +91,7 @@ class SummaryChart(Chart):
         bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
         calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
-        plot_params = super().get_plot_params(figfile)
+        plot_params = super().get_plot_params(figfile, self.taskname)
         if self.spw is not None:
             plot_params['spw'] = self.spw
         plot_scan = None
@@ -103,6 +107,8 @@ class SummaryChart(Chart):
         elif self.taskname == "semiFinalBPdcals":
             plot_scan = calibrator_scan_select_string
             plot_params['avgscan'] = False
+        elif self.taskname == "finalcals":
+            plot_scan = ""
 
         if plot_scan is not None:
             job = casa_tasks.plotms(**{**plot_params, 'scan': plot_scan})
@@ -121,7 +127,8 @@ class SummaryChart(Chart):
                 filename = 'semifinalcalibrated_per_spw_' + self.spw + '_' + self.suffix
             else:
                 filename = 'semifinalcalibrated_' + self.suffix
-
+        elif self.taskname == "finalcals":
+            filename = "finalcalsjunk"
         if filename:
             filename = os.path.join(base_path, (filename + '-%s-summary.png' % self.ms.basename))
         return filename
@@ -133,19 +140,27 @@ class SummaryChart(Chart):
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
         plot_type = ''
         if self.taskname == "testBPdcals":
+            xaxis = "freq"
+            yaxis = "amp"
             if prefix == 'BPcal' or ((delay_scan_select_string != bandpass_scan_select_string) and prefix == 'delaycal'):
                 plot_type = prefix
         elif self.taskname == "semiFinalBPdcals":
+            xaxis = "freq"
+            yaxis = "amp"
             if self.spw is not None:
                 plot_type = 'semifinalcalibratedcals per spw' + self.suffix
             else:
                 plot_type = 'semifinalcalibratedcals' + self.suffix
+        elif self.taskname == "finalcals":
+            xaxis = "freq"
+            yaxis = "delay"
+            plot_type = "finalcalsjunk"
 
         if plot_type:
             params = {'vis': self.ms.basename, 'type': plot_type}
             if self.spw is not None:
                 params['spw'] = self.spw
-            wrapper = logger.Plot(figfile, x_axis='freq', y_axis='amp', parameters=params)
+            wrapper = logger.Plot(figfile, x_axis=xaxis, y_axis=yaxis, parameters=params)
 
         if not os.path.exists(figfile):
             LOG.trace('Summary plot not found. Creating new plot.')
@@ -173,19 +188,30 @@ class PerAntennaChart(Chart):
         self.json = {}
         plottext = ""
         if self.plottype == "delay":
-            plottext = "testdelays" if self.taskname == "testBPdcals" else "delays" if self.taskname == "semiFinalBPdcals" else ''
+            plottext = "testdelays" if self.taskname == "testBPdcals" else "delays" if self.taskname == "semiFinalBPdcals" else 'finaldelays' if self.taskname == "finalcals" else ''
         elif self.plottype == "ampgain":
             plottext = "ampgain" if self.taskname == "testBPdcals" else ''
         elif self.plottype == "phasegain":
-            plottext = "phasegain" if self.taskname == "testBPdcals" else "phasegain-" + self.suffix if self.taskname == "semiFinalBPdcals" else ''
+            plottext = "phasegain" if self.taskname == "testBPdcals" else "phasegain-" + self.suffix \
+                        if self.taskname == "semiFinalBPdcals" else 'finalphasegain' if self.taskname == "finalcals" else ''
         elif self.plottype == "bpsolamp":
-            plottext = "bpsolamp" if self.taskname == "testBPdcals" else "bpsolamp-" + self.suffix if self.taskname == "semiFinalBPdcals" else ''
+            plottext = "bpsolamp" if self.taskname == "testBPdcals" else "bpsolamp-" + self.suffix if self.taskname == "semiFinalBPdcals"\
+                else 'finalbpsolamp' if self.taskname == "finalcals" else ''
         elif self.plottype == "bpsolphase":
-            plottext = "bpsolphase" if self.taskname == "testBPdcals" else "bpsolphase-" + self.suffix if self.taskname == "semiFinalBPdcals" else ''
+            plottext = "bpsolphase" if self.taskname == "testBPdcals" else "bpsolphase-" + self.suffix if self.taskname == "semiFinalBPdcals" else 'finalbpsolphase' if self.taskname == "finalcals" else ''
         elif self.plottype == "bpsolamp_perspw":
             plottext = "bpsolamp" if self.taskname == "testBPdcals" else "bpsolamp_perspw-" + self.suffix if self.taskname == "semiFinalBPdcals" else ''
         elif self.plottype == "bpsolphase_perspw":
             plottext = "bpsolphase" if self.taskname == "testBPdcals" else "bpsolphase_perspw-" + self.suffix if self.taskname == "semiFinalBPdcals" else ''
+        elif self.plottype == "finalbpsolphaseshort":
+            plottext = "finalbpsolphaseshort"
+        elif self.plottype == "finalamptimecal":
+            plottext = "finalamptimecal"
+        elif self.plottype == "finalampfreqcal":
+            plottext = "finalampfreqcal"
+        elif self.plottype == "finalphasegaincal":
+            plottext = "finalphasegaincal"
+
         if plottext:
             self.json_filename = os.path.join(context.report_dir,
                                             f'stage{result.stage_number}',
@@ -225,12 +251,14 @@ class PerAntennaChart(Chart):
         LOG.info("Plotting {!s} {!s}".format(self.taskname, self.plottype))
 
         if self.plottype == "delay":
-            filenametext = "testdelay" if self.taskname == "testBPdcals" else "delay" if self.taskname == "semiFinalBPdcals" else ''
-            type = "Test Delay" if self.taskname == "testBPdcals" else 'delay' + self.suffix if self.taskname == "semiFinalBPdcals" else None
+            filenametext = "testdelay" if self.taskname == "testBPdcals" else "delay" \
+                        if self.taskname == "semiFinalBPdcals" else 'finaldelays' if self.taskname == "finalcals" else ''
+            type = "Test Delay" if self.taskname == "testBPdcals" else 'delay' + self.suffix \
+                if self.taskname == "semiFinalBPdcals" else 'Final delay' if self.taskname == "finalcals" else None
             result_table = self.result.ktypecaltable
             xconnector = 'step'
             xaxis = 'Frequency'
-            yaxis = 'Delay'
+            yaxis = 'Amp'
         elif self.plottype == "ampgain":
             filenametext = "testBPdinitialgainamp" if self.taskname == "testBPdcals" else ''
             type = "Amp Gain" if self.taskname == "testBPdcals" else None
@@ -240,28 +268,34 @@ class PerAntennaChart(Chart):
             yaxis = 'Amp'
         elif self.plottype == "phasegain":
             result_table = self.result.bpdgain_touse
-            filenametext = "testBPdinitialgainphase" if self.taskname == "testBPdcals" else "BPinitialgainphase" if self.taskname == "semiFinalBPdcals" else ''
+            filenametext = "testBPdinitialgainphase" if self.taskname == "testBPdcals" else "BPinitialgainphase" if self.taskname == "semiFinalBPdcals" \
+                else 'finalBPinitialgainphase' if self.taskname == "finalcals" else ''
             xconnector = 'line'
             xaxis = 'Time'
             yaxis = 'phase'
             plot_params['symbolshape'] = 'circle'
-            type = "Phase Gain" if self.taskname == "testBPdcals" else 'phasegain' + self.suffix if self.taskname == "semiFinalBPdcals" else None
+            type = "Phase Gain" if self.taskname == "testBPdcals" else 'phasegain' + self.suffix if self.taskname == "semiFinalBPdcals"\
+                else 'BP initial gain phase' if self.taskname == "finalcals" else None
         elif self.plottype == "bpsolamp":
             result_table = self.result.bpcaltable
-            filenametext = "testBPcal_amp" if self.taskname == "testBPdcals" else "BPcal_amp" if self.taskname == "semiFinalBPdcals" else ''
+            filenametext = "testBPcal_amp" if self.taskname == "testBPdcals" else "BPcal_amp" if self.taskname == "semiFinalBPdcals"\
+                else 'finalBPcal_amp' if self.taskname == "finalcals" else ''
             xconnector = 'step'
             xaxis = 'Frequency'
             yaxis = 'Amp'
             plot_params['symbolshape'] = 'circle'
-            type = "Bandpass Amp Solution" if self.taskname == "testBPdcals" else 'bpsolamp' + self.suffix if self.taskname == "semiFinalBPdcals" else None
+            type = "Bandpass Amp Solution" if self.taskname == "testBPdcals" else 'bpsolamp' + self.suffix if self.taskname == "semiFinalBPdcals"\
+                else 'BP Amp solution' if self.taskname == "finalcals" else None
         elif self.plottype == "bpsolphase":
             result_table = self.result.bpcaltable
-            filenametext = "testBPcal_phase" if self.taskname == "testBPdcals" else "BPcal_phase" if self.taskname == "semiFinalBPdcals" else ''
+            filenametext = "testBPcal_phase" if self.taskname == "testBPdcals" else "BPcal_phase" if self.taskname == "semiFinalBPdcals"\
+                else 'finalBPcal_phase' if self.taskname == "finalcals" else ''
             xconnector = 'step'
             xaxis = 'Frequency'
             yaxis = 'Phase'
             plot_params['symbolshape'] = 'circle'
-            type = "Bandpass Phase Solution" if self.taskname == "testBPdcals" else 'bpsolphase' + self.suffix if self.taskname == "semiFinalBPdcals" else None
+            type = "Bandpass Phase Solution" if self.taskname == "testBPdcals" else 'bpsolphase' + self.suffix if self.taskname == "semiFinalBPdcals"\
+                else 'BP Phase solution' if self.taskname == "finalcals" else None
         elif self.plottype == "bpsolamp_perspw":
             result_table = self.result.bpcaltable
             filenametext = "testBPcal_amp" if self.taskname == "testBPdcals" else "BPcal_amp" if self.taskname == "semiFinalBPdcals" else ''
@@ -278,36 +312,87 @@ class PerAntennaChart(Chart):
             yaxis = 'Phase'
             plot_params['symbolshape'] = 'circle'
             type = "Bandpass Phase Solution" if self.taskname == "testBPdcals" else 'bpsolphase' + self.suffix if self.taskname == "semiFinalBPdcals" else None
+        elif self.plottype == "finalbpsolphaseshort":
+            result_table = self.result.phaseshortgaincaltable
+            filenametext = "phaseshortgaincal"
+            xconnector = 'line'
+            xaxis = 'Time'
+            yaxis = 'Phase'
+            plot_params['symbolshape'] = 'circle'
+            type = "Phase (short) gain solution"
+        elif self.plottype == "finalamptimecal":
+            result_table = self.result.finalampgaincaltable
+            filenametext = "finalamptimecal"
+            xconnector = 'step'
+            xaxis = 'Time'
+            yaxis = 'Amp'
+            plot_params['symbolshape'] = 'circle'
+            type = "Final amp time cal"
+        elif self.plottype == "finalampfreqcal":
+            result_table = self.result.finalampgaincaltable
+            filenametext = "finalampfreqcal"
+            xconnector = 'step'
+            xaxis = 'freq'
+            yaxis = 'Amp'
+            plot_params['symbolshape'] = 'circle'
+            type = "Final amp freq cal"
+        elif self.plottype == "finalphasegaincal":
+            result_table = self.result.finalampgaincaltable
+            filenametext = "finalphasegaincal"
+            xconnector = 'line'
+            xaxis = 'time'
+            yaxis = 'phase'
+            plot_params['symbolshape'] = 'circle'
+            type = "Final phase gain cal"
 
         plot_params['xaxis'] = xaxis
         plot_params['yaxis'] = yaxis
         plot_params['xconnector'] = xconnector
+
+        plotrange = []
+        spws = []
+        spw2band = self.ms.get_vla_spw2band()
+        if self.perSpwChart:
+            spws = self.ms.get_spectral_windows(science_windows_only=True)
+        elif self.taskname == "finalcals": # check if plottype is needed
+            dict_result_table = {}
+            spwlist = [str(spw.id) for spw in self.ms.get_spectral_windows(science_windows_only=True)]
+            spws = [",".join(spwlist)]
+            bandlist = set()
+            for spw, band in spw2band.items():
+                bandlist.add(band)
+            for band in bandlist:
+                dict_result_table[band] = result_table
+            result_table = dict_result_table
+        else:
+            # adding a place holder if perSpwChart is false
+            # This is just to ensure that loop executes atleast once if
+            # perSpwChart is false
+            spws.append(-1)
 
         for bandname, tabitem in result_table.items():
             with casa_tools.TableReader(tabitem) as tb:
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
-        plotrange = []
-        spws = []
-        spw2band = []
-        if self.perSpwChart:
-            spws = self.ms.get_spectral_windows(science_windows_only=True)
-            spw2band = self.ms.get_vla_spw2band()
-        else:
-            # adding a place holder if perSpwChart is false
-            # This is just to ensure that loop executes atleast once if
-            # perSpwChart is false
-            spws.append(-1)
+
         for spw in spws:
             if not self.perSpwChart or spw.specline_window:
                 for bandname, tabitem in result_table.items():
                     if self.perSpwChart and spw2band[spw.id] != bandname:
                         continue
                     if self.plottype == "bpsolamp" or self.plottype == "bpsolphase" or self.plottype == "bpsolamp_perspw" or self.plottype == "bpsolphase_perspw":
-                        maxmaxphase, maxmaxamp = self.get_maxphase_maxamp(self.result.bpdgain_touse[bandname], tabitem)
+                        maxmaxphase, maxmaxamp = self.get_maxphase_maxamp(tabitem)
                         ampplotmax = maxmaxamp
-                        phaseplotmax = maxmaxphase
+                        plotmax = maxmaxphase
+                    if self.plottype == "finalamptimecal" or self.plottype == "finalampfreqcal":
+                        with casa_tools.TableReader(self.result.finalampgaincaltable) as tb:
+                            cpar = tb.getcol('CPARAM')
+                            flgs = tb.getcol('FLAG')
+                        amps = np.abs(cpar)
+                        good = np.logical_not(flgs)
+                        maxamp = np.max(amps[good])
+                        plotmax = max(2.0, maxamp)
 
                     if self.plottype == "delay":
                         plot_title_prefix = 'K table: {!s}'.format(tabitem)
@@ -329,21 +414,36 @@ class PerAntennaChart(Chart):
                         plotrange = [0, 0, 0, ampplotmax]
                     elif self.plottype == "bpsolphase":
                         plot_title_prefix = 'B table: {!s}'.format(tabitem)
-                        plotrange = [0, 0, -phaseplotmax, phaseplotmax]
+                        plotrange = [0, 0, -plotmax, plotmax]
                     elif self.plottype == "bpsolamp_perspw":
                         plot_title_prefix = 'B table: {!s}'.format(tabitem)
                         plotrange = [0, 0, 0, ampplotmax]
                     elif self.plottype == "bpsolphase_perspw":
                         plot_title_prefix = 'B table: {!s}'.format(tabitem)
-                        plotrange = [0, 0, -phaseplotmax, phaseplotmax]
+                        plotrange = [0, 0, -plotmax, plotmax]
+                    elif self.plottype == "finalbpsolphaseshort":
+                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plotrange = [mintime, maxtime, -180, 180]
+                    elif self.plottype == "finalamptimecal":
+                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plotrange = [mintime, maxtime, 0, plotmax]
+                    elif self.plottype == "finalampfreqcal":
+                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plotrange = [0, 0, 0, plotmax]
+                    elif self.plottype == "finalphasegaincal":
+                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plotrange = [mintime, maxtime, -180, 180]
 
                     plot_params['plotrange'] = plotrange
 
                     for ii in range(nplots):
-                        if self.taskname == "testBPdcals":
+                        if self.taskname == "testBPdcals" or self.taskname == "finalcals":
                             filename = filenametext + str(ii) + '_' + bandname
                         elif self.taskname == "semiFinalBPdcals":
                             filename = filenametext + str(ii) + '_' + self.suffix + '_' + bandname
+                        elif self.taskname == "finalcals" and not self.perSpwChart:
+                            plot_params['spw'] = spw
+
                         if self.perSpwChart:
                             filename = "{!s}_{!s}.png".format(filename, str(spw.id))
                             plot_params['spw'] = str(spw.id)
