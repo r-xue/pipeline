@@ -464,7 +464,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         LOG.info('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         edge = inputs.edge
         broadline = inputs.broadline
-        fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
+        fitorder = 'automatic' if inputs.fitorder is None else inputs.fitorder
         fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm

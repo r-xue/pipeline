@@ -174,7 +174,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_func: Optional[Union[str, Dict[Union[int, str], str]]] = None,
-        fit_order: Optional[Union[int, Dict[Union[int, str], int]]] = None,
+        fit_order: Optional[Union[str, int, Dict[Union[int, str], int]]] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
         deviationmask: Optional[Union[dict, List[dict]]] = None,
@@ -350,6 +350,9 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         Returns:
             BaselineSubtractionResults instance
+            
+        Raises:
+            TypeError: value of fit_order has wrong data type
         """
         vis = self.inputs.vis
         ms = self.inputs.ms
@@ -377,13 +380,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   antenna_id_list,
                   spw_id_list)
 
-        # If fit_order is None (or falsy), default to -1 for each spw (which triggers heuristics)
-        if not fit_order or fit_order == 'automatic':
-            fit_order_dict = {spw_id: -1 for spw_id in spw_id_list}
-        elif not isinstance(fit_order, dict):
+        # If fit_order is None (or falsy), default to 'automatic' for each spw (which triggers heuristics)
+        if fit_order == 'automatic' or fit_order == -1:
+            fit_order_dict = {spw_id: 'automatic' for spw_id in spw_id_list}
+        elif isinstance(fit_order, str) or isinstance(fit_order, int):
             fit_order_dict = {spw_id: fit_order for spw_id in spw_id_list} # Single integer given: apply the same order to all spws
-        else:
-            # Convert keys to int if possible, then fill in missing spws with default -1
+        elif isinstance(fit_order, dict):
+            # Convert keys to int if possible, then fill in missing spws with default 'automatic'
             fit_order_dict = {}
             for k, v in fit_order.items():
                 try:
@@ -393,7 +396,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 fit_order_dict[key] = v
             for spw_id in spw_id_list:
                 if spw_id not in fit_order_dict:
-                    fit_order_dict[spw_id] = -1
+                    fit_order_dict[spw_id] = 'automatic'
+        else:
+            raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
+            
 
         # Default to 'cspline' if fit_func is None or falsy
         if not fit_func:
@@ -452,7 +458,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             formatted_edge = list(common.parseEdge(edge))
             heuristic = spw_funcs_dict[spw_id]
             current_fit_order = fit_order_dict.get(spw_id, -1)
-
+            if isinstance(current_fit_order, int) and current_fit_order < 0:
+                current_fit_order = 'automatic'
             out_blparam = heuristic(
                 self.datatable, ms, rowmap,
                 antenna_id, field_id, spw_id,
