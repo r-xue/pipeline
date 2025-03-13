@@ -37,6 +37,8 @@ import sys
 import tarfile
 import uuid
 
+from typing import List, Tuple, Optional, Union
+
 import astropy.io.fits as apfits
 
 from pipeline.infrastructure.launcher import Context
@@ -115,6 +117,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
     processing_data_type = [DataType.RAW, DataType.REGCAL_CONTLINE_ALL,
                             DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONTLINE_SCIENCE,
+                            DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
                             DataType.REGCAL_LINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE]
 
     calimages = vdp.VisDependentProperty(default=[])
@@ -124,6 +127,7 @@ class ExportDataInputs(vdp.StandardInputs):
     session = vdp.VisDependentProperty(default=[])
     targetimages = vdp.VisDependentProperty(default=[])
     imaging_products_only = vdp.VisDependentProperty(default=False)
+    tarms = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def products_dir(self):
@@ -137,7 +141,7 @@ class ExportDataInputs(vdp.StandardInputs):
         return not (self.imaging_products_only or self.exportmses)
 
     # docstring and type hints: supplements h_exportdata, hsd_exportdata, hsdn_exportdata
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None,
                  products_dir=None, imaging_products_only=None):
         """
@@ -185,6 +189,8 @@ class ExportDataInputs(vdp.StandardInputs):
 
                 Default: None (equivalent to False)
 
+            tarms: Tar final MeasurementSets
+            
             pprfile: Name of the pipeline processing request to be exported.
                 Defaults to a file matching the template 'PPR_*.xml'.
 
@@ -221,6 +227,7 @@ class ExportDataInputs(vdp.StandardInputs):
 
         self.session = session
         self.exportmses = exportmses
+        self.tarms = tarms
         self.pprfile = pprfile
         self.calintents = calintents
         self.calimages = calimages
@@ -347,9 +354,13 @@ class ExportData(basetask.StandardTaskTemplate):
         #    apply instructions
         msvisdict = collections.OrderedDict()
         calvisdict = collections.OrderedDict()
+
+        _, exportmses_session_names, exportmses_session_vislists, exportmses_vislist = self._make_lists(
+            inputs.context, inputs.session, None, imaging_only_mses=None)
+
         if not inputs.imaging_products_only:
             if inputs.exportmses:
-                msvisdict = self._do_ms_products(inputs.context, vislist, inputs.products_dir)
+                msvisdict = self._do_ms_products(inputs.context, exportmses_vislist, inputs.products_dir)
             if inputs.exportcalprods:
                 calvisdict = self._do_standard_ms_products(inputs.context, vislist, inputs.products_dir)
         result.msvisdict = msvisdict
@@ -364,9 +375,9 @@ class ExportData(basetask.StandardTaskTemplate):
                                                                  inputs.products_dir)
             elif inputs.exportmses:
                 # still needs sessiondict
-                for i in range(len(session_names)):
-                    sessiondict[session_names[i]] = \
-                    ([os.path.basename(visfile) for visfile in session_vislists[i]], )
+                for i in range(len(exportmses_session_names)):
+                    sessiondict[exportmses_session_names[i]] = \
+                        ([os.path.basename(visfile) for visfile in exportmses_session_vislists[i]], )
         result.sessiondict = sessiondict
 
         # Export calibrator images to FITS
@@ -420,32 +431,58 @@ class ExportData(basetask.StandardTaskTemplate):
         return recipe_name
 
     def _has_imaging_data(self, context, vis):
-        """
-        Check if the given vis contains any imaging data.
-        """
-
-        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
+        """Check if the given vis contains any imaging data."""
+        imaging_datatypes = [DataType.SELFCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE, DataType.SELFCAL_CONT_SCIENCE,
+                             DataType.REGCAL_CONT_SCIENCE, DataType.SELFCAL_LINE_SCIENCE, DataType.REGCAL_LINE_SCIENCE]
         ms_object = context.observing_run.get_ms(name=vis)
         return any(ms_object.get_data_column(datatype) for datatype in imaging_datatypes)
 
-    def _make_lists(self, context, session, vis, imaging_only_mses=False):
-        """
-        Create the vis and sessions lists
-        """
+    def _make_lists(
+        self,
+        context: Context,
+        session: List[str],
+        vis: Optional[Union[List[str], str]] = None,
+        imaging_only_mses: Optional[bool] = False,
+    ) -> Tuple[List[str], List[str], List[List[str]], List[str]]:
+        """Create the vis and sessions lists.
 
-        # Force inputs.vis to be a list.
+        This method processes input parameters to generate lists of sessions, session names, 
+        visibility files, and measurement sets based on the provided context and flags.
+
+        Args:
+            context (Context): The Pipeline context object.
+            session (List[str]): Session names
+            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names, 
+                or None. If None, the method uses all measurement sets registered in the context.
+            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement 
+                sets based on imaging data:
+                True: Includes only measurement sets with imaging data.
+                False: Includes only those without imaging data.
+                None: Disables filtering, including all measurement sets.
+
+        Returns:
+            session_list (List[str]): A list of session identifiers.
+            session_names (List[str]): A list of names corresponding to each session in session_list.
+            session_vislists (List[List[str]]): For each session, a list of visibility files associated
+                with that session.
+            vislist (List[str]): The final filtered list of visibility files.
+        """
+        # process the 'vis' parameter and ensure vislist is a list
         vislist = vis
+        if vislist is None:
+            vislist = [ms.name for ms in context.observing_run.measurement_sets]
         if isinstance(vislist, str):
             vislist = [vislist]
-        if imaging_only_mses:
-            vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
-        else:
-            vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
 
-        # Get the session list and the visibility files associated with
-        # each session.
-        session_list, session_names, session_vislists= self._get_sessions( \
-            context, session, vislist)
+        # filter based on imaging_only_mses condition
+        if isinstance(imaging_only_mses, bool):
+            if imaging_only_mses:
+                vislist = [vis for vis in vislist if self._has_imaging_data(context, vis)]
+            else:
+                vislist = [vis for vis in vislist if not self._has_imaging_data(context, vis)]
+
+        # Get the session list and the visibility files associated with each session.
+        session_list, session_names, session_vislists = self._get_sessions(context, session, vislist)
 
         return session_list, session_names, session_vislists, vislist
 
@@ -806,21 +843,47 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return pprmatchesout
 
-    def _export_final_ms(self, context, vis, products_dir):
+    def _export_final_ms(self, context: object, vis: str, products_dir: str) -> Optional[str]:
+        """Export a CASA measurement set (MS) to the products directory.
+
+        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory. 
+        Otherwise, the MS will be copied directly to the products directory as a directory structure.
+
+        Args:
+            context (object): The current pipeline context object (not used directly in this method).
+            vis (str): The path to the measurement set to be exported.
+            products_dir (str): The directory where the final MS will be stored.
+
+        Returns:
+            Optional[str]: The name of the exported file (compressed tarball or directory), or `None` if an error occurs.
         """
-        Save the ms to a compressed tarfile in products.
-        """
-        # Define the name of the output tarfile
+        # Define the name of the output tarfile or directory
         visname = os.path.basename(vis)
-        tarfilename = visname + '.tgz'
-        LOG.info('Storing final ms %s in %s', visname, tarfilename)
 
-        # Create the tar file
-        tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-        tar.add(visname)
-        tar.close()
+        if self.inputs.tarms:
+            # Export as tarball
+            tarfilename = visname + '.tgz'
+            LOG.info('Storing final MS %s in %s', visname, tarfilename)
 
-        return tarfilename
+            # Create the tar file
+            tar_path = os.path.join(products_dir, tarfilename)
+            try:
+                with tarfile.open(tar_path, "w:gz") as tar:
+                    tar.add(visname)
+                return tarfilename
+            except Exception as e:
+                LOG.error('Failed to create tarball %s: %s', tar_path, str(e))
+                return None
+        else:
+            # Copy MS directory directly
+            target_path = os.path.join(products_dir, visname)
+            LOG.info('Copying final MS %s to %s', visname, target_path)
+            try:
+                shutil.copytree(visname, target_path)
+                return visname
+            except Exception as e:
+                LOG.error('Failed to copy MS %s: %s', target_path, str(e))
+                return None        
 
     def _save_final_flagversion(self, vis, flag_version_name):
         """
