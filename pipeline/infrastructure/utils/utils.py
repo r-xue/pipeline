@@ -5,27 +5,28 @@ classes.
 import ast
 import bisect
 import collections
-from collections.abc import Iterable
 import contextlib
 import copy
-from datetime import datetime
 import errno
 import fcntl
-from functools import wraps
 import glob
 import inspect
 import itertools
-from numbers import Number
 import operator
 import os
 import pickle
-from pprint import pprint
 import re
 import shutil
 import string
 import tarfile
 import time
-from typing import Any, Callable, Collection, Dict, List, Optional, Sequence, Tuple, Union
+from collections.abc import Iterable
+from datetime import datetime
+from functools import wraps
+from numbers import Number
+from pprint import pprint
+from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
+                    Tuple, Union)
 from urllib.parse import urlparse
 
 import casaplotms
@@ -582,6 +583,7 @@ def get_obj_size(obj, serialize=True):
     else:
         try:
             from pympler.asizeof import asizeof
+
             # PIPE-1698: a workaround for NumPy-related issues with the recent Pympler/asizeof versions
             # see https://github.com/pympler/pympler/issues/155
             _ = asizeof(np.str_())
