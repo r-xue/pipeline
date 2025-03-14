@@ -55,7 +55,6 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
-from pipeline.infrastructure.renderer import stats_extractor
 from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
 from pipeline.domain import DataType
 from ..common import manifest
@@ -1516,6 +1515,8 @@ finally:
         Returns:
           The filename of the outputfile.
         """
+        import pipeline.infrastructure.renderer.stats_extractor as stats_extractor
+
         statsfile_name = "pipeline_stats_{}.json".format(oussid)
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
