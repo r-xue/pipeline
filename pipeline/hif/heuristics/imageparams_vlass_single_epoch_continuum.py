@@ -2,17 +2,17 @@ import os
 import re
 import shutil
 import uuid
-from typing import Union, Tuple, Dict, Optional
+from typing import Dict, Optional, Tuple, Union
 
 import numpy
-
 from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
-from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure.mpihelpers as mpihelpers
+import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure import casa_tools
+
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -322,7 +322,9 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+    def nsigma(
+        self, iteration: int, hm_nsigma: float, hm_masking: str, rms_multiplier: Optional[Union[int, float]] = None
+    ) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -367,7 +369,14 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         """Tclean rotatepastep parameter heuristics."""
         return 5.0
 
-    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters."""
 
         sidelobethreshold = None
@@ -383,8 +392,17 @@ class ImageParamsHeuristicsVlassSeCont(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
-                growiterations, dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
 
     def usepointing(self) -> bool:
         """clean flag to use pointing table."""
