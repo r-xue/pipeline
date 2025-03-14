@@ -106,7 +106,7 @@ class SDExportData(exportdata.ExportData):
         # Create and export the pipeline stats file
         pipeline_stats_file = None
         try:
-            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
+            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid, data_type="SD")
         except Exception as e:
             LOG.info("Unable to output pipeline statistics file: {}".format(e))
             LOG.debug(traceback.format_exc())

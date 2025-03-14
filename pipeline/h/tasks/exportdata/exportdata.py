@@ -1505,7 +1505,7 @@ finally:
 
         return os.path.basename(out_aqua_file)
 
-    def _export_stats_file(self, context, oussid='') -> str:
+    def _export_stats_file(self, context, oussid='', data_type="IF") -> str:
         """Generate and output the stats file.
 
         Args:
@@ -1522,7 +1522,7 @@ finally:
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 
-        stats_dict = stats_extractor.generate_stats(context)
+        stats_dict = stats_extractor.generate_stats(context, data_type=data_type)
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:
