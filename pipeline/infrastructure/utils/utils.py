@@ -12,6 +12,7 @@ import fcntl
 import glob
 import inspect
 import itertools
+import json
 import operator
 import os
 import pickle
@@ -24,7 +25,6 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from pprint import pprint
 from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
                     Tuple, Union)
 from urllib.parse import urlparse
@@ -1016,7 +1016,7 @@ def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: 
             pickle.dump(obj, f)
     if dump_json:
         with open(file_path+'.json', 'w') as f:
-            pprint(json_dict[name], f)
+            f.write(json.dumps(json_dict[name], default=str))
 
 
 def _get_full_method_path(func):
