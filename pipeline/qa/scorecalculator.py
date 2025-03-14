@@ -4050,7 +4050,7 @@ def score_fluxservice(result):
                 fluxorigin = measurement[0].origin
                 if fluxorigin == 'Source.xml':
                     score = 0.3
-                    msg = "Source.xml is the flux origin. Flux catalog service not used."
+                    msg = "Source.xml is the flux origin. Some/all flux values derived from ASDM."
             except Exception:
                 LOG.debug("Skipping measurement due to missing flux origin.")
 
