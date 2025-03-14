@@ -2936,6 +2936,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             if Overlap.NO in is_overlaps:
                 # by default score is 0.65
                 score = 0.65
+                msg = 'Deviation mask was triggered'
                 LOG.debug(
                     'Found deviation mask with no overlap. '
                     'Set deviation mask QA score to %s', score
@@ -2944,6 +2945,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 # score is 0.88 if all deviation masks partially/fullly
                 # overlap with detected line
                 score = 0.88
+                msg = 'Deviation mask overlapped with spectral lines was triggered'
                 LOG.debug(
                     'All deviation masks overlap with lines. '
                     'Set deviation mask QA score to %s', score
@@ -2951,7 +2953,6 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             else:
                 raise ValueError('Unexpected overlap status')
 
-            msg = 'Deviation mask was triggered'
             shortmsg = f'{msg}.'
             spw_string = ', '.join(map(str, sorted(spw_ids)))
             antenna_string = ', '.join(sorted(antenna_names))
