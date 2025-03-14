@@ -875,7 +875,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-
     def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
 
@@ -885,7 +884,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
+        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string if len(self.polarizations) and len(self.data_descriptions) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -903,9 +902,9 @@ class MeasurementSet(object):
         """
 
         corrs = set()
-        for lspw in self.spectral_windows:
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
-                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
+        for dd in self.data_descriptions:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd.spw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[dd.pol_id].corr_type_string)
 
         return sorted(corrs)
 
@@ -1129,7 +1128,7 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> np.float:
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1182,11 +1181,11 @@ class MeasurementSet(object):
             science_field_ids = [
                 fid for fid in field_ids
                 if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
             science_state_ids = [
                 sid for sid in state_ids
                 if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
 
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
@@ -1199,15 +1198,17 @@ class MeasurementSet(object):
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
         spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
 
-        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
+            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
+            # PIPE-2370: convert np.float64 to a native float for better weblog presentations.
             if stat_type == "max":
-                return np.max(integration)
+                return float(np.max(integration))
             elif stat_type == "median":
-                return np.median(integration)
+                return float(np.median(integration))
 
     def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
