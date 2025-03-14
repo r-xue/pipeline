@@ -1515,6 +1515,7 @@ finally:
         Returns:
           The filename of the outputfile.
         """
+        # Avoid a circular import
         import pipeline.infrastructure.renderer.stats_extractor as stats_extractor
 
         statsfile_name = "pipeline_stats_{}.json".format(oussid)
