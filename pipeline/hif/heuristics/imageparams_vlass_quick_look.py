@@ -435,10 +435,11 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
             LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
     def threshold(self, iteration, threshold, hm_masking):
-
         return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+    def nsigma(
+        self, iteration: int, hm_nsigma: float, hm_masking: str, rms_multiplier: Optional[Union[int, float]] = None
+    ) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -460,9 +461,15 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         """Tclean rotatepastep parameter heuristics."""
         return 360.
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
-
-        '''Default auto-boxing parameters.'''
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
+        """Default auto-boxing parameters."""
 
         sidelobethreshold = None
         noisethreshold = None
@@ -474,5 +481,14 @@ class ImageParamsHeuristicsVlassQl(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac,
-                growiterations, dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
