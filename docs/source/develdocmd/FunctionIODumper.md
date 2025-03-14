@@ -79,6 +79,47 @@ This decorator is designed to address a wide variety of scenarios:
     render.update_mako_context(ctx, context, results)
     ```
 
+- **Use pickles as input data of Unit test**:
+
+  For example, decorate hsd/tasks/importdata/reader.py::merge_flagcmd() and execute hsd_importdata,
+  then it will output pickle files of argument objects and returning object into merge_flagcmd* directory in current (working) directory.
+  We use the pickle file as expected input/output for a unit test. 
+  This sample velow uses a pickle file for the input argument, but basically input parameters should be specified and used for unit testing.
+
+  ```python
+  import os
+  import pickle
+  import unittest
+  from deepdiff.diff import DeepDiff
+
+  from pipeline.hsd.tasks.importdata.reader import merge_flagcmd
+
+  def load_pickle(file_path):
+      fname = '.'.join(os.path.basename(file_path).split(".")[0:-1])
+      with open(file_path, "rb") as f:
+          return fname, pickle.load(f)
+
+  class TestHsdImportData(unittest.TestCase):
+
+      def test_merge_flagcmd(self):
+          basepath = "merge_flagcmd.expected/"
+          
+          # load input data and expected result
+          _, commands = load_pickle(basepath + 'commands.pickle')
+          result = merge_flagcmd(commands)
+          
+          # load expected result
+          objname, expected = load_pickle(basepath + 'merge_flagcmd.expected.result.pickle')
+
+          # compare results
+          diff = DeepDiff(result, expected[objname], ignore_order=True)
+          self.assertDictEqual(diff, {}, f"Result is different:\n{result}")
+
+  if __name__ == "__main__":
+      unittest.main()
+  ```
+
+
 - **Regression Testing Automation**:  
   - Automatically capture function inputs and outputs during execution. Later, these dumps can be used to generate test cases or compare against new code versions.
 
