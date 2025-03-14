@@ -10,7 +10,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.h.tasks.common.displays import bandpass as bandpass
-import pipeline.infrastructure.callibrary as callibrary
 from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -574,7 +573,7 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = SingleDishPlotmsLeaf
 
-    def __init__(self, context, result, calapp: List[callibrary.CalApplication],
+    def __init__(self, context, result, calapp: List['CalApplication'],
                  xaxis, yaxis, ant='', pol='', **kwargs):
 
         # Create a dictionary to keep track of which caltable has which spws.
@@ -596,7 +595,7 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
 
     leaf_class = SingleDishPlotmsSpwComposite
 
-    def __init__(self, context, result, calapp: List[callibrary.CalApplication], xaxis, yaxis, pol='', **kwargs):
+    def __init__(self, context, result, calapp: List['CalApplication'], xaxis, yaxis, pol='', **kwargs):
 
         dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
         table_ants = sorted(dict_calapp_ants.keys())
