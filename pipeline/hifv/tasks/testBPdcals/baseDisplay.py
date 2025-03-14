@@ -76,7 +76,7 @@ class Chart(object):
 
 
 class SummaryChart(Chart):
-    def __init__(self, context, result, spw=None, suffix='', taskname=None):
+    def __init__(self, context, result, spw='', suffix='', taskname=None):
         self.context = context
         self.result = result
         self.ms = context.observing_run.get_ms(result.inputs['vis'])
@@ -92,7 +92,7 @@ class SummaryChart(Chart):
         delay_scan_select_string = self.context.evla['msinfo'][self.ms.name].delay_scan_select_string
         calibrator_scan_select_string = self.context.evla['msinfo'][self.ms.name].calibrator_scan_select_string
         plot_params = super().get_plot_params(figfile, self.taskname)
-        if self.spw is not None:
+        if self.spw:
             plot_params['spw'] = self.spw
         plot_scan = None
         if self.taskname == "testBPdcals":
@@ -323,7 +323,7 @@ class PerAntennaChart(Chart):
         elif self.plottype == "finalamptimecal":
             result_table = self.result.finalampgaincaltable
             filenametext = "finalamptimecal"
-            xconnector = 'step'
+            xconnector = 'line'
             xaxis = 'Time'
             yaxis = 'Amp'
             plot_params['symbolshape'] = 'circle'
@@ -337,7 +337,7 @@ class PerAntennaChart(Chart):
             plot_params['symbolshape'] = 'circle'
             type = "Final amp freq cal"
         elif self.plottype == "finalphasegaincal":
-            result_table = self.result.finalampgaincaltable
+            result_table = self.result.finalphasegaincaltable
             filenametext = "finalphasegaincal"
             xconnector = 'line'
             xaxis = 'time'
@@ -385,8 +385,8 @@ class PerAntennaChart(Chart):
                         maxmaxphase, maxmaxamp = self.get_maxphase_maxamp(tabitem)
                         ampplotmax = maxmaxamp
                         plotmax = maxmaxphase
-                    if self.plottype == "finalamptimecal" or self.plottype == "finalampfreqcal":
-                        with casa_tools.TableReader(self.result.finalampgaincaltable) as tb:
+                    if self.plottype == "finalamptimecal" or self.plottype == "finalampfreqcal" or self.plottype == "ampgain":
+                        with casa_tools.TableReader(tabitem) as tb:
                             cpar = tb.getcol('CPARAM')
                             flgs = tb.getcol('FLAG')
                         amps = np.abs(cpar)
@@ -395,43 +395,46 @@ class PerAntennaChart(Chart):
                         plotmax = max(2.0, maxamp)
 
                     if self.plottype == "delay":
-                        plot_title_prefix = 'K table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'K table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                    else "delay.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                    else "finaldelay.tbl" if self.taskname == "finalcals" else "")
+
                     elif self.plottype == "ampgain":
-                        with casa_tools.TableReader(tabitem) as tb:
-                            cpar = tb.getcol('CPARAM')
-                            flgs = tb.getcol('FLAG')
-                        amps = np.abs(cpar)
-                        good = np.logical_not(flgs)
-                        maxamp = np.max(amps[good])
-                        plotmax = maxamp
                         plotrange = [mintime, maxtime, 0.0, plotmax]
                         plot_title_prefix = 'G table: {!s}'.format(tabitem)
                     elif self.plottype == "phasegain":
-                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
                         plotrange = [mintime, maxtime, -180, 180]
+                        plot_title_prefix = 'G table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                    else tabitem if self.taskname == "semiFinalBPdcals"
+                                                                    else "finalBPinitialgain.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolamp":
-                        plot_title_prefix = 'B table: {!s}'.format(tabitem)
                         plotrange = [0, 0, 0, ampplotmax]
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                    else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                    else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolphase":
-                        plot_title_prefix = 'B table: {!s}'.format(tabitem)
                         plotrange = [0, 0, -plotmax, plotmax]
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                    else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                    else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolamp_perspw":
-                        plot_title_prefix = 'B table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem)
                         plotrange = [0, 0, 0, ampplotmax]
                     elif self.plottype == "bpsolphase_perspw":
-                        plot_title_prefix = 'B table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem)
                         plotrange = [0, 0, -plotmax, plotmax]
                     elif self.plottype == "finalbpsolphaseshort":
-                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'G table: phaseshortgaincal.tbl  '
                         plotrange = [mintime, maxtime, -180, 180]
                     elif self.plottype == "finalamptimecal":
-                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'G table: finalampgaincal.tbl  '
                         plotrange = [mintime, maxtime, 0, plotmax]
                     elif self.plottype == "finalampfreqcal":
-                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'G table: finalampgaincal.tbl  '
                         plotrange = [0, 0, 0, plotmax]
                     elif self.plottype == "finalphasegaincal":
-                        plot_title_prefix = 'G table: {!s}'.format(tabitem)
+                        plot_title_prefix = 'G table: finalphasegaincal.tbl  '
+
                         plotrange = [mintime, maxtime, -180, 180]
 
                     plot_params['plotrange'] = plotrange
@@ -465,7 +468,7 @@ class PerAntennaChart(Chart):
                         if not os.path.exists(figfile):
                             try:
                                 LOG.debug("Plotting {!s} {!s} {!s}".format(self.taskname, self.plottype, antName))
-                                plot_title = "{!s} Antenna: {!s} Band: {!s}".format(plot_title_prefix, antName, bandname)
+                                plot_title = "{!s} Antenna: {!s}  Band: {!s}".format(plot_title_prefix, antName, bandname)
                                 plot_params['vis'] = tabitem
                                 plot_params['antenna'] = antPlot
                                 plot_params['title'] = plot_title

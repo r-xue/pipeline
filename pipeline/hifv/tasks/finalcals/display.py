@@ -14,7 +14,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class finalcalsSummaryChart(baseDisplay.SummaryChart):
-    def __init__(self, context, result, spw=None, suffix='', taskname=None):
+    def __init__(self, context, result, spw='', suffix='', taskname=None):
         super().__init__(context, result, spw=spw, suffix=suffix, taskname=taskname)
 
     def plot(self):
