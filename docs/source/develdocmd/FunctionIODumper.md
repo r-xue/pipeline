@@ -66,20 +66,22 @@ This decorator is designed to address a wide variety of scenarios:
     ```
     Next, disable the decorator (to avoid creating pickles during the re-run of the decorated step), and copy pickle files from dumped directory to the current, then run the code below in the working directory, then it regenerates PNG images of the stage 13 only:
     ```python
+    import os
     import pickle
     from pipeline.hsd.tasks.imaging.renderer import T2_4MDetailsSingleDishImagingRenderer
 
-    with open('ctx.pickle', 'rb') as f:
-      ctx = pickle.load(f)
-    with open('context.pickle', 'rb') as f:
-      context = pickle.load(f)
-    with open('results.pickle', 'rb') as f:
-      results = pickle.load(f)
+    pickle_path = '<path_to_pickles>'
+    with open(os.path.join(pickle_path, 'ctx.pickle'), 'rb') as f:
+        ctx = pickle.load(f)
+    with open(os.path.join(pickle_path, 'context.pickle'), 'rb') as f:
+          context = pickle.load(f)
+    with open(os.path.join(pickle_path, 'results.pickle'), 'rb') as f:
+          context = results.load(f)
     render = T2_4MDetailsSingleDishImagingRenderer()
     render.update_mako_context(ctx, context, results)
     ```
 
-- **Use pickles as input data of Unit test**:
+- **Use pickles as input data of a unit test**:
 
   For example, decorate hsd/tasks/importdata/reader.py::merge_flagcmd() and execute hsd_importdata,
   then it will output pickle files of argument objects and returning object into merge_flagcmd* directory in current (working) directory.
