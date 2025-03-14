@@ -464,7 +464,6 @@ class SingleDishPlotmsLeaf(object):
         self.coloraxis = coloraxis
         self.plotindex = plotindex
         self.numfields = numfields
-        self.clearplots = True if plotindex == 0 else False  # clearplots: set to True to clear a previously existing plot of an another measurementset or an another spw. Otherwise set to False to overplot.
 
         ms = context.observing_run.get_ms(self.vis)
         fields = get_field_from_ms(ms, calapp.gainfield)
@@ -494,26 +493,26 @@ class SingleDishPlotmsLeaf(object):
 
         title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis=self.coloraxis)
+        figfile = ""
 
-        try:
+        if os.path.exists(figfile):
+            LOG.debug('Returning existing plot')
+        else:
             if self.plotindex == self.numfields-1:
                 figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
                 task = self._create_task(title, figfile)
-                if os.path.exists(figfile):
-                    LOG.debug('Returning existing plot')
-                else:
+                try:
                     task.execute()
-                plot_objects = [self._get_plot_object(figfile, task)]
+                    plot_objects = [self._get_plot_object(figfile, task)]
+                except Exception as e:
+                    LOG.error(str(e))
+                    LOG.debug(traceback.format_exc())
+                    LOG.error('Failed to generate plot "{}"'.format(figfile))
+                    plot_objects = []
             else:
-                figfile = ""
                 task = self._create_task(title, figfile)
                 task.execute()
                 plot_objects = []
-        except Exception as e:
-            LOG.error(str(e))
-            LOG.debug(traceback.format_exc())
-            LOG.error('Failed to generate plot "{}"'.format(figfile))
-            plot_objects = []
 
         return plot_objects
 
@@ -526,6 +525,7 @@ class SingleDishPlotmsLeaf(object):
         Return:
             Instance of JobRequest.
         """
+        clearplots = True if self.plotindex == 0 else False
         task_args = {'vis': self.caltable,
                      'xaxis': self.xaxis,
                      'yaxis': self.yaxis,
@@ -539,7 +539,7 @@ class SingleDishPlotmsLeaf(object):
                      'averagedata': True,
                      'avgchannel': '1e8',
                      'plotindex': self.plotindex,
-                     'clearplots': self.clearplots,
+                     'clearplots': clearplots,
                      'plotfile': figfile
                      }
 
