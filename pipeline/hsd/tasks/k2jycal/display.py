@@ -31,7 +31,7 @@ class K2JyBoxScatterDisplay(object):
         ms_labels: List[str], 
         spws: Dict[Any, Any] = None
     ) -> None:
-        """Initialize K2JySingleHistDisplay instance.
+        """Initialize K2JyBoxScatterDisplay instance.
 
         Args:
             stage_dir: Stage directory to which plots are exported
