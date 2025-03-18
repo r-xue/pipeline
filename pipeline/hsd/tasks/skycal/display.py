@@ -431,7 +431,7 @@ class SingleDishPlotmsLeaf(object):
         ant: str = '',
         coloraxis: str = '',
         plotindex: int = 0,
-        numfields: int = 0,
+        flush_plot: bool = False,
         **kwargs: Any
     ) -> None:
         """Construct SingleDishPlotmsLeaf instance.
@@ -449,7 +449,7 @@ class SingleDishPlotmsLeaf(object):
             ant: Antenna selection. Defaults to '' (all antenna).
             coloraxis: Color axis type. Defaults to ''.
             plotindex: Index of plot to show the field (actually calapp).
-            numfields: Number of fields.
+            flush_plot: Flag to flush plot.
         Raises:
             RuntimeError: Invalid field selection in calapp
         """
@@ -463,13 +463,14 @@ class SingleDishPlotmsLeaf(object):
         self.antenna = str(ant)
         self.coloraxis = coloraxis
         self.plotindex = plotindex
-        self.numfields = numfields
+        self.flush_plot = flush_plot
+        self.field = calapp.gainfield
 
         ms = context.observing_run.get_ms(self.vis)
-        fields = get_field_from_ms(ms, calapp.gainfield)
+        fields = get_field_from_ms(ms, self.field)
         if len(fields) == 0:
             # failed to find field domain object with field
-            raise RuntimeError(f'No match found for field "{calapp.gainfield}".')
+            raise RuntimeError(f'No match found for field "{self.field}".')
 
         self.antmap = dict((a.id, a.name) for a in ms.antennas)
         if len(self.antenna) == 0:
@@ -493,28 +494,27 @@ class SingleDishPlotmsLeaf(object):
 
         title = 'Sky level vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis=self.coloraxis)
-        figfile = ""
+        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
+        task = self._create_task(title, figfile)
 
         if os.path.exists(figfile):
             LOG.debug('Returning existing plot')
         else:
-            if self.plotindex == self.numfields-1:
-                figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
-                task = self._create_task(title, figfile)
-                try:
-                    task.execute()
-                    plot_objects = [self._get_plot_object(figfile, task)]
-                except Exception as e:
-                    LOG.error(str(e))
-                    LOG.debug(traceback.format_exc())
-                    LOG.error('Failed to generate plot "{}"'.format(figfile))
-                    plot_objects = []
-            else:
-                task = self._create_task(title, figfile)
+            try:
                 task.execute()
-                plot_objects = []
+            except Exception as e:
+                LOG.error(str(e))
+                LOG.debug(traceback.format_exc())
+                if self.flush_plot:
+                    LOG.error('Failed to generate plot "{}"'.format(figfile))
+                else:
+                    LOG.error('Failed to generate plot for field "{}"'.format(self.field))
+                return []
 
-        return plot_objects
+        if self.flush_plot:
+            return [self._get_plot_object(figfile, task)]
+        else:
+            return []
 
     def _create_task(self, title: str, figfile: str) -> 'JobRequest':
         """Create task of CASA plotms.
@@ -526,6 +526,8 @@ class SingleDishPlotmsLeaf(object):
             Instance of JobRequest.
         """
         clearplots = True if self.plotindex == 0 else False
+        if not self.flush_plot:
+            figfile = ""
         task_args = {'vis': self.caltable,
                      'xaxis': self.xaxis,
                      'yaxis': self.yaxis,
@@ -583,7 +585,8 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         for spw in table_spws:
             children_field = []
             for plotindex, cal in enumerate(calapp):
-                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, numfields=len(calapp), **kwargs)
+                final_field = plotindex == len(calapp)-1
+                item = self.leaf_class(context, result, cal, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, plotindex=plotindex, flush_plot=final_field, **kwargs)
                 children_field.append(item)
             children.extend(children_field)
 
