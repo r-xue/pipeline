@@ -6,6 +6,7 @@ of the web log.
 """
 import collections
 import copy
+import dataclasses
 import itertools
 import math
 import operator
@@ -56,26 +57,38 @@ REASONS_TO_TEXT = {
 }
 
 
-# PIPE356Switches is a struct used to hold various options for outlier
-# detection and reporting
-PIPE356Switches = collections.namedtuple(
-    'PIPE356Switches',
-    'calculate_metrics export_outliers export_messages include_scores outlier_score flag_all export_mswrappers'
-)
+@dataclasses.dataclass
+class QAPreset:
+    """
+    PIPE356Switches is used to hold various options for controlling outlier
+    detection and reporting behaviour.
+    """
+    # default values define default QA=ON behaviour
+    calculate_metrics: bool = True
+    export_outliers: bool = True
+    export_messages: bool = False
+    include_scores: bool = True
+    outlier_score: float = 0.5
+    flag_all: bool = False
+    export_mswrappers: bool = False
+    create_banner_scores: bool = False
 
 
-# PIPE356_MODES defines some preset modes for outlier detection and reporting
-PIPE356_MODES = {
-    'TEST_REAL_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=False, export_mswrappers=True),
-    'TEST_FAKE_OUTLIERS': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True,
-                                          include_scores=True, outlier_score=0.5, flag_all=True, export_mswrappers=True),
-    'ON': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=False, include_scores=True,
-                          outlier_score=0.5, flag_all=False, export_mswrappers=False),
-    'DEBUG': PIPE356Switches(calculate_metrics=True, export_outliers=True, export_messages=True, include_scores=False,
-                             outlier_score=0.5, flag_all=False, export_mswrappers=True),
-    'OFF': PIPE356Switches(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
-                           outlier_score=0.5, flag_all=False, export_mswrappers=False)
+# QA_PRESET defines some preset modes for outlier detection and reporting
+QA_PRESETS: dict[str, QAPreset] = {
+    # default. Runs real QA but omit diagnostic output
+    'ON': QAPreset(),
+    # As above but also summarises scores into headline 'banner' scores.
+    'INCLUDE_BANNER_SCORES': QAPreset(create_banner_scores=True),
+    # runs QA metrics but does not include the scores in the QA report
+    'DEBUG': QAPreset(include_scores=False, export_messages=True, export_mswrappers=True),
+    # runs and includes real QA but outputs more messages and pickled objects to assist with testing
+    'TEST_REAL_OUTLIERS': QAPreset(export_messages=True, export_mswrappers=True),
+    # As above but makes every score be above the QA threshold. Useful for testing score summaries.
+    'TEST_FAKE_OUTLIERS': QAPreset(export_messages=True, export_mswrappers=False, flag_all=True),
+    # QA off. Turns everything off: QA calculation, diagnostic output, score inclusion, etc., etc.
+    'OFF': QAPreset(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
+                    flag_all=False, export_mswrappers=False, create_banner_scores=False),
 }
 
 
@@ -139,31 +152,32 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
             return
 
         pipe356_mode = os.environ.get('PIPE356_QA_MODE', 'ON').upper()
-        mode_switches = PIPE356_MODES[pipe356_mode]
+        qa_preset = QA_PRESETS[pipe356_mode]
 
         # dict to hold all QA scores, keyed by intended web log destination
         qa_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
 
         # calculate the outliers and convert to scores
-        if mode_switches.calculate_metrics:
+        if qa_preset.calculate_metrics:
             # calculate the raw QA scores
             qa_scores = get_qa_scores(
                 ms=ms,
-                export_outliers=mode_switches.export_outliers,
-                outlier_score=mode_switches.outlier_score,
-                flag_all=mode_switches.flag_all,
-                export_mswrappers=mode_switches.export_mswrappers
+                export_outliers=qa_preset.export_outliers,
+                outlier_score=qa_preset.outlier_score,
+                flag_all=qa_preset.flag_all,
+                export_mswrappers=qa_preset.export_mswrappers,
+                create_banner_scores=qa_preset.create_banner_scores,
             )
 
         # dump weblog messages to a separate file if requested
-        if qa_scores and mode_switches.export_messages:
+        if qa_scores and qa_preset.export_messages:
             targets_to_log = [pqa.WebLogLocation.ACCORDION, pqa.WebLogLocation.BANNER]
             with open('PIPE356_messages.txt', 'a') as export_file:
                 for weblog_target in targets_to_log:
                     for qa_score in qa_scores[weblog_target]:
                         export_file.write('{}\n'.format(qa_score.longmsg))
 
-        if qa_scores and mode_switches.include_scores:
+        if qa_scores and qa_preset.include_scores:
             for score_list in qa_scores.values():
                 result.qa.pool.extend(score_list)
 
@@ -370,6 +384,7 @@ def get_qa_scores(
         export_mswrappers: bool,
         output_path: Optional[Path] = Path(''),
         memory_gb: Optional[float] = MEMORY_CHUNK_SIZE,
+        create_banner_scores: bool = False,
 ):
     """
     Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
@@ -437,7 +452,7 @@ def get_qa_scores(
 
     # Get summary QA scores
     qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
-    final_scores = summarise_scores(all_scores, ms, qaevalf)
+    final_scores = summarise_scores(all_scores, ms, qaevalf, create_banner_scores)
 
     return final_scores
 
@@ -599,7 +614,8 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
 def summarise_scores(
         all_scores: List[pqa.QAScore],
         ms: MeasurementSet,
-        qaevalf: QAScoreEvalFunc
+        qaevalf: QAScoreEvalFunc,
+        create_banner_scores: bool
 ) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
@@ -672,12 +688,13 @@ def summarise_scores(
     final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     banner_scores = []
-    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
-        # erase several dimensions for banner messages. These messages outline
-        # just the vis, spw, and intent. For specific info, people should look
-        # at the accordion messages.
-        msgs = combine_scores(all_scores, hierarchy_root, ['pol', 'ant', 'scan'], ms, pqa.WebLogLocation.BANNER)
-        banner_scores.extend(msgs)
+    if create_banner_scores:
+        for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
+            # erase several dimensions for banner messages. These messages outline
+            # just the vis, spw, and intent. For specific info, people should look
+            # at the accordion messages.
+            msgs = combine_scores(all_scores, hierarchy_root, ['pol', 'ant', 'scan'], ms, pqa.WebLogLocation.BANNER)
+            banner_scores.extend(msgs)
     final_scores[pqa.WebLogLocation.BANNER] = banner_scores
 
     # JH request from 8/4/20:
