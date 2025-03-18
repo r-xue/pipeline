@@ -1,4 +1,5 @@
-"""
+"""utils sub-package.
+
 The utils package contains a set of utility classes and functions that are
 useful to the pipeline framework and to tasks manipulating pipeline framework
 objects, Python data types, and CASA data types.
@@ -7,8 +8,25 @@ The utils package is intended to be free of any task-specific logic. Code that
 assumes knowledge or logic beyond that of the task-independent framework should
 be housed in the h.common package (or hif.common, hifv.common, hsd.common, etc.
 as appropriate).
+
+Modules:
+    utils: Core utility functions (imported first to prevent circular imports)
+    casa_data: Utilities for handling CASA data structures
+    conversion: Data conversion utilities
+    diagnostics: Diagnostic and debugging tools
+    framework: Pipeline framework utilities
+    imaging: Image processing utilities
+    math: Mathematical functions and algorithms
+    positioncorrection: Position correction utilities
+    ppr: Pipeline processing request utilities
+    sorting: Sorting algorithms and utilities
+    weblog: Web logging utilities
 """
+
 from importlib import import_module
+
+# generic utility functions first to prevent potential circular imports
+from .utils import *
 
 from .casa_data import *
 from .conversion import *
@@ -19,7 +37,6 @@ from .math import *
 from .positioncorrection import *
 from .ppr import *
 from .sorting import *
-from .utils import *
 from .weblog import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
