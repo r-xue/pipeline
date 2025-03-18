@@ -7,7 +7,8 @@ ipywidgets
 
 # Distributed Computing
 dask[distributed]
-bokeh
+dask_jobqueue
+bokeh>=3.1.0
 
 # Display Tools
 pyvirtualdisplay>=3.0   # Virtual display for headless environments
