@@ -50,7 +50,7 @@ class PhaseUpSolIntAdapter(adapters.Adapter):
         :param intent: the intent for which to find the integration time 
         :type intent: string
         """
-        int_time = ms.get_median_integration_time(intent)
+        int_time = ms.get_integration_time_stats(intent=intent, stat_type="median")
         return self._adaptee(int_time)
 
 

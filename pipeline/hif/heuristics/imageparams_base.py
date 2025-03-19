@@ -2183,8 +2183,14 @@ class ImageParamsHeuristics(object):
     def niter(self):
         return None
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
-
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters."""
 
         sidelobethreshold = None
@@ -2197,8 +2203,17 @@ class ImageParamsHeuristics(object):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-                dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
 
     def nterms(self, spwspec):
         return None
@@ -2364,7 +2379,7 @@ class ImageParamsHeuristics(object):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma, hm_masking):
+    def nsigma(self, iteration, hm_nsigma, hm_masking, rms_multiplier=None):
         """Tclean nsigma parameter heuristics."""
         return hm_nsigma
 
@@ -2504,4 +2519,19 @@ class ImageParamsHeuristics(object):
 
     def psfcutoff(self) -> None:
         """Tclean psfcutoff parameter heuristics."""
+        return None
+
+    def get_nfrms_multiplier(self, iteration, intent, specmode, imagename) -> None:
+        """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
+
+        Args:
+            iteration (int): The iteration number.
+            intent (str): The intent.
+            specmode (str): The spectral mode.
+            imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
+
+        Returns:
+            float: The multiplier for the nfrms-based threshold.
+
+        """
         return None

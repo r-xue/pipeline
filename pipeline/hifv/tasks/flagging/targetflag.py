@@ -24,7 +24,18 @@ class TargetflagInputs(vdp.StandardInputs):
         intents_to_flag = {'*CALIBRATE*', '*TARGET*'}
         return ','.join(self.ms.intents.intersection(intents_to_flag))
 
+    # docstring and type hints: supplements hifv_targetflag
     def __init__(self, context, vis=None, intents=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            intents: List of intents of scans to be flagged.
+
+        """
         super(TargetflagInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -48,7 +59,7 @@ class TargetflagResults(basetask.Results):
         s = 'Targetflag (rflag mode) results:\n'
         for job in self.jobs:
             s += '%s performed. Statistics to follow?' % str(job)
-        return s 
+        return s
 
 
 @task_registry.set_equivalent_casa_task('hifv_targetflag')

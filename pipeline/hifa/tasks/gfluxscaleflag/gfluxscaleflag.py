@@ -118,9 +118,101 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
     # tooManyIntegrationsFraction
     tmint = vdp.VisDependentProperty(default=0.085)
 
+    # docstring and type hints: supplements hifa_gfluxscaleflag
     def __init__(self, context, output_dir=None, vis=None, intent=None, field=None, spw=None, solint=None,
                  phaseupsolint=None, minsnr=None, refant=None, antnegsig=None, antpossig=None, tmantint=None,
                  tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: vis=['M51.ms']
+
+            intent: A string containing a comma delimited list of intents against
+                which the selected fields are matched. If undefined (default), it
+                will select all data with the AMPLITUDE, PHASE, and CHECK intents,
+                except for one case: if one of the AMPLITUDE intent fields was also
+                used for BANDPASS, then this task will select only data with PHASE
+                and CHECK intents.
+
+                Example: intent='`*PHASE*`'
+
+            field:
+
+            spw:
+
+            solint: Time and channel solution intervals in CASA syntax.
+
+                Example: solint='inf,10ch', solint='inf'
+
+            phaseupsolint: The phase correction solution interval in CASA syntax.
+
+                Example: phaseupsolint='300s'
+
+            minsnr: Solutions below this SNR are rejected.
+
+            refant: Reference antenna names. Defaults to the value(s) stored in the
+                pipeline context. If undefined in the pipeline context defaults to
+                the CASA reference antenna naming scheme.
+
+                Example: refant='DV01', refant='DV06,DV07'
+
+            antnegsig: Lower sigma threshold for identifying outliers as a result of
+                bad antennas within individual timestamps.
+
+                Example: antnegsig=4.0
+
+            antpossig: Upper sigma threshold for identifying outliers as a result of
+                bad antennas within individual timestamps.
+
+                Example: antpossig=4.6
+
+            tmantint: Threshold for maximum fraction of timestamps that are allowed to
+                contain outliers.
+
+                Example: tmantint=0.063
+
+            tmint: Threshold for maximum fraction of "outlier timestamps" over
+                "total timestamps" that a baseline may be a part of.
+
+                Example: tmint=0.085
+
+            tmbl: Initial threshold for maximum fraction of "bad baselines" over "all
+                baselines" that an antenna may be a part of.
+
+                Example: tmbl=0.175
+
+            antblnegsig: Lower sigma threshold for identifying outliers as a result of
+                "bad baselines" and/or "bad antennas" within baselines, across all
+                timestamps.
+
+                Example: antblnegsig=3.4
+
+            antblpossig: Threshold for identifying outliers as a result of
+                "bad baselines" and/or "bad antennas" within baselines, across all
+                timestamps.
+
+                Example: antblpossig=3.2
+
+            relaxed_factor: Relaxed value to set the threshold scaling factor to under
+                certain conditions (see task description).
+
+                Example: relaxed_factor=2.0
+
+            niter: Maximum number of times to iterate on evaluation of flagging
+                heuristics. If an iteration results in no new flags, then subsequent
+                iterations are skipped.
+
+                Example: niter=2
+
+        """
         super(GfluxscaleflagInputs, self).__init__()
 
         # pipeline inputs
@@ -199,7 +291,7 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
             LOG.info('Applying phase-up, bandpass, and amplitude cal tables.')
             # Apply the calibrations.
             callib_map = self._do_applycal(merge=False)
-            # copy across the vis:callibrary dict to our result. This dict 
+            # copy across the vis:callibrary dict to our result. This dict
             # will be inspected by the renderer to know if/which callibrary
             # files should be copied across to the weblog stage directory
             result.callib_map.update(callib_map)

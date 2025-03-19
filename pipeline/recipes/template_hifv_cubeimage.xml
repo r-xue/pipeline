@@ -38,12 +38,6 @@
     {{/importonly}}
 
     <ProcessingCommand>
-        <Command xmlns="">hifv_flagtargetsdata</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-        
-    <ProcessingCommand>
         <Command xmlns="">hifv_mstransform</Command>
         <ParameterSet>
             <Parameter>
@@ -53,6 +47,11 @@
         </ParameterSet>
     </ProcessingCommand>
 
+    <ProcessingCommand>
+        <Command xmlns="">hifv_flagtargetsdata</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
 
     {{#cube_image}}
     <!-- create continumm-free data if cube_image=true -->
@@ -147,6 +146,10 @@
                 <Keyword xmlns="">width</Keyword>
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>            
             <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>
@@ -314,6 +317,10 @@
                 <Keyword xmlns="">width</Keyword>
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>            
             <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>

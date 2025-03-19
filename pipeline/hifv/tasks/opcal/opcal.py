@@ -105,7 +105,9 @@ class Opcal(basetask.StandardTaskTemplate):
         plotweather_args = {'vis': inputs.vis, 'seasonal_weight': seasonal_weight, 'doPlot': True}
         plotweather_job = casa_tasks.plotweather(**plotweather_args)
         opacities = self._executor.execute(plotweather_job)
-
+        # PIPE-2370: plotweather returns tau as list[np.float64] instead of list[float].
+        # Convert it to list[float] for better weblog presentation and formatting in casa_commands.log.
+        opacities = [float(x) for x in opacities]
         inputs.parameter = opacities
 
         inputs.spw, center_frequencies = _find_spw(inputs.vis, bands, context)
