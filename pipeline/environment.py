@@ -11,14 +11,16 @@ import os
 import platform
 import re
 import resource
-import subprocess
 import shutil
+import subprocess
 import sys
 import typing
 from importlib.metadata import PackageNotFoundError, version
 from importlib.util import find_spec
-from pathlib import Path
 from io import StringIO
+from pathlib import Path
+from typing import AnyStr, Optional, TextIO, Union
+
 import casatasks
 
 from .infrastructure import casa_tools, logging, mpihelpers, utils
@@ -34,21 +36,29 @@ __all__ = ['casa_version', 'casa_version_string', 'compare_casa_version', 'pipel
 LOG = logging.get_logger(__name__)
 
 
-def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
-    """
-    Run a command in a subprocess.
+def _run(
+    command: str,
+    stdout: Optional[Union[TextIO, StringIO]] = None,
+    stderr: Optional[Union[TextIO, StringIO]] = None,
+    cwd: Optional[str] = None,
+    shell: bool = True
+) -> int:
+    """Run a command in a subprocess.
 
     This helper function is intended to hide the boilerplate required to
     create and handle a subprocess while capturing its output. Rather than
     having functions call subprocess directly, they should consider calling
     this routine so that we have uniform handling.
 
-    @param command: the command to execute
-    @param stdout: optional stream to direct stdout to
-    @param stderr: optional stream to direct stderr to
-    @param shell:
-    @param cwd: working directory for command
-    @return: exit code of the process in which the command executed
+    Args:
+        command: The command to execute.
+        stdout: Optional stream to direct stdout to. Defaults to sys.stderr.
+        stderr: Optional stream to direct stderr to. Defaults to sys.stderr.
+        cwd: Working directory for command. Defaults to None.
+        shell: Whether to use the shell as the program to execute. Defaults to True.
+
+    Returns:
+        int: Exit code of the process in which the command executed.
     """
     stdout = stdout or sys.stderr
     stderr = stderr or sys.stderr
@@ -66,16 +76,21 @@ def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
     return proc.returncode
 
 
-def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, log_errors=True) -> str:
-    """
-    Safely run a command in a subprocess, returning the given string if an
-    error occurs.
-
-    @param command: the command to execute
-    @param on_error: message to return if an exception occurs
-    @param cwd: working directory for command
-    @param log_errors: whether to log errors that occur while running the command
-    @return: process output or error message
+def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, log_errors: bool = True) -> str:
+    """Safely run a command in a subprocess, returning the given string if an error occurs.
+    
+    Executes the specified command and returns its stdout output. If the command
+    fails for any reason, returns the specified error message instead.
+    
+    Args:
+        command: The command to execute as a subprocess.
+        on_error: Message to return if an exception occurs.
+        cwd: Working directory for command execution.
+        log_errors: Whether to log errors that occur while running the command.
+        
+    Returns:
+        str: The process stdout output (stripped) if successful, or the on_error 
+            message if any error occurs.
     """
     stdout = StringIO()
     try:
@@ -90,15 +105,24 @@ def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, lo
     return on_error
 
 
-def _load(path: str, encoding: str = 'UTF-8') -> typing.AnyStr:
-    """
-    Read in a file and return the contents
+def _load(path: str, encoding: str = 'UTF-8', on_error: Optional[AnyStr] = None) -> AnyStr:
+    """Reads a file and returns its contents.
 
-    @param path: path to file
-    @param encoding: optional encoding used to decode the file
+    Args:
+        path: Path to the file to be read.
+        encoding: Character encoding used to decode the file. Defaults to 'UTF-8'.
+        on_error: Value to return if reading fails. Defaults to None.
+
+    Returns:
+        The contents of the file as a string or bytes object depending on encoding.
+
+    Raises:
+        FileNotFoundError: If the file doesn't exist.
+        PermissionError: If the user lacks permission to read the file.
     """
     with open(path, 'r', encoding=encoding, newline="") as file:
         return file.read()
+    return on_error
 
 
 class Environment(typing.Protocol):
@@ -729,34 +753,6 @@ def _pipeline_revision() -> str:
             pass
 
     return version_str
-
-
-def _ulimit():
-    """
-    Get the ulimit setting.
-
-    The 'too many open files' error during imaging is often due to an
-    incorrect ulimit. The ulimit value is recorded per host to assist in
-    diagnosing these errors.
-
-    See: PIPE-350; PIPE-338
-
-    :return: ulimit as string
-    """
-    # get soft limit on number of open files
-    soft_limit, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
-
-    return '{}'.format(soft_limit)
-
-
-def _role():
-    if not MPIEnvironment.is_mpi_enabled:
-        return 'Non-MPI Host'
-
-    if MPIEnvironment.is_mpi_client:
-        return 'MPI Client'
-    else:
-        return 'MPI Server'
 
 
 def _cluster_details():
