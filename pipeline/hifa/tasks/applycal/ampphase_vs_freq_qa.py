@@ -3,8 +3,9 @@ import functools
 import operator
 import os
 import warnings
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Tuple
 
 import numpy as np
 import scipy.optimize
@@ -13,30 +14,57 @@ import pipeline.infrastructure.logging as logging
 from pipeline.domain import MeasurementSet
 from pipeline.domain.measures import FrequencyUnits
 from . import mswrapper, qa_utils
+from .qa_utils import UnitFactorType
 
 LOG = logging.get_logger(__name__)
 
 
-# AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
-AntennaFit = collections.namedtuple(
-    'AntennaFit',
-    ['spw', 'scan', 'ant', 'pol', 'amp', 'phase']
-)
-# LinearFitParameters is a struct to hold best fit parameters for a linear model
-LinearFitParameters = collections.namedtuple(
-    'LinearFitParameters',
-    ['slope', 'intercept']
-)
-# Outlier describes an outlier data selection with why it's an outlier, and by how much
-Outlier = collections.namedtuple(
-    'Outlier',
-    ['vis', 'intent', 'scan', 'spw', 'ant', 'pol', 'num_sigma', 'delta_physical', 'amp_freq_sym_off', 'reason']
-)
-# ValueAndUncertainty is a simple 2-tuple to hold a value and the uncertainty in that value
-ValueAndUncertainty = collections.namedtuple(
-    'ValueAndUncertainty',
-    ['value', 'unc']
-)
+@dataclass
+class ValueAndUncertainty:
+    """
+    ValueAndUncertainty holds a value and the uncertainty in that value
+    """
+    value: float
+    unc: float
+
+
+@dataclass
+class LinearFitParameters:
+    """
+    LinearFitParameters holds the best fit parameters for a linear model
+    """
+    slope: ValueAndUncertainty
+    intercept: ValueAndUncertainty
+
+
+@dataclass
+class AntennaFit:
+    """
+    AntennaFit is used to associate ant/pol metadata with the amp/phase best fits
+    """
+    spw: int
+    scan: str
+    ant: int
+    pol: int
+    amp: LinearFitParameters
+    phase: LinearFitParameters
+
+
+@dataclass
+class Outlier:
+    """
+    Outlier describes an outlier data selection with why it's an outlier, and by how much
+    """
+    vis: set
+    intent: set
+    scan: set
+    spw: set
+    ant: set
+    pol: set
+    num_sigma: float
+    delta_physical: float
+    amp_freq_sym_off: bool
+    reason: set
 
 
 # nsigma thresholds for marking deviating fits as an outlier
@@ -51,7 +79,7 @@ AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD = 0.1  # in % (0.1=10%)
 PHASE_SLOPE_PHYSICAL_THRESHOLD = 3.0          # in deg/GHz (3.0=3deg/GHz)
 PHASE_INTERCEPT_PHYSICAL_THRESHOLD = 6.0      # in deg (6.0=6deg)
 
-#Dictionary to reference the thresholds above
+# dictionary to reference the thresholds above
 DELTA_PHYSICAL_LIMIT = {
     "amp_slope": AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD,
     "amp_intercept": AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD,
@@ -70,10 +98,11 @@ def score_all_scans(
 ) -> list[Outlier]:
     """
     Calculate amp/phase vs freq and time outliers for an EB and filter out outliers.
-    :param ms: name of ms file
-    :param intent: intent for scans
-    :memory_gb: max memory allowed in gb
-    :saved_visibilities: folder where saved average visibilities are, if any
+    :param ms: The measurement set.
+    :param intent: scan intent.
+    :param flag_all: True if all data should be flagged as a QA fail.
+    :param memory_gb: Max memory allowed in gb.
+    :param buffer_path: Folder where saved average visibilities are, if any.
     :param outlier_score: score to assign to generated QAScores
     :return: list of Outlier objects
     """
@@ -131,7 +160,7 @@ def score_all_scans(
 
         LOG.info('Applycal QA analysis: processing {} scan average spw {}'.format(ms.basename, spw_id))
 
-        all_scans = '_'.join(str(scan.id) for scan in scans) #string with list of all scans separated by underscore
+        all_scans = '_'.join(str(scan.id) for scan in scans) # string with list of all scans separated by underscore
         ddi = ms.get_data_description(spw=spw_id)
         pickle_file = buffer_path / f'buf.{ms.basename}.{all_scans}.{ddi.id}.pkl'
         if os.path.exists(pickle_file):
@@ -159,7 +188,7 @@ def score_all_scans(
     return outliers
 
 
-def get_best_fits_per_ant(wrapper, frequencies):
+def get_best_fits_per_ant(wrapper: mswrapper.MSWrapper, frequencies: np.ndarray) -> list[AntennaFit]:
     """
     Calculate and return the best amp/phase vs freq fits for data in the input
     MSWrapper.
@@ -168,8 +197,9 @@ def get_best_fits_per_ant(wrapper, frequencies):
     antenna, returning a list of AntennaFit objects that characterise the fit
     parameters and fit uncertainties per fit.
 
-    :param wrapper: MSWrapper to process
-    :return: a list of AntennaFit objects
+    :param wrapper: MSWrapper to process.
+    :param frequencies: The frequencies.
+    :return: list of AntennaFit objects
     """
     V_k = wrapper.V
 
@@ -280,7 +310,12 @@ def stdListStr(thislist):
     return str(thislist).replace(' ', '').replace(',', '_').replace('[', '').replace(']', '')
 
 
-def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
+def score_all(
+        all_fits: list[AntennaFit],
+        outlier_fn: Callable[..., Outlier],
+        unitfactor: UnitFactorType,
+        flag_all: bool = False
+) -> list[Outlier]:
     """
     Compare and score the calculated best fits based on how they deviate from
     a reference value.
@@ -302,10 +337,11 @@ def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
 
     :param all_fits: list of all AntennaFit best fit parameters for all metrics
     :param outlier_fn: a function returning Outlier objects
+    :param unitfactor: dict of unit factors per metric per spectral window
     :param flag_all: True if all fits should be classed as outliers
     :return: list of Outlier objects
     """
-    # Dictionary for the different cases to consider. Each is defined by a tuple
+    # dictionary for the different cases to consider. Each is defined by a tuple
     #  with: attr, ref_value_fn, sigma_threshold
     score_definitions = {
         "amp_slope": ('amp.slope', get_median_fit, AMPLITUDE_SLOPE_THRESHOLD),
@@ -324,7 +360,10 @@ def score_all(all_fits, outlier_fn, unitfactor, flag_all: bool = False):
     return outliers
 
 
-def get_median_fit(all_fits, accessor):
+def get_median_fit(
+        all_fits: list[AntennaFit],
+        accessor: Callable[[AntennaFit], ValueAndUncertainty]
+) -> ValueAndUncertainty:
     """
     Get the median best fit from a list of best fits.
 
@@ -333,7 +372,6 @@ def get_median_fit(all_fits, accessor):
     etc.)
 
     :param all_fits: mixed list of best fits
-    :type: list of AntennaFit instances
     :param accessor: function to filter best fits
     :return: median value and uncertainty of fits of selected type
     """
@@ -343,7 +381,14 @@ def get_median_fit(all_fits, accessor):
     return ValueAndUncertainty(value=median, unc=median_sigma)
 
 
-def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_threshold, unitfactor):
+def score_X_vs_freq_fits(
+        all_fits: list[AntennaFit],
+        attr: str,
+        ref_value_fn: Callable[[list[AntennaFit], Callable], ValueAndUncertainty],
+        outlier_fn: Callable[..., Outlier],
+        sigma_threshold: float,
+        unitfactor: UnitFactorType
+) -> list[Outlier]:
     """
     Score a set of best fits, comparing the fits identified by the 'attr'
     attribute against a reference value calculated by the ref_value_fn,
@@ -357,6 +402,7 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
         value to be used as a reference value in fit comparisons
     :param outlier_fn: a function returning Outlier objects
     :param sigma_threshold: the nsigma threshold to be considered an outlier
+    :param unitfactor: dict of unit factors per metric per spectral window
     :return: list of Outlier objects
     """
     # convert linear fit metadata to a reason that identifies this fit as
@@ -383,7 +429,14 @@ def score_X_vs_freq_fits(all_fits, attr, ref_value_fn, outlier_fn, sigma_thresho
     return outliers
 
 
-def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_threshold, unitfactor):
+def score_fits(
+        all_fits: list[AntennaFit],
+        reference_value_fn: Callable[[list[AntennaFit], Callable], ValueAndUncertainty],
+        accessor: Callable[[AntennaFit], LinearFitParameters],
+        outlier_fn: Callable[..., Outlier],
+        sigma_threshold: float,
+        unitfactor: UnitFactorType,
+) -> list[Outlier]:
     """
     Score a list of best fit parameters against a reference value, identifying
     outliers as fits that deviate by more than sigma_threshold * std dev from
@@ -396,6 +449,7 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
         AntennaFit
     :param outlier_fn: function that returns an Outlier instance
     :param sigma_threshold: threshold nsigma deviation for comparisons
+    :param unitfactor: dict of unit factors per metric per spectral window
     :return: list of Outliers
     """
     spws = {f.spw for f in all_fits}
@@ -434,8 +488,25 @@ def score_fits(all_fits, reference_value_fn, accessor, outlier_fn, sigma_thresho
     )
 
 
-def _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, normfactor):
-    """Creates structured data buffer with fit information."""
+def _create_data_buffer(
+        all_fits: list[AntennaFit],
+        pols: set[int],
+        ants: set[int],
+        accessor: Callable[[AntennaFit], LinearFitParameters],
+        reference_value_fn: Callable[[list[AntennaFit], Callable], ValueAndUncertainty],
+        normfactor: dict[int, float]
+) -> dict[int, dict[int, dict]]:
+    """
+    Creates structured data buffer with fit information.
+
+    :param all_fits: list of AntennaFits.
+    :param pols: set of polarization IDs.
+    :param ants: set of antenna IDs.
+    :param accessor: function that returns one LinearFitParameters from an AntennaFit.
+    :param reference_value_fn: function that returns a reference ValueAndUncertainty from a list of these objects.
+    :param normfactor: dict of normalization factors per polarization.
+    :return: dict of fit information.
+    """
     median_cor_factor = np.sqrt(np.pi / 2)
     buffer = collections.defaultdict(dict)
 
@@ -443,9 +514,9 @@ def _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, norm
         pol_fits = [f for f in all_fits if f.pol == pol]
         n_antennas = len(pol_fits)
 
-        # get reference val. Usually median, could be zero for phase
-        reference_val, sigma_sample = reference_value_fn(pol_fits, accessor)
-        ref_sigma = median_cor_factor * sigma_sample / np.sqrt(n_antennas)
+        # get reference val and uncertainty. Usually median, could be zero for phase.
+        reference = reference_value_fn(pol_fits, accessor)
+        ref_sigma = median_cor_factor * reference.unc / np.sqrt(n_antennas)
 
         for fit in pol_fits:
             ant = fit.ant
@@ -454,13 +525,13 @@ def _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, norm
             unc = fit_param.unc
 
             this_sigma = np.sqrt(ref_sigma ** 2 + unc ** 2)
-            raw_sigma = (value - reference_val) / this_sigma
-            delta_physical = np.abs(value - reference_val) * normfactor[pol]
+            raw_sigma = (value - reference.value) / this_sigma
+            delta_physical = np.abs(value - reference.value) * normfactor[pol]
 
             buffer[pol][ant] = {
                 'value': value,
                 'num_sigma': raw_sigma,
-                'refval': reference_val,
+                'refval': reference.value,
                 'this_sigma': this_sigma,
                 'delta_physical': delta_physical,
                 'masked': False
@@ -473,8 +544,25 @@ def _create_data_buffer(all_fits, pols, ants, accessor, reference_value_fn, norm
     return buffer
 
 
-def _calculate_combined_polarization_data(pols, ants, data_buffer, metric, normfactor, last_pol):
-    """Calculates combined polarization data (I) where applicable."""
+def _calculate_combined_polarization_data(
+        pols: set[int],
+        ants: set[int],
+        data_buffer: dict[int, dict[int, dict]],
+        metric: str,
+        normfactor: dict[int, float],
+        last_pol: int
+) -> dict[int, dict]:
+    """
+    Calculates combined polarization data (I) where applicable.
+
+    :param pols: set of polarization IDs.
+    :param ants: set of antenna IDs.
+    :param data_buffer: dict of fit information.
+    :param metric: name of the metric.
+    :param normfactor: dict of normalization factors per polarization.
+    :param last_pol: last polarization.
+    :return: dict of combined polarization data.
+    """
     buffer_i = {}
 
     for ant in ants:
@@ -513,8 +601,23 @@ def _calculate_combined_polarization_data(pols, ants, data_buffer, metric, normf
     return buffer_i
 
 
-def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) -> dict:
-    """Calculates normalisation factors for different metrics."""
+def _calculate_normalisation_factors(
+        all_fits: list[AntennaFit],
+        pols: set[int],
+        spw: int,
+        metric: str,
+        unitfactor: UnitFactorType
+) -> dict[int, float]:
+    """
+    Calculates normalisation factors for different metrics.
+
+    :param all_fits: list of AntennaFits.
+    :param pols: set of polarization IDs.
+    :param spw: spectral window ID.
+    :param metric: name of the metric.
+    :param unitfactor: dict of unit factors per metric per spectral window.
+    :return: dict of normalization factors per polarization.
+    """
     factors = {}
 
     # For amp slope and amp intercept metric, get median flux to calculate %
@@ -542,12 +645,37 @@ def _calculate_normalisation_factors(all_fits, pols, spw, metric, unitfactor) ->
 
 
 def _get_metric_name_from_accessor(accessor: Callable) -> str:
-    """Extracts metric name from accessor function."""
+    """
+    Extracts metric name from accessor function.
+
+    :param accessor: function that returns one LinearFitParameters from an AntennaFit.
+    :return: name of the metric.
+    """
     return accessor.__str__().split("'")[1].replace('.', '_')
 
 
-def _detect_outliers(pols, ants, data_buffer, data_buffer_i, sigma_thresh, delta_lim, metric, outlier_fn):
-    """Identifies outliers based on statistical thresholds."""
+def _detect_outliers(
+        pols: set[int],
+        ants: set[int],
+        data_buffer: dict[int, dict[int, dict]],
+        data_buffer_i: dict[int, dict],
+        sigma_thresh: float,
+        delta_lim: dict[str, float],
+        metric: str,
+        outlier_fn: Callable[..., Outlier]
+) -> list[Outlier]:
+    """
+    Identifies outliers based on statistical thresholds.
+
+    :param pols: set of polarization IDs.
+    :param ants: set of antenna IDs.
+    :param data_buffer: dict of fit information.
+    :param data_buffer_i: dict of combined polarization data.
+    :param sigma_thresh: threshold nsigma deviation for comparisons.
+    :param delta_lim: dict of physical deviation limits per metric.
+    :param metric: name of the metric.
+    :return: list of Outliers.
+    """
     outliers = []
 
     # Create list of outliers evaluating per polarization for all metrics,
@@ -600,20 +728,28 @@ def _create_masked_entry():
     }
 
 
-def to_linear_fit_parameters(fit, err):
+def to_linear_fit_parameters(
+        fit: Tuple[float, float],
+        err: Tuple[float, float]
+) -> LinearFitParameters:
     """
     Convert tuples from the best fit evaluation into a LinearFitParameters
     namedtuple.
 
     :param fit: 2-tuple of (slope, intercept) best-fit parameters
     :param err: 2-tuple of uncertainty in (slope, intercept) parameters
-    :return:
+    :return: equivalent LinearFitParameters
     """
     return LinearFitParameters(slope=ValueAndUncertainty(value=fit[0], unc=err[0]),
                                intercept=ValueAndUncertainty(value=fit[1], unc=err[1]))
 
 
-def get_amp_fit(amp_model_fn, frequencies, visibilities, sigma):
+def get_amp_fit(
+        amp_model_fn: Callable,
+        frequencies: np.ndarray,
+        visibilities: np.ndarray,
+        sigma: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Fit a linear amplitude vs frequency model to a set of time-averaged
     visibilities.
@@ -622,7 +758,7 @@ def get_amp_fit(amp_model_fn, frequencies, visibilities, sigma):
     :param frequencies: numpy array of channel frequencies
     :param visibilities: numpy array of time-averaged visibilities
     :param sigma: numpy array of uncertainies in time-averaged visibilities
-    :return: tuple of best fit params, uncertainty tuple
+    :return: tuple of best fit params, uncertainties
     """
     # calculate amplitude and phase from visibility, inc. std. deviations for each
     amp = np.ma.abs(visibilities)
@@ -648,7 +784,13 @@ def get_amp_fit(amp_model_fn, frequencies, visibilities, sigma):
     return amp_fit, amp_err
 
 
-def get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, sigma):
+def get_phase_fit(
+        amp_model_fn: Callable,
+        ang_model_fn: Callable,
+        frequencies: np.ndarray,
+        visibilities: np.ndarray,
+        sigma: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Fit a linear model for phase vs frequency to a set of time-averaged
     visibilities.
@@ -705,15 +847,14 @@ def get_phase_fit(amp_model_fn, ang_model_fn, frequencies, visibilities, sigma):
     return phase_fit, phase_err
 
 
-def get_linear_function(midpoint, x_scale):
+def get_linear_function(midpoint: float, x_scale: float) -> Callable:
     """
     Return a scaled linear function (a function of slope and intercept).
 
-    :param midpoint:
-    :param x_scale:
-    :return:
+    :param midpoint: The midpoint.
+    :param x_scale: The x scale.
+    :return: A scaled linear function.
     """
-
     def f(x, slope, intercept):
         return np.ma.multiply(
             np.ma.multiply(slope, np.ma.subtract(x, midpoint)),
@@ -723,13 +864,13 @@ def get_linear_function(midpoint, x_scale):
     return f
 
 
-def get_angular_linear_function(midpoint, x_scale):
+def get_angular_linear_function(midpoint: float, x_scale: float) -> Callable:
     """
     Angular linear model to fit phases only.
 
-    :param midpoint:
-    :param x_scale:
-    :return:
+    :param midpoint: The midpoint.
+    :param x_scale: The x scale.
+    :return: An angular linear function.
     """
     linear_fn = get_linear_function(midpoint, x_scale)
 
@@ -739,14 +880,40 @@ def get_angular_linear_function(midpoint, x_scale):
     return f
 
 
-def get_chi2_ang_model(angular_model, nu, omega, phi, angdata, angsigma):
+def get_chi2_ang_model(
+        angular_model: Callable,
+        nu: np.ndarray,
+        omega: float,
+        phi: float,
+        angdata: np.ndarray,
+        angsigma: np.ndarray
+) -> float:
+    """
+    Calculates the chi-squared value for the angular model.
+
+    :param angular_model: The angular model.
+    :param nu: The frequencies.
+    :param omega: The slope.
+    :param phi: The intercept.
+    :param angdata: The angular data.
+    :param angsigma: The angular sigma.
+    """
     m = angular_model(nu, omega, phi)
     diff = angdata - m
     aux = (np.square(diff.real / angsigma.real) + np.square(diff.imag / angsigma.imag))[~angdata.mask]
     return float(np.sum(aux.real))
 
 
-def fit_angular_model(angular_model, nu, angdata, angsigma):
+def fit_angular_model(angular_model: Callable, nu: np.ndarray, angdata: np.ndarray, angsigma: np.ndarray) -> dict:
+    """
+    Fits the angular model to the data.
+
+    :param angular_model: The angular model.
+    :param nu: The frequencies.
+    :param angdata: The angular data.
+    :param angsigma: The angular sigma.
+    :return: The fit results.
+    """
     f_aux = lambda omega_phi: get_chi2_ang_model(angular_model, nu, omega_phi[0], omega_phi[1], angdata, angsigma)
     angle = np.ma.angle(angdata[~angdata.mask])
     with warnings.catch_warnings():
@@ -756,13 +923,12 @@ def fit_angular_model(angular_model, nu, angdata, angsigma):
     return fitres
 
 
-def robust_stats(a):
+def robust_stats(a: np.ndarray) -> Tuple[float, float]:
     """
-    Return median and estimate standard deviation
-    of numpy array A using median statistics
+    Return median and estimate standard deviation of numpy array A using median statistics
 
-    :param a:
-    :return:
+    :param a: The numpy array to assess.
+    :return: The median and standard deviation.
     """
     # correction factor for obtaining sigma from MAD
     madfactor = 1.482602218505602
@@ -781,7 +947,7 @@ def robust_stats(a):
     return mu, sigma
 
 
-def data_selection_contains(proposed, ds_args):
+def data_selection_contains(proposed: Outlier, ds_args: Outlier) -> bool:
     """
     Return True if one data selection is contained within another.
 
@@ -801,4 +967,4 @@ def data_selection_contains(proposed, ds_args):
 # Select this to compare fits against the median
 # PHASE_REF_FN = get_median_fit
 # Select this to compare fits against zero
-PHASE_REF_FN = lambda _, __: ValueAndUncertainty(0, 0)
+PHASE_REF_FN: Callable[[list[AntennaFit], Callable], ValueAndUncertainty] = lambda _, __: ValueAndUncertainty(0, 0)
