@@ -807,10 +807,24 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
         ywintxt = ymin2 + 0.05*lowbuf2*trrange
         ax2 = ax1.twinx()
         if np.sum(skychansel) > 0:
-            minskychan = np.min(np.where(skychansel))
-            maxskychan = np.max(np.where(skychansel))
-            ax2.plot(nu[skychansel], ywin*np.ones(np.sum(skychansel)), 's', color='black', markersize=psize)
-            ax2.text(np.min(nu[skychansel]), ywintxt, '{0:d}~{1:d}'.format(minskychan, maxskychan), fontsize = 9, color = 'black', fontweight = 'normal')
+            skyline_channels = np.where(skychansel)[0]
+            # detect non-contiguous boundaries
+            skyline_boundaries = np.where(np.diff(skyline_channels) > 1)[0]
+            left_edge = [0] + (skyline_boundaries + 1).tolist()
+            right_edge = skyline_boundaries.tolist() + [len(skyline_channels) - 1]
+            # draw channel range for each skyline
+            for imin, imax in zip(left_edge, right_edge):
+                minskychan = skyline_channels[imin]
+                maxskychan = skyline_channels[imax]
+                if nu[0] < nu[-1]:
+                    # USB
+                    chan_label = f'{minskychan}~{maxskychan}'
+                else:
+                    # LSB
+                    chan_label = f'{maxskychan}~{minskychan}'
+                sel = skychansel[minskychan:maxskychan + 1]
+                ax2.plot(nu[minskychan:maxskychan + 1], ywin*np.ones(len(sel)), 's', color='black', markersize=psize)
+                ax2.text(np.min(nu[minskychan:maxskychan + 1]), ywintxt, chan_label, fontsize = 9, color = 'black', fontweight = 'normal')
         ax2.plot(nu, transm, linestyle='solid', linewidth=1.0, color='magenta')
         ax2.set_ylim((ymin2, ymax2))
         ax2.set_yticks([mintr, 0.5*(maxtr+mintr), maxtr])
