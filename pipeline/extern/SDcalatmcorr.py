@@ -7,6 +7,9 @@
 #of atmospheric line residuals.
 #2020 - T.Sawada, H. Francke
 
+# 19/mar/2025: - SDPL team took over maintenance responsibility of this code from original author.
+#                The code is based on the commit mentioned above, but will be updated by SDPL team
+#                for bug fix/refactoring/enhancement.
 # 13/mar/2025: - (v2.7) Update to optimize, simplify and reduce this code in order ot pass resposability to PLWG
 #              - Removed 'maxabs' and 'intabs' metrics, and the associated baseline fitting routines, and science line
 #                channels detection functions, which never worked very well.
