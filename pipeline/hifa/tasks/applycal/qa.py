@@ -22,7 +22,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure.pipelineqa import WebLogLocation
 from . import ampphase_vs_freq_qa, qa_utils
 from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
@@ -60,8 +59,12 @@ REASONS_TO_TEXT = {
 @dataclasses.dataclass
 class QAPreset:
     """
-    PIPE356Switches is used to hold various options for controlling outlier
-    detection and reporting behaviour.
+    QAPreset is used to hold various options for controlling outlier detection
+    and reporting behaviour. The default values are set to the standard
+    behaviour for a production pipeline run.
+
+    Originally this was called PIPE356Switches, and the environment variable
+    used to select a preset is still called PIPE356_QA_MODE.
     """
     # default values define default QA=ON behaviour
     calculate_metrics: bool = True
@@ -187,6 +190,12 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
 
 
 class QAScoreEvalFunc:
+    """
+    QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
+    objects, generates an object that can be evaluated to obtain a QA score evaluation
+    for any subset of the dataset.
+    """
+
     # Dictionary of minimum QA scores values accepted for each intent
     INTENT_MINSCORE = {
         'BANDPASS': 0.34,
@@ -219,17 +228,10 @@ class QAScoreEvalFunc:
     QAEVALF_SCALE = 1.55
 
     def __init__(self, ms: MeasurementSet, intents: list[str], outliers: List[Outlier]):
-        """
-        QAScoreEvalFunc is a function that given the dataset parameters and a list of outlier
-        objects, generates an object that can be evaluated to obtain a QA score evaluation
-        for any subset of the dataset.
-
-
-        """
-        #Save basic data and MeasurementSet domain object
+        # Save basic data and MeasurementSet domain object
         self.ms = ms
 
-        #Create the relevant vector array for QA scores evaluation, and save them
+        # Create the relevant vector array for QA scores evaluation, and save them
         self.outliers = outliers
         self.noutliers = len(outliers)
         self.metricnames = np.array([list(o.reason)[0].replace('gt90deg_offset_','') for o in outliers])
@@ -248,7 +250,7 @@ class QAScoreEvalFunc:
         self.allintents = frozenset(intents).intersection(ms.intents)
         self.long_msg = 'EVALUATE_TO_GET_LONGMSG'
         self.short_msg = 'EVALUATE_TO_GET_SHORTMSG'
-        #Initialize metrics/data dictionary
+        # Initialize metrics/data dictionary
         self.qascoremetrics = {}
 
         for intent in self.allintents:
@@ -260,8 +262,7 @@ class QAScoreEvalFunc:
 
 
     def __call__(self, qascore: pqa.QAScore):
-
-        #If given a list of QA scores, evaluate them all and return an array of the results
+        # If given a list of QA scores, evaluate them all and return an array of the results
         if type(qascore) == list:
             output = [self.__call__(q) for q in qascore]
             return np.array(output)
@@ -300,20 +301,20 @@ class QAScoreEvalFunc:
         for i in selintent:
             for s in selspw:
                 for m in mlist:
-                    #For this metric, select the pool of outliers from the "applies_to" attribute
+                    # For this metric, select the pool of outliers from the "applies_to" attribute
                     sel = (basesel & (self.metricnames == m) & (self.mtratio > 1.0))
                     nsel = np.sum(sel)
                     if nsel > 0:
                         idxmax = np.argsort(self.metricscores[sel])[-1]
-                        #Get ratio Metric/Threshold for maximum value -> significance
+                        # Get ratio Metric/Threshold for maximum value -> significance
                         self.qascoremetrics[i][s][m]['significance'] = self.mtratio[sel][idxmax]
-                        #Generate message for this max outlier
+                        # Generate message for this max outlier
                         thismaxoutlieridx = np.arange(self.noutliers)[sel][idxmax]
                         thismaxoutlier = self.outliers[thismaxoutlieridx]
                         thisqamsg = QAMessage(self.ms, thismaxoutlier, reason=list(thismaxoutlier.reason)[0])
                         self.qascoremetrics[i][s][m]['long_msg'] = thisqamsg.full_message
                         self.qascoremetrics[i][s][m]['short_msg'] = thisqamsg.short_message
-                        #copy the boolean is_amp_sym_offset from this QA scores
+                        # copy the boolean is_amp_sym_offset from this QA scores
                         self.qascoremetrics[i][s][m]['is_amp_sym_off'] = self.is_amp_sym_off[sel][idxmax]
                         self.qascoremetrics[i][s][m]['outliers'] = True
                     else:
@@ -331,21 +332,21 @@ class QAScoreEvalFunc:
             sig_subscores = np.array([self.qascoremetrics[i][s][selmetric]['significance'] for s in selspw])
             is_amp_sym_off_subscores = np.array([self.qascoremetrics[i][s][selmetric]['is_amp_sym_off'] for s in selspw])
             anyoutliers = any([self.qascoremetrics[i][s][selmetric]['outliers'] for s in selspw])
-            #combine metric factors into one for each
-            #Currently just using the maximum of each.
+            # combine metric factors into one for each
+            # Currently just using the maximum of each.
             idxmax = np.argsort(sig_subscores)[-1]
-            #copy message from the outlier with maximum metric value
+            # copy message from the outlier with maximum metric value
             self.qascoremetrics[i]['long_msg'] = longmsgsubscores[idxmax]
             self.qascoremetrics[i]['short_msg'] = shortmsgsubscores[idxmax]
             significance = np.max(sig_subscores)
-            #Determine whether for this QA scores we set this boolean is_amp_symmetric_offset
-            #In order to be symmetric for all the data considered in the QA score,
-            #it needs to be symmetric for any outlier in the pool.
+            # Determine whether for this QA scores we set this boolean is_amp_symmetric_offset
+            # In order to be symmetric for all the data considered in the QA score,
+            # it needs to be symmetric for any outlier in the pool.
             is_amp_sym_off_all = all(is_amp_sym_off_subscores)
             if anyoutliers:
-                #Decide the minimum QA score for this subscore
-                #Unless it is a non-polarization intent with symmetric amplitude outliers,
-                #should be determined by the intent_minscore dictionary from the intent
+                # Decide the minimum QA score for this subscore
+                # Unless it is a non-polarization intent with symmetric amplitude outliers,
+                # should be determined by the intent_minscore dictionary from the intent
                 if (selmetric == 'amp_vs_freq.intercept') and (i != 'POLARIZATION') and is_amp_sym_off_all:
                     thisminscore = self.INTENT_MINSCORE['AMP_SYM_OFFSET']
                 else:
@@ -448,7 +449,8 @@ def get_qa_scores(
                 debug_file.write(f'{msg}\n')
 
     # convert outliers to QA scores
-    all_scores.extend(outliers_to_qa_scores(ms, outliers, outlier_score))
+    scores_for_intent = outliers_to_qa_scores(ms, outliers, outlier_score)
+    all_scores.extend(scores_for_intent)
 
     # Get summary QA scores
     qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
@@ -505,6 +507,9 @@ class QAMessage:
         corr_msg = f' {corr_msg}' if corr_msg else ''
 
         # TODO bifurcate this method for Outliers and TargetDataSelections
+        # TargetDataSelections and Outliers have very similar interfaces but
+        # are not quite identical, leading to code like below that needs to
+        # check variable types.
         if isinstance(outlier, Outlier):
             num_sigma_msg = '{0:.3f}'.format(outlier.num_sigma)
             delta_physical_msg = '{0:.3f}'.format(outlier.delta_physical)
