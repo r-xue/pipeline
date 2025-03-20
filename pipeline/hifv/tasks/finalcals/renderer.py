@@ -179,7 +179,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # generate amp bandpass solution per-spw plots
-            plotter = finalcalsdisplay.finalbpSolAmpPerAntennaPerSpwChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="bpsolamp_perspw", perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -194,7 +194,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             json_path = plotter.json_filename
 
             # generate phase bandpass per spw solution plots
-            plotter = finalcalsdisplay.finalbpSolPhasePerAntennaPerSpwChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="bpsolphase_perspw", perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -219,7 +219,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots = plotter.plot()
             json_path = plotter.json_filename
 
-            plotter = finalcalsdisplay.finalAmpTimeCalPerAntennaPerSpwChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype='finalamptimecal', perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
@@ -244,7 +244,7 @@ class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plots = plotter.plot()
             json_path = plotter.json_filename
 
-            plotter = finalcalsdisplay.finalPhaseGainCalPerAntennaPerSpwChart(context, result)
+            plotter = finalcalsdisplay.AntennaChart(context, result, taskname="finalcals", plottype="finalphasegaincal", perSpwChart=True)
             spw_plots = plotter.plot()
 
             # write the html for each MS to disk
