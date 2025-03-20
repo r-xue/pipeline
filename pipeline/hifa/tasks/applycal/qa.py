@@ -426,23 +426,6 @@ def get_qa_scores(
             debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
             debug_file.write(f'PHASE_INTERCEPT_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_PHYSICAL_THRESHOLD}\n')
 
-            def outlier_attr_to_str(o: Outlier, attr: str) -> str:
-                if attr == 'scan' and o.scan == {-1}:
-                    return f'scan=all'
-
-                raw_val = getattr(o, attr)
-                try:
-                    str_val = ','.join(map(str, sorted(raw_val)))
-                except TypeError:
-                    # not an iterable
-                    str_val = str(raw_val)
-
-                # Request from Harold: use antenna names to match the weblog
-                if attr == 'ant':
-                    str_val = ','.join(sorted(a.name for a in ms.get_antenna(str_val)))
-
-                return f'{attr}={str_val}'
-
             for i,o in enumerate(outliers):
                 # Filter doubles from sources with multiple intents
                 duplicate_entry = any(
@@ -461,7 +444,7 @@ def get_qa_scores(
                     continue
 
                 msg = ' '.join(
-                    outlier_attr_to_str(o, attr)
+                    outlier_attr_to_str(o, attr, ms)
                     for attr in
                     ('vis', 'scan', 'spw', 'ant', 'pol', 'reason', 'num_sigma', 'delta_physical', 'amp_freq_sym_off')
                 )
@@ -952,3 +935,39 @@ def compress_data_selections(to_merge: DataSelectionToScores,
         keys_to_merge = list(to_merge.keys())
 
     return to_merge
+
+
+def outlier_attr_to_str(o: Outlier, attr: str, ms: MeasurementSet) -> str:
+    """
+    Convert an outlier attribute to a string representation.
+
+    This function takes an Outlier object and an attribute name, and returns a
+    string representation of the attribute's value. It handles different
+    attribute types, including iterables and non-iterables, and formats them
+    appropriately.
+
+    @param o: The Outlier object.
+    @param attr: The name of the attribute to convert.
+    @param ms: MeasurementSet object used to convert antenna IDs to names
+
+    @return :A string representation of the attribute's value.
+    """
+    raw_val = getattr(o, attr)
+    try:
+        str_val = ','.join(map(str, sorted(raw_val)))
+    except TypeError:
+        # not an iterable
+        str_val = str(raw_val)
+
+    match attr:
+        case 'ant':
+            # use antenna names to match the weblog
+            str_val = ','.join(sorted(a.name for a in ms.get_antenna(str_val)))
+        case 'num_sigma':
+            str_val = f'{float(str_val):.1f}'
+        case 'delta_physical':
+            str_val = f'{float(str_val):.3f}'
+        case 'scan':
+            str_val = 'all' if str_val == '-1' else str_val
+
+    return f'{attr}={str_val}'
