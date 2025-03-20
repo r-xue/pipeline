@@ -434,7 +434,13 @@ def get_qa_scores(
                 try:
                     str_val = ','.join(map(str, sorted(raw_val)))
                 except TypeError:
+                    # not an iterable
                     str_val = str(raw_val)
+
+                # Request from Harold: use antenna names to match the weblog
+                if attr == 'ant':
+                    str_val = ','.join(sorted(a.name for a in ms.get_antenna(str_val)))
+
                 return f'{attr}={str_val}'
 
             for i,o in enumerate(outliers):
