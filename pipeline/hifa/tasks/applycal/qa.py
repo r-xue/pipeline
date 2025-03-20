@@ -12,7 +12,7 @@ import math
 import operator
 import os
 from pathlib import Path
-from typing import Dict, Iterable, List, Reversible, Optional
+from typing import Iterable, Reversible, Optional
 
 import numpy as np
 
@@ -22,7 +22,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure.pipelineqa import WebLogLocation
+from pipeline.infrastructure.pipelineqa import WebLogLocation, QAScore
 from . import ampphase_vs_freq_qa, qa_utils
 from .ampphase_vs_freq_qa import Outlier, score_all_scans
 
@@ -75,15 +75,12 @@ class QAPreset:
     outlier_score: float = 0.5
     flag_all: bool = False
     export_mswrappers: bool = False
-    create_banner_scores: bool = False
 
 
 # QA_PRESET defines some preset modes for outlier detection and reporting
 QA_PRESETS: dict[str, QAPreset] = {
     # default. Runs real QA but omit diagnostic output
     'ON': QAPreset(),
-    # As above but also summarises scores into headline 'banner' scores.
-    'INCLUDE_BANNER_SCORES': QAPreset(create_banner_scores=True),
     # runs QA metrics but does not include the scores in the QA report
     'DEBUG': QAPreset(include_scores=False, export_messages=True, export_mswrappers=True),
     # runs and includes real QA but outputs more messages and pickled objects to assist with testing
@@ -92,7 +89,7 @@ QA_PRESETS: dict[str, QAPreset] = {
     'TEST_FAKE_OUTLIERS': QAPreset(export_messages=True, export_mswrappers=False, flag_all=True),
     # QA off. Turns everything off: QA calculation, diagnostic output, score inclusion, etc., etc.
     'OFF': QAPreset(calculate_metrics=False, export_outliers=False, export_messages=False, include_scores=False,
-                    flag_all=False, export_mswrappers=False, create_banner_scores=False),
+                    flag_all=False, export_mswrappers=False),
 }
 
 
@@ -106,7 +103,7 @@ DataSelection = collections.namedtuple('DataSelection', 'vis intent scan spw ant
 # mapping data selections to the QA scores that cover that data selection. The
 # DataSelection keys are simple tuples, with index relating to a data
 # selection parameter (e.g., vis=[0], intent=[1], scan=[2], etc.).
-DataSelectionToScores = Dict[DataSelection, List[pqa.QAScore]]
+DataSelectionToScores = dict[DataSelection, list[pqa.QAScore]]
 
 
 class ALMAApplycalListQAHandler(pqa.QAPlugin):
@@ -159,7 +156,7 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
         qa_preset = QA_PRESETS[pipe356_mode]
 
         # dict to hold all QA scores, keyed by intended web log destination
-        qa_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
+        qa_scores: dict[pqa.WebLogLocation, list[pqa.QAScore]] = {}
 
         # calculate the outliers and convert to scores
         if qa_preset.calculate_metrics:
@@ -170,7 +167,6 @@ class ALMAApplycalQAHandler(pqa.QAPlugin):
                 outlier_score=qa_preset.outlier_score,
                 flag_all=qa_preset.flag_all,
                 export_mswrappers=qa_preset.export_mswrappers,
-                create_banner_scores=qa_preset.create_banner_scores,
             )
 
         # dump weblog messages to a separate file if requested
@@ -228,7 +224,7 @@ class QAScoreEvalFunc:
     QAEVALF_MAX = 1.0
     QAEVALF_SCALE = 1.55
 
-    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: List[Outlier]):
+    def __init__(self, ms: MeasurementSet, intents: list[str], outliers: list[Outlier]):
         # Save basic data and MeasurementSet domain object
         self.ms = ms
 
@@ -386,7 +382,6 @@ def get_qa_scores(
         export_mswrappers: bool,
         output_path: Optional[Path] = Path(''),
         memory_gb: Optional[float] = MEMORY_CHUNK_SIZE,
-        create_banner_scores: bool = False,
 ) -> dict[WebLogLocation, list[pqa.QAScore]]:
     """
     Calculate amp/phase vs freq and time outliers for an EB and convert to QA scores.
@@ -472,7 +467,7 @@ def get_qa_scores(
 
     # Get summary QA scores
     qaevalf = QAScoreEvalFunc(ms, INTENTS, outliers)
-    final_scores = summarise_scores(all_scores, ms, qaevalf, create_banner_scores)
+    final_scores = summarise_scores(all_scores, ms, qaevalf)
 
     return final_scores
 
@@ -544,8 +539,8 @@ class QAMessage:
 
 
 def outliers_to_qa_scores(ms: MeasurementSet,
-                          outliers: List[ampphase_vs_freq_qa.Outlier],
-                          outlier_score: float) -> List[pqa.QAScore]:
+                          outliers: list[ampphase_vs_freq_qa.Outlier],
+                          outlier_score: float) -> list[pqa.QAScore]:
     """
     Convert a list of consolidated Outliers into a list of equivalent
     QAScores.
@@ -635,11 +630,10 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
 
 
 def summarise_scores(
-        all_scores: List[pqa.QAScore],
+        all_scores: list[pqa.QAScore],
         ms: MeasurementSet,
         qaevalf: QAScoreEvalFunc,
-        create_banner_scores: bool
-) -> Dict[pqa.WebLogLocation, List[pqa.QAScore]]:
+) -> dict[pqa.WebLogLocation, list[pqa.QAScore]]:
     """
     Process a list of QAscores, replacing the detailed and highly specific
     input scores with compressed representations intended for display in the
@@ -648,7 +642,7 @@ def summarise_scores(
     """
     # list to hold the final QA scores: non-combined hidden scores, plus the
     # summarised (and less specific) accordion scores and banner scores
-    final_scores: Dict[pqa.WebLogLocation, List[pqa.QAScore]] = {}
+    scores_by_location: dict[pqa.WebLogLocation, list[pqa.QAScore]] = {}
 
     # we don't want the non-combined scores reported in the web log. They're
     # useful for the QA report written to disk, but for the web log the
@@ -657,7 +651,7 @@ def summarise_scores(
     hidden_scores = copy.deepcopy(all_scores)
     for score in hidden_scores:
         score.weblog_location = pqa.WebLogLocation.HIDDEN
-    final_scores[pqa.WebLogLocation.HIDDEN] = hidden_scores
+    scores_by_location[pqa.WebLogLocation.HIDDEN] = hidden_scores
 
     # JH update to spec for PIPE-477:
     #
@@ -668,7 +662,7 @@ def summarise_scores(
     # that level of detail can be suppressed to keep the number of accordion
     # messages down. I have changed the example in the description accordingly.
 
-    accordion_scores = []
+    processed_scores = []
     # Collect scores. The phase scores (normal and > 90 deg offset) should
     # get just one single 1.0 score in case of no outliers.
     for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq']]:
@@ -680,7 +674,7 @@ def summarise_scores(
         for hierarchy_root in hierarchy_roots:
             msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
             num_scores += len(msgs)
-            accordion_scores.extend(msgs)
+            processed_scores.extend(msgs)
 
         # add a single 1.0 accordion score for metrics that generated no outlier
         if num_scores == 0:
@@ -698,27 +692,42 @@ def summarise_scores(
             score.origin = pqa.QAOrigin(metric_name=hierarchy_roots[0],
                                         metric_score=0,
                                         metric_units='number of outliers')
-            accordion_scores.append(score)
+            processed_scores.append(score)
 
     # Use continuum scoring function.
-    # This needs to happen *before* the banner scores are compiled, as the dimension
-    # erasure of banner scores leads to complaints from the QA evaluation function
-    for fq in accordion_scores:
-        newscore = qaevalf(fq)
-        fq.score = newscore
-        fq.longmsg = qaevalf.long_msg
-        fq.shortmsg = qaevalf.short_msg
-    final_scores[pqa.WebLogLocation.ACCORDION] = accordion_scores
+    # This needs to happen *before* the banner scores are compiled, as further
+    # dimension erasure leads to complaints from the QA evaluation function
+    for score in processed_scores:
+        adjusted_score = qaevalf(score)
+        score.score = adjusted_score
+        # Note that we adopt the score but not the QAScoreEvalFunc long/short
+        # messages, as those messages refer to a single vis/spw/ant/intent
+        # selection. Instead, we prefer to keep the original aggregated
+        # message that applies to the union data selection.
 
-    banner_scores = []
-    if create_banner_scores:
-        for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
-            # erase several dimensions for banner messages. These messages outline
-            # just the vis, spw, and intent. For specific info, people should look
-            # at the accordion messages.
-            msgs = combine_scores(accordion_scores, hierarchy_root, ['pol', 'ant', 'scan'], ms, pqa.WebLogLocation.BANNER)
-            banner_scores.extend(msgs)
-    final_scores[pqa.WebLogLocation.BANNER] = banner_scores
+    # scores destined for the weblog accordion
+    accordion_scores: list[QAScore] = []
+
+    # PIPE-1770 spec:
+    #   For INTENT=CHECK, suppress or leave out the QA messages that identify
+    #   outliers by antenna & scan (i.e., so it is only reports outlier
+    #   type/spw for each ms).
+    check_scores = [s for s in processed_scores if 'CHECK' in s.applies_to.intent]
+    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
+        msgs = combine_scores(check_scores, hierarchy_root, ['ant', 'scan'], ms, pqa.WebLogLocation.ACCORDION)
+        accordion_scores.extend(msgs)
+
+    # PIPE-1770 spec:
+    #   For other intents, suppress the fully aggregated QA message (since it
+    #   is a duplication now that we have combined the QA messages that used
+    #   to be shown at the top and bottom of the page
+    #
+    # Suppress fully-aggregated scores means do not run them through
+    # combine_scores, i.e., just add them to the final results as-is.
+    non_check_scores = [s for s in processed_scores if 'CHECK' not in s.applies_to.intent]
+    accordion_scores.extend(non_check_scores)
+
+    scores_by_location[pqa.WebLogLocation.ACCORDION] = accordion_scores
 
     # JH request from 8/4/20:
     #
@@ -726,21 +735,21 @@ def summarise_scores(
     # by {ms; intent; spw} so that they appear in "figure order" (currently
     # they seem to be ordered by {ms; intent; scan}
     #
-    for destination, unsorted_scores in final_scores.items():
+    for destination, unsorted_scores in scores_by_location.items():
         sorted_scores = sorted(unsorted_scores, key=lambda score: (sorted(score.applies_to.vis),
                                                                    sorted(score.applies_to.intent),
                                                                    sorted(score.applies_to.spw),
                                                                    sorted(score.applies_to.scan)))
-        final_scores[destination] = sorted_scores
+        scores_by_location[destination] = sorted_scores
 
-    return final_scores
+    return scores_by_location
 
 
-def combine_scores(all_scores: List[pqa.QAScore],
+def combine_scores(all_scores: list[pqa.QAScore],
                    hierarchy_base: str,
-                   discard: List[str],
+                   discard: list[str],
                    ms: MeasurementSet,
-                   location: pqa.WebLogLocation) -> List[pqa.QAScore]:
+                   location: pqa.WebLogLocation) -> list[pqa.QAScore]:
     """
     Combine and summarise a list of QA scores.
 
@@ -893,7 +902,7 @@ def compress_data_selections(to_merge: DataSelectionToScores,
     # particular field by creating a new tuple that omits that field and
     # sorting/grouping on the reduced tuple. This function is used to create
     # the reduced tuple that 'ignores' the specified field(s)
-    def get_keyfunc(cols_to_ignore: List[str]):
+    def get_keyfunc(cols_to_ignore: list[str]):
         def keyfunc(ds: DataSelection):
             return tuple(getattr(ds, field) for field in ds._fields if field not in cols_to_ignore)
         return keyfunc
@@ -914,7 +923,7 @@ def compress_data_selections(to_merge: DataSelectionToScores,
             # the ignored field. These selections in g can be merged.
             group = list(g)
             # convert from ((1, ), (2, ), (5, )) to (1, 2, 5)
-            merged_vals = tuple(itertools.chain(*(getattr(g, attr) for g in group)))
+            merged_vals = tuple(set(itertools.chain(*(getattr(g, attr) for g in group))))
 
             # we now need to reconstruct the full data selection tuple from the
             # reduced tuple in k plus the values we've just merged. We do this
