@@ -423,9 +423,24 @@ def get_qa_scores(
         debug_path = 'applycalQA_outliers.txt'
         with open(debug_path, 'a') as debug_file:
             debug_file.write(f'AMPLITUDE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_SLOPE_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'AMPLITUDE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.AMPLITUDE_INTERCEPT_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'PHASE_SLOPE_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_THRESHOLD}\n')
+            debug_file.write(f'PHASE_SLOPE_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.PHASE_SLOPE_PHYSICAL_THRESHOLD}\n')
             debug_file.write(f'PHASE_INTERCEPT_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_THRESHOLD}\n')
+            debug_file.write(f'PHASE_INTERCEPT_PHYSICAL_THRESHOLD: {ampphase_vs_freq_qa.PHASE_INTERCEPT_PHYSICAL_THRESHOLD}\n')
+
+            def outlier_attr_to_str(o: Outlier, attr: str) -> str:
+                if attr == 'scan' and o.scan == {-1}:
+                    return f'scan=all'
+
+                raw_val = getattr(o, attr)
+                try:
+                    str_val = ','.join(map(str, sorted(raw_val)))
+                except TypeError:
+                    str_val = str(raw_val)
+                return f'{attr}={str_val}'
 
             for i,o in enumerate(outliers):
                 # Filter doubles from sources with multiple intents
@@ -443,10 +458,12 @@ def get_qa_scores(
                 )
                 if duplicate_entry:
                     continue
-                scan_msg = f'all' if o.scan == {-1} else o.scan
-                msg = (f'{o.vis} {o.intent} scan={scan_msg} spw={o.spw} ant={o.ant} '
-                       f'pol={o.pol} reason={o.reason} sigma_deviation={o.num_sigma} '
-                       f'delta_physical={o.delta_physical} amp_freq_sym_off={o.amp_freq_sym_off}')
+
+                msg = ' '.join(
+                    outlier_attr_to_str(o, attr)
+                    for attr in
+                    ('vis', 'scan', 'spw', 'ant', 'pol', 'reason', 'num_sigma', 'delta_physical', 'amp_freq_sym_off')
+                )
                 debug_file.write(f'{msg}\n')
 
     # convert outliers to QA scores
