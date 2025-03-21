@@ -133,7 +133,7 @@ class SummaryChart(Chart):
             filename = os.path.join(base_path, (filename + '-%s-summary.png' % self.ms.basename))
         return filename
 
-    def get_plot_wrapper(self, prefix):
+    def get_plot_wrapper(self, prefix=''):
         figfile = self.get_figfile(prefix=prefix)
 
         bandpass_scan_select_string = self.context.evla['msinfo'][self.ms.name].bandpass_scan_select_string
@@ -230,6 +230,7 @@ class PerAntennaChart(Chart):
         xaxis = ''
         yaxis = ''
         filenametext = ''
+
         type = None
         plot_params = {
             'vis': '',
@@ -416,7 +417,7 @@ class PerAntennaChart(Chart):
                     elif self.plottype == "bpsolamp":
                         plotrange = [0, 0, 0, ampplotmax]
                         plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
-                                                                    else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                    else "BPcal.b" if self.taskname == "semiFinalBPdcals"
                                                                     else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolphase":
                         plotrange = [0, 0, -plotmax, plotmax]
@@ -469,8 +470,6 @@ class PerAntennaChart(Chart):
                         # construct the relative filename, eg. 'stageX/testdelay0.png'
 
                         figfile = os.path.join(stage_dir, filename)
-                        #if bandname =="K" and self.perSpwChart and spw.id ==116:
-                            #from IPython import embed; embed()
                         if not os.path.exists(figfile):
                             try:
                                 LOG.debug("Plotting {!s} {!s} {!s}".format(self.taskname, self.plottype, antName))

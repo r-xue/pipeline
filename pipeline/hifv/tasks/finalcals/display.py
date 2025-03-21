@@ -1,7 +1,6 @@
 
-from pipeline.hifv.tasks.testBPdcals import baseDisplay
 import pipeline.infrastructure as infrastructure
-
+from pipeline.hifv.tasks.common.displays import baseDisplay as baseDisplay
 
 LOG = infrastructure.get_logger(__name__)
 
