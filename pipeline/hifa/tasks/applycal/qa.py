@@ -443,11 +443,12 @@ def get_qa_scores(
                 if duplicate_entry:
                     continue
 
-                msg = ' '.join(
+                str_components = [
                     outlier_attr_to_str(o, attr, ms)
                     for attr in
                     ('vis', 'scan', 'spw', 'ant', 'pol', 'reason', 'num_sigma', 'delta_physical', 'amp_freq_sym_off')
-                )
+                ]
+                msg = ' '.join(c for c in str_components if c != '')
                 debug_file.write(f'{msg}\n')
 
     # convert outliers to QA scores
@@ -969,5 +970,11 @@ def outlier_attr_to_str(o: Outlier, attr: str, ms: MeasurementSet) -> str:
             str_val = f'{float(str_val):.3f}'
         case 'scan':
             str_val = 'all' if str_val == '-1' else str_val
+        case 'amp_freq_sym_off':
+            # 'It would be desirable to suppress printing amp_freq_sym_off
+            # when it makes no sense (any phase_vs_freq reason, or
+            # amp_vs_freq.slope.'
+            if 'amp_vs_freq.slope' in o.reason or all(reason.startswith('phase_vs_freq') for reason in o.reason):
+                return ''
 
     return f'{attr}={str_val}'
