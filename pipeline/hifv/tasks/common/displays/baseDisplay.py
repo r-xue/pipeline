@@ -486,17 +486,16 @@ class PerAntennaChart(Chart):
                                 LOG.warning("Unable to plot " + filename)
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
-                            try:
-                                plot = logger.Plot(figfile, x_axis=xaxis, y_axis=yaxis, field='',
-                                                parameters={'spw': plot_params['spw'],
-                                                            'pol': '',
-                                                            'ant': antName,
-                                                            'bandname': bandname,
-                                                            'type': type,
-                                                            'file': os.path.basename(figfile)})
-                                plots.append(plot)
-                            except Exception as ex:
-                                LOG.warning("Unable to add plot to stack ", ex)
-                                plots.append(None)
-
+                        try:
+                            plot = logger.Plot(figfile, x_axis=xaxis, y_axis=yaxis, field='',
+                                            parameters={'spw': plot_params['spw'],
+                                                        'pol': '',
+                                                        'ant': antName,
+                                                        'bandname': bandname,
+                                                        'type': type,
+                                                        'file': os.path.basename(figfile)})
+                            plots.append(plot)
+                        except Exception as ex:
+                            LOG.warning("Unable to add plot to stack ", ex)
+                            plots.append(None)
         return [p for p in plots if p is not None]

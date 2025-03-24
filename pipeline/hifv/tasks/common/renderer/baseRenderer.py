@@ -196,12 +196,12 @@ class calsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             plotter = display.AntennaChart(context, result, taskname=self.taskname, plottype="delay", suffix=suffix)
             plots = plotter.plot()
             json_path = plotter.json_filename
-
             # write the html for each MS to disk
             renderer = VLASubPlotRenderer(context, result, plots, json_path, template, filename_prefix, band2spw, taskname=self.taskname)
             with renderer.get_file() as fileobj:
                 fileobj.write(renderer.render())
                 delay_subpages[ms] = renderer.filename
+
             if self.taskname == "testBPdcals":
                 # generate amp Gain plots and JSON file
                 plotter = display.AntennaChart(context, result, taskname=self.taskname, plottype="ampgain")
@@ -315,8 +315,7 @@ class calsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     'bpsolphase_subpages': bpsolphase_subpages,
                     'dirname': weblog_dir})
         if self.taskname == "finalcals":
-            ctx.update({'bpsolphase_subpages': bpsolphase_subpages,
-                        'bpsolphaseshort_subpages': bpsolphaseshort_subpages,
+            ctx.update({'bpsolphaseshort_subpages': bpsolphaseshort_subpages,
                         'finalamptimecal_subpages': finalamptimecal_subpages,
                         'finalampfreqcal_subpages': finalampfreqcal_subpages,
                         'finalphasegaincal_subpages': finalphasegaincal_subpages})
