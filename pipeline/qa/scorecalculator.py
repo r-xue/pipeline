@@ -22,27 +22,22 @@ import numpy as np
 from scipy import interpolate
 from scipy.special import erf
 
-import pipeline.domain as domain
-import pipeline.domain.measures as measures
-import pipeline.infrastructure.basetask
-import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
-import pipeline.infrastructure.utils as utils
-import pipeline.qa.checksource as checksource
-from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
-from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
-from pipeline.infrastructure import casa_tools
+from pipeline.domain import datatable, measures
+from pipeline.infrastructure import basetask, casa_tools, logging, utils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
+    from pipeline.domain.measurementset import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
+    from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+    from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
     from pipeline.infrastructure.launcher import Context
 
 __all__ = ['score_polintents',                                # ALMA specific
@@ -115,7 +110,7 @@ def log_qa(method):
     def f(self, *args, **kw):
         # get the size of the CASA log before task execution
         qascore = method(self, *args, **kw)
-        if pipeline.infrastructure.basetask.DISABLE_WEBLOG:
+        if basetask.DISABLE_WEBLOG:
             if isinstance(qascore, tuple):
                 _qascore = qascore[0]
             else:
@@ -594,7 +589,7 @@ def score_parallactic_range(
 
 
 @log_qa
-def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
@@ -700,7 +695,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
 
 
 @log_qa
-def score_samecalobjects(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
         Check if BP/Phcal/Ampcal are all the same object and score appropriately
     """
@@ -3387,7 +3382,7 @@ def generate_metric_mask(context, result, cs, mask):
 
         with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag.extend(permanent_flag[0, OnlineFlagIndex])
+            online_flag.extend(permanent_flag[0, datatable.OnlineFlagIndex])
 
     if org_direction is None:
         ra = np.asarray(ofs_ra)
@@ -3608,7 +3603,7 @@ def score_sdimage_masked_pixels(context, result):
 
 
 @log_qa
-def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem') -> pqa.QAScore:
+def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """Evaluate QA score based on the absorption feature in the image.
 
     If there is an emission at OFF_SOURCE position (contamination),
@@ -4021,18 +4016,20 @@ def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
 
 
 @log_qa
-def score_fluxservice(result):
+def score_fluxservice(result: ALMAImportDataResults) -> pqa.QAScore:
     """
     Determines the score based on the flux catalog service usage and flux origin.
     If the primary flux service query fails and the backup is invoked, the severity level is BLUE (0.9).
     If the backup also fails, the severity level is YELLOW (0.6).
     If neither service is used and Source.xml is the origin, the severity is RED (0.3).
     If flux service is used but the age of the nearest monitoring point exceeds 14 days, the score is 0.5.
+
+    Args:
+        result: a ALMAImportDataResults object.
+
+    Returns:
+        a pipeline QA score object
     """
-
-    score = 1.0
-    msg = "Flux catalog service not used."
-
     # Check flux service usage
     if result.fluxservice == 'FIRSTURL':
         msg = "Flux catalog service used."
@@ -4042,23 +4039,28 @@ def score_fluxservice(result):
     elif result.fluxservice == 'FAIL':
         msg = "Neither primary nor backup flux service could be queried. ASDM values used."
         score = 0.3
+    else:  # only other possibility is fluxservice=None
+        score = 1.0
+        msg = "Flux catalog service not used."
 
-    # Check flux origin
+    # Check flux origin and age in a single iteration
+    origincounter = 0
+    agecounter = 0
+
     for setjy_result in result.setjy_results:
-        for measurement in setjy_result.measurements.values():
+        for fieldid, measurement in setjy_result.measurements.items():
             try:
+                # Check flux origin
                 fluxorigin = measurement[0].origin
                 if fluxorigin == 'Source.xml':
                     score = 0.3
                     msg = "Source.xml is the flux origin. Some/all flux values derived from ASDM."
+                origincounter += 1
             except Exception:
                 LOG.debug("Skipping measurement due to missing flux origin.")
 
-    # Check age of nearest monitoring point if flux service was used
-    if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
-        agecounter = 0
-        for setjy_result in result.setjy_results:
-            for fieldid, measurement in setjy_result.measurements.items():
+            # Check age of nearest monitoring point if flux service was used
+            if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
                 try:
                     fieldobjs = result.mses[0].get_fields(field_id=fieldid)
                     if any('AMPLITUDE' in fieldobj.intents for fieldobj in fieldobjs):
@@ -4068,9 +4070,13 @@ def score_fluxservice(result):
                 except IndexError:
                     LOG.debug("Skipping measurement due to missing age data.")
 
-        if agecounter > 0:
-            score = 0.5
-            msg += " Age of nearest monitor point is greater than 14 days."
+    if origincounter == 0:
+        score = 0.3
+        msg = "Flux origin missing for all measurements."
+
+    if agecounter > 0:
+        score = 0.5
+        msg += " Age of nearest monitor point is greater than 14 days."
 
     origin = pqa.QAOrigin(metric_name='score_fluxservice', metric_score=score, metric_units='flux service')
     return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
@@ -4358,7 +4364,7 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QA
 
 
 @log_qa
-def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
