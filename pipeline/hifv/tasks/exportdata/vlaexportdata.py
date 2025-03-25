@@ -4,7 +4,7 @@ import shutil
 import collections
 import tarfile
 import io
-import xml.etree.cElementTree as eltree
+import xml.etree.ElementTree as eltree
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
@@ -24,7 +24,6 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     exportcalprods = vdp.VisDependentProperty(default=False)
     imaging_products_only = vdp.VisDependentProperty(default=False)
-    tarms = vdp.VisDependentProperty(default=True)
 
     @exportcalprods.postprocess
     def exportcalprods(self, value):
@@ -32,21 +31,65 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
         # (1) not imaging_product_only and not exportmses
         # OR
         # (2) not imaging_product_only and both exportmses and exportcalprods are True
-        if self.imaging_products_only: return False
-        elif not self.exportmses: return True
-        else: return value
+        if self.imaging_products_only:
+            return False
+        elif not self.exportmses:
+            return True
+        else:
+            return value
 
+    # docstring and type hints: supplements hifv_exportdata
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
                  tarms=None, exportcalprods=None,
                  pprfile=None, calintents=None, calimages=None, targetimages=None, products_dir=None, gainmap=None,
                  imaging_products_only=None):
-        super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                  exportmses=exportmses, pprfile=pprfile, calintents=calintents,
-                                                  calimages=calimages, targetimages=targetimages,
-                                                  products_dir=products_dir, imaging_products_only=imaging_products_only)
+        """Initialize the Inputs.
+
+        Args:
+            context: the pipeline Context state object
+
+            output_dir: the working directory for pipeline data
+
+            session: List of sessions one per visibility file. Currently defaults to a single virtual session containing all the visibility files in vis.
+                In the future, this will default to the set of observing sessions defined
+                in the context.
+                example: session=['session1', 'session2']
+
+            vis: List of visibility data files for which flagging and calibration information will be exported. Defaults to the list maintained in the
+                pipeline context.
+                example: vis=['X227.ms', 'X228.ms']
+
+            exportmses: Export the final MeasurementSets instead of the final flags, calibration tables, and calibration instructions.
+
+            tarms: Tar final MeasurementSets
+
+            exportcalprods: Export flags and caltables in addition to MeasurementSets. this parameter is only valid when exportmses = True.
+
+            pprfile: Name of the pipeline processing request to be exported. Defaults to a file matching the template 'PPR_*.xml'.
+                example: pprfile=['PPR_GRB021004.xml']
+
+            calintents: List of calibrator image types to be exported. Defaults to all standard calibrator intents, 'BANDPASS', 'PHASE', 'FLUX'.
+                example: 'PHASE'
+
+            calimages: List of calibrator images to be exported. Defaults to all calibrator images recorded in the pipeline context.
+                example: calimages=['3C454.3.bandpass', '3C279.phase']
+
+            targetimages: List of science target images to be exported. Defaults to all science target images recorded in the pipeline context.
+                example: targetimages=['NGC3256.band3', 'NGC3256.band6']
+
+            products_dir: Name of the data products subdirectory. Defaults to './' example: '../products'
+
+            gainmap: The value of ``gainmap`` parameter in hifv_restoredata task put in casa_piperestorescript.py
+
+            imaging_products_only: Export science target imaging products only
+
+        """
+        super().__init__(context, output_dir=output_dir, session=session, vis=vis,
+                         exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
+                         calimages=calimages, targetimages=targetimages,
+                         products_dir=products_dir, imaging_products_only=imaging_products_only)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
-        self.tarms = tarms
 
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
@@ -102,8 +145,8 @@ class VLAExportData(exportdata.ExportData):
 
         # Make the imaging vislist and the sessions lists.
         #     Force this regardless of the value of imaging_only_products
-        session_list, session_names, session_vislists, vislist = super()._make_lists(
-            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=False)
+        _, _, _, vislist = super()._make_lists(
+            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=None)
 
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
@@ -197,11 +240,26 @@ class VLAExportData(exportdata.ExportData):
             except:
                 continue
 
+        # Is hif_selfcal/hif_uvcontsub executed?
+        selfcal = False
+        uvcontsub = False
+        for result in context.results:
+            result_meta = result.read()
+            if hasattr(result_meta, 'pipeline_casa_task'):
+                if result_meta.pipeline_casa_task.startswith('hif_selfcal'):
+                    selfcal = True
+                if result_meta.pipeline_casa_task.startswith('hif_uvcontsub'):
+                    uvcontsub = True
+
         if vlassmode:
             task_string += "\n    hifv_fixpointing()"
 
         task_string += "\n    hifv_statwt()"
         task_string += "\n    hifv_mstransform()"
+        if uvcontsub:
+            task_string += "\n    hif_uvcontsub()"
+        if selfcal:
+            task_string += "\n    hif_selfcal(restore_only=True)"
 
         template = '''h_init()
 try:
@@ -217,32 +275,6 @@ finally:
         shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)
-
-    def _export_final_ms(self, context, vis, products_dir):
-        """
-        If kwarg exportmses is True then...
-            If tarms is True (default):  Save the ms to a compressed tarfile in products directory
-            Else copy the ms directly to the products directory.
-        """
-        # Define the name of the output tarfile
-        visname = os.path.basename(vis)
-
-        if self.inputs.tarms:
-
-            tarfilename = visname + '.tgz'
-            LOG.info('Storing final ms %s in %s', visname, tarfilename)
-
-            # Create the tar file
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(visname)
-            tar.close()
-
-            return tarfilename
-        else:
-            LOG.info('Copying final ms %s to %s', visname, os.path.join(products_dir, visname))
-            shutil.copytree(visname, os.path.join(products_dir, visname))
-
-            return visname
 
     def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
         """
@@ -302,7 +334,7 @@ finally:
             hifv_comment = [y for y in flag_dict.values() if y['name'] == 'hifv_checkflag_target-vla'][0]['comment']
             export_final_flags_dict['hifv_checkflag_target-vla'] = hifv_comment
 
-        if 'statwt_1' in flag_keys: 
+        if 'statwt_1' in flag_keys:
             statwt_comment = [y for y in flag_dict.values() if y['name'] == 'statwt_1'][0]['comment']
             export_final_flags_dict['statwt_1'] = statwt_comment
 

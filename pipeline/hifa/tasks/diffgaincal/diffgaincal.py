@@ -47,7 +47,22 @@ class DiffGaincalResults(basetask.Results):
 
 class DiffGaincalInputs(vdp.StandardInputs):
 
+    # docstring and type hints: supplements hifa_diffgaincal
     def __init__(self, context, output_dir=None, vis=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: ['M32A.ms', 'M32B.ms']
+
+        """
         super().__init__()
         # Standard Pipeline inputs.
         self.context = context

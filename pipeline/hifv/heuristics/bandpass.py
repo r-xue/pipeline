@@ -6,6 +6,7 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from . import uvrange
 
 LOG = infrastructure.get_logger(__name__)
@@ -112,7 +113,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     m = context.observing_run.get_ms(vis)
     bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
     bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
-    minBL_for_cal = m.vla_minbaselineforcal()
+    minBL_for_cal = vla_minbaselineforcal()
 
     try:
         setjy_results = context.results[0].read()[0].setjy_results
@@ -181,7 +182,7 @@ def do_bandpassweakbp(vis, caltable, context=None, RefAntOutput=None, spw=None, 
     m = context.observing_run.get_ms(vis)
     bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
     bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
-    minBL_for_cal = m.vla_minbaselineforcal()
+    minBL_for_cal = vla_minbaselineforcal()
 
     BPGainTables = sorted(context.callibrary.active.get_caltable())
     BPGainTables.append(ktypecaltable)

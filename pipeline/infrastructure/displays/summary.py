@@ -1145,11 +1145,12 @@ class SpwIdVsFreqChart(object):
         for spwid_list in utils.get_spectralspec_to_spwid_map(scan_spws).values():
             yield spwid_list
 
-    def plot(self) -> logger.Plot:
+    def plot(self) -> logger.Plot | None:
         """Create the plot.
 
         Returns:
             Plot object
+            Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
         if os.path.exists(filename):
@@ -1157,6 +1158,9 @@ class SpwIdVsFreqChart(object):
         ms = self.inputs.ms
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
+        if len(targeted_scans) == 0:
+            LOG.warning(f'No TARGET scans found in MS {ms.name}. Skip generating SPW ID vs. Frequency coverage plot.')  # PIPE-2284
+            return None
         antid = 0
         if hasattr(ms, 'reference_antenna') and isinstance(ms.reference_antenna, str):
             antid = ms.get_antenna(search_term=ms.reference_antenna.split(',')[0])[0].id
@@ -1199,7 +1203,7 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-
+        
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set

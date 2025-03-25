@@ -44,6 +44,7 @@ class MakeImListInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
+    allow_wproject = vdp.VisDependentProperty(default=False)
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -70,8 +71,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_cell(self):
-        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @hm_cell.convert
@@ -91,8 +90,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_imsize(self):
-        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @hm_imsize.convert
@@ -154,37 +151,182 @@ class MakeImListInputs(vdp.StandardInputs):
         returned.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+
         mitigated_hm_cell = None
+        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+            mitigated_hm_cell = self.context.size_mitigation_parameters['hm_cell']
+
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
-        if mitigated_hm_cell not in [None, {}]:
-            return mitigated_hm_cell
-        else:
+
+        if mitigated_hm_cell in [None, {}] or self.hm_cell:
             return self.hm_cell
+        else:
+            return mitigated_hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
         """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
         mitigated_hm_imsize = None
+        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+            mitigated_hm_imsize = self.context.size_mitigation_parameters['hm_imsize']
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
-        if mitigated_hm_imsize not in [None, {}]:
-            return mitigated_hm_imsize
-        else:
+        if mitigated_hm_imsize in [None, {}] or self.hm_imsize:
             return self.hm_imsize
+        else:
+            return mitigated_hm_imsize
 
+    # docstring and type hints: supplements hif_makeimlist
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
-                 datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
+                 datacolumn=None, parallel=None, known_synthesized_beams=None, allow_wproject=False, scal=False):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                "": use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            imagename: Prefix for output image names, "" for automatic.
+
+            intent: Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
+                TARGET or combinations thereof.
+
+                Examples: 'PHASE,BANDPASS', 'TARGET'
+
+            field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
+                specified only fields with data matching the intent will be
+                selected. The fields will be selected from MeasurementSets in
+                "vis".
+                "" Fields matching intent, one image per target source.
+
+            spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
+
+            contfile: Name of file with frequency ranges to use for continuum images.
+
+            linesfile: Name of file with line frequency ranges to exclude for continuum images.
+
+            uvrange: Select a set of uv ranges to image. "": All uv data is included
+
+                Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
+
+            specmode: Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. '' defaults to 'cube' if ``intent`` parameter includes 'TARGET'
+                otherwise 'mfs'.
+                specmode='mfs' produce one image per source and spw
+                specmode='cont' produce one image per source and aggregate
+                over all specified spws
+                specmode='cube' produce an LSRK frequency cube, channels are
+                specified in frequency
+                specmode='repBW' produce an LSRK frequency cube at
+                representative channel width
+
+            outframe: velocity frame of output image (LSRK, '' for automatic) (not implemented)
+
+            hm_imsize: Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.
+                The default values are derived as follows:
+                1. Determine phase center and spread of field centers
+                around it.
+                2. Set the size of the image to cover the spread of field
+                centers plus a border of width 0.75 * beam radius, to
+                first null.
+                3. Divide X and Y extents by cell size to arrive at the
+                number of pixels required.
+                The PB level setting for single fields leads to an imsize
+                extending to the specified level plus 5% padding in all
+                directions.
+
+                Examples: '0.3pb', [120, 120]
+
+            hm_cell: Image X and Y cell sizes. "" computes the cell size based on the UV coverage of all the fields to be imaged and uses a
+                5 pix per beam sampling.
+                The pix per beam specification ('<number>ppb') uses the above
+                default cell size ('5ppb') and scales it accordingly.
+                The cells can also be specified as explicit measures.
+
+                Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
+
+            calmaxpix: Maximum image X or Y size in pixels if a calibrator is being imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX' intent).
+
+            phasecenter: Direction measure or field id of the image center. The default phase center is set to the mean of the field
+                directions of all fields that are to be image together.
+
+                Examples: 'J2000 19h30m00 -40d00m00', 0
+
+            psf_phasecenter:
+
+            nchan: Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by
+                spw consistent with start and width.
+
+            start: Start of image frequency axis as frequency or velocity. "" selects start frequency automatically.
+
+            width: Output channel width. Difference in frequency between 2 selected channels for
+                frequency mode images.
+                'pilotimage' for 15 MHz / 8 channel heuristic
+
+            nbins: Channel binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
+
+                Examples: '9:2,11:4,13:2,15:8', '*:2'
+
+            robust: Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)
+
+            uvtaper: uv-taper on outer baselines
+
+            clearlist: Clear any existing target list
+
+            per_eb: Make an image target per EB
+
+            per_session: Make an image target per session
+
+            calcsb: Force (re-)calculation of sensitivities and beams
+
+            datatype: Data type(s) to image. The default '' selects the best available data type (e.g. selfcal over regcal) with
+                an automatic fallback to the next available data type.
+                With the ``datatype`` parameter one can force the use of only
+                given data type(s) without a fallback. The data type(s) are
+                specified as comma separated string of keywords. Accepted
+                values are the standard data types such as
+                'REGCAL_CONTLINE_ALL', 'REGCAL_CONTLINE_SCIENCE',
+                'SELFCAL_CONTLINE_SCIENCE', 'REGCAL_LINE_SCIENCE',
+                'SELFCAL_LINE_SCIENCE'. The shortcuts 'regcal' and 'selfcal'
+                are also accepted. They are expanded into the full data types
+                using the ``specmode`` parameter and the available data types for
+                the given MSes. In addition the strings 'best' and 'all' are
+                accepted, where 'best' means the above mentioned automatic
+                mode and 'all' means all available data types for a given
+                specmode. The data type strings are case insensitive.
+
+                Examples: 'selfcal', 'regcal, 'selfcal,regcal',
+                'REGCAL_LINE_SCIENCE,selfcal_line_science'
+
+            datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
+
+            parallel: Use MPI cluster where possible
+
+            known_synthesized_beams:
+
+            allow_wproject: Allow the wproject heuristics for imaging
+
+            scal:
+
+        """
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -217,6 +359,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
+        self.allow_wproject = allow_wproject
         self.scal = scal
 
 
@@ -1295,12 +1438,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
+                                nfrms_multiplier = self._get_nfrms_multiplier(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                target_heuristics.imaging_params['allow_wproject'] = inputs.allow_wproject
                                 gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
                                 # Get field-specific uvrange value
@@ -1314,7 +1461,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         # Nevertheless, we retain this exception handler as an extra precaution.
                                         LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
                                                     field_intent[0], actual_spwspec, ex)
-                                              
+
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1332,6 +1479,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=gridder,
+                                    wprojplanes=target_heuristics.wprojplanes(gridder=gridder, spwspec=actual_spwspec),
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
@@ -1388,6 +1536,48 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_nfrms_multiplier(self, field, spw, datatype_str):
+        """Get the nfrms multiplier for the selfcal-succesfull imaging target for VLA."""
+        nfrms_multiplier = None
+        context = self.inputs.context
+
+        if (
+            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
+            and hasattr(context, "selfcal_targets")
+            and datatype_str.startswith("SELFCAL_")
+            and self.inputs.specmode == "cont"
+        ):
+            for sc_target in context.selfcal_targets:
+                sc_spw = set(sc_target["spw"].split(","))
+                im_spw = set(spw.split(","))
+                # PIPE-1878: use previous succesfully selfcal results to derive the optimal nfrms multiplier value
+                if sc_target["field"] == field and im_spw.intersection(sc_spw) and sc_target["sc_success"]:
+                    try:
+                        nfrms = sc_target["sc_lib"]["RMS_NF_final"]
+                        rms = sc_target["sc_lib"]["RMS_final"]
+                        LOG.info(
+                            "The ratio of nf_rms and rms from the selfcal-final imaging for field %s and spw %s: %s",
+                            field,
+                            spw,
+                            nfrms / rms,
+                        )
+                        nfrms_multiplier = max(nfrms / rms, 1.0)
+                        LOG.info(
+                            "Using nfrms_multiplier=%s for field %s and spw %s based "
+                            "on previous selfcal aggregate continuum imaging results.",
+                            nfrms_multiplier,
+                            field,
+                            spw,
+                        )
+                    except Exception as ex:
+                        LOG.warning(
+                            f"Error calculating the nfrms multiplier value for field {field} spw {spw} from previous succesful self-calibration outcome: {ex}"
+                        )
+
+                    break
+
+        return nfrms_multiplier
 
     def _get_deconvolver_nterms(self, field, intent, spw, stokes, specmode, datatype_str, image_heuristics):
         """

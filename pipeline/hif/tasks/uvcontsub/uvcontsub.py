@@ -1,21 +1,19 @@
 import os
 import shutil
+import tarfile
 from collections import namedtuple
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.tablereader as tablereader
-import pipeline.infrastructure.vdp as vdp
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure.utils import nested_dict
-from pipeline.infrastructure import casa_tasks
-from pipeline.domain import DataType
-from pipeline.infrastructure import task_registry
 import pipeline.infrastructure.sessionutils as sessionutils
-
+import pipeline.infrastructure.tablereader as tablereader
+import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import DataType
 from pipeline.hif.tasks.makeimlist import makeimlist
-
+from pipeline.infrastructure import casa_tasks, task_registry
+from pipeline.infrastructure.utils import nested_dict
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -30,8 +28,44 @@ class UVcontSubInputs(vdp.StandardInputs):
     spw = vdp.VisDependentProperty(default='')
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
+    # docstring and type hints: supplements hif_uvcontsub
     def __init__(self, context, output_dir=None, vis=None, field=None,
                  spw=None, intent=None, fitorder=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            field: The list of field names or field ids for which UV continuum fits are computed. Defaults to all fields.
+
+                Examples: '3C279', '3C279,M82'
+
+            spw: The list of spectral windows and channels for which uv continuum fits are computed.
+                '', Defaults to all science spectral windows.
+
+                Example: '11,13,15,17'
+
+            intent: A string containing a comma delimited list of intents against which the selected fields are matched.
+
+                '': Defaults to all data with TARGET intent.
+
+            fitorder: Polynomial order for the continuum fits per source and spw. Defaults to {} which means fit order 1 for all sources and
+                spws. If an explicit dictionary is given then all unspecified
+                selections still default to 1.
+
+                Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
+
+            parallel: Execute using CASA HPC functionality, if available.
+
+        """
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -102,6 +136,9 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
             fitorder = inputs.fitorder
         else:
             fitorder = nested_dict()
+
+        # Optionally recover cont.dat
+        self._precheck_contdat()
 
         known_synthesized_beams = inputs.context.synthesized_beams
 
@@ -255,6 +292,43 @@ class SerialUVcontSub(basetask.StandardTaskTemplate):
                 LOG.info('Copying %s from original MS to science targets line MS', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_target_line)
                 shutil.copyfile(vis_source, outputvis_target_line)
+
+    @staticmethod
+    def _precheck_contdat():
+        """Attempt to recover `cont.dat` if missing.
+
+        This method checks if `cont.dat` is present in the current directory.
+        If not, it searches for a compressed auxiliary product (`*.auxproducts.tgz`) 
+        or a direct `cont.dat` file in the `../products/` directory. If a valid 
+        tar archive is found containing `cont.dat`, the method extracts it.
+        """
+        contdatfile = 'cont.dat'
+        if os.path.exists(contdatfile):
+            LOG.debug("File %s already exists. No recovery needed.", contdatfile)
+            return
+
+        search_patterns = ["../products/*.auxproducts.tgz", "../products/"+contdatfile]
+        for pattern in search_patterns:
+            for file_path in utils.glob_ordered(pattern):
+                if file_path.endswith(".auxproducts.tgz") and tarfile.is_tarfile(file_path):
+                    try:
+                        with tarfile.open(file_path, "r:gz") as tar:
+                            members = [m for m in tar.getmembers() if m.name == contdatfile]
+                            if members:
+                                LOG.info("Extracting %s from %s", contdatfile, file_path)
+                                tar.extractall(members=members)
+                                LOG.info("Extraction complete.")
+                                return
+                    except tarfile.TarError as e:
+                        LOG.error("Failed to extract %s from %s: %s", contdatfile, file_path, str(e))
+                        return
+
+                elif file_path.endswith("cont.dat"):
+                    LOG.info("Found %s at %s. Copying to current directory.", contdatfile, file_path)
+                    shutil.copyfile(file_path, contdatfile)
+                    return
+
+        LOG.debug("No valid archive or 'cont.dat' file found in '../products/'. Recovery failed.")
 
 
 @task_registry.set_equivalent_casa_task('hif_uvcontsub')

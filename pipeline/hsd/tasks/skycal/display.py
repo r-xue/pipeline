@@ -241,7 +241,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             ms = self.context.observing_run.get_ms(self._vis)
             def __get_sorted_reference_scans(msobj: 'MeasurementSet',
                                              spw: Optional[Union[int, str,
-                                                                 collections.Sequence]] = None) -> List['Scan']:
+                                                                 collections.abc.Sequence]] = None) -> List['Scan']:
                 """
                 Return a list of REFERENCE Scan objects sorted by scan IDs.
                 Args:
@@ -319,7 +319,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         return caltable
 
     @staticmethod
-    def get_solution_interval(caltable: str) -> float:
+    def get_solution_interval(caltable: str) -> Optional[float]:
         """Compute appropriate solution interval for caltable.
 
         The value should be given to solutionTimeThresholdSeconds
@@ -336,30 +336,45 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             caltable: Name of the caltable
 
         Returns:
-            Solution interval in seconds
+            Solution interval in seconds. Return value will be None
+            if no valid caltable rows exist.
         """
         with casa_tools.TableReader(caltable) as tb:
+            unique_timestamps_per_antenna = []
+            antennas = numpy.unique(tb.getcol('ANTENNA1'))
             valid_rows = tb.query('not all(FLAG)')
             intervalcol = valid_rows.getcol('INTERVAL')
+            timecol = valid_rows.getcol('TIME')
+            antenna1col = valid_rows.getcol('ANTENNA1')
+            for a in antennas:
+                unique_timestamps_per_antenna.append(
+                    numpy.unique(timecol[antenna1col == a])
+                )
             valid_rows.close()
 
-            antennas = numpy.unique(tb.getcol('ANTENNA1'))
-            timecol = []
-            for a in antennas:
-                selected = tb.query(f'ANTENNA1 == {a}')
-                timecol.append(selected.getcol('TIME'))
-                selected.close()
+        if len(intervalcol) == 0:
+            # return None if no valid caltable rows exist
+            return None
 
         max_interval = int(numpy.ceil(intervalcol.max()))
-        min_time_diff_per_antenna = map(
-            lambda x: numpy.diff(numpy.unique(x)).min(),
-            timecol
-        )
-        min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
+
+        # check if number of unique timestamps is less than 2
+        if numpy.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
+            # if True, skip evaluating min_time_diff since
+            # time difference cannot be calculated
+            min_time_diff = None
+        else:
+            # if False, evaluate min_time_diff as a minimum
+            # time difference between adjacent timestamps
+            min_time_diff_per_antenna = map(
+                lambda x: numpy.diff(x).min(),
+                unique_timestamps_per_antenna
+            )
+            min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
 
         LOG.info(f'max_interval is {max_interval}, min_time_diff is {min_time_diff}')
 
-        if max_interval < min_time_diff:
+        if min_time_diff is None or max_interval < min_time_diff:
             solution_interval = max_interval
         else:
             # The solution_interval should be shorter than min_time_diff.
@@ -384,10 +399,14 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         """
         caltable = self.get_caltable_from_result(result)
         solution_interval = self.get_solution_interval(caltable)
+        extra_options = {}
+        if solution_interval is not None:
+            extra_options['solutionTimeThresholdSeconds'] = solution_interval
+
         super(SingleDishSkyCalAmpVsFreqDetailChart, self).__init__(
             context, result, xaxis='freq', yaxis='amp',
             showatm=True, overlay='time',
-            solutionTimeThresholdSeconds=solution_interval)
+            **extra_options)
 
         self.init_with_field(context, result, field)
 
@@ -622,118 +641,6 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
         super(SingleDishSkyCalAmpVsTimeDetailChart, self).__init__(context, result, calapp,
                                                                    xaxis='time', yaxis='amp',
                                                                    coloraxis='corr')
-
-
-class SingleDishSkyCalIntervalVsTimeDisplay(common.PlotbandpassDetailBase, SingleDishSkyCalDisplayBase):
-    """Class to execute pyplot and return a plot (figure) of Interval vs. Time.
-
-    If figtype='summary', the first spw is used, while all spw are used if figtype='detail'.
-    """
-
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: 'CalApplication', figtype: str='') -> None:
-        """Initialize the class.
-
-        Args:
-            context: Pipeline context.
-            result: SDSkyCalResults instance.
-            calapp: CalApplication instance.
-            figtype: Type of figure: 'summary' or 'detail'.
-        """
-        self.context = context
-        self.result = result
-        self.calapp = calapp
-        self.figtype = str(figtype)
-        LOG.info('figtype = {0}'.format(self.figtype))
-
-    @casa5style_plot
-    def plot(self) -> List[logger.Plot]:
-        """Generate a Interval vs, Time plot.
-
-        Return:
-            List of logger.Plot.
-        """
-        context = self.context
-        result = self.result
-        calapp = self.calapp
-        figtype = self.figtype
-        vis = os.path.basename(result.inputs['vis'])
-        ms = context.observing_run.get_ms(vis)
-        antennas = ms.antennas
-        fields = ms.fields
-        science_spw = ms.get_spectral_windows(science_windows_only=True)
-        if figtype == 'detail':
-            spw_ids = [spw.id for spw in science_spw]
-        elif figtype == 'summary':
-            spw_ids = [science_spw[0].id]
-        else:
-            pass
-        plot = None
-        plots = []
-        antenna_ids = [ant.id for ant in antennas]
-        field_strategy = ms.calibration_strategy['field_strategy']
-
-        for spw_id in spw_ids:
-            LOG.debug('spw_id={0}'.format(spw_id))
-            for antenna_id in antenna_ids:
-                LOG.debug('antenna_id={0}'.format(antenna_id))
-                for field_id_target, field_id_reference in field_strategy.items():
-                    LOG.debug('field_id_target = {0}, field_id_reference = {1}'.format(field_id_target, field_id_reference))
-                    field = fields[field_id_target]
-                    # make plots for the interval ratio (off-source/on-source) vs time;
-                    with casa_tools.TableReader(calapp.gaintable) as tb:
-                        t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}&&FIELD_ID=={}'.format(spw_id, antenna_id, field_id_reference), sortlist='TIME', columns='TIME, SPECTRAL_WINDOW_ID, INTERVAL')
-                        mjd_secs = t.getcol('TIME')
-                        if len(mjd_secs) == 0:
-                            t.close()
-                            pass
-                        else:
-                            target_scans = ms.get_scans(scan_intent='TARGET', field=field_id_target, spw=spw_id)
-                            target_scans0 = target_scans[0]
-                            interval_unit = target_scans0.mean_interval(spw_id=spw_id).total_seconds()
-                            interval = t.getcol('INTERVAL') / interval_unit
-                            t.close()
-                            date_list = sd_display.mjd_to_plotval( (mjd_secs/86400.0) )
-                            start_time = numpy.min(date_list)
-                            end_time = numpy.max(date_list)
-                            fig = plt.figure()
-                            ax = fig.add_subplot(1,1,1)
-                            ax.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
-                            ax.xaxis.set_major_formatter(sd_display.utc_formatter())
-                            ax.tick_params( axis='both', labelsize=10 )
-                            antenna_name = antennas[antenna_id].name
-                            field_name = field.clean_name
-                            plt.title('Interval vs. Time Plot\n{} Field:{} Antenna:{} Spw:{}'.format(vis, field_name, antenna_name, spw_id), fontsize=12)
-                            plt.ylabel('Interval of Off-Source / Interval of On-Source', fontsize=10)
-                            plt.xlabel("UTC", fontsize=10)
-                            ax.plot(date_list, interval, linestyle='None', marker=".", label="Interval of Off-Source\nUnit: {} seconds (Interval of On-Source)".format(interval_unit))
-                            min_interval = numpy.min(interval)
-                            max_interval = numpy.max(interval)
-                            ax.set_ylim([min_interval-3.0, max_interval+3.0])
-                            plt.legend(bbox_to_anchor=(1, 1), loc='upper right', borderaxespad=1, fontsize=10)
-                            if figtype == "summary":
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_summary_hsd_skycal_offinterval"
-                            else:
-                                prefix = vis + "_" + '{}'.format(antenna_name)+ "_" + '{}'.format(field_name) + "_spw" + '{}'.format(spw_id) + "_hsd_skycal_offinterval"
-                            figroot = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-                            figpath = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-                            LOG.info('Plot of Interval vs Time: figpath = {0}'.format(figpath))
-                            plt.savefig(figpath)
-                            plt.close()
-                            if os.path.exists(figpath):
-                                parameters = {
-                                'spw': spw_id,
-                                'ant': antenna_name,
-                                'vis': vis,
-                                'type': 'Plot of Interval vs. Time',
-                                'file': vis}
-                                plot = logger.Plot(figpath,
-                                    x_axis='Time',
-                                    y_axis='Off-Source Interval / On-Source Interval',
-                                    field=field_name,
-                                    parameters=parameters)
-                                plots.append(plot)
-        return plots
-
 
 @casa5style_plot
 def plot_elevation_difference(
