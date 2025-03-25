@@ -4033,6 +4033,7 @@ def score_fluxservice(result: ALMAImportDataResults) -> pqa.QAScore:
     # Check flux service usage
     if result.fluxservice == 'FIRSTURL':
         msg = "Flux catalog service used."
+        score = 1.0
     elif result.fluxservice == 'BACKUPURL':
         msg = "Backup flux catalog service used."
         score = 0.9
@@ -4040,8 +4041,8 @@ def score_fluxservice(result: ALMAImportDataResults) -> pqa.QAScore:
         msg = "Neither primary nor backup flux service could be queried. ASDM values used."
         score = 0.3
     else:  # only other possibility is fluxservice=None
-        score = 1.0
         msg = "Flux catalog service not used."
+        score = 1.0
 
     # Check flux origin and age in a single iteration
     origincounter = 0
