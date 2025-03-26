@@ -21,6 +21,13 @@ LOG = infrastructure.get_logger(__name__)
 #            included bl-name, bl-len, phase RMS in log
 # K Berry - NRAO
 #          -  July 2023 moved into PL
+# V Geers - UKATC
+#          - April 2024: updates to handle Band-to-Band datasets
+#            (PIPE-2079, PIPE-2081) for PL2024 release.
+#          - June 2024: updates to restrict SpW candidates to spectralspec,
+#            for PL2024 release.
+# L T Maud - ESO
+#          - Dec 2024 check caltable spw and match with spw_candidates
 ##################
 
 
@@ -57,7 +64,7 @@ class PhaseStabilityHeuristics(object):
                 self.refantid = ant.id
             self.antlist.append(ant.name)
 
-        # Select which SpW to use for phase stability analysis.
+        # Identify SpW candidates for phase stability analysis.
         spw_candidates = self._get_spw_candidates(inputsin)
 
         ##################
@@ -364,7 +371,20 @@ class PhaseStabilityHeuristics(object):
         
         # order irrelavant as keyed here with BL Name
         return baselineLen
-    
+
+    @staticmethod
+    def _get_spws_in_caltable(caltable) -> set[str]:
+        """
+        Return set of spectral window IDs present in a caltable file.
+
+        Returns:
+            Set of spectral window IDs present in caltable as strings.
+        """
+        with casa_tools.TableReader(caltable) as tb:
+            spwids = tb.getcol('SPECTRAL_WINDOW_ID')
+
+        return {str(spwid) for spwid in spwids}
+
     def _get_bandpass_scan_time(self) -> Tuple[float, float]:
         """
         Read a caltable file and return time
@@ -840,9 +860,7 @@ class PhaseStabilityHeuristics(object):
 
         return spwid, blflags
 
-    # Static methods
-    @staticmethod
-    def _get_spw_candidates(inputsin) -> List[str]:
+    def _get_spw_candidates(self, inputsin) -> list[str]:
         """
         Retrieves a list of spectral window candidates for the phase decoherence
         analysis, ranked based on atmosphere heuristics.
@@ -879,10 +897,18 @@ class PhaseStabilityHeuristics(object):
         # PIPE-1871: as potential fall-back candidates, keep only those SpWs
         # that have the same SpectralSpec as the top candidate.
         qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
-        qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
         qa_spw_list = [str(spw.id) for spw in qa_spws if spw.spectralspec == qa_spws[0].spectralspec]
 
-        return qa_spw_list
+        # PIPE-2442: Filter initial SpW candidates to restrict to SpWs available
+        # in the bandpass phase-up caltable. Log if this filtering changes the
+        # list of SpW candidates.
+        spws_in_caltable = self._get_spws_in_caltable(self.caltable)
+        qa_spw_list_filtered = list(set(qa_spw_list) & spws_in_caltable)
+        if len(qa_spw_list_filtered) <= len(qa_spw_list):
+            LOG.info(f"{inputsin.ms.basename}: updated SpW candidates to reject SpWs that are not present in the"
+                     f" bandpass phase-up caltable.")
+
+        return qa_spw_list_filtered
 
     @staticmethod
     def phase_unwrap(phase: np.ndarray) -> np.ndarray:
