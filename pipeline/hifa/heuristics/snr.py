@@ -989,7 +989,7 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, edge_fraction):
         polarizationFactor = np.sqrt(2.0)
 
         # SNR computation
-        timeFactor = ALMA_FIDUCIAL_EXP_TIME / np.sqrt(spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans']))
+        timeFactor = np.sqrt(ALMA_FIDUCIAL_EXP_TIME / (spw_dict[spwid]['exptime'] / len(spw_dict[spwid]['snr_scans'])))
         bandwidthFactor = np.sqrt(ALMA_FIDUCIAL_BANDWIDTH / min(spw_dict[spwid]['bandwidth'], maxEffectiveBW))
         # PIPE-788: multiply the exposure time by the fraction of unflagged data
         flagFactor = 1.0 / np.sqrt(1 - flag_result['spw'][str(spwid)]['flagged'] / flag_result['spw'][str(spwid)]['total'])
@@ -1165,12 +1165,10 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         solint_dict[spwid]['sensitivity_per_channel_mJy'] = bpsensitivity
 
         # Phaseup bandpass solution info
+        solint_dict[spwid]['phaseup_solint'] = solint_dict[spwid]['integration_minutes'] * requiredIntegrations * 60.0
         if requiredIntegrations <= 1.0:
-            solint_dict[spwid]['phaseup_solint'] = 'int'
             solint_dict[spwid]['nint_phaseup_solint'] = 1
         else:
-            solint_dict[spwid]['phaseup_solint'] = '%fs' % (solint_dict[spwid]['integration_minutes'] *
-                                                            requiredIntegrations * 60.0)
             solint_dict[spwid]['nint_phaseup_solint'] = int(np.ceil(requiredIntegrations))
         solInts = int(np.ceil(solint_dict[spwid]['exptime_minutes'] / solint_dict[spwid]['integration_minutes'])) // int(np.ceil(requiredIntegrations))
         if solInts < minBpNintervals:
@@ -1179,11 +1177,11 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         else:
             tooFewIntervals = False
             asterisks = ''
-        LOG.info("%sspw %2d (%6.3fmin) requires phaseup solint='%0.3gsec' (%d time intervals in solution) to reach S/N=%.0f" %
+        LOG.info("%sspw %2d (%6.3fmin) requires phaseup solint='%0.3fsec' (%d time intervals in solution) to reach S/N=%.0f" %
                  (asterisks,
                   spwid,
                   solint_dict[spwid]['exptime_minutes'],
-                  60.0 * requiredIntegrations * solint_dict[spwid]['integration_minutes'],
+                  solint_dict[spwid]['phaseup_solint'],
                   solInts,
                   reqPhaseupSnr))
         solint_dict[spwid]['nphaseup_solutions'] = solInts
