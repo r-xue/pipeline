@@ -689,22 +689,39 @@ class PhaseStabilityHeuristics(object):
         # that we read in - just in case we 'need' this information
         rms_results['blflags'] = []
 
-        nant = len(self.antlist)
-        iloop = np.arange(nant-1)
+        # Get phase for the reference antenna.
+        pHrefant = self._get_cal_phase(self.refantid)
 
+        # Number of antennas.
+        nant = len(self.antlist)
+
+        # Loop over every antenna ID.
+        iloop = np.arange(nant-1)
         for i in iloop:
             # Ant based parameters
             pHant1 = self._get_cal_phase(i)
             rms_results['antname'].append(self.antlist[i])
 
+            # Subtract the phase for reference antenna from the phase for the
+            # current antenna. Because phases can be non-zero, use
+            # pHant1- pHrefant (or) pHrefant - pHant1, depending on which is
+            # smaller antenna index.
+            if self.refantid <= i:
+                pHantalone = pHrefant - pHant1
+            else:
+                pHantalone = pHant1 - pHrefant
+
             # Make an assessment of flagged data for that antenna
-            if len(pHant1[np.isnan(pHant1)]) > self.flag_tolerance*len(pHant1):
+            if len(pHantalone[np.isnan(pHantalone)]) > self.flag_tolerance*len(pHantalone):
                 rms_results['antphaserms'].append(np.nan)
                 rms_results['antphasermscycle'].append(np.nan)
-                
+
             else:
-                # Do averaing -> 10s
-                pHant_ave = self.ave_phase(pHant1, self.difftime, over=10.0)  # for thermal/short term noise
+                # Perform averaging over 10s, but work on the corrected w.r.t.
+                # refant. This should be zero but in case there is a jump
+                # (i.e. refant change), then this should now correctly have
+                # taken this out.
+                pHant_ave = self.ave_phase(pHantalone, self.difftime, over=10.0)
                 rmspHant_ave = np.std(np.array(pHant_ave)[np.isfinite(pHant_ave)])
                 rms_results['antphaserms'].append(rmspHant_ave)
                 if timeScale:
@@ -721,7 +738,7 @@ class PhaseStabilityHeuristics(object):
                 pHant2 = self._get_cal_phase(j)
                 # phases from cal table come in an order, baseline then is simply the subtraction
                 pH = pHant1 - pHant2
-                    
+
                 # fill baseline information now
                 rms_results['blname'].append(self.antlist[i]+'-'+self.antlist[j])
                 # OLD (new) WAY from context - average all as overview
@@ -766,7 +783,7 @@ class PhaseStabilityHeuristics(object):
 
         # set RMS output in degrees as we want
         for key_res in ['blphaserms', 'blphasermscycle', 'antphaserms', 'antphasermscycle']:
-            rms_results[key_res]= np.degrees(rms_results[key_res])
+            rms_results[key_res] = np.degrees(rms_results[key_res])
         
         return rms_results
     
