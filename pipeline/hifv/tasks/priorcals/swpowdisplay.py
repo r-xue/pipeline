@@ -117,14 +117,13 @@ class swpowPerAntennaChart(object):
                 if float(max(freqs)) >= 18000000000.0:
                     plotrange = [0, 0, 0, 200]
 
+            # Get antenna name
+            domain_antennas = self.ms.get_antenna(antPlot)
+            idents = [a.name if a.name else a.id for a in domain_antennas]
+            antName = ','.join(idents)
+
             if not os.path.exists(figfile):
                 try:
-                    # Get antenna name
-                    antName = antPlot
-                    if antPlot != '':
-                        domain_antennas = self.ms.get_antenna(antPlot)
-                        idents = [a.name if a.name else a.id for a in domain_antennas]
-                        antName = ','.join(idents)
 
                     LOG.debug("Switched Power Plot, using antenna={!s} and spw={!s}".format(antName,
                                                                                             self.result.sw_result.spw))
@@ -144,7 +143,8 @@ class swpowPerAntennaChart(object):
                                                 antenna=antPlot, spw=spwtouse, timerange='',
                                                 plotindex=pindex, overwrite=True, gridrows=numspws, gridcols=1, rowindex=pindex,
                                                 plotrange=plotrange, coloraxis='corr', colindex=0, clearplots=cplots[pindex],
-                                                title='Switched Power  swpow.tbl   Antenna: {!s}  {!s}-band {!s} SPW: {!s} Mean Frequency:{!s}'.format(antName, self.band, baseband, spwtouse, mean_freq),
+                                                title='Switched Power  swpow.tbl   Antenna: {!s}  {!s}-band {!s} SPW: {!s} Mean Frequency:{!s}'.format(
+                                                    antName, self.band, baseband, spwtouse, mean_freq),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile, scan=self.science_scan_ids)
                         job.execute()
 

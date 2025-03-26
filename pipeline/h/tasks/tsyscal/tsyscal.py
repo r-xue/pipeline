@@ -1,6 +1,5 @@
 import collections
 from operator import itemgetter, attrgetter
-from typing import Dict, List, Set
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -91,7 +90,7 @@ class TsyscalInputs(vdp.StandardInputs):
 class Tsyscal(basetask.StandardTaskTemplate):
     Inputs = TsyscalInputs
 
-    def prepare(self):
+    def prepare(self) -> resultobjects.TsyscalResults:
         inputs = self.inputs
 
         # make a note of the current inputs state before we start fiddling
@@ -116,7 +115,7 @@ class Tsyscal(basetask.StandardTaskTemplate):
 
         return resultobjects.TsyscalResults(pool=calapps, unmappedspws=nospwmap)
 
-    def analyse(self, result):
+    def analyse(self, result: resultobjects.TsyscalResults) -> resultobjects.TsyscalResults:
         # double-check that the caltable was actually generated
         on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
@@ -132,23 +131,26 @@ class Tsyscal(basetask.StandardTaskTemplate):
 GainfieldMapping = collections.namedtuple('GainfieldMapping', 'intent preferred fallback')
 
 
-def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[GainfieldMapping]:
+def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> list[GainfieldMapping]:
     """
     Get gainfield solution map. Different solution maps are returned for
     single dish and interferometric data.
 
-    :param ms: MS to analyse
-    :param is_single_dish: True if MS is single dish data
-    :return: list of GainfieldMappings
+    Args:
+        ms: MS to analyse.
+        is_single_dish: True if MS is single dish data.
+
+    Returns:
+        List of GainfieldMappings.
     """
     # define function to get Tsys fields for intent
-    def f(intent):
+    def f(intent, exclude: str | None = None) -> str:
         if ',' in intent:
             head, tail = intent.split(',', 1)
             # the 'if o' test filters out results for intents that do not have
             # fields, e.g., PHASE for SD data
-            return ','.join(o for o in (f(head), f(tail)) if o)
-        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
+            return ','.join(o for o in (f(head, exclude=exclude), f(tail, exclude=exclude)) if o)
+        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent, exclude_intents=exclude))
 
     # return different gainfield maps for single dish and interferometric
     if is_single_dish:
@@ -160,28 +162,50 @@ def get_solution_map(ms: MeasurementSet, is_single_dish: bool) -> List[Gainfield
         ]
 
     else:
-        # Intent mapping extracted from CAS-12213 ticket.
+        # CAS-12213: original intent mapping.
         # PIPE-2080: updated to add mapping for DIFFGAINREF, DIFFGAINSRC intent.
+        # PIPE-2394: updated mapping for PHASE, TARGET, CHECK
         #
-        # ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse
-        # BANDPASS cal 	        all BANDPASS cals 	fallback to 'nearest'
-        # FLUX cal 	            all FLUX cals 	    fallback to 'nearest'
-        # DIFFGAIN[REF|SRC]     all DIFFGAIN cals 	fallback to BANDPASS
-        # PHASE cal 	        all PHASE cals 	    all TARGETs
-        # TARGET 	            all TARGETs 	    all PHASE cals
-        # CHECK_SOURCE        	all TARGETs     	all PHASE cals
+        # Intent to be calibrated:
+        # - BANDPASS cal
+        #   * Preferred: all BANDPASS cals.
+        #   * Fallback: 'nearest'.
+        # - FLUX cal
+        #   * Preferred: all FLUX cals.
+        #   * Fallback: 'nearest'.
+        # - DIFFGAIN[REF|SRC]
+        #   * Preferred: all DIFFGAIN cals.
+        #   * Fallback to BANDPASS.
+        # - PHASE cal
+        #   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and TARGET.
+        #   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.
+        # - TARGET
+        #   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and PHASE.
+        #   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.
+        # - CHECK_SOURCE
+        #   * Preferred: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals, and PHASE.
+        #   * Fallback: ATMOSPHERE cals, but excluding AMP, BP, DIFFGAIN*, POL* cals.
+
+        # PIPE-2394: typical calibrator intents to avoid (all but PHASE)
+        # matching searching for nearby Tsys field for PHASE, TARGET, and/or
+        # CHECK.
+        exclude_intents = 'AMPLITUDE,BANDPASS,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE'
+
         return [
             GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
             GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
             GainfieldMapping(intent='DIFFGAINREF', preferred=f('DIFFGAINREF'), fallback=f('BANDPASS')),
             GainfieldMapping(intent='DIFFGAINSRC', preferred=f('DIFFGAINSRC'), fallback=f('BANDPASS')),
-            GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
-            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
-            GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
+            GainfieldMapping(intent='PHASE', preferred=f('ATMOSPHERE', exclude=f'{exclude_intents},TARGET'),
+                             fallback=f('ATMOSPHERE', exclude=exclude_intents)),
+            GainfieldMapping(intent='TARGET', preferred=f('ATMOSPHERE', exclude=f'{exclude_intents},PHASE'),
+                             fallback=f('ATMOSPHERE', exclude=exclude_intents)),
+            GainfieldMapping(intent='CHECK', preferred=f('ATMOSPHERE', exclude=f'{exclude_intents},PHASE'),
+                             fallback=f('ATMOSPHERE', exclude=exclude_intents)),
         ]
 
 
-def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> Dict:
+def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> dict:
     """
     Get the mapping of observing intent to gainfield parameter for a
     measurement set.
@@ -189,11 +213,13 @@ def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> Dict:
     The mapping follows the observing intent to gainfield intent defined in
     CAS-12213.
 
-    :param ms: MS to analyse
-    :param is_single_dish: boolean for if SD data or not
-    :return: dict of {observing intent: gainfield}
-    """
+    Args:
+        ms: MS to analyse.
+        is_single_dish: boolean for if SD data or not.
 
+    Returns:
+        Dictionary of {observing intent: gainfield}.
+    """
     soln_map = get_solution_map(ms, is_single_dish)
     final_map = {s.intent: s.preferred if s.preferred else s.fallback for s in soln_map}
 
@@ -213,13 +239,19 @@ def get_gainfield_map(ms: MeasurementSet, is_single_dish: bool) -> Dict:
     return converted
 
 
-def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
+def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str, exclude_intents: str | None = None) -> set[str]:
     """
     Returns the identity of the Tsys field(s) for an intent.
 
-    :param ms: MS to analyse
-    :param intent: intent to retrieve fields for.
-    :return: set of field identifiers corresponding to intent
+    Args:
+        ms: MS to analyse.
+        intent: Intent to retrieve fields for.
+        exclude_intents: String of intent(s) (comma-separated) that should not
+            be covered by the Tsys field.
+
+    Returns:
+        Set of field identifiers corresponding to given intent, while not
+        associated with intents (optionally) given by ``exclude_intents``.
     """
     # In addition to the science intent scan, a field must also have a Tsys
     # scan observed for a Tsys solution to be considered present. The
@@ -230,6 +262,11 @@ def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
     # us handle single field, single pointing science targets alongside mosaic
     # targets mixed together in the same EB. Theoretically, at least...
     intent_fields = ms.get_fields(intent=intent)
+
+    # PIPE-2394: If requested, avoid matching fields that cover any of the
+    # intents that are to be excluded.
+    if exclude_intents is not None:
+        intent_fields = [f for f in intent_fields if f.intents.isdisjoint(set(exclude_intents.split(',')))]
 
     # contains fields of this intent that also have a companion Tsys scan
     intent_fields_with_tsys = [f for f in intent_fields if 'ATMOSPHERE' in f.intents]
@@ -266,8 +303,8 @@ def get_tsys_fields_for_intent(ms: MeasurementSet, intent: str) -> Set[str]:
     return {field_identifiers[i] for i in r}
 
 
-def get_calapplications(ms: MeasurementSet, tsys_table: str, calfrom_defaults: Dict, origin: callibrary.CalAppOrigin,
-                        spw_map: List, is_single_dish: bool) -> List[callibrary.CalApplication]:
+def get_calapplications(ms: MeasurementSet, tsys_table: str, calfrom_defaults: dict, origin: callibrary.CalAppOrigin,
+                        spw_map: list, is_single_dish: bool) -> list[callibrary.CalApplication]:
     """
     Get a list of CalApplications that apply a Tsys caltable to a measurement
     set using the gainfield mapping defined in CAS-12213.
@@ -276,13 +313,16 @@ def get_calapplications(ms: MeasurementSet, tsys_table: str, calfrom_defaults: D
     constructor. Any other required CalFrom constructor arguments should be
     provided to this function via the calfrom_defaults parameter.
 
-    :param ms: MeasurementSet to apply calibrations to
-    :param tsys_table: name of Tsys table
-    :param calfrom_defaults: dict of CalFrom constructor arguments
-    :param origin: CalOrigin for the created CalApplications
-    :param spw_map: Tsys SpW map
-    :param is_single_dish: boolean declaring if current MS is for Single-Dish
-    :return: list of CalApplications
+    Args:
+        ms: MeasurementSet to apply calibrations to.
+        tsys_table: name of Tsys table.
+        calfrom_defaults: dict of CalFrom constructor arguments.
+        origin: CalOrigin for the created CalApplications.
+        spw_map: Tsys SpW map.
+        is_single_dish: boolean declaring if current MS is for Single-Dish.
+
+    Returns:
+        List of CalApplications.
     """
     # Get the map of intent:gainfield
     soln_map = get_gainfield_map(ms, is_single_dish)

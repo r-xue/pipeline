@@ -681,7 +681,7 @@ class VLAImportDataRegressionExtractor(RegressionExtractor):
         d = OrderedDict()
 
         d['{}.numantennas'.format(prefix)] = len(result.mses[0].antennas)
-        d['{}.vla_max_integration_time'.format(prefix)] = result.mses[0].get_vla_max_integration_time()
+        d['{}.vla_max_integration_time'.format(prefix)] = result.mses[0].get_integration_time_stats(stat_type="max")
 
         return d
 

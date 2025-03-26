@@ -887,3 +887,19 @@ def set_add_model_column_parameters(context):
     imaging_parameters['parallel'] = False
 
     return imaging_parameters
+
+
+def vla_minbaselineforcal():
+    """Min baseline for cal
+
+    Args:
+        None
+
+    Returns:
+        Constant value
+
+    """
+
+    # Old determination before it was changed to a constant value of 4
+    # return max(4, int(len(self.antennas) / 2.0))
+    return 4

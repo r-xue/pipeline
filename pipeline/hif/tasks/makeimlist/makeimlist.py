@@ -44,6 +44,7 @@ class MakeImListInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
+    allow_wproject = vdp.VisDependentProperty(default=False)
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -70,8 +71,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_cell(self):
-        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @hm_cell.convert
@@ -91,8 +90,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_imsize(self):
-        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @hm_imsize.convert
@@ -154,38 +151,47 @@ class MakeImListInputs(vdp.StandardInputs):
         returned.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+
         mitigated_hm_cell = None
+        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+            mitigated_hm_cell = self.context.size_mitigation_parameters['hm_cell']
+
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
-        if mitigated_hm_cell not in [None, {}]:
-            return mitigated_hm_cell
-        else:
+
+        if mitigated_hm_cell in [None, {}] or self.hm_cell:
             return self.hm_cell
+        else:
+            return mitigated_hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
         """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
         mitigated_hm_imsize = None
+        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+            mitigated_hm_imsize = self.context.size_mitigation_parameters['hm_imsize']
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
-        if mitigated_hm_imsize not in [None, {}]:
-            return mitigated_hm_imsize
-        else:
+        if mitigated_hm_imsize in [None, {}] or self.hm_imsize:
             return self.hm_imsize
+        else:
+            return mitigated_hm_imsize
 
     # docstring and type hints: supplements hif_makeimlist
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
-                 datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
+                 datacolumn=None, parallel=None, known_synthesized_beams=None, allow_wproject=False, scal=False):
         """Initialize Inputs.
 
         Args:
@@ -316,6 +322,8 @@ class MakeImListInputs(vdp.StandardInputs):
 
             known_synthesized_beams:
 
+            allow_wproject: Allow the wproject heuristics for imaging
+
             scal:
 
         """
@@ -351,6 +359,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
+        self.allow_wproject = allow_wproject
         self.scal = scal
 
 
@@ -1429,12 +1438,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
+                                nfrms_multiplier = self._get_nfrms_multiplier(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                target_heuristics.imaging_params['allow_wproject'] = inputs.allow_wproject
                                 gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
                                 # Get field-specific uvrange value
@@ -1466,6 +1479,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=gridder,
+                                    wprojplanes=target_heuristics.wprojplanes(gridder=gridder, spwspec=actual_spwspec),
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
@@ -1522,6 +1536,48 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_nfrms_multiplier(self, field, spw, datatype_str):
+        """Get the nfrms multiplier for the selfcal-succesfull imaging target for VLA."""
+        nfrms_multiplier = None
+        context = self.inputs.context
+
+        if (
+            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
+            and hasattr(context, "selfcal_targets")
+            and datatype_str.startswith("SELFCAL_")
+            and self.inputs.specmode == "cont"
+        ):
+            for sc_target in context.selfcal_targets:
+                sc_spw = set(sc_target["spw"].split(","))
+                im_spw = set(spw.split(","))
+                # PIPE-1878: use previous succesfully selfcal results to derive the optimal nfrms multiplier value
+                if sc_target["field"] == field and im_spw.intersection(sc_spw) and sc_target["sc_success"]:
+                    try:
+                        nfrms = sc_target["sc_lib"]["RMS_NF_final"]
+                        rms = sc_target["sc_lib"]["RMS_final"]
+                        LOG.info(
+                            "The ratio of nf_rms and rms from the selfcal-final imaging for field %s and spw %s: %s",
+                            field,
+                            spw,
+                            nfrms / rms,
+                        )
+                        nfrms_multiplier = max(nfrms / rms, 1.0)
+                        LOG.info(
+                            "Using nfrms_multiplier=%s for field %s and spw %s based "
+                            "on previous selfcal aggregate continuum imaging results.",
+                            nfrms_multiplier,
+                            field,
+                            spw,
+                        )
+                    except Exception as ex:
+                        LOG.warning(
+                            f"Error calculating the nfrms multiplier value for field {field} spw {spw} from previous succesful self-calibration outcome: {ex}"
+                        )
+
+                    break
+
+        return nfrms_multiplier
 
     def _get_deconvolver_nterms(self, field, intent, spw, stokes, specmode, datatype_str, image_heuristics):
         """
