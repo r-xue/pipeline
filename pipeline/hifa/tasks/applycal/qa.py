@@ -974,7 +974,9 @@ def outlier_attr_to_str(o: Outlier, attr: str, ms: MeasurementSet) -> str:
             # 'It would be desirable to suppress printing amp_freq_sym_off
             # when it makes no sense (any phase_vs_freq reason, or
             # amp_vs_freq.slope.'
-            if 'amp_vs_freq.slope' in o.reason or all(reason.startswith('phase_vs_freq') for reason in o.reason):
+            if 'amp_vs_freq.slope' in o.reason \
+                    or all(reason.startswith('phase_vs_freq') for reason in o.reason) \
+                    or all(reason.startswith('gt90deg_offset_phase_vs_freq') for reason in o.reason):
                 return ''
 
     return f'{attr}={str_val}'
