@@ -357,7 +357,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         #Detect outliers in ON-data
         ondata_results = sd_qa_utils.smoothed_sigma_clip(datadiff, thresholds['X-Y_freq_dev'], mode = 'two-sided')
         normdatadiff = ondata_results['normdata']
-        outlier_data = ondata_results['outliers'] & (~msw.data_stats['sci_line_sel'])
+        outlier_data = ondata_results['outliers'] & (~sci_line_channels)
         nsigma_ondata = ondata_results['snrmax']
 
         #Define type of outliers selection arrays
