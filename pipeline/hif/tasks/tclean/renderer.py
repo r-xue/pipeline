@@ -812,36 +812,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, plots_dict, prefix, field, spw, pol, datatype, urls, cube_all_cont):
-        super(TCleanPlotsRenderer, self).__init__('tcleanplots.mako', context, makeimages_results)
+        super().__init__('tcleanplots.mako', context, makeimages_results)
 
-        # Set HTML page name
-        # VLA needs a slightly different name for some cases
-        # For that we need to check imaging_mode and specmode but we have to
-        # protect against iteration errors for empty results.
-        if not result.empty():
-            if 'VLA' in result.imaging_mode and 'VLASS' not in result.imaging_mode and result.specmode == 'cont':
-                # ms = context.observing_run.get_ms(result[0].results[0].vis[0])
-                # band = ms.get_vla_spw2band()
-                # band_spws = {}
-                # for k, v in band.items():
-                #     band_spws.setdefault(v, []).append(k)
-                # for k, v in band_spws.items():
-                #     for spw in spw.split(','):
-                #         if int(spw) in v:
-                #             band = k
-                #             break
-                # TODO: Not sure if a random number will work in all cases.
-                #       While working on PIPE-129 it happened that this code
-                #       was run 4 times for 2 targets. Better make sure the
-                #       name is well defined (see new setup for per EB images below).
-                outfile = '%s-field%s-pol%s-datatype%s-cleanplots-%d.html' % (prefix, field, pol, datatype, randint(1, 1e12))
-            else:
-                # The name needs to be unique also for the per EB imaging. Thus prepend the image name
-                # which contains the OUS or EB ID.
-                outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
-        # TODO: Check if this is useful since the result is empty.
-        else:
-            outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
+
+        outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
 
         # HTML encoded filenames, so can't have plus sign
         valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
