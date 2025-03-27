@@ -1128,7 +1128,8 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> float:
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False,
+                                   stat_type: str = "max", band: str | None = None,) -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1136,6 +1137,7 @@ class MeasurementSet(object):
             spw: spw string list - '1,7,11,18'.
             science_windows_only: Use integration time of science spws only to compute the given statistics.
             stat_type: Type of the statistics.
+            band: return maximum integration time for the given band, default None
         Returns
             Computed statistics value.
         """
@@ -1168,8 +1170,11 @@ class MeasurementSet(object):
                 spws = [ispw for ispw in all_spws if str(ispw.id) in spw_string_list]
             except:
                 LOG.error("Incorrect spw string format.")
-
-        if science_windows_only == True:
+        if band is not None:
+            spw2band = self.get_vla_spw2band()
+            spws = [spw for spw in spws if spw2band[spw.id].lower() == band.lower()]
+            science_spw_dd_ids = [self.get_data_description(spw).id for spw in spws]
+        if science_windows_only:
             # now get the science spws, those used for scientific intent
             science_spws = [
                 ispw for ispw in spws
@@ -1196,10 +1201,10 @@ class MeasurementSet(object):
 
         state_str = utils.list_to_str(science_state_ids if science_windows_only else state_ids)
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
-        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
+        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only or band is not None else ""
 
         taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
-            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only or band is not None else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
