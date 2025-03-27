@@ -85,9 +85,9 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     unregister_existing = vdp.VisDependentProperty(default=False)
 
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
-                 phaseupmaxsolint=None, phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_bandpass=None,
-                 solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
-                 unregister_existing=None, hm_auto_fillgaps=None, hm_phaseup_combine=None, **parameters):
+                 phaseupmaxsolint=None, phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_phaseup_combine=None,
+                 hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None,
+                 bpnsols=None, unregister_existing=None, hm_auto_fillgaps=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -101,7 +101,10 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
                 Example: vis=['ngc5921.ms']
 
-            mode:
+            mode: Type of bandpass solution. Currently only supports the
+                default value of 'channel' (corresponding to bandtype='B' in
+                CASA bandpass) to perform a channel-by-channel solution for each
+                spw.
 
             hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The
                 options are:
@@ -122,7 +125,7 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
             phaseupmaxsolint: Maximum phase correction solution interval (in
                 seconds) allowed in very low-SNR cases. Used only when
-                 ``hm_phaseup`` = 'snr'.
+                ``hm_phaseup`` = 'snr'.
 
                 Example: phaseupmaxsolint=60.0
 
@@ -133,8 +136,7 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 Example: phaseupsolint='300s'
 
             phaseupsnr: The required SNR for the phaseup solution. Used to calculate
-                the phaseup time solint, and only if
-                ``hm_phaseup`` = 'snr'.
+                the phaseup time solint, and only if ``hm_phaseup`` = 'snr'.
 
                 Example: phaseupsnr=10.0
 
@@ -142,6 +144,18 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 if ``hm_phaseup`` = 'snr'.
 
                 Example: phaseupnsols=4
+
+            hm_phaseup_combine: The spw combination heuristic for the phase-up
+                solution. Accepts one of following 3 options:
+
+                - 'snr', default: heuristics will use combine='spw' in phase-up
+                  gaincal, when SpWs have SNR <20.
+                - 'always': heuristic will force combine='spw' in the phase-up
+                  gaincal.
+                - 'never': heuristic will not use spw combination; this was the
+                  default logic for Pipeline release 2024 and prior.
+
+                Example: hm_phaseup_combine='always'
 
             hm_bandpass: The bandpass solution heuristics. The options are:
                 'snr': compute the solution required to achieve the specified SNR
@@ -256,20 +270,6 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 bandpass solves.
 
                 Example: minsnr=3.0
-
-            hm_phaseup_combine: The spw combination heuristic for the phase-up
-                solution. Accepts one of following 3 options:
-
-                '', default: heuristics will use combine='spw' in gaincal calls,
-                when SpWs have SNR <20.
-
-                'always': heuristic will force combine='spw' in the phase-up
-                gaincal.
-
-                'never': heuristic will not use spw combination; this was the
-                default logic for Pipeline release 2024 and prior.
-
-                Example: hm_phaseup_combine='always'
         """
         super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
