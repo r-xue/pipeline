@@ -51,10 +51,11 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_missing_bandpass_phaseup',                  # ALMA specific
-           'score_bandpass_phaseup_combine',                  # ALMA specific
            'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
+           'score_missing_bandpass_phaseup',                  # ALMA specific
+           'score_bandpass_phaseup_combine',                  # ALMA specific
+           'score_bandpass_phaseup_snr',                      # ALMA specific
            'score_decoherence_assessment',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
            'score_missing_phaseup_snrs',                      # ALMA specific
@@ -2105,6 +2106,42 @@ def score_bandpass_phaseup_combine(phaseup_results) -> list[pqa.QAScore]:
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_bandpass_phaseup_snr(ms, snr, snr_threshold):
+    """
+    Score the expected phase-up SNR for bandpass calibrator.
+    Introduced for hifa_bandpass (PIPE-2442).
+    """
+    if snr <= 0.3 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_ERROR
+        shortmsg = 'Low bandpass phase-up SNR'
+        longmsg = (f'{ms.basename}: expected bandpass phase-up SNR ({snr:.1f}) is <= 30% of the phase SNR'
+                   f' threshold ({snr_threshold:.1f}).')
+    elif snr <= 0.5 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_WARNING
+        shortmsg = 'Low bandpass phase-up SNR'
+        longmsg = (f'{ms.basename}: expected bandpass phase-up SNR ({snr:.1f}) is <= 50% of the phase SNR'
+                   f' threshold ({snr_threshold:.1f}).')
+    elif snr <= 0.75 * snr_threshold:
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = 'Low bandpass phase-up SNR'
+        longmsg = (f'{ms.basename}: expected bandpass phase-up SNR ({snr:.1f}) is <= 75% of the phase SNR'
+                   f' threshold ({snr_threshold:.1f}).')
+    else:
+        score = 1.0
+        shortmsg = 'Bandpass phase-up SNR is ok'
+        longmsg = (f'{ms.basename}: expected bandpass phase-up SNR ({snr:.1f}) is > 75% of the phase SNR'
+                   f' threshold ({snr_threshold:.1f}).')
+
+    origin = pqa.QAOrigin(metric_name='score_bandpass_phaseup_snr',
+                          metric_score=snr,
+                          metric_units='Phase-up SNR')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa

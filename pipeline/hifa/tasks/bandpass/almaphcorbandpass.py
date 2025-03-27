@@ -2,6 +2,8 @@ import itertools
 import math
 import os
 
+import numpy
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -328,7 +330,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # If requested and available, use the SNR results to determine the
             # optimal values for combine and solution interval.
             if inputs.hm_phaseup == 'snr' and snr_result.spwids:
-                phaseup_solint, phaseup_combine = self._get_best_phaseup_solint(snr_result)
+                phaseup_solint, phaseup_combine, phaseup_snr_expected = self._get_best_phaseup_solint(snr_result)
             # Otherwise, skip determination of optimal values, and stick with
             # default values, i.e. use the input phase solint, and use the
             # default of no spw combination unless explicitly forced by user.
@@ -339,6 +341,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     LOG.warning('SNR based phaseup solint estimates are unavailable for MS %s' % inputs.ms.basename)
                 phaseup_solint = inputs.phaseupsolint
                 phaseup_combine = 'spw' if inputs.hm_phaseup_combine == 'always' else ''
+                phaseup_snr_expected = None
 
             # Report choice for solint and combine (when applicable), and
             # compute temporary spw-to-spw phase offset caltable if necessary.
@@ -377,6 +380,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             if phasediff_result:
                 result.preceding.append(phasediff_result.final)
             result.preceding.append(phaseup_result.final)
+            # Add expected SNR to the phase-up result (for QA scoring).
+            result.phaseup_snr_expected = phaseup_snr_expected
 
             # PIPE-1624: Store bandpass phaseup caltable table name so it
             # can be saved into the context. Do not use the version in
@@ -411,21 +416,22 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         bpsolint_task = bpsolint.BpSolint(bpsolint_inputs)
         return self._executor.execute(bpsolint_task)
 
-    # Returns the best solint and spw mapping to use for the bandpass phaseup
-    # before doing 'bandpass'.
-    def _get_best_phaseup_solint(self, snr_result: bpsolint.BpSolintResults) -> tuple[str, str]:
+    # Returns the best solint, spw mapping, and expected SNR for the bandpass
+    # phase-up solution that will be pre-applied during 'bandpass'.
+    def _get_best_phaseup_solint(self, snr_result: bpsolint.BpSolintResults) -> tuple[str, str, float | None]:
         """
         Use SNR results (incl. optimal bandpass solution intervals) to select
         the best solution interval and spw combination setting to use in the
-        phase-up.
+        phase-up, and the expected phase-up SNR.
 
         Args:
             snr_result: dictionary with SNR results for each SpW.
 
         Returns:
-            2-tuple containing:
+            3-tuple containing:
             - phase-up solution interval
             - phase-up combine setting
+            - expected phase-up SNR
         """
         inputs = self.inputs
         quanta = casa_tools.quanta
@@ -437,7 +443,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             LOG.warning(f"{inputs.ms.basename}: no SNR results available, therefore unable to determine optimal phaseup"
                         f" solint. Reverting to phaseup solint default {inputs.phaseupsolint}.")
             phase_combine = 'spw' if inputs.hm_phaseup_combine == 'always' else ''
-            return inputs.phaseupsolint, phase_combine
+            return inputs.phaseupsolint, phase_combine, None
 
         # PIPE-2442: select which SpWs to consider in determination of best
         # solint, and retrieve the corresponding indices of those SpWs in the
@@ -502,7 +508,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                         f" to determine optimal phaseup solint. Reverting to phaseup solint default"
                         f" {inputs.phaseupsolint}.")
             phase_combine = 'spw' if inputs.hm_phaseup_combine == 'always' else ''
-            return inputs.phaseupsolint, phase_combine
+            return inputs.phaseupsolint, phase_combine, None
 
         # Since SNR results are not empty, then use the first available SpW to
         # determine the scan integration time as a timedelta object. It is
@@ -517,6 +523,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         # Determine best solution interval based on SNR results for each SpW
         # under consideration.
         spwids = []
+        phintsnrs = []
         bestsolint = []
         for i in spwindex:
             # No solution available for this SpW.
@@ -525,8 +532,10 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                             (snr_result.spwids[i], inputs.ms.basename))
                 continue
 
-            # Otherwise, keep this SpW under consideration.
+            # Otherwise, keep this SpW under consideration and store its SNR
+            # estimate.
             spwids.append(snr_result.spwids[i])
+            phintsnrs.append(snr_result.phintsnrs[i])
 
             # If the number of phase solutions in the SNR result was below the
             # minimum number of phaseup gain solution points:
@@ -562,8 +571,13 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         if max(bestsolint) <= timedelta_integration_time:
             LOG.info(f"{inputs.ms.basename}: the largest optimal solint, {max(bestsolint):.3f}s, is smaller than"
                      f" the integration time, {timedelta_integration_time:.3f}s, setting solint to 'int'.")
-            phase_combine = 'spw' if inputs.hm_phaseup_combine == 'always' else ''
-            return 'int', phase_combine
+            if inputs.hm_phaseup_combine == 'always':
+                phase_combine = 'spw'
+                snr_expected = numpy.linalg.norm(phintsnrs)
+            else:
+                phase_combine = ''
+                snr_expected = min(phintsnrs)
+            return 'int', phase_combine, snr_expected
 
         # Otherwise, the maximum best solution interval was above the
         # integration time, and it may be possible to use SpW combination to
@@ -590,6 +604,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 # string with unit, and restrict to 3 significant digits.
                 finalfactor = round_up(inputs.phaseupmaxsolint / timedelta_integration_time)
                 finalsolint = quanta.tos(quanta.quantity(timedelta_integration_time * finalfactor, 's'), 3)
+                snr_expected = numpy.sqrt(finalfactor) * min(phintsnrs)
                 LOG.warning(f"{inputs.ms.basename}: the largest optimal solint, {max(bestsolint):.3f}s, is greater than"
                             f" {inputs.phaseupmaxsolint}s, adjusting to {finalsolint}.")
 
@@ -599,7 +614,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 low_snr_spws = [str(spwid) for bsi, spwid in zip(bestsolint, spwids) if bsi > inputs.phaseupmaxsolint]
                 if low_snr_spws:
                     LOG.warning(f"{inputs.ms.basename}: spw(s) {utils.commafy(low_snr_spws, False)} will have a"
-                                f" low phaseup gaincal SNR < {inputs.phaseupsnr}.")
+                                f" low phaseup gaincal SNR = {snr_expected}, which is < input phase-up SNR threshold"
+                                f" ({inputs.phaseupsnr}).")
 
             # Otherwise, the largest derived optimal solint must be above the
             # integration time but below the maximum allowed value:
@@ -611,6 +627,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 # digits.
                 finalfactor = round_up(max(bestsolint) / timedelta_integration_time)
                 finalsolint = quanta.tos(quanta.quantity(timedelta_integration_time * finalfactor, 's'), 3)
+                snr_expected = numpy.sqrt(finalfactor) * min(phintsnrs)
 
                 LOG.info(f"{inputs.ms.basename}: setting solint to {finalsolint}.")
 
@@ -630,6 +647,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             if min(bestsolint) <= timedelta_integration_time:
                 LOG.info(f"{inputs.ms.basename}: optimal solint based on aggregate bandwidth is 'int'.")
                 finalsolint = 'int'
+                snr_expected = numpy.linalg.norm(phintsnrs)
 
             # Otherwise, a new optimal solint based on the aggregate bandwidth
             # through SpW combination needs to be computed here.
@@ -662,6 +680,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 # integration time, then set the solint to 'int'.
                 if combinesolint <= timedelta_integration_time:
                     finalsolint = 'int'
+                    snr_expected = numpy.linalg.norm(phintsnrs)
                 # If the optimal combined solint is still greater than the
                 # maximum allowed value (i.e. really low SNR scenario):
                 elif combinesolint > inputs.phaseupmaxsolint:
@@ -672,16 +691,18 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     # significant digits.
                     finalfactor = round_up(inputs.phaseupmaxsolint / timedelta_integration_time)
                     finalsolint = quanta.tos(quanta.quantity(timedelta_integration_time * finalfactor, 's'), 3)
+                    snr_expected = numpy.sqrt(finalfactor) * numpy.linalg.norm(phintsnrs)
                     LOG.warning(f"{inputs.ms.basename}: the combined spw solution interval, {combinesolint:.3f}s, is"
                                 f" greater than {inputs.phaseupmaxsolint}s, adjusting to {finalsolint}, solution SNR"
-                                f" < {inputs.phaseupsnr}.")
+                                f" = {snr_expected:.2f}, < {inputs.phaseupsnr}.")
                 # Otherwise, proceed with the optimal combined solint.
                 else:
                     # Use quanta to turn into a string with unit, and restrict
                     # to 3 significant digits.
                     finalsolint = quanta.tos(quanta.quantity(combinesolint), 3)
+                    snr_expected = numpy.sqrt(combfactor) * numpy.linalg.norm(phintsnrs)
 
-        return finalsolint, phaseup_combine
+        return finalsolint, phaseup_combine, snr_expected
 
     # Compute the phaseup solution.
     def _do_phaseup(self, combine='', solint='int'):

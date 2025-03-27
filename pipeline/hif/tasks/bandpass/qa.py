@@ -128,13 +128,20 @@ class BandpassQAHandler(pqa.QAPlugin):
                 if os.path.exists(qa_dir):
                     shutil.rmtree(qa_dir)
 
-            # If bandpass phase-up results are available, then score these and
-            # add to the pool.
+            # PIPE-2442: if bandpass phase-up results are available, then score
+            # these and add to the pool.
             if result.preceding:
                 # Compute QA score based on whether phase-up used SpW combination.
                 result.qa.pool.extend(qacalc.score_bandpass_phaseup_combine(result.preceding))
-            # Otherwise return a simple score noting that phase-up was missing.
-            else:
+
+                # Compute QA score based on phase-up SNR, if available
+                # (hifa_bandpass only).
+                if getattr(result, 'phaseup_snr_expected', None):
+                    result.qa.pool.append(qacalc.score_bandpass_phaseup_snr(ms, result.phaseup_snr_expected,
+                                                                            result.inputs['phaseupsnr']))
+            # Otherwise add a simple score for missing bandpass phase-up.
+            # Only works for hifa_bandpass (using hm_phaseup input parameter).
+            elif 'hm_phaseup' in result.inputs:
                 result.qa.pool.append(qacalc.score_missing_bandpass_phaseup(ms, result.inputs['hm_phaseup']))
         else:
             result.qa = pqa.QAScorePool()
