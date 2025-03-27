@@ -2823,7 +2823,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         # 1: channels detected as line, 0: line-free channels
         line_mask = np.zeros(nchan, dtype=np.uint8)
         for left, right in lines:
-            line_mask[left:right + 1] = 1
+            line_mask[max(0, left):right + 1] = 1
 
         # deviation mask
         for member_id in member_list:
