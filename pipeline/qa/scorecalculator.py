@@ -2932,7 +2932,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             is_overlaps = {y for x in data for y in x[3]}
             LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
 
-            # score is fixed to 0.65. See PIPE-2136 and PIPEREQ-304.
+            # score depends on whether deviation masks overlap with lines
+            # see PIPEREQ-293 for detail
             if Overlap.NO in is_overlaps:
                 # by default score is 0.65
                 score = 0.65
