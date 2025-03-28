@@ -1,15 +1,16 @@
 #
 # [SCRIPT INFORMATION]
 # GIT REPO: https://bitbucket.alma.cl/scm/~harold.francke/sd-atm-line-correction-prototype.git
-# COMMIT: 5f854d90e25
+# COMMIT: c600e544134
 #
 #SDcalatmcorr: Casapipescript with wrapper for TS script "atmcorr.py" for the removal
 #of atmospheric line residuals.
 #2020 - T.Sawada, H. Francke
 
-# 19/mar/2025: - SDPL team took over maintenance responsibility of this code from original author.
+# 27/mar/2025: - Added missing docstrings, eliminated bootstrap() and getSBData(), which have no use in production.
 #                The code is based on the commit mentioned above, but will be updated by SDPL team
 #                for bug fix/refactoring/enhancement.
+# 19/mar/2025: - SDPL team took over maintenance responsibility of this code from original author.
 # 13/mar/2025: - (v2.7) Update to optimize, simplify and reduce this code in order ot pass resposability to PLWG
 #              - Removed 'maxabs' and 'intabs' metrics, and the associated baseline fitting routines, and science line
 #                channels detection functions, which never worked very well.
@@ -334,7 +335,22 @@ def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spw
         output['peaksinfo'][k]['maxrange'] = int(idx + hwhmright[k])
     return output
 
-def gradeskylines(skylines, cntrweight = 1.0):
+def gradeskylines(skylines: dict, cntrweight: float = 1.0):
+    '''Function to calculate a "grade" for each skyline detected by the getskylines() function.
+    These "grades" are based ona  normalized value of the opacity at the skyline peak and the position of
+    the line in the SPW, and is aimed at providing a decision on which skyline to used for model evaluation.
+    param:
+        skylines: (dict) Dictionary of detected skylines indexed by SPW, where each sub-dictionary is as obtained
+                  from getskylines().
+        cntrweight: (float) Relative weight given to the position of the skyline relative to the center of the SPW.
+                    Must be a positive float number between 0 and 1, a value of 0.0 means no weight to position,
+                    a value >0 gives the line a linearly decreasing grade the further it is away from the center of the SPW.
+    returns:
+        A tuple of (spw, peak) that identifies the SPW and id number of the skyline in that SPW that has the best grade.
+        The skyline id number is the same as in the dictionary output from getskylines().
+        Additionally, the grades calculated are saved in the input skylines dictionary, modifiying the original variable.
+    '''
+
     spwlist = np.sort(list(skylines.keys()))
     idxspw = []
     idxpeak = []
@@ -379,6 +395,21 @@ def skysel(skylines, linestouse = 'all', avoidpeak = 0.0):
     return skysel
 
 def calcmetric(rawsample, rawsigmasample, metrictype = 'intabsdiff', smoothbox = 1):
+    '''Function that calculates a metric value for a given piece of spectrum (time-averaged data), typically
+    a section around the skyline selected by its "grade".
+    param:
+        rawsample: (numpy array) Array with the data to be used to compute the metric.
+        rawsigmasample: (numpy array) Noise array related to the data to be used to compute the metric. Noise
+                        estimation typically used is the standard deviation along the time dimension.
+        smoothbox: (int) Run a boxcar smoothing on the data piece before calculating the metric. Value in number of channels.
+        metrictype: (str) String that determines which algorithm to use to calculate the metric value. Options are:
+                    - "intabs": Integral of the absolute value of spectrum piece. (deprecated)
+                    - "maxabs": Maximum of the absolute value of spectrum piece. (deprecated)
+                    - "maxabsdiff": Maximum of the absolute value of the derivative of the spectrum piece.
+                    - "intabsdiff": Integral of the absolute value of the derivative of the spectrum piece.
+                    - "intsqdiff": Integral of the square value of the derivative of the spectrum piece.
+    '''
+
     (npols, nch) = np.shape(rawsample)
     #Smooth if requested
     if (smoothbox > 1) and (type(smoothbox) == int):
@@ -487,18 +518,16 @@ def calcmetric(rawsample, rawsigmasample, metrictype = 'intabsdiff', smoothbox =
     else:
         return -1.0
 
-def bootstrap(data, metrictype = 'intabsdiff', nsample = 100):
-    metric = [calcmetric(data, np.sqrt(data), metrictype = metrictype)[0]]
-    n = len(data)
-    for i in range(nsample):
-        idxsample = np.random.randint(0,n,n)
-        sample = data[idxsample]
-        metric.append(calcmetric(sample, np.sqrt(sample), metrictype = metrictype)[0])
-    metric = np.array(metric)
-    return metric
-
 #Copied over from analysisUtils
 def getSpwList(msmd,intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=False):
+    '''Function to extract and return the list of Science SPWs. Copied from analysisUtils.
+    params:
+        msmd: CASA msmd object used to obtain metadata of the MS.
+        intent: (str) Intent of the dataset queried to obtain SPW list.
+        tdm, fdm, sqld: (bool) Parameters passed to CASA's task msmd.almaspws. First two say whether
+                        to consider TDM and FDM SPWs, third whether to consider SQLD SPWs.
+    returns: List of SPWs
+    '''
     spws = msmd.spwsforintent(intent)
     almaspws = msmd.almaspws(tdm=tdm,fdm=fdm,sqld=sqld)
     scienceSpws = np.intersect1d(spws,almaspws)
@@ -509,7 +538,7 @@ def onlineChannelAveraging(msmd, spws=None):
     """
     For Cycle 3-onward data, determines the channel averaging factor from
     the ratio of the effective channel bandwidth to the channel width.
-    spw: a single value, or a list; if Nonne, then uses science spws
+    spw: a single value, or a list; if None, then uses science spws
     Returns: single value for a single spw, or a list for a list of spws
     -Todd Hunter
     """
@@ -640,7 +669,14 @@ def getAntennaFlagFrac(ms, fieldid, spwid, spwsetup):
     antflag_frac = [antflag[spwsetup['antnames'][antid]]['flagged']/antflag[spwsetup['antnames'][antid]]['total'] for antid in spwsetup['antids']]
     return antflag_frac
 
-def getCalAtmData(ms, spws, spwsetup):
+def getCalAtmData(ms: str, spws: list, spwsetup: dict):
+    '''Funtion to extract Tsys, Trec, Tatm and tau data from the ASDM's CALATMOSPHERE table.
+    param:
+        ms: MS filename
+        spws: List of SPWs to load
+        spwsetup: Dictionary of metadata obtained from getSpecSetup()
+    '''
+
     tb = createCasaTool(tbtool)
     #Open CALATMOSPHERE table
     tb.open(os.path.join(ms, 'ASDM_CALATMOSPHERE'))
@@ -704,6 +740,16 @@ def getCalAtmData(ms, spws, spwsetup):
     return (tground_all, pground_all, hground_all, tmatm_all, tsys, trec, tau, antatm)
 
 def makeNANmetrics(fieldid, spwid, nmodels):
+    ''' Returns a dummy metric resuls table used when the metrics cannot be really calculated, in order
+    to be used a place holder and having the same structure as the output from the calcmetric() function.
+    All the metric and metric error entries are np.nan value.
+    params:
+        fieldid: Field ID of field used in atmcorr() for best model identification.
+        spwid: SPW used.
+        nmodels: Number of models attempted.
+    returns: Table given as dictionary with metric tables.
+    '''
+
     metricdtypes = np.dtype([('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
     metrics = {fieldid: {spwid: np.zeros(nmodels, dtype = metricdtypes)}}
     for k in range(nmodels):
@@ -719,6 +765,33 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
              tau = None, title = None, output = None, isize = 300, psize = 2,
              highbuf = 0.5, lowbuf = 0.3, atmhighbuf = 0.05,
              diffsmoothbox = 1, ischosen = None, takediff = False, xlabel = None, ylabel = None):
+    '''Function to produce time-averaged Real v/s Frequency scatter plot, optionally including several markers for
+    sky line channel selection, science line channel selection, fitted baseline curve, atmospheric opacity
+    curve. Additionally, data can be plotted in diff mode: plot Value(channel n+1) - Value(channel n)
+    i.e. the derivative of the data to be plotted.
+    params:
+        nu: (numpy array) Array of channel frequencies (x-axis).
+        tmavedata: (numpy array) Array of y-axis (Real value, or Amplitude) data.
+        skychansel: (numpy boolean array) Data selection vector used to mark sky line selection channels.
+        scisrcsel: (numpy boolean array) Data selection vector used to mark science line channels.
+        bline: (numpy boolean array) Fitted baseline to be plotted on top of tmavedata.
+        tau: (numpy boolean array) Opacity data.
+        title: (str) Title for the plot.
+        output: (str) Path and filename for output PNG image file.
+        isize: (int) Number of DPI to be used when saving PNG file.
+        psize: (int) Marker size for data points.
+        lowbuf, highbuf: (float) Image y-axis margins at the lower and upper part, respectively, given as
+                         a fraction of the data range in the y-axis.
+        atmhighbuf: (float) Border to add to atmospheric transmission in the upper part of the plot, given as
+                    a fraction of the transmission range of the opacity data.
+        diffsmoothbox: (int) Size of boxcar smoothing applied to data, if required. Default of 1 means no smoothing.
+        ischosen: (bool) True/False Whether this plot is for the selected model. If equal to True, will print string
+                  "Applied" in upper right corner of the plot, otherwise will print "Discarded".
+        takediff: (bool) True/False Whether to take a np.diff() of the data before plotting.
+        xlabel: (str) x-axis label. If none given, defaults to "Freq [GHz]"
+        ylabel: (str) y-axis label. If none given, defaults to "Corr Amp [Jy]"
+                (or "Abs(Amp[i+1]-Amp[i])", if takediff=True)
+    '''
 
     (npol, nchan) = np.shape(tmavedata)
     #Choose whether to plot data as-is or its derivative
@@ -1431,24 +1504,12 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
 
     return (bestmodels, models, metrics, fitstatus)
 
-def getSBData(asdm):
-    f = open(asdm+'/SBSummary.xml', 'r')
-    sbuid = ''
-    for line in f:
-        item = line.split()
-        if (len(item) == 5) and ('EntityRef' in item[0]) and ('SchedBlock' in item[3]):
-            sbuid = item[1].split('=')[1].replace('"','')
-    sqlfmt = """SELECT PRJ_ARCHIVE_UID, PRJ_CODE, MOUS_STATUS_UID, ARCHIVE_UID AS SB_UID, SB_NAME FROM (SELECT PRJ_ARCHIVE_UID, PRJ_CODE FROM ALMA.BMMV_OBSPROJECT) JOIN (SELECT ARCHIVE_UID, PRJ_REF, MOUS_STATUS_UID, SB_STATUS_UID, SB_NAME FROM ALMA.BMMV_SCHEDBLOCK WHERE ARCHIVE_UID = '*SBUID*') ON PRJ_ARCHIVE_UID = PRJ_REF"""
-    sql = sqlfmt.replace('*SBUID*', sbuid)
-    conn = connect(almaoracleauth)
-    cursor = conn.cursor()
-    print('Querying the archive for : '+sql)
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    return result[0]
-
 def getTimeStamp(timefmt = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}'):
-    #Get timestamp for output folders and files
+    '''Function to generate a timestamp for output folders and files.
+    param:
+        timefmt: (str) Python string format string, to be used with the string.format() function.
+    returns: String of timestamp.
+    '''
     aux = systime.localtime()
     timestamp = timefmt.format(aux.tm_year, aux.tm_mon, aux.tm_mday, aux.tm_hour, aux.tm_min, aux.tm_sec)
     return timestamp
@@ -1506,10 +1567,6 @@ def redPipeSDatmcorr(iant = 'auto', atmtype = [1, 2, 3, 4],
         os.system('ln -s ../'+asdm+' working/'+asdm)
     #es = aU.stuffForScienceDataReduction()
     #Get Project Code and MOUS uid to enter dat into the context
-    if accessarchive:
-        (prjuid, pcode, mousstatusuid, sbuid, sbname) = getSBData(asdmlist[0])
-    else:
-        print('Could not access ALMA oracle database, set Project Code and MOUS uid manually.')
 
     os.chdir('working')
     context = h_init()
