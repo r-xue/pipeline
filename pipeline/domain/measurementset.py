@@ -1129,7 +1129,7 @@ class MeasurementSet(object):
             return baseband_spws
 
     def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False,
-                                   stat_type: str = "max", band: str | None = None,) -> float:
+                                   stat_type: str = "max", band: str | None = None) -> float:
         """Get the given statistcs of integration time.
 
         Args:
