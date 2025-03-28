@@ -458,14 +458,13 @@ class Syspower(basetask.StandardTaskTemplate):
                         sp_template.mask = sp_median_mask
                         LOG.info('    restored {0:.2f}% template flags after interpolation'.format(
                                  100.0 * np.sum(sp_median_mask) / sp_median_mask.size))
-
                         # repeat after square root
                         if isinstance(sp_data.mask, bool):
                             sp_data.mask = np.ma.getmaskarray(sp_data)
-                        sp_data.mask[sp_data < 0] = True
+                        sp_data.mask = sp_data < 0
                         sp_data = sp_data ** .5
                         sp_template = sp_template ** .5
-                        sp_data.mask[sp_data != sp_data] = True
+                        sp_data.mask = sp_data != sp_data
                         sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
                                                                        flag_median=True,
                                                                        k=5, threshold=6, do_shift=False)
