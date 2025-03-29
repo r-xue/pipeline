@@ -323,6 +323,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Need to translate the virtual spw IDs to real ones
         real_spwsel = context.observing_run.get_real_spwsel(inputs.spwsel, inputs.vis)
 
+        # allowed inputs.specmode defined in makeimlist/editimlist are:
+        #   mfs, cont, cube, repBW
+        tclean_specmode = inputs.specmode if inputs.specmode != 'cont' else 'mfs'
+
         # Common tclean parameters
         tclean_job_parameters = {
             'vis':           inputs.vis,
@@ -332,7 +336,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'field':         inputs.field,
             'spw':           real_spwsel,
             'intent':        utils.to_CASA_intent(inputs.ms[0], inputs.intent),
-            'specmode':      inputs.specmode if inputs.specmode != 'cont' else 'mfs',
+            'specmode':      tclean_specmode,
             'gridder':       inputs.gridder,
             'pblimit':       inputs.pblimit,
             'niter':         inputs.niter,
@@ -370,13 +374,13 @@ class CleanBase(basetask.StandardTaskTemplate):
             if inputs.specmode == 'cube':
                 tclean_job_parameters['specmode'] = 'cubesource'
             # 2018-04-19: 'REST' does not yet work (see CAS-8965, CAS-9997)
-            #tclean_job_parameters['outframe'] = 'REST'
+            # tclean_job_parameters['outframe'] = 'REST'
             tclean_job_parameters['outframe'] = ''
             # 2018-07-10: Parallel imaging of ephemeris objects does not
             # yet work (see CAS-11631)
             # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
             # runs for ephemeris sources.
-            #tclean_job_parameters['parallel'] = False
+            # tclean_job_parameters['parallel'] = False
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             if inputs.gridder in ('mosaic', 'awproject') and inputs.psf_phasecenter != inputs.phasecenter:
@@ -385,6 +389,11 @@ class CleanBase(basetask.StandardTaskTemplate):
             else:
                 tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe
+
+        # PIPE-2423: use specmode='mvc' for special cases of VLASS imaging when gridder=awp2/awphpg
+        # Also see: https://casadocs.readthedocs.io/en/stable/examples/community/Example_Wideband_PrimaryBeamCorrection.html
+        if tclean_job_parameters['gridder'] in ('awp2', 'awphpg') and tclean_job_parameters['deconvolver'] == 'mtmfs':
+            tclean_job_parameters['specmode'] = 'mvc'
 
         if scanidlist not in [[], None]:
             tclean_job_parameters['scan'] = scanidlist
