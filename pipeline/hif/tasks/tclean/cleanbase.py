@@ -390,10 +390,18 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe
 
-        # PIPE-2423: use specmode='mvc' for special cases of VLASS imaging when gridder=awp2/awphpg
-        # Also see: https://casadocs.readthedocs.io/en/stable/examples/community/Example_Wideband_PrimaryBeamCorrection.html
+        # PIPE-2423: set specmode='mvc' for VLASS imaging with awp2/awphpg gridders
+        # For mtmfs, 'mvc' provides better wideband primary beam correction
+        # Reference: https://casadocs.readthedocs.io/en/stable/examples/community/Example_Wideband_PrimaryBeamCorrection.html
         if tclean_job_parameters['gridder'] in ('awp2', 'awphpg') and tclean_job_parameters['deconvolver'] == 'mtmfs':
             tclean_job_parameters['specmode'] = 'mvc'
+
+        # PIPE-2423: fallback to awp2 gridder when savemodel=modelcolumn is required with awphpg
+        # The model-prediction-write capability needed for modelcolumn is not available for awphpg
+        # See: CAS-14146/CAS-13581 and this JIRA comment:
+        # https://open-jira.nrao.edu/browse/CAS-13581?focusedId=214944&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-214944
+        if tclean_job_parameters['gridder'] == 'awphpg' and tclean_job_parameters['savemodel'] == 'modelcolumn':
+            tclean_job_parameters['gridder'] = 'awp2'
 
         if scanidlist not in [[], None]:
             tclean_job_parameters['scan'] = scanidlist
