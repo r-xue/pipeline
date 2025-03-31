@@ -1,6 +1,7 @@
+import collections
 import math
-import os
 import numpy as np
+import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -368,12 +369,15 @@ class PerAntennaChart(Chart):
             # This is just to ensure that loop executes atleast once if
             # perSpwChart is false
             spws.append(-1)
-        if self.taskname == "finalcals":  # check if plottype is needed
+        if self.taskname == "finalcals":
             if self.perSpwChart:
                 spws = self.ms.get_spectral_windows(science_windows_only=True)
             else:
-                spwlist = [str(spw.id) for spw in self.ms.get_spectral_windows(science_windows_only=True)]
-                spws = [",".join(spwlist)]
+                spwlist = [spw.id for spw in self.ms.get_spectral_windows(science_windows_only=True)]
+                band2spw = collections.defaultdict(list)
+                for spw, band in spw2band.items():
+                    if spw in spwlist:
+                        band2spw[band].append(str(spw))
 
             result_table = {band: result_table for band in {band for spw, band in spw2band.items()}}
 
@@ -382,7 +386,6 @@ class PerAntennaChart(Chart):
                 times.extend(tb.getcol('TIME'))
         mintime = np.min(times)
         maxtime = np.max(times)
-
         for spw in spws:
             if not self.perSpwChart or spw.specline_window:
                 for bandname, tabitem in result_table.items():
@@ -403,8 +406,8 @@ class PerAntennaChart(Chart):
 
                     if self.plottype == "delay":
                         plot_title_prefix = 'K table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
-                                                                    else "delay.tbl" if self.taskname == "semiFinalBPdcals"
-                                                                    else "finaldelay.tbl" if self.taskname == "finalcals" else "")
+                                                                     else "delay.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                     else "finaldelay.tbl" if self.taskname == "finalcals" else "")
 
                     elif self.plottype == "ampgain":
                         plotrange = [mintime, maxtime, 0.0, plotmax]
@@ -412,23 +415,27 @@ class PerAntennaChart(Chart):
                     elif self.plottype == "phasegain":
                         plotrange = [mintime, maxtime, -180, 180]
                         plot_title_prefix = 'G table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
-                                                                    else tabitem if self.taskname == "semiFinalBPdcals"
-                                                                    else "finalBPinitialgain.tbl" if self.taskname == "finalcals" else "")
+                                                                     else tabitem if self.taskname == "semiFinalBPdcals"
+                                                                     else "finalBPinitialgain.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolamp":
                         plotrange = [0, 0, 0, ampplotmax]
                         plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
-                                                                    else "BPcal.b" if self.taskname == "semiFinalBPdcals"
-                                                                    else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
+                                                                     else "BPcal.b" if self.taskname == "semiFinalBPdcals"
+                                                                     else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolphase":
                         plotrange = [0, 0, -plotmax, plotmax]
                         plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
-                                                                    else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
-                                                                    else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
+                                                                     else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                     else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                     elif self.plottype == "bpsolamp_perspw":
-                        plot_title_prefix = 'B table: finalBPcal.tbl  '
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                     else "BPcal.b" if self.taskname == "semiFinalBPdcals"
+                                                                     else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                         plotrange = [0, 0, 0, ampplotmax]
                     elif self.plottype == "bpsolphase_perspw":
-                        plot_title_prefix = 'B table: finalBPcal.tbl  '
+                        plot_title_prefix = 'B table: {!s}  '.format(tabitem if self.taskname == "testBPdcals"
+                                                                     else "BPcal.tbl" if self.taskname == "semiFinalBPdcals"
+                                                                     else "finalBPcal.tbl" if self.taskname == "finalcals" else "")
                         plotrange = [0, 0, -plotmax, plotmax]
                     elif self.plottype == "finalbpsolphaseshort":
                         plot_title_prefix = 'G table: phaseshortgaincal.tbl  '
@@ -450,8 +457,9 @@ class PerAntennaChart(Chart):
                             filename = filenametext + str(ii) + '_' + bandname
                         elif self.taskname == "semiFinalBPdcals":
                             filename = filenametext + str(ii) + '_' + self.suffix + '_' + bandname
-                        elif self.taskname == "finalcals" and not self.perSpwChart:
-                            plot_params['spw'] = spw
+
+                        if self.taskname == "finalcals" and not self.perSpwChart:
+                            plot_params['spw'] = ",".join(band2spw[bandname])
 
                         if self.perSpwChart:
                             filename = "{!s}_{!s}.png".format(filename, str(spw.id))
@@ -470,10 +478,15 @@ class PerAntennaChart(Chart):
                         # construct the relative filename, eg. 'stageX/testdelay0.png'
 
                         figfile = os.path.join(stage_dir, filename)
+                        plot_failed = False
                         if not os.path.exists(figfile):
                             try:
                                 LOG.debug("Plotting {!s} {!s} {!s}".format(self.taskname, self.plottype, antName))
-                                plot_title = "{!s} Antenna: {!s}  Band: {!s}".format(plot_title_prefix, antName, bandname)
+                                if not self.perSpwChart:
+                                    plot_title = "{!s} Antenna: {!s}  Band: {!s}".format(plot_title_prefix, antName, bandname)
+                                else:
+                                    plot_title = "{!s} Antenna: {!s}  Band: {!s} Spw: {!s}".format(plot_title_prefix, antName, bandname, str(spw.id))
+
                                 plot_params['vis'] = tabitem
                                 plot_params['antenna'] = antPlot
                                 plot_params['title'] = plot_title
@@ -483,19 +496,22 @@ class PerAntennaChart(Chart):
 
                                 job.execute()
                             except Exception as ex:
+                                plot_failed = True
                                 LOG.warning("Unable to plot " + filename)
                         else:
                             LOG.debug('Using existing ' + filename + ' plot.')
-                        try:
-                            plot = logger.Plot(figfile, x_axis=xaxis, y_axis=yaxis, field='',
-                                            parameters={'spw': plot_params['spw'],
-                                                        'pol': '',
-                                                        'ant': antName,
-                                                        'bandname': bandname,
-                                                        'type': type,
-                                                        'file': os.path.basename(figfile)})
-                            plots.append(plot)
-                        except Exception as ex:
-                            LOG.warning("Unable to add plot to stack ", ex)
-                            plots.append(None)
+                        if not plot_failed:
+                            try:
+                                plot = logger.Plot(figfile, x_axis=xaxis, y_axis=yaxis, field='',
+                                                parameters={'spw': plot_params['spw'],
+                                                            'pol': '',
+                                                            'ant': antName,
+                                                            'bandname': bandname,
+                                                            'type': type,
+                                                            'file': os.path.basename(figfile)})
+                                plots.append(plot)
+                            except Exception as ex:
+                                LOG.warning("Unable to add plot to stack ", ex)
+                                plots.append(None)
+
         return [p for p in plots if p is not None]
