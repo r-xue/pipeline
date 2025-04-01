@@ -3,6 +3,7 @@ import os
 import shutil
 import tempfile
 
+from pipeline.extern import bandpass_pipereq234
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -35,6 +36,39 @@ class BandpassQAPool(pqa.QAScorePool):
         QA dictionary to the antenna, spw and pol it represents.
         """
         self.pool[:] = [self._get_qascore(ms, t) for t in self.score_types]
+        
+        # Compute QA score based on phase-up solint.
+        # phaseup_solint_scores = self._get_phaseup_solint_scores()
+        # self.pool.extend(phaseup_solint_scores)
+
+        # Compute QA score based on phase-up combine.
+        # phaseup_combine_scores = self._get_phaseup_combine_scores()
+        # self.pool.extend(phaseup_combine_scores)
+
+        # Compute QA score based on bandpass_pipereq234.
+        bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms)
+        self.pool.extend(bandpass_pipereq234_scores)
+
+    def _get_bandpass_pipereq234_scores(self, vis):
+        spws = set(bandpass_pipereq234.bandpass_platforming())
+        print(spws)
+        f_spw = 0.0
+        if f_spw <= 0.0:
+            score = 1.0
+            shortmsg = 'No correlator subband issues detected'
+            longmsg = 'No correlator subband issues detected'
+        else:
+            qa_max = 0.65
+            qa_min = 0.5
+            ref_spw_impacted = False
+            if ref_spw_impacted:
+                qa_ref = 0.15
+            else:
+                qa_ref = 0.0
+            score = qa_max - (qa_max-qa_min)*f_spw - qa_ref
+            shortmsg = 'Correlator subband issues detected'
+            longmsg = f"{vis} correlator subband issues may be affecting the following solutions: spw x: Ant1, Ant2, Ant3; spw y: Ant1, Ant2"
+        return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis)]
 
     def _get_qascore(self, ms, score_type):
         (min_score, spw_str, qa_id) = self._get_min(score_type)

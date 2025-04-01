@@ -200,10 +200,16 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
     with open(pickle_file,'rb') as f:
         data=pickle.load(f)
     
+    note_platform_return = ''
+    flagnote_return = ''
+    note_platform_start_return = ''
+
     #iterate through tables
     for i, itab in enumerate(list(data.keys())):
         pldir=inputpath.split('/')[-1]
-        caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
+#        caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
+        caltable=glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
+
         print(caltable+ ' in Platforming evaluation')
 
         #get the meta data from caltable
@@ -321,7 +327,9 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                     note_platform_phsjump=''
                     note_platform_ampjump=''
                     note_platform_subbspk=''
+                    spws = []
 
+                    
                     flagchan_range_amp=[]
                     flagchan_range_phs=[]
                     
@@ -444,6 +452,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                        #########################
                                        this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
                                        note_platform += (this_note_platform+'\n')
+                                       spws.append(ispw)
                                        #########################
 
                                        #########################
@@ -469,6 +478,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                           ###########################
                                           this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
                                           note_platform += (this_note_platform+'\n')
+                                          spws.append(ispw)
                                           #########################
 
                                           #########################
@@ -560,6 +570,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                     #########################
                                     this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                     note_platform += (this_note_platform+'\n')
+                                    spws.append(ispw)
                                     #########################
 
                                     #########################
@@ -585,6 +596,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                           ###########################
                                           this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                           note_platform += (this_note_platform+'\n')
+                                          spws.append(ispw)
                                           #########################
 
                                           #########################
@@ -687,6 +699,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                   freq_max=(spw_freq[0*subb_nchan]) #GHz
                                   this_note_platform = ' QA0_Platforming  phase  subband : ' + str(0) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                   note_platform += (this_note_platform+'\n')
+                                  spws.append(ispw)
                                   
                                   #########################
                                   # this list contains the frequency range of the affected subband
@@ -762,6 +775,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                   freq_max=(spw_freq[(subb_num-1)*subb_nchan]) #GHz
                                   this_note_platform = ' QA0_Platforming  phase  subband : ' + str(subb_num-1) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                   note_platform += (this_note_platform+'\n')
+                                  spws.append(ispw)
                                   
                                   #########################
                                   # this list contains the frequency range of the affected subband
@@ -844,6 +858,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                    freq_max=(spw_freq[isubb*subb_nchan]) #GHz
                                    this_note_platform = ' QA0_Platforming  phase  subband : ' + str(isubb) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                    note_platform += (this_note_platform+'\n')
+                                   spws.append(ispw)
                                    
                                    #########################
                                    # this list contains the frequency range of the affected subband
@@ -956,6 +971,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                   this_note_platform = ' QA0_Platforming  amplitude subband: ' + str(0) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(ch_step/bp_amp_rms)
                                   note_platform += (this_note_platform+'\n')
+                                  spws.append(ispw)
                                   
                                   #########################
                                   # this list contains the frequency range of the affected subband
@@ -1028,6 +1044,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                   this_note_platform = ' QA0_Platforming  amplitude subband: ' + str(subb_num-1) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(ch_step/bp_amp_rms)
                                   note_platform += (this_note_platform+'\n')
+                                  spws.append(ispw)
                                   
                                   #########################
                                   # this list contains the frequency range of the affected subband
@@ -1129,6 +1146,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                     this_note_platform = ' QA0_Platforming  amp subband spike: ' + str(isubb) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq1_max +'GHz  P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(spk_step/bp_amp_rms)
                                     note_platform += (this_note_platform+'\n')
+                                    spws.append(ispw)
 
                                     #########################
                                     # this list contains the frequency range of the affected subband
@@ -1156,7 +1174,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                    note_platform += (this_note_platform+'\n')
                                    this_flagchan_range=[spw_freq[isubb*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
                                    flagchan_range_amp.append(this_flagchan_range)
-                            
+                                   spws.append(ispw)
                             
                             #######################
                             # this string is important and appends the heuristics values for each heuristics
@@ -1245,11 +1263,13 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                 ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
                                 ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
-                       
-
                     outfile.write(note_platform)
                     outfile_val.write(note_platform_start)
                     outfile_flag.write(flagnote)
+                    
+                    note_platform_return += note_platform
+                    flagnote_return += flagnote
+                    note_platform_start_return += note_platform_start
 
                 plt.savefig(figure_name)
                 plt.close()
@@ -1257,11 +1277,180 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
         outfile.close()
         outfile_val.close()
         outfile_flag.close()
+        return note_platform_return, note_platform_start_return, flagnote_return #not strictly correct, missing all contents
+
+def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
+   mkdirstr='mkdir '+outputpath
+
+   if os.path.isdir(outputpath) == False:
+      os.system(mkdirstr)
+
+   #pull out table name and associated ms name
+   vislist=[]
+   tabkey=[]
+   tablelist=[]
+
+   #path to the bandpass tables for analysis
+   #may need to be changed to comply with the PL code
+#    mytablelist=glob.glob(inputpath+'/S*/G*/M*/working/uid*bandpass.s*channel.solintinf.bcal.tbl')
+#    myworkdir=glob.glob(inputpath+'/S*/G*/M*/working/')
+   mytablelist=glob.glob('uid*bandpass.s*channel.solintinf.bcal.tbl')
+   myworkdir=glob.glob(inputpath)
+   inputpath = os.path.abspath(inputpath)
+   print('mytablelist', mytablelist)
+   print('myworkdir', myworkdir)
+
+   #read the bandpass tables and save the table name, the associated MS name, the path to table into a list
+   #table name is a key of the dictionary saved into pickle file
+   tb=table()
+   for mytab in mytablelist:
+       tb.open(mytab)
+       tb_summary=tb.info()
+       if tb_summary['subType']=='B Jones':                           #checking whether this is bandpass gain table (bandtype='B Jones')
+          tabkey.append(mytab.split('/')[-1])                         #bandpass table name 
+          vislist.append(myau.getMeasurementSetFromCaltable(mytab))   #associated MS name
+          tablelist.append(os.path.abspath('./' + mytab))                                     #bandpass table paths 
+       tb.close()
+
+   print('tabkey', tabkey)
+   print('vislist', vislist)
+   print('tablelist', tablelist)
+
+   #go into the output directory to dump the analysis result 
+   #products of the analysis result: bandpass data pickle file, text files, and plots
+   os.chdir(outputpath)
+   
+   #creating PL directory to save the data (text files and figures)
+   outdir='./bandpass_qa' #mytablelist[0].split('/')[-6]
+   if os.path.isdir(outdir) == False:
+      os.system('mkdir '+outdir)
+   os.chdir(outdir)
+   print("changed dir to:", outdir)
+
+   #define structure of pickle file, bandpass_library
+   #bandpass_library[mytab][myfield][myspw][myant][mypol]['amp']=amp2
+   #bandpass_library[key1][key2][key3][key4][key5][key6]
+   #key1: table names
+   #key2: reference antenna name and field names
+   #key3: spw ID
+   #key4: bandwidth, num of channels, frequency, antennas
+   #key5: polarization, 0 and 1
+   #key6: 'amp'(original data with the PL flag applied, WVR LO checked additionally)
+   #      'phase'(original data with the PL flag applied, WVR LO checked additionally)
+   #      'amp2' (copy of the original with the PL flag only): not used for the analysis but used for plotting only
+   #      'phase2'(copy of the original with the PL flag only): not used for the analyis but used for plotting only 
+   #      'flag'
+   #Overall structure of the dictionary, for example
+   #bandpass_library.keys(['table1','table2','table3'])
+   #bandpass_library['table1'].keys(['refAnt','J0821+1234','J1234-0234'])
+   #bandpass_library['refAnt'] = 'DA41'
+   #bandpass_library['J0821+1234'].keys(['17,19,21,23'])
+   #bandpass_library['table1']['J0821+1234']['19'].keys(['bw','nchan','freq','DA41','DA42',...,])
+   #bandpass_library['table1']['J0821+1234']['19']['bw']=1.9
+   #bandpass_library['table1']['J0821+1234']['19']['nchan']=512
+   #bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
+   #bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
+   #bandpass_library['table1']['J0821+1234']['19']['DA41'].keys([0,1])
+   #bandpass_library['table1']['J0821+1234']['19']['DA41'][0].keys(['amp','phase','amp2','phase2','flag'])
+   #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['amp']=[1.01,0.92,1.03,0.97,...,0.98]
+   #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['phase']=[0.15,0.12,0.10,0.23,...,0.23]
+   #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['flag']=[0,1,1,....,0]
+   #
+
+   if os.path.isfile('bandpass_library.pickle')==False:
+      bandpass_library={}
+
+      for i, mytab in enumerate(tabkey):
+         caltable=tablelist[i]
+         tb=table()
+         tb.open(caltable)
+         print("doing table:",mytab)
+         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
+         bandpass_library[mytab]={}
+
+         tmp = tb.getcol('ANTENNA2')
+         res=st.mode(tmp)
+         refAnt = antennaNames[np.bincount(tb.getcol('ANTENNA2')).argmax()]
+         print("FieldNames", fieldNames)
+         print("RefAnt", refAnt)
+         bandpass_library[mytab]['RefAnt']=refAnt
+
+         #check bandwidth and nchan
+         visname=myau.getMeasurementSetFromCaltable(caltable)
+         myvis=os.path.join(inputpath,visname)
+         print('myvis', myvis)
+         spw_bandwidth=myau.getScienceSpwBandwidths(myvis)
+
+         for j, myfield in enumerate(fieldNames):
+            print("doing field:",myfield)
+            myfieldid=fieldIds[j]
+            bandpass_library[mytab][myfield]={}
+            
+            for m, myspw in enumerate(spwIds):
+               print("doing spw:",myspw)
+
+               bandpass_library[mytab][myfield][myspw]={}
+               spw_nchan=myau.getNChanFromCaltable(caltable,myspw)
+               spw_freq=myau.getChanFreqFromCaltable(caltable,myspw)       #GHz
+               bandpass_library[mytab][myfield][myspw]['bw']=spw_bandwidth[m]
+               bandpass_library[mytab][myfield][myspw]['nchan']=spw_nchan
+               bandpass_library[mytab][myfield][myspw]['freq']=spw_freq
+
+               for k, myant in enumerate(antennaNames):
+                  bandpass_library[mytab][myfield][myspw][myant]={}
+                  myantid=antIds[k]
+                  mytb = tb.query('FIELD_ID == '+str(myfieldid)+' AND SPECTRAL_WINDOW_ID == '+str(myspw)+' AND ANTENNA1 == '+str(myantid))
+                  gain=mytb.getcol('CPARAM')
+                  err=mytb.getcol('PARAMERR')
+                  time=mytb.getcol('TIME')
+                  flag=mytb.getcol('FLAG')
+                  snr=mytb.getcol('SNR')
+               
+                  for mypol in range(len(gain)):
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]={}
+                      phase=np.angle(gain[mypol])
+                      phase=np.unwrap(phase)
+                      deg=np.degrees(phase)
+                      amp=np.absolute(gain[mypol])
+                      amp2=np.copy(amp)
+                      deg2=np.copy(deg)
+                      myflag=flag[mypol]
+                      idx=np.where(myflag==True)[0]
+                      for myid in range(len(myflag)):
+                          if (myid in idx):
+                              amp2[myid]=np.nan
+                              deg2[myid]=np.nan
+                      
+                      amp3=np.copy(amp2)
+                      deg3=np.copy(deg2)
+
+                      for ifreq, lofreq in enumerate(WVR_LO):
+                          freq1=lofreq-62.5/1000.0/2.0
+                          freq2=lofreq+62.5/1000.0/2.0
+                          if (np.min(spw_freq)<lofreq and np.max(spw_freq)>lofreq):
+                             wvrlo_id=np.where((spw_freq>freq1) & (spw_freq<freq2))[0]
+                             amp2[wvrlo_id]=np.nan
+                             deg2[wvrlo_id]=np.nan
+
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]['amp']=amp2
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]['phase']=deg2
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]['amp2']=amp3
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]['phase2']=deg3
+                      bandpass_library[mytab][myfield][myspw][myant][mypol]['flag']=myflag
+
+         tb.close()
+
+      with open('bandpass_library.pickle', 'wb') as f:
+          pickle.dump(bandpass_library, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+   #evaluate bandpass platform/spikes
+   note_platform, note_platform_start, flagnote = evalPerAntBP_Platform('bandpass_library.pickle',inputpath)
+   return note_platform, note_platform_start, flagnote
 
 def main(argv):
 
    #output path need to be modified 
-   def_output_path = "./QA0_Bandpass/"
+   def_output_path = ""#/home/zuul07/kberry/repos/clean/pipeline/pipeline/extern/QA0_Bandpass/"
 
    #input path need to be modified
    inputpath='./'
@@ -1294,8 +1483,13 @@ def main(argv):
 
    #path to the bandpass tables for analysis
    #may need to be changed to comply with the PL code
-   mytablelist=glob.glob(inputpath+'/S*/G*/M*/working/uid*bandpass.s*channel.solintinf.bcal.tbl')
-   myworkdir=glob.glob(inputpath+'/S*/G*/M*/working/')
+#    mytablelist=glob.glob(inputpath+'/S*/G*/M*/working/uid*bandpass.s*channel.solintinf.bcal.tbl')
+#    myworkdir=glob.glob(inputpath+'/S*/G*/M*/working/')
+   mytablelist=glob.glob(inputpath+'/working/uid*bandpass.s*channel.solintinf.bcal.tbl')
+   myworkdir=glob.glob(inputpath+'/working/')
+
+   print('mytablelist', mytablelist)
+   print('myworkdir', myworkdir)
 
    #read the bandpass tables and save the table name, the associated MS name, the path to table into a list
    #table name is a key of the dictionary saved into pickle file
@@ -1308,6 +1502,10 @@ def main(argv):
           vislist.append(myau.getMeasurementSetFromCaltable(mytab))   #associated MS name
           tablelist.append(mytab)                                     #bandpass table paths 
        tb.close()
+
+   print('tabkey', tabkey)
+   print('vislist', vislist)
+   print('tablelist', tablelist)
 
    #go into the output directory to dump the analysis result 
    #products of the analysis result: bandpass data pickle file, text files, and plots
@@ -1370,7 +1568,7 @@ def main(argv):
 
          #check bandwidth and nchan
          visname=myau.getMeasurementSetFromCaltable(caltable)
-         myvis=os.path.join(inputpath,visname)
+         myvis=os.path.join(inputpath+'/working/',visname)
          print('myvis', myvis)
          spw_bandwidth=myau.getScienceSpwBandwidths(myvis)
 
