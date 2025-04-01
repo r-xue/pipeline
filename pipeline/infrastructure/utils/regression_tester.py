@@ -334,7 +334,7 @@ class PipelineRegression(object):
         if not self.compare_only and omp_num_threads is not None:
             casa_tools.casalog.ompSetNumThreads(default_nthreads)
 
-    def __compare_results(self, new_file: str, relative_tolerance: float) -> None: 
+    def __compare_results(self, new_file: str, relative_tolerance: float) -> None:
         """
         Compare results between new one loaded from file and old one.
 

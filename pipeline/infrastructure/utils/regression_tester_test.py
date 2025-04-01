@@ -1,6 +1,8 @@
 """
 Tests for the regression_tester.py module.
 """
+from __future__ import annotations
+
 import packaging
 import pytest
 import re
