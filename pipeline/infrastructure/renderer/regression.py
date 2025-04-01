@@ -998,7 +998,7 @@ def get_prefix(result:Results, task:StandardTaskTemplate) -> str:
 
 
 def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
-    """Extracts QA scores from a TaskResults object and organizes them into a structured OrderedDict.
+    """Extract QA scores from a TaskResults object and organize them into a structured OrderedDict.
 
     Args:
         prefix (str): Base string to prepend to each key in the output dictionary.
@@ -1012,6 +1012,7 @@ def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
         >>> result = Results(...)  # Assuming Results object with qa.pool
         >>> scores = extract_qa_score_regression("test", result)
         >>> # Resulting keys might look like: "test.field_data.spw_0.qa.metric.accuracy"
+    
     """
     # Initialize an ordered dictionary to maintain insertion order
     d = OrderedDict()
@@ -1028,14 +1029,15 @@ def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
         metric_score, score_value = qa_score.origin.metric_score, qa_score.score
 
         data_select = "".join(
-            f".{key}_{value}"
-            for key, value in [("field", qa_score.origin.metric_field), ("spw", qa_score.origin.metric_spw)]
-            if value is not None  # Only include if value exists
+            f".{key}_" + "_".join(sorted(map(str, value)))
+            for key, value in [("field", qa_score.applies_to.field), ("spw", qa_score.applies_to.spw)]
+            if value
         )
-
         # Add metric score and value to dictionary with formatted keys
-        d.update({f"{prefix}{data_select}.qa.metric.{metric_name}": metric_score,
-                  f"{prefix}{data_select}.qa.score.{metric_name}": score_value})
+        d.update({
+            f"{prefix}{data_select}.qa.metric.{metric_name}": metric_score,
+            f"{prefix}{data_select}.qa.score.{metric_name}": score_value,
+        })
     return d
 
 
