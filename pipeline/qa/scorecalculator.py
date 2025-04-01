@@ -4049,27 +4049,28 @@ def score_fluxservice(result: ALMAImportDataResults) -> pqa.QAScore:
     agecounter = 0
 
     for setjy_result in result.setjy_results:
-        for fieldid, measurement in setjy_result.measurements.items():
-            try:
-                # Check flux origin
-                fluxorigin = measurement[0].origin
-                if fluxorigin == 'Source.xml':
-                    score = 0.3
-                    msg = "Source.xml is the flux origin. Some/all flux values derived from ASDM."
-                origincounter += 1
-            except Exception:
-                LOG.debug("Skipping measurement due to missing flux origin.")
-
-            # Check age of nearest monitoring point if flux service was used
-            if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
+        for fieldid, measurements in setjy_result.measurements.items():
+            for measurement in measurements:
                 try:
-                    fieldobjs = result.mses[0].get_fields(field_id=fieldid)
-                    if any('AMPLITUDE' in fieldobj.intents for fieldobj in fieldobjs):
-                        age = measurement[0].age
-                        if int(abs(age)) > 14:
-                            agecounter += 1
-                except IndexError:
-                    LOG.debug("Skipping measurement due to missing age data.")
+                    # Check flux origin
+                    fluxorigin = measurement.origin
+                    if fluxorigin == 'Source.xml':
+                        score = 0.3
+                        msg = "Source.xml is the flux origin. Some/all flux values derived from ASDM."
+                    origincounter += 1
+                except Exception:
+                    LOG.debug("Skipping measurement due to missing flux origin.")
+
+                # Check age of nearest monitoring point if flux service was used
+                if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
+                    try:
+                        fieldobjs = result.mses[0].get_fields(field_id=fieldid)
+                        if any('AMPLITUDE' in fieldobj.intents for fieldobj in fieldobjs):
+                            age = measurement.age
+                            if int(abs(age)) > 14:
+                                agecounter += 1
+                    except IndexError:
+                        LOG.debug("Skipping measurement due to missing age data.")
 
     if origincounter == 0:
         score = 0.3
