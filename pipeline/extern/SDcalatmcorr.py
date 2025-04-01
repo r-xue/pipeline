@@ -1,12 +1,19 @@
 #
 # [SCRIPT INFORMATION]
 # GIT REPO: https://bitbucket.alma.cl/scm/~harold.francke/sd-atm-line-correction-prototype.git
-# COMMIT: d563bd9cd29
+# COMMIT: c600e544134
 #
 #SDcalatmcorr: Casapipescript with wrapper for TS script "atmcorr.py" for the removal
 #of atmospheric line residuals.
 #2020 - T.Sawada, H. Francke
 
+# 27/mar/2025: - Added missing docstrings, eliminated bootstrap() and getSBData(), which have no use in production.
+#                The code is based on the commit mentioned above, but will be updated by SDPL team
+#                for bug fix/refactoring/enhancement.
+# 19/mar/2025: - SDPL team took over maintenance responsibility of this code from original author.
+# 13/mar/2025: - (v2.7) Update to optimize, simplify and reduce this code in order ot pass resposability to PLWG
+#              - Removed 'maxabs' and 'intabs' metrics, and the associated baseline fitting routines, and science line
+#                channels detection functions, which never worked very well.
 # 08/apr/2022: - (v2.6) Change logic of best model evaluation to be done inside the atmcor() method.
 #              - Created a function makePlot() to clean up the plot generation par of the code.
 #                This function added a label with Applied/Discarded to point out the used model.
@@ -18,7 +25,7 @@
 # 25/feb/2022: - (v2.4) Added feature to automatically select least flagged antenna for doing the metric measurement.
 #              - Changed default parameters to consider atmtype 1,2,3,4 only for models testing.
 #              - Remove remaining dependencies on analysisUtils
-#              - Cleaned up procedure to handle default model fallback case, including the return of 
+#              - Cleaned up procedure to handle default model fallback case, including the return of
 #                a 'fitstatus' variable decribing whether a best fit or a fallback to default model happened.
 # 27/jan/2022: - (v2.3) Fixed bug that made script crash with multiples EBs getting different
 #                SPW selection with multiple ATM selected for model testing
@@ -38,7 +45,7 @@
 #                it by one mstransform and several sdatmcor call, in order to calculate the corrected data
 #              - Added metrics 'intabsdiff' (integral of absolute value of derivative) and
 #                'intsqdiff' (integral of square value of derivative).
-#              - Improved statistical estimation of data errors 
+#              - Improved statistical estimation of data errors
 #              - Changed data normalization routine and science emission detection.
 #              - Uploaded to ALMA Bitbucket
 # 03/mar/2021: - Fixed bug handling datasets having TDM SPWs
@@ -51,20 +58,6 @@
 
 import os, sys
 from sys import path
-
-#This is in order to be able to use cx_Oracle. Please set path to the correct
-#folder in your system. If the cx_Oracle library is not available,
-#set the variable accessarchive to False
-accessarchive = False
-if accessarchive:
-    os.environ['LD_LIBRARY_PATH'] = '/usr/lib/oracle/12.2/client64/lib:/opt/casa/packages/RHEL7/release/casa-6.2.1-7-pipeline-2021.2.0.128/lib'
-    path.append('/usr/lib64/python36.zip')
-    path.append('/usr/lib64/python3.6')
-    path.append('/usr/lib64/python3.6/lib-dynload')
-    path.append('/usr/local/lib64/python3.6/site-packages')
-    path.append('/usr/lib64/python3.6/site-packages')
-    path.append('/usr/lib/python3.6/site-packages')
-    from cx_Oracle import connect
 
 import glob
 import numpy as np
@@ -87,34 +80,10 @@ from casatasks import mstransform
 import pipeline.infrastructure.callibrary as callibrary
 pipelineloaded = True
 
-# try:
-#     from pipeline.h.cli import h_init
-#     from pipeline.hsd.cli import hsd_importdata
-#     from pipeline.hsd.cli import hsd_flagdata
-#     from pipeline.h.cli import h_tsyscal
-#     from pipeline.hsd.cli import hsd_tsysflag
-#     from pipeline.hsd.cli import hsd_skycal
-#     from pipeline.hsd.cli import hsd_k2jycal
-#     from pipeline.hsd.cli import hsd_applycal
-#     from pipeline.hsd.cli import hsd_atmcor
-#     from pipeline.h.cli import h_resume
-#     from pipeline.hsd.cli import hsd_baseline
-#     from pipeline.hsd.cli import hsd_blflag
-#     from pipeline.hsd.cli import hsd_imaging
-#     from pipeline.hsd.cli import hsd_exportdata
-#     from pipeline.h.cli import h_save
-#     import pipeline.infrastructure.callibrary as callibrary
-#     pipelineloaded = True
-# except ImportError:
-#     print('Could not load pipeline tasks! Please run CASA with --pipeline option.')
-#     print('You will not be able to run the redPipeSDatmcorr() task.')
-#     pipelineloaded = False
-
 #Useful function for fully flattening array
 flattenlist = lambda l: [item for sublist in l for item in sublist]
 
-#ALMA Oracle DB authetication
-almaoracleauth = 'almasu/alma4dba@ora.sco.alma.cl:1521/ALMA.SCO.CL'
+version = '2.7'
 
 def createCasaTool(mytool):
     """
@@ -152,154 +121,6 @@ def robuststats(A):
     sigma = (1.0/bn)*madfactor*np.ma.median(np.ma.abs(A - mu))
     return (mu, sigma)
 
-def binnedstats(x, A, Aerr, nbins = None, bins = None):
-    '''Return a tuple of arrays (of size nbins) of median and sigmas 
-    calculated from robuststats() from chopping the array A in nbins pieces.
-    Alternatively, bins can be explicitly be given with the bins parameter in the form:
-    bins = [[x0, x1], [x2, x3], ...]
-    '''
-    n = len(A)
-    if (type(nbins) == int) and (bins is None):
-        binsize = int(np.ceil(1.0*n/nbins))
-        p = [[i*binsize, min((i+1)*binsize,n-1)] for i in range(nbins)]
-    elif (nbins is None) and (type(bins) == list):
-        p = bins
-    elif ((nbins is None) and (type(bins) == None)) or ((type(nbins) == int) and (type(bins) == list)):
-        print('Either set nbins=(integer) or give bins as a partition of channels!')
-        return (None, None, None)
-    npart = len(p)
-    xbin = np.zeros(npart)
-    mu = np.zeros(npart)
-    sigma = np.zeros(npart)
-    mederr = np.zeros(npart)
-    chi2 = np.zeros(npart)
-    mskfrac = np.zeros(npart)
-    for i in range(npart):
-        sel = (A.mask[p[i][0]:p[i][1]] == False)
-        nsel = np.sum(sel)
-        xbin[i] = np.mean(x[p[i][0]:p[i][1]][sel])
-        thisA = A[p[i][0]:p[i][1]][sel]
-        thisAerr = Aerr[p[i][0]:p[i][1]][sel]
-        (thismu, thissigma) = robuststats(thisA)
-        mu[i] = thismu
-        sigma[i] = thissigma
-        (thismederr, thiserrsigma) = robuststats(thisAerr)
-        mederr[i] = thismederr
-        chi2[i] = np.sum(np.square((thisA - thismu)/thisAerr))/(nsel - 1.0)
-        mskfrac[i] = 1.0*np.sum(A.mask[p[i][0]:p[i][1]])/(p[i][1]-p[i][0]+1.0)
-    return (xbin, mu, sigma, mederr, chi2, mskfrac, p)
-
-def fitbaseline(x, y, dy, initialbins = 5, detectionsigma = (-99.0, 5.0),
-                minbinfracsize = 0.025, targetchi2 = 4.0, maxoutlierfrac = 0.9,
-                outlierprobmu = 0.5, outlierprobsigma = 0.25, bordertokeep = 0.05):
-    '''Fit baseline to function y(x) (having error dy(x)).
-    Starts partitioning domain in 'initialbins' and the subdividing bins up to 
-    a fractional size 'minbinfracsize' of the total number of channels.
-    Returns PPoly instance with fit.
-    '''
-    #Initialize values for start
-    n = len(x)
-    spwrange = np.max(x) - np.min(x)
-    outliermu = np.min(x) + outlierprobmu*spwrange
-    outliersig = outlierprobsigma*spwrange
-    outlierprob = np.exp(-0.5*np.square((x - outliermu)/outliersig))
-    print('fitbaseline: len(x): '+str(n)+' y.mask:'+str(np.sum(y.mask))+' dy.mask:'+str(np.sum(dy.mask)))
-    #If initialbins <2, that's too few, we need two points at least
-    if (initialbins < 2) or (minbinfracsize > 0.5):
-        print('initialbins cannot be less than 2!!! setting it to 2...')
-        initialbins = 2
-        minbinfracsize = 0.45
-    #Setting minimum bin size
-    minbinsize = int(np.round(1.0*n*minbinfracsize))
-    #If initial number of bins is not consistent with minbinfracsize, augment
-    #minbinsize to match it, but complain about it
-    if (initialbins*minbinsize >= n) and (minbinsize >= 20):
-        print('Minimal bin size and initial number of bins inconsistent!')
-        print('setting minimal bin size to nchans/initialbins - 1...')
-        minbinsize = int(np.round(1.0*n/initialbins)) - 1
-    elif minbinsize < 20:
-        print('Minimal bin size < 20 channels! setting it to 20 to avoid noisy statistics...')
-        minbinsize = 20
-
-    #Calculate border to keep
-    bordermin = int(bordertokeep*n)
-    bordermax = int(n - bordertokeep*n)
-
-    #Put value just to start
-    repchi2 = 10*targetchi2
-    rerun = False
-    #Initial stats per bin
-    binsize = int(np.round(1.0*n/initialbins))
-    p = [[i*binsize, min((i+1)*binsize,n-1)] for i in range(initialbins)]
-
-    #Loop while representative chi2 has not reached goal while
-    #the minimum bin size has not shrunk below minimum allowed size
-    while (repchi2 > targetchi2):
-        #Bin data according to partition p
-        (xbin, ybin, dybin, meddybin, chi2binaux, mskfracbin, p) = binnedstats(x, y, dy, bins = p)
-        #Check is there are bin with no valid results
-        allvalid = np.all([np.isfinite(xbin),np.isfinite(ybin)],axis=0)
-        print('nbins: '+str(len(xbin))+' allvalid: '+str(np.sum(allvalid))+' y.mask: '+str(np.sum(y.mask)))
-        print('xbins: '+str(xbin))
-        print('p: '+str(p))
-        if (not (len(allvalid) == np.sum(allvalid))) and (np.sum(allvalid) > 1):
-            #If we still have at least two datapoints, leave the nan's outside and continue
-            xbin = xbin[allvalid]
-            ybin = ybin[allvalid]
-            dybin = dybin[allvalid]
-        if np.sum(allvalid) <= 1:
-            print('Could not converge to fit!!!')
-            blfit = None 
-            #Calculate the residuals of the baseline fit and bin them
-            res = (y - np.ma.median(y))
-            chi2bin = chi2binaux
-            break
-        #Calculate baseline fit
-        orderbins = np.argsort(xbin)
-        blfit = CubicSpline(xbin[orderbins], ybin[orderbins], bc_type='not-a-knot')
-        #Calculate the residuals of the baseline fit and bin them
-        res = (y - blfit(x))
-        #Calculate the median residual per bin
-        (xaux, resbin, dresbin, mederrbin, chi2bin, mskfracres, paux) = binnedstats(x, res, dy, bins = p)
-        #Revise stats per bin and split them if residuals are too high
-        binsplitidx = chi2bin*np.any([chi2bin > targetchi2, mskfracres > maxoutlierfrac])
-        bin2split = np.argsort(binsplitidx)[-1]
-        #Save chi2 of bin with highest chi2
-        repchi2 = chi2bin[bin2split]
-        print('p='+str(p))
-        print('chi2bin='+str(chi2bin))
-        #If chi^2 is too big, and bin is wide enough, split it.
-        if (binsplitidx[bin2split] > 0.0) and (p[bin2split][1]-p[bin2split][0] > minbinsize):
-            midval = int(np.floor(0.5*(p[bin2split][0]+p[bin2split][1])))
-            p = [p[i] for i in range(0,bin2split)] + \
-                [[p[bin2split][0], midval], [midval, p[bin2split][1]]] + \
-                [p[i] for i in range(bin2split + 1, len(p))]
-        #If chi^2 is too big, but bin size has become too small, remove segment (unless it's in the border we keep)
-        elif (binsplitidx[bin2split] > 0.0) and (p[bin2split][1]-p[bin2split][0] <= minbinsize) and \
-             (p[bin2split][0] > bordermin) and (p[bin2split][1] < bordermax):
-            print('p[bin2split]='+str(p[bin2split]))
-            p.remove(p[bin2split])
-        #If there are no bins with chi^2 larger than target, stop here
-        else:
-            break
-
-    #Detect outliers
-    if not (res is None):
-        outliers = np.any([res*outlierprob < detectionsigma[0]*dy, res*outlierprob > detectionsigma[1]*dy], axis=0)
-    else:
-        outliers = np.zeros(n, dtype=bool)
-
-    output = {}
-    output['blfit'] = blfit
-    output['xbin'] = xbin
-    output['ybin'] = ybin
-    output['dybin'] = dybin
-    output['chi2bin'] = chi2bin
-    output['p'] = p
-    output['outliers'] = outliers
-
-    return output
-
 def segmentEdges(seq, gap, label, sortdata = True):
     '''Return edges of sequence of values with gaps
     Assumes 1D array "seq" is ordered. Otherwise one should sort it first.
@@ -320,11 +141,11 @@ def segmentEdges(seq, gap, label, sortdata = True):
     if np.sum(isgap) > 0:
         startseg = seq[np.append([True],isgap)]
         endseg = seq[np.append(isgap,[True])]
+        output = np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
     else:
-        startseg = seq[0]
-        enseg = seq[-1]
+        output = np.array([(seq[0], seq[-1], label)], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
 
-    return np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))],np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
+    return output
 
 def selectRanges(timeseq, rangetable):
     '''Return selection boolean array for a time sequence, given a table of time ranges.
@@ -335,8 +156,6 @@ def selectRanges(timeseq, rangetable):
     for i in range(nranges):
         sel += np.all([timeseq >= rangetable['tstart'][i], timeseq <= rangetable['tend'][i]], axis=0)
     return sel
-
-
 
 def sigclipfit(x, A, Asig, fitdeg, nclips, nsigma, bordertokeep = 0.05, progdegree = False, smoothselbox = 0.05):
     '''Return polynomial model parameters done to vector A and residuals from the fit.
@@ -404,7 +223,7 @@ def sigclipfit(x, A, Asig, fitdeg, nclips, nsigma, bordertokeep = 0.05, progdegr
 
 def enlargesel(sel, box):
     '''Enlarge selection by "box" pixels around each selected pixel
-    in "sel" vector. 
+    in "sel" vector.
     '''
     n = len(sel)
     newsel = 0.0*sel
@@ -420,216 +239,6 @@ def smooth(y, box_pts):
     box = np.ma.ones(box_pts)/box_pts
     y_smooth = np.ma.convolve(y, box, mode='same')
     return y_smooth
-
-def noisenormdata(tmdataon, antson, dataon, tmatm, antatm, tsys, trec, tau):
-    '''Compute a noise-normalized data for source selection. To be used by selsource() function.
-    '''
-    npol, nch, nint = np.shape(dataon)
-    npolatm, nchatm, nlinesatm = np.shape(tsys)
-    nant = len(np.unique(antson))
-    natm =  int(nlinesatm/nant)
-    #Get skylines, if any
-    #skylines = getskylines(tau, fraclevel = 0.5)
-    #skymask = skysel(skylines, avoidpeak = 0.0)
-    #Smooth Trx
-    smbox = int(0.01*nch)
-    smtrec = 0.0*trec
-    for pol in range(npolatm):
-        for atmline in range(nlinesatm):
-            smtrec[pol, :, atmline] = smooth(trec[pol, :, atmline], smbox)
-    #Mask borders
-    minmask = np.min(dataon.mask, axis=(0,2))
-    badborder = int(0.05*nch)
-    minmask[0:badborder] = True
-    minmask[nch-badborder:nch] = True
-    tmavelist = []
-    tmsigmalist = []
-    tavenorm = np.ma.MaskedArray(np.zeros(nch), mask=minmask)
-    tnorm = np.ma.MaskedArray(np.zeros(nch), mask=minmask)
-    normdata = 0.0*dataon
-    cx = 0
-    for pol in range(npol):
-        for atmscan in range(natm):
-            for ant in range(nant):
-                #Select data for this pol, ATM scan and antenna
-                tstart = tmatm[atmscan*nant+ant]
-                if atmscan < natm - 1:
-                    tend = tmatm[(atmscan+1)*nant+ant]
-                else:
-                    tend = tmdataon[-1]
-                sel = np.ma.all([tmdataon >= tstart, tmdataon <= tend, antson == ant], axis=0)
-                nsel = np.sum(sel)
-                if nsel > 0:
-                    #Extract piece of data
-                    thisdata = dataon[pol,:,sel]
-                    normdata[pol,:,sel] = thisdata/(tsys[pol, :, atmscan*nant+ant] - smtrec[pol, :, atmscan*nant+ant])
-    #Renormalize fluctuations
-    #Find median value for each integration and calculate data - median(data)
-    medmedian = np.ma.median(np.ma.median(normdata, axis=1), axis=1)
-    if np.any(np.isnan(medmedian)):
-        return None
-    fqmedian = np.ma.median(normdata, axis=1)
-    fqmedianzeros = (fqmedian <= 0.0)
-    fqmedian[fqmedianzeros] = 1.0
-    renormdata = 0.0*normdata
-    for pol in range(npol):
-        renormdata[pol, :, :] = normdata[pol, :, :]*np.outer(np.ones(nch), medmedian[pol]/fqmedian[pol])
-
-    return renormdata
-
-def selsource2(spw, spwsetup, nu, tmdataon, antson, dataon, tmatm, antatm, tsys, trec, tau, smoothselbox = 0.05, maxmasked = 0.5,
-               ndegree = 3, nclips = 3, nsigma = 5.0, verbose = False):
-    '''Select science target channels and return boolean vector with selection. Task attempts polynomial
-    fits to a baseline of normalized (to Tsys) noise and detect upwards outliers (variance higher than expected
-    from Tsys level). Final best fit gets determined by chi^2 (including extpenalty factor)
-    Positional params: From MS selection:
-                       nu: (freq. vector of SPW), tmdataon (time vector of dataon data selection),
-                       antson: (vector of antenna column of dataon data selection),
-                       dataon: (masked array of selected data),
-                       Data from CALATMOSPHERE table:
-                       tmatm: (vector of times of sel. rows), antatm (vector of antenna IDs of sel. rows)
-                       tsys: (Tsys table), trec (T Receiver table), tau (optical depth table)
-    '''
-    #Initialize variables
-    npol, nch, nint = np.shape(dataon)
-    if smoothselbox > 0.0:
-        box = max(2, int(smoothselbox*len(nu)))
-    else:
-        box = 1
-
-    #Get skylines, if any. Avoid peak of skylines in science target detection
-    skylines = getskylines(tau, spw, spwsetup, fraclevel = 0.7)
-    skymask = skysel(skylines, avoidpeak = 0.0)
-    noskymask = np.ma.logical_not(skymask)
-    #Normalize the standard deviation of the data by Tsys
-    normdata = noisenormdata(tmdataon, antson, dataon, tmatm, antatm, tsys, trec, tau)
-    normsigma = np.ma.sum(np.ma.median(normdata, axis=2), axis=0)
-    #If normalized sigma data array is masked more than maxmasked fraction of data, return an empty selection
-    if (normdata is None) or (np.sum(normsigma.mask) >= maxmasked*nch):
-        return np.zeros(nch)
-    (mu, sig) = robuststats(normsigma)
-    normsigmasigma = np.ma.MaskedArray(np.ones(nch)*sig, mask=normsigma.mask)
-    basenoisefit = sigclipfit(nu, normsigma, normsigmasigma, ndegree, nclips, (99.0, nsigma), bordertokeep = 0.0, smoothselbox=smoothselbox)
-    blmodel = np.ma.sum([basenoisefit['coefs'][i]*(nu**(ndegree-i)) for i in range(ndegree+1)], axis=0)
-    #Select the outliers as probable science target emission channels
-    srcsel = np.ma.logical_not(basenoisefit['sel'])
-    srcsel[skymask] = False
-    finalsrcsel = (enlargesel(srcsel, box) > 0)
-    #basenoisefit = fitbaseline(nu, normsigma, normsigmasigma)
-    #srcsel = (enlargesel(basenoisefit['outliers'], box) > 0)
-
-    if verbose:
-        plt.plot(nu, normsigma, '.k')
-        plt.plot(nu, blmodel, '-b')
-        plt.plot(nu[finalsrcsel], normsigma[finalsrcsel], 'sr')
-        plt.xlabel('Frequency [GHz]')
-        plt.ylabel('Normalized Sigma Amp')
-        plt.savefig('selsource2_normsigma.png')
-
-    return finalsrcsel
-
-def selsource(spw, spwsetup, nu, tmdataon, antson, dataon, tmatm, antatm, tsys, trec, tau,
-              ndegree = 3, nclips = 3, nsigma = 3.0, smoothbox = 0.03, extpenalty = 0.1,
-              verbose = False, maxmasked = 0.5):
-    '''Select science target channels and return boolean vector with selection. Task attempts polynomial
-    fits to a baseline of normalized (to Tsys) noise and detect upwards outliers (variance higher than expected
-    from Tsys level). Final best fit gets determined by chi^2 (including extpenalty factor)
-    Positional params: From MS selection:
-                       nu: (freq. vector of SPW), tmdataon (time vector of dataon data selection),
-                       antson: (vector of antenna column of dataon data selection),
-                       dataon: (masked array of selected data),
-                       Data from CALATMOSPHERE table:
-                       tmatm: (vector of times of sel. rows), antatm (vector of antenna IDs of sel. rows)
-                       tsys: (Tsys table), trec (T Receiver table), tau (optical depth table)
-    Keyword params:
-    ndegree: Maximum degree of polynomial used to fit noise baseline (default=7)
-    nclips: Maximum number of sigma clipping iterations to try in noise baseline fitting (default=5)
-    nsigma: number of sigmas for science source channel selection. (default=3.0)
-    smoothbox: Number of pixels to enlarge science target selection around pixels initially selected through
-               the nsigma excess. Given as fraction of SPW width. (default=0.03)
-    extpenalty: Factor to add a penalty to chi^2 of the fits, equal to extpenalty*(channel_range/number_of_channels)
-    where channel_range is the range of channels of detected science sources. This factor aims at favoring more
-    compact detections. (default=1.0)
-    verbose: Return all fits' selections, fit coefficient and chi^2's instead of only the best fit. Also produces
-    plots for each fit. (default=False)
-    maxmasked: Maximum fraction of data allowed to be masked. If higher than this, return a vector with no selection.
-    '''
-    npol, nch, nint = np.shape(dataon)
-    #Get skylines, if any. Avoid peak of skylines in science target detection
-    skylines = getskylines(tau, spw, spwsetup, fraclevel = 0.3)
-    skymask = skysel(skylines, avoidpeak = 0.0)
-    noskymask = np.ma.logical_not(skymask)
-    #Normalize the standard deviation of the data by Tsys
-    normdata = noisenormdata(tmdataon, antson, dataon, tmatm, antatm, tsys, trec, tau)
-    normsigma = np.ma.sum(np.ma.median(normdata, axis=2), axis=0)
-    #If normalized sigma data array is masked more than maxmasked fraction of data, return an empty selection
-    if (normdata is None) or (np.sum(normsigma.mask) >= maxmasked*nch):
-        return np.zeros(nch)
-    (mu, sig) = robuststats(normsigma)
-    (xbin, mubin, sigbin, mederrbin, chi2bin, mskfracbin, p) = binnedstats(nu, normsigma, np.ones(nch)*sig, nbins = 10)
-    minsig = np.min(sigbin)
-    normsigmasigma = np.ma.MaskedArray(np.ones(nch)*minsig, mask=normsigma.mask)
-    allbasenoisefit = {}
-    allsel = {}
-    allchi2 = []
-    chi2idx = {}
-    invchi2idx = {}
-    chi2cx = 0
-    onlyskysel = {}
-    allressigma = []
-    for nc in range(1, nclips+1):
-        for deg in range(1, ndegree+1):
-            basenoisefit = sigclipfit(nu, normsigma, normsigmasigma, deg, nc, (999.0, nsigma), bordertokeep = 0.05, smoothselbox=smoothbox)
-            sourcesel = np.ma.logical_not(basenoisefit['sel'])
-            sourcesel[normsigma.mask] = False
-            sourcesel[skymask] = False
-            #Measure full extent of selection
-            idxsourcesel = np.where(sourcesel)[0]
-            if len(idxsourcesel) >= 2:
-                extfactor = extpenalty*(np.max(idxsourcesel)-np.min(idxsourcesel))/nch
-            else:
-                extfactor = 0.0
-            allbasenoisefit[(nc, deg)] = basenoisefit
-            allsel[(nc, deg)] = sourcesel
-            noskylinesel = np.ma.all([basenoisefit['sel'], noskymask], axis=0)
-            onlyskysel[(nc,deg)] = np.any([noskylinesel, sourcesel], axis=0)
-            (muaux, sigaux) = robuststats(basenoisefit['residuals'][onlyskysel[(nc,deg)]])
-            allressigma.append(sigaux)
-            chi2idx[chi2cx] = (nc, deg)
-            invchi2idx[(nc, deg)] = chi2cx
-            chi2cx += 1
-    bestsigma = np.min(allressigma)
-    for nc in range(1, nclips+1):
-        for deg in range(1, ndegree+1):
-            #Measure full extent of selection
-            idxsourcesel = np.where(allsel[(nc, deg)])[0]
-            if len(idxsourcesel) >= 2:
-                extfactor = extpenalty*(np.max(idxsourcesel)-np.min(idxsourcesel))/nch
-            else:
-                extfactor = 0.0
-            allchi2.append(np.ma.sum((allbasenoisefit[(nc, deg)]['residuals'][onlyskysel[(nc,deg)]]**2)/(bestsigma**2))/(1.0*np.sum(onlyskysel[(nc,deg)]) - deg - 1)+extfactor)
-    allchi2 = np.array(allchi2)
-    bestfit = np.argsort(allchi2)[0]
-    (bestnc, bestdeg) = chi2idx[bestfit]
-    sourcesel = allsel[(bestnc, bestdeg)]
-    if verbose:
-        for nc in range(1, nclips+1):
-            for deg in range(1, ndegree+1):
-                model = np.ma.sum([allbasenoisefit[(nc, deg)]['coefs'][i]*(nu**(deg-i)) for i in range(deg+1)], axis=0)
-                plt.clf()
-                plt.plot(nu, normsigma, '-k')
-                plt.plot(nu[sourcesel], normsigma[sourcesel], 'sr')
-                plt.plot(nu, model, ':g')
-                plt.text(0.8*np.ma.max(nu)+0.2*np.ma.min(nu), 0.8*np.ma.max(normsigma)+0.2*np.ma.min(normsigma), 'chi2: '+str(allchi2[invchi2idx[(nc,deg)]]))
-                plt.xlabel('Frequency [GHz]')
-                plt.ylabel('Normalized Sigma(Amp)')
-                if (nc == bestnc) and (deg == bestdeg):
-                    plt.title('Normalized Noise plot (best fit)')
-                else:
-                    plt.title('Normalized Noise plot')
-                plt.savefig('selsource_output1_nc'+str(nc)+'_deg'+str(deg)+'.png')
-
-    return sourcesel
 
 def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spwbordertoavoid = 0.025, taudeg = 2):
     '''Get position of sky lines and line widths from the optical depth.
@@ -662,7 +271,7 @@ def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spw
     widthratio = np.zeros(npeak)
     #Fit "baseline" to tau
     nu = spwsetup[spw]['chanfreqs']/1.e09
-    taufit = sigclipfit(nu, np.ma.MaskedArray(tauspec, mask=np.zeros(nch)), 
+    taufit = sigclipfit(nu, np.ma.MaskedArray(tauspec, mask=np.zeros(nch)),
                         np.ma.MaskedArray(np.sqrt(tauspec), mask=np.zeros(nch)), 2, 3, 5.0)
     taubline = np.ma.sum([taufit['coefs'][deg]*(nu**(taudeg-deg)) for deg in range(taudeg + 1)], axis = 0)
     subtau = tauspec - taubline
@@ -726,7 +335,22 @@ def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spw
         output['peaksinfo'][k]['maxrange'] = int(idx + hwhmright[k])
     return output
 
-def gradeskylines(skylines, cntrweight = 1.0):
+def gradeskylines(skylines: dict, cntrweight: float = 1.0):
+    '''Function to calculate a "grade" for each skyline detected by the getskylines() function.
+    These "grades" are based ona  normalized value of the opacity at the skyline peak and the position of
+    the line in the SPW, and is aimed at providing a decision on which skyline to used for model evaluation.
+    param:
+        skylines: (dict) Dictionary of detected skylines indexed by SPW, where each sub-dictionary is as obtained
+                  from getskylines().
+        cntrweight: (float) Relative weight given to the position of the skyline relative to the center of the SPW.
+                    Must be a positive float number between 0 and 1, a value of 0.0 means no weight to position,
+                    a value >0 gives the line a linearly decreasing grade the further it is away from the center of the SPW.
+    returns:
+        A tuple of (spw, peak) that identifies the SPW and id number of the skyline in that SPW that has the best grade.
+        The skyline id number is the same as in the dictionary output from getskylines().
+        Additionally, the grades calculated are saved in the input skylines dictionary, modifiying the original variable.
+    '''
+
     spwlist = np.sort(list(skylines.keys()))
     idxspw = []
     idxpeak = []
@@ -771,6 +395,21 @@ def skysel(skylines, linestouse = 'all', avoidpeak = 0.0):
     return skysel
 
 def calcmetric(rawsample, rawsigmasample, metrictype = 'intabsdiff', smoothbox = 1):
+    '''Function that calculates a metric value for a given piece of spectrum (time-averaged data), typically
+    a section around the skyline selected by its "grade".
+    param:
+        rawsample: (numpy array) Array with the data to be used to compute the metric.
+        rawsigmasample: (numpy array) Noise array related to the data to be used to compute the metric. Noise
+                        estimation typically used is the standard deviation along the time dimension.
+        smoothbox: (int) Run a boxcar smoothing on the data piece before calculating the metric. Value in number of channels.
+        metrictype: (str) String that determines which algorithm to use to calculate the metric value. Options are:
+                    - "intabs": Integral of the absolute value of spectrum piece. (deprecated)
+                    - "maxabs": Maximum of the absolute value of spectrum piece. (deprecated)
+                    - "maxabsdiff": Maximum of the absolute value of the derivative of the spectrum piece.
+                    - "intabsdiff": Integral of the absolute value of the derivative of the spectrum piece.
+                    - "intsqdiff": Integral of the square value of the derivative of the spectrum piece.
+    '''
+
     (npols, nch) = np.shape(rawsample)
     #Smooth if requested
     if (smoothbox > 1) and (type(smoothbox) == int):
@@ -879,18 +518,16 @@ def calcmetric(rawsample, rawsigmasample, metrictype = 'intabsdiff', smoothbox =
     else:
         return -1.0
 
-def bootstrap(data, metrictype = 'intabsdiff', nsample = 100):
-    metric = [calcmetric(data, np.sqrt(data), metrictype = metrictype)[0]]
-    n = len(data)
-    for i in range(nsample):
-        idxsample = np.random.randint(0,n,n)
-        sample = data[idxsample]
-        metric.append(calcmetric(sample, np.sqrt(sample), metrictype = metrictype)[0])
-    metric = np.array(metric)
-    return metric
-
 #Copied over from analysisUtils
 def getSpwList(msmd,intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=False):
+    '''Function to extract and return the list of Science SPWs. Copied from analysisUtils.
+    params:
+        msmd: CASA msmd object used to obtain metadata of the MS.
+        intent: (str) Intent of the dataset queried to obtain SPW list.
+        tdm, fdm, sqld: (bool) Parameters passed to CASA's task msmd.almaspws. First two say whether
+                        to consider TDM and FDM SPWs, third whether to consider SQLD SPWs.
+    returns: List of SPWs
+    '''
     spws = msmd.spwsforintent(intent)
     almaspws = msmd.almaspws(tdm=tdm,fdm=fdm,sqld=sqld)
     scienceSpws = np.intersect1d(spws,almaspws)
@@ -901,7 +538,7 @@ def onlineChannelAveraging(msmd, spws=None):
     """
     For Cycle 3-onward data, determines the channel averaging factor from
     the ratio of the effective channel bandwidth to the channel width.
-    spw: a single value, or a list; if Nonne, then uses science spws
+    spw: a single value, or a list; if None, then uses science spws
     Returns: single value for a single spw, or a list for a list of spws
     -Todd Hunter
     """
@@ -1032,7 +669,14 @@ def getAntennaFlagFrac(ms, fieldid, spwid, spwsetup):
     antflag_frac = [antflag[spwsetup['antnames'][antid]]['flagged']/antflag[spwsetup['antnames'][antid]]['total'] for antid in spwsetup['antids']]
     return antflag_frac
 
-def getCalAtmData(ms, spws, spwsetup):
+def getCalAtmData(ms: str, spws: list, spwsetup: dict):
+    '''Funtion to extract Tsys, Trec, Tatm and tau data from the ASDM's CALATMOSPHERE table.
+    param:
+        ms: MS filename
+        spws: List of SPWs to load
+        spwsetup: Dictionary of metadata obtained from getSpecSetup()
+    '''
+
     tb = createCasaTool(tbtool)
     #Open CALATMOSPHERE table
     tb.open(os.path.join(ms, 'ASDM_CALATMOSPHERE'))
@@ -1096,13 +740,19 @@ def getCalAtmData(ms, spws, spwsetup):
     return (tground_all, pground_all, hground_all, tmatm_all, tsys, trec, tau, antatm)
 
 def makeNANmetrics(fieldid, spwid, nmodels):
-    metricdtypes = np.dtype([('maxabs', float), ('maxabserr', float), ('intabs', float), ('intabserr', float), ('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
+    ''' Returns a dummy metric resuls table used when the metrics cannot be really calculated, in order
+    to be used a place holder and having the same structure as the output from the calcmetric() function.
+    All the metric and metric error entries are np.nan value.
+    params:
+        fieldid: Field ID of field used in atmcorr() for best model identification.
+        spwid: SPW used.
+        nmodels: Number of models attempted.
+    returns: Table given as dictionary with metric tables.
+    '''
+
+    metricdtypes = np.dtype([('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
     metrics = {fieldid: {spwid: np.zeros(nmodels, dtype = metricdtypes)}}
     for k in range(nmodels):
-        metrics[fieldid][spwid]['maxabs'][k] = np.nan
-        metrics[fieldid][spwid]['maxabserr'][k] = np.nan
-        metrics[fieldid][spwid]['intabs'][k] = np.nan
-        metrics[fieldid][spwid]['intabserr'][k] = np.nan
         metrics[fieldid][spwid]['maxabsdiff'][k] = np.nan
         metrics[fieldid][spwid]['maxabsdifferr'][k] = np.nan
         metrics[fieldid][spwid]['intabsdiff'][k] = np.nan
@@ -1115,6 +765,33 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
              tau = None, title = None, output = None, isize = 300, psize = 2,
              highbuf = 0.5, lowbuf = 0.3, atmhighbuf = 0.05,
              diffsmoothbox = 1, ischosen = None, takediff = False, xlabel = None, ylabel = None):
+    '''Function to produce time-averaged Real v/s Frequency scatter plot, optionally including several markers for
+    sky line channel selection, science line channel selection, fitted baseline curve, atmospheric opacity
+    curve. Additionally, data can be plotted in diff mode: plot Value(channel n+1) - Value(channel n)
+    i.e. the derivative of the data to be plotted.
+    params:
+        nu: (numpy array) Array of channel frequencies (x-axis).
+        tmavedata: (numpy array) Array of y-axis (Real value, or Amplitude) data.
+        skychansel: (numpy boolean array) Data selection vector used to mark sky line selection channels.
+        scisrcsel: (numpy boolean array) Data selection vector used to mark science line channels.
+        bline: (numpy boolean array) Fitted baseline to be plotted on top of tmavedata.
+        tau: (numpy boolean array) Opacity data.
+        title: (str) Title for the plot.
+        output: (str) Path and filename for output PNG image file.
+        isize: (int) Number of DPI to be used when saving PNG file.
+        psize: (int) Marker size for data points.
+        lowbuf, highbuf: (float) Image y-axis margins at the lower and upper part, respectively, given as
+                         a fraction of the data range in the y-axis.
+        atmhighbuf: (float) Border to add to atmospheric transmission in the upper part of the plot, given as
+                    a fraction of the transmission range of the opacity data.
+        diffsmoothbox: (int) Size of boxcar smoothing applied to data, if required. Default of 1 means no smoothing.
+        ischosen: (bool) True/False Whether this plot is for the selected model. If equal to True, will print string
+                  "Applied" in upper right corner of the plot, otherwise will print "Discarded".
+        takediff: (bool) True/False Whether to take a np.diff() of the data before plotting.
+        xlabel: (str) x-axis label. If none given, defaults to "Freq [GHz]"
+        ylabel: (str) y-axis label. If none given, defaults to "Corr Amp [Jy]"
+                (or "Abs(Amp[i+1]-Amp[i])", if takediff=True)
+    '''
 
     (npol, nchan) = np.shape(tmavedata)
     #Choose whether to plot data as-is or its derivative
@@ -1124,13 +801,19 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
             ydata[ipol] = np.ma.abs(np.ma.diff(tmavedata[ipol]))
             ydata.mask[ipol] = tmavedata.mask[ipol][1:]
         xdata = nu[1:]
-        seldata = scisrcsel[1:]
+        if scisrcsel is not None:
+            seldata = scisrcsel[1:]
+        else:
+            seldata = None
         if ylabel is None:
             ylabel = 'Abs(Amp[i+1]-Amp[i])'
     else:
         ydata = tmavedata
         xdata = nu
-        seldata = scisrcsel
+        if scisrcsel is not None:
+            seldata = scisrcsel
+        else:
+            seldata = None
         if ylabel is None:
             ylabel = 'Corr Amp [Jy]'
     #Also apply smoothing if requested
@@ -1169,12 +852,13 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
     ax1.set_title(title)
     for ipol in range(npol):
         thisstyle = ('blue' if (ipol == 0) else 'red')
-        ax1.plot(xdata, ydata[ipol], '.', color=thisstyle, markersize=psize)
-        if np.sum(scisrcsel) > 0:
+        pol_label = ('Pol XX' if (ipol == 0) else 'Pol YY')
+        ax1.plot(xdata, ydata[ipol], '.', color=thisstyle, markersize=psize, label=pol_label)
+        if seldata is not None:
             ax1.plot(xdata[seldata], ydata[ipol][seldata], '.', color='green', markersize=psize)
         if bline is not None:
             ax1.plot(nu, bline[ipol], '--', color=thisstyle)
-
+    ax1.legend(loc = 'upper left')
     ax1.set_xlabel(xlabel)
     ax1.set_ylabel(ylabel)
     ax1.set_xlim((xmin,xmax))
@@ -1196,9 +880,27 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
         ymin2 = mintr - lowbuf2*trrange
         ymax2 = maxtr + atmhighbuf*trrange
         ywin = ymin2 + 0.1*lowbuf2*trrange
-        ax2 = ax1.twinx() 
+        ywintxt = ymin2 + 0.05*lowbuf2*trrange
+        ax2 = ax1.twinx()
         if np.sum(skychansel) > 0:
-            ax2.plot(nu[skychansel], ywin*np.ones(np.sum(skychansel)), 's', color='black', markersize=psize)
+            skyline_channels = np.where(skychansel)[0]
+            # detect non-contiguous boundaries
+            skyline_boundaries = np.where(np.diff(skyline_channels) > 1)[0]
+            left_edge = [0] + (skyline_boundaries + 1).tolist()
+            right_edge = skyline_boundaries.tolist() + [len(skyline_channels) - 1]
+            # draw channel range for each skyline
+            for imin, imax in zip(left_edge, right_edge):
+                minskychan = skyline_channels[imin]
+                maxskychan = skyline_channels[imax]
+                if nu[0] < nu[-1]:
+                    # USB
+                    chan_label = f'{minskychan}~{maxskychan}'
+                else:
+                    # LSB
+                    chan_label = f'{maxskychan}~{minskychan}'
+                sel = skychansel[minskychan:maxskychan + 1]
+                ax2.plot(nu[minskychan:maxskychan + 1], ywin*np.ones(len(sel)), 's', color='black', markersize=psize)
+                ax2.text(np.min(nu[minskychan:maxskychan + 1]), ywintxt, chan_label, fontsize = 9, color = 'black', fontweight = 'normal')
         ax2.plot(nu, transm, linestyle='solid', linewidth=1.0, color='magenta')
         ax2.set_ylim((ymin2, ymax2))
         ax2.set_yticks([mintr, 0.5*(maxtr+mintr), maxtr])
@@ -1212,10 +914,8 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
 def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             maxalt = 120.0, lapserate = -5.6, scaleht = 2.0,
             jyperkfactor = None, dobackup = False, forcespws = None, forcefield = None, forcemetricline = None,
-            blinedeg = 3, blinenclip = 1, blinensigma = 5.0, maxonlyspw = False,
-            minpeaklevel = 0.05, timestamp = None, plotsfolder = None, diffsmooth = 0.002,
-            psize = 2, isize = 300, plotbline = False,
-            defatmtype = 1, defmaxalt = 120, deflapserate = -5.6, defscaleht = 2.0,
+            maxonlyspw = False, minpeaklevel = 0.05, timestamp = None, plotsfolder = None, diffsmooth = 0.002,
+            psize = 2, isize = 300, defatmtype = 1, defmaxalt = 120, deflapserate = -5.6, defscaleht = 2.0,
             decisionmetric = 'intabsdiff'):
     ''' Task to apply CSV-3320 correction for atmospheric lines.
     Parameter list:
@@ -1231,13 +931,9 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     jyperkfactor: Dictionary of Jy/K factors for each EB, antenna and SPW. Default will
     assume a factor of 1.0. To be obtained from getJyperKfromCSV() function
     dobackup: Whether to do a backup of the MS before applying the correction.
-    (True/False) Default is True. 
+    (True/False) Default is True.
     forcespws: Force the list of SPWs to process. If not specified, task will do all SPWs.
     forcefield: Force the FIELD ID to process. If not specified task will pick the first one.
-    blinedeg: Degree of the baseline fitting polynomial.
-    blinenclip: Number of sigma clipping iterations to use in the baseline fitting routine.
-    blinensigma: Significance in number of sigmas for the sigma clipping routine that fit the
-    baseline polynomial.
     maxonlyspw: Whether to select the SPW with largest skyline only. (Default: True)
     timestamp: Timestamp string to use for the model plots folder
     plotsfolder: Explicit folder name for model plots folder. If given, timestamp will be ignored.
@@ -1315,10 +1011,8 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
 
     #Search for sky lines
     skylines = {}
-    skylinesbroad = {}
     for spwid in spws:
         skylines[spwid] = getskylines(tau[spwid], spwid, spwsetup, fraclevel = 0.3, minpeaklevel = minpeaklevel)
-        skylinesbroad[spwid] = getskylines(tau[spwid], spwid, spwsetup, fraclevel = 0.2, minpeaklevel = minpeaklevel)
 
     #Select SPWs to process
     spwstoprocess = []
@@ -1370,7 +1064,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     modtypes = np.dtype([('atmtype', int), ('maxalt', float), ('lapserate', float), ('scaleht', float)])
     models = np.array([model for model in product(atmtype, maxalt, lapserate, scaleht)], dtype = modtypes)
     nmodels = len(models)
-    metricdtypes = np.dtype([('maxabs', float), ('maxabserr', float), ('intabs', float), ('intabserr', float), ('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
+    metricdtypes = np.dtype([('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
     print('fieldid: '+str(fieldid)+' spwstoprocess: '+str(spwstoprocess))
     #Create metric output dictionary
     if (len(spwstoprocess) > 0) and (jyperkfactor is not None):
@@ -1465,17 +1159,15 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         data = subtb.getcol(datacolumn)
         flag = subtb.getcol('FLAG')
         flagrow = subtb.getcol('FLAG_ROW')
-        ant1 = subtb.getcol('ANTENNA1')
         npol = data.shape[0]
         #Add the flag ROW flag to the individual row flag arrays,
         #in order to use only one array.
         flaggedrowlist = np.where(flagrow)[0]
         for row in flaggedrowlist:
-            flag[:,:,row] = np.logical_or(flag[:,:,row],~flag[:,:,row])
+            flag[:,:,row] = True
+            #flag[:,:,row] = np.logical_or(flag[:,:,row],~flag[:,:,row])
         #Create selection vector for on-source rows
         onsel = selectRanges(tmdata, onsourcetab)
-        tmdataon = tmdata[onsel]
-        antson = ant1[onsel]
 
         #Create masked data numpy array for ease of use, cdata to contain the data before correction
         #and diffbuffer after correction
@@ -1487,31 +1179,10 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         precorravedataon = np.ma.mean(dataon, axis = 2)
         maskedchans = np.any(precorravedataon.mask, axis = 0)
 
-        #scisrcsel = selsource2(spwid, spwsetup, nu, tmdataon, antson, dataon, tmatm_all[spwid], antatm[spwid], tsys[spwid], trec[spwid], tau[spwid])
-        scisrcsel = selsource(spwid, spwsetup, nu, tmdataon, antson, dataon, tmatm_all[spwid], antatm[spwid], tsys[spwid], trec[spwid], tau[spwid])
-        if (scisrcsel is not None) and (len(scisrcsel) > 0):
-            scisrcsel[maskedchans] = False
-            nchsci = int(np.sum(scisrcsel))
-        else:
-            nchsci = 0
-        isscisrc = (nchsci > 0)
-        #Create a selection vector for baseline subtraction including the line but removing possible
-        #overlap with science target channels
-        #Narrow sky channels selection for measuring the metrics, broad for baseline fitting
+        #Narrow sky channels selection for measuring the metrics
         skychansel = skysel(skylines[spwid], linestouse = metricskylineids)
         skychansel[maskedchans] = False
-        skychanselbroad = skysel(skylinesbroad[spwid])
-        skychanselbroad[maskedchans] = False
-        #Make baseline channel selection excluding both science target and sky lines
-        baselinesel = np.ones(len(nu), dtype=bool)
-        if isscisrc:
-            skychansel[scisrcsel] = np.zeros(nchsci, dtype=bool)
-            skychanselbroad[scisrcsel] = np.zeros(nchsci, dtype=bool)
-            baselinesel[scisrcsel] = np.zeros(nchsci, dtype=bool)
-        baselinesel[skychanselbroad] = np.zeros(int(np.sum(skychanselbroad)), dtype=bool)
         #Initialize variables for baseline subtraction
-        blinefit = {}
-        blinemodel = {}
         metricnorm = -99
 
         #If we are left with no channels with skylines, we are in trouble
@@ -1523,8 +1194,6 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             return (bestmodels, models, metrics, fitstatus, spwstoprocess, metricskylineids)
 
         #Pre-correction average
-        #precorrdataon = np.transpose(np.transpose(cdata)[onsel])
-        #precorravedataon = np.ma.mean(precorrdataon, axis = 2)
         normsample = dataon[:,skychansel]
         #Try to calculate the normalizing value for the metrics
         #If is cannot calculate it, fill default value of 1
@@ -1535,47 +1204,22 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             print('Could not determine normalization of data! is all of it flagged??')
             metricnorm = 1.0
 
-        # xmin = np.min(nu) - 0.02*(np.max(nu)-np.min(nu))
-        # xmax = np.max(nu) + 0.02*(np.max(nu)-np.min(nu))
-        # try:
-        #     mindata0 = np.ma.min(precorravedataon)
-        #     maxdata0 = np.ma.max(precorravedataon)
-        #     ymin0 = mindata0 - 1.0*np.abs(maxdata0 - mindata0)
-        #     ymax0 = maxdata0 + 1.0*np.abs(maxdata0 - mindata0)
-        #     yatm0 = maxdata0 + 0.5*np.abs(maxdata0 - mindata0)
-        # except:
-        #     print('Could not determine normalization of data! is all of it flagged??')
-        #     ymin0 = -1.0
-        #     ymax0 = 1.0
-        #     yatm = 0.5
-
         #Plot data before correction
-        # plt.clf()
-        # for ipol in range(npol):
-        #     thisstyle = ('blue' if (ipol == 0) else 'red')
-        #     plt.plot(nu, precorravedataon[ipol], '.', color=thisstyle, markersize=psize)
-        #     if isscisrc:
-        #         plt.plot(nu[scisrcsel], precorravedataon[ipol][scisrcsel], '.', color='green', markersize=psize)
-        #     #plt.plot(nu[skychansel], precorravedataon[ipol][skychansel], 's', color='magenta', markersize=psize)
-        #     plt.plot(nu[skychansel], yatm0*np.ones(np.sum(skychansel)), 's', color='magenta', markersize=psize)
-        # plt.xlabel('Freq [Ghz]')
-        # plt.ylabel('Corr Amp [Jy]')
-        # strmodel = 'EB:{0:s}\nSPW:{1:s}, Field:{2:s}'.format(ms, str(spwid), spwsetup['namesfor'][str(fieldid)][0])
-        # plt.title('Uncorrected data '+strmodel)
-        # plt.xlim((xmin,xmax))
-        # plt.ylim((ymin0,ymax0))
-        # plt.savefig(plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.nocorr.'+str(k)+'.old.png',dpi=isize)
-        makePlot(nu=nu, tmavedata=precorravedataon, skychansel=skychansel, scisrcsel=scisrcsel, tau=tau[spwid],
+        makePlot(nu=nu, tmavedata=precorravedataon, skychansel=skychansel, tau=tau[spwid],
                  title=strmodel, diffsmoothbox=1, takediff=False, ischosen=None, isize = isize, psize = psize,
                  output=plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.nocorr.png')
 
     #End of processing uncorrected dataset, close it
     tb.close()
 
+    #Delete big variables to reduce memory consumption
+    del(tmdata)
+    del(data)
+    del(flag)
+    del(flagrow)
+
     #Lists of plots to do after looping over all models
     plotlist = []
-    plotlistnobline = []
-    plotlistdiff = []
 
     #Open uncorrected data to measure skylines and presence of science target
     for spwid in spwstoprocess:
@@ -1603,7 +1247,8 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             #in order to use only one array.
             flaggedrowlistk = np.where(flagrowk)[0]
             for row in flaggedrowlistk:
-                flagk[:,:,row] = np.logical_or(flagk[:,:,row],~flag[:,:,row])
+                flagk[:,:,row] = True
+                #flagk[:,:,row] = np.logical_or(flagk[:,:,row],~flag[:,:,row])
 
             #Create selection vector for on-source rows
             onselk = selectRanges(tmdatak, onsourcetab)
@@ -1618,57 +1263,17 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             tmavedataonk = np.ma.mean(diffdataonk, axis = 2)
             tmstddataonk = np.ma.std(diffdataonk, axis = 2)/np.sqrt(nrowk)
 
-            #Fit baseline
-            for ipol in range(npol):
-                blinefit[ipol] = fitbaseline(nu[baselinesel], tmavedataonk[ipol][baselinesel], tmstddataonk[ipol][baselinesel])
-                if not (blinefit[ipol]['blfit'] is None):
-                    blinemodel[ipol] = blinefit[ipol]['blfit'](nu)
-                else:
-                    blinemodel[ipol] = 0.0*tmavedataonk[ipol]
-                #blinefit[ipol] = sigclipfit(nu[baselinesel], tmavedataonk[ipol][baselinesel], tmstddataonk[ipol][baselinesel], blinedeg, blinenclip, blinensigma, bordertokeep = 0.05, smoothselbox = 0.0)
-                #blinemodel[ipol] = np.ma.sum([blinefit[ipol]['coefs'][deg]*(nu**(blinedeg-deg)) for deg in range(blinedeg+1)], axis = 0)
-            #Compute baseline subtracted data
-            blinesubdataon = 0.0*tmavedataonk
-            for ipol in range(npol):                    
-                blinesubdataon[ipol] = tmavedataonk[ipol] - blinemodel[ipol]
-
             #Plot corrected data with baseline fit, etc.
-            if plotbline:
-                bline = blinemodel
-            else:
-                bline = None
-            plotlist.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel, 'scisrcsel': scisrcsel,
-                             'tau': tau[spwid], 'title': 'Model '+strmodel, 'diffsmoothbox': 1, 
-                             'takediff': False, 'ischosen': False, 'bline': bline,
+            plotlist.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel,
+                             'tau': tau[spwid], 'title': 'Model '+strmodel, 'diffsmoothbox': 1,
+                             'takediff': False, 'ischosen': False,
                              'isize': isize, 'psize': psize,
                              'output': plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.model.'+str(k)+'.png'})
 
-
-            #Plot corrected data without baseline
-            plotlistnobline.append({'nu': nu, 'tmavedata': blinesubdataon, 'skychansel': skychansel,
-                                    'scisrcsel': scisrcsel, 'tau': tau[spwid], 'title': 'Model '+strmodel,
-                                    'diffsmoothbox': 1, 'takediff': False, 'ischosen': False,
-                                    'isize': isize, 'psize': psize, 'ylabel': 'Corr Amp (-baseline) [Jy]',
-                                    'output': plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.model.'+str(k)+'.nobline.png'})
-
-            #Plot corrected data absolute value of derivative
-            plotlistdiff.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel,
-                                    'scisrcsel': scisrcsel, 'tau': tau[spwid], 'title': 'Model '+strmodel,
-                                    'diffsmoothbox': diffsmoothbox, 'takediff': True, 'ischosen': False,
-                                    'isize': isize, 'psize': psize,
-                                    'output': plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.model.'+str(k)+'.absdiff.png'})
-
             #Select sample data for metrics
-            skysamplenobline = blinesubdataon[:,skychansel]/metricnorm
             skysample = tmavedataonk[:,skychansel]/metricnorm
             skysamplesigma = tmstddataonk[:,skychansel]/(metricnorm*np.sqrt(nrowk))
             #Calculate metrics
-            (maxabs, maxabserr) = calcmetric(skysamplenobline, skysamplesigma, metrictype='maxabs')
-            metrics[fieldid][spwid]['maxabs'][k] = maxabs
-            metrics[fieldid][spwid]['maxabserr'][k] = maxabserr
-            (intabs, intabserr) = calcmetric(skysamplenobline, skysamplesigma, metrictype='intabs')
-            metrics[fieldid][spwid]['intabs'][k] = intabs
-            metrics[fieldid][spwid]['intabserr'][k] = intabserr
             (maxabsdiff, maxabsdifferr) = calcmetric(skysample, skysamplesigma, metrictype='maxabsdiff', smoothbox = diffsmoothbox)
             metrics[fieldid][spwid]['maxabsdiff'][k] = maxabsdiff
             metrics[fieldid][spwid]['maxabsdifferr'][k] = maxabsdifferr
@@ -1697,14 +1302,10 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     #Set best model plot parameter as "Accepted"
     if idxbestmodel is not None:
         plotlist[idxbestmodel]['ischosen'] = True
-        plotlistnobline[idxbestmodel]['ischosen'] = True
-        plotlistdiff[idxbestmodel]['ischosen'] = True
 
     #Create all model plots
     for idx in range(len(plotlist)):
         makePlot(**plotlist[idx])
-        makePlot(**plotlistnobline[idx])
-        makePlot(**plotlistdiff[idx])
 
     return (bestmodels, models, metrics, fitstatus, spwstoprocess, metricskylineids)
 
@@ -1781,13 +1382,11 @@ def getJyperKfromCaltable(mslist, context):
     return output
 
 def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetric = 'intabsdiff',
-                      iant = 'auto', atmtype = [1,2,3,4], maxalt = [120], 
+                      iant = 'auto', atmtype = [1,2,3,4], maxalt = [120],
                       lapserate = [-5.6], scaleht = [2.0], resultsfile = None, plotsfolder = None,
-                      forcespws = None, forcefield = None, forcemetricline = None, blinedeg = 5, blinenclip = 1, 
-                      blinensigma = 10.0, maxonlyspw = False, minpeaklevel = 0.05,
+                      forcespws = None, forcefield = None, forcemetricline = None, maxonlyspw = False, minpeaklevel = 0.05,
                       timestamp = None, diffsmooth = 0.002, psize = 2, isize = 300,
-                      defatmtype = 1, defmaxalt = 120, deflapserate = -5.6, defscaleht = 2.0,
-                      plotbline = False):
+                      defatmtype = 1, defmaxalt = 120, deflapserate = -5.6, defscaleht = 2.0):
     '''
     Positional parameters: mslist, context
     mslist: List of MS filenames to be processed.
@@ -1862,9 +1461,9 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
             atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = iant, atmtype = atmtype, maxalt = maxalt, lapserate = lapserate,
                     scaleht = scaleht, jyperkfactor = jyperkfactor, dobackup = False,
                     forcespws = spwstoprocess, plotsfolder = plotsfolder,
-                    forcefield = forcefield, forcemetricline = metricskylineids, blinedeg = blinedeg, blinenclip = blinenclip,
-                    blinensigma = blinensigma, maxonlyspw = maxonlyspw, minpeaklevel = minpeaklevel, timestamp = timestamp,
-                    diffsmooth = diffsmooth, psize = psize, isize = isize, plotbline = plotbline,
+                    forcefield = forcefield, forcemetricline = metricskylineids,
+                    maxonlyspw = maxonlyspw, minpeaklevel = minpeaklevel, timestamp = timestamp,
+                    diffsmooth = diffsmooth, psize = psize, isize = isize,
                     defatmtype=defatmtype, defmaxalt=defmaxalt, deflapserate=deflapserate, defscaleht=defscaleht,
                     decisionmetric = decisionmetric)
 
@@ -1905,24 +1504,12 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
 
     return (bestmodels, models, metrics, fitstatus)
 
-def getSBData(asdm):
-    f = open(asdm+'/SBSummary.xml', 'r')
-    sbuid = ''
-    for line in f:
-        item = line.split()
-        if (len(item) == 5) and ('EntityRef' in item[0]) and ('SchedBlock' in item[3]):
-            sbuid = item[1].split('=')[1].replace('"','')
-    sqlfmt = """SELECT PRJ_ARCHIVE_UID, PRJ_CODE, MOUS_STATUS_UID, ARCHIVE_UID AS SB_UID, SB_NAME FROM (SELECT PRJ_ARCHIVE_UID, PRJ_CODE FROM ALMA.BMMV_OBSPROJECT) JOIN (SELECT ARCHIVE_UID, PRJ_REF, MOUS_STATUS_UID, SB_STATUS_UID, SB_NAME FROM ALMA.BMMV_SCHEDBLOCK WHERE ARCHIVE_UID = '*SBUID*') ON PRJ_ARCHIVE_UID = PRJ_REF"""
-    sql = sqlfmt.replace('*SBUID*', sbuid)
-    conn = connect(almaoracleauth)
-    cursor = conn.cursor()
-    print('Querying the archive for : '+sql)
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    return result[0]
-
 def getTimeStamp(timefmt = '{0:04d}{1:02d}{2:02d}{3:02d}{4:02d}{5:02d}'):
-    #Get timestamp for output folders and files
+    '''Function to generate a timestamp for output folders and files.
+    param:
+        timefmt: (str) Python string format string, to be used with the string.format() function.
+    returns: String of timestamp.
+    '''
     aux = systime.localtime()
     timestamp = timefmt.format(aux.tm_year, aux.tm_mon, aux.tm_mday, aux.tm_hour, aux.tm_min, aux.tm_sec)
     return timestamp
@@ -1943,7 +1530,7 @@ def redPipeSDatmcorr(iant = 'auto', atmtype = [1, 2, 3, 4],
     scaleht: h0 parameter for at (water scale height; km). Default is 2.0
     decisionmetric: Metric to use to take the decision on best model selection (see selectModelParams())
     metricspws: List of SPWs to use for model selection. Parameter gets passed to task selectModelParams() as forcespws.
-    metricfield: List of Field to use for model selection. Currently only supported one. 
+    metricfield: List of Field to use for model selection. Currently only supported one.
     Parameter gets passed to task selectModelParams() as forcefield.
     dobackup: Whether to do a backup of the MS before applying the correction.
     (True/False) Default is True
@@ -1980,10 +1567,6 @@ def redPipeSDatmcorr(iant = 'auto', atmtype = [1, 2, 3, 4],
         os.system('ln -s ../'+asdm+' working/'+asdm)
     #es = aU.stuffForScienceDataReduction()
     #Get Project Code and MOUS uid to enter dat into the context
-    if accessarchive:
-        (prjuid, pcode, mousstatusuid, sbuid, sbname) = getSBData(asdmlist[0])
-    else:
-        print('Could not access ALMA oracle database, set Project Code and MOUS uid manually.')
 
     os.chdir('working')
     context = h_init()
