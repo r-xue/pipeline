@@ -395,4 +395,3 @@ class residualsSummaryChart(object):
                 return None
 
         return wrapper
-

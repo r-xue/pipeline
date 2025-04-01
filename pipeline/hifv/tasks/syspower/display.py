@@ -31,9 +31,13 @@ class syspowerBoxChart(object):
         figfile = self.get_figfile(prefix)
 
         antenna_names = [a.name for a in self.ms.antennas]
-
+        # Positions of the boxes; ticks and limits are automatically set to match.
+        # Defaults to range(1, N+1), where N is the number of boxes to be drawn.
+        # Reference: https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.boxplot.html
+        # Hence, adding 1 to antenna ids
+        antenna_ids = [a.id+1 for a in self.ms.antennas]
         # box plot of Pdiff template
-        dat_common = self.dat_common # self.result.dat_common
+        dat_common = self.dat_common  # self.result.dat_common
         clip_sp_template = self.result.clip_sp_template
 
         LOG.info("Creating syspower box chart for {!s}-band...".format(self.band))
@@ -45,7 +49,8 @@ class syspowerBoxChart(object):
         ant_dat = np.ma.masked_outside(ant_dat, clip_sp_template[0], clip_sp_template[1])
         ant_dat_filtered = [ant_dat[i][~ant_dat.mask[i]] for i in range(dshape[0])]
         plt.boxplot(ant_dat_filtered, whis=10, sym='.')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=50)
+        plt.xticks(antenna_ids, antenna_names)
         plt.ylim(clip_sp_template[0], clip_sp_template[1])
         plt.ylabel('Template Pdiff   {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
@@ -111,7 +116,8 @@ class syspowerBarChart(object):
         # fraction of flagged data in Pdiff template
         percent_flagged_by_antenna = [100. * np.sum(ant_dat.mask[i]) / ant_dat.mask[i].size for i in range(dshape[0])]
         plt.bar(list(range(dshape[0])), percent_flagged_by_antenna, color='red')
-        plt.xticks(rotation=45)
+        plt.xticks(rotation=50)
+        plt.xticks(np.arange(0, len(antenna_names)), antenna_names)
         plt.ylabel('Fraction of Flagged Solutions (%)     {!s}-band'.format(self.band))
         plt.xlabel('Antenna')
 
@@ -480,14 +486,13 @@ class syspowerPerAntennaChart(object):
                 clip_sp_template = self.result.clip_sp_template
                 plotrange = [-1, -1, clip_sp_template[0], clip_sp_template[1]]
 
+            # Get antenna name
+            domain_antennas = self.ms.get_antenna(antPlot)
+            idents = [a.name if a.name else a.id for a in domain_antennas]
+            antName = ','.join(idents)
+
             if not os.path.exists(figfile):
                 try:
-                    # Get antenna name
-                    antName = antPlot
-                    if antPlot != '':
-                        domain_antennas = self.ms.get_antenna(antPlot)
-                        idents = [a.name if a.name else a.id for a in domain_antennas]
-                        antName = ','.join(idents)
 
                     LOG.debug("Sys Power Plot, using antenna={!s}".format(antName))
 
@@ -518,10 +523,10 @@ class syspowerPerAntennaChart(object):
                                                 clearplots=cplots[pindex],
                                                 title='Sys Power ' + tabletype +
                                                       '.tbl  Antenna: {!s}  {!s}-band  {!s}  spw: {!s}   {!s}'.format(antName,
-                                                                                                         self.band,
-                                                                                                         baseband,
-                                                                                                         spwtouse,
-                                                                                                         mean_freq),
+                                                                                                                      self.band,
+                                                                                                                      baseband,
+                                                                                                                      spwtouse,
+                                                                                                                      mean_freq),
                                                 titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile, scan=self.science_scan_ids)
 
                         job.execute()

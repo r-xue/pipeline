@@ -22,6 +22,9 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.get_logger(__name__)
 
+# Threshold of the elevation difference of QA score
+ELEVATION_DIFFERENCE_THRESHOLD = 3.0  # deg
+
 
 class SDSkyCalInputs(vdp.StandardInputs):
     """Inputs class for SDSkyCal task."""
@@ -250,7 +253,6 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
     """Generate sky calibration table."""
 
     Inputs = SDSkyCalInputs
-    ElevationDifferenceThreshold = 3.0  # deg
 
     def prepare(self) -> SDSkyCalResults:
         """Prepare arguments for CASA job and execute it.
@@ -376,40 +378,6 @@ class SerialSDSkyCal(basetask.StandardTaskTemplate):
         Returns:
             Updated SDSkyCalResults instance.
         """
-        # compute elevation difference between ON and OFF and
-        # warn if it exceeds elevation threshold
-        threshold = self.ElevationDifferenceThreshold
-        context = self.inputs.context
-        resultdict = compute_elevation_difference(context, result)
-        ms = self.inputs.ms
-
-        spectralspecs = ms.get_spectral_specs()
-        spectralspecs_spwids = {}
-        for ss in spectralspecs:
-            spw_ss = ms.get_spectral_windows(science_windows_only=True, spectralspecs = [ss])
-            list_spwids = [x.id for x in spw_ss]
-            if len(list_spwids) == 0:
-                continue
-            else:
-                spectralspecs_spwids[ss] = list_spwids
-
-        for list_spwids in spectralspecs_spwids.values():
-            spwid0 = list_spwids[0]
-            for field_id, eldfield in resultdict.items():
-                for antenna_id, eldant in eldfield.items():
-                    assert spwid0 in eldant
-                    eldiff0 = eldant[spwid0].eldiff0
-                    eldiff1 = eldant[spwid0].eldiff1
-                    eldiff = numpy.append(eldiff0, eldiff1)
-                    if len(eldiff) > 0:
-                        eldmax = numpy.max(numpy.abs(eldiff))
-                        if eldmax >= threshold:
-                            field_name = ms.fields[field_id].name
-                            antenna_name = ms.antennas[antenna_id].name
-                            LOG.warning('Elevation difference between ON and OFF for {} field {} antenna {} spw {} was {}deg'
-                                        ' exceeding the threshold of {}deg'
-                                        ''.format(ms.basename, field_name, antenna_name, list_spwids, eldmax, threshold))
-
         return result
 
 
@@ -420,7 +388,6 @@ class SDSkyCal(sessionutils.ParallelTemplate):
 
     Inputs = SDSkyCalInputs
     Task = SerialSDSkyCal
-
 
 def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict:
     """Compute elevation difference.
@@ -457,22 +424,9 @@ def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -
             assert len(fields) > 0
             field_id_on = fields[0].id
 
-        #if ms.basename not in resultdict:
-        #    resultdict[ms.basename] = {}
-
         antenna_ids = [ant.id for ant in ms.antennas]
 
-        # representative spw
         science_spw = ms.get_spectral_windows(science_windows_only=True)
-#         # choose representative spw based on representative frequency if it is available
-#         if hasattr(ms, 'representative_target') and ms.representative_target[1] is not None:
-#             qa = casa_tools.quanta
-#             rep_freq = ms.representative_target[1]
-#             centre_freqs = [qa.quantity(spw.centre_frequency.str_to_precision(16)) for spw in science_spw]
-#             freq_diffs = [abs(qa.sub(cf, rep_freq).convert('Hz')['value']) for cf in centre_freqs]
-#             spw_id = science_spw[numpy.argmin(freq_diffs)].id
-#         else:
-#             spw_id = science_spw[0].id
 
         calfroms = calapp.calfrom
 
