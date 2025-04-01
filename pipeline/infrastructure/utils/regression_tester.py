@@ -44,20 +44,23 @@ class PipelineRegression(object):
             expectedoutput_dir: Optional[str] = None
             ):
         """
-        Constructor of PipelineRegression object. A list of MeasurementSet names is required input through the `visname` variable.
-        Either recipe or ppr variables must be provided; ppr will take precedent if both are provided.
+        Initializes a PipelineRegression instance.
+
+        A list of MeasurementSet names (`visname`) is required. Either `ppr` or `recipe` must be provided; 
+        if both are given, `ppr` takes precedence.
 
         Args:
-            visname: list of names of MeasurementSets
-            ppr: PPR file name
-            recipe: recipe XML file name
-            project_id: project ID; included at the beginning of the output_dir if provided
-            input_dir: path to directory contains input files
-            output_dir: path to directory to output. If None, it sets visname
-            expectedoutput_file: path to a file that defines expected output of a test. Will override expectedoutput_dir if that is 
-                                 also specified.
-            expectedoutput_dir: path to a directory which contains 1 or more expected output files. Not used if expectedoutput_file 
-                                is specified.
+            visname: List of MeasurementSets used for testing.
+            ppr: Path to the PPR file. Takes precedence over `recipe` if both are provided.
+            recipe: Path to the recipe XML file.
+            project_id: Project ID. If provided, it is prefixed to the `output_dir` name.
+            input_dir: Path to the directory containing input files.
+            output_dir: Path to the output directory. If `None`, it is derived using `visname` and/or `project_id`.
+            expectedoutput_file: Path to a file defining the expected test output. Overrides `expectedoutput_dir` if set.
+            expectedoutput_dir: Path to a directory containing expected output files. Ignored if `expectedoutput_file` is set.
+
+        Raises:
+            ValueError: If neither `ppr` nor `recipe` is provided.
         """
         self.visname = visname
         if not recipe and not ppr:
@@ -244,7 +247,7 @@ class PipelineRegression(object):
         """
         Run test with PPR if supplied or recipereducer if no PPR and compared to expected results.
 
-        The inputs and expectd output are usually found in the pipeline data repository.
+        The inputs and expected output are usually found in the pipeline data repository.
 
         Args:
             telescope: string 'alma' or 'vla'
@@ -433,7 +436,7 @@ class PipelineRegression(object):
         elif telescope == 'vla':
             executevlappr.executeppr(ppr_local, importonly=False)
         else:
-            LOG.error("Telescope is not 'alma' or 'vla'.  Can't run executeppr.")
+            LOG.error("Telescope is not 'alma' or 'vla'. Can't run executeppr.")
 
     def __run_reducer(self, input_vis: List[str]) -> None:
         """
