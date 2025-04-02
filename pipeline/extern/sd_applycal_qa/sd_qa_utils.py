@@ -62,9 +62,9 @@ def segmentEdges(seq, gap, label, sortdata = True):
     if np.sum(isgap) > 0:
         startseg = seq[np.append([True],isgap)]
         endseg = seq[np.append(isgap,[True])]
-        output = np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.unicode_,40)]))
+        output = np.array([(startseg[i], endseg[i], label) for i in range(len(startseg))], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
     else:
-        output = np.array([(seq[0], seq[-1], label)], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.unicode_,40)]))
+        output = np.array([(seq[0], seq[-1], label)], np.dtype([('tstart',np.float64),('tend',np.float64),('intent',np.str_,40)]))
 
     return output
 
@@ -314,7 +314,7 @@ def getCalAtmData(ms: str, spws: list, spwsetup: dict, antenna: str = ''):
         maxfreq = np.max(spwsetup[spwid]['chanfreqs'])
         midfreq = 0.5*(minfreq+maxfreq)
         samebbspw = [s for s in spwsetup['spwlist'] if spwsetup[s]['BBname'] == spwsetup[spwid]['BBname']]
-        
+
         #Create query string
         if (len(antenna) > 0) and (antenna in spwsetup['antnames']):
             tbselstr = 'basebandName=="{0:s}" && syscalType=="TEMPERATURE_SCALE" && antennaName=="{1:s}"'.format(str(spwsetup[spwid]['BBname']), antenna)
@@ -386,7 +386,7 @@ def getScienceGoalData(ms: str):
         value = items[1].replace(' ','')
         scigoaldata[item] = value
     tb.close()
-    
+
     return scigoaldata
 
 def robuststats(A):
@@ -412,12 +412,12 @@ def nearestFinite(A, i):
     '''Function used to search for the nearest unmasked, finite datapoint left and right
     from a given position inside an array, where left means a lower index in the
     array, and right a higher index.
-    
+
     Parameters:
     A: Numpy Masked array containing the data in question.
     i: The index reference point from which to search for unmasked and finite data.
     '''
-    
+
     n = len(A)
     left = np.nan
     right = np.nan
@@ -429,7 +429,7 @@ def nearestFinite(A, i):
                 break
     else:
         left = 0
-        
+
     if np.isnan(left):
         left = i
 
@@ -449,7 +449,7 @@ def nearestFinite(A, i):
 
 def enlargesel(sel, box):
     '''Enlarge selection by "box" pixels around each selected pixel
-    in "sel" vector. 
+    in "sel" vector.
     '''
     n = len(sel)
     newsel = np.zeros(n, dtype=bool)
