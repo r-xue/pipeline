@@ -26,7 +26,7 @@ LOG = infrastructure.get_logger(__name__)
 class NRORestoreDataInputs(restoredata.RestoreDataInputs):
     """NRORestoreDataInputs manages the inputs for the NRORestoreData task."""
 
-    reffile = vdp.VisDependentProperty(default='')
+    reffile = vdp.VisDependentProperty(default='nroscalefile.csv')
     caltable = vdp.VisDependentProperty(default='')
     hm_rasterscan = vdp.VisDependentProperty(default='time')
 
@@ -82,7 +82,7 @@ class NRORestoreDataInputs(restoredata.RestoreDataInputs):
                 If no file name is specified or specified file doesn't exist,
                 all the factors are set to 1.0.
 
-                Example: reffile='', reffile='nroscalefactor.csv'
+                Example: reffile='', reffile='nroscalefile.csv'
 
             products_dir: Name of the data products directory.
 

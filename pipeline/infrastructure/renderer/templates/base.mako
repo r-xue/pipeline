@@ -74,11 +74,9 @@ ${pcontext.project_summary.proposal_code} -
                 <li class="${'active' if self.attr.navbar_active == 'Home' else ''}">
                 	<a href="t1-1.html"><span class="glyphicon glyphicon-home"></span> Home</a>
                 </li>
-                % if pcontext.logtype != 'GOUS':
                 <li class="${'active' if self.attr.navbar_active == 'By Topic' else ''}">
                 	<a href="t1-3.html">By Topic</a>
                 </li>
-                % endif
                 <li class="${'active' if self.attr.navbar_active == 'By Task' else ''}">
                 	<a href="t1-4.html">By Task</a>
                 </li>

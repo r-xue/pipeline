@@ -78,7 +78,7 @@ class ObservatoryImagingPolicy(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def get_conv1d() -> float:
-        """Get the constant of conv1d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv1d. This is to obtain convolution factors in tsdimaging task.
 
         Raises:
             NotImplementedError
@@ -91,7 +91,7 @@ class ObservatoryImagingPolicy(abc.ABC):
     @staticmethod
     @abc.abstractmethod
     def get_conv2d() -> float:
-        """Get the constant of conv2d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv2d. This is to obtain convolution factors in tsdimaging task.
 
         Raises:
             NotImplementedError
@@ -166,7 +166,7 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
 
     @staticmethod
     def get_conv1d() -> float:
-        """Get the constant of conv1d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv1d. This is to obtain convolution factors in tsdimaging task.
 
         Returns:
             the constant of conv1d.
@@ -175,7 +175,7 @@ class ALMAImagingPolicy(ObservatoryImagingPolicy):
 
     @staticmethod
     def get_conv2d() -> float:
-        """Get the constant of conv2d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv2d. This is to obtain convolution factors in tsdimaging task.
 
         Returns:
             the constant of conv2d.
@@ -234,7 +234,7 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
 
     @staticmethod
     def get_conv1d() -> float:
-        """Get the constant of conv1d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv1d. This is to obtain convolution factors in tsdimaging task.
 
         Returns:
             the constant of conv1d.
@@ -243,7 +243,7 @@ class NROImagingPolicy(ObservatoryImagingPolicy):
 
     @staticmethod
     def get_conv2d() -> float:
-        """Get the constant of conv2d. This is to obtain convolution factors in sdimaging task.
+        """Get the constant of conv2d. This is to obtain convolution factors in tsdimaging task.
 
         Returns:
             the constant of conv2d.

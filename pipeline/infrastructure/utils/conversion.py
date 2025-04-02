@@ -182,11 +182,11 @@ def mjd_seconds_to_datetime(mjd_secs: Sequence[Number]) -> List[datetime]:
     return unix_seconds_to_datetime(mjd_secs_with_offsets)
 
 
-def get_epoch_as_datetime(epoch: Number) -> datetime:
-    """Convert a CASA epoch measure into a Python datetime.
+def get_epoch_as_datetime(epoch: dict) -> datetime:
+    """Convert a CASA 'epoch' measure into a Python datetime.
 
     Args:
-        epoch: CASA epoch measure.
+        epoch: CASA 'epoch' measure dictionary.
     Returns:
         The equivalent Python datetime.
     """
@@ -742,7 +742,7 @@ def refcode_to_skyframe(refcode):
 
     To get a list of built-in astropy.coordinates frame names:
         from astropy.coordinates import frame_transform_graph
-        print(frame_transform_graph.get_name())
+        print(frame_transform_graph.get_names())
     To get a list of CASA csys reference code:
         csys = cs.newcoordsys(direction=True)
         clist = csys.referencecode('dir', True)

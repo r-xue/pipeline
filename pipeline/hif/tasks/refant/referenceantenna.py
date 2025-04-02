@@ -54,9 +54,7 @@ class RefAntInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def spw(self):
-        intents = {'PHASE', 'BANDPASS', 'AMPLITUDE', 'POLARIZATION'}
-        spws = [spw for spw in self.ms.get_spectral_windows() if not intents.isdisjoint(spw.intents)]
-        return ','.join([str(spw.id) for spw in spws])
+        return ','.join(str(spw.id) for spw in self.ms.get_spectral_windows(intent=self.intent))
 
     def to_casa_args(self):
         # refant does not use CASA tasks
