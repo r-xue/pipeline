@@ -7,7 +7,6 @@ import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
@@ -308,7 +307,10 @@ class Circfeedpolcal(polarization.Polarization):
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
-                newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
+                try:
+                    newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
+                except AttributeError:
+                    LOG.warning("Exception: 'phaseshortgaincaltable' is not present.")
         GainTables[idx] = newtable
 
         return GainTables

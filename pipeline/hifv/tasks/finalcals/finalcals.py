@@ -117,6 +117,7 @@ class FinalcalsResults(basetask.Results):
             return
         m = context.observing_run.get_ms(self.vis)
         context.evla['msinfo'][m.name].phaseshortgaincaltable = self.phaseshortgaincaltable
+        context.evla['msinfo'][m.name].finalampgaincaltable = self.finalampgaincaltable
         for calapp in self.final:
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calapp.calto, calapp.calfrom))
