@@ -2,18 +2,20 @@ import os, sys
 import numpy as np
 import copy
 import casatools
-import sd_qa_utils
 from scipy import signal
+
+from . import sd_qa_utils
+
 
 class MSWrapperSD(object):
     """
     MSWrapper is a wrapper around a NumPy array populated with measurement set
     data for a specified scan and spectral window of Single Dish dataset.
-    
+
     The static method MSWrapperSD.create_from_ms should be used to instantiate
     MSWrapper objects.
     """
-    
+
     def __init__(self, fname=None, antenna=None, spw=None, npol=None, nchan=None, nrows=None,
         fieldid=None, column='CORRECTED_DATA', onoffsel='ON', spw_setup=None,
         data=None, weight=None, time=None, outliers=None, outlierfreq=None, outliertime=None,
@@ -109,7 +111,7 @@ class MSWrapperSD(object):
             msmd.close()
             return None
         msmd.close()
-        
+
         #Get field ID
         if (fieldid is None) and (len(spw_setup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*']) == 1):
             fieldid = spw_setup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*'][0]
@@ -117,7 +119,7 @@ class MSWrapperSD(object):
         #Get columns
         tb.open(fname, nomodify=True)
         mscolnames = tb.colnames()
-        
+
         #Select data column
         if (column == 'CORRECTED_DATA') and ('CORRECTED_DATA' in mscolnames):
             datacol = "CORRECTED_DATA"
@@ -189,7 +191,7 @@ class MSWrapperSD(object):
 
         return MSWrapperSD(fname=fname, antenna=antenna, spw=spw, npol=npol, nchan=nchan, nrows=nrows, fieldid=fieldid, column=column, onoffsel=onoffsel, spw_setup=spw_setup, data=data, weight=weight, time=tmdata, tsysdata=tsysdata, scantimesel=scantimesel, nrowscan=nrowscan, time_mean_scan=time_mean_scan, time_std_scan=time_std_scan, data_stats=None,
             analysis=None)
-        
+
     def average_data_per_scan(self):
         ''' Method to average data per scan and all data, and update per-scan and all scan average arrays.
         '''

@@ -10,8 +10,10 @@ from astropy.time import Time
 import matplotlib.dates as mdates
 import casatools
 import copy
-import sd_qa_utils
-import mswrapper_sd
+
+from . import sd_qa_utils
+from . import mswrapper_sd
+
 
 def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: int = 1,
                      zrange: str = '0.9', remove_skylines: bool = False, nchanstdblock: int = 20,
@@ -187,7 +189,7 @@ def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: 
     cmapsky = 'cividis'
     cmapmask = 'gray'
     cmapsel = 'Reds'
-    
+
     #Make upper plots with average data
     axs[0,0].plot(freq_ghz, meandata[0].real, '.b')
     axs[0,0].set_ylim((zmin, zmax))
@@ -546,7 +548,7 @@ def makeSummaryTable(qascore_list, plots_fnames, plfolder, working_folder = '.',
             weblink = 'weblog_plot_not_found'
         fout.write(fmt.format(plfolder,msname,spw,antenna,scan+'('+fieldname+')',qascore.score,metric_data,metric_trec,width,plot_fname,weblink))
     fout.close()
-    
+
     return
 
 def makeQAmsgTable(qascore_list, plfolder, output_file = 'sd_applycal_output/qascores_details.csv', writemode = 'w'):
@@ -558,7 +560,7 @@ def makeQAmsgTable(qascore_list, plfolder, output_file = 'sd_applycal_output/qas
         msname = list(qascore.applies_to.vis)[0]
         fout.write(fmt.format(plfolder,msname,qascore.longmsg))
     fout.close()
-    
+
     return
 
 def addFLSLentry(qascore_list, output_file = './prototype_qa_score.csv', dtime_min = -1, writemode = 'a'):

@@ -6,12 +6,14 @@ import pickle
 from itertools import product
 import matplotlib.dates as mdates
 import casatools
-import mswrapper_sd
-import sd_qa_utils
-import sd_qa_reports
 from scipy import stats
 from scipy import signal
-import pipelineqa as pqa
+
+import pipeline.infrastructure.pipelineqa as pqa
+from . import mswrapper_sd
+from . import sd_qa_utils
+from . import sd_qa_reports
+
 
 ### Dictionary of default Threshold values ###
 # X-Y_freq_dev: Threshold for devation in ON-source XX-YY polarization data difference
@@ -106,7 +108,7 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
 
     #Release memory taken up by the copy of the dataset
     del(Fmsw)
-    
+
     #Save results in the original MSWrapper object
     msw.data_stats = {'peak_fft_pwr': peak_fft_pwr, 'XYcorr': XYcorr}
 
@@ -198,7 +200,7 @@ def attach_sci_line_res(mswCollection: dict, data_stats_comb: dict):
         Function modified in place all the MSWrapperSD objects, associating each msw to the corresponding
         science line selection vectors depending on the Fieldname and SPW.
     '''
-    
+
     for key, msw in mswCollection.items():
         (ms, spw, ant, fieldid) = key
         fieldname = data_stats_comb['comb_metadata']['names_for'][ms][str(fieldid)][0]
@@ -222,7 +224,7 @@ def qascorefunc(nsigma: float, score_top: float = 0.67, score_bottom: float = 0.
         nsigma_threshold: Number of sigmas set as threshold, value for which a QA score turns the color in this range.
         nsigma_bottom: Number of sigmas for which a blue QA scores turn bottom value. Must be greater than nsigma_threshold.
     '''
-    
+
     return max(score_top - (score_top - score_bottom)*(nsigma - nsigma_threshold)/(nsigma_bottom - nsigma_threshold), score_bottom)
 
 def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_thresholds, plot_output_path: str = '.',
@@ -244,10 +246,10 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
     #Path for output files
     if not os.path.exists(plot_output_path):
         os.mkdir(plot_output_path)
-    
+
     #output variable for QA scores
     qascores_scans = []
-    
+
     #Get dataset array size
     (npol, nchan, nrows) = (msw.npol, msw.nchan, msw.nrows)
     msname = msw.fname.split('/')[-1]
@@ -313,7 +315,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
     combtrecdiffX = np.ma.sum([atmdata[scan]['trecdiffX'] for scan in atmdata.keys()], axis=0)
     combtrecdiffY = np.ma.sum([atmdata[scan]['trecdiffY'] for scan in atmdata.keys()], axis=0)
     atmdata['all'] = {'trecdiffX': combtrecdiffX, 'trecdiffY': combtrecdiffY}
-    
+
     #Get data per scan
     idx_lowest = -1
     qascore_lowest = 1.0
@@ -508,7 +510,7 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, buffer_data: 
     '''
 
     #Load buffered data from disk, if exists
-    buf = os.path.dirname(msNames[0])+'/mswCollection.buffer.pkl'
+    buf = os.path.join(os.path.dirname(msNames[0]), 'mswCollection.buffer.pkl')
     if os.path.exists(buf):
         f = open(buf, 'rb')
         mswCollection = pickle.load(f)

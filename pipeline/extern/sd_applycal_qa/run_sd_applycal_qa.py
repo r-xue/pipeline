@@ -9,8 +9,10 @@ import argparse
 import glob
 import time as systime
 import numpy as np
-import sd_applycal_qa
-import sd_qa_reports
+
+from . import sd_applycal_qa
+from . import sd_qa_reports
+
 
 def_input_path = "/Users/haroldfrancke/QAscoresMOUSs_SD"
 #def_input_path = "/jaopost_spool/"
@@ -45,7 +47,7 @@ def parse_arguments():
 
         if not os.path.exists(args.output+'/'+input_folder_name):
             os.system('mkdir '+args.output+'/'+input_folder_name)
-                
+
         args.output = args.output+'/'+input_folder_name
         print("Output copy directory: "+args.output)
     else:
@@ -91,7 +93,7 @@ def main():
     print('Requesting plot output to be in '+output_path+'sd_applycal_output')
     #Run sd_applycal main method to get QA scores
     (qascore_list, plots_fnames, qascore_per_scan_list) = sd_applycal_qa.get_ms_applycal_qascores(mslist, plot_output_path = output_path+'sd_applycal_output')
-    
+
     #End time
     tend = systime.time()
     dtime_min = (tend-tstart)/60.0
@@ -100,7 +102,7 @@ def main():
     sd_qa_reports.addFLSLentry(qascore_list, output_file = output_path+'/prototype_qa_score.csv', dtime_min = dtime_min)
     sd_qa_reports.makeSummaryTable(qascore_list, plots_fnames, plfolder, output_file = output_path+'/sd_applycal_output/qascore_summary.csv', working_folder = working_folder, weblog_adress = 'http://jaopost-web.sco.alma.cl/spool/sd-qascores/PIPEREQ-176/')
     sd_qa_reports.makeQAmsgTable(qascore_per_scan_list, plfolder, output_file = output_path+'/sd_applycal_output/qascores_details.csv')
- 
+
     return
 
 if __name__ == '__main__':
