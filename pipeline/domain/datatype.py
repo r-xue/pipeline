@@ -4,9 +4,12 @@ Module to define data type.
 Classes:
     DataType: An Enum class to define data type.
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
 
 from enum import Enum, auto, unique
 from operator import attrgetter
+
 
 @unique
 class DataType(Enum):
@@ -25,7 +28,6 @@ class DataType(Enum):
         REGCAL_LINE_SCIENCE: calibrated spectral line data
         SELFCAL_LINE_SCIENCE self-calibrated spectral line data
     """
-
     RAW = auto()
     REGCAL_CONTLINE_ALL = auto()
     ATMCORR = auto()
@@ -38,10 +40,20 @@ class DataType(Enum):
     SELFCAL_LINE_SCIENCE = auto()
 
     @staticmethod
-    def get_specmode_datatypes(intent, specmode):
+    def get_specmode_datatypes(intent: str, specmode: str) -> list[DataType]:
         """
+        Return valid datatypes for given intent and specmode.
+
         Return the list of valid datatypes depending on the intent and specmode,
-        in order of preference for the automatic choice of datatype (if not manually overridden).
+        in order of preference for the automatic choice of datatype (if not
+        manually overridden).
+
+        Args:
+            intent: Intent to select datatypes for.
+            specmode: Spectral gridding type to select datatypes for.
+
+        Returns:
+            List of valid datatypes for given intent and specmode.
         """
         if intent == 'TARGET':
             if specmode == 'mfs':
@@ -72,7 +84,7 @@ class DataType(Enum):
         return specmode_datatypes
 
     @staticmethod
-    def get_short_datatype_desc(datatype_str):
+    def get_short_datatype_desc(datatype_str: str) -> str:
         """
         Return a short summary string for weblog purposes.
         """
@@ -84,5 +96,6 @@ class DataType(Enum):
             return '<span style="background-color:palegreen;">SELFCAL</span>'
         else:
             return 'UNKNOWN'
+
 
 TYPE_PRIORITY_ORDER = sorted(DataType.__members__.values(), key=attrgetter('value'))

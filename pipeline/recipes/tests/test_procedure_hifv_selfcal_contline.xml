@@ -32,7 +32,11 @@
             <Parameter>
                 <Keyword xmlns="">amplitude_selfcal</Keyword>
                 <Value xmlns="">True</Value>
-            </Parameter>                     
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">allow_wproject</Keyword>
+                <Value xmlns="">False</Value>
+            </Parameter>                                       
         </ParameterSet>
     </ProcessingCommand>
 

@@ -445,8 +445,8 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
-        ordered_agents = ['before', 'anos', 'online', 'shadow', 'intents', 'qa0',  'qa2', 'template', 'autocorr',
-                          'edgespw', 'clip', 'quack',
+        ordered_agents = ['before', 'clip', 'anos', 'online', 'shadow', 'intents', 'qa0',  'qa2', 'template', 'autocorr',
+                          'edgespw', 'quack',
                           'baseband']
 
         summary_reps = [agent_summaries[agent]
@@ -465,6 +465,11 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         inputs = self.inputs
 
+        # PIPE-1033: Moving zero flagging before template.
+        # Flag mode clip
+        if inputs.clip:
+            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
+            flag_cmds.append('mode=\'summary\' name=\'clip\'')
         # flag anos?
         if inputs.online:
             if not os.path.exists(inputs.fileonline):
@@ -539,11 +544,6 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         # VLA specific commands
 
-        # Flag mode clip
-        if inputs.clip:
-            flag_cmds.append('mode=\'clip\' correlation=\'ABS_ALL\' clipzeros=True reason=\'clip\'')
-            flag_cmds.append('mode=\'summary\' name=\'clip\'')
-
         # Flag quack
         if inputs.quack:
             flag_cmds.append(self._get_quack_cmds())
@@ -617,7 +617,7 @@ class FlagDeterVLA(flagdeterbase.FlagDeterBase):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         quack_scan_string = self._get_vla_quackingscans()
-        int_time = m.get_vla_max_integration_time()
+        int_time = m.get_integration_time_stats(stat_type="max")
 
         quack_mode_cmd = 'mode=\'quack\' scan=\'%s\' quackinterval=%s quackmode=\'beg\' quackincrement=False reason=\'quack\' name=\'quack\'' % (quack_scan_string, str(1.5*int_time))
 

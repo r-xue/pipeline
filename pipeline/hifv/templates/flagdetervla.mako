@@ -56,6 +56,7 @@ $(document).ready(function(){
 # these functions are defined in template scope so we have access to the flags 
 # and agents context objects
 
+
 def total_for_mses(mses, row):
 	flagged = 0
 	total = 0

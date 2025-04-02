@@ -532,7 +532,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Use only valid science spws
         fieldlist = inputs.ms.get_fields(task_arg=field)
-        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True))
+        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True, intent=intent))
         spw_ids = {spw.id for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)}
         spw_ids = ','.join(map(str, spw_ids))
 
@@ -817,8 +817,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 gaintype = 'T'
                 interp = 'linearPD,linear'
 
-                # Compute optimal solint.
-                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+                # Compute optimal solint for science SpWs for current intent.
+                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True, intent=intent)]
                 exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
                 solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:

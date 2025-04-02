@@ -216,7 +216,12 @@ def fm_reason(slib):
     <div class="table-responsive collapse multi-collapse in" id="${id_name}_persol">
     <table class="table table-bordered">
       <!-- <caption style="caption-side:top">Per solint stats</caption> -->
-      <caption>Per solint stats</caption>
+      <%
+      caption='Per solint stats'
+      if 'mosaic' == target['sc_lib']['obstype'] :
+        caption+=': Gaintables for mosaics include solutions for all self-calibratable sub-fields of that mosaic. As such, flagged gain-calibration solutions of a given field can lead to significant, and undesirable, additional flagging in adjacent fields, even if said adjacent field had a successful gain-calibration solution of its own. To mitigate this, all flagged solutions are dropped from the gaintable. Additionally any field with >25% flagging in total is removed from the gaintable and will not have this gaintable applied to avoid excessive interpolation. "Excluded" indicates the antenna is not present in this gaintable due to all of its solutions being dropped. In the event that this gaintable is applied, i.e. there is at least one field with solutions remaining in the gaintable, any excluded antennas are treated as if they are 100% flagged.'
+      %>
+      <caption>${caption}</caption>
       <thead>
           <tr>
               <th>Solint</th>
