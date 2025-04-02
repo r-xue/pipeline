@@ -1080,12 +1080,11 @@ class TestSlowerRegression:
         """
 
         input_dir = 'pl-regressiontest/13A-537'
-        output_dir = 'pl-regressiontest/13A-537/calimage_contcube_selfcal'
+
         pr = PipelineRegression(recipe='procedure_hifv_calimage_cont_cube_selfcal.xml',
                                 input_dir=input_dir,
                                 visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
-                                expectedoutput_dir=input_dir,
-                                output_dir=output_dir)
+                                expectedoutput_dir=input_dir)
 
         pr.run(telescope='vla', omp_num_threads=1)
 
