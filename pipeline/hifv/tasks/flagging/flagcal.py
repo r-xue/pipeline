@@ -70,9 +70,9 @@ class Flagcal(basetask.StandardTaskTemplate):
         # Check finalcal stage prefixes.
         caltable = self.inputs.caltable
         if not os.path.exists(caltable):
-            m = self.context.observing_run.get_ms(self.vis)
+            m = self.inputs.context.observing_run.get_ms(self.vis)
             try:
-                caltable = self.context.evla['msinfo'][m.name].finalampgaincaltable
+                caltable = self.inputs.context.evla['msinfo'][m.name].finalampgaincaltable
             except AttributeError:
                 LOG.warning("Exception: 'finalampgaincaltable' is not present.")
         flagcal_result = self._do_flagdata(caltable=caltable,
