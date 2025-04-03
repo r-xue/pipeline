@@ -70,7 +70,7 @@ class Flagcal(basetask.StandardTaskTemplate):
         # Check finalcal stage prefixes.
         caltable = self.inputs.caltable
         if not os.path.exists(caltable):
-            m = self.inputs.context.observing_run.get_ms(self.vis)
+            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             try:
                 caltable = self.inputs.context.evla['msinfo'][m.name].finalampgaincaltable
             except AttributeError:
