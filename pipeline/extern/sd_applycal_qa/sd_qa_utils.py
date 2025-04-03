@@ -273,7 +273,10 @@ def getSpecSetup(myms: str, spwlist: list = [], intentlist: list = ['*OBSERVE_TA
 
     #Get science goal information
     scigoaldata = getScienceGoalData(myms)
-    spwsetup['sensitivityGoalinJy'] = u.Unit(scigoaldata['sensitivityGoal']).to(u.Jy)
+    if 'sensitivityGoal' in scigoaldata:
+        spwsetup['sensitivityGoalinJy'] = u.Unit(scigoaldata['sensitivityGoal']).to(u.Jy)
+    else:
+        spwsetup['sensitivityGoalinJy'] = None
     spwsetup['representativeFrequencyinHz'] = u.Unit(scigoaldata['representativeFrequency']).to(u.Hz)
     spwsetup['representativeBandwidthinHz'] = u.Unit(scigoaldata['representativeBandwidth']).to(u.Hz)
     reprdist = [np.abs(spwsetup[s]['fcenter']-spwsetup['representativeFrequencyinHz']) for s in spwsetup['spwlist']]

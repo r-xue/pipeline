@@ -402,7 +402,11 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
         #Calculate max of outlier strength relative to range of data for report, use on-data and calcualte
         #percentage of deviation relative to RMS
-        peak_outlier_percent = np.round(100.0*np.abs(ondata_results['datamax'])/msw.spw_setup['sensitivityGoalinJy'], decimals=1)
+        if msw.spw_setup['sensitivityGoalinJy']:
+            peak_outlier_percent = np.round(100.0*np.abs(ondata_results['datamax'])/msw.spw_setup['sensitivityGoalinJy'], decimals=1)
+        else:
+            # unrealistic value to disable second condition in the if statement below
+            peak_outlier_percent = 120.0
         #width detection as percentage of BW
         #width_bw_percent = 100.0*ondata_results['widthmax']/nchan
 
