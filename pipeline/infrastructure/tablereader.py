@@ -1,46 +1,56 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
+import bisect
 import collections
 import datetime
+import functools
 import itertools
 import operator
 import os
 import re
 import xml.etree.ElementTree as ElementTree
-from bisect import bisect_left
-from functools import reduce
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Optional, Tuple, Union
 
 import cachetools
-import numpy
+import numpy as np
 
-import pipeline.domain as domain
-import pipeline.domain.measures as measures
-import pipeline.infrastructure.utils as utils
-from . import casa_tools
-from . import logging
-from .casa_tools import MSMDReader
-from ..domain import Antenna, AntennaArray
+from pipeline import domain, infrastructure
+from pipeline.domain import measures
+from pipeline.infrastructure import casa_tools, utils
 
-LOG = logging.get_logger(__name__)
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+    from pipeline.domain import Antenna, AntennaArray, MeasurementSet
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
-def find_EVLA_band(frequency, bandlimits=None, BBAND='?4PLSCXUKAQ?'):
+def find_EVLA_band(
+        frequency,
+        bandlimits: Optional[List[float]] = None,
+        BBAND: Optional[str] = '?4PLSCXUKAQ?'
+        ) -> str:
     """identify VLA band"""
     if bandlimits is None:
         bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9]
-    i = bisect_left(bandlimits, frequency)
+    i = bisect.bisect_left(bandlimits, frequency)
 
     return BBAND[i]
 
 
-def _get_ms_name(ms):
+def _get_ms_name(ms: Union[MeasurementSet, str]) -> str:
     return ms.name if isinstance(ms, domain.MeasurementSet) else ms
 
 
-def _get_ms_basename(ms):
+def _get_ms_basename(ms: Union[MeasurementSet, str]) -> str:
     return ms.basename if isinstance(ms, domain.MeasurementSet) else ms
 
 
-def _get_science_goal_value(science_goals, goal_keyword):
+def _get_science_goal_value(
+        science_goals: NDArray[np.str_],
+        goal_keyword: str
+        ) -> str:
     value = None
     for science_goal in science_goals:
         keyword = science_goal.split('=')[0].replace(' ', '')
@@ -101,7 +111,7 @@ class MeasurementSetReader(object):
                 states = [s for s in ms.states
                           if s.id in statesforscans[str(scan_id)]]
 
-                intents = reduce(lambda s, t: s.union(t.intents), states, set())
+                intents = functools.reduce(lambda s, t: s.union(t.intents), states, set())
 
                 fields = [f for f in ms.fields if f.id in fieldsforscans[str(scan_id)]]
 
@@ -137,7 +147,7 @@ class MeasurementSetReader(object):
 
                     raw_midpoints = list(time_col[dd_mask])
                     epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
-                                       for o in (numpy.min(raw_midpoints), numpy.max(raw_midpoints))]
+                                       for o in (np.min(raw_midpoints), np.max(raw_midpoints))]
 
                     scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
@@ -235,9 +245,17 @@ class MeasurementSetReader(object):
         # For ALMA, extract spectral spec from spw name.
         for spw in ms.spectral_windows:
             if 'ALMA' in spw.name:
-                i = spw.name.find('#')
-                if i != -1:
-                    spw.spectralspec = spw.name[:i]
+                # PIPE-2384: new spw names will include grouping ID as first 'token'
+                # if present, the spectralspec will then be the second 'token'
+                # New SPW Example: X100001#X900000004#ALMA_RB_06#BB_1#SW-01
+                # Grouping ID: X100001; Spectral Spec: X900000004
+                # Old SPW Example: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
+                # Spectral Spec: X1398968310
+                spw_split = spw.name.split('#')
+                alma_ind = [spw_split.index(x) for x in spw_split if x.startswith('ALMA')][0]
+                spw.spectralspec = spw_split[alma_ind - 1]
+                if alma_ind == 2:
+                    spw.grouping_id = spw_split[0]
 
     @staticmethod
     def link_intents_to_spws(msmd, ms):
@@ -417,7 +435,7 @@ class MeasurementSetReader(object):
                     if openms.selectinit(datadescid=dd.id):
                         ms_info = openms.getdata(['axis_info', 'time'])
 
-                        dd.obs_time = numpy.mean(ms_info['time'])
+                        dd.obs_time = np.mean(ms_info['time'])
                         dd.chan_freq = ms_info['axis_info']['freq_axis']['chan_freq'].tolist()
                         dd.corr_axis = ms_info['axis_info']['corr_axis'].tolist()
 
@@ -597,11 +615,11 @@ class SpectralWindowTable(object):
             # in the SOURCE table might cause dubious "SEVERE" messages. Here we temporarily filter out them and
             # later replace with generic messages of missing the transition metadata in the MS subtable.
             transitions = False
-            with logging.log_filtermsg('SOURCE table does not contain a row'):
+            with infrastructure.logging.log_filtermsg('SOURCE table does not contain a row'):
                 if i in target_spw_ids:
                     try:
                         # The msmd.transitions(..) call below can return a boolean value of False or
-                        # a Numpy array with dtype=numpy.str_ , e.g.,
+                        # a Numpy array with dtype=np.str_ , e.g.,
                         #   CASA <15>: msmd.transitions(sourceid=2,spw=16)
                         #   Out[15]: array(['N2H__v_0_J_1_0(ID=3925982)'], dtype='<U26')
                         # For invalid source/spw combinations, the call could also trigger an exception with a RuntimeError.
@@ -681,10 +699,10 @@ class SpectralWindowTable(object):
                     tsel = tb.query(f"SPECTRAL_WINDOW_ID == {ms_spwid}")
                     angle = tsel.getcol('RECEPTOR_ANGLE')
                     pol = tsel.getcol('POLARIZATION_TYPE')
-                    use = numpy.logical_or(pol == 'X', pol == 'Y')
-                    angle[~use] = numpy.nan
-                    if not numpy.all(numpy.isnan(angle)):
-                        angle_info[ms_spwid] = numpy.degrees(numpy.nanmedian(angle, axis=1))
+                    use = np.logical_or(pol == 'X', pol == 'Y')
+                    angle[~use] = np.nan
+                    if not np.all(np.isnan(angle)):
+                        angle_info[ms_spwid] = np.degrees(np.nanmedian(angle, axis=1))
                     tsel.close()
         except Exception as ex:
             LOG.info("Unable to read feed info for MS {}: {}".format(_get_ms_basename(ms), ex))
@@ -880,7 +898,7 @@ class ObservationTable(object):
 
 class AntennaTable(object):
     @staticmethod
-    def get_antenna_array(msmd: MSMDReader) -> AntennaArray:
+    def get_antenna_array(msmd: casa_tools._logging_msmd_cls) -> AntennaArray:
         position = msmd.observatoryposition()            
         names = set(msmd.observatorynames())
         assert len(names) == 1
@@ -889,7 +907,7 @@ class AntennaTable(object):
         return domain.AntennaArray(name, position, antennas)
 
     @staticmethod
-    def get_antennas(msmd: MSMDReader) -> List[Antenna]:
+    def get_antennas(msmd: casa_tools._logging_msmd_cls) -> List[Antenna]:
         antenna_table = os.path.join(msmd.name(), 'ANTENNA')
         LOG.trace('Opening ANTENNA table to read ANTENNA.FLAG_ROW')
         with casa_tools.TableReader(antenna_table) as table:
@@ -1255,7 +1273,7 @@ class SourceTable(object):
                 # Add the average spacing in minutes of the MJD column of the ephemeris table (see PIPE-627).
                 if 'MJD' in tb.colnames():
                     mjd = tb.getcol('MJD')
-                    avg_spacings[eph_sourcename] = numpy.diff(mjd).mean()*1440 # Convert fractional day to minutes
+                    avg_spacings[eph_sourcename] = np.diff(mjd).mean()*1440 # Convert fractional day to minutes
                 # Return file names (not whole paths) for the ephemeris tables (see PIPE-627)
                 ephemeris_table_names[eph_sourcename] = os.path.splitext(os.path.basename(ephemeris_table))[0]
 
