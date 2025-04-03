@@ -1694,13 +1694,22 @@ def score_missing_derived_fluxes(ms, reqfields, reqintents, measurements):
     scifields = {field for field in ms.get_fields(reqfields, intent=reqintents)}
 
     # Expected science windows
-    scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
+    scispws = ms.get_spectral_windows(science_windows_only=True)
+
+    # Requested intents as set.
+    reqintents = set(reqintents.split(','))
 
     # Loop over the expected fields
     nexpected = 0
     for scifield in scifields:
-        validspws = {spw.id for spw in scifield.valid_spws}
-        nexpected += len(validspws.intersection(scispws))
+        # PIPE-2458: flux measurements are only expected for science SpWs that
+        # are valid for this field and that cover one or more of the requested
+        # intents. This will filter out cases where a SpW is a science SpW
+        # but not used for one of the requested intents for this field.
+        scifield_req_intents = scifield.intents.intersection(reqintents)
+        scifield_valid_spws = {spw for spw in scifield.valid_spws
+                               if spw in scispws and spw.intents.intersection(scifield_req_intents)}
+        nexpected += len(scifield_valid_spws)
 
     # Loop over measurements
     nmeasured = 0
@@ -3170,9 +3179,6 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
 
         if warnings != []:
             longmsg = 'EB %s field %s spwid %d: has a %s%s' % (msnames, fieldname, spwid, ' and a '.join(warnings), snr_msg)
-            # Log warnings only if they would not be logged by the QA system (score <= 0.66)
-            if score > 0.66:
-                LOG.warning(longmsg)
         else:
             if score <= 0.9:
                 longmsg = 'EB %s field %s spwid %d: Check source fit not optimal' % (msnames, fieldname, spwid)
