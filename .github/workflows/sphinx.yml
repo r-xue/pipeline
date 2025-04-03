@@ -50,7 +50,7 @@ jobs:
             docs/_build/latex/taskdocs.pdf
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/PIPE-1669-run-dev-pipeline-with-modular-casa6'
+        if: github.ref == 'refs/heads/update-docs-build-and-packaging-setup'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_build
