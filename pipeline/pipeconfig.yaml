@@ -58,13 +58,13 @@ pipeconfig:
 
     tier0futures: true
 
-casaconfig:
-  measures_auto_update: false
-  data_auto_update: false
-  log2term: true
-  nologger: true
-  agg: true
-  user_site: false
+casaconfig: # all values are null for now, so the settings determined by casaconfig remain unchanged.
+  measures_auto_update: null
+  data_auto_update: null
+  log2term: null
+  nologger: null
+  agg: null
+  user_site: null
   datapath: null # this should be a list of paths or null
   measurespath: null # this should be a path or null
   cachedir: null # this should be a path or null
