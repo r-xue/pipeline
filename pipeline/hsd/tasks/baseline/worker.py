@@ -201,7 +201,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
                       can have a different fitting function, with 'cspline' as the 
                       default for missing SPWs.
             fit_order: Fitting order for polynomial. Accepts either a single integer or a dictionary 
-                       mapping SPW IDs (int or str) to an integer.For cubic spline, it is used 
+                       mapping SPW IDs (int or str) to an integer. For cubic spline, it is used 
                        to determine how much the spectrum is segmented into. Default (None, 'automatic' 
                        or `-1`) triggers automatic order selection (heuristics); `0` or any positive 
                        integer uses the specified order. If a dictionary is provided, each SPW can have 
@@ -398,9 +398,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 deviationmask = None
             formatted_edge = list(common.parseEdge(edge))
             heuristic = spw_funcs_dict[spw_id]
-            current_fit_order = fit_order_dict.get(spw_id, -1)
-            if isinstance(current_fit_order, int) and current_fit_order < 0:
-                current_fit_order = 'automatic'
+            current_fit_order = fit_order_dict.get(spw_id, 'automatic')
             out_blparam = heuristic(
                 self.datatable, ms, rowmap,
                 antenna_id, field_id, spw_id,
@@ -445,8 +443,14 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
         if not fit_order:
             return {spw_id: 'automatic' for spw_id in spw_id_list}
-        elif isinstance(fit_order, (str, int)):
-            return {spw_id: fit_order for spw_id in spw_id_list}
+        
+        elif isinstance(fit_order, (int, str)):
+            if isinstance(fit_order, int) and fit_order <= 0:
+                value = 'automatic'
+            else:
+                value = fit_order
+            return {spw_id: value for spw_id in spw_id_list}
+        
         elif isinstance(fit_order, dict):
             fit_order_dict = {}
             for k, v in fit_order.items():
@@ -454,11 +458,12 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     key = int(k)
                 except Exception:
                     key = k
-                fit_order_dict[key] = v
-            for spw_id in spw_id_list:
-                if spw_id not in fit_order_dict:
-                    fit_order_dict[spw_id] = 'automatic'
+                if isinstance(v, int) and v <= 0:
+                    fit_order_dict[key] = 'automatic'
+                else:
+                    fit_order_dict[key] = v
             return fit_order_dict
+        
         else:
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 

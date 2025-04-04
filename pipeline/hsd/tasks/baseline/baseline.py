@@ -236,7 +236,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                 Default: None (equivalent to True)
 
             fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline
-                ('spline' or 'cspline'), polynomial ('poly' or 'polynomial'), or 'sinusoid' (future support).
+                ('spline' or 'cspline'), polynomial ('poly' or 'polynomial').
 
                 Accepts:
                 - A string: Applies the same function to all spectral windows (SPWs).
