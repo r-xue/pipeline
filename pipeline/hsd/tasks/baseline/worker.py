@@ -352,7 +352,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             BaselineSubtractionResults instance
             
         Raises:
-            TypeError: value of fit_order has wrong data type
+            TypeError: Value of fit_order has unsupported data type
         """
         vis = self.inputs.vis
         ms = self.inputs.ms
@@ -379,69 +379,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   field_id_list,
                   antenna_id_list,
                   spw_id_list)
-
-        # If fit_order is None (or falsy), default to 'automatic' for each spw (which triggers heuristics)
-        if fit_order == 'automatic' or fit_order == -1:
-            fit_order_dict = {spw_id: 'automatic' for spw_id in spw_id_list}
-        elif isinstance(fit_order, str) or isinstance(fit_order, int):
-            fit_order_dict = {spw_id: fit_order for spw_id in spw_id_list} # Single integer given: apply the same order to all spws
-        elif isinstance(fit_order, dict):
-            # Convert keys to int if possible, then fill in missing spws with default 'automatic'
-            fit_order_dict = {}
-            for k, v in fit_order.items():
-                try:
-                    key = int(k)
-                except Exception:
-                    key = k
-                fit_order_dict[key] = v
-            for spw_id in spw_id_list:
-                if spw_id not in fit_order_dict:
-                    fit_order_dict[spw_id] = 'automatic'
-        else:
-            raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
-            
-
-        # Default to 'cspline' if fit_func is None or falsy
-        if not fit_func:
-            fit_func_value = 'cspline'
-        else:
-            fit_func_value = fit_func
-
-        if not isinstance(fit_func_value, dict):
-            # Single string: create one BaselineFitParamConfig instance and apply to all spws
-            blparam_heuristic = BaselineFitParamConfig(
-                fitfunc=fit_func_value,
-                switchpoly=self.inputs.switchpoly
-            )
-            spw_funcs_dict = {spw_id: blparam_heuristic for spw_id in spw_id_list}
-        else:
-            # Convert dictionary keys to int when possible
-            processed_fit_func = {}
-            for k, v in fit_func_value.items():
-                try:
-                    key = int(k)
-                except Exception:
-                    key = k
-                processed_fit_func[key] = v
-
-            # For each spw in spw_id_list, use the provided fit function,
-            # or default to 'cspline' if not specified.
-            unique_fit_funcs = {processed_fit_func.get(spw_id, 'cspline') for spw_id in spw_id_list}
-            unique_fit_funcs.add('cspline')  # ensure the default is always included
-
-            # Create one BaselineFitParamConfig instance per unique function string.
-            heuristics_map = {
-                func_str: BaselineFitParamConfig(
-                    fitfunc=func_str,
-                    switchpoly=self.inputs.switchpoly
-                )
-                for func_str in unique_fit_funcs
-            }
-            # Build a mapping from spw_id to the appropriate BaselineFitParamConfig.
-            spw_funcs_dict = {
-                spw_id: heuristics_map[processed_fit_func.get(spw_id, 'cspline')]
-                for spw_id in spw_id_list
-            } 
+        
+        # Convert the fitting parameters into dictionaries mapping each SPW.
+        fit_order_dict = self.get_fit_order_dict(fit_order, spw_id_list)
+        spw_funcs_dict = self.get_fit_func_dict(fit_func, spw_id_list)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -481,6 +422,99 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                    'outfile': outfile}
         results = BaselineSubtractionResults(success=True, outcome=outcome)
         return results
+    
+    
+    def get_fit_order_dict(self, fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
+                    spw_id_list: List[int]) -> Dict[int, Union[int, str]]:
+        """
+        Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
+        
+        If fit_order is None or falsy, every SPW is assigned 'automatic' (triggering heuristics).
+        If a single integer (or string) is provided, it is applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; missing SPWs default to 'automatic'.
+        
+        Args:
+            fit_order: The fit order parameter (int, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
+        
+        Returns:
+            A dictionary mapping each SPW ID (int) to its fit order (int or 'automatic').
+        
+        Raises:
+            TypeError: Value of fit_order has unsupported data type
+        """
+        if not fit_order:
+            return {spw_id: 'automatic' for spw_id in spw_id_list}
+        elif isinstance(fit_order, (str, int)):
+            return {spw_id: fit_order for spw_id in spw_id_list}
+        elif isinstance(fit_order, dict):
+            fit_order_dict = {}
+            for k, v in fit_order.items():
+                try:
+                    key = int(k)
+                except Exception:
+                    key = k
+                fit_order_dict[key] = v
+            for spw_id in spw_id_list:
+                if spw_id not in fit_order_dict:
+                    fit_order_dict[spw_id] = 'automatic'
+            return fit_order_dict
+        else:
+            raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
+
+    
+    def get_fit_func_dict(self, fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
+                      spw_id_list: List[int]) -> Dict[int, BaselineFitParamConfig]:
+        """
+        Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
+        
+        If fit_func is None or falsy, the default 'cspline' is used.
+        If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
+        
+        Args:
+            fit_func: The fit function parameter (str, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
+        
+        Returns:
+            A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
+        """
+        if not fit_func:
+            fit_func_value = 'cspline'
+        else:
+            fit_func_value = fit_func
+
+        if not isinstance(fit_func_value, dict):
+            # Single string: Create one instance for all SPWs.
+            blparam_heuristic = BaselineFitParamConfig(
+                fitfunc=fit_func_value,
+                switchpoly=self.inputs.switchpoly
+            )
+            return {spw_id: blparam_heuristic for spw_id in spw_id_list}
+        else:
+            processed_fit_func = {}
+            for k, v in fit_func_value.items():
+                try:
+                    key = int(k)
+                except Exception:
+                    key = k
+                processed_fit_func[key] = v
+
+            # For each spw, use its provided value or default to 'cspline'
+            unique_fit_funcs = {processed_fit_func.get(spw_id, 'cspline') for spw_id in spw_id_list}
+            unique_fit_funcs.add('cspline')  # Ensure default is always included
+
+            # Create one BaselineFitParamConfig instance per unique function string.
+            heuristics_map = {
+                func_str: BaselineFitParamConfig(
+                    fitfunc=func_str,
+                    switchpoly=self.inputs.switchpoly
+                )
+                for func_str in unique_fit_funcs
+            }
+            return {spw_id: heuristics_map[processed_fit_func.get(spw_id, 'cspline')]
+                    for spw_id in spw_id_list}
+
 
     def analyse(self, results: BaselineSubtractionResults) -> BaselineSubtractionResults:
         """Generate plots from baseline subtraction results.
