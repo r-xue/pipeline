@@ -1,3 +1,6 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import copy
 import functools
 import itertools
@@ -5,9 +8,9 @@ import operator
 import os
 import platform
 import re
-import sys
 import types
 from inspect import signature
+from typing import Any, Callable, List
 
 import casatasks
 import casaplotms
@@ -20,14 +23,15 @@ else:
     # before CAS-14218, the task wvrgcal was under the almatasks package
     import almatasks
 
-from . import logging, utils
+from pipeline import infrastructure
+from pipeline.infrastructure import utils
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 # logger for keeping a trace of CASA task and CASA tool calls.
 # The filename incorporates the hostname to keep MPI client files distinct
-CASACALLS_LOG = logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
-                                   filename='casacalls-{!s}.txt'.format(platform.node().split('.')[0]))
+CASACALLS_LOG = infrastructure.logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
+                                                  filename='casacalls-{!s}.txt'.format(platform.node().split('.')[0]))
 
 # functions to be executed just prior to and immediately after execution of the
 # CASA task, providing a way to collect metrics on task execution.
@@ -35,36 +39,39 @@ PREHOOKS = []
 POSTHOOKS = []
 
 
-class FunctionArg(object):
+class BaseArg:
     """
-    Class to hold named function or method arguments
+    Base class for function or method arguments.
     """
-    def __init__(self, name, value):
+    def __init__(self, value, name=None):
         self.name = name
         self.value = value
 
     def __str__(self):
-        return '{!s}={!r}'.format(self.name, self.value)
+        return f'{self.name}={self.value!r}' if self.name else str(self.value)
 
     def __repr__(self):
-        return 'FunctionArg({!r}, {!r})'.format(self.name, self.value)
+        class_name = self.__class__.__name__
+        return f'{class_name}({self.name!r}, {self.value!r})' if self.name else f'{class_name}({self.value!r})'
 
 
-class NamelessArg(object):
+class FunctionArg(BaseArg):
     """
-    Class to hold unnamed arguments
+    Class to hold named function or method arguments.
+    """
+    def __init__(self, name, value):
+        super().__init__(value, name)
+
+
+class NamelessArg(BaseArg):
+    """
+    Class to hold unnamed arguments.
     """
     def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return str(self.value)
-
-    def __repr__(self):
-        return 'NamelessArg({!r})'.format(self.value)
+        super().__init__(value)
 
 
-def alphasort(argument):
+def alphasort(argument: BaseArg) -> BaseArg:
     """
     Return an argument with values sorted so that the log record is easier to
     compare to other pipeline executions.
@@ -112,7 +119,7 @@ def alphasort(argument):
 _uuid_regex = re.compile(r'[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}', re.I)
 
 
-def UUID_to_underscore(argument):
+def UUID_to_underscore(argument: BaseArg) -> BaseArg:
     """
     Return an argument with UUIDs converted to underscores.
 
@@ -132,28 +139,38 @@ def UUID_to_underscore(argument):
     return FunctionArg(argument.name, value)
 
 
-def truncate_paths(arg):
-    # Path arguments are kw args with specific identifiers. Exit early if this
-    # is not a path argument
+def truncate_paths(arg: BaseArg) -> BaseArg:
+    """
+    Modifies the argument value to remove excessive absolute paths for logging clarity and terseness.
+
+    Args:
+        arg: An argument object containing the name and value set for transformation.
+
+    Returns:
+        Either the original argument or a new transformed argument with absolute paths removed.
+    """
+    # Path arguments are kw args with specific identifiers. Exit early if this is not a path argument
     if isinstance(arg, NamelessArg):
         return arg
     if arg.name not in ('vis', 'caltable', 'gaintable', 'asdm', 'outfile', 'figfile', 'listfile', 'inpfile', 'plotfile',
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
-    # PIPE-639: 'inpfile' is an argument for CASA's flagdata task, and it can
-    # contain either a path name, a list of path names, or a list of flagging
-    # commands. Attempting to get the basename of a flagging command can cause
-    # it to become malformed. Treat 'inpfile' as a special case, where we only
-    # return the basename if the provided string(s) resolves as a path to an
-    # existing file. We cannot apply this rule to all arguments, as some
-    # arguments specify output files that may not exist yet.
+    # Special case: Ensure ASDM UIDs are not truncated
+    if arg.name == "asdm" and isinstance(arg.value, str) and is_uid(arg.value):
+        return arg  # Return unmodified if it's a UID
+
+    # PIPE-639: 'inpfile' may contain non-path values, so check if it's a real file before truncating
     func = basename_if_isfile if arg.name == 'inpfile' else os.path.basename
 
-    # wrap value in a tuple so that strings can be interpreted by
-    # the recursive map function
-    basename_value = _recur_map(func, (arg.value,))[0]
+    # wrap value in a list so that strings can be interpreted by the recursive map function
+    basename_value = _recur_map(func, [arg.value])[0]
     return FunctionArg(arg.name, basename_value)
+
+
+def is_uid(string: str) -> bool:
+    """Check if the given string is formatted as a UID."""
+    return string.startswith("uid://")
 
 
 def basename_if_isfile(arg: str) -> str:
@@ -166,8 +183,18 @@ def basename_if_isfile(arg: str) -> str:
     return arg
 
 
-def _recur_map(fn, data):
-    return [isinstance(x, str) and fn(x) or _recur_map(fn, x) for x in data]
+def _recur_map(fn: Callable[[str], str], data: List[str | List[Any]]) -> List[str | List[Any]]:
+    """
+    Recursively extracts strings from the data structure and applies the function to the string.
+
+    Args:
+        fn: The function to be applied to each string within the data structure.
+        data: A list containing a string or any combination of nested lists of strings.
+
+    Returns:
+        A list matching the structure of the original data with each string found within the data transformed.
+    """
+    return [fn(x) if isinstance(x, str) else _recur_map(fn, x) for x in data]
 
 
 class JobRequest(object):

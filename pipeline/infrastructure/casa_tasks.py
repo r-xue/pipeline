@@ -25,11 +25,10 @@ else:
     # before CAS-14218, the task wvrgcal was under the almatasks package
     import almatasks
 
+from pipeline import infrastructure
+from pipeline.infrastructure import jobrequest
 
-from . import logging
-from .jobrequest import JobRequest
-
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = []
 
@@ -41,268 +40,273 @@ def register_task(func):
 
 
 @register_task
-def applycal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.applycal, *v, **k)
+def applycal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.applycal, *v, **k)
 
 
 @register_task
-def bandpass(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.bandpass, *v, **k)
+def bandpass(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.bandpass, *v, **k)
 
 
 @register_task
-def calstat(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.calstat, *v, **k)
+def calstat(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.calstat, *v, **k)
 
 
 @register_task
-def clearcal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.clearcal, *v, **k)
+def clearcal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.clearcal, *v, **k)
 
 
 @register_task
-def concat(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.concat, *v, **k)
+def concat(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.concat, *v, **k)
 
 
 @register_task
-def delmod(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.delmod, *v, **k)
+def delmod(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.delmod, *v, **k)
 
 
 @register_task
-def exportfits(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.exportfits, *v, **k)
+def exportfits(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.exportfits, *v, **k)
 
 
 @register_task
-def gaincal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.gaincal, *v, **k)
+def gaincal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.gaincal, *v, **k)
 
 
 @register_task
-def flagcmd(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.flagcmd, *v, **k)
+def getantposalma(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.getantposalma, *v, **k)
 
 
 @register_task
-def flagdata(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.flagdata, *v, **k)
+def flagcmd(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.flagcmd, *v, **k)
 
 
 @register_task
-def flagmanager(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.flagmanager, *v, **k)
+def flagdata(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.flagdata, *v, **k)
 
 
 @register_task
-def fluxscale(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.fluxscale, *v, **k)
+def flagmanager(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.flagmanager, *v, **k)
 
 
 @register_task
-def gencal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.gencal, *v, **k)
+def fluxscale(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.fluxscale, *v, **k)
 
 
 @register_task
-def hanningsmooth(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.hanningsmooth, *v, **k)
+def gencal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.gencal, *v, **k)
 
 
 @register_task
-def imdev(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imdev, *v, **k)
+def hanningsmooth(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.hanningsmooth, *v, **k)
 
 
 @register_task
-def imval(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imval, *v, **k)
+def imdev(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imdev, *v, **k)
 
 
 @register_task
-def imfit(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imfit, *v, **k)
+def imval(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imval, *v, **k)
 
 
 @register_task
-def imhead(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imhead, *v, **k)
+def imfit(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imfit, *v, **k)
 
 
 @register_task
-def immath(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.immath, *v, **k)
+def imhead(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imhead, *v, **k)
 
 
 @register_task
-def immoments(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.immoments, *v, **k)
+def immath(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.immath, *v, **k)
 
 
 @register_task
-def imregrid(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imregrid, *v, **k)
+def immoments(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.immoments, *v, **k)
 
 
 @register_task
-def imsmooth(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imsmooth, *v, **k)
+def imregrid(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imregrid, *v, **k)
 
 
 @register_task
-def impbcor(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.impbcor, *v, **k)
+def imsmooth(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imsmooth, *v, **k)
 
 
 @register_task
-def importasdm(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.importasdm, *v, **k)
+def impbcor(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.impbcor, *v, **k)
 
 
 @register_task
-def imstat(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imstat, *v, **k)
+def importasdm(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.importasdm, *v, **k)
 
 
 @register_task
-def imsubimage(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.imsubimage, *v, **k)
+def imstat(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imstat, *v, **k)
 
 
 @register_task
-def initweights(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.initweights, *v, **k)
+def imsubimage(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.imsubimage, *v, **k)
 
 
 @register_task
-def listobs(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.listobs, *v, **k)
+def initweights(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.initweights, *v, **k)
 
 
 @register_task
-def mstransform(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.mstransform, *v, **k)
+def listobs(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.listobs, *v, **k)
 
 
 @register_task
-def partition(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.partition, *v, **k)
+def mstransform(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.mstransform, *v, **k)
 
 
 @register_task
-def plotants(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.plotants, *v, **k)
+def partition(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.partition, *v, **k)
 
 
 @register_task
-def plotbandpass(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.plotbandpass, *v, **k)
+def plotants(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.plotants, *v, **k)
 
 
 @register_task
-def plotms(*v, **k) -> JobRequest:
-    return JobRequest(casaplotms.plotms, *v, **k)
+def plotbandpass(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.plotbandpass, *v, **k)
 
 
 @register_task
-def plotweather(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.plotweather, *v, **k)
+def plotms(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casaplotms.plotms, *v, **k)
 
 
 @register_task
-def polcal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.polcal, *v, **k)
+def plotweather(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.plotweather, *v, **k)
 
 
 @register_task
-def polfromgain(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.polfromgain, *v, **k)
+def polcal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.polcal, *v, **k)
 
 
 @register_task
-def setjy(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.setjy, *v, **k)
+def polfromgain(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.polfromgain, *v, **k)
 
 
 @register_task
-def split(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.split, *v, **k)
+def setjy(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.setjy, *v, **k)
 
 
 @register_task
-def statwt(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.statwt, *v, **k)
+def split(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.split, *v, **k)
 
 
 @register_task
-def tclean(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.tclean, *v, **k)
+def statwt(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.statwt, *v, **k)
 
 
 @register_task
-def uvcontsub(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.uvcontsub, *v, **k)
+def tclean(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.tclean, *v, **k)
 
 
 @register_task
-def wvrgcal(*v, **k) -> JobRequest:
-    return JobRequest(almatasks.wvrgcal, *v, **k)
+def uvcontsub(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.uvcontsub, *v, **k)
 
 
 @register_task
-def visstat(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.visstat, *v, **k)
+def wvrgcal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(almatasks.wvrgcal, *v, **k)
 
 
 @register_task
-def rerefant(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.rerefant, *v, **k)
+def visstat(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.visstat, *v, **k)
 
 
 @register_task
-def sdatmcor(*v, **k) -> JobRequest:
+def rerefant(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.rerefant, *v, **k)
+
+
+@register_task
+def sdatmcor(*v, **k) -> jobrequest.JobRequest:
     """Wrap casatasks.sdatmcor
 
     Returns:
         JobRequest instance
     """
-    return JobRequest(casatasks.sdatmcor, *v, **k)
+    return jobrequest.JobRequest(casatasks.sdatmcor, *v, **k)
 
 
 @register_task
-def sdbaseline(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdbaseline, *v, **k)
+def sdbaseline(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.sdbaseline, *v, **k)
 
 
 @register_task
-def sdcal(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdcal, *v, **k)
+def sdcal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.sdcal, *v, **k)
 
 
 @register_task
-def tsdimaging(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.tsdimaging, *v, **k)
+def tsdimaging(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.tsdimaging, *v, **k)
 
 
 @register_task
-def copyfile(*v, **k) -> JobRequest:
-    return JobRequest(shutil.copyfile, *v, **k)
+def copyfile(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(shutil.copyfile, *v, **k)
 
 
 @register_task
-def copytree(*v, **k) -> JobRequest:
-    return JobRequest(shutil.copytree, *v, **k)
+def copytree(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(shutil.copytree, *v, **k)
 
 
 @register_task
-def rmtree(*v, **k) -> JobRequest:
-    return JobRequest(shutil.rmtree, *v, **k)
+def rmtree(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(shutil.rmtree, *v, **k)
 
 
 @register_task
-def move(*v, **k) -> JobRequest:
-    return JobRequest(shutil.move, *v, **k)
+def move(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(shutil.move, *v, **k)
 
 
 class CasaTasks:
