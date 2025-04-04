@@ -29,8 +29,9 @@ if TYPE_CHECKING:
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class PipelineRegression(object):
-    """Pipeline regression test class called from pytest."""
+class PipelineRegression:
+    regex_casa_pattern = re.compile(r'.*casa-([\d.]+(?:-\d+)?)')
+    regex_pipeline_pattern = re.compile(r'.*pipeline-([\d.]+(?:\.\d+)*\d)(?=\b|[-_]|$)')
 
     def __init__(
             self,
@@ -123,10 +124,8 @@ class PipelineRegression(object):
         reference_dict = {}
 
         for file_name in reference_data_files:
-            regex_casa_pattern = re.compile(r'.*casa-([\d.]+(?:-\d+)?)')
-            regex_pipeline_pattern = re.compile(r'.*pipeline-([\d.]+(?:\.\d+)*\d)(?=\b|[-_]|$)')
-            casa_match = regex_casa_pattern.match(file_name)
-            pipeline_match = regex_pipeline_pattern.match(file_name)
+            casa_match = self.regex_casa_pattern.match(file_name)
+            pipeline_match = self.regex_pipeline_pattern.match(file_name)
 
             if casa_match and pipeline_match:
                 try:

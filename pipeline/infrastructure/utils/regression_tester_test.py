@@ -85,9 +85,6 @@ class TestPipelineRegression(unittest.TestCase):
 
     def test_regex_matching(self) -> None:
         """Tests that the regex correctly extracts CASA and Pipeline versions."""
-        regex_casa = re.compile(r'.*casa-([\d.]+(?:-\d+)?)')
-        regex_pipeline = re.compile(r'.*pipeline-([\d.]+(?:\.\d+)*\d)(?=\b|[-_]|$)')
-
         test_cases = [
             ("test_results_casa-6.5.0-pipeline-2023.1.0", "6.5.0", "2023.1.0"),
             ("test_casa-6.4.3-pipeline-2022.3", "6.4.3", "2022.3"),
@@ -96,8 +93,8 @@ class TestPipelineRegression(unittest.TestCase):
         ]
 
         for filename, expected_casa, expected_pipeline in test_cases:
-            casa_match = regex_casa.match(filename)
-            pipeline_match = regex_pipeline.match(filename)
+            casa_match = self.pipeline.regex_casa_pattern.match(filename)
+            pipeline_match = self.pipeline.regex_pipeline_pattern.match(filename)
 
             casa_version = casa_match.group(1) if casa_match else None
             pipeline_version = pipeline_match.group(1) if pipeline_match else None
