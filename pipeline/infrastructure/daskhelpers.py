@@ -1,47 +1,133 @@
+"""Helper functions for using Dask for parallel processing in the pipeline.
 
-import pprint
+This module provides functions to start and stop a Dask cluster,
+submit tasks to the cluster, and retrieve results.  It also includes
+functions to determine if the current process is a Dask worker and
+whether Dask is ready for use.  The module leverages Dask's `delayed`
+functionality and `Future` objects for parallel task execution and
+result management.  It also handles merging of CASA command logs from
+distributed workers.
+
+The module uses a custom `FutureTask` class to encapsulate the submission
+and retrieval of results from Dask futures.  The `future_exec` function
+is used by Dask workers to execute the actual pipeline tasks.  The
+`is_dask_ready` function checks if a Dask client is available and
+`tier0futures` is enabled, indicating readiness for parallel processing
+using Dask.
+"""
+
+from __future__ import annotations
+
+import atexit
+import importlib.util
 import os
+from pprint import pformat
+from typing import Dict, Optional, Tuple, Union
 
-from pipeline.domain.unitformat import file_size
-from pipeline.infrastructure import logging
-from pipeline.infrastructure.utils import get_obj_size
+from ..domain.unitformat import file_size
+from . import logging
+from .utils import get_obj_size
 
-daskclient = None
-tier0futures = True
+# Check if all required dask modules are available
+dask_spec = importlib.util.find_spec('dask')
+distributed_spec = importlib.util.find_spec('distributed')
+dask_jobqueue_spec = importlib.util.find_spec('dask_jobqueue')
+
+dask_available = all([dask_spec, distributed_spec, dask_jobqueue_spec])
+
+if dask_available:
+    import dask
+    from dask.distributed import Client, LocalCluster, WorkerPlugin
+    from dask.distributed.worker import Worker
+    from dask_jobqueue import HTCondorCluster, SLURMCluster
+else:
+    Client = None
+
+
+daskclient: Optional[Client] = None
+tier0futures: bool = False
 
 LOG = logging.get_logger(__name__)
 
+__all__ = ['is_dask_worker', 'daskclient', 'tier0futures', 'dask_available', 'is_dask_ready']
 
-class FutureTask(object):
+
+def is_dask_worker() -> bool:
+    """Determine if the current process is running within a Dask worker.
+
+    This function checks if the current Python process is executing inside a Dask
+    worker. It uses a reliable method that works even during the worker setup
+    process, specifically by checking for active worker instances using weak
+    references.
+
+    See: https://stackoverflow.com/questions/78589634/what-is-the-cleanest-way-to-detect-whether-im-running-in-a-dask-worker
+
+    Returns:
+        bool: True if the process is a Dask worker, False otherwise.
+    """
+    is_worker = False
+    try:
+        if Worker._instances:
+            is_worker = True
+    except ImportError:
+        pass
+    return is_worker
+
+
+class FutureTask:
+    """Encapsulates the submission and retrieval of results from Dask futures.
+
+    This class simplifies the interaction with Dask futures, providing a
+    consistent interface for submitting tasks and retrieving results. It also
+    handles merging of CASA command logs from distributed workers.
+    """
 
     def __init__(self, executable):
+        """Submits a task to the Dask cluster.
 
-        LOG.debug('submitting a FutureTask %s from the dask client: %s', executable, file_size.format(get_obj_size(executable)))
+        Args:
+            executable: The executable object to be run on a Dask worker.
+        """
+        LOG.debug(
+            'submitting a FutureTask %s from the dask client: %s',
+            executable,
+            file_size.format(get_obj_size(executable)),
+        )
         self.future = daskclient.submit(future_exec, executable)
 
     def get_result(self):
+        """Retrieves the result from the Dask future and merges CASA logs.
 
+        Returns:
+            The result of the task execution.
+
+        Raises:
+            Exception: If an error occurs during task execution or log merging.
+        """
         task_result, tier0_executable = self.future.result()
-        LOG.debug('Received the task executation result (%s) from a worker for executing %s; content:',
-                  file_size.format(get_obj_size(task_result)), tier0_executable)
-        LOG.debug(pprint.pformat(task_result))
+        LOG.debug(
+            'Received the task executation result (%s) from a worker for executing %s; content:',
+            file_size.format(get_obj_size(task_result)),
+            tier0_executable,
+        )
+        LOG.debug(pformat(task_result))
 
         self._merge_casa_commands(tier0_executable.logs)
 
         return task_result
 
     def _merge_casa_commands(self, logs):
-
-        LOG.debug('return request logs: {}'.format(logs))
+        """Merges CASA command logs from a worker into the client-side log."""
+        LOG.debug('return request logs: %s', logs)
 
         response_logs = logs
         client_cmdfile = response_logs.get('casa_commands')
         tier0_cmdfile = response_logs.get('casa_commands_tier0')
 
         if all(isinstance(cmdfile, str) and os.path.exists(cmdfile) for cmdfile in [client_cmdfile, tier0_cmdfile]):
-            LOG.info(f'Merge {tier0_cmdfile} into {client_cmdfile}')
-            with open(client_cmdfile, 'a') as client:
-                with open(tier0_cmdfile, 'r') as tier0:
+            LOG.info('Merge %s into %s', tier0_cmdfile, client_cmdfile)
+            with open(client_cmdfile, 'a', encoding='utf-8') as client:
+                with open(tier0_cmdfile, 'r', encoding='utf-8') as tier0:
                     client.write(tier0.read())
                 os.remove(tier0_cmdfile)
         else:
@@ -49,13 +135,18 @@ class FutureTask(object):
 
 
 def future_exec(tier0_executable):
-    """
-    Execute a pipeline task.
+    """Execute a pipeline task on a Dask worker.
 
-    This function is used to recreate and execute tasks/jobrequests on cluster nodes.
+    This function is called by Dask workers to execute pipeline tasks. It
+    retrieves the executable from the Tier0Executable object and executes it.
+    The result and the Tier0Executable object are then returned.
 
-    :param tier0_executable: the Tier0Executable task to execute
-    :return: the Result returned by executing the task
+    Args:
+        tier0_executable: The Tier0Executable object containing the executable.
+
+    Returns:
+        A tuple containing the result of the task execution and the
+        Tier0Executable object.
     """
     executable = tier0_executable.get_executable()
 
@@ -66,5 +157,206 @@ def future_exec(tier0_executable):
 
 
 def is_dask_ready():
-    """Return the availability of dask-base tier0 queue"""
+    """Check if Dask is ready for parallel task execution.
+
+    Returns:
+        bool: True if a Dask client is available and tier0futures is enabled,
+              False otherwise.
+    """
     return bool(daskclient) and tier0futures
+
+
+def session_startup(casa_config: Dict[str, Optional[str]], loglevel: Optional[str] = None) -> Tuple[str, str]:
+    """Initializes a CASA session with custom configurations and log settings.
+
+    This function updates the casaconfig attributes, sets the CASA log file, and adjusts
+    the log filtering level for casalogsink.
+
+    Args:
+        casa_config: A dictionary containing CASA configuration attributes. Keys are
+                     attribute names (e.g., 'logfile', 'nworkers'), and values are the
+                     desired settings. Values can be None, in which case the attribute
+                     is not modified.
+        loglevel: Optional pipeline log level string:
+                        critical, error, warning, attention, info, debug, todo, trace.
+                  If provided, the CASA log filter level is adjusted accordingly. If None,
+                  casa loglevel defaults to 'INFO1'.
+
+    Returns:
+        A tuple containing:
+            - The path to the CASA log file (str).
+            - The CASA log filter level (str).
+    """
+    from casaconfig import config
+
+    print('setlogfile', casa_config)
+
+    # Update casaconfig attributes
+    for key, value in casa_config.items():
+        if hasattr(config, key) and value is not None:
+            setattr(config, key, value)
+            if key == 'logfile':
+                pass
+                # casatasks.casalog.setlogfile(value)
+    # Initialize casatasks and get log file
+    import casatasks
+
+    casalogfile = casatasks.casalog.logfile()
+
+    # Adjust log filtering level
+    casaloglevel = 'INFO1'
+    import pipeline.infrastructure.logging as logging
+
+    if loglevel is not None:
+        # map pipeline loglevel to casa loglevel, e.g. PL-attention is eqauivelentt to INFO1
+        casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
+
+    casatasks.casalog.filter(casaloglevel)
+    print('last-state:', casalogfile)
+
+    # from pprint import pprint
+    # import dask
+    # pprint(dask.config.config)
+    # print('---')
+
+    return casalogfile, casaloglevel
+
+
+def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = None) -> Optional[Client]:
+    """Start a Dask cluster based on configuration settings.
+
+    This function initializes a Dask cluster, either locally or via SLURM,
+    based on the configuration provided. It also sets up a Dask client,
+    registers a cleanup function, and initializes worker processes.
+
+    Args:
+        dask_config: Optional dictionary containing Dask configuration settings.
+                     If None, the default configuration from `config['pipeconfig']['dask']` is used.
+
+    Returns:
+        Client: A Dask client instance if the cluster is successfully started,
+                None otherwise.
+    """
+    global daskclient, tier0futures
+
+    def custom_worker_init(logfile):
+        import os
+
+        # os.environ['_CASA_LOGFILE'] = logfile
+        print(f'Initialized worker with PID: {os.getpid()}, logfile: {logfile}')
+
+    class CustomInitPlugin(WorkerPlugin):
+        def setup(self, worker):
+            import socket
+
+            import casatasks
+
+            logfile = casatasks.casalog.logfile()
+            print(
+                f'Initialized {worker.id} @ {worker.address} - {socket.gethostname()} - PID: {os.getpid()}\n    logfile: {logfile}'
+            )
+
+    if not dask_available:
+        LOG.warning('dask[distributed] not installed; skipping...')
+        return None
+    from ..pipeconfig import config
+
+    dask_config_session = config['pipeconfig']['dask']
+    LOG.debug('dask config (session): \n %s', pformat(dask_config_session))
+    dask.config.update_defaults(dask_config_session)
+    if dask_config is not None:
+        LOG.debug('dask config (user): \n %s', pformat(dask_config))
+        dask.config.update_defaults(dask_config)
+
+    # attached the exect client casaconfig issue which can be used to help initialze workers
+    dask.config.update_defaults({'casaconfig': config['casaconfig']})
+
+    # Optionally, print the config to see what is loaded
+    # LOG.info(dask.config.config)
+
+    # Retrieve settings from the config
+    # scheduler_port = dask.config.get('distributed.scheduler.port', default=None)
+
+    dashboard_address: Optional[str] = dask.config.get('dashboard_address', default=None)
+    n_workers: Optional[int] = dask.config.get('n_workers', default=None)
+    clustertype: Optional[str] = dask.config.get('clustertype', default=None)
+
+    cluster: Union[LocalCluster, SLURMCluster, None] = None
+
+    if clustertype == 'local':
+        cluster = LocalCluster(
+            n_workers=n_workers,
+            # worker_class=Nanny,
+            dashboard_address=dashboard_address,
+            processes=True,  # True to avoid GIL
+            threads_per_worker=1,
+        )
+    elif clustertype == 'slurm':
+        cluster = SLURMCluster(n_workers=n_workers, scheduler_options={'dashboard_address': dashboard_address})
+        LOG.debug(pformat(cluster.job_script()))
+    elif clustertype == 'htcondor':
+        cluster = HTCondorCluster(n_workers=n_workers, scheduler_options={'dashboard_address': dashboard_address})
+        LOG.debug(pformat(cluster.job_script()))
+    else:
+        LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
+        return None
+
+    if daskclient is None:
+        daskclient = Client(cluster)
+
+        # prefer using plugin which automatically applied to new workers joined by scaling
+        daskclient.register_plugin(CustomInitPlugin())
+
+        # daskclient.run(session_startup, {})
+        # casaconfig: Dict[str, Optional[str]] = {"logfile": casalogfile}
+        # import casatasks
+        # casalogfile: Optional[str] = None
+        # casalogfile = casatasks.casalog.logfile()
+        # daskclient.run(custom_worker_init, casalogfile)
+
+        tier0futures = bool(dask.config.get('tier0futures', default=None))
+
+        atexit.register(stop_daskcluster)
+
+    else:
+        LOG.warning('dask cluster already started.')
+
+    if daskclient:
+        LOG.info('Cluster dashboard: %s', daskclient.dashboard_link)
+        LOG.info('   client:  %s', daskclient)
+        LOG.info('   cluster: %s', daskclient.cluster)
+
+        def get_status(dask_worker: Worker) -> tuple[str, str]:
+            return dask_worker.status, dask_worker.id
+
+        status: Dict[str, tuple[str, str]] = daskclient.run(get_status)
+        LOG.info('worker status: \n %s', pformat(status))
+
+    return daskclient
+
+
+def stop_daskcluster() -> None:
+    """Stop the Dask cluster and close the client.
+
+    This function shuts down the Dask cluster and closes the associated client.
+    It should be registered with `atexit` to ensure proper cleanup.
+    """
+    global daskclient
+
+    if not dask_available:
+        LOG.warning('DASK not installed; skipping')
+        return
+
+    if daskclient is not None:
+        LOG.info('closing the dask cluster/client at %s', str(daskclient.dashboard_link))
+        if daskclient.status == 'running':
+            daskclient.close()
+        else:
+            LOG.warning('client already closed')
+        if daskclient.cluster.status.value == 'running':
+            daskclient.cluster.close()
+        else:
+            LOG.warning('cluster already closed')
+        daskclient = None
+
+    return

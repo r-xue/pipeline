@@ -10,10 +10,13 @@ import webbrowser
 from astropy.utils.iers import conf as iers_conf
 import pkg_resources
 
+# Load pipeline session configuration early to allow modifications of
+# casaconfig.config attributes before importing casatasks
+from . import pipeconfig
 
 from . import domain, environment, infrastructure
 from .domain import measures
-from .infrastructure import Context, Pipeline
+from .infrastructure import Context, Pipeline, daskhelpers
 
 
 from . import h
@@ -37,7 +40,6 @@ casalog.filter(casa_loglevel)
 __version__ = revision = environment.pipeline_revision
 
 
-
 # PIPE-2195: Extend auto_max_age to reduce the frequency of IERS Bulletin-A table auto-updates.
 # This change increases the maximum age of predictive data before auto-downloading is triggered.
 # Note that the default auto_max_age value is 30 days as of Astropy ver 6.0.1:
@@ -52,6 +54,17 @@ __pipeline_documentation_weblink_alma__ = "http://almascience.org/documents-and-
 WEBLOG_LOCK = threading.Lock()
 HTTP_SERVER = None
 
+
+if pipeconfig.config['pipeconfig'].get('xvfb', False):
+
+    try:
+        from pyvirtualdisplay import Display
+        disp = Display(visible=0, size=(2048, 2048))
+        disp.start()
+    except ImportError:
+        LOG.warning('Required package pyvirtualdisplay is not installed, '
+                    'which is required to creating virtual displays for '
+                    'GUI applications in headless environments')
 
 def show_weblog(index_path='',
                 handler_class=http.server.SimpleHTTPRequestHandler,
@@ -226,7 +239,8 @@ def log_host_environment():
         pass
 
 
-log_host_environment()
+if not daskhelpers.is_dask_worker():
+    log_host_environment()
 
 
 def inherit_docstring_and_type_hints():

@@ -20,16 +20,14 @@ import os
 import pickle
 import string
 import uuid
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
-from .conversion import flatten, safe_split
-from .. import jobrequest
-from .. import logging
-from .. import mpihelpers
-from .. import daskhelpers
 from pipeline.infrastructure.basetask import ResultsProxy
 from pipeline.infrastructure.jobrequest import JobRequest
 from pipeline.infrastructure.renderer.logger import Plot
+
+from .. import daskhelpers, jobrequest, logging, mpihelpers
+from .conversion import flatten, safe_split
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context

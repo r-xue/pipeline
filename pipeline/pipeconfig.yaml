@@ -1,0 +1,71 @@
+pipeconfig:
+  FLUX_SERVICE_URL: "https://almascience.org/sc/flux" # not used yet
+  FLUX_SERVICE_URL_BACKUP: "https://asa.alma.cl/sc/flux" # not used yet
+  chdir: "./" # not used yet
+  vis: # not used yet
+  procedure: # not used yet
+  loglevel: "info" # not used yet
+  ppr: # not used yet
+  vlappr: # not used yet
+  xvfb: false # pyvirtualdisplay is required for xvfb=True
+  omp_num_threads: 4 # not used yet
+  dask:
+    dashboard_address: "localhost:0"
+    clustertype: "local"
+    n_workers: 4
+    distributed:
+      worker:
+        nthreads: 1 # Number of threads per worker
+        memory:
+          target: 0.6 # When 60% memory usage is reached, start spilling to disk
+          spill: 0.7 # When 70% memory usage is reached, spill more to disk
+          pause: 0.8 # When 80% memory usage is reached, pause worker activity
+          terminate: 0.95 # When 95% memory usage is reached, terminate the worker
+      scheduler:
+        host: "localhost" # Scheduler host
+        port: 0 # Port of the scheduler
+      client:
+        heartbeat_interval: 10000 # Heartbeat interval in milliseconds
+    jobqueue:
+      slurm:
+        name: pipe-dask-worker
+        queue: "queue"
+        cores: 1 # Total number of cores per job
+        memory: "10gb" # Total memory per job
+        processes: 1 # Number of Python processes per job
+        interface: "eno1"
+        walltime: "01:00:00"
+      htcondor:
+        # Job resource specifications
+        cores: 4 # Number of cores per job
+        memory: "8GB" # Memory per job
+        disk: "10GB" # Disk space per job
+        # Job submission details
+        job_extra:
+          universe: "vanilla"
+          getenv: "True"
+          initialdir: "$(PWD)" # Start job in current directory
+          # should_transfer_files: "YES"
+          # when_to_transfer_output: "ON_EXIT"
+          max_retries: 3
+        # Other settings
+        name: "pipe-dask-worker" # Name of the worker jobs
+        processes: 1 # Number of processes per worker
+        interface: "eno1" # Network interface to use
+        death_timeout: "60s" # Timeout for worker death
+        # local_directory: "/tmp"     # Directory to store local worker files
+        log_directory: "htcondor_logs/" # Directory to store logs
+
+    tier0futures: true
+
+casaconfig:
+  measures_auto_update: false
+  data_auto_update: false
+  log2term: true
+  nologger: true
+  agg: true
+  user_site: false
+  datapath: null # this should be a list of paths or null
+  measurespath: null # this should be a path or null
+  cachedir: null # this should be a path or null
+  logfile: null # this should be a path or null

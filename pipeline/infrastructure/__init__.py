@@ -14,6 +14,7 @@ from . import imagelibrary
 from . import jobrequest
 from . import logging
 from . import mpihelpers
+from . import daskhelpers
 from . import utils
 from . import timetracker
 from .callibrary import CalLibrary, CalTo, CalFrom, CalApplication, CalState
