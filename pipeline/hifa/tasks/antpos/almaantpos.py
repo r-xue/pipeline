@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 import os
-import warnings
 from typing import TYPE_CHECKING, Dict, List, Literal, Optional
 
 from pipeline import infrastructure
 from pipeline.hif.tasks.antpos import antpos
-from pipeline.infrastructure import callibrary, casa_tasks, task_registry, vdp
+from pipeline.infrastructure import casa_tasks, task_registry, vdp
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -203,24 +202,4 @@ class ALMAAntpos(antpos.Antpos):
             antpos_job = casa_tasks.getantposalma(**antpos_args)
             self._executor.execute(antpos_job)
 
-        gencal_args = inputs.to_casa_args()
-        gencal_job = casa_tasks.gencal(caltype='antpos', **gencal_args)
-        # PIPE-1309: we put the casa task call under the catch_warnings contextmanager to prevent
-        # gencal(caltype='antpos') from raising UserWarnings as exceptions. This could be
-        # removed after CAS-13614 is fixed.
-        with warnings.catch_warnings():
-            self._executor.execute(gencal_job)
-
-        calto = callibrary.CalTo(vis=inputs.vis)
-        # careful now! Calling inputs.caltable mid-task will remove the
-        # newly-created caltable, so we must look at the task arguments
-        # instead
-        calfrom = callibrary.CalFrom(gencal_args['caltable'],
-                                     caltype='antpos',
-                                     spwmap=[],
-                                     interp='', calwt=False)
-
-        calapp = callibrary.CalApplication(calto, calfrom)
-
-        return antpos.AntposResults(pool=[calapp], antenna=gencal_args['antenna'],
-                                    offsets=gencal_args['parameter'])
+        return super().prepare()

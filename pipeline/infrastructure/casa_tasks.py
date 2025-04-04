@@ -39,6 +39,7 @@ def register_task(func):
     return func
 
 
+# casatasks
 @register_task
 def applycal(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.applycal, *v, **k)
@@ -75,16 +76,6 @@ def exportfits(*v, **k) -> jobrequest.JobRequest:
 
 
 @register_task
-def gaincal(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.gaincal, *v, **k)
-
-
-@register_task
-def getantposalma(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.getantposalma, *v, **k)
-
-
-@register_task
 def flagcmd(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.flagcmd, *v, **k)
 
@@ -105,8 +96,18 @@ def fluxscale(*v, **k) -> jobrequest.JobRequest:
 
 
 @register_task
+def gaincal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.gaincal, *v, **k)
+
+
+@register_task
 def gencal(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.gencal, *v, **k)
+
+
+@register_task
+def getantposalma(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.getantposalma, *v, **k)
 
 
 @register_task
@@ -225,6 +226,26 @@ def polfromgain(*v, **k) -> jobrequest.JobRequest:
 
 
 @register_task
+def rerefant(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.rerefant, *v, **k)
+
+
+@register_task
+def sdatmcor(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.sdatmcor, *v, **k)
+
+
+@register_task
+def sdbaseline(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.sdbaseline, *v, **k)
+
+
+@register_task
+def sdcal(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.sdcal, *v, **k)
+
+
+@register_task
 def setjy(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.setjy, *v, **k)
 
@@ -245,6 +266,11 @@ def tclean(*v, **k) -> jobrequest.JobRequest:
 
 
 @register_task
+def tsdimaging(*v, **k) -> jobrequest.JobRequest:
+    return jobrequest.JobRequest(casatasks.tsdimaging, *v, **k)
+
+
+@register_task
 def uvcontsub(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.uvcontsub, *v, **k)
 
@@ -259,36 +285,7 @@ def visstat(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(casatasks.visstat, *v, **k)
 
 
-@register_task
-def rerefant(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.rerefant, *v, **k)
-
-
-@register_task
-def sdatmcor(*v, **k) -> jobrequest.JobRequest:
-    """Wrap casatasks.sdatmcor
-
-    Returns:
-        JobRequest instance
-    """
-    return jobrequest.JobRequest(casatasks.sdatmcor, *v, **k)
-
-
-@register_task
-def sdbaseline(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.sdbaseline, *v, **k)
-
-
-@register_task
-def sdcal(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.sdcal, *v, **k)
-
-
-@register_task
-def tsdimaging(*v, **k) -> jobrequest.JobRequest:
-    return jobrequest.JobRequest(casatasks.tsdimaging, *v, **k)
-
-
+# shutil tasks
 @register_task
 def copyfile(*v, **k) -> jobrequest.JobRequest:
     return jobrequest.JobRequest(shutil.copyfile, *v, **k)
