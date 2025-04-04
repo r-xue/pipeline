@@ -66,11 +66,8 @@ def is_dask_worker() -> bool:
         bool: True if the process is a Dask worker, False otherwise.
     """
     is_worker = False
-    try:
-        if Worker._instances:
-            is_worker = True
-    except ImportError:
-        pass
+    if dask_available and Worker._instances:
+        is_worker = True
     return is_worker
 
 
