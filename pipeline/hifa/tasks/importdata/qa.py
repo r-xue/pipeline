@@ -1,34 +1,38 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
-from itertools import chain
-from typing import List, Tuple, Dict, Callable, Set
+import itertools
+from typing import TYPE_CHECKING, List, Tuple, Dict, Callable, Set
 
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.utils as utils
-import pipeline.qa.scorecalculator as qacalc
-from pipeline.domain.field import Field
-from pipeline.domain.measurementset import MeasurementSet
+from pipeline import infrastructure
 from pipeline.h.tasks.exportdata import aqua
-from pipeline.infrastructure import casa_tools
-from .almaimportdata import ALMAImportDataResults
+from pipeline.hifa.tasks.importdata import almaimportdata
+from pipeline.infrastructure import casa_tools, pipelineqa, utils
+from pipeline.qa import scorecalculator
 
-LOG = logging.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain.field import Field
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 aqua_exporter = aqua.xml_generator_for_metric('ScoreParallacticAngle', '{:0.3f}')
 aqua.register_aqua_metric(aqua_exporter)
 
 
-class ALMAImportDataListQAHandler(pqa.QAPlugin):
+class ALMAImportDataListQAHandler(pipelineqa.QAPlugin):
     result_cls = collections.abc.Iterable
-    child_cls = ALMAImportDataResults
+    child_cls = almaimportdata.ALMAImportDataResults
 
-    def handle(self, context, result):
+    def handle(self, context: Context, result: almaimportdata.ALMAImportDataResults) -> None:
         super().handle(context, result)
 
         # Check per-session parallactic angle coverage of polarisation calibration
         parallactic_threshold = result.inputs['minparang']
         # gather mses into a flat list
-        mses = list(chain(*(r.mses for r in result)))
+        mses = list(itertools.chain(*(r.mses for r in result)))
 
         # PIPE-597 spec states to test POLARIZATION intent
         intents_to_test = {'POLARIZATION'}
@@ -38,11 +42,11 @@ class ALMAImportDataListQAHandler(pqa.QAPlugin):
         result.parang_ranges = parang_ranges
 
 
-class ALMAImportDataQAHandler(pqa.QAPlugin):
-    result_cls = ALMAImportDataResults
+class ALMAImportDataQAHandler(pipelineqa.QAPlugin):
+    result_cls = almaimportdata.ALMAImportDataResults
     child_cls = None
 
-    def handle(self, context, result):
+    def handle(self, context: Context, result: almaimportdata.ALMAImportDataResults) -> None:
         # Check for the presence of polarization intents
         recipe_name = context.project_structure.recipe_name
         polcal_scores = _check_polintents(recipe_name, result.mses)
@@ -58,7 +62,7 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
                                           context.observing_run.virtual_science_spw_names)
 
         # Flux service usage
-        score5 = _check_fluxservice(result)
+        scores5 = _check_fluxservice(result)
 
         # Check for flux.csv
         score6 = _check_fluxcsv(result)
@@ -74,21 +78,22 @@ class ALMAImportDataQAHandler(pqa.QAPlugin):
 
         # Add all scores to QA score pool in result.
         result.qa.pool.extend(polcal_scores)
-        result.qa.pool.extend([score2, score4, score5, score6, score8, score9])
+        result.qa.pool.extend([score2, score4, score6, score8, score9])
         result.qa.pool.extend(scores3)
+        result.qa.pool.extend(scores5)
         result.qa.pool.extend(scores7)
 
 
-def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
     """
     Check each measurement set for polarization intents
     """
-    return qacalc.score_polintents(recipe_name, mses)
+    return scorecalculator.score_polintents(recipe_name, mses)
 
 
 def _check_parallactic_angle_range(mses: List[MeasurementSet],
                                    intents: Set[str],
-                                   threshold: float) -> Tuple[List[pqa.QAScore], Dict]:
+                                   threshold: float) -> Tuple[List[pipelineqa.QAScore], Dict]:
     """
     Check that the parallactic angle coverage of the polarisation calibrator
     meets the required threshold.
@@ -101,7 +106,7 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
     :return: list of QAScores and dictionary of metrics
     """
     # holds list of all QA scores for this metric
-    all_scores: List[pqa.QAScore] = []
+    all_scores: List[pipelineqa.QAScore] = []
     # holds all parallactic angle ranges for all
     # session names, intents and pol cal names
     all_metrics = {'sessions': {}, 'pol_intents_found': False}
@@ -132,7 +137,7 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
                     all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
                 LOG.info(f'Parallactic angle range for {polcal_name} ({intent}) in session {session_name}: '
                          f'{parallactic_range}')
-                session_scores = qacalc.score_parallactic_range(
+                session_scores = scorecalculator.score_parallactic_range(
                     intents_present, session_name, polcal_name, parallactic_range, threshold
                 )
                 all_scores.extend(session_scores)
@@ -140,61 +145,61 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
     return all_scores, all_metrics
 
 
-def _check_bands(mses) -> pqa.QAScore:
+def _check_bands(mses) -> pipelineqa.QAScore:
     """
     Check each measurement set for bands with calibration issues
     """
-    return qacalc.score_bands(mses)
+    return scorecalculator.score_bands(mses)
 
 
-def _check_observing_modes(mses) -> List[pqa.QAScore]:
+def _check_observing_modes(mses) -> List[pipelineqa.QAScore]:
     """
     Check each measurement set for issues with observing modes.
     """
-    return qacalc.score_observing_modes(mses)
+    return scorecalculator.score_observing_modes(mses)
 
 
-def _check_science_spw_names(mses, virtual_science_spw_names) -> pqa.QAScore:
+def _check_science_spw_names(mses, virtual_science_spw_names) -> pipelineqa.QAScore:
     """
     Check science spw names
     """
-    return qacalc.score_science_spw_names(mses, virtual_science_spw_names)
+    return scorecalculator.score_science_spw_names(mses, virtual_science_spw_names)
 
 
-def _check_fluxservice(result) -> pqa.QAScore:
+def _check_fluxservice(result) -> pipelineqa.QAScore:
     """
     Check flux service usage
     """
-    return qacalc.score_fluxservice(result)
+    return scorecalculator.score_fluxservice(result)
 
 
-def _check_fluxservicemessages(result) -> pqa.QAScore:
+def _check_fluxservicemessages(result) -> pipelineqa.QAScore:
     """
     Check flux service messages
     """
-    return qacalc.score_fluxservicemessages(result)
+    return scorecalculator.score_fluxservicemessages(result)
 
 
-def _check_fluxservicestatuscodes(result) -> pqa.QAScore:
+def _check_fluxservicestatuscodes(result) -> pipelineqa.QAScore:
     """
     Check flux service statuscodes
     """
-    return qacalc.score_fluxservicestatuscodes(result)
+    return scorecalculator.score_fluxservicestatuscodes(result)
 
 
-def _check_fluxcsv(result) -> pqa.QAScore:
+def _check_fluxcsv(result) -> pipelineqa.QAScore:
     """
     Check for flux.csv file
     """
-    return qacalc.score_fluxcsv(result)
+    return scorecalculator.score_fluxcsv(result)
 
 
-def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
     """
     Check if BP/Phcal/Ampcal are all the same object
     """
 
-    return qacalc.score_samecalobjects(recipe_name, mses)
+    return scorecalculator.score_samecalobjects(recipe_name, mses)
 
 
 # - functions to measure parallactic angle coverage of polarisation calibrator ----------------------------------------

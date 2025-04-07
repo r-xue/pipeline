@@ -4015,71 +4015,71 @@ def score_polcal_results(session_name: str, caltables: list) -> pipelineqa.QASco
 
 
 @log_qa
-def score_fluxservice(result: ALMAImportDataResults) -> pipelineqa.QAScore:
+def score_fluxservice(result: ALMAImportDataResults) -> list[pipelineqa.QAScore]:
     """
-    Determines the score based on the flux catalog service usage and flux origin.
-    If the primary flux service query fails and the backup is invoked, the severity level is BLUE (0.9).
-    If the backup also fails, the severity level is YELLOW (0.6).
-    If neither service is used and Source.xml is the origin, the severity is RED (0.3).
-    If flux service is used but the age of the nearest monitoring point exceeds 14 days, the score is 0.5.
-
-    Args:
-        result: a ALMAImportDataResults object.
-
-    Returns:
-        a pipeline QA score object
+    Returns QA scores based on:
+      1. Flux catalog service usage and flux origin
+      2. Age of the nearest monitoring point (if applicable)
     """
-    # Check flux service usage
-    if result.fluxservice == 'FIRSTURL':
-        msg = "Flux catalog service used."
-        score = 1.0
-    elif result.fluxservice == 'BACKUPURL':
-        msg = "Backup flux catalog service used."
-        score = 0.9
-    elif result.fluxservice == 'FAIL':
-        msg = "Neither primary nor backup flux service could be queried. ASDM values used."
-        score = 0.3
-    else:  # only other possibility is fluxservice=None
-        msg = "Flux catalog service not used."
-        score = 1.0
+    flux_score, flux_msg = {
+        'FIRSTURL': (1.0, "Flux catalog service used."),
+        'BACKUPURL': (0.9, "Backup flux catalog service used."),
+        'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
+        None: (1.0, "Flux catalog service not used.")
+    }.get(result.fluxservice, (1.0, "Flux catalog service not used."))
 
-    # Check flux origin and age in a single iteration
-    origincounter = 0
+    ampcal = None
+    ampcal_spws = []
     agecounter = 0
+    scores = []
 
-    for setjy_result in result.setjy_results:
-        for fieldid, measurements in setjy_result.measurements.items():
-            for measurement in measurements:
-                try:
-                    # Check flux origin
-                    fluxorigin = measurement.origin
-                    if fluxorigin == 'Source.xml':
-                        score = 0.3
-                        msg = "Source.xml is the flux origin. Some/all flux values derived from ASDM."
-                    origincounter += 1
-                except Exception:
-                    LOG.debug("Skipping measurement due to missing flux origin.")
+    if result.fluxservice in ('FIRSTURL', 'BACKUPURL'):
+        for setjy_result in result.setjy_results:
+            for fieldid, measurements in setjy_result.measurements.items():
+                fieldobjs = result.mses[0].get_fields(field_id=fieldid)
+                ampcals = [f for f in fieldobjs if 'AMPLITUDE' in f.intents]
+                if not ampcals:
+                    continue
 
-                # Check age of nearest monitoring point if flux service was used
-                if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
-                    fieldobjs = result.mses[0].get_fields(field_id=fieldid)
-                    if any('AMPLITUDE' in fieldobj.intents for fieldobj in fieldobjs):
-                        if measurement.age:
-                            if int(abs(measurement.age)) > 14:
-                                agecounter += 1
-                        else:
-                            LOG.debug("Skipping measurement due to missing age data.")
+                ampcal = ampcals[0]
 
-    if origincounter == 0:
-        score = 0.3
-        msg = "Flux origin missing for all measurements."
+                for m in measurements:
+                    if getattr(m, 'origin', None) == 'Source.xml':
+                        flux_score = min(flux_score, 0.3)
+                        ampcal_spws.append(str(m.spw_id))
 
-    if agecounter > 0:
-        score = 0.5
-        msg += " Age of nearest monitor point is greater than 14 days."
+                    age = getattr(m, 'age', None)
+                    if age is None:
+                        LOG.debug("Skipping measurement due to missing age data.")
+                    elif abs(int(age)) > 14:
+                        agecounter += 1
 
-    origin = pipelineqa.QAOrigin(metric_name='score_fluxservice', metric_score=score, metric_units='flux service')
-    return pipelineqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+        if ampcal_spws and ampcal:
+            flux_msg = (
+                f"For {result.mses[0].basename}, the origin of the adopted flux for the flux "
+                f"calibrator {ampcal.name} is the ASDM for the following spws: {', '.join(ampcal_spws)}."
+            )
+
+        # Score based on monitor point age
+        age_score = 0.5 if agecounter > 0 else 1.0
+        age_msg = (
+            f"Age of nearest monitoring point exceeds 14 days for {agecounter} measurement(s)."
+            if agecounter > 0 else
+            "All monitoring points are within acceptable age range."
+        )
+
+        scores.append(pipelineqa.QAScore(
+            age_score, longmsg=age_msg, shortmsg=age_msg,
+            origin=pipelineqa.QAOrigin('flux_monitor_age', age_score, 'days')
+        ))
+
+    # Score for flux catalog usage
+    scores.append(pipelineqa.QAScore(
+        flux_score, longmsg=flux_msg, shortmsg=flux_msg,
+        origin=pipelineqa.QAOrigin('flux_catalog_service', flux_score, 'flux service')
+    ))
+
+    return scores
 
 
 @log_qa
