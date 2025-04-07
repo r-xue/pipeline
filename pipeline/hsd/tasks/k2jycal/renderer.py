@@ -2,7 +2,7 @@
 import os
 import collections
 import shutil
-from numpy import mean, std
+from numpy import median, percentile
 
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
@@ -102,15 +102,15 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         for spw_id, spw_info in spw_data.items():
             if not spw_info["all_factors"]:
                 continue
-            stats = self.__calculate_stats(spw_info["all_factors"], r=3)
-            upper, lower, m_val, s_val = stats["upper_limit"], stats["lower_limit"], stats["mean"], stats["std"]
+            stats = self.__calculate_stats(spw_info["all_factors"])
+            upper, lower, m_val = stats["upper_limit"], stats["lower_limit"], stats["median"]
             for ms_label, factor_list in spw_info["ms_dict"].items():
                 for factor, corr, ant in factor_list:
                     if factor < lower or factor > upper:
                         spw_info["outliers"].append((ms_label, factor))
                         LOG.warning(
-                            "Value of factor %f for pol %s, spw %s on antenna %s in ms '%s' is significantly away from mean %f (std %f).",
-                            factor, corr, spw_id, ant, ms_label, m_val, s_val
+                            "Value of factor %f for pol %s, spw %s on antenna %s in ms '%s' is significantly away from the median value %f (upper fence %f, lower fence %f).",
+                            factor, corr, spw_id, ant, ms_label, m_val, upper, lower
                         )
         
         logging.remove_handler(extra_logrecords_handler)
@@ -144,29 +144,33 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
         })
 
     @staticmethod
-    def __calculate_stats(values: list = [], r: float = 3) -> Dict[str, float]:
+    def __calculate_stats(values: list = [], whis: float = 1.5) -> Dict[str, float]:
         """ Helper to compute statistical metrics for a given list of factors. 
         
         Args:
             values: A list of numeric factor values.
-            r:  The threshold for defining outliers. 
-                Values beyond `mean ± r * std` are considered outliers. Defaults to 3.
+            whis:  The position of the whiskers. 
+                   The lower whisker is at the lowest datum above Q1 - whis*(Q3-Q1), 
+                   and the upper whisker at the highest datum below Q3 + whis*(Q3-Q1), 
+                   where Q1 and Q3 are the first and third quartiles. 
+                   Defaults to 1.5
 
         Returns:
             A dictionary containing:
-                - "upper_limit" (float): The mean + r * standard deviation.
-                - "lower_limit" (float): The mean - r * standard deviation.
-                - "mean" (float): The average of the values.
-                - "std" (float): The standard deviation of the values. If the list has 
-                                fewer than two values, this is set to 0.0.
+                - "upper_limit" (float): The upper fence of the values = Q3 + (1.5 * IQR)
+                - "lower_limit" (float): The lower fence of the values = Q1 – (1.5 * IQR)
+                - "median" (float): The median value of the data.
         """
-        m = mean(values)
-        s = std(values) if len(values) > 1 else 0.0
+        m = median(values)
+        q1 = percentile(values, 25)
+        q3 = percentile(values, 75)
+        iqr = q3 - q1
+        low = q1 - whis * iqr
+        up = q3 + whis * iqr
         return {
-            "upper_limit": m + r * s,
-            "lower_limit": m - r * s,
-            "mean": m,
-            "std": s
+            "upper_limit": up,
+            "lower_limit": low,
+            "median": m
         }
 
     @staticmethod
