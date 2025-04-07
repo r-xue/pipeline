@@ -53,7 +53,8 @@ class PlotterPool(object):
                        ralist: List[float],
                        declist: List[float],
                        direction_reference: Optional[str] = None,
-                       brightnessunit: str = 'Jy/beam') -> display.SDSparseMapPlotter:
+                       brightnessunit: str = 'Jy/beam',
+                       freq_frame: str = '') -> display.SDSparseMapPlotter:
         """Create plotter instance.
 
         Args:
@@ -63,13 +64,15 @@ class PlotterPool(object):
             declist: List of Dec values for labeling
             direction_reference: Directon reference string. Defaults to None.
             brightnessunit: Brightness unit string. Defaults to 'Jy/beam'.
-
+            freq_frame: Frequency reference frame. Defaults to ''
+                (no frame information).
         Returns:
             Plotter instance
         """
         fig = figure.Figure()
-        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec,
-                                             step=1, brightnessunit=brightnessunit)
+        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec, step=1,
+                                             brightnessunit=brightnessunit,
+                                             freq_frame=freq_frame)
         plotter.direction_reference = direction_reference
         plotter.setup_labels_absolute(ralist, declist)
         return plotter
@@ -782,6 +785,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         else:
             atm_transmission = None
             atm_freq = None
+        spw = self.ms.get_spectral_window(spw_id)
+        freq_frame = spw.frame
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix,
                                                    postfit_integrated_data, postfit_map_data,
                                                    prefit_integrated_data, prefit_map_data,
@@ -790,7 +795,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                                                    npol, frequency,
                                                    deviation_mask, line_range,
                                                    atm_transmission, atm_freq,
-                                                   edge, in_rowmap=in_rowmap)
+                                                   edge, in_rowmap=in_rowmap,
+                                                   freq_frame=freq_frame)
         plot_flatness = self.plot_flatness_profile(postfit_prefix,
                                                    postfit_integrated_data,
                                                    npol)
@@ -849,7 +855,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         atm_transmission: Optional[numpy.ndarray],
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]],
-        in_rowmap: Optional[dict] = None
+        in_rowmap: Optional[dict] = None,
+        freq_frame: str = ''
     ) -> Dict[str, Dict[int, str]]:
         """Create various type of plots.
 
@@ -880,7 +887,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             edge: Edge channels excluded from the baseline fitting
             in_rowmap: Row mapping between original (calibrated) MS and the MS
                        before baseline subtraction.
-
+            freq_frame: frequency reference frame
         Returns:
             Dictionary containing names of the figure with plot type and
             polarization id as keys
@@ -901,7 +908,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
 
         plotter = self.pool.create_plotter(num_ra, num_dec, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
-                                           brightnessunit=bunit)
+                                           brightnessunit=bunit, freq_frame=freq_frame)
 
         if line_range is not None:
             lines_map = get_lines(self.datatable, num_ra, npol, rowlist)
@@ -1145,7 +1152,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                       line_range: Optional[List[Tuple[float, float]]],
                       deviation_mask: Optional[List[Tuple[int, int]]],
                       edge: Tuple[int, int], brightnessunit: str,
-                      stat: BinnedStat,
+                      freq_frame: str, stat: BinnedStat,
                       figfile: str) -> None:
         """
         Create a plot of baseline flatness of a spectrum.
@@ -1161,6 +1168,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             edge: Number of elements in left and right edges that should be
                 eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
+            freq_frame: frequency reference frame
             stat: Binned statistics data
             figfile: A file name to save figure.
         """
@@ -1182,7 +1190,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
         plt.title('Spatially Averaged Spectrum')
         plt.ylabel(f'Intensity ({brightnessunit})')
-        plt.xlabel('Frequency (GHz)')
+        plt.xlabel(f'Frequency (GHz) {freq_frame}')
         if edge is not None:
             (ch1, ch2) = edge
             fedge0 = ch_to_freq(0, frequency)
@@ -1298,8 +1306,11 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
 
             if not basetask.DISABLE_WEBLOG:
                 postfit_qa_figfile = self.postfit_prefix + '_flatness_pol%s.png' % ipol
+                spw = self.ms.get_spectral_window(spw_id)
+                freq_frame = spw.frame
                 self.plot_flatness(postfit_integrated_data[ipol], frequency, line_range,
-                                   deviation_mask, edge, bunit, stat, postfit_qa_figfile)
+                                   deviation_mask, edge, bunit, freq_frame,
+                                   stat, postfit_qa_figfile)
 
                 if not os.path.exists(postfit_qa_figfile):
                     LOG.warning(
