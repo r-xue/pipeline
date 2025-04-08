@@ -655,15 +655,18 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 LOG.info(f"{inputs.ms.basename}: computing optimal solint based on aggregate bandwidth.")
 
                 # Identify SpW with smallest optimal solint.
-                idx_spw_min_solint = bestsolint.index(min(bestsolint))
+                spwid_min_solint = spwids[bestsolint.index(min(bestsolint))]
 
-                # Determine the aggregate bandwidth.
-                bandwidths = [quanta.quantity(snr_result.bandwidths[i])['value'] for i in spwindex]
+                # Determine the aggregate bandwidth for all SpWs originally
+                # under consideration, including any for which there may not
+                # have been a valid entry in SNR result, hence use origina
+                # spwindex instead of spwids.
+                sum_bw = sum(inputs.ms.get_spectral_window(snr_result.spwids[i]).bandwidth.value for i in spwindex)
 
                 # Set bandwidth scaling factor to bandwidth of SpW with the
                 # smallest optimal solint divided by the aggregate bandwidth of
                 # the SpWs under consideration.
-                bwfactor = quanta.quantity(snr_result.bandwidths[idx_spw_min_solint])['value'] / sum(bandwidths)
+                bwfactor = float(inputs.ms.get_spectral_window(spwid_min_solint).bandwidth.value / sum_bw)
 
                 # Set the solint for the SpW combination gaincal by scaling the
                 # smallest optimal solint with the bandwidth scaling factor,
