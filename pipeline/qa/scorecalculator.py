@@ -2056,13 +2056,14 @@ def score_missing_bandpass_phaseup(ms, hm_phaseup) -> pqa.QAScore:
     Returns:
         QAScore object.
     """
-    score = 1.0
     # Adjust QA message based on whether it is intentional that the phase-up
     # solution is missing.
     if hm_phaseup == '':
+        score = 1.0
         shortmsg = f"No phase-up computed"
         longmsg = f"{ms.basename}: skipped bandpass phase-up solution (disabled with hm_phaseup='')."
     else:
+        score = 0.0
         shortmsg = f"No phase-up found"
         longmsg = (f"{ms.basename}: bandpass phase-up solution missing from results, even though it should have"
                    f" been computed (hm_phaseup = {hm_phaseup}).")
