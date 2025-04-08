@@ -2,7 +2,6 @@ import contextlib
 import os
 import shutil
 import tarfile
-import collections
 from typing import List, Optional, Set
 
 import pipeline.infrastructure as infrastructure
@@ -10,11 +9,14 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
+from pipeline.infrastructure.tablereader import MeasurementSetReader
+import pipeline.domain as domain
 from pipeline.domain.datatype import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline import environment
+from pipeline.h.heuristics import importdata as importdata_heuristics
 from . import fluxes
 
 __all__ = [
@@ -292,7 +294,7 @@ class ImportData(basetask.StandardTaskTemplate):
         short_data_types = list(set([v.replace('_ALL', '').replace('_SCIENCE', '')
                                      for v in available_data_types
                                      if v.endswith('_ALL') or v.endswith('_SCIENCE')]))
-        data_type_entry = collections.namedtuple('DataTypeEntry', ('str_data_type enum_data_type'))
+
         for ms in observing_run.measurement_sets:
             LOG.debug(f'Setting session to {inputs.session} for {ms.basename}')
 
@@ -306,12 +308,13 @@ class ImportData(basetask.StandardTaskTemplate):
 
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
-            if inputs.datacolumns in (None, {}):
-                data_types = {'DATA': data_type_entry('RAW', DataType.RAW)}
-                if correcteddatacolumn_name is not None:
-                    # Default to standard calibrated IF MS if the corrected data column is present
-                    data_types['CORRECTED'] = data_type_entry('REGCAL_CONTLINE_ALL', DataType.REGCAL_CONTLINE_ALL)
-            else:
+            # Try getting any saved data type information from the MS HISTORY table
+            ms_history = MeasurementSetReader.get_history(ms)
+            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = importdata_heuristics.get_ms_data_types_from_history(ms_history)
+
+            if inputs.datacolumns not in (None, {}):
+                # Parse user defined datatype information via task parameter
+
                 data_types = {}
 
                 # Check inputs and parse any short data types
@@ -328,11 +331,11 @@ class ImportData(basetask.StandardTaskTemplate):
 
                     if v.upper() in short_data_types:
                         if ms.intents == {'TARGET'}:
-                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_SCIENCE', DataType[f'{v.upper()}_SCIENCE'])
+                            data_types[k.upper()] = DataType[f'{v.upper()}_SCIENCE']
                         else:
-                            data_types[k.upper()] = data_type_entry(f'{v.upper()}_ALL', DataType[f'{v.upper()}_ALL'])
+                            data_types[k.upper()] = DataType[f'{v.upper()}_ALL']
                     elif v.upper() in available_data_types:
-                        data_types[k.upper()] = data_type_entry(f'{v.upper()}', DataType[f'{v.upper()}'])
+                        data_types[k.upper()] = DataType[f'{v.upper()}']
                     else:
                         msg = f'No such data type {v.upper()}'
                         LOG.error(msg)
@@ -343,7 +346,7 @@ class ImportData(basetask.StandardTaskTemplate):
                     LOG.error(msg)
                     raise ValueError(msg)
                 if len(data_types) == 1:
-                    if ms_origin == 'ASDM' and 'DATA' in data_types and data_types['DATA'].str_data_type != 'RAW':
+                    if ms_origin == 'ASDM' and 'DATA' in data_types and data_types['DATA'].name != 'RAW':
                         msg = 'Data type for ASDMs can only be "RAW"'
                         LOG.error(msg)
                         raise ValueError(msg)
@@ -361,14 +364,24 @@ class ImportData(basetask.StandardTaskTemplate):
                     LOG.error(msg)
                     raise ValueError(msg)
 
-            # Set data_type for DATA and CORRECTED_DATA columns if specified
-            if 'DATA' in data_types:
-                LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].str_data_type}')
-                ms.set_data_column(data_types['DATA'].enum_data_type, datacolumn_name)
+                self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
-            if 'CORRECTED' in data_types:
-                ms.set_data_column(data_types['CORRECTED'].enum_data_type, correcteddatacolumn_name)
-                LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].str_data_type}')
+                # Log a warning if the user defined datatype information differs from the MS HISTORY information (if available)
+                if ms.data_column != data_type_per_column_from_ms:
+                    LOG.warning(f'User supplied datatypes {dict((v, k.name) for k, v in ms.data_column.items())} differ from information found in the MS ({dict((v, k.name) for k, v in data_type_per_column_from_ms.items())}).')
+
+            else:
+                if data_type_per_column_from_ms and data_types_per_source_and_spw_from_ms:
+                    # Set the lookup dictionaries
+                    ms.set_data_type_dicts(data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms)
+                else:
+                    # Fallback default datatypes
+                    data_types = {'DATA': DataType.RAW}
+                    if correcteddatacolumn_name is not None:
+                        # Default to standard calibrated IF MS if the corrected data column is present
+                        data_types['CORRECTED'] = DataType.REGCAL_CONTLINE_ALL
+
+                    self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
             ms.session = inputs.session
             results.origin[ms.basename] = ms_origin
@@ -542,10 +555,21 @@ class ImportData(basetask.StandardTaskTemplate):
                 tb.putcolkeywords('DIRECTION', x)
                 LOG.info(basename + ': changing coords from J2000 to ICRS in the SOURCE table')
 
+    def _set_column_data_types(self, ms: domain.MeasurementSet, data_types: dict, datacolumn_name: str, correcteddatacolumn_name: str) -> None:
+
+        # Set data_type for DATA and CORRECTED_DATA columns if specified
+        if 'DATA' in data_types:
+            LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].name}')
+            ms.set_data_column(data_types['DATA'], datacolumn_name)
+
+        if 'CORRECTED' in data_types:
+            ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name)
+            LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].name}')
+
 
 def get_datacolumn_name(msname: str) -> Optional[str]:
     """
-    Return a name of data column in MeasurementSet (MS).
+    Return a name of the data column in a MeasurementSet (MS).
 
     Args:
         msname: A path of MS
@@ -559,7 +583,7 @@ def get_datacolumn_name(msname: str) -> Optional[str]:
 
 def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
     """
-    Return name of corrected data column in MeasurementSet (MS).
+    Return name of the corrected data column in a MeasurementSet (MS).
 
     Args:
         msname: A path of MS

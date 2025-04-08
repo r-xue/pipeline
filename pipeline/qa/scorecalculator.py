@@ -3654,7 +3654,8 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
                           metric_score=float(k_spw),
                           metric_units='Number of spws with missing SNR measurements')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin,
+                       applies_to=pqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
 
 
 @log_qa
