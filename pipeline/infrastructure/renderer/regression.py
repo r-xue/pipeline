@@ -997,15 +997,15 @@ def get_prefix(result:Results, task:StandardTaskTemplate) -> str:
     return prefix
 
 
-def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
-    """Extract QA scores from a TaskResults object and organize them into a structured OrderedDict.
+def extract_qa_score_regression(prefix: str, result: Results) -> dict:
+    """Extract QA scores from a TaskResults object and organize them into a structured dictionary.
 
     Args:
         prefix (str): Base string to prepend to each key in the output dictionary.
         result (Results): TaskResults Object containing QA pool data to be processed.
 
     Returns:
-        OrderedDict: Dictionary with formatted keys mapping to metric scores and values.
+        dict: Dictionary with formatted keys mapping to metric scores and values.
             Keys follow the pattern: {prefix}.field_{field_id}.spw_{spw_id}.qa.{metric|score}.{metric_name}
 
     Examples:
@@ -1014,8 +1014,8 @@ def extract_qa_score_regression(prefix: str, result: Results) -> OrderedDict:
         >>> # Resulting keys might look like: "test.field_data.spw_0.qa.metric.accuracy"
     
     """
-    # Initialize an ordered dictionary to maintain insertion order
-    d = OrderedDict()
+    # Initialize a dictionary
+    d = {}
 
     # Iterate through each QA score in the result's pool
     for qa_score in result.qa.pool:
