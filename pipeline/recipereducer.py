@@ -235,6 +235,29 @@ def reduce(vis: Optional[List[str]] = None, infiles: Optional[List[str]] = None,
            loglevel: str = 'info', plotlevel: str = 'default',
            session: Optional[List[str]] = None, exitstage: Optional[int] = None,
            startstage: Optional[int] = None) -> launcher.Context:
+    """Executes a CASA Pipeline data reduction procedure.
+
+    This function triggers the execution of pipeline tasks defined in a
+    given XML precipe procedure, managing context creation and task sequencing.
+
+    Args:
+        vis (Optional[List[str]]): List of measurement sets to process.
+        infiles (Optional[List[str]]): Supplementary input files for the pipeline executation.
+        procedure (str): XML procedure file defining the pipeline workflow.
+        context (Optional[launcher.Context]): Existing context object. A new context is created if None.
+        name (Optional[str]): Context name, used only if `context` is None.
+        loglevel (str): Logging level (e.g., 'info', 'debug').
+        plotlevel (str): Plotting verbosity level used during task execution.
+        session (Optional[List[str]]): List of session names corresponding to each vis. Defaults to "default".
+        exitstage (Optional[int]): If provided, stops execution after this stage number.
+        startstage (Optional[int]): If provided, begins execution from this stage number.
+
+    Returns:
+        launcher.Context: The pipeline context object with updated state.
+
+    Raises:
+        exceptions.PipelineException: Raised if a pipeline task fails with tracebacks.
+    """
     if vis is None:
         vis = []
 
@@ -264,15 +287,15 @@ def reduce(vis: Optional[List[str]] = None, infiles: Optional[List[str]] = None,
             procedure_stage_nr += 1
             if procedure_stage_nr < startstage:
                 continue
-            LOG.info('Executing pipeline task %s' % _as_task_call(task, task_args))
+            LOG.info('Executing pipeline task %s', _as_task_call(task, task_args))
 
             try:
                 result = task(**task_args)
-            except Exception as ex:
+            except Exception:
                 # Log message if an exception occurred that was not handled by
                 # standardtask template (not turned into failed task result).
                 _hif_call = _as_task_call(task, task_args)
-                LOG.error('Unhandled error in recipereducer while running pipeline task %s.' % _hif_call)
+                LOG.error("Unhandled error in recipereducer while running pipeline task %s.", _hif_call)
                 traceback.print_exc()
                 return context
 
