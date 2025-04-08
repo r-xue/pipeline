@@ -435,8 +435,9 @@ def test_uid___A002_Xc845c0_X7366_cycle5_restore_regression():
                             expectedoutput_dir=ref_directory)
 
     # copy files for the restore into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
     pr.run()
 
@@ -459,8 +460,9 @@ def test_uid___A002_Xc46ab2_X15ae_selfcal_restore_regression():
                             expectedoutput_dir=ref_directory)
 
     # copy files into products folder for restore
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
     pr.run()
 
@@ -483,8 +485,9 @@ def test_uid___A002_Xef72bb_X9d29_renorm_restore_regression():
                             expectedoutput_dir=ref_directory)
 
     # copy files into products folder for restore
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/rawdata')
 
     pr.run()
 
@@ -520,8 +523,9 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
                             expectedoutput_dir=('pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'))
 
     # copy files use restore task into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/products')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
@@ -539,7 +543,7 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
         recipe='procedure_hsdn_calimage.xml', input_dir='pl-regressiontest/mg2-20170525142607-180419',
         visname=['mg2-20170525142607-180419.ms'],
         expectedoutput_file=('pl-regressiontest/mg2-20170525142607-180419/' +
-                             'mg2-20170525142607-180419.casa-6.6.6-6-pipeline-2024.2.0.3.results.txt'))
+                             'mg2-20170525142607-180419.casa-6.6.6-9-pipeline-2025.0.0.36.results.txt'))
     pr.run()
 
 
@@ -557,12 +561,13 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     pr = PipelineRegression(
         input_dir=input_dir, visname=['mg2-20170525142607-180419.ms'],
         expectedoutput_file=(f'{input_dir}/' +
-                             'mg2-20170525142607-180419_PPR.casa-6.6.6-6-pipeline-2024.2.0.3.results.txt'),
+                             'mg2-20170525142607-180419_PPR.casa-6.6.6-9-pipeline-2025.0.0.36.results.txt'),
         output_dir='mg2-20170525142607-180419_PPR')
 
     # copy files use restore task into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/products')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR.xml')
 
@@ -662,8 +667,9 @@ def test_13A_537__restore__PPR__regression():
                             output_dir='13A_537__restore__PPR__regression')
 
     # copy files use restore task into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/products')
-    shutil.copytree(input_products, f'{pr.output_dir}/products')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/products')
+        shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
@@ -685,8 +691,9 @@ def test_13A_537__restore__post1553__PPR__regression():
                             output_dir='13A_537__restore__post1553__PPR__regression')
 
     # copy files use restore task into products folder
-    input_products = casa_tools.utils.resolve(f'{input_dir}/post1553_products')
-    shutil.copytree(input_products, f'{pr.output_dir}/products')
+    if not pr.compare_only:
+        input_products = casa_tools.utils.resolve(f'{input_dir}/post1553_products')
+        shutil.copytree(input_products, f'{pr.output_dir}/products')
 
     pr.run(ppr=f'{input_dir}/PPR_13A-537_restore.xml', telescope='vla')
 
@@ -709,13 +716,15 @@ def test_vlass_quicklook():
                             expectedoutput_dir=ref_directory)
 
     # Copy parameter list file into the working directory
-    parameter_list_file = casa_tools.utils.resolve(
-        f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
+
     try:
         os.mkdir(f'{pr.output_dir}/working/')
     except FileExistsError:
         pass
-    shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/QLIP_parameter.list'))
+    if not pr.compare_only:
+        parameter_list_file = casa_tools.utils.resolve(
+            f'{input_dir}/TSKY0001.sb32295801.eb32296475.57549.31722762731_split_QLIP_parameter.list')
+        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/QLIP_parameter.list'))
     pr.run(telescope='vla')
 
 # Section for longer-running tests
@@ -1114,7 +1123,7 @@ class TestSlowerRegression:
 
         pr.run(telescope='vla', omp_num_threads=1)
 
-    ### VLASS section
+    # VLASS section
     @pytest.mark.vlass
     def test_vlass_se_cont_mosaic(self, data_directory):
         """Run VLASS regression
@@ -1132,13 +1141,16 @@ class TestSlowerRegression:
                                 visname=[dataset_name],
                                 expectedoutput_dir=ref_directory)
 
-        # Copy parameter list file into the working directory
-        parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
         try:
             os.mkdir(f'{pr.output_dir}/working/')
         except FileExistsError:
             pass
-        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/SEIP_parameter.list'))
+
+        # Copy parameter list file into the working directory
+        if not pr.compare_only:
+            parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
+            shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(
+                f'{pr.output_dir}/working/SEIP_parameter.list'))
 
         pr.run(telescope='vla')
 
@@ -1159,13 +1171,17 @@ class TestSlowerRegression:
                                 visname=[dataset_name],
                                 expectedoutput_dir=ref_directory)
 
-        # Copy parameter list file into the working directory
-        parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter_awp32.list')
+
         try:
             os.mkdir(f'{pr.output_dir}/working/')
         except FileExistsError:
             pass
-        shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/SEIP_parameter.list'))
+        
+        # Copy parameter list file into the working directory
+        if not pr.compare_only:
+            parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter_awp32.list')
+            shutil.copyfile(parameter_list_file, casa_tools.utils.resolve(
+                f'{pr.output_dir}/working/SEIP_parameter.list'))
 
         pr.run(telescope='vla')
 
@@ -1185,20 +1201,24 @@ class TestSlowerRegression:
                                 visname=[dataset_name],
                                 expectedoutput_dir=ref_directory)
 
-        # Copy parameter list files and reimaging resources into the working directory
-        SEIP_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
         try:
             os.mkdir(f'{pr.output_dir}/working/')
         except FileExistsError:
             pass
 
-        shutil.copyfile(SEIP_parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/SEIP_parameter.list'))
+        # Copy parameter list files and reimaging resources into the working directory
+        if not pr.compare_only:
+            seip_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/SEIP_parameter.list')
+            shutil.copyfile(seip_parameter_list_file, casa_tools.utils.resolve(
+                f'{pr.output_dir}/working/SEIP_parameter.list'))
 
-        CCIP_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/CCIP_parameter_sg16.list')
-        shutil.copyfile(CCIP_parameter_list_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/CCIP_parameter.list'))
+            ccip_parameter_list_file = casa_tools.utils.resolve(f'{input_dir}/CCIP_parameter_sg16.list')
+            shutil.copyfile(ccip_parameter_list_file, casa_tools.utils.resolve(
+                f'{pr.output_dir}/working/CCIP_parameter.list'))
 
-        reimaging_resources_file = casa_tools.utils.resolve(f'{input_dir}/reimaging_resources.tgz')
-        shutil.copyfile(reimaging_resources_file, casa_tools.utils.resolve(f'{pr.output_dir}/working/reimaging_resources.tgz'))
+            reimaging_resources_file = casa_tools.utils.resolve(f'{input_dir}/reimaging_resources.tgz')
+            shutil.copyfile(reimaging_resources_file, casa_tools.utils.resolve(
+                f'{pr.output_dir}/working/reimaging_resources.tgz'))
 
         pr.run(telescope='vla')
 
