@@ -6,15 +6,15 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifa.tasks.antpos.almaantpos.ALMAAntposInputs.__init__
 @utils.cli_wrapper
 def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=None, antposfile=None,
-                threshold=None):
+                threshold=None, snr=None, search=None):
     """Derive an antenna position calibration table
 
     The hifa_antpos task corrects the antenna positions recorded in the ASDMs using
     updated antenna position calibration information determined after the
     observation was taken.
 
-    Corrections can be input by hand, read from a file on disk, or in the future
-    by querying an ALMA database service.
+    Corrections can be input by hand, read from a file on disk, or by querying an ALMA 
+    database service.
 
     The antenna positions file is in 'csv' format containing 6 comma-delimited
     columns as shown below. This file should not include blank lines, including
@@ -33,9 +33,6 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     generate other calibration tables, or permanently to generate calibrated
     visibilities for imaging.
 
-    Note: the ``hm_antpos`` 'online' option will be implemented when the
-    observing system provides an antenna position determination service.
-
     Returns:
         The results object for the pipeline task is returned.
 
@@ -51,6 +48,13 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
         user:
 
         >>> hifa_antpos(hm_antpos='file', antposfile='myantposfile.csv')
+
+        3. Correct the position of antennas for all the visibility files in a single
+        pipeline run using antenna positions retrieved from DB, limiting the selection
+        to antennas with S/N of 5.0 or more and using the 'both_closest' search algorithm.
+        A JSON file is returned and fed into the gencal task to apply corrections.
+
+        >>> hifa_antpos(hm_antpos='online', snr=5.0, search='both_closest')
 
     """
     ##########################################################################

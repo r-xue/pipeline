@@ -2,11 +2,15 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional
+import random
+import time
+from typing import TYPE_CHECKING, Any, Callable, Literal, Optional
+
+import numpy as np
 
 from pipeline import infrastructure
 from pipeline.hif.tasks.antpos import antpos
-from pipeline.infrastructure import casa_tasks, task_registry, vdp
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry, vdp
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -19,6 +23,42 @@ __all__ = [
 LOG = infrastructure.logging.get_logger(__name__)
 
 
+def run_with_retry(
+    func: Callable[..., Any],
+    max_retries: int = 3,
+    base_delay: int = 3,
+    jitter: int = 2,
+    *args,
+    **kwargs
+) -> Any:
+    """
+    Executes a function with retry logic and exponential backoff plus random jitter.
+
+    Args:
+        func: The function to execute.
+        max_retries: Maximum number of retry attempts.
+        base_delay: Base delay in seconds before retrying.
+        jitter: Maximum additional random jitter in seconds added to delay.
+        *args: Positional arguments to pass to the function.
+        **kwargs: Keyword arguments to pass to the function.
+
+    Returns:
+        Any: The result of the function call if successful.
+
+    Raises:
+        Exception: The last encountered exception if all retries fail.
+    """
+    for attempt in range(max_retries):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            LOG.warning(f"[Attempt {attempt}] Failed with error: {e}")
+            if attempt == max_retries:
+                LOG.error("Max retries reached. Raising exception.")
+                raise e
+            time.sleep(base_delay + random.uniform(0, jitter))
+
+
 class ALMAAntposInputs(antpos.AntposInputs):
     """
     ALMAAntposInputs defines the inputs for the ALMAAntpos pipeline task.
@@ -29,18 +69,22 @@ class ALMAAntposInputs(antpos.AntposInputs):
     hm_antpos = vdp.VisDependentProperty(default='online')
     antposfile = vdp.VisDependentProperty(default="antennapos.json")
     threshold = vdp.VisDependentProperty(default=1.0)
+    snr = vdp.VisDependentProperty(default=5.0)
+    search = vdp.VisDependentProperty(default='both_latest')
 
     def __init__(
             self,
             context: Context,
             output_dir: Optional[str] = None,
-            vis: Optional[List[str]] = None,
-            caltable: Optional[List[str]] = None,
+            vis: Optional[list[str]] = None,
+            caltable: Optional[list[str]] = None,
             hm_antpos: Optional[Literal['online', 'manual', 'file']] = None,
             antposfile: Optional[str] = None,
             antenna: Optional[str] = None,
-            offsets: Optional[List[float]] = None,
-            threshold: Optional[float] = None
+            offsets: Optional[list[float]] = None,
+            threshold: Optional[float] = None,
+            snr: Optional[float] = None,
+            search: Optional[Literal['both_latest', 'both_closest']] = None
             ):
         """
         Initializes the pipeline input parameters for antenna position corrections.
@@ -76,7 +120,8 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 Example: `"antennapos.csv"`
 
             antenna: 
-                A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos="manual"`).
+                A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos` is "manual" 
+                or "online"`).
 
                 Example: `"DV05,DV07"`
 
@@ -92,6 +137,17 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
                 Example: `1.0`
 
+            snr:
+                A float value describing the signal-to-noise threshold used by the getantposalma task. Antennas with 
+                snr below the threshold will not be retrieved. Only used with `hm_antpos="online"`. Defaults to `0.0`.
+
+                Example: `5.0`
+
+            search:
+                Search algorithm used by the getantposalma task. Supports 'both_latest' and 'both_closest'.
+                Only used with `hm_antpos="online"`. Defaults to `both_latest`.
+
+                Example: `both_closest`
         """
         super().__init__(
             context,
@@ -104,6 +160,8 @@ class ALMAAntposInputs(antpos.AntposInputs):
             offsets=offsets
             )
         self.threshold = threshold
+        self.snr = snr
+        self.search = search
 
         if hm_antpos == 'file' and antposfile is None:
             raise ValueError("`antposfile` must be defined for `hm_antpos='file'`.")
@@ -124,7 +182,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
                         f"`offsets` must have {expected_length} values (3 per antenna), but got {len(offsets)}."
                     )
 
-    def to_casa_args(self) -> Dict[str, str | List[float]]:
+    def to_casa_args(self) -> dict[str, str | list[float]]:
         """
         Configure gencal task arguments and return them in dictionary format.
 
@@ -156,38 +214,34 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 'antenna': antenna,
                 'parameter': offsets}
 
-    def to_antpos_args(self) -> Dict[str, str | List[str]]:
+    def to_antpos_args(self) -> dict[str, str | list[str]]:
         """
         Configure getantposalma task arguments and return them in dictionary format.
-        TODO: develop heuristics for determining time window (tw)
 
         Returns:
             outfile: Name of file to write antenna positions retrieved from DB.
             asdm: The execution block ID (ASDM) of the dataset.
-            tw: Time window ('start time,end time'; times should be UTC and in YY-MM-DDThh:mm:ss.sss format) in which 
-                to consider baseline measurements.
-            hosts: Priority-ranked list of URLs used by getantposalma to query. Currently only the production API is known.
+            snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will not be retrieved.
+            search: Search algorithm to use. Supports 'both_latest' and 'both_closest'.
         """
-        ms = self.context.observing_run.measurement_sets[0]
-        retry = 3  # TODO: determine if this retry method works/is effective
-
         return {'outfile': self.antposfile,
-                'asdm': ms.execblock_id,
-                'tw': '',
-                'hosts': [
-                    'https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa'
-                    ] * retry}
+                'asdm': self.context.observing_run.measurement_sets[0].execblock_id,
+                'snr': self.snr,
+                'search': self.search}
 
     def __str__(self):
-        s = 'AlmaAntposInputs:\n'
-        s += '\tvis: %s\n' % self.vis
-        s += '\tcaltable: %s\n' % self.caltable
-        s += '\thm_antpos: %s\n' % self.hm_antpos
-        s += '\tantposfile: %s\n' % self.antposfile
-        s += '\tantenna: %s\n' % self.antenna
-        s += '\toffsets: %s\n' % self.offsets
-        s += '\tthreshold: %s\n' % self.threshold
-        return s
+        return (
+            f"AlmaAntposInputs:\n"
+            f"\tvis: {self.vis}\n"
+            f"\tcaltable: {self.caltable}\n"
+            f"\thm_antpos: {self.hm_antpos}\n"
+            f"\tantposfile: {self.antposfile}\n"
+            f"\tantenna: {self.antenna}\n"
+            f"\toffsets: {self.offsets}\n"
+            f"\tthreshold: {self.threshold}\n"
+            f"\tsnr: {self.snr}\n"
+            f"\tsearch: {self.search}"
+        )
 
 
 @task_registry.set_equivalent_casa_task('hifa_antpos')
@@ -199,7 +253,49 @@ class ALMAAntpos(antpos.Antpos):
         if inputs.hm_antpos == 'online':
             # PIPE-51: retrieve json file for MS to include in the call to gencal
             antpos_args = inputs.to_antpos_args()
-            antpos_job = casa_tasks.getantposalma(**antpos_args)
+            antpos_job = run_with_retry(casa_tasks.getantposalma, **antpos_args)
             self._executor.execute(antpos_job)
 
         return super().prepare()
+
+    def analyse(self, result):
+        result = super().analyse(result)
+
+        # add the offsets to the result for online query
+        if self.inputs.hm_antpos == 'online':
+            antennas, offsets = self._get_antenna_offsets(result.final[0].gaintable)
+            indices = self._get_antennas_with_significant_offset(offsets)
+            if indices:
+                result.antenna = ",".join([antennas[i] for i in indices])
+                result.offsets = offsets[:, indices].T.flatten().tolist()
+
+        return result
+
+    def _get_antenna_offsets(self, antpos_tbl: str) -> np.ndarray:
+        """
+        Retrieves the antenna offsets from the antpos table created by gencal and flattens it into a list.
+
+        Args:
+            antpos_tbl: file name of the antenna position table.
+
+        Returns:
+            A list of coordinate offsets with length 3*X, where X is the number of antennas in the observation.
+        """
+        with casa_tools.TableReader(antpos_tbl + "/ANTENNA") as tb:
+            antennas = tb.getcol('NAME')
+            offsets = tb.getcol('OFFSET')
+
+        return antennas, offsets
+
+    def _get_antennas_with_significant_offset(self, offsets: np.ndarray, threshold: float = 1e-9) -> np.ndarray:
+        """
+        Returns indices of antennas with any coordinate offset exceeding the threshold.
+
+        Args:
+            offsets (np.ndarray): A 3 x N array.
+            threshold (float): Threshold for significance.
+
+        Returns:
+            np.ndarray: Indices of antennas with significant offsets.
+        """
+        return np.where(np.any(np.abs(offsets) > threshold, axis=0))[0]
