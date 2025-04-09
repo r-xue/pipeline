@@ -130,6 +130,9 @@ class Context(object):
         self.subtask_counter = 0
         LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
 
+        # Define list of processing intents.
+        self.processing_intents = dict()
+
         # Define observing run.
         self.observing_run = domain.ObservingRun()
 
@@ -285,7 +288,8 @@ class Pipeline(object):
         context: Context object containing the Pipeline state information.
     """
     def __init__(self, context: str | None = None, loglevel: str = 'info', casa_version_check: bool = True,
-                 name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None):
+                 name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None,
+                 processing_intents: list = []):
         """
         Initialise the pipeline, creating a new Context or loading a saved
         Context from disk.
@@ -302,6 +306,8 @@ class Pipeline(object):
             plotlevel: Pipeline plots level.
             path_overrides: Optional dictionary containing context properties to
                 be redefined when loading existing context (e.g. "name").
+            processing_intents: Dictionary of processing intents for the current
+                pipeline run.
         """
         # configure logging with the preferred log level
         logging.set_logging_level(level=loglevel)
@@ -343,6 +349,8 @@ class Pipeline(object):
             if path_overrides is not None:
                 for k, v in path_overrides.items():
                     setattr(self.context, k, v)
+
+        self.context.processing_intents = processing_intents
 
         self._link_casa_log(self.context)
 

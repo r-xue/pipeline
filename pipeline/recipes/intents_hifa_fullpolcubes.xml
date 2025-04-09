@@ -1,0 +1,6 @@
+<ProcessingIntents>
+    <Intents>
+        <Keyword xmlns="">INTERFEROMETRY_FULL_POL_CUBE_IMAGING</Keyword>
+        <Value xmlns="">True</Value>
+    </Intents>
+</ProcessingIntents>

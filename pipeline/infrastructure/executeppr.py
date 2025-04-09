@@ -77,6 +77,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
+        processing_intents = _getProcessingIntents(intentsDict)
 
         # Set the directories
         if 'SCIPIPE_ROOTDIR' in os.environ:
@@ -104,9 +105,10 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         #     Resumes from the last context. Consider adding name
         if bpset and bpaction == 'resume':
             context = cli.h_resume(filename='last')
+            context.processing_intents.update(processing_intents)
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel)
+            context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
@@ -568,6 +570,23 @@ def _getPerformanceParameters(intentsDict: dict) -> project.PerformanceParameter
         setattr(performanceParams, key, intentsDict[key])
 
     return performanceParams
+
+
+def _getProcessingIntents(intentsDict: dict) -> dict:
+    """
+    Filter the real processing intents from the PPR ProcessingIntents section.
+
+    Args:
+        intentsDict: The dictionary with the PPR ProcessingIntents content.
+
+    Returns:
+        processingIntents: The dictionary with the real processing intents.
+    """
+    knownProcessingIntents = ['INTERFEROMETRY_FULL_POL_CUBE_IMAGING']
+
+    processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
+
+    return processingIntents
 
 
 def _getSessions(intentsDict: dict) -> dict:
