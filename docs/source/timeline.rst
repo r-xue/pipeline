@@ -20,11 +20,11 @@ Roadmap
         Infrastructure work begins               :active, milestone, 2025-10-01, 1d
 
         section Testing (tentative schedule)
-        EE12 ALMA Test Report Review #1 (TRR1)       :test1, 2025-05-15, 2025-05-30
-        Validation testing / bug fixing         :test2, 2025-06-15, 2025-09-07
-        EE12 ALMA Test Report Review #2 (TRR2)       :test3, 2025-07-10, 2025-07-25
-        EE12 Acceptance                       : test4, 2025-08-19, 2025-08-21
-        JAO-ARC Validation Subset testing       :test5, 2025-09-07, 2025-09-14
+        Validation testing / bug fixing             :test1, 2025-06-15, 2025-09-07
+        EE12 ALMA Test Report Review #1 (TRR1)      :test2, 2025-05-15, 2025-05-29
+        EE12 ALMA Test Report Review #2 (TRR2)      :test3, 2025-07-10, 2025-07-24
+        EE12 ALMA Acceptance Review                 :test4, 2025-08-19, 2025-09-04
+        JAO-ARC Validation Subset testing           :test5, 2025-09-07, 2025-09-14
 
         section Delivery
         ALMA Cycle 11 and VLA/SRDP Pipeline (2024.1.0.8, CASA 6.6.1-py3.8) :done, crit, milestone, 2024-09-15, 1d
