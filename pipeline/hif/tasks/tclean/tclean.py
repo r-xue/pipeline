@@ -1625,7 +1625,7 @@ class Tclean(cleanbase.CleanBase):
             # The PIPE-704 edge exclusion of 5% fails for smaller than regular PL imsizes because
             # the fraction of the PB becomes too small. Thus covering these cases with the actual
             # ratio of pblimit_cleanmask/pblimit_image.
-            pblimit_factor = min(1.05, utils.math.round_down(result.pblimit_cleanmask / result.pblimit_image, 2))
+            pblimit_factor = min(1.05, utils.math.round_down(1.0 + 0.5 * (result.pblimit_cleanmask / result.pblimit_image - 1.0), 2))
 
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
