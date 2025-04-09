@@ -15,7 +15,7 @@ import packaging
 import platform
 import pytest
 import re
-from typing import TYPE_CHECKING, Tuple, Optional, List
+from typing import TYPE_CHECKING, Optional
 
 from casatasks.private import tec_maps
 
@@ -35,7 +35,7 @@ class PipelineRegression:
 
     def __init__(
             self,
-            visname: List[str],
+            visname: list[str],
             ppr: Optional[str] = None,
             recipe: Optional[str] = None,
             project_id: Optional[str] = None,
@@ -201,7 +201,7 @@ class PipelineRegression:
 
         return best_match
 
-    def __sanitize_regression_string(self, instring: str) -> Tuple[str, str, Optional[float]]:
+    def __sanitize_regression_string(self, instring: str) -> tuple[str, str, Optional[float]]:
         """Sanitize to get numeric values, remove newline chars and change to float.
 
         instring format: "[quantity_name]=[quantity value]:::tolerance"
@@ -388,28 +388,28 @@ class PipelineRegression:
                 pytest.fail("Failed to match {0} result value{1} within tolerance{1} :\n{2}".format(
                     n_errors, '' if n_errors == 1 else 's', '\n'.join(errors)), pytrace=True)
 
-    def __save_new_results_to(self, new_file: str, new_results: List[str]) -> None:
+    def __save_new_results_to(self, new_file: str, new_results: list[str]) -> None:
         """
         Compare results between new one and old one, both results are loaded from specified files.
 
         Args:
             new_file : file path of new results to save
-            new_results : List[str] of new results
+            new_results : a list of new results
         """
         with open(new_file, 'w') as fd:
             fd.writelines([str(x) + '\n' for x in new_results])
 
-    def __get_results_of_from_current_context(self) -> List[str]:
+    def __get_results_of_from_current_context(self) -> list[str]:
         """
         Get results of current execution from context.
 
-        Returns: List[str] of new results
+        Returns: a list of new results
         """
         context = launcher.Pipeline(context='last').context
         new_results = sorted(regression.extract_regression_results(context))
         return new_results
 
-    def __run_ppr(self, input_vis: List[str], ppr: str, telescope: str) -> None:
+    def __run_ppr(self, input_vis: list[str], ppr: str, telescope: str) -> None:
         """
         Execute the recipe defined by PPR.
 
@@ -437,7 +437,7 @@ class PipelineRegression:
         else:
             LOG.error("Telescope is not 'alma' or 'vla'. Can't run executeppr.")
 
-    def __run_reducer(self, input_vis: List[str]) -> None:
+    def __run_reducer(self, input_vis: list[str]) -> None:
         """
         Execute the recipe by recipereducer.
 
