@@ -430,10 +430,32 @@ def scale_uv_range(ms: MeasurementSet) -> Tuple[Distance, str]:
 
 
 def split_spw(spw_string: str) -> str:
-    split_list = spw_string.split('#')
+    """
+    Splits an SPW string on '#' characters while retaining them, and inserts a <br/>
+    before the 'ALMA' portion to improve readability. Returns the original string
+    if 'ALMA' is not found.
 
-    for i, part in enumerate(split_list):
+    Example:
+        Input: "X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES"
+        Output: "X100001#<br/>X900000004#<br/>ALMA_RB_06#BB_1#SW-01#FULL_RES"
+
+    Args:
+        spw_string: The original SPW string containing '#' delimiters.
+
+    Returns:
+        The reformatted SPW string with <br/> inserted before 'ALMA'.
+    """
+    parts = []
+    current = ""
+
+    for segment in spw_string.split('#'):
+        if current:
+            parts.append(current + '#')
+        current = segment
+    parts.append(current)
+
+    for i, part in enumerate(parts):
         if 'ALMA' in part:
-            return "<br/>".join(split_list[:i] + ["".join(split_list[i:])])
+            return "<br/>".join(parts[:i] + ["".join(parts[i:])])
 
-    return spw_string  # Return original string if no 'ALMA' found
+    return spw_string

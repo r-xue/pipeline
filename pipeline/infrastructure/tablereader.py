@@ -9,8 +9,8 @@ import itertools
 import operator
 import os
 import re
-import xml.etree.ElementTree as ElementTree
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union
+import xml
+from typing import TYPE_CHECKING, Optional
 
 import cachetools
 import numpy as np
@@ -28,7 +28,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 def find_EVLA_band(
         frequency,
-        bandlimits: Optional[List[float]] = None,
+        bandlimits: Optional[list[float]] = None,
         BBAND: Optional[str] = '?4PLSCXUKAQ?'
         ) -> str:
     """identify VLA band"""
@@ -39,11 +39,11 @@ def find_EVLA_band(
     return BBAND[i]
 
 
-def _get_ms_name(ms: Union[MeasurementSet, str]) -> str:
+def _get_ms_name(ms: MeasurementSet | str) -> str:
     return ms.name if isinstance(ms, domain.MeasurementSet) else ms
 
 
-def _get_ms_basename(ms: Union[MeasurementSet, str]) -> str:
+def _get_ms_basename(ms: MeasurementSet | str) -> str:
     return ms.basename if isinstance(ms, domain.MeasurementSet) else ms
 
 
@@ -64,7 +64,7 @@ def _get_science_goal_value(
     return value
 
 
-class ObservingRunReader(object):
+class ObservingRunReader:
     @staticmethod
     def get_observing_run(ms_files):
         if isinstance(ms_files, str):
@@ -77,7 +77,7 @@ class ObservingRunReader(object):
         return observing_run
 
 
-class MeasurementSetReader(object):
+class MeasurementSetReader:
     @staticmethod
     def get_scans(msmd, ms):
         LOG.debug('Analysing scans in {0}'.format(ms.name))
@@ -247,7 +247,7 @@ class MeasurementSetReader(object):
             if 'ALMA' in spw.name:
                 # PIPE-2384: new spw names will include grouping ID as first 'token'
                 # if present, the spectralspec will then be the second 'token'
-                # New SPW Example: X100001#X900000004#ALMA_RB_06#BB_1#SW-01
+                # New SPW Example: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
                 # Grouping ID: X100001; Spectral Spec: X900000004
                 # Old SPW Example: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
                 # Spectral Spec: X1398968310
@@ -508,7 +508,7 @@ class MeasurementSetReader(object):
         return correlator_name
 
     @staticmethod
-    def get_acs_software_version(ms, msmd) -> Tuple[str, str]:
+    def get_acs_software_version(ms, msmd) -> tuple[str, str]:
         """
         Retrieve the ALMA Common Software version and build version from the ASDM_ANNOTATION table. 
 
@@ -554,7 +554,7 @@ class MeasurementSetReader(object):
             return None
 
 
-class SpectralWindowTable(object):
+class SpectralWindowTable:
     @staticmethod
     def get_spectral_windows(msmd, ms):
         # map spw ID to spw type
@@ -800,7 +800,7 @@ class SpectralWindowTable(object):
         """
         ids = []
         try:
-            root_element = ElementTree.parse(xml_path)
+            root_element = xml.etree.ElementTree.parse(xml_path)
 
             for row in root_element.findall('row'):
                 element = row.findtext('spectralWindowId')
@@ -871,7 +871,7 @@ class SpectralWindowTable(object):
         return {k: v for k, v in zip(asdm_ids, spw_spws)}
 
 
-class ObservationTable(object):
+class ObservationTable:
     @staticmethod
     def get_project_info(msmd):
         project_id = msmd.projects()[0]
@@ -896,7 +896,7 @@ class ObservationTable(object):
         return observer, project_id, schedblock_id, execblock_id
 
 
-class AntennaTable(object):
+class AntennaTable:
     @staticmethod
     def get_antenna_array(msmd: casa_tools._logging_msmd_cls) -> AntennaArray:
         position = msmd.observatoryposition()            
@@ -907,7 +907,7 @@ class AntennaTable(object):
         return domain.AntennaArray(name, position, antennas)
 
     @staticmethod
-    def get_antennas(msmd: casa_tools._logging_msmd_cls) -> List[Antenna]:
+    def get_antennas(msmd: casa_tools._logging_msmd_cls) -> list[Antenna]:
         antenna_table = os.path.join(msmd.name(), 'ANTENNA')
         LOG.trace('Opening ANTENNA table to read ANTENNA.FLAG_ROW')
         with casa_tools.TableReader(antenna_table) as table:
@@ -930,7 +930,7 @@ class AntennaTable(object):
         return antennas
 
 
-class DataDescriptionTable(object):
+class DataDescriptionTable:
     @staticmethod
     def get_descriptions(msmd, ms):
         spws = ms.spectral_windows
@@ -967,7 +967,7 @@ SBSummaryInfo = collections.namedtuple(
                      'maxAllowedBeamAxialRatio sensitivity dynamicRange spectralDynamicRangeBandWidth sbName')
 
 
-class SBSummaryTable(object):
+class SBSummaryTable:
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
         try:
@@ -981,7 +981,7 @@ class SBSummaryTable(object):
                                  sensitivity=None, dynamicRange=None, spectralDynamicRangeBandWidth=None, sbName=None)
 
     @staticmethod
-    def get_observing_modes(ms: domain.MeasurementSet) -> List[str]:
+    def get_observing_modes(ms: domain.MeasurementSet) -> list[str]:
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')
         observing_modes = []
@@ -1138,7 +1138,7 @@ class SBSummaryTable(object):
         return rows
 
 
-class ExecblockTable(object):
+class ExecblockTable:
     @staticmethod
     def get_execblock_info(ms):
         try:
@@ -1178,7 +1178,7 @@ class ExecblockTable(object):
         return rows
 
 
-class PolarizationTable(object):
+class PolarizationTable:
     @staticmethod
     def get_polarizations(msmd):
         pol_ids = sorted({int(i) for i in msmd.polidfordatadesc()})
@@ -1195,7 +1195,7 @@ class PolarizationTable(object):
         return domain.Polarization(id, num_corr, corr_type, corr_product)
 
 
-class SourceTable(object):
+class SourceTable:
     @staticmethod
     def get_sources(msmd):
         rows = SourceTable._read_table(msmd)
@@ -1280,7 +1280,7 @@ class SourceTable(object):
         return eph_sourcenames, ephemeris_table_names, avg_spacings
 
 
-class StateTable(object):
+class StateTable:
     @staticmethod
     def get_states(msmd):
         state_factory = StateTable.get_state_factory(msmd)
@@ -1323,7 +1323,7 @@ class StateTable(object):
         return domain.state.StateFactory(facility, dt_start)        
 
 
-class FieldTable(object):
+class FieldTable:
     @staticmethod
     def _read_table(msmd):
         num_fields = msmd.nfields()
@@ -1372,7 +1372,7 @@ def _make_range(f_min, f_max):
                                    measures.Frequency(f_max))
 
 
-class BandDescriber(object):
+class BandDescriber:
     alma_bands = {'ALMA Band 1': _make_range(35, 50),
                   'ALMA Band 2': _make_range(67, 90),
                   'ALMA Band 3': _make_range(84, 116),

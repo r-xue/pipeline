@@ -14,14 +14,14 @@ from typing import Iterable, Iterator, Sequence
 
 import numpy
 
-import pipeline.infrastructure as infrastructure
+from pipeline import infrastructure
 from pipeline.infrastructure import casa_tools
-from . import measures
+from pipeline.domain import measures
 
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-class ArithmeticProgression(object):
+class ArithmeticProgression:
     """
     A representation of an arithmetic progression that can generate sequence
     elements on demand.
@@ -79,7 +79,7 @@ def compress(values: Sequence[int | float]) -> Sequence[int | float] | Arithmeti
         return values
 
 
-class ChannelList(object):
+class ChannelList:
     """
     A container/generator for Channel objects.
 
@@ -148,7 +148,7 @@ class ChannelList(object):
         return Channel(f_lo, f_hi, f_bw)
 
 
-class Channel(object):
+class Channel:
     """
     Representation of a channel within a spectral window.
 
@@ -291,7 +291,7 @@ class Channel(object):
         self.frequency_range.set(frequency1, frequency2)
 
 
-class SpectralWindow(object):
+class SpectralWindow:
     """
     SpectralWindow is a logical representation of a spectral window (spw).
 
@@ -317,7 +317,7 @@ class SpectralWindow(object):
         correlation_bits: Number of bits used for correlation.
         median_receptor_angle: Median feed receptor angle.
         specline_window: Whether spw is intended for spectral line or continuum (VLA only).
-        grouping_id: GOUS ID used to identify project group level (new in Cycle 12 ALMA data)  TODO improve description
+        grouping_id: Grouping ID to uniquely identify this spw in different MOUS within the same GOUS (ALMA-only, introduced in Cycle 12).
     """
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
@@ -552,7 +552,7 @@ class SpectralWindow(object):
         return 'SpectralWindow({0})'.format(', '.join(args))
 
 
-class SpectralWindowWithChannelSelection(object):
+class SpectralWindowWithChannelSelection:
     """
     SpectralWindowWithChannelSelection decorates a SpectralWindow so that the
     spectral window ID also contains a channel selection.
