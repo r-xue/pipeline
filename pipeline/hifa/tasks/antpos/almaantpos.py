@@ -1,6 +1,7 @@
 # Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
+import json
 import os
 import random
 import time
@@ -263,39 +264,65 @@ class ALMAAntpos(antpos.Antpos):
 
         # add the offsets to the result for online query
         if self.inputs.hm_antpos == 'online':
-            antennas, offsets = self._get_antenna_offsets(result.final[0].gaintable)
-            indices = self._get_antennas_with_significant_offset(offsets)
-            if indices:
-                result.antenna = ",".join([antennas[i] for i in indices])
-                result.offsets = offsets[:, indices].T.flatten().tolist()
+            offsets_dict = self._get_antenna_offsets(self.inputs.vis)
+            antenna_names, offsets = self._get_antennas_with_significant_offset(offsets_dict)
+            if antenna_names:
+                result.antenna = ",".join(antenna_names)
+                result.offsets = offsets
+                LOG.info("Antenna corrections applied to the following antennas: %s", result.antenna)
 
         return result
 
-    def _get_antenna_offsets(self, antpos_tbl: str) -> np.ndarray:
+    def _get_antenna_offsets(self, vis: str) -> dict[np.str_, np.ndarray[float]]:
         """
-        Retrieves the antenna offsets from the antpos table created by gencal and flattens it into a list.
+        Retrieves the antenna names and positions from the vis ANTENNA table and computes the offsets.
 
         Args:
-            antpos_tbl: file name of the antenna position table.
+            vis: The MeasurementSet name.
 
         Returns:
-            A list of coordinate offsets with length 3*X, where X is the number of antennas in the observation.
+            Dictionary mapping antenna names to (x, y, z) offset tuples.
         """
-        with casa_tools.TableReader(antpos_tbl + "/ANTENNA") as tb:
+        with casa_tools.TableReader(vis + "/ANTENNA") as tb:
             antennas = tb.getcol('NAME')
-            offsets = tb.getcol('OFFSET')
+            tb_positions = tb.getcol('POSITION')
 
-        return antennas, offsets
+        tb_antpos_dict = dict(zip(antennas, tb_positions.T))
 
-    def _get_antennas_with_significant_offset(self, offsets: np.ndarray, threshold: float = 1e-9) -> np.ndarray:
+        # Retrieve antenna corrections from antennapos.json
+        with open(self.inputs.antposfile, 'r') as f:
+            query_dict = json.load(f)
+            db_antpos_dict = query_dict['data']
+
+        # calculate offsets
+        offsets_dict = {}
+        for antenna in antennas:
+            offsets_dict[antenna] = db_antpos_dict[antenna] - tb_antpos_dict[antenna]
+
+        return offsets_dict
+
+    def _get_antennas_with_significant_offset(
+            self,
+            offsets_dict: dict[np.str_, np.ndarray[float]],
+            threshold: float = 1e-9
+            ) -> tuple[list[np.str_], list[np.float64]]:
         """
-        Returns indices of antennas with any coordinate offset exceeding the threshold.
+        Identifies antennas with significant non-zero coordinate offsets.
 
         Args:
-            offsets (np.ndarray): A 3 x N array.
-            threshold (float): Threshold for significance.
+            offsets_dict: Dictionary mapping antenna names to (x, y, z) offset tuples.
+            threshold: Threshold above which an offset is considered significant.
 
         Returns:
-            np.ndarray: Indices of antennas with significant offsets.
+            A list of antenna names with significant offsets, and a flattened list of their 
+            corresponding offset values.
         """
-        return np.where(np.any(np.abs(offsets) > threshold, axis=0))[0]
+        names = []
+        flattened_offsets = []
+
+        for antenna, offsets in offsets_dict.items():
+            if np.any(np.abs(offsets) > threshold):
+                names.append(antenna)
+                flattened_offsets.extend(offsets)
+
+        return names, flattened_offsets
