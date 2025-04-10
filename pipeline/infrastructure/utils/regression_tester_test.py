@@ -102,7 +102,3 @@ class TestPipelineRegression(unittest.TestCase):
 
             self.assertEqual(casa_version, expected_casa)
             self.assertEqual(pipeline_version, expected_pipeline)
-
-
-if __name__ == "__main__":
-    unittest.main()

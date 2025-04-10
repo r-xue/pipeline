@@ -11,7 +11,7 @@ import shutil
 import datetime
 import glob
 import os
-import packaging
+import packaging.version
 import platform
 import pytest
 import re
