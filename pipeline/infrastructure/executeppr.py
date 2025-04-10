@@ -77,7 +77,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'brea
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
-        processing_intents = _getProcessingIntents(intentsDict)
+        processing_intents = _getProcessingIntents(intentsDict, procedureName)
 
         # Set the directories
         if 'SCIPIPE_ROOTDIR' in os.environ:
@@ -572,19 +572,32 @@ def _getPerformanceParameters(intentsDict: dict) -> project.PerformanceParameter
     return performanceParams
 
 
-def _getProcessingIntents(intentsDict: dict) -> dict:
+def _getProcessingIntents(intentsDict: dict, procedureName: str) -> dict:
     """
     Filter the real processing intents from the PPR ProcessingIntents section.
+    As a fallback also inspect the recipe name to derive some processing
+    information.
 
     Args:
         intentsDict: The dictionary with the PPR ProcessingIntents content.
+        procedureName: The PPR recipe name.
 
     Returns:
         processingIntents: The dictionary with the real processing intents.
     """
-    knownProcessingIntents = ['INTERFEROMETRY_FULL_POL_CUBE_IMAGING']
 
+    # Dictionary with known processing intents and their possible recipe
+    # names. The latter is fragile, but initially necessary until the PPR
+    # contains the actual intents.
+    knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polcalimage_totalintensity']}
+
+    # Initial filtering of PPR intents
     processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
+
+    # Fallback via recipe names
+    for k, v in knownProcessingIntents.items():
+        if (k not in processingIntents) and (procedureName in v):
+            processingIntents[k] = True
 
     return processingIntents
 

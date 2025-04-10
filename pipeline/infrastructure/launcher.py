@@ -289,7 +289,7 @@ class Pipeline(object):
     """
     def __init__(self, context: str | None = None, loglevel: str = 'info', casa_version_check: bool = True,
                  name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None,
-                 processing_intents: list = []):
+                 processing_intents: dict = None):
         """
         Initialise the pipeline, creating a new Context or loading a saved
         Context from disk.
@@ -350,7 +350,8 @@ class Pipeline(object):
                 for k, v in path_overrides.items():
                     setattr(self.context, k, v)
 
-        self.context.processing_intents = processing_intents
+        if processing_intents is not None:
+            self.context.processing_intents = processing_intents
 
         self._link_casa_log(self.context)
 

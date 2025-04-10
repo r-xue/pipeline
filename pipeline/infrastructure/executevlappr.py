@@ -54,7 +54,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
-        processing_intents = _getProcessingIntents(intentsDict)
+        processing_intents = _getProcessingIntents(intentsDict, procedureName)
 
         # Set the directories
         if 'SCIPIPE_ROOTDIR' in os.environ:
