@@ -97,8 +97,9 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
         peaks_fft = signal.find_peaks_cwt(absfft_data, peak_modes, min_snr=peak_minsnr)
         if len(peaks_fft) > 0:
             pwr_peaks_fft = np.take(absfft_data, np.int64(peaks_fft))
-            idxmaxpwr = np.argsort(pwr_peaks_fft)[-1]
-            peak_fft_pwr.append(pwr_peaks_fft[idxmaxpwr])
+            # idxmaxpwr = np.argsort(pwr_peaks_fft)[-1]
+            # peak_fft_pwr.append(pwr_peaks_fft[idxmaxpwr])
+            peak_fft_pwr.append(np.max(pwr_peaks_fft))
         else:
             peak_fft_pwr.append(0.0)
     peak_fft_pwr = np.ma.MaskedArray(peak_fft_pwr, mask=maskfreq1D)
