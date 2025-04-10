@@ -380,7 +380,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
             if phasediff_result:
                 result.preceding.append(phasediff_result.final)
             result.preceding.append(phaseup_result.final)
-            # Add expected SNR to the phase-up result (for QA scoring).
+            # PIPE-2442: add phase-up SNR to the final result for QA scoring.
             result.phaseup_snr_expected = phaseup_snr_expected
 
             # PIPE-1624: Store bandpass phaseup caltable table name so it
