@@ -962,7 +962,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
                                      (str(iant), antName, rrx, bband, str(spwl)))
                         if isBandIgnored:
                             for ispw in iglist[antName][trrx]:
-                                ignoredSPWs.append(utils.range_to_list(ispw))
+                                ignoredSPWs.extend(utils.range_to_list(ispw))
 
                         # PIPE-1183, skip bad deformatter flagging for SPWs in ignore list
                         for ispw in spwl:
