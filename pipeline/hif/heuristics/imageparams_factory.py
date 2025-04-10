@@ -1,16 +1,24 @@
 from .imageparams_alma import ImageParamsHeuristicsALMA
 from .imageparams_alma_scal import ImageParamsHeuristicsALMAScal
 from .imageparams_alma_srdp import ImageParamsHeuristicsALMASrdp
-from .imageparams_vlass_quick_look import ImageParamsHeuristicsVlassQl
-from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeCont, ImageParamsHeuristicsVlassSeContAWPP001, ImageParamsHeuristicsVlassSeContMosaic
-from .imageparams_vlass_single_epoch_taper import ImageParamsHeuristicsVlassSeTaper
-from .imageparams_vlass_single_epoch_cube import ImageParamsHeuristicsVlassSeCube
 from .imageparams_vla import ImageParamsHeuristicsVLA
 from .imageparams_vla_scal import ImageParamsHeuristicsVLAScal
+from .imageparams_vlass_quick_look import ImageParamsHeuristicsVlassQl
+from .imageparams_vlass_single_epoch_continuum import (
+    ImageParamsHeuristicsVlassSeCont,
+    ImageParamsHeuristicsVlassSeContAWPP001,
+    ImageParamsHeuristicsVlassSeContAWP2,
+    ImageParamsHeuristicsVlassSeContAWP2P001,
+    ImageParamsHeuristicsVlassSeContHPG,
+    ImageParamsHeuristicsVlassSeContHPGP001,
+    ImageParamsHeuristicsVlassSeContMosaic,
+)
+from .imageparams_vlass_single_epoch_cube import ImageParamsHeuristicsVlassSeCube
+from .imageparams_vlass_single_epoch_taper import ImageParamsHeuristicsVlassSeTaper
+
 
 class ImageParamsHeuristicsFactory(object):
-
-    '''Imaging heuristics factory class.'''
+    """Imaging heuristics factory class."""
 
     @staticmethod
     def getHeuristics(vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}, imaging_mode='ALMA'):
@@ -24,9 +32,17 @@ class ImageParamsHeuristicsFactory(object):
             return ImageParamsHeuristicsVlassQl(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P032']:  # single epoch continuum
             return ImageParamsHeuristicsVlassSeCont(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
-        elif imaging_mode == 'VLASS-SE-CONT-AWP-P001': # single epoch continuum, gridder=awproject, wprojplanes=1
+        elif imaging_mode == 'VLASS-SE-CONT-AWP-P001':  # single epoch continuum, gridder=awproject, wprojplanes=1
             return ImageParamsHeuristicsVlassSeContAWPP001(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
-        elif imaging_mode == 'VLASS-SE-CONT-MOSAIC': # single epoch continuum, gridder=mosaic
+        elif imaging_mode in ['VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWP2-P032']:  # single epoch continuum
+            return ImageParamsHeuristicsVlassSeContAWP2(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'VLASS-SE-CONT-AWP2-P001':  # single epoch continuum
+            return ImageParamsHeuristicsVlassSeContAWP2P001(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode in ['VLASS-SE-CONT-HPG', 'VLASS-SE-CONT-HPG-P032']:  # single epoch continuum
+            return ImageParamsHeuristicsVlassSeContHPG(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'VLASS-SE-CONT-HPG-P001':  # single epoch continuum
+            return ImageParamsHeuristicsVlassSeContHPGP001(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        elif imaging_mode == 'VLASS-SE-CONT-MOSAIC':  # single epoch continuum, gridder=mosaic
             return ImageParamsHeuristicsVlassSeContMosaic(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode == 'VLASS-SE-TAPER':  # single epoch taper
             return ImageParamsHeuristicsVlassSeTaper(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
@@ -35,6 +51,6 @@ class ImageParamsHeuristicsFactory(object):
         elif imaging_mode in ['VLA', 'JVLA', 'EVLA']:  # VLA but not VLASS
             return ImageParamsHeuristicsVLA(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         elif imaging_mode in ['VLA-SCAL', 'JVLA-SCAL', 'EVLA-SCAL']:  # VLA but not VLASS
-            return ImageParamsHeuristicsVLAScal(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)            
+            return ImageParamsHeuristicsVLAScal(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
         else:
-            raise Exception('Unknown imaging mode: %s' % imaging_mode)
+            raise Exception(f'Unknown imaging mode: {imaging_mode}')
