@@ -94,23 +94,24 @@ class MSWrapperSD(object):
         msmd = casatools.msmetadata()
         ms = casatools.ms()
         tb = casatools.table()
-        msmd.open(fname)
         #Select ON or OFF data
         if onoffsel == 'ON':
-            #Get data times for OBSERVE_TARGET
-            tmonsource = msmd.timesforintent('OBSERVE_TARGET#ON_SOURCE')
-            #Make table of subscans while on source
-            seltab = sd_qa_utils.segmentEdges(tmonsource, 5.0, 'onsource')
+            tb.open(fname + '/STATE')
+            tb_on = tb.query('OBS_MODE ~ m/^OBSERVE_TARGET#ON_SOURCE/')
+            state_ids = tb_on.rownumbers().tolist()
+            tb_on.close()
+            tb.close()
         elif onoffsel == 'OFF':
-            tmoffsource = msmd.timesforintent('OBSERVE_TARGET#OFF_SOURCE')
-            seltab = sd_qa_utils.segmentEdges(tmoffsource, 5.0, 'offsource')
+            tb.open(fname + '/STATE')
+            tb_off = tb.query('OBS_MODE ~ m/^OBSERVE_TARGET#OFF_SOURCE/')
+            state_ids = tb_off.rownumbers().tolist()
+            tb_off.close()
+            tb.close()
         elif onoffsel == 'BOTH':
-            seltab = []
+            state_ids = []
         else:
             print('Could not understand parameter onoffsel='+onoffsel+' Must be ON|OFF|BOTH! Exiting...')
-            msmd.close()
             return None
-        msmd.close()
 
         #Get field ID
         if (fieldid is None) and (len(spw_setup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*']) == 1):
@@ -144,31 +145,21 @@ class MSWrapperSD(object):
 
         #Open MS and read DATA/CORRECTED column
         querystr = 'DATA_DESC_ID == {0:s} && FIELD_ID == {1:s} && ANTENNA1 == {2:s}'.format(str(spw_setup[spw]['ddi']), str(fieldid), str(antenna_id))
+        querystr += ' && NOT FLAG_ROW'
+        if len(state_ids) > 0:
+            querystr += f'  && STATE_ID IN {state_ids}'
         print('Reading data for TaQL query: '+querystr)
         subtb = tb.query(querystr)
         tmdata = subtb.getcol('TIME')
-        data = subtb.getcol(datacol)
+        data = subtb.getcol(datacol).real
         flag = subtb.getcol('FLAG')
-        flagrow = subtb.getcol('FLAG_ROW')
         weight = subtb.getcol('WEIGHT')
         subtb.close()
         tb.close()
 
         (npol, nchan, nrows) = np.shape(data)
-        #Add the flag ROW flag to the individual row flag arrays,
-        #in order to use only one array.
-        flaggedrowlist = np.where(flagrow)[0]
-        for row in flaggedrowlist:
-            flag[:,:,row] = np.logical_or(flag[:,:,row],~flag[:,:,row])
         #Create masked data numpy array for ease of use
-        data = np.ma.masked_array(np.real(data.copy()), mask=flag, fill_value=0.0)
-        #Create selection vector for on/off-source rows selected, if any selection
-        if len(seltab) > 0:
-            sel = sd_qa_utils.selectRanges(tmdata, seltab)
-            tmdata = tmdata[sel]
-            #Search for science target channels
-            data = np.transpose(np.transpose(data)[sel])
-            weight = np.transpose(np.transpose(weight)[sel])
+        data = np.ma.masked_array(data, mask=flag, fill_value=0.0)
 
         scanlist = spw_setup['scansforfield'][str(fieldid)]
         nscans = len(scanlist)
