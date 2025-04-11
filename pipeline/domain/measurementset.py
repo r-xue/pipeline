@@ -1370,7 +1370,7 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
-            save_to_ms (bool, optional): If True, persists the data type–column mapping
+            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping
                 to the MS history subtable. Defaults to True.                
 
         Raises:
