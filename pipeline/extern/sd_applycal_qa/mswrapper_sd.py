@@ -151,6 +151,7 @@ class MSWrapperSD(object):
         flag = subtb.getcol('FLAG')
         flagrow = subtb.getcol('FLAG_ROW')
         weight = subtb.getcol('WEIGHT')
+        subtb.close()
         tb.close()
 
         (npol, nchan, nrows) = np.shape(data)
