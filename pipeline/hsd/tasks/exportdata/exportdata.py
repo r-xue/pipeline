@@ -24,6 +24,7 @@ import os
 import shutil
 import string
 import tarfile
+import traceback
 from typing import Dict, Generator, List, Optional
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
