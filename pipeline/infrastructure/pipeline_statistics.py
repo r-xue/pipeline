@@ -200,7 +200,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
 
     p1 = PipelineStatistics(
         name='project_id',
-        value=context.observing_run.project_ids.pop(),
+        value=next(iter(context.observing_run.project_ids)),
         longdesc='Proposal id number',
         origin=PipelineStatistics.import_program,
         mous=mous,
