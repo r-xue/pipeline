@@ -1353,9 +1353,8 @@ class MeasurementSet(object):
         self.data_types_per_source_and_spw = data_types_per_source_and_spw
 
     def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False) -> None:
-        """
-        Set data type and column.
+                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+        """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
         data types per (source,spw) tuple. If source or spw are unset, they
@@ -1371,6 +1370,8 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
+            save_to_ms (bool, optional): If True, persists the data type–column mapping
+                to the MS history subtable. Defaults to True.                
 
         Raises:
             ValueError: An error raised when the column does not exist
@@ -1420,9 +1421,16 @@ class MeasurementSet(object):
         # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
         # minimum fallback implementation and should be replaced by a properly
         # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
-        with casa_tools.MSReader(self.name) as ms:
-            ms.writehistory(f'data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}', origin='Datatype Handler')
-            ms.writehistory(f'data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}', origin='Datatype Handler')
+        if save_to_ms:
+            with casa_tools.MSReader(self.name) as ms:
+                ms.writehistory(
+                    f"data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}",
+                    origin="Datatype Handler",
+                )
+                ms.writehistory(
+                    f"data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}",
+                    origin="Datatype Handler",
+                )
 
     def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """
