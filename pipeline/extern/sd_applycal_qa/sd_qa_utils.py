@@ -1,6 +1,9 @@
 import os, sys
 import numpy as np
 from scipy.interpolate import CubicSpline
+from scipy.ndimage import convolve1d
+from scipy.ndimage import gaussian_filter1d
+from scipy.optimize import minimize_scalar
 from astropy import units as u
 from casatools import msmetadata as msmdtool
 from casatools import table as tbtool
@@ -68,6 +71,23 @@ def segmentEdges(seq, gap, label, sortdata = True):
 
     return output
 
+def segment_edges_optimized(seq):
+    '''Optimized return edges for mask arrays'''
+    n = len(seq)
+    if n < 2:
+        return np.array([(seq[0] if n == 1 else np.nan, seq[-1] if n == 1 else np.nan)],
+                        dtype=[('tstart', np.float64), ('tend', np.float64)])
+
+    is_gap = np.diff(seq)
+    gap_indices = np.where(is_gap)[0]
+
+    if not gap_indices.size:
+        return np.array([(seq[0], seq[-1])], dtype=[('tstart', np.float64), ('tend', np.float64)])
+
+    starts = np.concatenate(([seq[0]], seq[gap_indices + 1]))
+    ends = np.concatenate((seq[gap_indices], [seq[-1]]))
+    return np.array(list(zip(starts, ends)), dtype=[('tstart', np.float64), ('tend', np.float64)])
+
 def selectRanges(timeseq, rangetable):
     '''Return selection boolean array for a time sequence, given a table of time ranges.
     '''
@@ -102,7 +122,7 @@ def sci_line_sel_2str(data_stats_comb: dict) -> str:
         outputstr += '\n'
     return outputstr
 
-def abs_rfft_wmask(data, minsectionsize = 20):
+def abs_rfft_wmask(data, minsectionsize = 20, full_freqfft=None, mask_sections=None):
     '''Function used estimate the amplitude of the FFT of a 1D dataset having uniform sampling
     but masked sections. Algorithm will calculate the absolute value of the FFT in each section,
     and return the addition of each of the results of the individual sections.
@@ -111,36 +131,41 @@ def abs_rfft_wmask(data, minsectionsize = 20):
         minsectionsize: Minimum size of the section to be considered.
     '''
     n = len(data)
-    full_freqfft = np.fft.rfftfreq(n, 1)
-    #If too much data is flagged, return dummy array with masked elements
-    if np.sum(data.mask) > n - minsectionsize:
-        dummy = np.abs(np.fft.rfft(np.zeros_like(data.data)))
-        return np.ma.MaskedArray(dummy, mask = np.ones_like(dummy))
-    #If nothing is flagged, just call rfft
-    elif np.sum(data.mask) == 0:
-        return np.abs(np.fft.rfft(data))
 
-    unmasked = ~data.mask
-    unmaskedidx = np.arange(n)[unmasked]
-    masksections = segmentEdges(unmaskedidx, 1.1, 'unmasked_segment')
+    if full_freqfft is None:
+        full_freqfft = np.fft.rfftfreq(n)
+
+    masked_count = np.sum(data.mask)
+
+    if masked_count > n - minsectionsize:
+        return np.zeros_like(full_freqfft), None
+    elif masked_count == 0:
+        return np.abs(np.fft.rfft(data.data)), None
+
+    unmasked_indices = np.where(~data.mask)[0]
+    if not unmasked_indices.size:
+        return np.zeros_like(full_freqfft)
+
+    if mask_sections is None:
+        mask_sections = segment_edges_optimized(~data.mask)
 
     absfft_list = []
-    for section in masksections:
-        #Calculate and check if section size is at leastas big as minsectionsize
-        nsection = int(section[1]) - int(section[0])
-        if nsection < minsectionsize:
-            continue
-        #Calculate FFT and it absolute value
-        absfft = np.abs(np.fft.rfft(data[int(section[0]):int(section[1])]))
-        freqfft = np.fft.rfftfreq(nsection, 1)
-        #Resample FFTs in this section to full sample size
-        resamp_absfft = np.interp(full_freqfft, freqfft, absfft)
-        absfft_list.append(resamp_absfft)
-    absfft_list = np.array(absfft_list)
-    sumabsfft = np.sum(absfft_list, axis=0)
-    sumabsfft = np.ma.MaskedArray(sumabsfft, mask = np.zeros_like(sumabsfft))
 
-    return sumabsfft
+    for section in mask_sections:
+        start, end = int(section['tstart']), int(section['tend'])
+        n_section = end - start
+        if n_section >= minsectionsize:
+            segment = data.data[start:end] # Access underlying data
+            absfft = np.abs(np.fft.rfft(segment))
+            freqfft = np.fft.rfftfreq(n_section)
+            resamp_absfft = np.interp(full_freqfft, freqfft, absfft)
+            absfft_list.append(resamp_absfft)
+
+    if not absfft_list:
+        return np.zeros_like(full_freqfft), None
+
+    sumabsfft = np.sum(np.array(absfft_list), axis=0)
+    return sumabsfft, mask_sections
 
 #Copied over from analysisUtils
 def getSpwList(msmd, intent='OBSERVE_TARGET#ON_SOURCE',tdm=True,fdm=True, sqld=False):
@@ -397,15 +422,11 @@ def robuststats(A):
     madfactor = 1.482602218505602
     n = len(A)
     #Fitting parameters for sample size correction factor b(n)
-    if (n%2 == 0):
-        alpha = 1.32
-        beta = -1.5
-    else:
-        alpha = 1.32
-        beta = -0.9
-    bn = 1.0 - 1.0/(alpha*n + beta)
+    alpha = 1.32
+    beta = -1.5 if (n % 2 == 0) else -0.9
+    bn = 1.0 - 1.0 / (alpha * n + beta)
     mu = np.ma.median(A)
-    sigma = (1.0/bn)*madfactor*np.ma.median(np.ma.abs(A - mu))
+    sigma = (1.0 / bn) * madfactor * np.ma.median(np.ma.abs(A - mu))
     return (mu, sigma)
 
 def nearestFinite(A, i):
@@ -460,59 +481,118 @@ def enlargesel(sel, box):
 
     return newsel
 
-def smooth(y, box_pts):
+def smooth(y: np.ma.core.MaskedArray, box_pts: int):
     '''Smooth using boxcar convolution including masking, if it is a MaskedArray object.
+    param:
+        y: Data to be smoothed.
+        box_pts: Size of the boxcar smoothing kernel (int).
     '''
-    if not type(y) == np.ma.core.MaskedArray:
-        ymasked = np.ma.MaskedArray(y, mask = np.zeros_like(y))
+    if not isinstance(y, np.ma.MaskedArray):
+        ymasked = np.ma.MaskedArray(y, mask=np.zeros_like(y, dtype=bool))
     else:
-        ymasked = y
-    y_smooth = np.ma.MaskedArray(np.zeros_like(ymasked), mask = ymasked.mask)
-    nchan = len(ymasked)
-    r = int(np.round(box_pts/2.0))
-    for k in range(nchan):
-        idxmin = max(0, k - r + 1)
-        idxmax = min(nchan, k + r)
-        y_smooth[k] = np.ma.mean(ymasked[idxmin:idxmax])
-    y_smooth.mask = ymasked.mask
-    return y_smooth
+        ymasked = y.copy()
 
-def smoothed_sigma_clip(data, threshold, max_smooth_frac = 0.3, smooth_box_sigma = 20, mode = 'two-sided'):
+    mask = ymasked.mask
+    data = ymasked.filled(0)
+
+    kernel = np.ones(box_pts) / box_pts
+    smoothed_data = convolve1d(data, kernel, mode = 'reflect')
+    if np.sum(mask) > 0:
+        smoothed_mask = convolve1d(1.0*mask, kernel, mode = 'reflect')
+        smoothed_mask = (smoothed_mask > 0.0)
+    else:
+        smoothed_mask = mask
+
+    smoothed_masked = np.ma.MaskedArray(smoothed_data, mask=smoothed_mask)
+
+    return smoothed_masked
+
+def smooth_gauss(y: np.ma.core.MaskedArray, box_pts: float, box_sigma_ratio = 3.55):
+    '''Smooth using gaussian convolution including masking, if it is a MaskedArray object.
+    param:
+        y: Data to be smoothed.
+        box_pts: Size of the smoothing kernel, float value.
+        box_sigma_ratio: Ratio between box_pts and gaussian sigma.
+    '''
+    if not isinstance(y, np.ma.MaskedArray):
+        ymasked = np.ma.MaskedArray(y, mask=np.zeros_like(y, dtype=bool))
+    else:
+        ymasked = y.copy()
+
+    mask = ymasked.mask
+    data = ymasked.filled(0)
+
+    smoothed_data = gaussian_filter1d(data, box_pts/box_sigma_ratio)
+    if np.sum(mask) > 0:
+        smoothed_mask = gaussian_filter1d(1.0*mask, box_pts/box_sigma_ratio)
+        smoothed_mask = (smoothed_mask > 0.0)
+    else:
+        smoothed_mask = mask
+
+    smoothed_masked = np.ma.MaskedArray(smoothed_data, mask=smoothed_mask)
+
+    return smoothed_masked
+
+def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_frac: float = 0.3,
+                             smooth_box_sigma: int = 20, mode: str = 'two-sided') -> dict:
+    '''Perform sigma-clipping selection of outlier datapoints in a 1-D dataset, after applying a boxcar smoothing of varing
+    amount to the data. The amount of smoothing is selected by the maximizing the peak of the outliers. Then the resulting
+    boolean selection vector of outlier, the coordinate (channel), the SNR, the data value of the maximum outlier and the
+    smoothing width used to maximize SNR are given as output in a dictionary. Additionally the normalization sigma (stdev of data)
+    used to estimate the number of standard deviations, and the normalized version of the data used for outlier selection is also returned.
+    param:
+        data: (numpy array) Data to be tested for outliers.
+        threshold: (float) Threshold used for sigma-clipping of outliers
+        max_smooth_frac: (float) Maximum size of smoothing box to use, given as a fraction of the total number of channels.
+        smooth_box_sigma: (int) Smoothing box size used to subtract large scale trends and obtain a channel-to-channel standard deviation value,
+                                used for data normalization into number of sigmas.
+        mode: (str) Either 'two-sided' for positive and negative sigma-clipping, or 'one-sided' for only positive sigma-clipping.
+    returns:
+        Dictionary, with keys:
+        chanmax:  Channel number of the maximum outlier.
+        snrmax: SNR of the maximum outlier.
+        outliers: Numpy boolean array for selection of outliers.
+        widthmax: Smoothing width that maximizes SNR of maximum outlier.
+        smsigma: Channel-to-channel standard deviation 
+        datamax: Data value of the maximum outlier.
+        widths: List of boxcar smoothing widths used.
+        normdata: Normalized data used for outlier detection, in units of number of sigmas.
+    '''
 
     nchan = len(data)
-    maxsmbox = int(max_smooth_frac*nchan)
-    smboxstep = max(1, int(maxsmbox/40.0))
-    #Obtaine estimate of pixel-to-pixel RMS, without baseline structure
+    maxsmbox = int(max_smooth_frac * nchan)
+    smboxstep = max(1, int(maxsmbox / 40.0))
+    # Obtain estimate of pixel-to-pixel RMS, without baseline structure
     mudata, _ = robuststats(data)
-    smdata = smooth(data, smooth_box_sigma)
-    _, smsigma = robuststats(data - smdata)
-    #Smoothing box sizes
-    widths = np.arange(2, maxsmbox, smboxstep)
-    #Calculate smoothed data SNR matrix
-    smdata = {}
-    for k, w in enumerate(widths):
-        smdata[k] = smooth(data, w)
-    smdatasnr = np.ma.MaskedArray([(smdata[k] - mudata)/(smsigma/np.sqrt(w)) for k, w in enumerate(widths)])
-    #Get width which maximizes the SNR of the outlier
+    smdata_baseline = smooth(data, smooth_box_sigma)
+    _, smsigma = robuststats(data - smdata_baseline)
     if mode == 'two-sided':
-        snrmax_width = np.max(np.abs(smdatasnr), axis=1)
-        idxmaxsnr = np.ma.argsort(snrmax_width, endwith=False)[-1]
-        widthmax = widths[idxmaxsnr]
-        outliers = (np.ma.abs(smdatasnr[idxmaxsnr]) > threshold)
-        snrmax = snrmax_width[idxmaxsnr]
-        chanmax = np.ma.argsort(np.ma.abs(smdatasnr[idxmaxsnr]), endwith=False)[-1]
-        datamax = data[chanmax]
+        def min_neg_snr(w):
+            smy = smooth_gauss(data, w)
+            snr = (smy - mudata)/(smsigma/np.sqrt(w))
+            return np.min(-np.abs(snr))
     elif mode == 'one-sided':
-        snrmax_width = np.max(smdatasnr, axis=1)
-        idxmaxsnr = np.ma.argsort(snrmax_width, endwith=False)[-1]
-        widthmax = widths[idxmaxsnr]
-        outliers = (smdatasnr[idxmaxsnr] > threshold)
-        snrmax = snrmax_width[idxmaxsnr]
-        chanmax = np.ma.argsort(smdatasnr[idxmaxsnr], endwith=False)[-1]
-        datamax = data[chanmax]
+        def min_neg_snr(w):
+            smy = smooth_gauss(data, w)
+            snr = (smy - mudata)/(smsigma/np.sqrt(w))
+            return np.min(-snr)
+    #Find best w that maximizes SNR
+    wfit = minimize_scalar(min_neg_snr, bounds=(1.0, maxsmbox), method='bounded')
+    widthmax = wfit.x
+    snrmax = -wfit.fun
+    smdata = smooth_gauss(data, widthmax)
+    normdata = (smdata - mudata)/(smsigma/np.sqrt(widthmax))
+    if mode == 'two-sided':
+        thresdata = np.abs(normdata)
+    elif mode == 'one-sided':
+        thresdata = normdata
+    outliers = (thresdata > threshold)
+    chanmax = np.argmax(thresdata)
+    datamax = data[chanmax]
 
     return {'chanmax': chanmax, 'snrmax': snrmax, 'outliers': outliers, 'widthmax': widthmax, 'smsigma': smsigma,
-            'datamax': datamax, 'widths': widths, 'normdata': smdatasnr[idxmaxsnr]}
+            'datamax': datamax, 'widths': [widthmax], 'normdata': normdata}
+
 
 def getAtmDataForSPW(fname: str, spw_setup: dict, spw: int, antenna: str, smooth_trec_factor: float = 0.01,
                     nchan_flagged_border: int = 5):
