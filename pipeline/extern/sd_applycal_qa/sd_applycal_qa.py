@@ -72,6 +72,9 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
     peak_fft_pwr = []
     XYcorr = []
     nstep = int(np.floor(nchan/10.0))
+    full_freqs = np.fft.rfftfreq(nrows)
+    mask_sections = None
+    last_chdata_mask = np.zeros(nrows, dtype=bool)
     for ch in range(nchan):
         if maskfreq1D[ch]:
             peak_fft_pwr.append(0.0)
@@ -90,7 +93,11 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
             chdataSum = np.ma.mean(chdata, axis=0)
         else:
             chdataSum = chdata[0]
-        absfft_data = sd_qa_utils.abs_rfft_wmask(chdataSum)
+        #Check is we have a valid masked sections array from lst iteration, if not, set it to None and force recalculate
+        if (mask_sections is not None) and (not np.all(chdataSum.mask == last_chdata_mask)):
+            mask_sections = None
+        absfft_data, mask_sections = sd_qa_utils.abs_rfft_wmask(chdataSum, full_freqfft=full_freqs, mask_sections=mask_sections)
+        last_chdata_mask = chdataSum.mask
         #Zero out constant and neighboring modes
         absfft_data[0:loworder_to_zero] = 0.0
         #Get peaks
@@ -109,7 +116,7 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
 
     #Release memory taken up by the copy of the dataset
     del(Fmsw)
-
+    
     #Save results in the original MSWrapper object
     msw.data_stats = {'peak_fft_pwr': peak_fft_pwr, 'XYcorr': XYcorr}
 
