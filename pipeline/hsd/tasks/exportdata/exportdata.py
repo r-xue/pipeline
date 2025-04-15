@@ -404,7 +404,8 @@ class SDExportData(exportdata.ExportData):
                         yield reffile
 
     def _do_auxiliary_products(self, context: Context, oussid: str,
-                               output_dir: str, products_dir: str) -> str:
+                               output_dir: str, products_dir: str,
+                               pipeline_stats: str) -> str:
         """Save a K2JY reference file and flag files into tarball.
 
         Args:

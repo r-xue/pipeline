@@ -36,7 +36,9 @@ import os
 import shutil
 import sys
 import tarfile
+import traceback
 import uuid
+
 
 from typing import List, Tuple, Optional, Union
 
@@ -53,7 +55,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline import environment
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import stats_extractor
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 from pipeline.infrastructure.filenamer import fitsname, PipelineProductNameBuilder
@@ -1516,6 +1517,8 @@ finally:
         Returns:
           The filename of the outputfile.
         """
+        from pipeline.infrastructure import stats_extractor
+
         statsfile_name = "pipeline_stats_{}.json".format(oussid)
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
