@@ -8,7 +8,7 @@ import pipeline.infrastructure.casa_tools as casa_tools
 
 PointingOutlierHeuristicsResult = collections.namedtuple(
     "PointingOutlierHeuristicsResult",
-    ["cx", "cy", "med_dist", "mask"]
+    ["cx", "cy", "med_dist", "factor", "mask", "dist"]
 )
 
 # Variables below are the threshold factors for the heuristics.
@@ -135,5 +135,7 @@ class PointingOutlierHeuristics(api.Heuristic):
             med_x,
             med_y,
             median_distance,
-            mask
+            threshold,
+            mask,
+            distance
         )

@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import collections
+import itertools
 import os
 import re
 import shutil
+import string
 from typing import TYPE_CHECKING, Generator, List, Optional, Union
+
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -12,15 +18,22 @@ import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataTable
 from pipeline.h.tasks.flagging import flagdeterbase
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.displays import pointing
+from pipeline.hsd.heuristics.pointing_outlier import PointingOutlierHeuristics
+from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_flagcmd
 
 if TYPE_CHECKING:
-    from pipeline.domain import SpectralWindow
+    from pipeline.domain import Antenna, Field, SpectralWindow
     from pipeline.infrastructure import Context
 
 LOG = infrastructure.get_logger(__name__)
 
+PointingOutlierStats = collections.namedtuple(
+    "PointingOutlierStats",
+    ["cx", "cy", "median_distance", "factor", "outliers", "separations"]
+)
 
 class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
     """
@@ -235,6 +248,21 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
 
 class FlagDeterALMASingleDishResults(flagdeterbase.FlagDeterBaseResults):
 
+    def __init__(
+            self,
+            summaries: list[dict],
+            flagcmds: list[str],
+            pointing_outlier_stats: dict[tuple[int, int], PointingOutlierStats]):
+        """Initialize results object for hsd_flagdata.
+
+        Args:
+            summaries: List of flagging summaries.
+            flagcmds: List of flagging commands
+            pointing_outlier_stats: Statistics of pointing outliers.
+        """
+        super().__init__(summaries, flagcmds)
+        self.pointing_outlier_stats = pointing_outlier_stats
+
     def merge_with_context(self, context):
         # call parent's method
         super().merge_with_context(context)
@@ -304,6 +332,64 @@ def update_flag_pointing(filename: str, flag_incomplete_raster: bool):
             os.remove(tmpfile)
 
 
+def detect_pointing_outliers(datatable_name: str,
+                             field: Field,
+                             antenna: Antenna) -> PointingOutlierStats:
+    """Detect pointing outliers using PointingOutlierHeuristics.
+
+    Args:
+        datatable_name: Name of the datatable.
+        field: Target field domain object.
+        antenna: Antenna domain object.
+
+    Returns:
+        List of datatable row indices detected as pointing outliers.
+    """
+    rotable_name = os.path.join(datatable_name, "RO")
+    rwtable_name = os.path.join(datatable_name, "RW")
+    with casa_tools.TableReader(rotable_name) as rotable:
+        taql = f"SRCTYPE == 0 && FIELD_ID == {field.id} && ANTENNA == {antenna.id}"
+        rotable_sel = rotable.query(taql)
+        try:
+            rows = rotable_sel.rownumbers()
+            # use SHIFT_RA and SHIFT_DEC columns to support ephemeris sources
+            ra = rotable_sel.getcol("SHIFT_RA")
+            dec = rotable_sel.getcol("SHIFT_DEC")
+        finally:
+            rotable_sel.close()
+
+    with casa_tools.TableReader(rwtable_name) as rwtable:
+        msname = os.path.basename(rwtable.getkeyword("FILENAME"))
+        flag = rwtable.getcol('FLAG_PERMANENT')[0, 3, rows]
+
+    valid_ra = ra[flag == 1]
+    valid_dec = dec[flag == 1]
+    valid_row = rows[flag == 1]
+
+    heuristics = PointingOutlierHeuristics()
+    result = heuristics(field.frame, valid_ra, valid_dec)
+    outlier_mask = np.where(np.logical_not(result.mask))[0]
+    outliers = valid_row[outlier_mask]
+    separations = result.dist[outlier_mask]
+
+    if len(outliers) > 0:
+        LOG.info(
+            'MS "%s" field "%s" antenna "%s": %d pointing outliers detected',
+            msname, field.name, antenna.name, len(outliers)
+        )
+        LOG.debug("Outliers: %s", outliers)
+    else:
+        LOG.debug(
+            'MS "%s" field "%s" antenna "%s": no outliers detected',
+            msname, field.name, antenna.name
+        )
+
+    return PointingOutlierStats(
+        result.cx, result.cy, result.med_dist,
+        result.factor, outliers, separations
+    )
+
+
 class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
     # Make the member functions of the FlagDeterALMASingleDishInputs() class member
@@ -321,18 +407,125 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             return 1.875e9  # 1.875GHz
 
     def prepare(self):
-        results = super().prepare()
+        # save flag status before flagging
+        self._execute_flagmanager(mode='save')
 
-        # update datatable
-        # this task uses _handle_multiple_vis framework
-        msobj = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        origin_basename = os.path.basename(msobj.origin_ms)
-        table_name = os.path.join(self.inputs.context.observing_run.ms_datatable_name, origin_basename)
+        try:
+            results = super().prepare()
+
+            # update datatable
+            # this task uses _handle_multiple_vis framework
+            self._update_datatable()
+
+            # run pointing outlier heuristic for each target field
+            outlier_stats = self._detect_pointing_outliers()
+
+            # check if pointing outliers are detected or not
+            if len(outlier_stats) > 0:
+                for field_id, antenna_id in outlier_stats.keys():
+                    field = self.inputs.ms.get_fields(field_id=field_id)[0]
+                    antenna = self.inputs.ms.get_antenna(str(antenna_id))[0]
+                    LOG.warning(
+                        '[pointing_outlier_flagged] '
+                        'Pointing outliers are detected in "%s", '
+                        'Field "%s", Antenna "%s"',
+                        self.inputs.vis, field.name, antenna.name
+                    )
+                # if outlier exists, update pointing flag file, then
+                # perform deterministic flagging and update datatable again
+                self._append_outlier_flagcmd_to_flagpoinging_file(outlier_stats)
+
+                # restore flag status
+                self._execute_flagmanager(mode='restore')
+
+                # perform deterministic flagging and datatable update again
+                results = super().prepare()
+                self._update_datatable()
+
+        finally:
+            # delete flag state for internal use
+            self._execute_flagmanager(mode='delete')
+
+        return FlagDeterALMASingleDishResults(
+            results.summaries,
+            results.flagcmds(),
+            pointing_outlier_stats=outlier_stats
+        )
+
+    def _execute_flagmanager(self, mode: str):
+        flagversion_name = 'SDPL_hsd_flagdata_internal_before_flagging'
+        args_save = {
+            'vis': self.inputs.vis,
+            'mode': mode,
+            'versionname': flagversion_name
+        }
+        job = casa_tasks.flagmanager(**args_save)
+        self._executor.execute(job)
+
+    def _update_datatable(self):
+        """Update flag information in the datatable.
+
+        This is necessary to make datatable consistent with the MS.
+        """
+        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
+        table_name = os.path.join(
+            self.inputs.context.observing_run.ms_datatable_name,
+            origin_basename
+        )
         datatable = DataTable(name=table_name, readonly=False)
-        datatable._update_flag(msobj.name)
+        datatable._update_flag(self.inputs.ms.origin_ms)
         datatable.exportdata(minimal=False)
 
-        return FlagDeterALMASingleDishResults(results.summaries, results.flagcmds())
+    def _detect_pointing_outliers(self) -> dict[tuple[int, int], PointingOutlierStats]:
+        outliers = {}
+        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
+        table_name = os.path.join(
+            self.inputs.context.observing_run.ms_datatable_name,
+            origin_basename
+        )
+        antennas = self.inputs.ms.get_antenna()
+        target_fields = self.inputs.ms.get_fields(intent="TARGET")
+        for field, antenna in itertools.product(target_fields, antennas):
+            outliers_for_field = detect_pointing_outliers(table_name, field, antenna)
+            if len(outliers_for_field.outliers) > 0:
+                outliers[(field.id, antenna.id)] = outliers_for_field
+
+        return outliers
+
+    def _append_outlier_flagcmd_to_flagpoinging_file(
+            self,
+            outlier_stats: dict[tuple[int, int], PointingOutlierStats]):
+        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
+        table_name = os.path.join(
+            self.inputs.context.observing_run.ms_datatable_name,
+            origin_basename
+        )
+        datatable = DataTable(name=table_name, readonly=True)
+        reason = "pointing_outlier"
+        cmd_template = string.Template(
+            "mode='manual' field='$field_id' antenna='$antenna_id&&&' timerange='$timerange'"
+            f" reason='SDPL:{reason}'\n"
+        )
+
+        # convert list of outlier row indices into flag commands
+        flagcmds = []
+        for (field_id, antenna_id), stats in outlier_stats.items():
+            rows = stats.outliers
+            timerange_list = datatable_rowid_to_flagcmd(datatable, rows)
+            for timerange in timerange_list:
+                flagcmds.append(
+                    cmd_template.safe_substitute(
+                        field_id=field_id,
+                        antenna_id=antenna_id,
+                        timerange=timerange
+                    )
+                )
+
+        # append flag commands only when flagpointing file exists
+        if os.path.exists(self.inputs.filepointing):
+            with open(self.inputs.filepointing, 'a') as f:
+                for cmd in flagcmds:
+                    f.write(cmd)
 
     def _yield_edge_spw_cmds(self) -> Generator[str, None, None]:
         """Yield flag commands to flag edge channels.
