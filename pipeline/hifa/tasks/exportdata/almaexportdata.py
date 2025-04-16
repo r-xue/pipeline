@@ -4,11 +4,11 @@ import shutil
 import traceback
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
-from pipeline.h.tasks.common import manifest
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.utils import utils
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.renderer import stats_extractor
+
 from . import almaifaqua
 
 LOG = infrastructure.get_logger(__name__)
@@ -21,7 +21,8 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
     imaging_products_only = vdp.VisDependentProperty(default=False)
 
     # docstring and type hints: supplements hifa_exportdata
-    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, pprfile=None, calintents=None,
+    def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None, tarms=None,
+                 pprfile=None, calintents=None,
                  calimages=None, targetimages=None, products_dir=None, imaging_products_only=None):
         """Initialize the Inputs.
 
@@ -67,7 +68,7 @@ class ALMAExportDataInputs(exportdata.ExportDataInputs):
 
         """
         super(ALMAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                   exportmses=exportmses, pprfile=pprfile, calintents=calintents,
+                                                   exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
                                                    calimages=calimages, targetimages=targetimages,
                                                    products_dir=products_dir,
                                                    imaging_products_only=imaging_products_only)
@@ -82,13 +83,13 @@ class ALMAExportData(exportdata.ExportData):
 
     def prepare(self):
 
-        results = super(ALMAExportData, self).prepare()
+        results = super().prepare()
 
         oussid = self.inputs.context.get_oussid()
 
         # Make the imaging vislist and the sessions lists.
         #     Force this regardless of the value of imaging_only_products
-        session_list, session_names, session_vislists, vislist = super(ALMAExportData, self)._make_lists(
+        _, session_names, session_vislists, vislist = super()._make_lists(
             self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=True)
 
         # Depends on the existence of imaging mses

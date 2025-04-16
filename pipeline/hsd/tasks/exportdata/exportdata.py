@@ -24,7 +24,7 @@ import os
 import shutil
 import string
 import tarfile
-from typing import Dict, Generator, List, Optional, Tuple, Union
+from typing import Dict, Generator, List, Optional
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
@@ -71,8 +71,6 @@ class SDExportData(exportdata.ExportData):
         Prepare and execute an export data job appropriate to the task inputs.
 
         This is almost equivalent to ALMAExportData.prepare().
-        Only difference is to use self._make_lists() instead of
-        ExportData._make_lists()
 
         Returns:
             ExportDataResults object
@@ -82,9 +80,9 @@ class SDExportData(exportdata.ExportData):
         oussid = self.inputs.context.get_oussid()
 
         # Make the imaging list of names of MeasurementSet and the sessions lists.
-        session_list, session_names, session_vislists, vislist = \
+        _, session_names, session_vislists, vislist = \
             self._make_lists(self.inputs.context, self.inputs.session,
-                             self.inputs.vis, imaging_only_mses=True)
+                             self.inputs.vis, imaging_only_mses=None)
 
         LOG.info('vislist={}'.format(vislist))
 
@@ -148,38 +146,6 @@ class SDExportData(exportdata.ExportData):
                                   auxcalapplys, pipe_aqua_reportfile, oussid, recipe_name)
 
         return results
-
-    def _make_lists(self, context: Context, session: List[str],
-                    vis: Union[List[str], str], imaging_only_mses: bool=False) \
-            -> Tuple[List[str], List[str], List[List[str]], List[str]]:
-        """Create the list of names of MeasurementSet and ones of session.
-
-        Args:
-            context : Pipeline context
-            session : session names
-            vis : a name of MeasurementSet or list of it
-            imaging_only_mses : a flag of imaging-only measurement sets.
-                                In single dish pipeline, all mses are non-
-                                imaging ones but they need to be returned
-                                even when imaging is False so no filtering
-                                is done. NOT IN USE.
-        Returns:
-            a tuple of session list, session name list,
-            list of MeasurementSet names lists associated with each session,
-            list of MeasurementSet names
-        """
-        LOG.info('Single dish specific _make_lists')
-        # Force inputs.vis to be a list.
-        vislist = vis
-        if isinstance(vislist, str):
-            vislist = [vislist, ]
-
-        # Get the session list and the visibility files associated with
-        # each session.
-        session_list, session_names, session_vislists = \
-            self._get_sessions(context, session, vislist)
-
-        return session_list, session_names, session_vislists, vislist
 
     def _do_aux_session_products(self, context: Context, oussid: str,
                                  session_names: List[str],

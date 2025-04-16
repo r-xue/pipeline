@@ -1,6 +1,5 @@
 class CleanTarget(dict):
-
-    '''Clean target template definition.'''
+    """Clean target template definition."""
 
     def __init__(self, *args, **kwargs):
         self['antenna'] = None              # list of strings
@@ -22,6 +21,7 @@ class CleanTarget(dict):
         self['psf_phasecenter'] = None      # string
         self['specmode'] = None             # string
         self['gridder'] = None              # string
+        self['wprojplanes'] = None          # int
         self['datacolumn'] = None           # string
         self['datatype'] = None             # string
         self['datatype_info'] = None        # string
@@ -69,6 +69,7 @@ class ScalTarget(CleanTarget):
         self['sc_vislist'] = None           # input vis list
         self['sc_telescope'] = None         # string
         self['sc_parallel'] = None          # string
+        self['sc_field']= None              # string, dequoted, alias of field_name
         self['field_name'] = None           # string, dequoted
         self['field_id'] = None             # int
         self['spw_real'] = None             # spw_real lookup table

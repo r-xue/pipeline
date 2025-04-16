@@ -151,7 +151,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
     # Names of import tasks that need special treatment:
     import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata')
     restore_tasks = ('h_restoredata', 'hifv_restoredata')
-
+    breakpoint_task = 'breakpoint'
     # Loop over the commands
     for command in commandsList:
 
@@ -159,6 +159,11 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
         pipeline_task_name = command[0]
         task_args = command[1]
         casa_tools.set_log_origin(fromwhere=pipeline_task_name)
+
+        # PIPE-2388: Skipping breakpoint command
+        if pipeline_task_name == breakpoint_task:
+            casa_tools.post_to_log("Found {}, not performing any action.".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+            continue
 
         # Execute the command
         casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
@@ -185,14 +190,14 @@ def executeppr(pprXmlFile: str, importonly: bool = True, loglevel: str = 'info',
 
             if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
+                                        echo_to_screen=echo_to_screen)
                 break
 
         except Exception:
             # Log message if an exception occurred that was not handled by
             # standardtask template (not turned into failed task result).
             casa_tools.post_to_log("Unhandled error in executevlappr while running pipeline task {}"
-                                   "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
+                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
             errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
