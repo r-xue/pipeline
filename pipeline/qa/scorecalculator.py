@@ -42,6 +42,7 @@ if TYPE_CHECKING:
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
+    from pipeline.hsd.tasks.flagging.flagdeteralmasd import PointingOutlierStats
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
     from pipeline.infrastructure.launcher import Context
 
@@ -4412,3 +4413,104 @@ def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
+
+
+def extract_time_range_from_flagpointing_file(
+        ms: MeasurementSet,
+        field_id: int,
+        antenna_id: int) -> list[str]:
+    """Extract time range from flagging commands.
+
+    In case if pointing outliers are detected, the flagpointing file
+    (<ms>.flagpointing.txt) should include flag commands that intend
+    to flag outliers. This function extracts time range information
+    from the flag commands.
+
+    Args:
+        ms: MS domain object.
+        field_id: Field ID.
+        antenna_id: Antenna ID.
+
+    Returns:
+        List of time ranges extracted from flag commands.
+    """
+    flagpointing = os.path.splitext(ms.name)[0] + '.flagpointing.txt'
+
+    if not os.path.exists(flagpointing):
+        return []
+
+    pattern = re.compile(
+        rf"mode='manual' field='{field_id}' antenna='{antenna_id}&&&' "
+        rf"timerange='([^']*)' reason='SDPL:pointing_outlier'"
+    )
+
+    with open(flagpointing, 'r') as f:
+        matched = filter(
+            lambda x: x is not None,
+            map(lambda x: re.match(pattern, x), f)
+        )
+        time_ranges = [x[1] for x in matched]
+
+    return time_ranges
+
+
+@log_qa
+def score_pointing_outlier(
+    ms: MeasurementSet,
+    pointing_outlier_stats: dict[tuple[int, int], PointingOutlierStats]
+) -> list[pqa.QAScore]:
+    """Generate QA score for pointing outliers.
+
+    If pointing outliers are detected, the score is set to 0.83.
+    In that case, this function creates QAScore objects for each
+    combination of field and antenna that have pointing outliers.
+    The score is 1.0 if no pointing outliers are detected.
+
+    Args:
+        ms: MS domain object.
+        pointing_outlier_stats: Dictionary of pointing outlier
+            statistics indexed by (field_id, antenna_id).
+
+    Returns:
+        List of QAScore objects.
+    """
+    # If no pointing outliers are detected, return QAScore with score of 1.0
+    if len(pointing_outlier_stats) == 0:
+        score = 1.0
+        longmsg = (f'No pointing outliers detected in "{ms.basename}".')
+        shortmsg = "No pointing outliers detected"
+
+        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
+                              metric_score=score,
+                              metric_units='number of pointing outliers')
+        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        return [score]
+
+    # score is 0.83 when pointing outlier is detected (PIPEREQ-358/PIPE-2533)
+    qa_scores = []
+    for (field_id, antenna_id), stats in pointing_outlier_stats.items():
+        num_outliers = len(stats.outliers)
+        field = ms.get_fields(field_id=field_id)[0]
+        antenna = ms.get_antenna(str(antenna_id))[0]
+        assert num_outliers > 0
+        score = 0.83
+        max_separation = np.max(stats.separations)
+        time_range = extract_time_range_from_flagpointing_file(ms, field_id, antenna_id)
+        assert len(time_range) > 0
+        time_range_str = ', '.join(time_range)
+        longmsg = (
+            f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
+            f"Flagged time range is {time_range_str}. "
+            f"Max separation from nominal field center is {max_separation:.2f} deg."
+        )
+        shortmsg = "Pointing outliers detected"
+
+        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
+                              metric_score=score,
+                              metric_units='number of pointing outliers')
+
+        qa_scores.append(
+            pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        )
+
+    return qa_scores
