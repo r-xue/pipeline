@@ -22,7 +22,7 @@ from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
-from .typing import LineWindow
+from .typing import LineWindow, FitOrder, FitFunc
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.api import Heuristic
@@ -98,8 +98,8 @@ class SDBaselineInputs(vdp.StandardInputs):
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
-                 fitfunc: Optional[Union[str, Dict[Union[int, str], str]]] = None,
-                 fitorder: Optional[Union[int, Dict[Union[int, str], int]]] = None,
+                 fitfunc: Optional[FitFunc] = None,
+                 fitorder: Optional[FitOrder] = None,
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
                  deviationmask: Optional[bool] = None,
@@ -707,6 +707,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             result.out_mses.append(new_ms)
 
         return result
+
 
 class HeuristicsTask(object):
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""

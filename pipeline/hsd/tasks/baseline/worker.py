@@ -9,7 +9,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable, DataType
+from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import BaselineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -285,7 +285,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
 
         return args
 
-
+ 
 class BaselineSubtractionResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction."""
 
@@ -423,7 +423,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
     
     
     def get_fit_order_dict(self, fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
-                    spw_id_list: List[int]) -> Dict[int, Union[int, str]]:
+                    spw_id_list: List[int], ms: MeasurementSet) -> Dict[int, Union[int, str]]:
         """
         Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
         
@@ -454,10 +454,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         elif isinstance(fit_order, dict):
             fit_order_dict = {}
             for k, v in fit_order.items():
-                try:
-                    key = int(k)
-                except Exception:
-                    key = k
+                key = utils.convert_spw_virtual2real(k, ms)
                 if isinstance(v, int) and v <= 0:
                     fit_order_dict[key] = 'automatic'
                 else:
@@ -469,7 +466,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
     
     def get_fit_func_dict(self, fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
-                      spw_id_list: List[int]) -> Dict[int, BaselineFitParamConfig]:
+                      spw_id_list: List[int], ms: MeasurementSet) -> Dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
         
@@ -499,15 +496,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         else:
             processed_fit_func = {}
             for k, v in fit_func_value.items():
-                try:
-                    key = int(k)
-                except Exception:
-                    key = k
+                key = utils.convert_spw_virtual2real(k, ms)
                 processed_fit_func[key] = v
 
             # For each spw, use its provided value or default to 'cspline'
             unique_fit_funcs = {processed_fit_func.get(spw_id, 'cspline') for spw_id in spw_id_list}
-            unique_fit_funcs.add('cspline')  # Ensure default is always included
 
             # Create one BaselineFitParamConfig instance per unique function string.
             heuristics_map = {
