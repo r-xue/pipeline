@@ -194,6 +194,14 @@ class testBPdcals(basetask.StandardTaskTemplate):
         for band, spwlist in band2spw.items():
 
             for i in [0, 1, 2]:
+                # PIPE-1554: backing up the flags before applycal with version name.
+                # The given version name is used to restore the flags when required.
+                task = casa_tasks.flagmanager(vis=m.name, mode='save', versionname="testbpdcals_applycal")
+                try:
+                    self._executor.execute(task)
+                except Exception:
+                    LOG.error("Failed to save the last applied flags for %s" % m.basename)
+                    raise
                 LOG.debug("    RUNNING FIRST PART TESTBPDCALS    ")
                 gain_solint1perband, shortsol1perband, vis, bpdgain_tousename, gtypecaltablename, ktypecaltablename, bpcaltablename, \
                 flaggedSolnApplycalbandpassperband, flaggedSolnApplycaldelayperband, refant = self._do_testBPdcals(band, spwlist)
@@ -230,6 +238,15 @@ class testBPdcals(basetask.StandardTaskTemplate):
                     self.ignorerefant.append(refant)
                     LOG.warning("A baseband is determined to be bad for >50% of antennas.  "
                              "Removing reference antenna(s) {!s} and rerunning the test calibration.".format(','.join(self.ignorerefant)))
+
+                    # PIPE-1554: restoring saved version of the flags as baseband is bad for >50% of antennas.
+                    flag_version_name = "testbpdcals_applycal"
+                    task = casa_tasks.flagmanager(vis=m.name, mode='restore', versionname=flag_version_name)
+                    try:
+                        flag_restore_results = self._executor.execute(task)
+                    except Exception:
+                        LOG.error("Failed to restore the last applied flags for %s" % m.basename)
+                        raise
 
             gtypecaltable[band] = gtypecaltablename
             ktypecaltable[band] = ktypecaltablename
@@ -782,7 +799,8 @@ class testBPdcals(basetask.StandardTaskTemplate):
                               'calwt': [False]*ntables,
                               'parang': self.parang,
                               'applymode': 'calflagstrict',
-                              'flagbackup': True}
+                              'flagbackup': False
+                              }
 
         job = casa_tasks.applycal(**applycal_task_args)
 
