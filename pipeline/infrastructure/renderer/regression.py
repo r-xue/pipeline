@@ -25,10 +25,11 @@ QAPlugin.
 """
 import abc
 import collections
+import glob
 import os.path
 import re
 from collections import OrderedDict
-from typing import List, Union
+from typing import Dict, List, Union, Tuple
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -1058,6 +1059,74 @@ def extract_regression_results(context: Context) -> List[str]:
 
     # return unified
     return ['{}={}'.format(k, v)for k, v in unified.items()]
+
+
+def missing_directories(context: Context) -> List[str]:
+    """
+    Check if all of rawdata/, working/, and products/ are present.
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if all directories are present, False otherwise
+    """
+    missing = []
+    for directory in ['rawdata', 'working', 'products']:
+        if not os.path.exists(os.path.join(context.output_dir, '..', directory)):
+            missing.append(directory)
+
+    return missing
+
+
+def manifest_present(context: Context) -> bool:
+    """
+    Check if pipeline_manifest.xml is present under products/
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if pipeline_manifest.xml is present, False otherwise
+    """
+    manifest_path = os.path.join(context.products_dir, '*.pipeline_manifest.xml')
+    manifest_files = glob.glob(manifest_path)
+    return len(manifest_files) > 0
+
+
+def errorexit_present(context: Context) -> bool:
+    """
+    Check if errorexit.txt is present in the working directory
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if errorexit.txt is present, False otherwise
+    """
+    return os.path.exists(os.path.join(context.output_dir, 'errorexit.txt'))
+
+
+# def sanity_checks(context: Context) -> Dict[str, bool]:
+#     """
+#     Do the following sanity-checks on the pipeline run
+
+#     1. rawdata, working, products directories are present
+#     2. pipeline_manifest.xml is present under the products directory
+#     3. Non-existence of errorexit-*.txt in working directory
+
+#     Args:
+#         context: Context object
+
+#     Returns:
+#         Dict[str, bool] of sanity check values
+#     """
+#     # Non-results-based sanity checks
+#     sanity_checks = {}
+#     sanity_checks['directories_present'] = directories_present(context)
+#     sanity_checks['manifest_present'] = manifest_present(context)
+#     sanity_checks["errorexit"] = errorexit_present(context)
+#     return sanity_checks
 
 
 def get_all_subclasses(cls: RegressionExtractor) -> List[RegressionExtractor]:
