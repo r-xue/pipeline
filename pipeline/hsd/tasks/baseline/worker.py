@@ -380,9 +380,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   antenna_id_list,
                   spw_id_list)
         
+        uniquee_spws = set(spw_id_list)
+        
         # Convert the fitting parameters into dictionaries mapping each SPW.
-        fit_order_dict = self.get_fit_order_dict(fit_order, spw_id_list)
-        spw_funcs_dict = self.get_fit_func_dict(fit_func, spw_id_list)
+        fit_order_dict = self.get_fit_order_dict(fit_order, uniquee_spws, ms)
+        spw_funcs_dict = self.get_fit_func_dict(fit_func, uniquee_spws, ms)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -454,12 +456,13 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         elif isinstance(fit_order, dict):
             fit_order_dict = {}
             for k, v in fit_order.items():
-                key = utils.convert_spw_virtual2real(k, ms)
+                key = str(self.inputs.context.observing_run.virtual2real_spw_id(k, ms))
                 if isinstance(v, int) and v <= 0:
                     fit_order_dict[key] = 'automatic'
                 else:
                     fit_order_dict[key] = v
-            return fit_order_dict
+            return {spw_id: fit_order_dict.get(str(spw_id), 'automatic')
+                    for spw_id in spw_id_list}
         
         else:
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
@@ -496,11 +499,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         else:
             processed_fit_func = {}
             for k, v in fit_func_value.items():
-                key = utils.convert_spw_virtual2real(k, ms)
+                key = str(self.inputs.context.observing_run.virtual2real_spw_id(k, ms))
                 processed_fit_func[key] = v
 
             # For each spw, use its provided value or default to 'cspline'
-            unique_fit_funcs = {processed_fit_func.get(spw_id, 'cspline') for spw_id in spw_id_list}
+            unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
 
             # Create one BaselineFitParamConfig instance per unique function string.
             heuristics_map = {
@@ -510,7 +513,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                 )
                 for func_str in unique_fit_funcs
             }
-            return {spw_id: heuristics_map[processed_fit_func.get(spw_id, 'cspline')]
+            return {spw_id: heuristics_map[processed_fit_func.get(str(spw_id), 'cspline')]
                     for spw_id in spw_id_list}
 
 
