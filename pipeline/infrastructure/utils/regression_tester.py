@@ -417,7 +417,7 @@ class PipelineRegression:
         Do the following sanity-checks on the pipeline run
 
         1. rawdata, working, products directories are present
-        2. pipeline_manifest.xml is present under the products directory
+        2. *.pipeline_manifest.xml is present under the products directory
         3. Non-existence of errorexit-*.txt in working directory
         """
         context = launcher.Pipeline(context='last').context
@@ -429,7 +429,7 @@ class PipelineRegression:
             LOG.warning(msg)
             pytest.fail(msg)
 
-        # 2. pipeline_manifest.xml is present under the products directory
+        # 2. *.pipeline_manifest.xml is present under the products directory
         if not regression.manifest_present(context):
             msg = "pipeline_manifest.xml is not present under the products directory"
             LOG.warning(msg)

@@ -1087,7 +1087,7 @@ def manifest_present(context: Context) -> bool:
         context: Context object
 
     Returns:
-        True if pipeline_manifest.xml is present, False otherwise
+        True if *.pipeline_manifest.xml is present, False otherwise
     """
     manifest_path = os.path.join(context.products_dir, '*.pipeline_manifest.xml')
     manifest_files = glob.glob(manifest_path)
@@ -1096,15 +1096,17 @@ def manifest_present(context: Context) -> bool:
 
 def errorexit_present(context: Context) -> bool:
     """
-    Check if errorexit.txt is present in the working directory
+    Check if any errorexit-*.txt files are present in the working directory
 
     Args:
         context: Context object
 
     Returns:
-        True if errorexit.txt is present, False otherwise
+        True if any errorexit-*.txt is present, False otherwise
     """
-    return os.path.exists(os.path.join(context.output_dir, 'errorexit.txt'))
+    errorexit_path = os.path.join(context.products_dir, 'errorexit-*.xml')
+    errorexit_files = glob.glob(errorexit_path)
+    return len(errorexit_files) > 0
 
 
 # def sanity_checks(context: Context) -> Dict[str, bool]:
