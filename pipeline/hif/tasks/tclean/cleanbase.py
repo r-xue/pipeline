@@ -284,16 +284,16 @@ class CleanBase(basetask.StandardTaskTemplate):
         context = self.inputs.context
         inputs = self.inputs
 
-        # Derive names of clean products for this iteration
+        # Derive the names of clean products for this iteration.
+        # Note: result.model does not include the `.ttx` suffix from mtmfs cases.
         old_model_name = result.model
-        model_name = '%s.%s.iter%s.model' % (inputs.imagename, inputs.stokes, iter)
-        if old_model_name is not None:
-            if os.path.exists(old_model_name):
-                if result.multiterm:
-                    rename_image(old_name=old_model_name, new_name=model_name,
-                                 extensions=['.tt%d' % nterm for nterm in range(result.multiterm)])
-                else:
-                    rename_image(old_name=old_model_name, new_name=model_name)
+        model_name = f"{inputs.imagename}.{inputs.stokes}.iter{iter}.model"
+
+        # PIPE-2423: handle edge case where `iter1.model.ttx` could mistakenly be copied into `iter2.model`
+        # if both `iter1.model` and `iter1.model.ttx` exist (e.g. for specmode='mvc')
+        if old_model_name is not None and os.path.exists(old_model_name):
+            if not result.multiterm:
+                rename_image(old_name=old_model_name, new_name=model_name)
 
         if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             image_name = ''
@@ -818,13 +818,18 @@ class CleanBase(basetask.StandardTaskTemplate):
 
 
 def rename_image(old_name, new_name, extensions=['']):
-    """
-    Rename an image
+    """Rename a CASA image set.
+
+    Args:
+        old_name: Base name of the existing image set to rename.
+        new_name: New base name for the image set.
+        extensions: Optional list of suffixes/extensions to apply to the image name
+            when renaming (e.g., ['', '.image', '.mask']). Defaults to [''].
     """
     if old_name is not None:
-        for extension in extensions:
-            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
-                image.rename(name=new_name, overwrite=True)
+        for ext in extensions:
+            with casa_tools.ImageReader(f'{old_name}{ext}') as image:
+                image.rename(name=f'{new_name}{ext}', overwrite=True)
 
 
 class CleanBaseError(object):
