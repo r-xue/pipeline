@@ -401,7 +401,7 @@ class MetaDataReader(object):
                 spw_id = '*'
                 antenna_id = key
 
-            timerangestr_list = flagcmd_util.datatable_rowid_to_flagcmd(
+            timerangestr_list = flagcmd_util.datatable_rowid_to_timerange(
                 datatable, rowlist
             )
 

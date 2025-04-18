@@ -22,7 +22,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.displays import pointing
 from pipeline.hsd.heuristics.pointing_outlier import PointingOutlierHeuristics
-from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_flagcmd
+from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_timerange
 
 if TYPE_CHECKING:
     from pipeline.domain import Antenna, Field, SpectralWindow
@@ -511,7 +511,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         flagcmds = []
         for (field_id, antenna_id), stats in outlier_stats.items():
             rows = stats.outliers
-            timerange_list = datatable_rowid_to_flagcmd(datatable, rows)
+            timerange_list = datatable_rowid_to_timerange(datatable, rows)
             for timerange in timerange_list:
                 flagcmds.append(
                     cmd_template.safe_substitute(

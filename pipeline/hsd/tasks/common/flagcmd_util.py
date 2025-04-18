@@ -49,7 +49,25 @@ def merge_timerange(timerange_list: list[list[float]]) -> list[list[float]]:
     return timerange_merged
 
 
-def datatable_rowid_to_flagcmd(datatable: DataTableImpl, datatable_rows: Sequence[int]) -> list[str]:
+def datatable_rowid_to_timerange(
+        datatable: DataTableImpl,
+        datatable_rows: Sequence[int]
+) -> list[str]:
+    """Convert datatable row ids to time range.
+
+    This function reads TIME and EXPOSURE columns from
+    the datatable for given list of row ids, and
+    generate time range strings from them.
+    The time range strings are compatible with the
+    one used in the flagcmd.
+
+    Args:
+        datatable: DataTable object.
+        datatable_rows: List of row ids.
+
+    Returns:
+        List of time range strings.
+    """
     cmdlist = []
     time_list, sort_index = np.unique(
         [datatable.getcell('TIME', row) for row in datatable_rows],
