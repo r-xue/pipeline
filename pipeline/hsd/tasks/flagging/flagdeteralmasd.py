@@ -621,7 +621,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
         return to_flag
 
-    def get_fracspw(self, spw: 'SpectralWindow') -> float:
+    def get_fracspw(self, spw: SpectralWindow) -> float:
         """Get fraction of total number of spw channels that are to be flagged on each side of the spw.
 
         Args:
@@ -645,7 +645,7 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             LOG.debug('fraction is %s' % fracspw)
             return max(0.0, fracspw)
 
-    def verify_spw(self, spw: 'SpectralWindow'):
+    def verify_spw(self, spw: SpectralWindow):
         """Test if given spw needs to be processed by edgespw flagging.
 
         Args:
