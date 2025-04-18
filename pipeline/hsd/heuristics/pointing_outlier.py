@@ -115,7 +115,11 @@ class PointingOutlierHeuristics(api.Heuristic):
                 - cx: x coordinate of nominal center position
                 - cy: y coordinate of nominal center position
                 - med_dist: median distance from the nominal center
+                - threshold: factor to derive the threshold from
+                    median distance
                 - mask: validity mask (False means flagged by this heuristic)
+                - dist: computed distance array with respect to
+                    the nominal center
         """
         med_x = np.median(x)
         med_y = np.median(y)
