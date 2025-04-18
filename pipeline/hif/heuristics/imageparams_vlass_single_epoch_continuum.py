@@ -615,11 +615,10 @@ class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
@@ -644,11 +643,10 @@ class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont)
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
@@ -669,11 +667,10 @@ class ImageParamsHeuristicsVlassSeContHPG(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
@@ -698,11 +695,10 @@ class ImageParamsHeuristicsVlassSeContHPGP001(ImageParamsHeuristicsVlassSeCont):
 
     def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
         """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+        _, pblimit_cleanmask = super().pblimits(pb)
 
-        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
-
-        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
-        # the VLASS-SE-CONT-MOSAIC specific value.
+        # PIPE-2423: overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-AWP2/HPG specific value.
         return 0.2, pblimit_cleanmask
 
 
