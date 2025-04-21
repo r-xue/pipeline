@@ -4457,6 +4457,7 @@ def extract_time_range_from_flagpointing_file(
 @log_qa
 def score_pointing_outlier(
     ms: MeasurementSet,
+    pointing: bool,
     pointing_outlier_stats: dict[tuple[int, int], PointingOutlierStats]
 ) -> list[pqa.QAScore]:
     """Generate QA score for pointing outliers.
@@ -4468,6 +4469,7 @@ def score_pointing_outlier(
 
     Args:
         ms: MS domain object.
+        pointing: Whether pointing flag is applied or not.
         pointing_outlier_stats: Dictionary of pointing outlier
             statistics indexed by (field_id, antenna_id).
 
@@ -4495,15 +4497,23 @@ def score_pointing_outlier(
         assert num_outliers > 0
         score = 0.83
         max_separation = np.max(stats.separations)
-        time_range = extract_time_range_from_flagpointing_file(ms, field_id, antenna_id)
-        assert len(time_range) > 0
-        time_range_str = ', '.join(time_range)
-        longmsg = (
-            f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
-            f"Flagged time range is {time_range_str}. "
-            f"Max separation from nominal field center is {max_separation:.2f} deg."
-        )
-        shortmsg = "Pointing outliers detected"
+        if pointing:
+            time_range = extract_time_range_from_flagpointing_file(ms, field_id, antenna_id)
+            assert len(time_range) > 0
+            time_range_str = ', '.join(time_range)
+            longmsg = (
+                f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
+                f"Flagged time range is {time_range_str}. "
+                f"Max separation from nominal field center is {max_separation:.2f} deg."
+            )
+            shortmsg = "Pointing outliers detected"
+        else:
+            longmsg = (
+                f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
+                f"Max separation from nominal field center is {max_separation:.2f} deg."
+                "However, poinging flag was not applied."
+            )
+            shortmsg = "Pointing outliers detected (but not flagged)"
 
         origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
                               metric_score=score,
