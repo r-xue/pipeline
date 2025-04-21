@@ -406,16 +406,15 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         else:
             return 1.875e9  # 1.875GHz
 
-    def prepare(self):
-        # save flag status before flagging
-        self._execute_flagmanager(mode='save')
+    def prepare(self) -> FlagDeterALMASingleDishResults:
+        """Generates results object."""
+        if self.inputs.pointing:
+            # save flag status before flagging
+            self._execute_flagmanager(mode='save')
 
         try:
-            results = super().prepare()
-
-            # update datatable
-            # this task uses _handle_multiple_vis framework
-            self._update_datatable()
+            # pre-apply deterministic flagging
+            results = self._apply_deterministic_flagging()
 
             # run pointing outlier heuristic for each target field
             outlier_stats = self._detect_pointing_outliers()
@@ -431,20 +430,23 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
                         'Field "%s", Antenna "%s"',
                         self.inputs.vis, field.name, antenna.name
                     )
-                # if outlier exists, update pointing flag file, then
-                # perform deterministic flagging and update datatable again
-                self._append_outlier_flagcmd_to_flagpoinging_file(outlier_stats)
 
-                # restore flag status
-                self._execute_flagmanager(mode='restore')
+                if self.inputs.pointing:
+                    # if outlier exists, update pointing flag file
+                    self._append_outlier_flagcmd_to_flagpoinging_file(
+                        outlier_stats
+                    )
 
-                # perform deterministic flagging and datatable update again
-                results = super().prepare()
-                self._update_datatable()
+                    # restore flag status
+                    self._execute_flagmanager(mode='restore')
+
+                    # apply deterministic flagging and update datatable again
+                    results = self._apply_deterministic_flagging()
 
         finally:
-            # delete flag state for internal use
-            self._execute_flagmanager(mode='delete')
+            if self.inputs.pointing:
+                # delete flag state for internal use
+                self._execute_flagmanager(mode='delete')
 
         return FlagDeterALMASingleDishResults(
             results.summaries,
@@ -452,7 +454,28 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
             pointing_outlier_stats=outlier_stats
         )
 
+    def _apply_deterministic_flagging(self) -> flagdeterbase.FlagDeterBaseResults:
+        """Apply deterministic flagging.
+
+        It also updates the datatable.
+
+        Returns:
+            Results object of the base class.
+        """
+        results = super().prepare()
+
+        # update datatable
+        self._update_datatable()
+
+        return results
+
     def _execute_flagmanager(self, mode: str):
+        """Run flagmanager to save/restore/delete flag status.
+
+        Args:
+            mode: Execution mode. Should be either
+                'save', 'restore', or 'delete'.
+        """
         flagversion_name = 'SDPL_hsd_flagdata_internal_before_flagging'
         args_save = {
             'vis': self.inputs.vis,
