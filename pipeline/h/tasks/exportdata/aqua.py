@@ -803,6 +803,14 @@ def xml_for_sensitivity(d):
             imagename = d['imagename']
     except:
         imagename = 'N/A'
+        
+    try:
+        if d['theoretical_rms'] is None:
+            theoretical_rms_jy_per_beam = 'N/A'
+        else:
+            theoretical_rms_jy_per_beam = d['theoretical_rms']
+    except:
+        theoretical_rms_jy_per_beam = 'N/A'
 
     try:
         if d['datatype'] is None:
@@ -827,6 +835,7 @@ def xml_for_sensitivity(d):
         Robust=str(d.get('robust', '')),
         UVTaper=str(d.get('uvtaper', '')),
         SensitivityJyPerBeam=sensitivity_jy_per_beam,
+        TheoreticalRMSJyPerBeam=theoretical_rms_jy_per_beam,
         MsSpwId=d['spw'],
         IsRepresentative=is_representative,
         PbcorImageMinJyPerBeam=pbcor_image_min_jy_per_beam,
