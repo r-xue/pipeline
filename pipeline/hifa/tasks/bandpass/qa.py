@@ -70,7 +70,7 @@ def _phaseup_combine_handler(result: BandpassResults) -> list[pqa.QAScore]:
                 shortmsg = f"Spw combination used in phase-up"
             else:
                 score = 1.0
-                longmsg = f"{calapp.vis}: No spectral window combination necessary for phase-up solution."
+                longmsg = f"{calapp.vis}: Spectral window combination not used for phase-up solution."
                 shortmsg = f"No spw combination used in phase-up"
             qascore = pqa.QAScore(
                 score,
