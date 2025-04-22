@@ -11,7 +11,7 @@ import html
 import itertools
 import operator
 import os
-from typing import TYPE_CHECKING, Tuple
+from typing import TYPE_CHECKING
 
 import astropy.table
 import numpy as np
@@ -406,7 +406,7 @@ def plots_to_html(plots, title=None, alt=None, caption=None, group=None,
     return plots_html
 
 
-def scale_uv_range(ms: MeasurementSet) -> Tuple[Distance, str]:
+def scale_uv_range(ms: MeasurementSet) -> tuple[Distance, str]:
     """
     Return the UV range that captures the inner half of the data.
 

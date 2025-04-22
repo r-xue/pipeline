@@ -10,7 +10,7 @@ import operator
 import os
 import re
 import xml
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import cachetools
 import numpy as np
@@ -28,8 +28,8 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 def find_EVLA_band(
         frequency,
-        bandlimits: Optional[list[float]] = None,
-        BBAND: Optional[str] = '?4PLSCXUKAQ?'
+        bandlimits: list[float] | None = None,
+        BBAND: str | None = '?4PLSCXUKAQ?'
         ) -> str:
     """identify VLA band"""
     if bandlimits is None:
