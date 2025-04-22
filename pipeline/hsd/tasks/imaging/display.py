@@ -1,10 +1,12 @@
 """Set of plotting classes for hsd_imaging task."""
 import copy
+import datetime
 import itertools
 import math
+from math import ceil, floor
 import os
 import time
-from typing import Callable, Generator, List, Optional, Union
+from typing import Any, Callable, Dict, Generator, List, Optional, Tuple, Union
 
 import numpy
 from scipy import interpolate
@@ -14,6 +16,7 @@ import matplotlib.figure as figure
 import matplotlib.ticker as ticker
 from matplotlib.ticker import MultipleLocator
 
+from pipeline.environment import casa_version_string, pipeline_revision
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.displays.pointing as pointing
 import pipeline.infrastructure.renderer.logger as logger
@@ -451,7 +454,8 @@ class ChannelMapAxesManager(ImageAxesManager):
                  xlocator: ticker.Locator, ylocator: ticker.Locator,
                  xrotation: float, yrotation: float,
                  ticksize: int, colormap: str,
-                 nh: int, nv: int, brightnessunit: str):
+                 nh: int, nv: int, brightnessunit: str,
+                 freq_frame: str):
         """Construct ChannelMapAxesManager instance.
 
         The constructor generates (nh * nv) axes for channel map.
@@ -469,6 +473,7 @@ class ChannelMapAxesManager(ImageAxesManager):
             nh: number of channel maps in horizontal direction
             nv: number of channel maps in vertical direction
             brightnessunit: unit of the data to be displayed
+            freq_frame: frequency reference frame
         """
         super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
                                                     xlocator, ylocator,
@@ -477,6 +482,7 @@ class ChannelMapAxesManager(ImageAxesManager):
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
+        self.freq_frame = freq_frame
         self.nchmap = nh * nv
         self.left = 2.10 / 3.0
         self.width = 1.0 / 3.0 * 0.75
@@ -538,7 +544,7 @@ class ChannelMapAxesManager(ImageAxesManager):
             axes.xaxis.set_tick_params(which='major', labelsize=self.ticksize)
             axes.yaxis.set_tick_params(which='major', labelsize=self.ticksize)
 
-            axes.set_xlabel('Frequency (GHz)', size=self.ticksize)
+            axes.set_xlabel(f'Frequency (GHz) {self.freq_frame}', size=self.ticksize)
             axes.set_ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
             axes.set_title('Integrated Spectrum', size=self.ticksize)
 
@@ -655,7 +661,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         chan0 = 0
         chan1 = self.nchan
 
-        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit)
+        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit, self.frequency_frame)
         plotter.direction_reference = self.direction_reference
 
         plot_list = []
@@ -802,9 +808,9 @@ class SDSparseMapDisplay(SDImageDisplay):
 class SDChannelMapDisplay(SDImageDisplay):
     """Plotter to create a channel map."""
 
-    NUM_CHANNELMAP = 15
     NhPanel = 5
     NvPanel = 3
+    NUM_CHANNELMAP = NhPanel * NvPanel
 
     def plot(self) -> List[logger.Plot]:
         """Create list of channel maps.
@@ -884,6 +890,9 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         Returns:
             List of Plot instances.
+        
+        Raises:
+            Exception: Unexpected Result object.
         """
         colormap = 'color'
         scale_max = False
@@ -891,13 +900,17 @@ class SDChannelMapDisplay(SDImageDisplay):
 
         plot_list = []
 
-        is_freq_chan_reversed_image = False
-        if isinstance(self.inputs.result, SDImagingResultItem):
-            is_freq_chan_reversed_image = self.inputs.result.frequency_channel_reversed
+        # Result Object should have the flag frequency_channel_reversed that shows the frequency channel order.
+        # All images of observations that pipeline could do reduction are either USB or LSB.
+        if hasattr(self.inputs.result, 'frequency_channel_reversed'):
+            is_lsb = self.inputs.result.frequency_channel_reversed
+        else:
+            raise Exception('Unexpected Result object; It should have the flag '
+                            'frequency_channel_reversed that shows the frequency channel order.')
 
-        # retrieve line list from reduction group
+        # retrieve list of the valid feature lines from reduction group.
         # key is antenna and spw id
-        line_list = self.inputs.valid_lines(is_freq_chan_reversed_image)
+        line_list = self.inputs.valid_lines()
 
         # 2010/6/9 in the case of non-detection of the lines
         if len(line_list) == 0:
@@ -934,7 +947,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                                              RArotation, DECrotation,
                                              TickSize, colormap,
                                              self.NhPanel, self.NvPanel,
-                                             self.brightnessunit)
+                                             self.brightnessunit,
+                                             self.frequency_frame)
         axes_manager.direction_reference = self.direction_reference
         axes_integmap = axes_manager.axes_integmap
         beam_circle = None
@@ -948,103 +962,54 @@ class SDChannelMapDisplay(SDImageDisplay):
         data = self.data
         mask = self.mask
 
-        # If the frequency channel of the image cube has been reversed to ascending,
-        # indices of frequency and velocity must have an offset to get a center value of them.
-        if is_freq_chan_reversed_image:
-            _offset = 0.5
-            _left_edge = self.edge[1]
-        else:
-            _offset = 0
-            _left_edge = self.edge[0]
-
-        # NOTE: Variable names MUST be easy to understand.
-        # The variables with the prefixes, 'idx_' and 'indices_', indicate they are an index or
-        # sequence (list, set, array, etc.) of indices in the loop below.
-
+        # Plotting routine for each feature line
         for line_window in line_list:
-            _line_center = line_window[0]
-            _line_width = line_window[1]
-            _line_center_shifted = _line_center - _left_edge
+            (f_line_center, f_line_width) = (line_window[0], line_window[1])
 
-            # Offset calculation of index(int) from line(float) when the line has a decimal point of 0.5
-            # and frequency channel of the image is reversed;
-            # ex) n=107.5, nchan=128, reversed_n = nchan-1-n = 19.5
-            # when the real numeric cut-edge is 0.5 then the calculation of index 1-0.5 is to be neary 0.5 and not 0.5.
-            # So, the cut-edge which has 0.5 + offset 0.5 like int(19.5 + 0.5) must be 19, not 20.
-            _cut_edge_offset = 0
-            if is_freq_chan_reversed_image and _line_center_shifted - int(_line_center_shifted) == 0.5:
-                _cut_edge_offset = 1
+            # self.velocity, self.frequency, and self.nchan which are generated from casaimage
+            # don't contain their edges defined by self.edge.
+            # line_center contains the edge, so it need to be subtracted.
+            f_line_center -= self.edge[0] if not is_lsb else self.edge[1]
 
-            # shift channel according to the edge parameter
-            idx_line_center = int(_line_center_shifted + 0.5) - _cut_edge_offset
-            if float(idx_line_center) == _line_center_shifted:
-                velocity_line_center = self.velocity[idx_line_center]
-            else:
-                if is_freq_chan_reversed_image:
-                    velocity_line_center = 0.5 * (self.velocity[idx_line_center + 1] +
-                                                  self.velocity[idx_line_center])
-                else:
-                    velocity_line_center = 0.5 * (self.velocity[idx_line_center] +
-                                                  self.velocity[idx_line_center - 1])
-            LOG.debug(f'center velocity[{idx_line_center}]: {velocity_line_center}')
-            if idx_line_center > 0:
-                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center - 1])
-            else:
-                ChanVelWidth = abs(self.velocity[idx_line_center] - self.velocity[idx_line_center + 1])
+            # The domain of f_line_center is [-0.5, self.nchan-1.5), it will be rounded by _calc_plot_values()
+            if f_line_center < -0.5 or self.nchan - 1.5 <= f_line_center:
+                continue
 
-            LOG.debug(f"center frequency[{idx_line_center}]: {self.frequency[idx_line_center]}")
-            # 2007/9/13 Change the magnification factor 1.2 to your preference (to Dirk)
-            # be sure the width of one channel map is integer
-            # 2014/1/12 factor 1.4 -> 1.0 since velocity structure was taken into account for the range in validation.py
-            indices_slice_width = max(int(_line_width / self.NUM_CHANNELMAP + 0.5), 1)
-            idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width + 0.5 + _offset)
-            # 2007/9/10 remedy for 'out of index' error
-            LOG.debug('idx_left_end, indices_slice_width, NchanMap : '
-                      f'{idx_left_end}, {indices_slice_width}, {self.NUM_CHANNELMAP}')
-            if idx_left_end < 0:
-                indices_slice_width = int(idx_line_center * 2.0 / self.NUM_CHANNELMAP)
-                if indices_slice_width == 0:
-                    continue
-                idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width)
-            elif idx_left_end + indices_slice_width * self.NUM_CHANNELMAP > self.nchan:
-                indices_slice_width = int((self.nchan - 1 - idx_line_center) * 2.0 / self.NUM_CHANNELMAP)
-                if indices_slice_width == 0:
-                    continue
-                idx_left_end = int(idx_line_center - self.NUM_CHANNELMAP / 2.0 * indices_slice_width)
+            # calculate slice width
+            slice_width = self._calc_slice_width(f_line_width, f_line_center)
+            if slice_width < 1:
+                continue
 
-            chan0 = max(idx_left_end - 1, 0)
-            chan1 = min(idx_left_end + self.NUM_CHANNELMAP * indices_slice_width, self.nchan - 1)
-            V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
-            V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
-            LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
-                      f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
+            # digitize, and invert if needed, then get several values to plot
+            try:
+                (idx_line_center, idx_vertlines, velocity_line_center,
+                 velocity_per_channel, chan0, chan1, V0, V1, is_leftside) = \
+                     self._calc_plot_values(f_line_center, slice_width, is_lsb)
+            except ValueError as e:
+                LOG.warning('ValueError in digitize: %s' % e)
+                continue
 
-            vertical_lines = []
+            # Plotting objects for vertical lines
+            plotting_objects = []
 
             # vertical lines for integrated spectrum #1
-            vertical_lines.append(
+            plotting_objects.append(
                 axes_integsp1.axvline(x=self.frequency[chan0], linewidth=0.3, color='r')
             )
-            vertical_lines.append(
+            plotting_objects.append(
                 axes_integsp1.axvline(x=self.frequency[chan1], linewidth=0.3, color='r')
             )
-
-            # Drawing red vertical lines for integrated spectrum #2
+            
+            # Calculate red vertical lines for integrated spectrum #2
             # For detail, see the MEMO below.
-            _indices_width_of_emission_line = indices_slice_width * self.NUM_CHANNELMAP
-            _x_chan = numpy.arange(idx_left_end, idx_left_end + _indices_width_of_emission_line)
-            _y_vel = self.velocity[idx_left_end:idx_left_end + _indices_width_of_emission_line]
-            chan2vel = interpolate.interp1d(_x_chan, _y_vel, bounds_error=False, fill_value='extrapolate')
+            vel_vertlines = self.calc_velocity_lines(is_leftside, slice_width, idx_vertlines, velocity_line_center)
 
-            # calculate relative velocities for red vertical lines
-            _chans = [idx_left_end + i * indices_slice_width - 0.5 for i in range(self.NUM_CHANNELMAP + 1)]
-            vertlines = chan2vel(_chans) - velocity_line_center
-
-            vertical_lines.extend(
-                (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vertlines)
+            # vertical lines for integrated spectrum #2
+            plotting_objects.extend(
+                (axes_integsp2.axvline(x, linewidth=0.3, color='r') for x in vel_vertlines)
             )
 
-            LOG.debug('Relative velocities of the vertical lines: %s', vertlines)
+            LOG.debug('Relative velocities of the vertical lines: %s', vel_vertlines)
 
             # MEMO:
             # - For the velocity plot #2, the red vertical lines are drawn at the relative velocity
@@ -1070,7 +1035,7 @@ class SDChannelMapDisplay(SDImageDisplay):
                 t0 = time.time()
 
                 # Draw Total Intensity Map
-                total = masked_data.sum(axis=2) * ChanVelWidth
+                total = masked_data.sum(axis=2) * velocity_per_channel
                 total = numpy.flipud(total.transpose())
 
                 # 2008/9/20 DEC Effect
@@ -1136,19 +1101,18 @@ class SDChannelMapDisplay(SDImageDisplay):
                 # Draw Channel Map
                 NMap = 0
                 Vmax0 = Vmin0 = 0
-                Title = []
-                for i in range(self.NUM_CHANNELMAP):
-                    ii = self.NUM_CHANNELMAP - i - 1
-                    C0 = idx_left_end + indices_slice_width * ii
-                    C1 = C0 + indices_slice_width
-                    if C0 < 0 or C1 >= self.nchan - 1:
+                Title = [] 
+                for i in range(self.NUM_CHANNELMAP-1, -1, -1):
+                    if len(idx_vertlines) - 2 < i:
                         continue
+                    C0 = idx_vertlines[i]
+                    C1 = idx_vertlines[i+1]
                     velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
                     width = abs(self.velocity[C0] - self.velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
-                    _mask = masked_data[:, :, C0:C1].sum(axis=2) * ChanVelWidth
-                    Map[i] = numpy.flipud(_mask.transpose())
+                    _mask = masked_data[:, :, C0:C1].sum(axis=2) * velocity_per_channel
+                    Map[self.NUM_CHANNELMAP-1-i] = numpy.flipud(_mask.transpose())
                 del masked_data
                 Vmax0 = Map.max()
                 Vmin0 = Map.min()
@@ -1181,13 +1145,22 @@ class SDChannelMapDisplay(SDImageDisplay):
                 LOG.debug('PROFILE: integrated spectrum #2: %s sec' % (t3 - t2))
                 LOG.debug('PROFILE: channel map: %s sec' % (t4 - t3))
 
+                # generate PNG image of plots
                 FigFileRoot = self.inputs.imagename + '.pol%s' % (pol)
                 plotfile = os.path.join(self.stage_dir, FigFileRoot + '_ChannelMap_%s.png' % (ValidCluster))
-                fig.savefig(plotfile, dpi=DPIDetail)
+                # Save some parameters of the image as metadata into PNG header
+                _metadata = get_metadata(self)
+                _metadata['TYPE'] = 'Channel map'
+                _metadata['LINE_CENTER_VELOCITY'] = velocity_line_center
+                _metadata['LINE_CENTER'] = f_line_center
+                _metadata['LINE_CENTER_REV'] = self.nchan - 1 - f_line_center if is_lsb else None
+                _metadata['LINE_WIDTH'] = f_line_width
+                _metadata['LSB'] = is_lsb
+                fig.savefig(plotfile, dpi=DPIDetail, metadata={f'PL_{key}': str(val) for key, val in _metadata.items()})
 
                 for _a in itertools.chain([axes_integmap, axes_integsp1, axes_integsp2], axes_chmap):
                     for obj in itertools.chain(_a.lines[:], _a.texts[:], _a.patches[:], _a.images[:]):
-                        if (obj not in vertical_lines) and (obj != beam_circle):
+                        if (obj not in plotting_objects) and (obj != beam_circle):
                             obj.remove()
 
                 parameters = {}
@@ -1210,7 +1183,7 @@ class SDChannelMapDisplay(SDImageDisplay):
 
             ValidCluster += 1
 
-            for line in vertical_lines:
+            for line in plotting_objects:
                 line.remove()
 
         del axes_manager
@@ -1218,6 +1191,161 @@ class SDChannelMapDisplay(SDImageDisplay):
         del fig
 
         return plot_list
+
+    def _calc_plot_values(self, f_line_center:float, slice_width: int, is_lsb:bool) -> \
+            Tuple[Union[bool, int, float, List[int]]]:
+        """
+        Digitize values and calculate related values.
+        
+        This function digitizes the center of the feature line and indices of
+        vertical red lines on a plot first, and invert it if the processing
+        casaimage was from an lower side band, note that self.velocity and
+        self.frequency are already inverted. Then, it calculates some values
+        to use for plotting images of a weblog.
+
+        Args:
+            line_center (float): center index (but float) of feature line
+            slice_width (int): width of a slice on the channel map
+            is_lsb (bool): the flag whether the casaimage was LSB or not.
+
+        Returns: Tuple of them (in order):
+            int: the line center channel
+            List[int]: indices of vertical red lines on the integrated spectrum #2
+            float: velocity at the center of the line center channel
+            float: velocity per a channel
+            int, int: indices of the red lines on the integrated spectrum #1
+            float, float: relative velocities with respect to the window center
+                          at both edges of the red lines on the integrated spectrum #2
+            bool: the flag whether the center of the feature line is at left side of the channel map
+        
+        throws:
+            ValueError: unexpected out-of-boundery access or too few red lines are detected.
+        """
+        # digitize
+        i_line_center = floor(f_line_center + 0.5)
+        is_leftside = i_line_center <= (self.nchan - 1) // 2
+
+        # The neighbor channel of i_line_center to calculate the velocity value
+        # at the center of the feature line
+        neighbor_channel = i_line_center - 1
+
+        # The index of the first (left side) vertical red line
+        idx_1st_vertline = ceil(i_line_center - slice_width * self.NUM_CHANNELMAP * 0.5)
+
+        def _invert(x):
+            return self.nchan - 1 - x
+        
+        # invert if LSB
+        if is_lsb:
+            f_line_center, i_line_center, neighbor_channel, _idx = \
+                [_invert(x) for x in (f_line_center, i_line_center, neighbor_channel, idx_1st_vertline)]
+            is_leftside = not is_leftside
+            idx_1st_vertline = _idx - slice_width * self.NUM_CHANNELMAP + 1
+
+        # The indices of all vertical red lines
+        # The red lines are drawn at the boundaries of NUM_CHANNELMAP slices, so the number of them is NUM_CHANNELMAP + 1
+        i_idx_vertlines = [idx_1st_vertline + i * slice_width for i in range(self.NUM_CHANNELMAP + 1)]
+        
+        if len(i_idx_vertlines) < 2:
+            raise ValueError('Too few red lines: %s' % i_idx_vertlines)
+        
+        LOG.info(f'line center: {f_line_center}, indice vertical lines: {i_idx_vertlines}, nchan: {self.nchan}')
+        
+        # adjust neighbor channel at the edge
+        if neighbor_channel < 0:
+            neighbor_channel = 1
+        elif neighbor_channel >= self.nchan:
+            neighbor_channel = self.nchan - 2
+
+        _msg = f'line center: {i_line_center}, neighbor channel: {neighbor_channel}, ' + \
+               f'indice vertical lines: {i_idx_vertlines}, LSB: {is_lsb}'
+
+        # prevent unexpected out-of-range access
+        if i_line_center < 0 or i_line_center >= self.nchan or \
+           abs(neighbor_channel-i_line_center) != 1:
+            raise ValueError('Unexpected out-of-boundery access detected: %s' % _msg)
+
+        LOG.debug(_msg)
+
+        # calculate the velocity value at the center of the feature line
+        if float(i_line_center) == f_line_center:
+            velocity_line_center = self.velocity[i_line_center]
+        else:
+            velocity_line_center = (self.velocity[i_line_center] + self.velocity[neighbor_channel]) * 0.5
+
+        # calculate the velocity value per channel
+        velocity_per_channel = abs(self.velocity[i_line_center] - self.velocity[neighbor_channel])
+
+        # calculate indices of the red lines on the integrated spectrum #1
+        chan0 = max(i_idx_vertlines[0] - 1, 0)
+        chan1 = min(i_idx_vertlines[-1], self.nchan - 1)
+        
+        # calculate relative velocities of both edges of red lines on the integrated spectrum #2
+        V0 = min(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+        V1 = max(self.velocity[chan0], self.velocity[chan1]) - velocity_line_center
+        
+        LOG.debug(f'center velocity[{i_line_center}]: {velocity_line_center}')
+        LOG.debug(f"center frequency[{i_line_center}]: {self.frequency[i_line_center]}")
+        LOG.debug('chan0, chan1, V0, V1, velocity_line_center : '
+                    f'{chan0}, {chan1}, {V0}, {V1}, {velocity_line_center}')
+
+        return (i_line_center, i_idx_vertlines, velocity_line_center, 
+                velocity_per_channel, chan0, chan1, V0, V1, is_leftside)
+
+    def _calc_slice_width(self, line_width: float, line_center: float) -> int:
+        """
+        Calculate width of a slice.
+
+        Args:
+            line_width (float): width of the feature line
+            line_center (float): the center index of the feature line
+
+        Returns:
+            int: width of a slice. note that the minimum value is 0.
+        """
+        # adjust index of both side within channel
+        # candidate slice width based on the feature line width
+        _candidate_width = ceil(max(line_width / self.NUM_CHANNELMAP, 1))
+        # allowed max slice width based on the feature line center
+        _allowed_max_width = max(floor(2.0 * min(line_center + 0.5, self.nchan - line_center - 0.5) / self.NUM_CHANNELMAP), 1)
+
+        # If both sides of the vertical red lines are within nchan, then returns the candidate slice width
+        if line_center - _candidate_width * self.NUM_CHANNELMAP * 0.5 >= -0.5 and \
+           line_center + _candidate_width * self.NUM_CHANNELMAP * 0.5 <= self.nchan - 1 + 0.5:
+            return _candidate_width
+        else:
+            # If one side of the lines is out of nchan, returns the allowed max slice width
+            return _allowed_max_width
+
+    def calc_velocity_lines(self, is_leftside:bool, slice_width: int, idx_vertlines: List[int], velocity_line_center:float) -> List[float]:
+        """
+        Calculate relative velocities for red vertical lines on the velocity plot using extrapolation.
+        
+        Args:
+            is_leftside (bool): the flag whether the center of the feature line is at left side of the channel map
+            slice_width (int): width of a slice
+            idx_vertlines (List[int]): indice of vertical red lines
+            velocity_line_center (float): velocity value at the center of feature line
+            
+        Returns:
+            List[float]: relative velocities for red vertical lines
+        """
+        # interpolate function to calculate velocities using extrapolation
+        chan2vel = interpolate.interp1d(idx_vertlines, self.velocity[idx_vertlines],
+                                        bounds_error=False, fill_value='extrapolate')
+        
+        # get size of difference between the number of vertical lines and NUM_CHANNELMAP
+        _diff_len = self.NUM_CHANNELMAP + 1 - len(idx_vertlines)
+        
+        if is_leftside:
+            # push the indices of the vertical lines for extrapolation to the left side
+            idx_vertlines[len(idx_vertlines):]  = [idx_vertlines[-1] + i * slice_width for i in range(1, _diff_len+1)]
+        else:
+            # push the stuff to the right side
+            idx_vertlines[:0] = [idx_vertlines[0] + i * slice_width for i in range(-_diff_len, 0)]
+        
+        # calculate relative velocities for red vertical lines
+        return chan2vel(numpy.array(idx_vertlines) - 0.5) - velocity_line_center
 
 
 class SDRmsMapDisplay(SDImageDisplay):
@@ -1812,3 +1940,24 @@ def SDImageDisplayFactory(mode: str) -> Union[SDChannelAveragedImageDisplay, SDS
     else:
         # mode should be 'SP'
         return SDSpectralImageDisplay
+
+def get_metadata(obj: SDImageDisplay) -> Dict[str, str]:
+    """Get metadata for PNG header.
+
+    Args:
+        obj (SDImageDisplay): Parent object
+
+    Returns:
+        Dict[str, str]: metadata
+    """
+    _metadata = {}
+    _metadata['SPW'] = getattr(obj, 'spw', None)
+    _metadata['NCHAN'] = getattr(obj, 'nchan', None)
+    _metadata['ANTENNA'] = getattr(obj, 'antenna', None)
+    _metadata['CASA'] = casa_version_string
+    _metadata['VERSION'] = pipeline_revision
+    _metadata['DATE'] = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')
+    if hasattr(obj, 'inputs'):
+        _metadata['IMAGE'] = getattr(obj.inputs, 'imagename', None)
+        _metadata['FIELD'] = getattr(obj.inputs, 'source', None)
+    return {key: str(val) for key, val in _metadata.items()}

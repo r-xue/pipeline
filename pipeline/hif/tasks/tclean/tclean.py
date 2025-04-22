@@ -464,7 +464,10 @@ class Tclean(cleanbase.CleanBase):
                     self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
-                if abs(channel_width_manual) < channel_width_auto:
+                # PIPE-1984: add tolerance acceptance when comparing user-specified chanwidths with
+                # the intrinsic vis chanwidths.
+                channel_width_tolerance = 0.05
+                if abs(channel_width_manual) < channel_width_auto*(1-channel_width_tolerance):
                     LOG.error('User supplied channel width (%s GHz) smaller than native '
                               'value (%s GHz) for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
@@ -477,9 +480,15 @@ class Tclean(cleanbase.CleanBase):
                                                                                                     inputs.intent,
                                                                                                     inputs.spw)
                     return error_result
-
-                LOG.info('Using supplied width %s' % inputs.width)
-                channel_width = channel_width_manual
+                else:
+                    if abs(channel_width_manual) < channel_width_auto:
+                        LOG.warning('User supplied channel width (%s GHz) smaller than native '
+                                    'value (%s GHz) for Field %s SPW %s but within the tolerance of %f; '
+                                    'use the native value instead.', channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw, channel_width_tolerance)
+                        channel_width = channel_width_auto
+                    else:
+                        LOG.info('Using supplied width %s' % inputs.width)
+                        channel_width = channel_width_manual
                 if abs(channel_width) > channel_width_auto:
                     inputs.nbin = int(utils.round_half_up(abs(channel_width) / channel_width_auto) + 0.5)
             elif inputs.nbin not in (None, -1):
@@ -711,6 +720,8 @@ class Tclean(cleanbase.CleanBase):
         # with this PSF. CASA is expected to handle this with version 6.2.
 
         if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
+                                                  'VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWP2-P001', 'VLASS-SE-CONT-AWP2-P032',
+                                                  'VLASS-SE-CONT-HPG',  'VLASS-SE-CONT-HPG-P001', 'VLASS-SE-CONT-HPG-P032',
                                                   'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE']:
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         elif '-SCAL' in self.image_heuristics.imaging_mode:
@@ -1246,20 +1257,21 @@ class Tclean(cleanbase.CleanBase):
                                ignore='mask' if do_not_copy_mask else None)
 
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
+
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
             if inputs.cyclefactor not in (None, -999):
                 cyclefactor = inputs.cyclefactor
             else:
-                cyclefactor = self.image_heuristics.cyclefactor(iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+                cyclefactor = self.image_heuristics.cyclefactor(
+                    iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
             LOG.info('    Threshold %s', threshold)
             LOG.info('    Niter %s', niter)
 
-            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=nsigma,
+            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=inputs.hm_nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                     result=result, cyclefactor=cyclefactor)
             if result.image is None:

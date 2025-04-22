@@ -875,7 +875,6 @@ class MeasurementSet(object):
                         key=operator.itemgetter(1))
         return latest.end_time
 
-
     def get_vla_corrstring(self) -> str:
         """Get correlation string for VLA
 
@@ -885,7 +884,7 @@ class MeasurementSet(object):
         # Prep string listing of correlations from dictionary created by method buildscans
         # For now, only use the parallel hands.  Cross hands will be implemented later.
 
-        corrstring_list = self.polarizations[0].corr_type_string if len(self.polarizations) > 0 else []
+        corrstring_list = self.polarizations[self.data_descriptions[0].pol_id].corr_type_string if len(self.polarizations) and len(self.data_descriptions) > 0 else []
         removal_list = ['RL', 'LR', 'XY', 'YX']
         corrstring_list = sorted(set(corrstring_list).difference(set(removal_list)))
         corrstring = ','.join(corrstring_list)
@@ -903,9 +902,9 @@ class MeasurementSet(object):
         """
 
         corrs = set()
-        for lspw in self.spectral_windows:
-            if spw in ('', '*', None) or (isinstance(spw, str) and str(lspw.id) in spw.split(',')):
-                corrs = corrs.union(self.polarizations[lspw.id].corr_type_string)
+        for dd in self.data_descriptions:
+            if spw in ('', '*', None) or (isinstance(spw, str) and str(dd.spw.id) in spw.split(',')):
+                corrs = corrs.union(self.polarizations[dd.pol_id].corr_type_string)
 
         return sorted(corrs)
 
@@ -1129,7 +1128,7 @@ class MeasurementSet(object):
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> np.float:
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1182,11 +1181,11 @@ class MeasurementSet(object):
             science_field_ids = [
                 fid for fid in field_ids
                 if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
             science_state_ids = [
                 sid for sid in state_ids
                 if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
 
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
@@ -1199,15 +1198,17 @@ class MeasurementSet(object):
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
         spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
 
-        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
+            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
+            # PIPE-2370: convert np.float64 to a native float for better weblog presentations.
             if stat_type == "max":
-                return np.max(integration)
+                return float(np.max(integration))
             elif stat_type == "median":
-                return np.median(integration)
+                return float(np.median(integration))
 
     def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
@@ -1335,10 +1336,25 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False) -> None:
+    def set_data_type_dicts(self, data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
         """
-        Set data type and column.
+        Set the data type lookup dictionaries directly without writing new
+        MS HISTORY entries as they would already exist when calling this
+        method. Also do not auto-generate the per source and spw lookup
+        dictionary from the per column information since it might have a
+        sparse structure (e.g. selfcal use case).
+
+        Args:
+            data_type_per_column: Data type per column lookup dictionary
+            data_types_per_source_and_spw: Data type per source and spw
+                lookup dictionary.
+        """
+        self.data_column = data_type_per_column
+        self.data_types_per_source_and_spw = data_types_per_source_and_spw
+
+    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
+                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+        """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
         data types per (source,spw) tuple. If source or spw are unset, they
@@ -1354,6 +1370,8 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
+            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping
+                to the MS history subtable. Defaults to True.                
 
         Raises:
             ValueError: An error raised when the column does not exist
@@ -1399,6 +1417,20 @@ class MeasurementSet(object):
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
+
+        # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
+        # minimum fallback implementation and should be replaced by a properly
+        # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
+        if save_to_ms:
+            with casa_tools.MSReader(self.name) as ms:
+                ms.writehistory(
+                    f"data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}",
+                    origin="Datatype Handler",
+                )
+                ms.writehistory(
+                    f"data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}",
+                    origin="Datatype Handler",
+                )
 
     def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """

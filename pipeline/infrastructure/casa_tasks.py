@@ -256,6 +256,11 @@ def visstat(*v, **k) -> JobRequest:
 
 
 @register_task
+def rerefant(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.rerefant, *v, **k)
+
+
+@register_task
 def sdatmcor(*v, **k) -> JobRequest:
     """Wrap casatasks.sdatmcor
 
@@ -273,11 +278,6 @@ def sdbaseline(*v, **k) -> JobRequest:
 @register_task
 def sdcal(*v, **k) -> JobRequest:
     return JobRequest(casatasks.sdcal, *v, **k)
-
-
-@register_task
-def sdimaging(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdimaging, *v, **k)
 
 
 @register_task
