@@ -454,7 +454,8 @@ class ChannelMapAxesManager(ImageAxesManager):
                  xlocator: ticker.Locator, ylocator: ticker.Locator,
                  xrotation: float, yrotation: float,
                  ticksize: int, colormap: str,
-                 nh: int, nv: int, brightnessunit: str):
+                 nh: int, nv: int, brightnessunit: str,
+                 freq_frame: str):
         """Construct ChannelMapAxesManager instance.
 
         The constructor generates (nh * nv) axes for channel map.
@@ -472,6 +473,7 @@ class ChannelMapAxesManager(ImageAxesManager):
             nh: number of channel maps in horizontal direction
             nv: number of channel maps in vertical direction
             brightnessunit: unit of the data to be displayed
+            freq_frame: frequency reference frame
         """
         super(ChannelMapAxesManager, self).__init__(fig, xformatter, yformatter,
                                                     xlocator, ylocator,
@@ -480,6 +482,7 @@ class ChannelMapAxesManager(ImageAxesManager):
         self.nh = nh
         self.nv = nv
         self.brightnessunit = brightnessunit
+        self.freq_frame = freq_frame
         self.nchmap = nh * nv
         self.left = 2.10 / 3.0
         self.width = 1.0 / 3.0 * 0.75
@@ -541,7 +544,7 @@ class ChannelMapAxesManager(ImageAxesManager):
             axes.xaxis.set_tick_params(which='major', labelsize=self.ticksize)
             axes.yaxis.set_tick_params(which='major', labelsize=self.ticksize)
 
-            axes.set_xlabel('Frequency (GHz)', size=self.ticksize)
+            axes.set_xlabel(f'Frequency (GHz) {self.freq_frame}', size=self.ticksize)
             axes.set_ylabel('Intensity (%s)' % self.brightnessunit, size=self.ticksize)
             axes.set_title('Integrated Spectrum', size=self.ticksize)
 
@@ -658,7 +661,7 @@ class SDSparseMapDisplay(SDImageDisplay):
         chan0 = 0
         chan1 = self.nchan
 
-        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit)
+        plotter = SDSparseMapPlotter(self.figure, NH, NV, STEP, self.brightnessunit, self.frequency_frame)
         plotter.direction_reference = self.direction_reference
 
         plot_list = []
@@ -944,7 +947,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                                              RArotation, DECrotation,
                                              TickSize, colormap,
                                              self.NhPanel, self.NvPanel,
-                                             self.brightnessunit)
+                                             self.brightnessunit,
+                                             self.frequency_frame)
         axes_manager.direction_reference = self.direction_reference
         axes_integmap = axes_manager.axes_integmap
         beam_circle = None

@@ -849,17 +849,17 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
+            if 'VLA' in result.imaging_mode:
+                # PIPE-1462 / PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
+                # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
+                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
+                # vs. specmode='mvc') but with a different warning.
+                # For consistency and clarity in VLA continuum imaging plots, we continue to use non-pbcor images here.
+                colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
                          [('pbcorimage', 'mom0'), ('residual', 'mom0'), ('mom0_fc', None), ('cleanmask', None)]]
-
-        if 'VLA' in result.imaging_mode:
-            # PIPE-1462: use non-pbcor images for VLA in the tclean details page.
-            # Because 'mtmfs' CASA/tclean doesn't generate pbcor images for VLA and silently passes with a warning when pbcor=True,
-            # pbcor images are not produced from hif.tasks.tclean (see PIPE-1201/CAS-11636)
-            # Here, we set a fallback with non-pbcor images.
-            for i, colorder in enumerate(colorders):
-                colorders[i] = [('image', moment) if im_type == 'pbcorimage' else (im_type, moment) for im_type, moment in colorder]
 
         self.extra_data = {
             'plots_dict': plots_dict,
