@@ -25,14 +25,15 @@ from pipeline.hsd.heuristics.pointing_outlier import PointingOutlierHeuristics
 from pipeline.hsd.tasks.common.flagcmd_util import datatable_rowid_to_timerange
 
 if TYPE_CHECKING:
-    from pipeline.domain import Antenna, Field, SpectralWindow
+    from pipeline.domain import SpectralWindow
     from pipeline.infrastructure import Context
 
 LOG = infrastructure.get_logger(__name__)
 
 PointingOutlierStats = collections.namedtuple(
     "PointingOutlierStats",
-    ["cx", "cy", "median_distance", "factor", "outliers", "separations"]
+    ["cx", "cy", "median_distance", "factor",
+     "outliers", "timerange", "separations"]
 )
 
 class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
@@ -332,64 +333,6 @@ def update_flag_pointing(filename: str, flag_incomplete_raster: bool):
             os.remove(tmpfile)
 
 
-def detect_pointing_outliers(datatable_name: str,
-                             field: Field,
-                             antenna: Antenna) -> PointingOutlierStats:
-    """Detect pointing outliers using PointingOutlierHeuristics.
-
-    Args:
-        datatable_name: Name of the datatable.
-        field: Target field domain object.
-        antenna: Antenna domain object.
-
-    Returns:
-        List of datatable row indices detected as pointing outliers.
-    """
-    rotable_name = os.path.join(datatable_name, "RO")
-    rwtable_name = os.path.join(datatable_name, "RW")
-    with casa_tools.TableReader(rotable_name) as rotable:
-        taql = f"SRCTYPE == 0 && FIELD_ID == {field.id} && ANTENNA == {antenna.id}"
-        rotable_sel = rotable.query(taql)
-        try:
-            rows = rotable_sel.rownumbers()
-            # use SHIFT_RA and SHIFT_DEC columns to support ephemeris sources
-            ra = rotable_sel.getcol("SHIFT_RA")
-            dec = rotable_sel.getcol("SHIFT_DEC")
-        finally:
-            rotable_sel.close()
-
-    with casa_tools.TableReader(rwtable_name) as rwtable:
-        msname = os.path.basename(rwtable.getkeyword("FILENAME"))
-        flag = rwtable.getcol('FLAG_PERMANENT')[0, 3, rows]
-
-    valid_ra = ra[flag == 1]
-    valid_dec = dec[flag == 1]
-    valid_row = rows[flag == 1]
-
-    heuristics = PointingOutlierHeuristics()
-    result = heuristics(field.frame, valid_ra, valid_dec)
-    outlier_mask = np.where(np.logical_not(result.mask))[0]
-    outliers = valid_row[outlier_mask]
-    separations = result.dist[outlier_mask]
-
-    if len(outliers) > 0:
-        LOG.info(
-            'MS "%s" field "%s" antenna "%s": %d pointing outliers detected',
-            msname, field.name, antenna.name, len(outliers)
-        )
-        LOG.debug("Outliers: %s", outliers)
-    else:
-        LOG.debug(
-            'MS "%s" field "%s" antenna "%s": no outliers detected',
-            msname, field.name, antenna.name
-        )
-
-    return PointingOutlierStats(
-        result.cx, result.cy, result.med_dist,
-        result.factor, outliers, separations
-    )
-
-
 class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
     # Make the member functions of the FlagDeterALMASingleDishInputs() class member
@@ -421,14 +364,16 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
 
             # check if pointing outliers are detected or not
             if len(outlier_stats) > 0:
-                for field_id, antenna_id in outlier_stats.keys():
+                for (field_id, antenna_id), stats in outlier_stats.items():
                     field = self.inputs.ms.get_fields(field_id=field_id)[0]
                     antenna = self.inputs.ms.get_antenna(str(antenna_id))[0]
                     LOG.warning(
                         '[pointing_outlier_flagged] '
                         'Pointing outliers are detected in "%s", '
-                        'Field "%s", Antenna "%s"',
-                        self.inputs.vis, field.name, antenna.name
+                        'Field "%s", Antenna "%s": time range "%s", '
+                        'max separation %.2f arcsec',
+                        self.inputs.vis, field.name, antenna.name,
+                        ', '.join(stats.timerange), np.max(stats.separations)
                     )
 
                 if self.inputs.pointing:
@@ -500,41 +445,79 @@ class SerialFlagDeterALMASingleDish(flagdeterbase.FlagDeterBase):
         datatable.exportdata(minimal=False)
 
     def _detect_pointing_outliers(self) -> dict[tuple[int, int], PointingOutlierStats]:
-        outliers = {}
+        outlier_stats = {}
         origin_basename = os.path.basename(self.inputs.ms.origin_ms)
         table_name = os.path.join(
             self.inputs.context.observing_run.ms_datatable_name,
             origin_basename
         )
+        msname = self.inputs.ms.basename
+        datatable = DataTable(name=table_name, readonly=True)
         antennas = self.inputs.ms.get_antenna()
         target_fields = self.inputs.ms.get_fields(intent="TARGET")
-        for field, antenna in itertools.product(target_fields, antennas):
-            outliers_for_field = detect_pointing_outliers(table_name, field, antenna)
-            if len(outliers_for_field.outliers) > 0:
-                outliers[(field.id, antenna.id)] = outliers_for_field
+        ra_all = datatable.getcol("SHIFT_RA")
+        dec_all = datatable.getcol("SHIFT_DEC")
+        srctype_all = datatable.getcol("SRCTYPE")
+        field_id_all = datatable.getcol("FIELD_ID")
+        antenna_id_all = datatable.getcol("ANTENNA")
+        flag_all = np.any(datatable.getcol("FLAG_PERMANENT")[:, 3] == 1, axis=0)
+        valid_on_source = np.logical_and(srctype_all == 0, flag_all == 1)
 
-        return outliers
+        heuristic = PointingOutlierHeuristics()
+
+        for field, antenna in itertools.product(target_fields, antennas):
+            # data selection
+            field_antenna_flag = np.logical_and(
+                field_id_all == field.id,
+                antenna_id_all == antenna.id
+            )
+            selection = np.logical_and(valid_on_source, field_antenna_flag)
+            rows = np.where(selection)[0]
+            ra = ra_all[selection]
+            dec = dec_all[selection]
+
+            # run heuristic
+            heuristic_result = heuristic(field.frame, ra, dec)
+
+            outlier_mask = np.where(np.logical_not(heuristic_result.mask))[0]
+            if len(outlier_mask) > 0:
+                outliers = rows[outlier_mask]
+                LOG.info(
+                    'MS "%s" field "%s" antenna "%s": %d pointing outliers detected',
+                    msname, field.name, antenna.name, len(outliers)
+                )
+                LOG.debug("Outliers: %s", outliers)
+                separations = heuristic_result.dist[outlier_mask]
+                timerange_list = datatable_rowid_to_timerange(
+                    datatable, rows[outlier_mask]
+                )
+                outliers_for_field = PointingOutlierStats(
+                        heuristic_result.cx, heuristic_result.cy,
+                        heuristic_result.med_dist, heuristic_result.factor,
+                        outliers, timerange_list, separations
+                    )
+                outlier_stats[(field.id, antenna.id)] = outliers_for_field
+            else:
+                LOG.debug(
+                    'MS "%s" field "%s" antenna "%s": no outliers detected',
+                    msname, field.name, antenna.name
+                )
+
+        return outlier_stats
 
     def _append_outlier_flagcmd_to_flagpoinging_file(
             self,
             outlier_stats: dict[tuple[int, int], PointingOutlierStats]):
-        origin_basename = os.path.basename(self.inputs.ms.origin_ms)
-        table_name = os.path.join(
-            self.inputs.context.observing_run.ms_datatable_name,
-            origin_basename
-        )
-        datatable = DataTable(name=table_name, readonly=True)
         reason = "pointing_outlier"
         cmd_template = string.Template(
             "mode='manual' field='$field_id' antenna='$antenna_id&&&' timerange='$timerange'"
             f" reason='SDPL:{reason}'\n"
         )
 
-        # convert list of outlier row indices into flag commands
+        # generate flag commands
         flagcmds = []
         for (field_id, antenna_id), stats in outlier_stats.items():
-            rows = stats.outliers
-            timerange_list = datatable_rowid_to_timerange(datatable, rows)
+            timerange_list = stats.timerange
             for timerange in timerange_list:
                 flagcmds.append(
                     cmd_template.safe_substitute(

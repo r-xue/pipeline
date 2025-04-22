@@ -4415,45 +4415,6 @@ def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
     return scores
 
 
-def extract_time_range_from_flagpointing_file(
-        ms: MeasurementSet,
-        field_id: int,
-        antenna_id: int) -> list[str]:
-    """Extract time range from flagging commands.
-
-    In case if pointing outliers are detected, the flagpointing file
-    (<ms>.flagpointing.txt) should include flag commands that intend
-    to flag outliers. This function extracts time range information
-    from the flag commands.
-
-    Args:
-        ms: MS domain object.
-        field_id: Field ID.
-        antenna_id: Antenna ID.
-
-    Returns:
-        List of time ranges extracted from flag commands.
-    """
-    flagpointing = os.path.splitext(ms.name)[0] + '.flagpointing.txt'
-
-    if not os.path.exists(flagpointing):
-        return []
-
-    pattern = re.compile(
-        rf"mode='manual' field='{field_id}' antenna='{antenna_id}&&&' "
-        rf"timerange='([^']*)' reason='SDPL:pointing_outlier'"
-    )
-
-    with open(flagpointing, 'r') as f:
-        matched = filter(
-            lambda x: x is not None,
-            map(lambda x: re.match(pattern, x), f)
-        )
-        time_ranges = [x[1] for x in matched]
-
-    return time_ranges
-
-
 @log_qa
 def score_pointing_outlier(
     ms: MeasurementSet,
@@ -4497,23 +4458,17 @@ def score_pointing_outlier(
         assert num_outliers > 0
         score = 0.83
         max_separation = np.max(stats.separations)
-        if pointing:
-            time_range = extract_time_range_from_flagpointing_file(ms, field_id, antenna_id)
-            assert len(time_range) > 0
-            time_range_str = ', '.join(time_range)
-            longmsg = (
-                f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
-                f"Flagged time range is {time_range_str}. "
-                f"Max separation from nominal field center is {max_separation:.2f} deg."
-            )
-            shortmsg = "Pointing outliers detected"
-        else:
-            longmsg = (
-                f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
-                f"Max separation from nominal field center is {max_separation:.2f} deg."
-                "However, poinging flag was not applied."
-            )
-            shortmsg = "Pointing outliers detected (but not flagged)"
+        assert len(stats.timerange) > 0
+        time_range_str = ', '.join(stats.timerange)
+        longmsg = (
+            f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
+            f"Flagged time range is {time_range_str}. "
+            f"Max separation from nominal field center is {max_separation:.2f} deg."
+        )
+        shortmsg = "Pointing outliers detected"
+        if not pointing:
+            longmsg += " However, poinging flag was not applied."
+            shortmsg += " (but not flagged)"
 
         origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
                               metric_score=score,
