@@ -543,7 +543,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         elif len(unique_bands) == 2 and 'A' in unique_bands and 'Q' in unique_bands:
             fitorder = 1
         elif ((len(unique_bands) > 2) or
-              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
+              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands or unique_bands[0] in 'KAQ'))):
             # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
             if fractional_bandwidth >= 1.5:
                 fitorder = 4
