@@ -809,6 +809,10 @@ class finalAmpTimeCalPerAntennaPerSpwChart(object):
 
         plots = []
 
+        if not os.path.exists(self.result.finalampgaincaltable):
+            LOG.warning("{!s} not found.".format(self.result.finalampgaincaltable))
+            return plots
+
         spw2band = self.ms.get_vla_spw2band()
         band2spw = collections.defaultdict(list)
         spwobjlist = self.ms.get_spectral_windows(science_windows_only=True)
@@ -1099,7 +1103,9 @@ class finalPhaseGainCalPerAntennaPerSpwChart(object):
         spws = m.get_spectral_windows(science_windows_only=True)
         nplots = len(m.antennas)
         plots = []
-
+        if not os.path.exists(self.result.finalphasegaincaltable):
+            LOG.warning("{!s} not found.".format(self.result.finalphasegaincaltable))
+            return plots
         LOG.info("Plotting final phase freqcal per spw for spectral window spws")
 
         spw2band = self.ms.get_vla_spw2band()
