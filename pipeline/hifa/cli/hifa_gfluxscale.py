@@ -7,7 +7,7 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_gfluxscale(vis=None, reference=None, transfer=None, refintent=None, transintent=None, refspwmap=None,
                     reffile=None, phaseupsolint=None, solint=None, minsnr=None, refant=None, hm_resolvecals=None,
-                    antenna=None, peak_fraction=None, amp_outlier_sigma=None):
+                    antenna=None, peak_fraction=None, amp_outlier_sigma=None, parallel=None):
     """Derive flux density scales from standard calibrators
 
     Derive flux densities for point source transfer calibrators using flux models

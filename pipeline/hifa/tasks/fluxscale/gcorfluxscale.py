@@ -101,11 +101,13 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
                                                    'POLLEAKAGE')
     uvrange = vdp.VisDependentProperty(default='')
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_gfluxscale
     def __init__(self, context, output_dir=None, vis=None, caltable=None, fluxtable=None, reffile=None, reference=None,
                  transfer=None, refspwmap=None, refintent=None, transintent=None, solint=None, phaseupsolint=None,
                  minsnr=None, refant=None, hm_resolvedcals=None, antenna=None, uvrange=None, peak_fraction=None,
-                 amp_outlier_sigma=None):
+                 amp_outlier_sigma=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -203,10 +205,12 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
 
                 Example: amp_outlier_sigma=30.0
 
+            parallel: Execute using CASA HPC functionality, if available.            
+
         """
-        super(GcorFluxscaleInputs, self).__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
-                                                  fluxtable=fluxtable, reference=reference, transfer=transfer,
-                                                  refspwmap=refspwmap, refintent=refintent, transintent=transintent)
+        super().__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
+                         fluxtable=fluxtable, reference=reference, transfer=transfer,
+                         refspwmap=refspwmap, refintent=refintent, transintent=transintent)
         self.reffile = reffile
         self.solint = solint
         self.phaseupsolint = phaseupsolint
@@ -218,12 +222,10 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
         self.peak_fraction = peak_fraction
         self.amp_outlier_sigma = amp_outlier_sigma
 
+        self.parallel = parallel
 
-@task_registry.set_equivalent_casa_task('hifa_gfluxscale')
-@task_registry.set_casa_commands_comment(
-    'The absolute flux calibration is transferred to secondary calibrator sources.'
-)
-class GcorFluxscale(basetask.StandardTaskTemplate):
+
+class SerialGcorFluxscale(basetask.StandardTaskTemplate):
     Inputs = GcorFluxscaleInputs
 
     def __init__(self, inputs):
@@ -1003,6 +1005,13 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # Return flag commands for rendering in weblog.
         return flagcmds
 
+@task_registry.set_equivalent_casa_task('hifa_gfluxscale')
+@task_registry.set_casa_commands_comment(
+    'The absolute flux calibration is transferred to secondary calibrator sources.'
+)
+class GcorFluxscale(sessionutils.ParallelTemplate):
+    Inputs = GcorFluxscaleInputs
+    Task = SerialGcorFluxscale
 
 class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
     # use common implementation for parallel inputs argument
@@ -1012,7 +1021,7 @@ class SessionGcorFluxscaleInputs(GcorFluxscaleInputs):
                  transfer=None, refspwmap=None, refintent=None, transintent=None, solint=None, phaseupsolint=None,
                  minsnr=None, refant=None, hm_resolvedcals=None, antenna=None, uvrange=None, peak_fraction=None,
                  parallel=None):
-        super(SessionGcorFluxscaleInputs, self).__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
+        super().__init__(context, output_dir=output_dir, vis=vis, caltable=caltable,
                                                          fluxtable=fluxtable, reffile=reffile, reference=reference,
                                                          transfer=transfer, refspwmap=refspwmap, refintent=refintent,
                                                          transintent=transintent, solint=solint,
@@ -1030,7 +1039,7 @@ class SessionGcorFluxscale(basetask.StandardTaskTemplate):
     Inputs = SessionGcorFluxscaleInputs
 
     def __init__(self, inputs):
-        super(SessionGcorFluxscale, self).__init__(inputs)
+        super().__init__(inputs)
 
     is_multi_vis_task = True
 

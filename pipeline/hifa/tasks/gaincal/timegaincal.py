@@ -5,6 +5,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hif.tasks.gaincal import common
 from pipeline.hif.tasks.gaincal import gtypegaincal
@@ -54,10 +55,12 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 
     targetsolint = vdp.VisDependentProperty(default='inf')
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_timegaincal
     def __init__(self, context, vis=None, output_dir=None, calamptable=None, calphasetable=None, offsetstable=None,
                  amptable=None, targetphasetable=None, calsolint=None, targetsolint=None, calminsnr=None,
-                 targetminsnr=None, **parameters):
+                 targetminsnr=None, parallel=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -150,6 +153,8 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 
                 Example: smodel=[1,0,0,0]  - (I=1, unpolarized)
 
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
         super().__init__(context, vis=vis, output_dir=output_dir,  **parameters)
 
@@ -162,11 +167,11 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
         self.targetminsnr = targetminsnr
         self.targetphasetable = targetphasetable
         self.targetsolint = targetsolint
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_timegaincal')
-@task_registry.set_casa_commands_comment('Time dependent gain calibrations are computed.')
-class TimeGaincal(gtypegaincal.GTypeGaincal):
+
+class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
     Inputs = TimeGaincalInputs
 
     def prepare(self, **parameters) -> common.GaincalResults:
@@ -979,6 +984,13 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             return do_delete
 
         inputs.context.callibrary.unregister_calibrations(phase_no_combine_matcher)
+
+
+@task_registry.set_equivalent_casa_task('hifa_timegaincal')
+@task_registry.set_casa_commands_comment('Time dependent gain calibrations are computed.')
+class TimeGaincal(sessionutils.ParallelTemplate):
+    Inputs = TimeGaincalInputs
+    Task = SerialTimeGaincal
 
 
 def do_gtype_gaincal(context, executor, task_args) -> common.GaincalResults:

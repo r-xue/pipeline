@@ -5,7 +5,7 @@ from . import flagdeteralma
 from . import flagtargetsalma
 from . import qa
 from . import renderer
-from .flagdeteralma import FlagDeterALMA
+from .flagdeteralma import SerialFlagDeterALMA, FlagDeterALMA
 from .flagtargetsalma import FlagTargetsALMA
 
 qaadapter.registry.register_to_flagging_topic(flagdeteralma.FlagDeterALMAResults)
@@ -14,6 +14,9 @@ qaadapter.registry.register_to_flagging_topic(flagtargetsalma.FlagTargetsALMARes
 # Use generic deterministic flagging renderer for ALMA interferometry
 # deterministic flagging.
 weblog.add_renderer(FlagDeterALMA,
+                    super_renderer.T2_4MDetailsFlagDeterBaseRenderer(description='ALMA deterministic flagging'),
+                    group_by=weblog.UNGROUPED)
+weblog.add_renderer(SerialFlagDeterALMA,
                     super_renderer.T2_4MDetailsFlagDeterBaseRenderer(description='ALMA deterministic flagging'),
                     group_by=weblog.UNGROUPED)
 
