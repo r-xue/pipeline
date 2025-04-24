@@ -116,7 +116,7 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
 
     #Release memory taken up by the copy of the dataset
     del(Fmsw)
-    
+
     #Save results in the original MSWrapper object
     msw.data_stats = {'peak_fft_pwr': peak_fft_pwr, 'XYcorr': XYcorr}
 
@@ -526,7 +526,7 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: 
     '''
 
     #Load buffered data from disk, if exists
-    buf = os.path.dirname(msNames[0])+'/mswCollection.buffer.pkl'
+    buf = os.path.join(os.path.dirname(msNames[0]), 'mswCollection.buffer.pkl')
     if os.path.exists(buf):
         f = open(buf, 'rb')
         mswCollection = pickle.load(f)
