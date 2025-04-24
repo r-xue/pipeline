@@ -139,13 +139,15 @@ def combine_msw_stats(mswCollection: dict) -> dict:
     mskeys = (np.array(mswCollectionKeys).T)[0]
     mslist = np.unique(mskeys)
     idxfirst = {ms: np.where(mskeys == ms)[0][0] for ms in mslist}
-    fieldnames = np.unique(np.array([mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['fieldname']['*OBSERVE_TARGET#ON_SOURCE*'] for ms in mslist]).flatten())
+    fieldnames = np.unique(np.array(sd_qa_utils.flattenlist([mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['fieldname']['*OBSERVE_TARGET#ON_SOURCE*'] for ms in mslist])))
     names_for = {ms: mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['namesfor'] for ms in mslist}
     fieldid_for = {ms: {fieldname[0]: fieldid for (fieldid, fieldname) in names_for[ms].items()} for ms in mslist}
     antnames_for = {ms: mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['antnames'] for ms in mslist}
     #assuming all EBs have the same numbering for SPWs, we can take the first one. If not one would need to
     #make this more general.
     spwlist = mswCollection[mswCollectionKeys[idxfirst[mslist[0]]]].spw_setup['spwlist']
+    #Some MSs could have less fields, lets create a list of the MS that do for each field
+    mslist_for_fieldname = {fieldname: [ms for ms in mslist if fieldname in fieldid_for[ms].keys()] for fieldname in fieldnames}
 
     #Initialize output dictionary with metadata from the combination
     data_stats_comb = {'comb_metadata': {'mslist': mslist, 'mskeys': mskeys, 'idxfirst': idxfirst, 'fieldnames': fieldnames, 'names_for': names_for, 'fieldid_for': fieldid_for, 'antnames_for': antnames_for, 'spwlist': spwlist}}
@@ -156,8 +158,8 @@ def combine_msw_stats(mswCollection: dict) -> dict:
     for fieldname in fieldnames:
         data_stats_comb[fieldname] = {}
         for spw in spwlist:
-            comb_peak_data = np.ma.sum([np.ma.sum([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['peak_fft_pwr'] for ant in antnames_for[ms]], axis=0) for ms in mslist], axis=0)
-            comb_XYcorr = np.ma.mean([np.ma.mean([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['XYcorr'] for ant in antnames_for[ms]], axis=0) for ms in mslist], axis=0)
+            comb_peak_data = np.ma.sum([np.ma.sum([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['peak_fft_pwr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
+            comb_XYcorr = np.ma.mean([np.ma.mean([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['XYcorr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
             data_stats_comb[fieldname][str(spw)] = {'comb_peak_data': comb_peak_data, 'comb_XYcorr': comb_XYcorr}
 
     return data_stats_comb
@@ -291,12 +293,12 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
     skylinesel = sd_qa_utils.get_skysel_from_msw(msw)
 
     #Was there any science line detected?
-    if 'sci_line_sel' in msw.data_stats.keys():
+    if (msw.data_stats is not None) and ('sci_line_sel' in msw.data_stats.keys()):
         is_sci_line_det = (np.sum(msw.data_stats['sci_line_sel']) > 0)
         sci_line_channels = msw.data_stats['sci_line_sel']
     else:
         is_sci_line_det = False
-        sci_line_channels = np.zeros(nchan)
+        sci_line_channels = np.zeros(nchan, dtype=bool)
 
     #Per-scan analysis
     analysis = {}
@@ -510,19 +512,21 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
     return (msw, qascore, qascores_scans, plotfname)
 
-def load_and_stats(msNames: List[str], use_tsys_data: bool = True, buffer_data: bool = True) -> dict:
+def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: bool = True, buffer_data: bool = True) -> dict:
     '''Load a collection of MSWrapper_SD objects, and run a basic filter and statistics on each of them.
     Return a dictionary of MSWrapper_SD objects, indexed by tuples in the form (ms, spw, ant, fieldid).
     param:
         msNames: List of MS names to load.
         ondata_filters: List of filters to pass on the ON-source data
         use_tsys_data: True/False whether to load CalAtmosphere data from dataset
+        sciline_det: True/False whether to attempt strong science line detection. The detected channels are passed to outlier_detection()
+                     to exclude them for triggering a false XX-YY deviation.
         buffer_data: True/False whether to save/load the MSW collection to disk. This is aimed at easing the
                     use for repeated execution of the code, mostly testing.
     '''
 
     #Load buffered data from disk, if exists
-    buf = os.path.join(os.path.dirname(msNames[0]), 'mswCollection.buffer.pkl')
+    buf = os.path.dirname(msNames[0])+'/mswCollection.buffer.pkl'
     if os.path.exists(buf):
         f = open(buf, 'rb')
         mswCollection = pickle.load(f)
@@ -545,8 +549,9 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, buffer_data: 
             #Apply preliminary filters to ON-data
             print('Applying filter rowmedian...')
             mswCollection[(msonly, str(spw), ant, str(fieldid))].filter(type = 'rowmedian')
-            #Gather statistics per channel
-            data_stats_perchan(mswCollection[(msonly, str(spw), ant, str(fieldid))])
+            #Gather statistics per channel, if requested
+            if sciline_det:
+                data_stats_perchan(mswCollection[(msonly, str(spw), ant, str(fieldid))])
             #Clear raw data from MSWrapper object to release memory
             mswCollection[(msonly, str(spw), ant, str(fieldid))].data = None
 
@@ -577,7 +582,7 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
     '''
 
     #Load data and gather statistics
-    mswCollection = load_and_stats(msNames, use_tsys_data = use_tsys_data)
+    mswCollection = load_and_stats(msNames, use_tsys_data = use_tsys_data, sciline_det = sciline_det)
 
     #Combine stats for science line detection, if requested
     if sciline_det:
@@ -610,4 +615,3 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
         f.close()
 
     return (qascore_list, plots_fnames, qascore_per_scan_list)
-
