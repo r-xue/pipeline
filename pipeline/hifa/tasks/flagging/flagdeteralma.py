@@ -236,7 +236,7 @@ class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
         # Override the default verifier:
         #  - first run the default verifier
         #  - then run extra test to skip flagging of TDM windows
-        super(FlagDeterALMA, self).verify_spw(spw)
+        super().verify_spw(spw)
 
         # Test whether the spw is TDM or FDM. If it is FDM, then raise a
         # ValueError. From T. Hunter on PIPE-425:
@@ -280,7 +280,7 @@ class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
 
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
-        to_flag = super(FlagDeterALMA, self)._get_edgespw_cmds()
+        to_flag = super()._get_edgespw_cmds()
 
         # Loop over the spectral windows, generate a flagging command for each
         # spw in the ms. Calling get_spectral_windows() with no arguments

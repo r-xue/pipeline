@@ -46,7 +46,7 @@ ORIGIN = 'gcorfluxscale'
 class GcorFluxscaleResults(commonfluxresults.FluxCalibrationResults):
     def __init__(self, vis, resantenna=None, uvrange=None, measurements=None, fluxscale_measurements=None,
                  applies_adopted=False, ampcal_flagcmds=None):
-        super(GcorFluxscaleResults, self).__init__(vis, resantenna=resantenna, uvrange=uvrange,
+        super().__init__(vis, resantenna=resantenna, uvrange=uvrange,
                                                    measurements=measurements)
         self.applies_adopted = applies_adopted
 
@@ -229,7 +229,7 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
     Inputs = GcorFluxscaleInputs
 
     def __init__(self, inputs):
-        super(GcorFluxscale, self).__init__(inputs)
+        super().__init__(inputs)
 
     def prepare(self, **parameters):
         inputs = self.inputs

@@ -507,7 +507,7 @@ class WvrgcalflagData(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagDataInputs
 
     def __init__(self, inputs):
-        super(WvrgcalflagData, self).__init__(inputs)
+        super().__init__(inputs)
 
         # Initialize parameters that should persist across multiple flagging
         # iterations. These will be populated by the output from Wvrgcal on
