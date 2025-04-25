@@ -243,13 +243,7 @@ class WvrgcalflagInputs(wvrgcal.WvrgcalInputs):
         self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
-@task_registry.set_casa_commands_comment(
-    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
-    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
-    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
-    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
-    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.')
+
 class SerialWvrgcalflag(basetask.StandardTaskTemplate):
     Inputs = WvrgcalflagInputs
 
@@ -494,10 +488,17 @@ class WvrgcalflagDataInputs(vdp.StandardInputs):
     def as_dict(self):
         skip = ['context', 'ms']
         return {dd_name: dd
-                for dd_name, dd in inspect.getmembers(self, lambda a: not(inspect.isroutine(a)))
+                for dd_name, dd in inspect.getmembers(self, lambda a: not (inspect.isroutine(a)))
                 if not (dd_name.startswith('_') or dd_name in skip)}
 
 
+@task_registry.set_equivalent_casa_task('hifa_wvrgcalflag')
+@task_registry.set_casa_commands_comment(
+    'Water vapour radiometer corrections are calculated for each antenna. The quality of the correction is assessed by '
+    'comparing a phase gain solution calculated with and without the WVR correction. This requires calculation of a '
+    'temporary phase gain on the bandpass calibrator, a temporary bandpass using that temporary gain, followed by phase'
+    ' gains with the temporary bandpass, with and without the WVR correction. After that, some antennas are wvrflagged '
+    '(so that their WVR corrections are interpolated), and then the quality of the correction recalculated.')
 class Wvrgcalflag(sessionutils.ParallelTemplate):
     Inputs = WvrgcalflagInputs
     Task = SerialWvrgcalflag
