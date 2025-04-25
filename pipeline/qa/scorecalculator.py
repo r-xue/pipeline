@@ -4440,7 +4440,7 @@ def score_pointing_outlier(
     # If no pointing outliers are detected, return QAScore with score of 1.0
     if len(pointing_outlier_stats) == 0:
         score = 1.0
-        longmsg = (f'No pointing outliers detected in "{ms.basename}".')
+        longmsg = f'No pointing outliers detected in "{ms.basename}".'
         shortmsg = "No pointing outliers detected"
 
         origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
