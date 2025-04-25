@@ -18,7 +18,7 @@ BandpassApplication = collections.namedtuple('BandpassApplication',
                                              'ms bandtype solint intent spw gaintable')
 
 PhaseupApplication = collections.namedtuple('PhaseupApplication', 
-                                            'ms calmode solint minblperant minsnr flagged phaseupbw') 
+                                            'ms calmode solint combine minblperant minsnr phaseupbw')
 
 
 class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -192,17 +192,17 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                            for dt in utils.get_intervals(context, calapp)]
                 solint = 'Per integration (%s)' % utils.commafy(in_secs, quotes=False, conjunction='or')
 
+            combine = utils.get_origin_input_arg(calapp, 'combine') == 'spw'
+
             assert(len(calapp.origin) == 1)
             origin = calapp.origin[0]
             calmode = origin.inputs.get('calmode', 'N/A')
             calmode = calmode_map.get(calmode, calmode)
             minblperant = origin.inputs.get('minblperant', 'N/A')
             minsnr = origin.inputs.get('minsnr', 'N/A')
-            flagged = 'TODO'
             phaseupbw = result.inputs.get('phaseupbw', 'N/A')
 
-            a = PhaseupApplication(ms.basename, calmode, solint, minblperant,
-                                   minsnr, flagged, phaseupbw)
+            a = PhaseupApplication(ms.basename, calmode, solint, combine, minblperant, minsnr, phaseupbw)
             applications.append(a)
 
         return applications
