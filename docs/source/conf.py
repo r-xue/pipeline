@@ -16,10 +16,10 @@
 #
 #
 
-from datetime import datetime
 import os
 import sys
 import textwrap
+from datetime import datetime
 
 pipeline_src = os.getenv('pipeline_src')
 if pipeline_src is not None:
@@ -31,12 +31,9 @@ else:
 
 try:
     import pipeline
-
-    from pipeline.infrastructure.renderer.regression import get_all_subclasses
-    from pipeline.infrastructure.api import Task
-    from pipeline.infrastructure.api import Inputs
-    from pipeline.infrastructure.api import Results
     from pipeline.h.tasks import ImportData
+    from pipeline.infrastructure.api import Inputs, Results, Task
+    from pipeline.infrastructure.renderer.regression import get_all_subclasses
 
     taskclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Task)]
     inputsclasses_str = [ret0.__module__ + '.' + ret0.__name__ for ret0 in get_all_subclasses(Inputs)]
@@ -141,11 +138,14 @@ master_doc = 'index'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-release
 release = build_version = pipeline.environment.pipeline_revision  # used on the PDF cover
 version = build_version.split('+')[0]
+# remove -detached suffix as readthedocs always uses git checkout --force to create a
+# detached state
+build_version_short = build_version.removesuffix('-detached')
 
 # General information about the project.
 project = f'Pipeline \n ({version})'
 author = 'Pipeline Dev. Team'
-copyright = '2020–{0}, '.format(datetime.utcnow().year) + author + f', build: {build_version}'
+copyright = f'2020–{datetime.now().year}, {author}, build: {build_version_short}'
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
