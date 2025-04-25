@@ -63,7 +63,11 @@ def get_version(cwd: str | None = None) -> tuple[str, ...]:
         - The latest tag is not the latest commit
         - The repository has uncommitted changes
 
-        This script must run within a Git repository.
+        The current working directory or `cwd` must be within a Git repository.
+
+        The function retrieves the latest reachable branch tag and repository "dirty" state.
+        However, these values are mainly used by the Bamboo build plan for tarball naming, and
+        are not incorporated into the Pipeline build version string.
     """
     gitbin = shutil.which('git')
     if not gitbin:
@@ -346,11 +350,13 @@ def get_version_string_from_git(cwd: str | None = None, verbose: bool = False) -
 
     # try to get tag information, but we ignore the nontraditional 'dirty' check from get_version()
     tag_tuple = get_version(cwd=cwd)
-    last_release_tag = tag_tuple[1] if len(tag_tuple) > 1 else 'unknown_recent_release_tag'
-
     if verbose:
         print('# Output from get_version() (backward-compatible with pre-PIPE-1939 Perl script):')
         print(tag_tuple, '\n')
+    if len(tag_tuple) > 1:
+        last_release_tag = tag_tuple[1]
+    else:
+        return 'unknown'
 
     # Retrieve info about current commit.
     #
@@ -385,7 +391,7 @@ def get_version_string_from_git(cwd: str | None = None, verbose: bool = False) -
     public_label = last_release_tag
     local_parts = []
 
-    is_dev_branch = isinstance(git_branch, str) and git_branch != 'main' and not git_branch.startswith('release/')
+    is_dev_branch = git_branch != 'main' and not git_branch.startswith('release/')
 
     if recent_tag != last_release_tag:
         local_parts.append(recent_tag)
@@ -405,7 +411,7 @@ def get_version_string_from_git(cwd: str | None = None, verbose: bool = False) -
 
 
 if __name__ == '__main__':
-    desc = """
+    DESC = """
     This script derives a PEP 440-compatible version string from the Git repository state.
 
     When executed inside a Git repository, it prints the resulting version string. By default, for backward 
@@ -432,7 +438,7 @@ if __name__ == '__main__':
         2025.0.0.41+2025.0.0.41-151-g156bc01d1-dirty-update-docs-build-and-packaging-setup
     """
 
-    parser = argparse.ArgumentParser(description=textwrap.dedent(desc), formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description=textwrap.dedent(DESC), formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument(
         '-f',
         '--full-string',

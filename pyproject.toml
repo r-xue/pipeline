@@ -1,5 +1,11 @@
 [build-system]
-requires = ["setuptools>=64.0", "wheel", "csscompressor==0.9.5", "jsmin==3.0.1"]
+requires = [
+    "setuptools>=64.0",
+    "packaging>=22.0.0",
+    "wheel",
+    "csscompressor==0.9.5",
+    "jsmin==3.0.1",
+]
 build-backend = "setuptools.build_meta"
 
 [project]

@@ -7,6 +7,7 @@ import sys
 import csscompressor
 import setuptools
 from jsmin import jsmin
+from packaging.version import InvalidVersion, parse
 from setuptools import sic
 from setuptools.command.build_py import build_py
 
@@ -188,8 +189,12 @@ def _get_git_version() -> str:
                                                   stderr=subprocess.DEVNULL).decode().strip()
     except (FileNotFoundError, subprocess.CalledProcessError):
         # likely the script doesn't exist due to a wrong path or the Git metadata check failed.
-        ver_from_script = "0.0.dev0"
+        ver_from_script = 'unknown'
 
+    try:
+        parse(ver_from_script)
+    except InvalidVersion:
+        return '0.0.dev0'
 
     return ver_from_script
 
