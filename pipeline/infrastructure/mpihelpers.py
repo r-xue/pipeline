@@ -401,6 +401,47 @@ def is_mpi_ready():
     ])  # MPICommandClient ready
 
 
+def is_mpi_server() -> bool:
+    """Check if the current process is running on an MPI server.
+
+    Determines whether this process is running as an MPI server by checking both that MPI is enabled
+    and that this process is not specifically an MPI client.
+
+    Returns:
+        True if the process is an MPI server, False otherwise.
+    """
+    return MPIEnvironment.is_mpi_enabled and not MPIEnvironment.is_mpi_client
+
+
+def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> None:
+    """Execute the same function on both client and MPI server processes.
+
+    This function enables synchronized execution across MPI infrastructure. It's particularly useful
+    for setup tasks that need consistent state across all processes, such as changing the working directory.
+
+    Args:
+        fn: The function to execute.
+        *args: Positional arguments to pass to the function.
+        include_client: If True, the function is also executed on the client process.
+        **kwargs: Keyword arguments to pass to the function.
+    """
+    # Execute on client if requested
+    if include_client:
+        fn(*args, **kwargs)
+
+    # Prepare executable for server processes
+    executable = Tier0FunctionCall(fn, *args, **kwargs)
+
+    # Execute on all server processes if MPI is available
+    if mpiclient is not None and mpi_server_list is not None:
+        mpiclient.push_command_request(
+            'pipeline.infrastructure.mpihelpers.mpiexec(tier0_executable)',
+            block=True,
+            target_server=mpi_server_list,
+            parameters={'tier0_executable': executable},
+        )
+
+
 def _splitall(path):
     allparts = []
     while True:
