@@ -1104,13 +1104,13 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             for fieldidstring in fieldidlist:
                 fieldid = int(fieldidstring)
-                uvrangestring = uvrange(self.setjy_results, fieldid)
+                uvrangestring = uvrange(self.setjy_results, fieldidstring)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-                if utils.get_row_count(calMs, fieldid) != 0:
+                if utils.get_row_count(calMs, fieldidstring) != 0:
                     job = casa_tasks.gaincal(**task_args)
                     self._executor.execute(job)
                 else:

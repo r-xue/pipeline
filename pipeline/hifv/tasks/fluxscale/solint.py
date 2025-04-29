@@ -264,9 +264,11 @@ class Solint(basetask.StandardTaskTemplate):
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]
+
         testgains_result = self._do_gtype_testgains(calMs, bpdgain_touse, solint=solint,
                                                     context=self.inputs.context, combtime=combtime,
                                                     refAnt=refAnt, spw=','.join(spwlist))
+
 
         flaggedSolnResult1 = getCalFlaggedSoln(bpdgain_touse)
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -595,9 +597,10 @@ class Solint(basetask.StandardTaskTemplate):
                 fieldidlist.append(str(fieldobj.id))
 
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            if utils.get_row_count(calMs, fieldid) != 0:
-                uvrangestring = uvrange(self.setjy_results, fieldid)
+            # PIPE-1729: passing fieldidstring instead of field id to avoid
+            # warning while concatenating string and int
+            if utils.get_row_count(calMs, fieldidstring) != 0:
+                uvrangestring = uvrange(self.setjy_results, fieldidstring)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring
                 if os.path.exists(caltable):
