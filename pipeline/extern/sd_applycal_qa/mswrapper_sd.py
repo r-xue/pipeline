@@ -143,6 +143,11 @@ class MSWrapperSD(object):
             print('Cannot find antenna: '+str(antenna))
             return None
 
+        if attach_tsys_data:
+            tsysdata = sd_qa_utils.getAtmDataForSPW(fname, spw_setup, spw, antenna)
+        else:
+            tsysdata = None
+
         #Open MS and read DATA/CORRECTED column
         querystr = 'DATA_DESC_ID == {0:s} && FIELD_ID == {1:s} && ANTENNA1 == {2:s}'.format(str(spw_setup[spw]['ddi']), str(fieldid), str(antenna_id))
         querystr += ' && NOT FLAG_ROW'
@@ -156,6 +161,12 @@ class MSWrapperSD(object):
         weight = subtb.getcol('WEIGHT')
         subtb.close()
         tb.close()
+
+        #If all data is flagged, return dummy object
+        if np.shape(data) == (0,):
+            npol = spw_setup[spw]['npol']
+            nchan = spw_setup[spw]['nchan']
+            return MSWrapperSD(fname=fname, antenna=antenna, spw=spw, npol=npol, nchan=nchan, nrows=0, fieldid=fieldid, column=column, onoffsel=onoffsel, spw_setup=spw_setup, data=None, weight=None, time=None, tsysdata=tsysdata, scantimesel=None, nrowscan=None, time_mean_scan=None, time_std_scan=None, data_stats=None, analysis=None)
 
         (npol, nchan, nrows) = np.shape(data)
         #Create masked data numpy array for ease of use
@@ -176,17 +187,16 @@ class MSWrapperSD(object):
         time_mean_scan['all'] = np.ma.mean(data, axis=2)
         time_std_scan['all'] = np.ma.std(data, axis=2)
 
-        if attach_tsys_data:
-            tsysdata = sd_qa_utils.getAtmDataForSPW(fname, spw_setup, spw, antenna)
-        else:
-            tsysdata = None
-
         return MSWrapperSD(fname=fname, antenna=antenna, spw=spw, npol=npol, nchan=nchan, nrows=nrows, fieldid=fieldid, column=column, onoffsel=onoffsel, spw_setup=spw_setup, data=data, weight=weight, time=tmdata, tsysdata=tsysdata, scantimesel=scantimesel, nrowscan=nrowscan, time_mean_scan=time_mean_scan, time_std_scan=time_std_scan, data_stats=None,
             analysis=None)
 
     def average_data_per_scan(self):
         ''' Method to average data per scan and all data, and update per-scan and all scan average arrays.
         '''
+
+        #If no data is contained in this object, just return
+        if self.nrows == 0:
+            return
 
         scanlist = self.spw_setup['scansforfield'][str(self.fieldid)]
         self.time_mean_scan = {}
@@ -222,6 +232,10 @@ class MSWrapperSD(object):
         :return: MSWrapperSD instance (optional a tuple of a (MSWrapperSD, dict), where the dictionary
                  contains the fitted data.
         '''
+
+        #If no data is contained in this object, just return
+        if self.nrows == 0:
+            return
 
         (npol, nchan, nrows) = np.shape(self.data)
         (npoltsys, nchantsys, nscanstsys) = np.shape(self.tsysdata['tsys'])

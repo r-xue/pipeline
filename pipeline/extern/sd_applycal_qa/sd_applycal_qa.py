@@ -31,7 +31,7 @@ default_thresholds = {'X-Y_freq_dev': 15.0, 'Trec_freq_dev': 5.0,
                       'plot_threshold': 0.95}
 
 def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, filter_cutoff: float = 0.01,
-                       loworder_to_zero: int = 2, peak_modes: list = [2,3,4,5,6], peak_minsnr: float = 2.0):
+                       loworder_to_zero: int = 3, peak_modes: list = [2,3,4,5,6], peak_minsnr: float = 2.0):
     '''Function that calculates summary statistics per channel for a MSWrapperSD object. This comprises the FFT peak (along
     the time dimension) and Pearson correlation coefficient between the XX and YY polarization, also in the time dimension.
     These vector are stored in the "data_stats" attribute from the MSWrapper_SD object and are later used by the function
@@ -50,6 +50,14 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
         "XYcorr": The Person correlation coefficient between XX and YY.
     '''
 
+    #In case of empty object, return dummy arrays
+    if msw.nrows == 0:
+        nchan = msw.spw_setup[msw.spw]['nchan']
+        msw.data_stats = {'peak_fft_pwr': np.ma.MaskedArray(np.zeros(nchan), mask=np.ones(nchan, dtype=bool)),
+                          'XYcorr': np.ma.MaskedArray(np.zeros(nchan), mask=np.ones(nchan, dtype=bool))}
+        return
+
+    #Handle cases with 2 or 1 polarizations. Full stokes pol is not considered for now, so return dummy array for that.
     (npol, nchan, nrows) = np.shape(msw.data)
     maskfreq = np.min(msw.data.mask, axis=2)
     if npol == 2:
@@ -104,8 +112,6 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
         peaks_fft = signal.find_peaks_cwt(absfft_data, peak_modes, min_snr=peak_minsnr)
         if len(peaks_fft) > 0:
             pwr_peaks_fft = np.take(absfft_data, np.int64(peaks_fft))
-            # idxmaxpwr = np.argsort(pwr_peaks_fft)[-1]
-            # peak_fft_pwr.append(pwr_peaks_fft[idxmaxpwr])
             peak_fft_pwr.append(np.max(pwr_peaks_fft))
         else:
             peak_fft_pwr.append(0.0)
@@ -263,15 +269,6 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
     #Get dataset array size
     (npol, nchan, nrows) = (msw.npol, msw.nchan, msw.nrows)
     msname = msw.fname.split('/')[-1]
-
-    #If this is Pol XX only dataset, return default QA score of 1.0
-    if npol == 1:
-        reason = 'XX-YY.deviation'
-        applies_to = pqa.TargetDataSelection(vis={msname}, scan={'all'}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={0})
-        comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-        thisqascore = pqa.QAScore(1.0, longmsg='Only XX polarization available, no XX-YY QA possible for spw {0:d}, antenna {1:s} in scan {2:s}.'.format(msw.spw, msw.antenna, 'all'), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
-        return (msw, thisqascore, [thisqascore], 'N/A')
-
     #Channel frequencies in GHz and separation in MHz, and min and max frequency
     freqs = msw.spw_setup[msw.spw]['chanfreqs']*1.e-09
     chansep = msw.spw_setup[msw.spw]['chansep']*(1.e-06)
@@ -285,6 +282,23 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
     extscanlist = copy.deepcopy(scanlist)
     if nscans > 1:
         extscanlist.append('all')
+
+    #If this is an empty piece of the dataset, return QA score of 1.0
+    if nrows == 0:
+        #Create objects to create QAscore
+        reason = 'XX-YY.deviation'
+        applies_to = pqa.TargetDataSelection(vis={msname}, scan={'all'}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={'N/A'})
+        comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
+        qascore = pqa.QAScore(1.0, longmsg='All data flagged for spw {0:s}, antenna {1:s} in scan {2:s} (field {3:s}).'.format(str(msw.spw), msw.antenna, 'all', fieldname), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+        return (msw, qascore, [qascore], 'N/A')
+
+    #If this is Pol XX only dataset, return default QA score of 1.0
+    if npol == 1:
+        reason = 'XX-YY.deviation'
+        applies_to = pqa.TargetDataSelection(vis={msname}, scan={'all'}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={0})
+        comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
+        thisqascore = pqa.QAScore(1.0, longmsg='Only XX polarization available, no XX-YY QA possible for spw {0:d}, antenna {1:s} in scan {2:s}.'.format(msw.spw, msw.antenna, 'all'), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+        return (msw, thisqascore, [thisqascore], 'N/A')
 
     #Create 2D outlier map initialized
     msw.outliers = np.zeros((nchan, nrows), dtype=bool)
