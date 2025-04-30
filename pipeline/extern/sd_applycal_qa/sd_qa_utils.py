@@ -306,13 +306,19 @@ def getSpecSetup(myms: str, spwlist: list = [], intentlist: list = ['*OBSERVE_TA
         spwsetup['sensitivityGoalinJy'] = u.Unit(scigoaldata['sensitivityGoal']).to(u.Jy)
     else:
         spwsetup['sensitivityGoalinJy'] = None
-    spwsetup['representativeFrequencyinHz'] = u.Unit(scigoaldata['representativeFrequency']).to(u.Hz)
+
+    if 'representativeFrequency' in scigoaldata:
+        spwsetup['representativeFrequencyinHz'] = u.Unit(scigoaldata['representativeFrequency']).to(u.Hz)
+        reprdist = [np.abs(spwsetup[s]['fcenter']-spwsetup['representativeFrequencyinHz']) for s in spwsetup['spwlist']]
+        spwsetup['representativeSPW'] = spwsetup['spwlist'][np.argsort(reprdist)[0]]
+    else:
+        spwsetup['representativeFrequencyinHz'] = None
+        spwsetup['representativeSPW'] = spwsetup['spwlist'][0]
+
     if 'representativeBandwidth' in scigoaldata:
         spwsetup['representativeBandwidthinHz'] = u.Unit(scigoaldata['representativeBandwidth']).to(u.Hz)
     else:
         spwsetup['representativeBandwidthinHz'] = None
-    reprdist = [np.abs(spwsetup[s]['fcenter']-spwsetup['representativeFrequencyinHz']) for s in spwsetup['spwlist']]
-    spwsetup['representativeSPW'] = spwsetup['spwlist'][np.argsort(reprdist)[0]]
 
     return spwsetup
 
@@ -411,9 +417,14 @@ def getScienceGoalData(ms: str):
     '''
 
     scigoaldata = {}
+    asdm_sbsummary = os.path.join(ms, 'ASDM_SBSUMMARY')
+
+    if not os.path.exists(asdm_sbsummmary):
+        return scigoaldata
+
     tb = createCasaTool(tbtool)
     #Open ASDM_SBSUMMARY table
-    tb.open(os.path.join(ms, 'ASDM_SBSUMMARY'))
+    tb.open(asdm_sbsummary)
     scigoaltable = tb.getcol('scienceGoal')
     for line in scigoaltable.flatten():
         items = line.split('=')
