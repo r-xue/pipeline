@@ -419,7 +419,7 @@ def getScienceGoalData(ms: str):
     scigoaldata = {}
     asdm_sbsummary = os.path.join(ms, 'ASDM_SBSUMMARY')
 
-    if not os.path.exists(asdm_sbsummmary):
+    if not os.path.exists(asdm_sbsummary):
         return scigoaldata
 
     tb = createCasaTool(tbtool)
