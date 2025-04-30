@@ -30,12 +30,14 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
+import pipeline.extern.SDcalatmcorr as sdatm
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.infrastructure import casa_tools
+
 
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupMember
@@ -2806,6 +2808,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     # data per field per EB
     deviation_mask_qa_data = {}
     deviation_mask_all = result.outcome['deviation_mask']
+    # Precompute ATM-line masks per MS/SPW
+    atm_masks = {}
 
     # edge parameter
     # channels specified by edge will be excluded from resulting images
@@ -2833,7 +2837,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         line_mask = np.zeros(nchan, dtype=np.uint8)
         for left, right in lines:
             line_mask[max(0, left):right + 1] = 1
-
+            
         # deviation mask
         for member_id in member_list:
             LOG.debug('Processing member %s', member_id)
@@ -2842,7 +2846,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             deviation_masks = select_deviation_masks(
                 deviation_mask_all, reduction_group_member
             )
-
+            
             if deviation_masks:
                 data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
                 spw_id = reduction_group_member.spw_id
@@ -2859,8 +2863,29 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                         overlap = Overlap.NO
                     is_overlap.append(overlap)
                     LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
+            
+                #atm lines    
+                if not ms_name in atm_masks:
+                    spwsetup = sdatm.getSpecSetup(ms_name)
+                    spwlist = np.array(spwsetup["spwlist"]).tolist()
+                    atmdata = sdatm.getCalAtmData(ms_name, spwlist, spwsetup)
+                    tau = atmdata[-2]
+                    skylines = {
+                        spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05)
+                        for spw in spwlist
+                    }
+                    atm_masks[ms_name] = {
+                        spw: sdatm.skysel(skylines[spw], linestouse='all')
+                        for spw in spwlist
+                    }
+                    
+                # Determine if any DM segment overlaps an ATM mask
+                atm_overlap = any(
+                    np.any(atm_masks[ms_name].get(spw_id, np.zeros_like(line_mask, dtype=bool))[left:right+1])
+                    for left, right in deviation_masks
+                )
+                
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap, atm_overlap))
 
         # spectral lines
         if len(lines) > 0:
@@ -2939,11 +2964,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             spw_ids = {x[0] for x in data}
             antenna_names = {x[1] for x in data}
             is_overlaps = {y for x in data for y in x[3]}
+            atm_overlaps = any(x[4] for x in data)
             LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
 
             # score depends on whether deviation masks overlap with lines
             # see PIPEREQ-293 for detail
-            if Overlap.NO in is_overlaps:
+            if atm_overlaps:  
+                # atm_overlap flag
+                score = 0.88
+                msg = 'Deviation mask overlaps with atmospheric lines'
+                LOG.debug(
+                    'Deviation mask overlaps with atmospheric lines'
+                    'Set deviation mask QA score to %s', score
+                )
+            elif Overlap.NO in is_overlaps:
                 # by default score is 0.65
                 score = 0.65
                 msg = 'Deviation mask was triggered'
