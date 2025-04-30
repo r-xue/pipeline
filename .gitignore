@@ -170,3 +170,11 @@ docs/source/references/pipeline-resolved.bib
 
 # Ruff cache
 .ruff_cache
+
+# data etc.
+**/*.zarr
+**/*.ms
+**/*.tar
+**/*.zip
+**/*.fits
+**/*.im
