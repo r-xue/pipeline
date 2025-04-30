@@ -7,7 +7,6 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-import pipeline.h.tasks.flagging.qa as base_qa
 import pipeline.h.tasks.exportdata.aqua as aqua
 from .flagdeteralmasd import FlagDeterALMASingleDishResults, SerialFlagDeterALMASingleDish, FlagDeterALMASingleDish
 
