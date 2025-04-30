@@ -196,13 +196,21 @@ class QAScoreEvalFunc:
 
     # Dictionary of minimum QA scores values accepted for each intent
     INTENT_MINSCORE = {
-        'BANDPASS': 0.34,
-        'AMPLITUDE': 0.34,
-        'PHASE': 0.34,
-        'CHECK': 0.85,
-        'POLARIZATION': 0.34,
-        'AMP_SYM_OFFSET': 0.8
+        "AMPLITUDE": 0.34,
+        # This is NOT a pipeline intent but was in the prototype - it could probably be removed
+        "AMP_SYM_OFFSET": 0.8,
+        "BANDPASS": 0.34,
+        "CHECK": 0.85,
+        "DIFFGAINREF": 0.34,
+        "DIFFGAINSRC": 0.34,
+        "PHASE": 0.34,
+        "POLARIZATION": 0.34,
+        "POLANGLE": 0.34,
+        "POLLEAKAGE": 0.34,
     }
+    # sanity check: QAScoreEvalFun MUST have a score for every requestable intent,
+    # otherwise a KeyError will occur when data with that intent is encountered
+    assert set(INTENT_MINSCORE.keys()) >= set(INTENTS), 'INTENT_MINSCORE is missing intents'
 
     # Dictionaries necessary for the QAScoreEvalFunc class
     # scores_thresholds holds the list of metrics to actually use for calculating the score, each pointing
