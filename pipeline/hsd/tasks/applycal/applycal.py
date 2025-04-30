@@ -253,12 +253,13 @@ class SerialSDApplycal(SerialApplycal):
         if not os.path.exists(stage_dir):
             os.makedirs(stage_dir)
 
-        qa_result = sd_applycal_qa.get_ms_applycal_qascores(
-            msNames=[ms_name],
-            plot_output_path=stage_dir,
-        )
-        qascore_list, plots_fnames, qascore_per_scan_list = qa_result
-        results.xy_deviation_score.extend(qascore_list)
+        if self.inputs.ms.antenna_array.name == 'ALMA':
+            qa_result = sd_applycal_qa.get_ms_applycal_qascores(
+                msNames=[ms_name],
+                plot_output_path=stage_dir,
+            )
+            qascore_list, plots_fnames, qascore_per_scan_list = qa_result
+            results.xy_deviation_score.extend(qascore_list)
 
         return results
 
