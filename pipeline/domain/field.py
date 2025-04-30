@@ -14,29 +14,28 @@ class Field(object):
     A class to store logical representation of a field.
 
     Attributes:
-        id: The numerical identifier of this field within the
-            FIELD subtable of the MeasurementSet
-        source_id: A source ID associated with this field
-        time: A list of the unique times for this field
-        name: Field name
-        intents: A list of unique scan intents associated with this field
-        states: A list of unique State objects associated with this field
+        id: The numerical identifier of this field within the FIELD subtable of
+            the MeasurementSet.
+        source_id: The ID of the source associated with this field.
+        time: List of the unique times for this field.
+        name: The name of this field.
+        intents: A list of unique scan intents associated with this field.
+        states: A list of unique State objects associated with this field.
         valid_spws: A list of unique SpectralWindow objects associated with
-            this field
-        flux_densities: A list of unique flux measurments from setjy
+            this field.
+        flux_densities: A list of unique flux measurements from setjy.
     """
-
-    def __init__(self, field_id: int, name: str, source_id: int,
-                 time: np.ndarray, direction: dict):
+    def __init__(self, field_id: int, name: str, source_id: int, time: np.ndarray, direction: dict) -> None:
         """
-        Initialize Field class.
+        Initialize a Field object.
 
         Args:
-            field_id: Field ID
-            name: Field name
-            source_id: A source ID associated with this field
-            time: A list of the unique times for this field
-            direction: A direction measures for the phasecenter of this field
+            field_id: Field ID.
+            name: Field name.
+            source_id: A source ID associated with this field.
+            time: A list of the unique times for this field.
+            direction: A CASA 'direction' measure dictionary for the phasecenter
+                of this field.
         """
         self.id = field_id
         self.source_id = source_id
@@ -45,12 +44,21 @@ class Field(object):
 
         self._mdirection = direction
 
+        # Intents, states, and valid_spws are initialized as empty sets, and
+        # expected to be populated in a separate step during the import of a
+        # measurement set (see MeasurementSetReader.link_fields_to_states,
+        # MeasurementSetReader.link_spws_to_fields).
         self.intents = set()
         self.states = set()
         self.valid_spws = set()
+
+        # Flux densities are initialized as an empty set, and expected to be
+        # populated in a separate step during importdata that retrieves fluxes
+        # from multiple origins (Source.xml, user .CSV file). May also later be
+        # updated by flux calibration pipeline tasks.
         self.flux_densities = set()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         name = self.name
         if '"' in name:
             name = name[1:-1]
@@ -64,7 +72,7 @@ class Field(object):
         )
 
     @property
-    def clean_name(self):
+    def clean_name(self) -> str:
         """
         Get the field name with illegal characters replaced with underscores.
 
@@ -74,58 +82,79 @@ class Field(object):
         return utils.fieldname_clean(self._name)
 
     @property
-    def dec(self):
+    def dec(self) -> str:
+        """Return declination for the phasecenter of the field."""
         return casa_tools.quanta.formxxx(self.latitude, format='dms', prec=2)
 
     @property
-    def frame(self):
+    def frame(self) -> str:
+        """Return reference frame code for the Field."""
         return self._mdirection['refer']
 
     @property
-    def identifier(self):
+    def identifier(self) -> str:
         """
         A human-readable identifier for this Field.
         """
         return self.name if self.name else '#{0}'.format(self.id)
 
     @property
-    def latitude(self):
+    def latitude(self) -> dict:
+        """Return latitude for the phasecenter of the field."""
         return self._mdirection['m1']
 
     @property
-    def longitude(self):
+    def longitude(self) -> dict:
+        """Return longitude for the phasecenter of the field."""
         return self._mdirection['m0']
 
     @property
-    def mdirection(self):
+    def mdirection(self) -> dict:
+        """Return direction measure dictionary for phasecenter of the field."""
         return self._mdirection
 
     @property
-    def name(self):
+    def name(self) -> str:
+        """Return name of field, in form that can be used as a CASA argument."""
         # SCOPS-1666
         # work around CASA data selection problems with names consisting
         # entirely of digits
         return utils.fieldname_for_casa(self._name)
 
     @name.setter
-    def name(self, value):
+    def name(self, value: str) -> None:
+        """Set name of field to given value."""
         self._name = value
 
     @property
-    def ra(self):
+    def ra(self) -> str:
+        """Return right ascension for the phasecenter of the field."""
         return casa_tools.quanta.formxxx(self.longitude, format='hms', prec=3)
 
     # Galactic Longitude: it is usually expressed in DMS format
     @property
-    def gl(self):
+    def gl(self) -> str:
+        """Return longitude for phasecenter of the field, in DMS format."""
         return casa_tools.quanta.formxxx(self.longitude, format='dms', prec=2)
 
     # Galactic Latitude
     @property
-    def gb(self):
+    def gb(self) -> str:
+        """Return declination for the phasecenter of the field."""
         return self.dec
 
-    def set_source_type(self, source_type):
+    def set_source_type(self, source_type: str) -> None:
+        """
+        Update the intent(s) associated with the field based on given source
+        type(s).
+
+        Source types from VLA datasets are translated to equivalent ALMA
+        Pipeline intents.
+
+        Args:
+            source_type: String containing the source type(s) (aka intents)
+                associated with the field.
+        """
         source_type = source_type.strip().upper()
 
         # replace any VLA source_type with pipeline/ALMA intents
@@ -140,7 +169,7 @@ class Field(object):
             if source_type.find(intent) != -1:
                 self.intents.add(intent)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '<Field {id}: name=\'{name}\' intents=\'{intents}\'>'.format(
             id=self.identifier, name=self.name,
             intents=','.join(self.intents))

@@ -211,7 +211,7 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
                 coordsys = ia.coordsys()
                 try:
                     imshape = ia.shape()
-                    imsize = list(imshape[:2])
+                    imsize = imshape[:2].tolist()
                     nchan = imshape[coordsys.findaxisbyname('Spectral')]
                     rest_freq = coordsys.restfrequency()
                     increments = coordsys.increment()['numeric']
@@ -243,7 +243,7 @@ def generate_script(context: Context, scriptname: str, configname: str) -> bool:
     restfreqs = restfreqs.replace("' ", "',", nspw - 1)
 
     vis = myms.basename
-    antennalist = [a.id for a in myms.antennas]
+    antennalist = [int(a.id) for a in myms.antennas]
     source = myms.get_fields(intent='TARGET')[0].clean_name
     imaging_policy = observatory_policy.get_imaging_policy(context)
     convsupport = imaging_policy.get_convsupport()
