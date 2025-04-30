@@ -276,8 +276,12 @@ def getSpecSetup(myms: str, spwlist: list = [], intentlist: list = ['*OBSERVE_TA
         spwsetup[spwid]['ddi'] = msmd.datadescids(spw=spwid)[0]
         spwsetup[spwid]['npol'] = msmd.ncorrforpol(msmd.polidfordatadesc(spwsetup[spwid]['ddi']))
         #Get baseband for each SPW
-        spwsetup[spwid]['BB'] = int(msmd.baseband(spwid))
-        spwsetup[spwid]['BBname'] = 'BB_'+str(spwsetup[spwid]['BB'])
+        try:
+            spwsetup[spwid]['BB'] = int(msmd.baseband(spwid))
+            spwsetup[spwid]['BBname'] = 'BB_'+str(spwsetup[spwid]['BB'])
+        except Exception:
+            spwsetup[spwid]['BB'] = 0
+            spwsetup[spwid]['BBname'] = 'BB_0'
         spwsetup[spwid]['istdm'] = (spwid in spwsetup['tdmspws'])
         spwsetup[spwid]['nchan_high'] = nchan*5
         spwsetup[spwid]['chansep_high'] = chansep/5.
