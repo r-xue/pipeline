@@ -601,7 +601,7 @@ class LineWindowParser(object):
         """Return parsed line windows for given spw id.
 
         Args:
-            spw_id: spw id
+            spw_id: real spw id
 
         Returns:
             Line windows as one-dimensional list that provides start/end channels
@@ -662,7 +662,7 @@ class LineWindowParser(object):
             if spwid not in new_window:
                 new_window[spwid] = []
 
-        return self._virtual_to_real_spws(new_window)
+        return new_window
 
     def _list2dict(self, window: List[int]) -> dict:
         """Convert line window list into dict.
@@ -676,10 +676,8 @@ class LineWindowParser(object):
             Dictionary containing line window list per spw
         """
         # apply given window to all science windows
-        dict_window = dict((spwid, window) for spwid in self.science_spw)
-
-        return self._virtual_to_real_spws(dict_window)
-
+        return dict((spwid, window) for spwid in self.science_spw)
+ 
     def _dict2dict(self, window: dict) -> dict:
         """Convert line window dict into another dict.
 
