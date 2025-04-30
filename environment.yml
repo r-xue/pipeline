@@ -16,8 +16,8 @@ dependencies:
   - mpi4py<4.0.0
   - certifi
   - protobuf=3.20 # casatplotms requires ver<=3.20 currently
-  - poppler # required for PL
-  - imagemagick # required for PL
+  - poppler # required by PL
+  - imagemagick # required by PL
   - pandoc # required by nbsphinx; also available from macports/homebrew/apt; different from 'pandoc' on PyPI
   - pip:
       - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-group/simple
@@ -25,6 +25,8 @@ dependencies:
       - casatasks==6.6.6.*
       - casashell==6.6.6.*
       - casampi
+      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-qt5/simple # for linux
+      - --extra-index-url https://casa-pip.nrao.edu/repository/pypi-qt6/simple # for macOS-arm64
       - casaplotms
       - casaplotserver
       - -r requirements.txt
