@@ -2790,6 +2790,10 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     exist. Returned QAScore objects are the collection of scores from
     both spectral lines and deviation masks but they can be
     differentiated by the associated messages and/or metric units.
+    
+    If a deviation mask overlaps a known atmospheric line, the score 
+    is raised to 0.88.
+
 
     Relevant JIRA tickets:
         PIPE-2136
