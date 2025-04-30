@@ -12,9 +12,10 @@ import math
 import operator
 import os
 from pathlib import Path
-from typing import Iterable, Reversible, Optional
+from typing import Iterable, Reversible, Optional, overload
 
 import numpy as np
+import numpy.typing as npt
 
 import pipeline.h.tasks.applycal.applycal as h_applycal
 import pipeline.hif.tasks.applycal.ifapplycal as hif_applycal
@@ -257,8 +258,15 @@ class QAScoreEvalFunc:
                 for metric in self.SCORE_THRESHOLDS:
                     self.qascoremetrics[intent][spw.id][metric] = {}
 
+    @overload
+    def __call__(self, qascore: pqa.QAScore) -> float:
+        ...
 
-    def __call__(self, qascore: pqa.QAScore):
+    @overload
+    def __call__(self, qascore: list[pqa.QAScore]) -> npt.NDArray:
+        ...
+
+    def __call__(self, qascore: pqa.QAScore | list[pqa.QAScore]) -> float | npt.NDArray:
         # If given a list of QA scores, evaluate them all and return an array of the results
         if type(qascore) == list:
             output = [self.__call__(q) for q in qascore]
