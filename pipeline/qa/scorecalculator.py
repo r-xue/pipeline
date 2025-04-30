@@ -21,12 +21,18 @@ from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 import numpy as np
 from scipy import interpolate, special
 
+import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
-from pipeline import infrastructure
-from pipeline.domain import datatable, measures
-from pipeline.infrastructure import basetask, casa_tools, utils
-from pipeline.infrastructure.renderer import rendererutils
-from pipeline.qa import checksource
+import pipeline.infrastructure.renderer.rendererutils as rutils
+import pipeline.infrastructure.utils as utils
+import pipeline.qa.checksource as checksource
+from pipeline.domain import measures
+from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
+from pipeline.infrastructure import basetask, casa_tools, logging
 
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
@@ -100,7 +106,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_solint',
            'score_longsolint']
 
-LOG = infrastructure.logging.get_logger(__name__)
+LOG = logging.get_logger(__name__)
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -119,7 +125,7 @@ def log_qa(method):
                 _qascore = qascore[0]
             else:
                 _qascore = qascore
-            if _qascore.score >= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
+            if _qascore.score >= rutils.SCORE_THRESHOLD_SUBOPTIMAL:
                 LOG.info(_qascore.longmsg)
             else:
                 LOG.warning(_qascore.longmsg)
@@ -526,7 +532,7 @@ def score_bands(mses):
                           metric_units='MS score based on presence of high-frequency data')
 
     # Make score linear
-    return pqa.QAScore(max(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(max(rutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -903,11 +909,11 @@ def score_lowtrans_flagcmds(ms, result):
         # Get representative SpW for MS.
         _, rspw = ms.get_representative_source_spw()
         if rspw in spws:
-            score = rendererutils.SCORE_THRESHOLD_ERROR
+            score = rutils.SCORE_THRESHOLD_ERROR
             longmsg = f"Representative SpW {rspw} flagged for low transmission"
             shortmsg = f"Representative SpW flagged for low transmission"
         else:
-            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
             longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
             shortmsg = f"Non-representative SpW(s) flagged for low transmission"
     else:
@@ -1318,7 +1324,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
                               metric_units='Presence of unflagged data.')
 
     # Append extra warning to QA message if score falls at-or-below the "warning" threshold.
-    if score <= rendererutils.SCORE_THRESHOLD_WARNING:
+    if score <= rutils.SCORE_THRESHOLD_WARNING:
         longmsg += ' Please investigate!'
         shortmsg += ' Please investigate!'
 
@@ -1673,7 +1679,7 @@ def score_number_antenna_offsets(ms, offsets):
     else:
         # CAS-8877: if at least 1 antenna needed correction, then set the score
         # to the "suboptimal" threshold.
-        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = '%d nonzero antenna position offsets for %s ' % (nant_with_offsets, ms.basename)
         shortmsg = 'Nonzero antenna position offsets'
 
@@ -1781,7 +1787,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
             shortmsg = 'No mapped science spws'
         else:
             # Replace the previous score with a warning
-            score = rendererutils.SCORE_THRESHOLD_WARNING
+            score = rutils.SCORE_THRESHOLD_WARNING
             longmsg = 'There are %d mapped science spws for %s ' % (nexpected - nunmapped, ms.basename)
             shortmsg = 'There are mapped science spws'
 
@@ -1800,7 +1806,7 @@ def score_combine_spwmapping(ms, intent, field, spwmapping):
     threshold (for blue info message).
     """
     if spwmapping.combine:
-        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Using combined spw mapping'
     else:
@@ -1830,7 +1836,7 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         shortmsg = 'No spw mapping'
     elif spwmapping.combine:
         nunmapped = 0
-        score = rendererutils.SCORE_THRESHOLD_WARNING
+        score = rutils.SCORE_THRESHOLD_WARNING
         longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Combined spw mapping'
     else:
@@ -1855,11 +1861,11 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         else:
             # Replace the previous score with a warning
             if samesideband is True:
-                score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
                 longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping within sidebands'
             else:
-                score = rendererutils.SCORE_THRESHOLD_WARNING
+                score = rutils.SCORE_THRESHOLD_WARNING
                 longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
@@ -1879,17 +1885,17 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     Introduced for hifa_spwphaseup (PIPE-665).
     """
     if median_snr <= 0.3 * snr_threshold:
-        score = rendererutils.SCORE_THRESHOLD_ERROR
+        score = rutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
-        score = rendererutils.SCORE_THRESHOLD_WARNING
+        score = rutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
-        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
@@ -2805,6 +2811,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     # data per field per EB
     deviation_mask_qa_data = {}
     deviation_mask_all = result.outcome['deviation_mask']
+    # Precompute ATM-line masks per MS/SPW
+    atm_masks = {}
 
     # edge parameter
     # channels specified by edge will be excluded from resulting images
@@ -2832,7 +2840,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         line_mask = np.zeros(nchan, dtype=np.uint8)
         for left, right in lines:
             line_mask[max(0, left):right + 1] = 1
-
+            
         # deviation mask
         for member_id in member_list:
             LOG.debug('Processing member %s', member_id)
@@ -2841,7 +2849,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             deviation_masks = select_deviation_masks(
                 deviation_mask_all, reduction_group_member
             )
-
+            
             if deviation_masks:
                 data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
                 spw_id = reduction_group_member.spw_id
@@ -2858,8 +2866,29 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                         overlap = Overlap.NO
                     is_overlap.append(overlap)
                     LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
+            
+                #atm lines    
+                if not ms_name in atm_masks:
+                    spwsetup = sdatm.getSpecSetup(ms_name)
+                    spwlist = np.array(spwsetup["spwlist"]).tolist()
+                    atmdata = sdatm.getCalAtmData(ms_name, spwlist, spwsetup)
+                    tau = atmdata[-2]
+                    skylines = {
+                        spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05)
+                        for spw in spwlist
+                    }
+                    atm_masks[ms_name] = {
+                        spw: sdatm.skysel(skylines[spw], linestouse='all')
+                        for spw in spwlist
+                    }
+                    
+                # Determine if any DM segment overlaps an ATM mask
+                atm_overlap = any(
+                    np.any(atm_masks[ms_name].get(spw_id, np.zeros_like(line_mask, dtype=bool))[left:right+1])
+                    for left, right in deviation_masks
+                )
+                
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap, atm_overlap))
 
         # spectral lines
         if len(lines) > 0:
@@ -2938,11 +2967,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             spw_ids = {x[0] for x in data}
             antenna_names = {x[1] for x in data}
             is_overlaps = {y for x in data for y in x[3]}
+            atm_overlaps = any(x[4] for x in data)
             LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
 
             # score depends on whether deviation masks overlap with lines
             # see PIPEREQ-293 for detail
-            if Overlap.NO in is_overlaps:
+            if atm_overlaps:  
+                # atm_overlap flag
+                score = 0.88
+                msg = 'Deviation mask overlaps with atmospheric lines'
+                LOG.debug(
+                    'Deviation mask overlaps with atmospheric lines'
+                    'Set deviation mask QA score to %s', score
+                )
+            elif Overlap.NO in is_overlaps:
                 # by default score is 0.65
                 score = 0.65
                 msg = 'Deviation mask was triggered'
@@ -3386,7 +3424,7 @@ def generate_metric_mask(context, result, cs, mask):
 
         with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag.extend(permanent_flag[0, datatable.OnlineFlagIndex])
+            online_flag.extend(permanent_flag[0, OnlineFlagIndex])
 
     if org_direction is None:
         ra = np.asarray(ofs_ra)
@@ -3740,7 +3778,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Restore successful with renormalization applied'
-        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
         msg = 'Restore successful'
         score = 1.0
