@@ -303,7 +303,10 @@ def getSpecSetup(myms: str, spwlist: list = [], intentlist: list = ['*OBSERVE_TA
     else:
         spwsetup['sensitivityGoalinJy'] = None
     spwsetup['representativeFrequencyinHz'] = u.Unit(scigoaldata['representativeFrequency']).to(u.Hz)
-    spwsetup['representativeBandwidthinHz'] = u.Unit(scigoaldata['representativeBandwidth']).to(u.Hz)
+    if 'representativeBandwidth' in scigoaldata:
+        spwsetup['representativeBandwidthinHz'] = u.Unit(scigoaldata['representativeBandwidth']).to(u.Hz)
+    else:
+        spwsetup['representativeBandwidthinHz'] = None
     reprdist = [np.abs(spwsetup[s]['fcenter']-spwsetup['representativeFrequencyinHz']) for s in spwsetup['spwlist']]
     spwsetup['representativeSPW'] = spwsetup['spwlist'][np.argsort(reprdist)[0]]
 
@@ -556,7 +559,7 @@ def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_fr
         snrmax: SNR of the maximum outlier.
         outliers: Numpy boolean array for selection of outliers.
         widthmax: Smoothing width that maximizes SNR of maximum outlier.
-        smsigma: Channel-to-channel standard deviation 
+        smsigma: Channel-to-channel standard deviation
         datamax: Data value of the maximum outlier.
         widths: List of boxcar smoothing widths used.
         normdata: Normalized data used for outlier detection, in units of number of sigmas.
