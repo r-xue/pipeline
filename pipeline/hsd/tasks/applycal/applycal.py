@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import os
 from typing import TYPE_CHECKING, List, Optional, Union
 
 import numpy
 
+import pipeline.extern.sd_applycal_qa.sd_applycal_qa as sd_applycal_qa
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
@@ -32,7 +35,7 @@ class SDApplycalInputs(ApplycalInputs):
 
     # docstring and type hints: supplements hsd_applycal
     def __init__(self,
-                 context: 'Context',
+                 context: Context,
                  output_dir: Optional[str] = None,
                  vis: Optional[Union[str, List[str]]] = None,
                  field: Optional[Union[str, List[str]]] = None,
@@ -121,7 +124,7 @@ class SDApplycalResults(ApplycalResults):
     Please see parent task's docstring for detail.
     """
     def __init__(self,
-                 applied: Optional[List['CalApplication']] = None,
+                 applied: Optional[List[CalApplication]] = None,
                  data_type: Optional[DataType] = None):
         """Construct SDApplycalResults instance.
         Please see parent task's docstring for detail.
@@ -131,6 +134,7 @@ class SDApplycalResults(ApplycalResults):
             data_type: data type enum.
         """
         super().__init__(applied, data_type=data_type)
+        self.xy_deviation_score = []
 
 
 class SerialSDApplycal(SerialApplycal):
@@ -228,8 +232,38 @@ class SerialSDApplycal(SerialApplycal):
 
         return sdresults
 
+    def analyse(self, results: SDApplycalResults) -> SDApplycalResults:
+        """Analyse the results of the task.
 
-def set_unit(ms: 'MeasurementSet', calapp: List['CalApplication']):
+        This method assesses the quality of the calibrated applied in this stage.
+        The analysis focuses on the deviation of calibrated data between
+        XX and YY polarizations.
+
+        Returns:
+            SDApplycalResults: The results of the task.
+        """
+        results = super().analyse(results)
+
+        # perform XX-YY deviation QA
+        ms_name = self.inputs.ms.name
+        stage_dir = os.path.join(
+            self.inputs.context.report_dir,
+            f'stage{self.inputs.context.task_counter}'
+        )
+        if not os.path.exists(stage_dir):
+            os.makedirs(stage_dir)
+
+        qa_result = sd_applycal_qa.get_ms_applycal_qascores(
+            msNames=[ms_name],
+            plot_output_path=stage_dir,
+        )
+        qascore_list, plots_fnames, qascore_per_scan_list = qa_result
+        results.xy_deviation_score.extend(qascore_list)
+
+        return results
+
+
+def set_unit(ms: MeasurementSet, calapp: List[CalApplication]):
     """Set unit to MS data column according to applied calibrations.
 
     Args:
