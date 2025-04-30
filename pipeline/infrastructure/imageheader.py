@@ -1,19 +1,25 @@
+from __future__ import annotations
+
 import os
 import re
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-import pipeline as pipeline
-import pipeline.infrastructure as infrastructure
-from pipeline import environment
+import pipeline
+from pipeline import environment, infrastructure
 from pipeline.infrastructure import casa_tools
 from textwrap import wrap
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain import DataType
+    from pipeline.infrastructure.launcher import Context
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 # utility to make miscinfo clean
-def clean_extendable_keys(data, key, num_keys=None):
+def clean_extendable_keys(data: dict, key: str, num_keys: int | None = None) -> dict:
     """
     Remove extra entries in data. Logic is as follows:
 
@@ -82,8 +88,23 @@ def wrap_key(data: dict, key: str, value: str) -> dict:
 
 
 # Add information to image header
-def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, datatype=None, type=None, iter=None,
-                 intent=None, specmode=None, robust=None, weighting=None, is_per_eb=None, context=None):
+def set_miscinfo(
+        name,
+        spw: str | None = None,
+        virtspw: bool = True,
+        field: str | None = None,
+        nfield: int | None = None,
+        datatype: DataType | None = None,
+        type: str | None = None,
+        iter: int | None = None,
+        intent: str | None = None,
+        specmode: str | None = None,
+        robust: float | None = None,
+        weighting: str | None = None,
+        is_per_eb: bool | None = None,
+        context: Context | None = None,
+        visname: str | None = None
+        ) -> None:
     """Define miscellaneous image information."""
     if name == '':
         return
@@ -101,11 +122,20 @@ def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, datatype
         if spw is not None:
             unique_spws = ','.join(np.unique(spw.split(',')))
             if context is not None and context.observing_run is not None:
-                spw_names = [
-                    context.observing_run.virtual_science_spw_shortnames.get(
-                        context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
-                    for spw_id in unique_spws.split(',')
-                ]
+                # PIPE-2384: add full spw name to FITS header
+                if visname:
+                    ms = context.observing_run.get_ms(visname)
+                    spw_names = [
+                        context.observing_run.virtual_science_spw_ids.get(
+                            context.observing_run.real2virtual_spw_id(int(spw_id), ms), 'N/A')
+                        for spw_id in unique_spws.split(',')
+                    ]
+                else:
+                    spw_names = [
+                        context.observing_run.virtual_science_spw_shortnames.get(
+                            context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
+                        for spw_id in unique_spws.split(',')
+                    ]
             else:
                 spw_names = ['N/A']
             # Write spw IDs. For some observatories these are virtual IDs because of

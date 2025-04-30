@@ -743,7 +743,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                                              intent=inputs.intent, specmode=inputs.orig_specmode,
                                              robust=inputs.robust, weighting=inputs.weighting,
                                              is_per_eb=inputs.is_per_eb,
-                                             context=context)
+                                             context=context, visname=inputs.vis[0])
             # Store in TcleanResult
             if im_type == 'model':
                 result.set_model(iter=iter, image=im_name)
