@@ -12,12 +12,11 @@ LOG = infrastructure.get_logger(__name__)
 
 class PhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
-    phaseup       = vdp.VisDependentProperty(default=True)
-    phaseupbw     = vdp.VisDependentProperty(default='')
+    phaseup = vdp.VisDependentProperty(default=True)
+    phaseupbw = vdp.VisDependentProperty(default='')
     phaseupsolint = vdp.VisDependentProperty(default='int')
-    solint        = vdp.VisDependentProperty(default='inf')
+    solint = vdp.VisDependentProperty(default='inf')
 
-    # docstring and type hints: supplements hif_bandpass
     def __init__(self, context, mode=None, phaseup=None, phaseupbw=None, phaseupsolint=None,
                  solint=None, **parameters):
         """Initialize Inputs.
@@ -75,15 +74,10 @@ class PhcorBandpassInputs(bandpassmode.BandpassModeInputs):
 
             minsnr: Reject solutions below this SNR
         """
-        super(PhcorBandpassInputs, self).__init__(context, mode='channel', phaseup=phaseup, phaseupbw=phaseupbw,
-                                                  phaseupsolint=phaseupsolint, solint=solint, **parameters)
+        super().__init__(context, mode='channel', phaseup=phaseup, phaseupbw=phaseupbw,
+                         phaseupsolint=phaseupsolint, solint=solint, **parameters)
 
 
-@task_registry.set_equivalent_casa_task('hif_bandpass')
-@task_registry.set_casa_commands_comment(
-    'The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove '
-    'decorrelation of the bandpass calibrator before the bandpass is calculated.'
-)
 class PhcorBandpass(bandpassworker.BandpassWorker):
     Inputs = PhcorBandpassInputs
 
