@@ -3,19 +3,19 @@ import functools
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks, task_registry
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
-from pipeline.hif.tasks import applycal
-from pipeline.hif.tasks import correctedampflag
+from pipeline.hif.tasks import applycal, correctedampflag
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
 
 class TargetflagResults(basetask.Results):
     def __init__(self):
-        super(TargetflagResults, self).__init__()
+        super().__init__()
         self.cafresult = None
         self.plots = {}
         self.callib_map = {}
@@ -31,8 +31,11 @@ class TargetflagResults(basetask.Results):
 
 
 class TargetflagInputs(vdp.StandardInputs):
+
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_targetflag
-    def __init__(self, context, vis=None):
+    def __init__(self, context, vis=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -44,14 +47,15 @@ class TargetflagInputs(vdp.StandardInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
         self.context = context
         self.vis = vis
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_targetflag')
-@task_registry.set_casa_commands_comment('Flag target source outliers.')
-class Targetflag(basetask.StandardTaskTemplate):
+class SerialTargetflag(basetask.StandardTaskTemplate):
     Inputs = TargetflagInputs
 
     def prepare(self):
@@ -159,6 +163,16 @@ class Targetflag(basetask.StandardTaskTemplate):
     def analyse(self, results):
         return results
 
+
+@task_registry.set_equivalent_casa_task('hifa_targetflag')
+@task_registry.set_casa_commands_comment('Flag target source outliers.')
+class Targetflag(sessionutils.ParallelTemplate):
+    """ALMA Targetflag class for parallelization."""
+
+    Inputs = TargetflagInputs
+    Task = SerialTargetflag
+
+
 def create_plots(inputs, context, flagcmds, suffix=''):
     """
     Return amplitude vs time plots for the given data column.
@@ -195,6 +209,7 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
     Plotting class that creates an amplitude vs X plot for each spw, where X
     is given as a constructor argument.
     """
+
     def __init__(self, xaxis, context, output_dir, calto, **overrides):
         plot_args = {
             'ydatacolumn': 'corrected',
@@ -208,5 +223,5 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='TARGET',
-                                          **plot_args)
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='TARGET',
+                         **plot_args)
