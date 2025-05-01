@@ -103,9 +103,26 @@ def set_miscinfo(
         weighting: str | None = None,
         is_per_eb: bool | None = None,
         context: Context | None = None,
-        visname: str | None = None
         ) -> None:
-    """Define miscellaneous image information."""
+    """
+    Defines miscellaneous image information and updates the image header using the built-in CASA function setmiscinfo.
+
+    Args:
+        name: Name of the image to be modified.
+        spw: A comma-delimited string containing the relevant spw IDs.
+        virtspw: Signifies whether the spw IDs should be mapped to real or virtual spws
+        field: The field name associated with the image.
+        nfield: The number of fields present in the image.
+        datatype: A DataType object that signifies the type of data used to create the image.
+        type: The image type, typically appended to the end of the image name (i.e. 'model', 'residual', etc.).
+        iter: The current clean iteration of the image.
+        intent: The intent of the data used to create the image (i.e. 'TARGET').
+        specmode: The spectral definition mode of the image (i.e. 'mfs', 'cube', etc.).
+        robust: The robust weighting of the image.
+        weighting: The weighting scheme used to create the image (i.e. 'briggs').
+        is_per_eb: Signifies whether the data used to create the image was from a single EB or from multiple EBs.
+        context: The Context object that contains information about the current pipeline run.
+    """
     if name == '':
         return
 
@@ -122,12 +139,9 @@ def set_miscinfo(
         if spw is not None:
             unique_spws = ','.join(np.unique(spw.split(',')))
             if context is not None and context.observing_run is not None:
-                # PIPE-2384: add full spw name to FITS header
-                if visname:
-                    ms = context.observing_run.get_ms(visname)
+                if virtspw:
                     spw_names = [
-                        context.observing_run.virtual_science_spw_ids.get(
-                            context.observing_run.real2virtual_spw_id(int(spw_id), ms), 'N/A')
+                        context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A')
                         for spw_id in unique_spws.split(',')
                     ]
                 else:

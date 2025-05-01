@@ -117,7 +117,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def spw(self):
         first_ms = self.context.observing_run.measurement_sets[0]
-        return ','.join([spw.id for spw in first_ms.get_spectral_windows()])
+        return ','.join([str(spw.id) for spw in first_ms.get_spectral_windows()])
 
     @vdp.VisDependentProperty
     def spwsel(self):
@@ -743,7 +743,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                                              intent=inputs.intent, specmode=inputs.orig_specmode,
                                              robust=inputs.robust, weighting=inputs.weighting,
                                              is_per_eb=inputs.is_per_eb,
-                                             context=context, visname=inputs.vis[0])
+                                             context=context)
             # Store in TcleanResult
             if im_type == 'model':
                 result.set_model(iter=iter, image=im_name)
