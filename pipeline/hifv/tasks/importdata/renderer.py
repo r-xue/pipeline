@@ -1,10 +1,10 @@
+import functools
 import operator
-from functools import reduce
 
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.renderer.basetemplates as basetemplates
+from pipeline import infrastructure
+from pipeline.infrastructure.renderer import basetemplates, rendererutils
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class T2_4MDetailsVLAImportDataRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -26,10 +26,26 @@ class T2_4MDetailsVLAImportDataRenderer(basetemplates.T2_4MDetailsDefaultRendere
         for r in setjy_results:
             measurements.extend(r.measurements)
 
-        num_mses = reduce(operator.add, [len(r.mses) for r in result])
+        num_mses = functools.reduce(operator.add, [len(r.mses) for r in result])
 
         ctx.update({'flux_imported': True if measurements else False,
                     'setjy_results': setjy_results,
                     'num_mses': num_mses})
 
         return ctx
+
+    def update_mako_context(self, mako_context, pipeline_context, result):
+        super().update_mako_context(mako_context, pipeline_context, result)
+
+        minparang = result.inputs['minparang']
+        parang_ranges = result.parang_ranges
+        if parang_ranges['pol_intents_found']:
+            parang_plots = rendererutils.make_parang_plots(pipeline_context, result)
+        else:
+            parang_plots = {}
+
+        mako_context.update({
+            'minparang': minparang,
+            'parang_ranges': parang_ranges,
+            'parang_plots': parang_plots,
+        })

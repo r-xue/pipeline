@@ -1,13 +1,15 @@
 import collections
+import itertools
 
-import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.qa.scorecalculator as qacalc
-import pipeline.infrastructure.utils as utils
+from pipeline import infrastructure
+from pipeline.infrastructure import utils
 from pipeline.h.tasks.importdata import qa as hqa
+from pipeline.hifa.tasks.importdata import qa as hifaqa
 from . import importdata
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class VLAImportDataQAHandler(hqa.ImportDataQAHandler, pqa.QAPlugin):
@@ -54,3 +56,15 @@ class VLAImportDataListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool[:] for r in result])
         result.qa.pool.extend(collated)
+
+        # Check per-session parallactic angle coverage of polarisation calibration
+        parallactic_threshold = result.inputs['minparang']
+        # gather mses into a flat list
+        mses = list(itertools.chain(*(r.mses for r in result)))
+
+        # PIPE-597 spec states to test POLARIZATION intent
+        intents_to_test = {'POLARIZATION'}
+        parang_scores, parang_ranges = hifaqa._check_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
+
+        # result.qa.pool.extend(parang_scores)
+        result.parang_ranges = parang_ranges

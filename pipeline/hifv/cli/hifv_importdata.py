@@ -6,7 +6,7 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hifv.tasks.importdata.importdata.VLAImportDataInputs.__init__
 @utils.cli_wrapper
 def hifv_importdata(vis=None, session=None, asis=None, overwrite=None, nocopy=None, createmms=None,
-                    ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
+                    ocorr_mode=None, datacolumns=None, specline_spws=None, minparang=None, parallel=None):
 
     """Imports data into the VLA pipeline.
 
