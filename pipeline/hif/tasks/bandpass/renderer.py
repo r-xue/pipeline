@@ -73,9 +73,6 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             bandpass_table_rows.extend(self.get_bandpass_table(context, result, ms))
             phaseup_applications.extend(self.get_phaseup_applications(context, result, ms))
 
-        logging_handler = logging.CapturingHandler(level=logging.WARNING)
-        logging.add_handler(logging_handler)
-
         for result in with_cal_results:
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
@@ -140,10 +137,6 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     for vis in subpages:
                         subpages[vis] = renderer.path
 
-        extra_logrecords = logging_handler.buffer
-        logging.remove_handler(logging_handler)
-        logging_handler.close()
-
         bandpass_table_rows = utils.merge_td_columns(bandpass_table_rows)
         adopted_table_rows = make_adopted_table(context, results)
 
@@ -161,7 +154,6 @@ class T2_4MDetailsBandpassRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             "amp_subpages": amp_vs_time_subpages,
             "phase_subpages": phase_vs_time_subpages,
             "dirname": stage_dir,
-            "extra_logrecords": extra_logrecords,
         })
 
         return ctx
