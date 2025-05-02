@@ -3011,7 +3011,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
             # get list of unique mask ranges per spw
             deviation_masks_per_spw = collections.defaultdict(set)
-            for spw_id, _, deviation_mask, _ in data:
+            for spw_id, _, deviation_mask, _ , _ in data:
                 deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
 
             # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
