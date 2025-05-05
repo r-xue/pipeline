@@ -20,6 +20,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.measures import FrequencyUnits
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -194,10 +195,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
@@ -208,7 +208,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
             spw2band = m.get_vla_spw2band()
 
