@@ -432,6 +432,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
+
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
             nfldobj = len(fieldobj[0].intents)
@@ -442,7 +443,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents and
+                    not any(intent in ['PHASE', 'BANDPASS'] for intent in fieldobj[0].intents)):
 
                 LOG.warning("Field {!s}: {!s}, "
                             "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
