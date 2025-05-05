@@ -1,7 +1,9 @@
 import os
+import re
 import tempfile
 from inspect import signature
 
+import pipeline.environment as environment
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.mpihelpers as mpihelpers
@@ -414,8 +416,59 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info = image.miscinfo()
                 info['VLASSRJ'] = reject
                 LOG.info('mark the image %s as reject=%r', name, reject)
+                info['VLASSSPW'] = tclean_result.spw
+                info['VLASSPC'] = tclean_result.inputs["phasecenter"]
+                info['VLASSPL'] = tclean_result.stokes
+                info['VLASSRMS'] = tclean_result.image_rms
+                info['VLASSPT'] = tclean_result.imaging_mode
+                info['VLASSPV'] = environment.pipeline_revision
+                info['VLASSBWN'] = tclean_result.effective_bw
+                info['VLASSPK'] = tclean_result.image_max
+                info['VLASSBW'] = tclean_result.eff_ch_bw
+                info['VLASSITY'] = self._get_vlass_image_type(name)
+                epoch, tile, version = self._get_vlass_epoch_tile_version(name)
+                info['VLASSTN'] = tile
+                info['VLASSEP'] = epoch
+                info['VLASSVR'] = version
                 image.setmiscinfo(info)
 
+    def _get_vlass_epoch_tile_version(self, filename):
+        """Determine the VLASS epoch, tile name and version in the filename."""
+
+        epoch_match = re.search(r"VLASS(\d+\.\d+)", filename)
+        tilename_match = re.search(r"\.(T\d+t\d+)\.", filename)
+        version_match = re.search(r"\.v(\d+)(?:\.|$)", filename)
+        if epoch_match:
+            epoch = epoch_match.group(1)
+        else:
+            LOG.warning("Unable to get epoch given the filename {!s}, setting epoch to None", filename)
+            epoch = None
+        if tilename_match:
+            tile = tilename_match.group(1)
+        else:
+            LOG.warning("Unable to get tile name given the filename {!s}, setting tile name to None", filename)
+            tile = None
+        if version_match:
+            version = version_match.group(1)
+        else:
+            LOG.warning("Unable to get version number given the filename {!s}, setting version number to None", filename)
+            version = None
+
+        return epoch, tile, version
+
+    def _get_vlass_image_type(self, filename):
+        """Determine the VLASS image type based on specific substrings in the filename."""
+        return (
+            "ALPHAERR" if ".alphaerr." in filename else
+            "ALPHA" if ".alpha." in filename else
+            "RMS_TT0" if ".rms." in filename and ".tt0" in filename else
+            "RMS_TT1" if ".rms." in filename and ".tt1" in filename else
+            "RMS" if ".rms." in filename else
+            "INTENSITY_PBCOR_TT0" if ".pbcor." in filename and ".tt0" in filename else
+            "INTENSITY_PBCOR_TT1" if ".pbcor." in filename and ".tt1" in filename else
+            "INTENSITY_PBCOR" if ".pbcor." in filename else
+            "UNKNOWN"
+        )
     def _is_target_for_sensitivity(self, clean_result, heuristics):
         """
         Returns True if the clean target is one to export image sensitivity
