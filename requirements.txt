@@ -8,7 +8,7 @@
 #   
 # Path Information:
 #   macOS: $casa_bin = /Applications/CASA.app/Contents/MacOS/
-#   Linux: $casa_bin = bin/ directory in package (e.g., casa-6.6.6-8-py3.10.el8/bin)
+#   Linux: $casa_bin = bin/ directory in package (e.g., casa-6.6.6-9-py3.10.el8/bin)
 #
 # Recommended Aliases:
 #   export casa_bin='/Applications/CASA.app/Contents/MacOS'  # adjust for Linux
@@ -21,7 +21,7 @@
 
 # PL Production Dependencies
 cachetools==5.5.2               # https://github.com/tkem/cachetools
-mako==1.3.9                     # https://github.com/sqlalchemy/mako
+mako==1.3.10                    # https://github.com/sqlalchemy/mako
 pypubsub==4.0.3                 # https://pypi.org/project/PyPubSub
 intervaltree==3.1.0             # https://pypi.org/project/intervaltree
 logutils==0.3.5                 # https://pypi.org/project/logutils
@@ -30,4 +30,3 @@ astropy==6.1.7                  # https://docs.astropy.org/en/stable/changelog.h
                                 # last version compatible with Python 3.10
 docstring-inheritance==2.2.2    # https://pypi.org/project/docstring-inheritance
 bdsf==1.13.0.post2              # Only required for the VLASS pipeline
-                                # https://github.com/lofar-astron/PyBDSF/issues/247
