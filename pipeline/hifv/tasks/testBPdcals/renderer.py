@@ -1,5 +1,5 @@
 
-from pipeline.hifv.tasks.common.renderer import baseRenderer as baseRenderer
+from pipeline.hifv.tasks.common.renderer import renderer as baseRenderer
 
 
 class T2_4MDetailstestBPdcalsRenderer(baseRenderer.calsRenderer):

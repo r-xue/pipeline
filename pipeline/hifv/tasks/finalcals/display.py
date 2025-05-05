@@ -1,6 +1,6 @@
 
 import pipeline.infrastructure as infrastructure
-from pipeline.hifv.tasks.common.displays import baseDisplay as baseDisplay
+from pipeline.hifv.tasks.common.displays import display as baseDisplay
 
 LOG = infrastructure.get_logger(__name__)
 

@@ -10,7 +10,7 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import applycal
-from pipeline.hifv.tasks.common.renderer import baseRenderer as baseRenderer
+from pipeline.hifv.tasks.common.renderer import renderer as baseRenderer
 
 
 LOG = logging.get_logger(__name__)
