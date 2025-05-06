@@ -2,10 +2,9 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from . import bandpassmode
-from . import bandpassworker
+
 from .. import gaincal
+from . import bandpassmode, bandpassworker
 
 LOG = infrastructure.get_logger(__name__)
 
