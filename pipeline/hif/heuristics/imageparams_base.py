@@ -537,6 +537,15 @@ class ImageParamsHeuristics(object):
                                                      dopbcorr=False,
                                                      parallel=do_parallel
                                                      )
+                        LOG.debug('Imaging parameters for synthesized beam evluation:')
+                        LOG.debug('    field:     %s', field)
+                        LOG.debug('    intent:    %s', intent)
+                        LOG.debug('    spw        %s', valid_real_spwid_list)
+                        LOG.debug('    imsize:    %s', imsize)
+                        LOG.debug('    cell:      %.2g%s', cellv, cellu)
+                        LOG.debug('    uvtaper:   %s', uvtaper)
+                        LOG.debug('    robust:    %s', gridder)
+                        LOG.debug('    mosweight: %s', mosweight)
                         if do_parallel:
                             makepsf_imager = PyParallelContSynthesisImager(params=paramList)
                         else:
