@@ -139,17 +139,10 @@ def set_miscinfo(
         if spw is not None:
             unique_spws = ','.join(np.unique(spw.split(',')))
             if context is not None and context.observing_run is not None:
-                if virtspw:
-                    spw_names = [
-                        context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A')
-                        for spw_id in unique_spws.split(',')
-                    ]
-                else:
-                    spw_names = [
-                        context.observing_run.virtual_science_spw_shortnames.get(
-                            context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
-                        for spw_id in unique_spws.split(',')
-                    ]
+                spw_names = [
+                    context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A')
+                    for spw_id in unique_spws.split(',')
+                ]
             else:
                 spw_names = ['N/A']
             # Write spw IDs. For some observatories these are virtual IDs because of
