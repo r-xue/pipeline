@@ -5,10 +5,11 @@ import collections
 import itertools
 from typing import TYPE_CHECKING, List, Tuple, Dict, Callable, Set
 
+import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import infrastructure
 from pipeline.h.tasks.exportdata import aqua
 from pipeline.hifa.tasks.importdata import almaimportdata
-from pipeline.infrastructure import casa_tools, pipelineqa, utils
+from pipeline.infrastructure import casa_tools, utils
 from pipeline.qa import scorecalculator
 
 if TYPE_CHECKING:
@@ -22,7 +23,7 @@ aqua_exporter = aqua.xml_generator_for_metric('ScoreParallacticAngle', '{:0.3f}'
 aqua.register_aqua_metric(aqua_exporter)
 
 
-class ALMAImportDataListQAHandler(pipelineqa.QAPlugin):
+class ALMAImportDataListQAHandler(pqa.QAPlugin):
     result_cls = collections.abc.Iterable
     child_cls = almaimportdata.ALMAImportDataResults
 
@@ -42,7 +43,7 @@ class ALMAImportDataListQAHandler(pipelineqa.QAPlugin):
         result.parang_ranges = parang_ranges
 
 
-class ALMAImportDataQAHandler(pipelineqa.QAPlugin):
+class ALMAImportDataQAHandler(pqa.QAPlugin):
     result_cls = almaimportdata.ALMAImportDataResults
     child_cls = None
 
@@ -84,7 +85,7 @@ class ALMAImportDataQAHandler(pipelineqa.QAPlugin):
         result.qa.pool.extend(scores7)
 
 
-def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check each measurement set for polarization intents
     """
@@ -93,7 +94,7 @@ def _check_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipe
 
 def _check_parallactic_angle_range(mses: List[MeasurementSet],
                                    intents: Set[str],
-                                   threshold: float) -> Tuple[List[pipelineqa.QAScore], Dict]:
+                                   threshold: float) -> Tuple[List[pqa.QAScore], Dict]:
     """
     Check that the parallactic angle coverage of the polarisation calibrator
     meets the required threshold.
@@ -106,7 +107,7 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
     :return: list of QAScores and dictionary of metrics
     """
     # holds list of all QA scores for this metric
-    all_scores: List[pipelineqa.QAScore] = []
+    all_scores: List[pqa.QAScore] = []
     # holds all parallactic angle ranges for all
     # session names, intents and pol cal names
     all_metrics = {'sessions': {}, 'pol_intents_found': False}
@@ -145,56 +146,56 @@ def _check_parallactic_angle_range(mses: List[MeasurementSet],
     return all_scores, all_metrics
 
 
-def _check_bands(mses) -> pipelineqa.QAScore:
+def _check_bands(mses) -> pqa.QAScore:
     """
     Check each measurement set for bands with calibration issues
     """
     return scorecalculator.score_bands(mses)
 
 
-def _check_observing_modes(mses) -> List[pipelineqa.QAScore]:
+def _check_observing_modes(mses) -> List[pqa.QAScore]:
     """
     Check each measurement set for issues with observing modes.
     """
     return scorecalculator.score_observing_modes(mses)
 
 
-def _check_science_spw_names(mses, virtual_science_spw_names) -> pipelineqa.QAScore:
+def _check_science_spw_names(mses, virtual_science_spw_names) -> pqa.QAScore:
     """
     Check science spw names
     """
     return scorecalculator.score_science_spw_names(mses, virtual_science_spw_names)
 
 
-def _check_fluxservice(result) -> pipelineqa.QAScore:
+def _check_fluxservice(result) -> pqa.QAScore:
     """
     Check flux service usage
     """
     return scorecalculator.score_fluxservice(result)
 
 
-def _check_fluxservicemessages(result) -> pipelineqa.QAScore:
+def _check_fluxservicemessages(result) -> pqa.QAScore:
     """
     Check flux service messages
     """
     return scorecalculator.score_fluxservicemessages(result)
 
 
-def _check_fluxservicestatuscodes(result) -> pipelineqa.QAScore:
+def _check_fluxservicestatuscodes(result) -> pqa.QAScore:
     """
     Check flux service statuscodes
     """
     return scorecalculator.score_fluxservicestatuscodes(result)
 
 
-def _check_fluxcsv(result) -> pipelineqa.QAScore:
+def _check_fluxcsv(result) -> pqa.QAScore:
     """
     Check for flux.csv file
     """
     return scorecalculator.score_fluxcsv(result)
 
 
-def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def _check_calobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check if BP/Phcal/Ampcal are all the same object
     """

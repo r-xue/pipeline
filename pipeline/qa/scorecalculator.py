@@ -21,9 +21,10 @@ from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 import numpy as np
 from scipy import interpolate, special
 
+import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import infrastructure
 from pipeline.domain import datatable, measures
-from pipeline.infrastructure import basetask, casa_tools, pipelineqa, utils
+from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.qa import checksource
 
@@ -282,11 +283,11 @@ def score_data_flagged_by_agents(ms, summaries, min_frac, max_frac, agents=None,
         longmsg += ' for intent(s): {}.'.format(utils.commafy(intents, quotes=False))
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_data_flagged_by_agents',
+    origin = pqa.QAOrigin(metric_name='score_data_flagged_by_agents',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 def score_vla_science_data_flagged_by_agents(ms, summaries, min_frac, max_frac, agents, intents=None):
@@ -321,11 +322,11 @@ def score_vla_science_data_flagged_by_agents(ms, summaries, min_frac, max_frac, 
         longmsg += ' for intent(s): {}'.format(utils.commafy(intents, quotes=False))
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_vla_science_data_flagged_by_agents',
+    origin = pqa.QAOrigin(metric_name='score_vla_science_data_flagged_by_agents',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 # - exported scoring functions -----------------------------------------------------------------------------------------
 
@@ -340,7 +341,7 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
     num_all = len(all_mses)
 
     if num_all == 0:
-        return pipelineqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
+        return pqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
 
     f = float(num_with) / num_all
 
@@ -359,11 +360,11 @@ def score_ms_model_data_column_present(all_mses, mses_with_column):
 
     score = linear_score(f, 0.0, 1.0, 1.0, 0.9)
 
-    origin = pipelineqa.QAOrigin(metric_name='score_ms_model_data_column_present',
+    origin = pqa.QAOrigin(metric_name='score_ms_model_data_column_present',
                           metric_score=f,
                           metric_units='Fraction of MSes with modeldata columns present')
 
-    return pipelineqa.QAScore(score, longmsg, shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg, shortmsg, origin=origin)
 
 
 @log_qa
@@ -377,7 +378,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
     num_all = len(all_mses)
 
     if num_all == 0:
-        return pipelineqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
+        return pqa.QAScore(0.0, 'No MSes were imported', 'No MSes imported')
 
     if mses_with_history:
         # log a message like 'Entries were found in the HISTORY table for
@@ -401,15 +402,15 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
     f = float(num_with) / num_all
     score = linear_score(f, 0.0, 1.0, 1.0, 0.5)
 
-    origin = pipelineqa.QAOrigin(metric_name='score_ms_history_entries_present',
+    origin = pqa.QAOrigin(metric_name='score_ms_history_entries_present',
                           metric_score=f,
                           metric_units='Fraction of MSes with HISTORY')
 
-    return pipelineqa.QAScore(score, longmsg, shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg, shortmsg, origin=origin)
 
 
 @log_qa
-def score_observing_modes(mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     This QA heuristic evaluates a list of measurement sets, creating a QA score
     for each MS, and returning the aggregate list of QA scores for all MSes.
@@ -464,10 +465,10 @@ def score_observing_modes(mses: List[MeasurementSet]) -> List[pipelineqa.QAScore
             longmsg = f'Observing mode(s) ok for {ms.basename}'
 
         # Append score for current MS.
-        origin = pipelineqa.QAOrigin(metric_name='score_observing_modes',
+        origin = pqa.QAOrigin(metric_name='score_observing_modes',
                               metric_score=score,
                               metric_units='MS score based on the observing modes')
-        scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
 
@@ -516,18 +517,18 @@ def score_bands(mses):
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'High frequency band data found'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_bands',
+    origin = pqa.QAOrigin(metric_name='score_bands',
                           metric_score=score,
                           metric_units='MS score based on presence of high-frequency data')
 
     # Make score linear
-    return pipelineqa.QAScore(max(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(max(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
 def score_parallactic_range(
         pol_intents_present: bool, session_name: str, field_name: str, coverage: float, threshold: float
-        ) -> List[pipelineqa.QAScore]:
+        ) -> List[pqa.QAScore]:
     """
     Score a session based on parallactic angle coverage.
 
@@ -535,7 +536,7 @@ def score_parallactic_range(
     for full spec.
     """
     # holds the final list of QA scores
-    scores: List[pipelineqa.QAScore] = []
+    scores: List[pqa.QAScore] = []
 
     # are polarisation intents expected? true if pol recipe, false if not
     # Polcal detected in session (this function was called!) but this is not a
@@ -544,14 +545,14 @@ def score_parallactic_range(
         longmsg = (f'No polarisation intents detected. No parallactic angle coverage check required for session '
                    f'{session_name}.')
         shortmsg = 'Parallactic angle'
-        origin = pipelineqa.QAOrigin(
+        origin = pqa.QAOrigin(
             metric_name='ScoreParallacticAngle',
             metric_score=0.0,
             metric_units='degrees'
         )
-        score = pipelineqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                            weblog_location=pipelineqa.WebLogLocation.ACCORDION,
-                            applies_to=pipelineqa.TargetDataSelection(session={session_name}))
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
         return [score]
 
     # accordion message if coverage is adequate
@@ -559,14 +560,14 @@ def score_parallactic_range(
         longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0 > {threshold:.2f}\u00B0) for '
                    f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
-        origin = pipelineqa.QAOrigin(
+        origin = pqa.QAOrigin(
             metric_name='ScoreParallacticAngle',
             metric_score=coverage,
             metric_units='degrees'
         )
-        score = pipelineqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                            weblog_location=pipelineqa.WebLogLocation.ACCORDION,
-                            applies_to=pipelineqa.TargetDataSelection(session={session_name}))
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
         scores.append(score)
 
     # complain with a banner message if coverage is insufficient
@@ -574,21 +575,21 @@ def score_parallactic_range(
         longmsg = (f'Insufficient parallactic angle coverage ({coverage:.2f}\u00B0 < {threshold:.2f}\u00B0) for '
                    f'polarisation calibrator {field_name} in session {session_name}')
         shortmsg = 'Parallactic angle'
-        origin = pipelineqa.QAOrigin(
+        origin = pqa.QAOrigin(
             metric_name='ScoreParallacticAngle',
             metric_score=coverage,
             metric_units='degrees'
         )
-        score = pipelineqa.QAScore(0.6, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                            weblog_location=pipelineqa.WebLogLocation.BANNER,
-                            applies_to=pipelineqa.TargetDataSelection(session={session_name}))
+        score = pqa.QAScore(0.6, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.BANNER,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
         scores.append(score)
 
     return scores
 
 
 @log_qa
-def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
@@ -604,7 +605,7 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
     pol_intents_expected = recipe_name in pol_recipes
 
     # holds the final list of QA scores
-    scores: List[pipelineqa.QAScore] = []
+    scores: List[pqa.QAScore] = []
 
     # Spec from PIPE-606:
     #
@@ -626,12 +627,12 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
         if pol_intents_present:
             longmsg = f'Polarization calibrations expected and found: {mses_for_msg}'
             shortmsg = 'Polarization calibrators'
-            origin = pipelineqa.QAOrigin(metric_name='score_polintents',
+            origin = pqa.QAOrigin(metric_name='score_polintents',
                                   metric_score=1.0,
                                   metric_units='MS score based on presence of polarisation data')
-            score = pipelineqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                                weblog_location=pipelineqa.WebLogLocation.ACCORDION,
-                                applies_to=pipelineqa.TargetDataSelection(vis=ms_names))
+            score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.ACCORDION,
+                                applies_to=pqa.TargetDataSelection(vis=ms_names))
             scores.append(score)
 
         # and complain with a banner message if they weren't. Perhaps this
@@ -639,12 +640,12 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
         else:
             longmsg = f'Expected polarization calibrations not found in {mses_for_msg}'
             shortmsg = 'Polarization calibrators'
-            origin = pipelineqa.QAOrigin(metric_name='score_polintents',
+            origin = pqa.QAOrigin(metric_name='score_polintents',
                                   metric_score=0.5,
                                   metric_units='MS score based on presence of polarisation data')
-            score = pipelineqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                                weblog_location=pipelineqa.WebLogLocation.BANNER,
-                                applies_to=pipelineqa.TargetDataSelection(vis=ms_names))
+            score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.BANNER,
+                                applies_to=pqa.TargetDataSelection(vis=ms_names))
             scores.append(score)
 
         return scores
@@ -656,12 +657,12 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
         if pol_intents_in_ms:
             longmsg = f'{ms.basename} contains polarization calibrations: {utils.commafy(pol_intents_in_ms, False)}'
             shortmsg = 'Polarization intents'
-            origin = pipelineqa.QAOrigin(metric_name='score_polintents',
+            origin = pqa.QAOrigin(metric_name='score_polintents',
                                   metric_score=0.5,
                                   metric_units='MS score based on presence of polarisation data')
-            score = pipelineqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                                weblog_location=pipelineqa.WebLogLocation.ACCORDION,
-                                applies_to=pipelineqa.TargetDataSelection(vis=ms.basename))
+            score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                                weblog_location=pqa.WebLogLocation.ACCORDION,
+                                applies_to=pqa.TargetDataSelection(vis=ms.basename))
             scores.append(score)
 
     # if there are accordion warnings, summarise them in a banner warning too
@@ -669,12 +670,12 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
         affected_mses = {score.applies_to.vis for score in scores}
         longmsg = f'Unexpected polarization calibrations in {utils.commafy(affected_mses, False)}'
         shortmsg = 'Polarization intents'
-        origin = pipelineqa.QAOrigin(metric_name='score_polintents',
+        origin = pqa.QAOrigin(metric_name='score_polintents',
                               metric_score=0.5,
                               metric_units='MS score based on presence of polarisation data')
-        score = pipelineqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                            weblog_location=pipelineqa.WebLogLocation.BANNER,
-                            applies_to=pipelineqa.TargetDataSelection(vis=affected_mses))
+        score = pqa.QAScore(0.5, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.BANNER,
+                            applies_to=pqa.TargetDataSelection(vis=affected_mses))
         scores.append(score)
 
     # Add an 'all OK' accordion message if no unexpected intents detected
@@ -682,19 +683,19 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pipel
         ms_names = {ms.basename for ms in mses}
         longmsg = f'No polarization calibrations found: {utils.commafy(sorted(ms_names), False)}'
         shortmsg = 'No polarization calibrators'
-        origin = pipelineqa.QAOrigin(metric_name='score_polintents',
+        origin = pqa.QAOrigin(metric_name='score_polintents',
                               metric_score=1.0,
                               metric_units='MS score based on presence of polarisation data')
-        score = pipelineqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-                            weblog_location=pipelineqa.WebLogLocation.ACCORDION,
-                            applies_to=pipelineqa.TargetDataSelection(vis=ms_names))
+        score = pqa.QAScore(1.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(vis=ms_names))
         scores.append(score)
 
     return scores
 
 
 @log_qa
-def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
         Check if BP/Phcal/Ampcal are all the same object and score appropriately
     """
@@ -707,7 +708,7 @@ def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[p
     alma_recipes_expected = recipe_name in alma_recipes
 
     # holds the final list of QA scores
-    scores: List[pipelineqa.QAScore] = []
+    scores: List[pqa.QAScore] = []
 
     if alma_recipes_expected:
         for ms in mses:
@@ -725,11 +726,11 @@ def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[p
                 scorevalue = 1.0
                 msg = "Calibrators are different objects."
 
-            origin = pipelineqa.QAOrigin(metric_name='score_samecalobjects',
+            origin = pqa.QAOrigin(metric_name='score_samecalobjects',
                                   metric_score=scorevalue,
                                   metric_units='samecalobjects')
 
-            score = pipelineqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg, origin=origin)
+            score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg, origin=origin)
 
             scores.append(score)
 
@@ -794,13 +795,13 @@ def score_missing_intents(mses, array_type='ALMA_12m'):
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Calibrators missing'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_intents',
+    origin = pqa.QAOrigin(metric_name='score_missing_intents',
                           metric_score=score,
                           metric_units='Score based on missing calibration intents')
 
-    return pipelineqa.QAScore(
+    return pqa.QAScore(
         max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-        applies_to=pipelineqa.TargetDataSelection(vis=applies_to)
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
 
@@ -844,13 +845,13 @@ def score_ephemeris_coordinates(mses):
         longmsg = '%s.' % utils.commafy(complaints, False)
         shortmsg = 'Suspicious source coordinates'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_ephemeris_coordinates',
+    origin = pqa.QAOrigin(metric_name='score_ephemeris_coordinates',
                           metric_score=score,
                           metric_units='Score based on presence of ephemeris coordinates')
 
-    return pipelineqa.QAScore(
+    return pqa.QAScore(
         max(0.0, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin,
-        applies_to=pipelineqa.TargetDataSelection(vis=applies_to)
+        applies_to=pqa.TargetDataSelection(vis=applies_to)
     )
 
 
@@ -864,7 +865,7 @@ def score_online_shadow_template_agents(ms, summaries):
     score = score_data_flagged_by_agents(ms, summaries, 0.05, 0.6,
                                          agents=['online', 'shadow', 'qa0', 'qa2', 'before', 'template'])
 
-    new_origin = pipelineqa.QAOrigin(metric_name='score_online_shadow_template_agents',
+    new_origin = pqa.QAOrigin(metric_name='score_online_shadow_template_agents',
                               metric_score=score.origin.metric_score,
                               metric_units='Fraction of data newly flagged by online, shadow, and template agents')
     score.origin = new_origin
@@ -910,11 +911,11 @@ def score_lowtrans_flagcmds(ms, result):
         longmsg = "No SpW(s) flagged for low transmission"
         shortmsg = "No SpW(s) flagged for low transmission"
 
-    origin = pipelineqa.QAOrigin(metric_name='score_lowtrans',
+    origin = pqa.QAOrigin(metric_name='score_lowtrans',
                           metric_score=score,
                           metric_units='SpW(s) flagged by low transmission agent.')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -928,7 +929,7 @@ def score_vla_agents(ms, summaries):
                                                      ['online', 'template', 'autocorr', 'edgespw',
                                                       'clip', 'quack', 'baseband'])
 
-    new_origin = pipelineqa.QAOrigin(metric_name='score_vla_agents',
+    new_origin = pqa.QAOrigin(metric_name='score_vla_agents',
                               metric_score=score.origin.metric_score,
                               metric_units='Fraction of data newly flagged by online, shadow, and template agents')
     score.origin = new_origin
@@ -962,7 +963,7 @@ def score_applycal_agents(ms, summaries):
     score.longmsg = longmsg
 
     # Update origin.
-    new_origin = pipelineqa.QAOrigin(metric_name='score_applycal_agents',
+    new_origin = pqa.QAOrigin(metric_name='score_applycal_agents',
                               metric_score=score.origin.metric_score,
                               metric_units=score.origin.metric_units)
     score.origin = new_origin
@@ -994,11 +995,11 @@ def score_total_data_flagged(filename, summaries):
     longmsg = '%0.2f%% of data in %s was flagged' % (percent, filename)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_total_data_flagged',
+    origin = pqa.QAOrigin(metric_name='score_total_data_flagged',
                           metric_score=frac_flagged,
                           metric_units='Total fraction of data that is flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
 
 
 @log_qa
@@ -1025,11 +1026,11 @@ def score_total_data_flagged_vla(filename, summaries):
     longmsg = '%0.2f%% of data in %s was flagged' % (percent, filename)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_total_data_flagged_vla',
+    origin = pqa.QAOrigin(metric_name='score_total_data_flagged_vla',
                           metric_score=frac_flagged,
                           metric_units='Total fraction of VLA data that is flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
 
 
 @log_qa
@@ -1053,11 +1054,11 @@ def score_total_data_flagged_vla_bandpass(filename, frac_flagged):
     longmsg = '%0.2f%% of data in %s was flagged' % (percent, filename)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_total_data_flagged_vla_bandpass',
+    origin = pqa.QAOrigin(metric_name='score_total_data_flagged_vla_bandpass',
                           metric_score=frac_flagged,
                           metric_units='Total fraction of VLA data that is flagged in the caltable')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
 
 
 @log_qa
@@ -1077,11 +1078,11 @@ def score_flagged_vla_baddef(amp_collection, phase_collection, num_antennas):
     affected_antennas = amp_antennas.union(phase_antennas)
     num_affected_antennas = len(affected_antennas)
     frac_flagged = num_affected_antennas / float(num_antennas)
-    origin = pipelineqa.QAOrigin(metric_name='score_flagged_vla_baddef',
+    origin = pqa.QAOrigin(metric_name='score_flagged_vla_baddef',
                           metric_score=frac_flagged,
                           metric_units='Fraction of VLA antennas flagged by hifv_flagbaddef')
     if 0 == frac_flagged:
-        return pipelineqa.QAScore(1, longmsg='No antennas flagged', shortmsg='No antennas flagged', origin=origin)
+        return pqa.QAScore(1, longmsg='No antennas flagged', shortmsg='No antennas flagged', origin=origin)
     else:
         # Convert fraction of flagged data into a score.
         score = linear_score(frac_flagged, 0.0, 0.3, 1.0, 0.0)
@@ -1090,7 +1091,7 @@ def score_flagged_vla_baddef(amp_collection, phase_collection, num_antennas):
         longmsg = "{:d} of {:d} ({:0.2f}%) antennas affected and some of their spws are flagged" \
                   "".format(num_affected_antennas, num_antennas, percent)
         shortmsg = "{:0.2f}% antennas affected".format(percent)
-        return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 def countbaddelays(m, delaytable, delaymax):
@@ -1156,11 +1157,11 @@ def score_total_data_vla_delay(filename, m):
     longmsg = 'Max delay is {!s} ns'.format(str(maxdelay))
     shortmsg = longmsg
 
-    origin = pipelineqa.QAOrigin(metric_name='score_total_data_vla_delay',
+    origin = pqa.QAOrigin(metric_name='score_total_data_vla_delay',
                           metric_score=score,
                           metric_units='Delays that exceed 200 ns')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
 
 
 @log_qa
@@ -1204,11 +1205,11 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
         longmsg = 'No max rms.'
     shortmsg = longmsg
 
-    origin = pipelineqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+    origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
                           metric_score=score,
                           metric_units='rms values that exceed 0.01')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -1235,11 +1236,11 @@ def score_fraction_newly_flagged(filename, summaries, vis):
     longmsg = '%0.2f%% of data in %s was newly flagged' % (percent, filename)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_fraction_newly_flagged',
+    origin = pqa.QAOrigin(metric_name='score_fraction_newly_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data that is newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
 
 
 @log_qa
@@ -1261,11 +1262,11 @@ def linear_score_fraction_newly_flagged(filename, summaries, vis):
     longmsg = '%0.2f%% of data in %s was newly flagged' % (percent, filename)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='linear_score_fraction_newly_flagged',
+    origin = pqa.QAOrigin(metric_name='linear_score_fraction_newly_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data that is newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(vis), origin=origin)
 
 
 @log_qa
@@ -1299,7 +1300,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
                   'flagged.'.format(percent, intent, ms.basename)
         shortmsg = '{:0.2f}% unflagged data flagged.'.format(percent)
 
-        origin = pipelineqa.QAOrigin(metric_name='linear_score_fraction_unflagged_newly_flagged_for_intent',
+        origin = pqa.QAOrigin(metric_name='linear_score_fraction_unflagged_newly_flagged_for_intent',
                               metric_score=frac_flagged,
                               metric_units='Fraction of unflagged data for intent '
                                            '{} that is newly flagged'.format(intent))
@@ -1308,7 +1309,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
         score = 0.0
         longmsg = 'No unflagged data with intent {} found in {}.'.format(intent, ms.basename)
         shortmsg = 'No unflagged data.'
-        origin = pipelineqa.QAOrigin(metric_name='linear_score_fraction_unflagged_newly_flagged_for_intent',
+        origin = pqa.QAOrigin(metric_name='linear_score_fraction_unflagged_newly_flagged_for_intent',
                               metric_score=False,
                               metric_units='Presence of unflagged data.')
 
@@ -1317,7 +1318,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
         longmsg += ' Please investigate!'
         shortmsg += ' Please investigate!'
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1327,10 +1328,10 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
     """
     # only need to check when given multiple measurement sets
     if len(mses) < 2:
-        origin = pipelineqa.QAOrigin(metric_name='score_contiguous_session',
+        origin = pqa.QAOrigin(metric_name='score_contiguous_session',
                               metric_score=0,
                               metric_units='Non-contiguous measurement sets present')
-        return pipelineqa.QAScore(1.0,
+        return pqa.QAScore(1.0,
                            longmsg='%s forms one continuous observing session.' % mses[0].basename,
                            shortmsg='Unbroken observing session',
                            vis=mses[0].basename,
@@ -1368,11 +1369,11 @@ def score_contiguous_session(mses, tolerance=datetime.timedelta(hours=1)):
         shortmsg = 'Unbroken observing session'
         score = 1.0
 
-    origin = pipelineqa.QAOrigin(metric_name='score_contiguous_session',
+    origin = pqa.QAOrigin(metric_name='score_contiguous_session',
                           metric_score=not bool(bad_mses),
                           metric_units='Non-contiguous measurement sets present')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -1508,11 +1509,11 @@ def score_wvrgcal(ms_name, dataresult):
     # should be made always
     shortmsg = '%0.2fx improvement' % wvr_score
 
-    origin = pipelineqa.QAOrigin(metric_name='score_wvrgcal',
+    origin = pqa.QAOrigin(metric_name='score_wvrgcal',
                           metric_score=wvr_score,
                           metric_units='Phase RMS improvement after applying WVR correction')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(ms_name), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(ms_name), origin=origin)
 
 
 @log_qa
@@ -1534,11 +1535,11 @@ def score_sdtotal_data_flagged(label, frac_flagged):
     longmsg = '%0.2f%% of data in %s was newly flagged' % (percent, label)
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_sdtotal_data_flagged',
+    origin = pqa.QAOrigin(metric_name='score_sdtotal_data_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=None, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=None, origin=origin)
 
 
 @log_qa
@@ -1564,11 +1565,11 @@ def score_sdtotal_data_flagged_old(name, ant, spw, pol, frac_flagged, field=None
                    'flagged' % (percent, name, ant, field, spw, pol))
     shortmsg = '%0.2f%% data flagged' % percent
 
-    origin = pipelineqa.QAOrigin(metric_name='score_sdtotal_data_flagged_old',
+    origin = pqa.QAOrigin(metric_name='score_sdtotal_data_flagged_old',
                           metric_score=frac_flagged,
                           metric_units='Fraction of data newly flagged')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(name), origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(name), origin=origin)
 
 
 @log_qa
@@ -1591,11 +1592,11 @@ def score_tsysspwmap(ms, unmappedspws):
                                                                            utils.commafy(unmappedspws, False, 's'))
         shortmsg = 'Tsys spw map is incomplete'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_tsysspwmap',
+    origin = pqa.QAOrigin(metric_name='score_tsysspwmap',
                           metric_score=score,
                           metric_units='Fraction of unmapped Tsys windows')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1645,11 +1646,11 @@ def score_setjy_measurements(ms, reqfields, reqintents, reqspws, measurements):
         longmsg = 'Too many flux calibrator measurements for %s %d/%d' % (ms.basename, nmeasured, nexpected)
         shortmsg = 'Too many flux measurements'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_setjy_measurements',
+    origin = pqa.QAOrigin(metric_name='score_setjy_measurements',
                           metric_score=score,
                           metric_units='Ratio of number of flux measurements to number expected')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1672,11 +1673,11 @@ def score_number_antenna_offsets(ms, offsets):
         longmsg = '%d nonzero antenna position offsets for %s ' % (nant_with_offsets, ms.basename)
         shortmsg = 'Nonzero antenna position offsets'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_number_antenna_offsets',
+    origin = pqa.QAOrigin(metric_name='score_number_antenna_offsets',
                           metric_score=nant_with_offsets,
                           metric_units='Number of antennas requiring position offset correction')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1739,11 +1740,11 @@ def score_missing_derived_fluxes(ms, reqfields, reqintents, measurements):
         longmsg = 'Extra derived fluxes for %s %d/%d' % (ms.basename, nmeasured, nexpected)
         shortmsg = 'Extra derived fluxes'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_derived_fluxes',
+    origin = pqa.QAOrigin(metric_name='score_missing_derived_fluxes',
                           metric_score=score,
                           metric_units='Ratio of number of flux measurements to number expected')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1757,7 +1758,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
         longmsg = 'No mapped science spws for %s ' % ms.basename
         shortmsg = 'No mapped science spws'
 
-        origin = pipelineqa.QAOrigin(metric_name='score_refspw_mapping_fraction',
+        origin = pqa.QAOrigin(metric_name='score_refspw_mapping_fraction',
                               metric_score=0,
                               metric_units='Number of unmapped science spws')
     else:
@@ -1780,11 +1781,11 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
             longmsg = 'There are %d mapped science spws for %s ' % (nexpected - nunmapped, ms.basename)
             shortmsg = 'There are mapped science spws'
 
-        origin = pipelineqa.QAOrigin(metric_name='score_refspw_mapping_fraction',
+        origin = pqa.QAOrigin(metric_name='score_refspw_mapping_fraction',
                               metric_score=nunmapped,
                               metric_units='Number of unmapped science spws')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -1803,13 +1804,13 @@ def score_combine_spwmapping(ms, intent, field, spwmapping):
         longmsg = f'No combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'No combined spw mapping'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
+    origin = pqa.QAOrigin(metric_name='score_check_phaseup_combine_mapping',
                           metric_score=spwmapping.combine,
                           metric_units='Using combined spw mapping')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1858,13 +1859,13 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
                 longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
+    origin = pqa.QAOrigin(metric_name='score_phaseup_mapping_fraction',
                           metric_score=nunmapped,
                           metric_units='Number of unmapped science spws')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, intent={intent}, field={field})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1894,13 +1895,13 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -1996,12 +1997,12 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
         LOG.error(traceback.format_exc())
 
     # Create metric origin
-    phase_stability_origin = pipelineqa.QAOrigin(metric_name='Phase stability',
+    phase_stability_origin = pqa.QAOrigin(metric_name='Phase stability',
                                           metric_score=phasermscycle_p80,
                                           metric_units='Degrees')
 
-    return pipelineqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
-                       weblog_location=pipelineqa.WebLogLocation.ACCORDION)
+    return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
+                       weblog_location=pqa.WebLogLocation.ACCORDION)
 
 
 @log_qa
@@ -2031,13 +2032,13 @@ def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_thres
         longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -2067,13 +2068,13 @@ def score_missing_phaseup_snrs(ms, spwids, phsolints):
             (missing_spws, ms.basename)
         shortmsg = 'Missing phaseup SNR estimates'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_phaseup_snrs',
+    origin = pqa.QAOrigin(metric_name='score_missing_phaseup_snrs',
                           metric_score=nmissing,
                           metric_units='Number of spws with missing SNR measurements')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -2105,13 +2106,13 @@ def score_poor_phaseup_solutions(ms, spwids, nphsolutions, min_nsolutions):
             (poor_spws, ms.basename)
         shortmsg = 'Poorly determined phaseup solutions'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_poor_phaseup_solutions',
+    origin = pqa.QAOrigin(metric_name='score_poor_phaseup_solutions',
                           metric_score=npoor,
                           metric_units='Number of poor phaseup solutions')
 
-    applies_to = pipelineqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, spw={spwid for spwid in spwids})
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -2142,11 +2143,11 @@ def score_missing_bandpass_snrs(ms, spwids, bpsolints):
             (missing_spws, ms.basename)
         shortmsg = 'Missing bandpass SNR estimates'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_bandpass_snrs',
+    origin = pqa.QAOrigin(metric_name='score_missing_bandpass_snrs',
                           metric_score=nmissing,
                           metric_units='Number of missing bandpass SNR estimates')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -2177,11 +2178,11 @@ def score_poor_bandpass_solutions(ms, spwids, nbpsolutions, min_nsolutions):
         longmsg = 'Poorly determined bandpass solutions for spws %s in %s ' % (poor_spws, ms.basename)
         shortmsg = 'Poorly determined bandpass solutions'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_bandpass_snrs',
+    origin = pqa.QAOrigin(metric_name='score_missing_bandpass_snrs',
                           metric_score=npoor,
                           metric_units='Number of poor bandpass solutions')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -2210,11 +2211,11 @@ def score_missing_phase_snrs(ms, spwids, snrs):
         longmsg = 'Missing gaincal SNR estimates for spws %s in %s ' % (missing_spws, ms.basename)
         shortmsg = 'Missing gaincal SNR estimates'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_missing_phase_snrs',
+    origin = pqa.QAOrigin(metric_name='score_missing_phase_snrs',
                           metric_score=nmissing,
                           metric_units='Number of missing phase SNR estimates')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -2248,11 +2249,11 @@ def score_poor_phase_snrs(ms, spwids, minsnr, snrs):
             (poor_spws, ms.basename)
         shortmsg = 'Low gaincal SNR estimates'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_poor_phase_snrs',
+    origin = pqa.QAOrigin(metric_name='score_poor_phase_snrs',
                           metric_score=npoor,
                           metric_units='Number of poor phase SNR estimates')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -2314,11 +2315,11 @@ def score_derived_fluxes_snr(ms, measurements):
                   f' (> {100/snr_thresh:.1f}%) for {"; ".join(fld_summaries)}. The calibrator may be too faint.'
         shortmsg = 'Uncertainty in some of the derived fluxes'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_derived_fluxes_snr',
+    origin = pqa.QAOrigin(metric_name='score_derived_fluxes_snr',
                           metric_score=minsnr,
                           metric_units='Minimum SNR of derived flux measurement')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
 
 
 @log_qa
@@ -2337,11 +2338,11 @@ def score_path_exists(mspath, path, pathtype):
         longmsg = 'The %s file %s for %s was not created' % (pathtype, os.path.basename(path), os.path.basename(mspath))
         shortmsg = 'The %s file was not created' % pathtype
 
-    origin = pipelineqa.QAOrigin(metric_name='score_path_exists',
+    origin = pqa.QAOrigin(metric_name='score_path_exists',
                           metric_score=bool(score),
                           metric_units='Path exists on disk')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2356,11 +2357,11 @@ def score_file_exists(filedir, filename, filetype):
         longmsg = 'The %s file is undefined' % filetype
         shortmsg = 'The %s file is undefined' % filetype
 
-        origin = pipelineqa.QAOrigin(metric_name='score_file_exists',
+        origin = pqa.QAOrigin(metric_name='score_file_exists',
                               metric_score=None,
                               metric_units='No %s file to check' % filetype)
 
-        return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
     file_path = os.path.join(filedir, os.path.basename(filename))
     if os.path.exists(file_path):
@@ -2372,11 +2373,11 @@ def score_file_exists(filedir, filename, filetype):
         longmsg = 'The %s file %s does not exist' % (filetype, os.path.basename(filename))
         shortmsg = 'The %s file does not exist' % filetype
 
-    origin = pipelineqa.QAOrigin(metric_name='score_file_exists',
+    origin = pqa.QAOrigin(metric_name='score_file_exists',
                           metric_score=bool(score),
                           metric_units='File exists on disk')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2412,11 +2413,11 @@ def score_mses_exist(filedir, visdict):
         longmsg = 'No missing final ms  files'
         shortmsg = 'No missing final ms files'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_mses_exist',
+    origin = pqa.QAOrigin(metric_name='score_mses_exist',
                           metric_score=len(missing),
                           metric_units='Number of missing ms product files')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2451,11 +2452,11 @@ def score_flags_exist(filedir, visdict):
         longmsg = 'No missing final flag version files'
         shortmsg = 'No missing final flags version files'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_flags_exist',
+    origin = pqa.QAOrigin(metric_name='score_flags_exist',
                           metric_score=len(missing),
                           metric_units='Number of missing flagging product files')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2494,11 +2495,11 @@ def score_flagging_view_exists(filename, result):
     except AttributeError:
         pass
 
-    origin = pipelineqa.QAOrigin(metric_name='score_flagging_view_exists',
+    origin = pqa.QAOrigin(metric_name='score_flagging_view_exists',
                           metric_score=bool(score),
                           metric_units='Presence of flagging view')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=filename, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=filename, origin=origin)
 
 
 @log_qa
@@ -2533,11 +2534,11 @@ def score_applycmds_exist(filedir, visdict):
         longmsg = 'No missing final apply commands files'
         shortmsg = 'No missing final apply commands files'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_applycmds_exist',
+    origin = pqa.QAOrigin(metric_name='score_applycmds_exist',
                           metric_score=len(missing),
                           metric_units='Number of missing apply command files')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2572,11 +2573,11 @@ def score_caltables_exist(filedir, sessiondict):
         longmsg = 'No missing caltables files'
         shortmsg = 'No missing caltables files'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_caltables_exist',
+    origin = pqa.QAOrigin(metric_name='score_caltables_exist',
                           metric_score=len(missing),
                           metric_units='Number of missing caltables')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -2604,11 +2605,11 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
             longmsg = '%d images were exported' % (len(calimages) + len(targetimages))
             shortmsg = 'Images exported'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_images_exist',
+    origin = pqa.QAOrigin(metric_name='score_images_exist',
                           metric_score=metric,
                           metric_units='Number of exported images')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, int]]:
@@ -2758,7 +2759,7 @@ def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, r
 
 
 @log_qa
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pipelineqa.QAScore]:
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
     """Compute QA score based on the line detection result.
 
     QA scores are evaluated based on the line detection result for
@@ -2884,14 +2885,14 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            origin = pipelineqa.QAOrigin(metric_name='score_sd_line_detection',
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
                                   metric_units='Channel range(s) of detected lines')
-            selection = pipelineqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
+            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
                                                 field=set([field_name]),
                                                 intent={'TARGET'})
             line_detection_scores.append(
-                pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
             )
 
     if len(line_detection_scores) == 0:
@@ -2901,12 +2902,12 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         longmsg = 'No line ranges were detected in all SPWs.'
         shortmsg = 'No line ranges were detected in all SPWs.'
 
-        origin = pipelineqa.QAOrigin(metric_name='score_sd_line_detection',
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score='N/A',
                               metric_units='Channel range(s) of detected lines')
-        selection = pipelineqa.TargetDataSelection(intent={'TARGET'})
+        selection = pqa.TargetDataSelection(intent={'TARGET'})
         line_detection_scores.append(
-            pipelineqa.QAScore(
+            pqa.QAScore(
                 score, longmsg=longmsg, shortmsg=shortmsg,
                 origin=origin, applies_to=selection
             )
@@ -2980,16 +2981,16 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
                 for spw_id, deviation_masks in deviation_masks_for_image
             ])
-            origin = pipelineqa.QAOrigin(metric_name='score_sd_line_detection',
+            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                                   metric_score=metric_value,
                                   metric_units='Channel range(s) possibly affected by instrumental instabilities')
-            selection = pipelineqa.TargetDataSelection(vis=set([ms_name]),
+            selection = pqa.TargetDataSelection(vis=set([ms_name]),
                                                 spw=spw_ids,
                                                 field=set([field_name]),
                                                 ant=antenna_names,
                                                 intent={'TARGET'})
             deviation_mask_scores.append(
-                pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
             )
 
     return line_detection_scores + deviation_mask_scores
@@ -2998,7 +2999,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
-                              pol: str, stat: List[tuple]) -> pipelineqa.QAScore:
+                              pol: str, stat: List[tuple]) -> pqa.QAScore:
     """
     Return Pipeline QA score of baseline quality.
 
@@ -3036,11 +3037,11 @@ def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
         quality='Moderate'
     shortmsg = f'{quality} baseline flatness'
     longmsg = f'{quality} baseline flatness in {vis}, {source}, {ant}, virtual spw {vspw}, {pol}'
-    origin = pipelineqa.QAOrigin(metric_name='score_sd_baseline_quality',
+    origin = pqa.QAOrigin(metric_name='score_sd_baseline_quality',
                           metric_score=len(stat),
                           metric_units='Statistics of binned spectra')
 
-    return pipelineqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -3229,11 +3230,11 @@ def score_checksources(mses, fieldname, spwid, imagename, rms, gfluxscale, gflux
         if score <= 0.9:
             shortmsg = 'Check source fit not optimal'
 
-    origin = pipelineqa.QAOrigin(metric_name='ScoreChecksources',
+    origin = pqa.QAOrigin(metric_name='ScoreChecksources',
                           metric_score=metric_score,
                           metric_units=metric_units)
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin), offset, offset_err, beams, beams_err, fitflux, fitflux_err, fitpeak
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin), offset, offset_err, beams, beams_err, fitflux, fitflux_err, fitpeak
 
 
 @log_qa
@@ -3241,11 +3242,11 @@ def score_multiply(scores_list):
     score = functools.reduce(operator.mul, scores_list, 1.0)
     longmsg = 'Multiplication of scores.'
     shortmsg = 'Multiplication of scores.'
-    origin = pipelineqa.QAOrigin(metric_name='score_multiply',
+    origin = pqa.QAOrigin(metric_name='score_multiply',
                           metric_score=len(scores_list),
                           metric_units='Number of multiplied scores.')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -3309,7 +3310,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     max_metric_score = np.max(metric_score)
     # lower the score if elevation difference exceeds 3deg
     score = 1.0 if max_metric_score < el_threshold else 0.8
-    origin = pipelineqa.QAOrigin(metric_name='OnOffElevationDifference',
+    origin = pqa.QAOrigin(metric_name='OnOffElevationDifference',
                           metric_score=max_metric_score,
                           metric_units='deg')
 
@@ -3318,7 +3319,7 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     else:
         shortmsg = 'Elevation difference between ON and OFF is below {}deg'.format(el_threshold)
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
 def generate_metric_mask(context, result, cs, mask):
@@ -3591,18 +3592,18 @@ def score_sdimage_masked_pixels(context, result):
         mmin = 0.1
         score = (smax - smin) / (mmax - mmin) * (metric_score - mmin) + smin
 
-    origin = pipelineqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
+    origin = pqa.QAOrigin(metric_name='SingleDishImageMaskedPixels',
                           metric_score=metric_score,
                           metric_units='Fraction of masked pixels in image')
 
-    return pipelineqa.QAScore(score,
+    return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
                        origin=origin)
 
 
 @log_qa
-def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -> pipelineqa.QAScore:
+def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """Evaluate QA score based on the absorption feature in the image.
 
     If there is an emission at OFF_SOURCE position (contamination),
@@ -3639,14 +3640,14 @@ def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -
         smsg = 'No astronomical line contamination was detected.'
         score = 1.0
 
-    origin = pipelineqa.QAOrigin(metric_name='SingleDishImageContamination',
+    origin = pqa.QAOrigin(metric_name='SingleDishImageContamination',
                           metric_score=contaminated,
                           metric_units='Sign of possible line contamination')
-    selection = pipelineqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
                                         field=set(result.outcome['assoc_fields']),
                                         intent={'TARGET'},
                                         pol={'I'})
-    return pipelineqa.QAScore(score,
+    return pqa.QAScore(score,
                        longmsg=lmsg,
                        shortmsg=smsg,
                        origin=origin,
@@ -3691,12 +3692,12 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
                ''.format(utils.dequote(field.name), ','.join(field.intents), spw_id, vis, q_spw, ref_spw))
     shortmsg = 'Internal spw-spw consistency'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_gfluxscale_k_spw',
+    origin = pqa.QAOrigin(metric_name='score_gfluxscale_k_spw',
                           metric_score=float(k_spw),
                           metric_units='Number of spws with missing SNR measurements')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin,
-                              applies_to=pipelineqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin,
+                              applies_to=pqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
 
 
 @log_qa
@@ -3725,11 +3726,11 @@ def score_science_spw_names(mses, virtual_science_spw_names):
         longmsg = '{0} Virtual spw ID mapping will not work.'.format(' '.join(msgs))
         shortmsg = 'Science spw names do not match'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_spwnames',
+    origin = pqa.QAOrigin(metric_name='score_spwnames',
                           metric_score=score,
                           metric_units='spw names match virtual spw name lookup table')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 def score_renorm(result):
@@ -3740,15 +3741,15 @@ def score_renorm(result):
         msg = 'Restore successful'
         score = 1.0
 
-    origin = pipelineqa.QAOrigin(metric_name='score_renormalize',
+    origin = pqa.QAOrigin(metric_name='score_renormalize',
                           metric_score=score,
                           metric_units='')
-    return pipelineqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
 @log_qa
 def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
-                            threshold: float = 0.1) -> List[pipelineqa.QAScore]:
+                            threshold: float = 0.1) -> List[pqa.QAScore]:
     """
     This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
     and creates a score based on how large the deviation from one is.
@@ -3784,10 +3785,10 @@ def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: 
                 longmsg = f"Session '{session_name}' has gain ratios deviate from 1 by more than {threshold} for SpW" \
                           f" {spwid}, antenna(s) {ant_str}"
                 shortmsg = "Large gain ratio deviation"
-                origin = pipelineqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+                origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
                                       metric_score=score,
                                       metric_units='gain ratio')
-                scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+                scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     # If no large deviations in gain ratio are found, then create a good score.
     if not scores:
@@ -3795,17 +3796,17 @@ def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: 
         longmsg = f"Session '{session_name}' has gain ratios with deviations from 1 <= the threshold of {threshold}" \
                   f" for all SpWs and all antennas."
         shortmsg = "Gain ratio"
-        origin = pipelineqa.QAOrigin(metric_name='score_polcal_gain_ratio',
+        origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio',
                               metric_score=score,
                               metric_units='gain ratio')
-        scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
 
 
 @log_qa
 def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
-        -> pipelineqa.QAScore:
+        -> pqa.QAScore:
     """
     This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
     scores outliers beyond the threshold.
@@ -3836,16 +3837,16 @@ def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, L
         longmsg = f"Session '{session_name}' has gain ratio RMS <= the threshold of {threshold} for all scans."
         shortmsg = "Gain ratio RMS"
 
-    origin = pipelineqa.QAOrigin(metric_name='score_polcal_gain_ratio_rms',
+    origin = pqa.QAOrigin(metric_name='score_polcal_gain_ratio_rms',
                           metric_score=score,
                           metric_units='gain ratio rms')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
 def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
-                         th_bad: float = 0.15) -> List[pipelineqa.QAScore]:
+                         th_bad: float = 0.15) -> List[pqa.QAScore]:
     """
     This heuristic inspects the polarization calibrator leakage (D-terms)
     solutions caltable and create a score based on how large the deviation from
@@ -3907,10 +3908,10 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
                               f" SpW {spwid}, antenna(s)" \
                               f" {utils.commafy([ant_names[i] for i in poor_antids], quotes=False)}."
                     shortmsg = "Large deviation D-terms solutions"
-                    origin = pipelineqa.QAOrigin(metric_name='score_polcal_leakage',
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                                           metric_score=score,
                                           metric_units='D-terms solutions deviation')
-                    scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
                 if bad_antids:
                     score = 0.55
@@ -3918,10 +3919,10 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
                               f" SpW {spwid}, antenna(s)" \
                               f" {utils.commafy([ant_names[i] for i in bad_antids], quotes=False)}."
                     shortmsg = "Very large deviation D-terms solutions"
-                    origin = pipelineqa.QAOrigin(metric_name='score_polcal_leakage',
+                    origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                                           metric_score=score,
                                           metric_units='D-terms solutions deviation')
-                    scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+                    scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     # If no poor D-terms solutions are found, then create a good score.
     if not scores:
@@ -3929,16 +3930,16 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
         longmsg = f"Session '{session_name}' has D-terms solutions <= the threshold of {th_poor} for all SpWs and" \
                   f" antennas."
         shortmsg = "D-terms solutions"
-        origin = pipelineqa.QAOrigin(metric_name='score_polcal_leakage',
+        origin = pqa.QAOrigin(metric_name='score_polcal_leakage',
                               metric_score=score,
                               metric_units='D-terms solutions deviation')
-        scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
 
 
 @log_qa
-def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pipelineqa.QAScore]:
+def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pqa.QAScore]:
     """
     This heuristic inspects the dictionary returned by CASA's polfromgain and
     scores the residual polarization in Q and U, compared to a threshold.
@@ -3978,16 +3979,16 @@ def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: fl
             score = 1.0
             longmsg = f"Session '{session_name}' residual polarization <= the threshold of {threshold}."
             shortmsg = "Residual polarization"
-        origin = pipelineqa.QAOrigin(metric_name='score_polcal_residual_pol',
+        origin = pqa.QAOrigin(metric_name='score_polcal_residual_pol',
                               metric_score=score,
                               metric_units='residual polarization')
-        scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
 
 
 @log_qa
-def score_polcal_results(session_name: str, caltables: list) -> pipelineqa.QAScore:
+def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
     """
     This heuristic tests whether calibrations were derived for a polcal session.
 
@@ -4007,15 +4008,15 @@ def score_polcal_results(session_name: str, caltables: list) -> pipelineqa.QASco
         longmsg = f"Polarisation calibration derived for session '{session_name}'."
         shortmsg = "Polarisation calibration derived for session"
 
-    origin = pipelineqa.QAOrigin(metric_name='score_polcal_results',
+    origin = pqa.QAOrigin(metric_name='score_polcal_results',
                           metric_score=score,
                           metric_units='polarisation caltables')
 
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
-def score_fluxservice(result: ALMAImportDataResults) -> list[pipelineqa.QAScore]:
+def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
     """
     Returns QA scores based on:
       1. Flux catalog service usage and flux origin
@@ -4068,15 +4069,15 @@ def score_fluxservice(result: ALMAImportDataResults) -> list[pipelineqa.QAScore]
             "All monitoring points are within acceptable age range."
         )
 
-        scores.append(pipelineqa.QAScore(
+        scores.append(pqa.QAScore(
             age_score, longmsg=age_msg, shortmsg=age_msg,
-            origin=pipelineqa.QAOrigin('flux_monitor_age', age_score, 'days')
+            origin=pqa.QAOrigin('flux_monitor_age', age_score, 'days')
         ))
 
     # Score for flux catalog usage
-    scores.append(pipelineqa.QAScore(
+    scores.append(pqa.QAScore(
         flux_score, longmsg=flux_msg, shortmsg=flux_msg,
-        origin=pipelineqa.QAOrigin('flux_catalog_service', flux_score, 'flux service')
+        origin=pqa.QAOrigin('flux_catalog_service', flux_score, 'flux service')
     ))
 
     return scores
@@ -4106,10 +4107,10 @@ def score_fluxservicemessages(result):
                                                                                             qacode['clarification'])
                     shortmsg = "Flux service returned warning messages."
 
-    origin = pipelineqa.QAOrigin(metric_name='score_fluxservice_messaging',
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_messaging',
                           metric_score=score,
                           metric_units='flux service messaging')
-    return pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -4131,10 +4132,10 @@ def score_fluxservicestatuscodes(result):
                     score = 0.3
                     msg = "A query of the flux catalog service returned a status code: {!s}".format(str(qacode['status_code']))
 
-    origin = pipelineqa.QAOrigin(metric_name='score_fluxservice_statuscode',
+    origin = pqa.QAOrigin(metric_name='score_fluxservice_statuscode',
                           metric_score=score,
                           metric_units='flux service status code')
-    return pipelineqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
 @log_qa
@@ -4150,10 +4151,10 @@ def score_fluxcsv(result):
         score = 0.3
         msg = "flux.csv does not exist"
 
-    origin = pipelineqa.QAOrigin(metric_name='score_fluxcsv',
+    origin = pqa.QAOrigin(metric_name='score_fluxcsv',
                           metric_score=score,
                           metric_units='flux csv')
-    return pipelineqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+    return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
 
 
 @log_qa
@@ -4190,76 +4191,76 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     if 0.33 <= mom8_fc_final_score < 0.66:
         longmsg = 'MOM8 FC image for field {:s} virtspw {:s} with a peak SNR of {:#.5g} and a flux histogram asymmetry which indicate that there may be residual line emission in the findcont channels.'.format(field, spw, mom8_fc_peak_snr)
         shortmsg = 'MOM8 FC image indicates residual line emission'
-        weblog_location = pipelineqa.WebLogLocation.UNSET
+        weblog_location = pqa.WebLogLocation.UNSET
     else:
         longmsg = 'MOM8 FC image for field {:s} virtspw {:s} has a peak SNR of {:#.5g} and no significant flux histogram asymmetry.'.format(field, spw, mom8_fc_peak_snr)
         shortmsg = 'MOM8 FC peak SNR and flux histogram'
-        weblog_location = pipelineqa.WebLogLocation.ACCORDION
+        weblog_location = pqa.WebLogLocation.ACCORDION
 
-    origin = pipelineqa.QAOrigin(metric_name='score_mom8_fc_image',
+    origin = pqa.QAOrigin(metric_name='score_mom8_fc_image',
                           metric_score=(mom8_fc_peak_snr, mom8_10_fc_histogram_asymmetry, mom8_fc_max_segment_beams, mom8_fc_frac_max_segment),
                           metric_units='Peak SNR / Histogram asymmetry, Max. segment size in beams, Max. segment fraction')
 
-    return pipelineqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
+    return pqa.QAScore(mom8_fc_final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, weblog_location=weblog_location)
 
 
 @log_qa
-def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pipelineqa.QAScore]:
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
     """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pipelineqa.QAScore]: list of QAScores
+        List[pqa.QAScore]: list of QAScores
     """
     msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pipelineqa.QAScore]:
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
     """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pipelineqa.QAScore]: list of QAScores
+        List[pqa.QAScore]: list of QAScores
     """
     msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pipelineqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pqa.QAScore]:
     """Calculate QAScore of gap existence in raster pattern of imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pipelineqa.QAScore]: list of QAScores
+        List[pqa.QAScore]: list of QAScores
     """
     msg = 'Unable to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_rgap, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pipelineqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pqa.QAScore]:
     """Calculate QAScore when raster scan analysis was incomplete in imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pipelineqa.QAScore]: list of QAScores
+        List[pqa.QAScore]: list of QAScores
     """
     msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
 
 
-def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pipelineqa.QAScore]:
+def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
     """Generate score of raster scan correctness of importdata or imaging.
 
     Args:
@@ -4268,10 +4269,10 @@ def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, Raste
         msg (str): short message for QA
 
     Returns:
-        List[pipelineqa.QAScore]: lists contains QAScore objects.
+        List[pqa.QAScore]: lists contains QAScore objects.
     """
 
-    qa_scores = []  # [pipelineqa.QAScore]
+    qa_scores = []  # [pqa.QAScore]
 
     # converting rasterscan_heuristics_results to QA score
     for _execblock_id, _rasterscan_heuristics_results_list in rasterscan_heuristics_results.items():
@@ -4283,7 +4284,7 @@ def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, Raste
     return qa_scores
 
 
-def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pipelineqa.QAScore':
+def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str) -> 'pqa.QAScore':
     """Return an object which has FAILED information in raster scan analysis.
 
     Args:
@@ -4292,18 +4293,18 @@ def _rasterscan_failed_per_eb(execblock_id:str, failed_ants: list[str], msg: str
         msg: short message for QA
 
     Returns:
-        pipelineqa.QAScore: QA score object
+        pqa.QAScore: QA score object
     """
     SCORE_FAIL = 0.8
     longmsg = msg + f' : EB:{execblock_id}:{",".join(failed_ants)}'
-    origin = pipelineqa.QAOrigin(metric_name='score_rasterscan_correctness',
+    origin = pqa.QAOrigin(metric_name='score_rasterscan_correctness',
                         metric_score=SCORE_FAIL,
                         metric_units='raster scan correctness')
-    return pipelineqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
+    return pqa.QAScore(SCORE_FAIL, longmsg=longmsg, shortmsg=msg, origin=origin)
 
 
 @log_qa
-def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pipelineqa.QAScore:
+def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pqa.QAScore:
     """
     Calculate a score for the hifa_tsysflagcontamination task based on whether
     any line contamination was flagged.
@@ -4322,21 +4323,21 @@ def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pipelin
         longmsg = f'No Tsys line contamination detected in {vis}.'
         shortmsg = 'No Tsys line contamination'
 
-    origin = pipelineqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
+    origin = pqa.QAOrigin(metric_name='score_tsys_line_contamination_flagged',
                           metric_score=frac_flagged,
                           metric_units='Fraction of Tsys data that was identified as line contamination and flagged')
-    return pipelineqa.QAScore(
+    return pqa.QAScore(
         score,
         longmsg=longmsg,
         shortmsg=shortmsg,
         vis=os.path.basename(vis),
         origin=origin,
-        applies_to=pipelineqa.TargetDataSelection(vis={vis})
+        applies_to=pqa.TargetDataSelection(vis={vis})
     )
 
 
 @log_qa
-def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pipelineqa.QAScore]) -> List[pipelineqa.QAScore]:
+def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QAScore]) -> List[pqa.QAScore]:
     """
     Adopt QA scores that originate from the Tsysflag line contamination
     heuristic.
@@ -4345,14 +4346,14 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pipeli
     is here mainly to log the QA scores to console for non-weblog runs
     via the @log_qa decorator.
     """
-    origin = pipelineqa.QAOrigin(
+    origin = pqa.QAOrigin(
         metric_name="score_tsysflagcontamination_external_heuristic",
         metric_score="N/A",
         metric_units="",
     )
     qascores = []
     for fq in foreign_qascores:
-        adopted_qascore = pipelineqa.QAScore(
+        adopted_qascore = pqa.QAScore(
             score=fq.score,
             shortmsg=fq.shortmsg,
             longmsg=fq.longmsg,
@@ -4364,7 +4365,7 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pipeli
 
 
 @log_qa
-def score_iersstate(mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
+def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
@@ -4396,10 +4397,10 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pipelineqa.QAScore]:
             longmsg = (f"Dates for {ms.basename} not fully covered by IERSeop2000. Please update your data repository.")
             shortmsg = "MS dates not fully covered by IERSpredict. Please update your data repository."
 
-        origin = pipelineqa.QAOrigin(metric_name='score_iersstate',
+        origin = pqa.QAOrigin(metric_name='score_iersstate',
                               metric_score=score,
                               metric_units='state of IERS tables relative to observation date')
 
-        scores.append(pipelineqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
