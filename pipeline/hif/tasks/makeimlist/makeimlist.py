@@ -555,8 +555,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 LOG.warning('Falling back to raw data for imaging.')
 
             if not all(global_column == global_columns[0] for global_column in global_columns):
-                LOG.warning(
-                    f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in ms_objects_and_columns.items())}.')
+                details_string = ','.join(f'{k.basename}: {v}' for k, v in ms_objects_and_columns.items())
+                LOG.warning(f'Data type based column selection changes among MSes: {details_string}.')
 
         if inputs.datacolumn not in (None, ''):
             ms_datacolumn = inputs.datacolumn.upper()
@@ -577,8 +577,13 @@ class MakeImList(basetask.StandardTaskTemplate):
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = False
+            automatic_datacolumn_guess = 'DATA' if global_columns[0] == 'DATA' else 'CORRECTED'
             LOG.info(
-                f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
+                f'Manual override of datacolumn to {global_datacolumn}. '
+                f'Automatic data type ({selected_datatype.name}) based datacolumn '
+                f'would have been "{automatic_datacolumn_guess}". '
+                f'Data type of {global_datacolumn} column is {global_datatype_str}.'
+            )
         else:
             if global_columns[0] == 'DATA':
                 global_datacolumn = 'data'
