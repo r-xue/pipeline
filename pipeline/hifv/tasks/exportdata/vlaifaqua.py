@@ -160,8 +160,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             spwlist = ms.get_spectral_windows(science_windows_only=True)
             for spw in spwlist:
                 nx = ElementTree.Element("SPW")
-                ElementTree.SubElement(nx, 'Channel0').text = str(spw.channels.chan_freqs.start)
-                ElementTree.SubElement(nx, 'ChannelWidth').text = str(spw.channels.chan_freqs.delta)
+                ElementTree.SubElement(nx, 'Channel0', Units="Hz").text = str(spw.channels.chan_freqs.start)
+                ElementTree.SubElement(nx, 'ChannelWidth', Units="Hz").text = str(spw.channels.chan_freqs.delta)
                 ElementTree.SubElement(nx, 'NChannels').text = str(spw.channels.chan_freqs.num_terms)
                 root.append(nx)
 
@@ -224,8 +224,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             root.append(nx)
 
             time_on_source = utils.total_time_on_source(ms.scans)
-            nx = ElementTree.Element("TimeOnSource")
-            nx.text = str(time_on_source)
+            nx = ElementTree.Element("TimeOnSource", Units="sec")
+            nx.text = str(time_on_source.total_seconds())
             root.append(nx)
 
             science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
@@ -239,7 +239,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
             nx = ElementTree.Element("TimeOnScienceTarget")
             for target, exposure in target_exposure.items():
-                sub_element = ElementTree.SubElement(nx, "Target", name=target)
+                sub_element = ElementTree.SubElement(nx, "Target", name=target, Units="sec")
                 sub_element.text = str(exposure.seconds)
 
             root.append(nx)
@@ -302,7 +302,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                             if "TOTAL" in intent:
                                 new = float(flag_totals[ms][reason][intent][0])
                                 total = float(flag_totals[ms][reason][intent][1])
-                                percentage = new/total * 100
+                                percentage = new/total
                                 output_dict[ms][reason] = percentage
         return output_dict
 
@@ -322,7 +322,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             for summary in statwt_result.summaries:
                 if summary["name"] == "statwt":
                     for field in summary["field"]:
-                        output_dict[field] = float(summary["field"][field]['flagged']/summary["field"][field]["total"])*100.0
+                        output_dict[field] = float(summary["field"][field]['flagged']/summary["field"][field]["total"])
         return output_dict
 
     def get_project_structure(self, context):
@@ -369,7 +369,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
 
     def get_sensitivity(self, context):
         """
-            return xml for image sensitity
+            return xml for image sensitivity
         """
 
         root = ElementTree.Element("Imaging")
@@ -378,47 +378,41 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             topic = result.read()
             if topic.taskname == "hif_makeimages":
                 sensitivities = topic.sensitivities_for_aqua
-                for index, sensitity in enumerate(sensitivities):
-                    nx = ElementTree.Element("sensitity")
-                    ElementTree.SubElement(nx, "Array").text = str(sensitity['array'])
-                    ElementTree.SubElement(nx, "intent").text = str(sensitity['intent'])
-                    ElementTree.SubElement(nx, "field").text = str(sensitity['field'])
-                    ElementTree.SubElement(nx, "spw").text = str(sensitity['spw'])
-                    ElementTree.SubElement(nx, "is_representative").text = str(sensitity['is_representative'])
-                    ElementTree.SubElement(nx, "bwmode").text = str(sensitity['bwmode'])
-                    ElementTree.SubElement(nx, "cell").text = str(sensitity['cell'])
-                    ElementTree.SubElement(nx, "robust").text = str(sensitity['robust'])
-                    nx_bandwidth = ElementTree.SubElement(nx, "bandwidth")
-                    ElementTree.SubElement(nx_bandwidth, "unit").text = str(sensitity['bandwidth']["unit"])
-                    ElementTree.SubElement(nx_bandwidth, "value").text = str(sensitity['bandwidth']["value"])
+                for index, sensitivity in enumerate(sensitivities):
+                    nx = ElementTree.Element("image")
+                    ElementTree.SubElement(nx, "Array").text = str(sensitivity['array'])
+                    ElementTree.SubElement(nx, "intent").text = str(sensitivity['intent'])
+                    ElementTree.SubElement(nx, "field").text = str(sensitivity['field'])
+                    ElementTree.SubElement(nx, "spw").text = str(sensitivity['spw'])
+                    ElementTree.SubElement(nx, "is_representative").text = str(sensitivity['is_representative'])
+                    ElementTree.SubElement(nx, "bwmode").text = str(sensitivity['bwmode'])
+                    ElementTree.SubElement(nx, "cell").text = str(sensitivity['cell'])
+                    ElementTree.SubElement(nx, "robust").text = str(sensitivity['robust'])
+
+                    nx_bandwidth = ElementTree.SubElement(nx, "bandwidth", Units=str(sensitivity['bandwidth']["unit"]))
+                    nx_bandwidth.text = str(sensitivity['bandwidth']["value"])
 
                     nx_beam = ElementTree.SubElement(nx, "beam")
-                    nx_beam_major = ElementTree.SubElement(nx_beam, "major")
+                    nx_beam_major = ElementTree.SubElement(nx_beam, "major", Units=str(sensitivity['beam']["major"]["unit"]))
+                    nx_beam_major.text = str(sensitivity['beam']["major"]["value"])
 
-                    ElementTree.SubElement(nx_beam_major, "unit").text = str(sensitity['beam']["major"]["unit"])
-                    ElementTree.SubElement(nx_beam_major, "value").text = str(sensitity['beam']["major"]["value"])
-                    nx_beam_minor = ElementTree.SubElement(nx_beam, "minor")
-                    ElementTree.SubElement(nx_beam_minor, "unit").text = str(sensitity['beam']["minor"]["unit"])
-                    ElementTree.SubElement(nx_beam_minor, "value").text = str(sensitity['beam']["minor"]["value"])
+                    nx_beam_minor = ElementTree.SubElement(nx_beam, "minor", Units=str(sensitivity['beam']["minor"]["unit"]))
+                    nx_beam_minor.text = str(sensitivity['beam']["minor"]["value"])
 
-                    nx_sensitivity = ElementTree.SubElement(nx, "sensitivity")
-                    ElementTree.SubElement(nx_sensitivity, "unit").text = str(sensitity['sensitivity']["unit"])
-                    ElementTree.SubElement(nx_sensitivity, "value").text = str(sensitity['sensitivity']["value"])
+                    nx_sensitivity = ElementTree.SubElement(nx, "sensitivity", Units=str(sensitivity['sensitivity']["unit"]))
+                    nx_sensitivity.text = str(sensitivity['sensitivity']["value"])
 
-                    nx_effective_bw = ElementTree.SubElement(nx, "effective_bw")
-                    ElementTree.SubElement(nx_effective_bw, "unit").text = str(sensitity['sensitivity']["unit"])
-                    ElementTree.SubElement(nx_effective_bw, "value").text = str(sensitity['sensitivity']["value"])
+                    nx_effective_bw = ElementTree.SubElement(nx, "effective_bw", Units=str(sensitivity['effective_bw']["unit"]))
+                    nx_effective_bw.text = str(sensitivity['effective_bw']["value"])
 
-                    nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min")
-                    ElementTree.SubElement(nx_pbcor_image_min, "unit").text = str(sensitity['sensitivity']["unit"])
-                    ElementTree.SubElement(nx_pbcor_image_min, "value").text = str(sensitity['sensitivity']["value"])
+                    nx_pbcor_image_min = ElementTree.SubElement(nx, "pbcor_image_min", Units=str(sensitivity['pbcor_image_min']["unit"]))
+                    nx_pbcor_image_min.text = str(sensitivity['pbcor_image_min']["value"])
 
-                    nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max")
-                    ElementTree.SubElement(nx_pbcor_image_max, "unit").text = str(sensitity['sensitivity']["unit"])
-                    ElementTree.SubElement(nx_pbcor_image_max, "value").text = str(sensitity['sensitivity']["value"])
+                    nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max", Units=str(sensitivity['pbcor_image_max']["unit"]))
+                    nx_pbcor_image_max.text = str(sensitivity['pbcor_image_max']["value"])
 
                     if index < len(topic.results):
-                        ElementTree.SubElement(nx, "TheoreticalSensitivity").text = str(topic.results[index].sensitivity)
+                        ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['sensitivity']["unit"])).text = str(topic.results[index].sensitivity)
                     root.append(nx)
 
         return root
@@ -428,29 +422,33 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
             return xml for data volume
         """
         root = ElementTree.Element("DataVolume")
+        nx = ElementTree.Element("ProductsDirectory", Units="MB")
+        size_products_dir = utils.get_directory_size(context.products_dir)
+        nx.text = "{:.2f}".format(size_products_dir)
+        root.append(nx)
         for result in context.results:
             result = result.read()
             if result.taskname == "hif_checkproductsize":
-                nx = ElementTree.Element("AllowedMaxCubeSize")
-                nx.text = str(result.allowed_maxcubesize)
+                nx = ElementTree.Element("AllowedMaxCubeSize", Units="MB")
+                nx.text = str(result.allowed_maxcubesize * 1024 if result.allowed_maxcubesize != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("AllowedMaxCubeLimit")
-                nx.text = str(result.allowed_maxcubelimit)
+                nx = ElementTree.Element("AllowedMaxCubeLimit", Units="MB")
+                nx.text = str(result.allowed_maxcubelimit * 1024 if result.allowed_maxcubelimit != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("PredictedMaxCubeSize")
-                nx.text = str(result.original_maxcubesize)
+                nx = ElementTree.Element("PredictedMaxCubeSize", Units="MB")
+                nx.text = str(result.original_maxcubesize * 1024 if result.original_maxcubesize != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("MitigatedMaxCubeSize")
-                nx.text = str(result.mitigated_maxcubesize)
+                nx = ElementTree.Element("MitigatedMaxCubeSize", Units="MB")
+                nx.text = str(result.mitigated_maxcubesize * 1024 if result.mitigated_maxcubesize != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("AllowedMaxProductSize")
-                nx.text = str(result.allowed_productsize)
+                nx = ElementTree.Element("AllowedMaxProductSize", Units="MB")
+                nx.text = str(result.allowed_productsize * 1024 if result.allowed_productsize != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("InitialProductSize")
-                nx.text = str(result.original_productsize)
+                nx = ElementTree.Element("InitialProductSize", Units="MB")
+                nx.text = str(result.original_productsize * 1024 if result.original_productsize != -1 else -1)
                 root.append(nx)
-                nx = ElementTree.Element("MitigatedProductSize")
-                nx.text = str(result.mitigated_productsize)
+                nx = ElementTree.Element("MitigatedProductSize", Units="MB")
+                nx.text = str(result.mitigated_productsize * 1024 if result.mitigated_productsize != -1 else -1)
                 root.append(nx)
         return root
 
