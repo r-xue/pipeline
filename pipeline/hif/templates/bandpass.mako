@@ -48,20 +48,22 @@ $(document).ready(function() {
 % endif
 
 %if phaseup_applications:
-<h4>Phase-up on bandpass calibrator</h4>
+<h4>Spectral Window Phase Offsetting and Phase-up on the Bandpass Calibrator</h4>
 <table class="table table-bordered" summary="Application Results">
-	<caption>Applied calibrations and parameters used for phase-up calibration</caption>
+	<caption>Temporarily applied calibrations and parameters used for phase-up on the Bandpass calibrator. In case the
+	low SNR heuristics require the combination of SpWs for the phase-up solution, an initial phase offset solution is
+	computed using a solution interval = 'inf' over the bandpass scan, to align the phases of each SpW. The temporary
+	phase-offset (if generated) and phase-up tables are pre-applied to generate the bandpass solution.
+	</caption>
     <thead>
         <tr>
             <th scope="col" rowspan="2">Measurement Set</th>
-			<th scope="col" colspan="5">Phase-up Solution Parameters</th>
-<%doc>
-            <th scope="col" rowspan="2">% Flagged</th>
-</%doc>
+			<th scope="col" colspan="6">Phase-up Solution Parameters</th>
 		</tr>
 		<tr>
 			<th>Type</th>
             <th>Interval</th>
+            <th>Combine</th>
 			<th>Min Baselines per Antenna</th>
 			<th>Min SNR</th>
 			<th>Phase-up Bandwidth</th>
@@ -73,12 +75,10 @@ $(document).ready(function() {
 			<td>${application.ms}</td>
 		  	<td>${application.calmode}</td>
 		  	<td>${application.solint}</td>
+		  	<td>${application.combine}</td>
 		  	<td>${application.minblperant}</td>
 		  	<td>${application.minsnr}</td>
 		  	<td>${application.phaseupbw}</td>
-<%doc>
-		  	<td>${application.flagged}</td>
-</%doc>
 		</tr>
 % endfor		
 	</tbody>

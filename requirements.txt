@@ -1,21 +1,22 @@
 #################################################################################################################
-# CASA Requirements File - Version >=6.6.6; Python 3.10 (monolithic)
+# Pipeline Dependency Requirements File - CASA Version >=6.6.6; Python 3.10 (monolithic)
 #################################################################################################################
 #
-# Installation:
+# Usage:
 #   PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check install \
 #       --use-pep517 --upgrade-strategy=only-if-needed -r requirements.txt
-#   
-# Path Information:
-#   macOS: $casa_bin = /Applications/CASA.app/Contents/MacOS/
-#   Linux: $casa_bin = bin/ directory in package (e.g., casa-6.6.6-9-py3.10.el8/bin)
+#
+#   On Linux: $casa_bin is the bin/ directory inside the package, e.g.
+#       $ export casa_bin='<localpath>/casa-6.6.6-9-py3.10.el8/bin'
+#   On macOS, the CASA application directory structure is different:
+#       $ export casa_bin='<localpath>/CASA.app/Contents/MacOS' 
 #
 # Recommended Aliases:
-#   export casa_bin='/Applications/CASA.app/Contents/MacOS'  # adjust for Linux
-#   alias casa='${casa_bin}/casa --nologger --log2term --agg'
-#   alias casa_python='PYTHONNOUSERSITE=1 ${casa_bin}/python3'
-#   alias casa_pip='PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check'
-#   alias casa_pip_install='PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check install --use-pep517'
+#
+#   $ alias casa='${casa_bin}/casa --nologger --log2term --agg'
+#   $ alias casa_python='PYTHONNOUSERSITE=1 ${casa_bin}/python3'
+#   $ alias casa_pip='PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check'
+#   $ alias casa_pip_install='PYTHONNOUSERSITE=1 ${casa_bin}/pip3 --disable-pip-version-check install --use-pep517'
 #
 #################################################################################################################
 
@@ -29,4 +30,5 @@ ps_mem==3.14                    # https://pypi.org/project/ps-mem
 astropy==6.1.7                  # https://docs.astropy.org/en/stable/changelog.html
                                 # last version compatible with Python 3.10
 docstring-inheritance==2.2.2    # https://pypi.org/project/docstring-inheritance
-bdsf==1.13.0.post2              # Only required for the VLASS pipeline
+bdsf==1.13.0.post2              # https://github.com/lofar-astron/PyBDSF
+                                # Only required for the VLASS pipeline

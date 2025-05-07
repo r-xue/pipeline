@@ -316,7 +316,7 @@ class LinuxEnvironment(CommonEnvironment):
                     val = ast.literal_eval(val)
                 yield name, val
             else:
-                LOG.warn(f'{filename}:{line_number}: bad line {line!r}')
+                LOG.warning(f'{filename}:{line_number}: bad line {line!r}')
 
     @staticmethod
     def _from_lscpu(lscpu_json: dict, key: str) -> str:
