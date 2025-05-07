@@ -205,9 +205,6 @@ As reported in `CAS-14037 <https://open-jira.nrao.edu/browse/CAS-14037>`_, to av
 
     * Because the `casatools`_ wheels only start being built from CASA ver>=6.6.4 with Py3.10 on the ARM64 (Apple Silicon) platform:
 
-      * If your local conda install architecture is "arm64 (Apple Silicon)" rather than "x86_64", you have to manually edit "python=3.8"
-      to "python=3.10" below for the Python version specification. You will also skip the installation of two optional dependencies: "almatasks" and "pybsdf"
-
       * If your local **Conda installation architecture** is "x86_64" (either an Intel Mac or Apple Silicon Mac with the Rosetta 2 emulation layer),
       you can keep using the "python=3.8" in the Conda environment for full compatibility and support of all Pipeline features. Note one might need to set
       an environment variable (SYSTEM_VERSION_COMPAT=0) for your Conda command because `Conda/Python3.8 <https://github.com/pypa/packaging/pull/319>`_ is too old for pip to recognize the macOS version labels. If your local Conda architecture is "arm64" (native on Apple Silicon Macs), please choose the Python 3.10 setup (as specified in the latest `pipeline.yml``).
