@@ -46,9 +46,22 @@ class SDImagingResultItem(common.SingleDishResults):
             if cond:
                 context.sciimlist.add_item(image_item)
 
-    def _outcome_name(self):
-        # return [image.imagename for image in self.outcome]
-        return self.outcome['image'].imagename
+    def _outcome_name(self) -> str:
+        """Return image name as a name of the outcome.
+
+        When created image doesn't have valid pixels, the outcome
+        will be None. In this case, the function returns 'None'.
+        If outcome['image'] is set, it should be an ImageItem object.
+
+        Returns:
+            Name of the outcome.
+        """
+        if isinstance(self.outcome, dict):
+            image_item = self.outcome.get('image', None)
+            assert isinstance(image_item, imagelibrary.ImageItem)
+            return self.outcome['image'].imagename
+        else:
+            return 'None'
 
 
 class SDImagingResults(basetask.ResultsList):
