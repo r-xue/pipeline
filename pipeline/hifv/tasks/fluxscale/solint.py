@@ -16,6 +16,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure import utils
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -218,11 +219,9 @@ class Solint(basetask.StandardTaskTemplate):
         # Solint section
 
         (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
-
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -236,7 +235,7 @@ class Solint(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band),
                         '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         integration_time = m.get_integration_time_stats(stat_type="max")
         soltimes = [integration_time * x for x in soltimes]
 

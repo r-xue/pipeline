@@ -10,6 +10,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -200,12 +201,9 @@ class Syspower(basetask.StandardTaskTemplate):
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
 
+        # PIPE-2164: getting rq table from context
         # Assumes hifv_priorcals was executed as the previous stage
-        try:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result[0].final[0].gaintable
-        except Exception as ex:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
-            LOG.debug(ex)
+        rq_table = next(iter(self.inputs.context.callibrary.active.get_caltable('rq')))
 
         band_baseband_spw = collections.defaultdict(dict)
 
