@@ -605,7 +605,8 @@ class ExportData(basetask.StandardTaskTemplate):
 
         return sessiondict
 
-    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only, pipeline_stats_file=None):
+    def _do_if_auxiliary_products(self, oussid, output_dir, products_dir, vislist, imaging_products_only,
+                                  pipeline_stats_file=None, antposfile_name='antennapos.csv'):
         """
         Generate the auxiliary products
         """
@@ -615,7 +616,6 @@ class ExportData(basetask.StandardTaskTemplate):
             antposfile_name = 'Undefined'
         else:
             fluxfile_name = 'flux.csv'
-            antposfile_name = 'antennapos.csv'
             contfile_name = 'cont.dat'
         empty = True
 
@@ -688,7 +688,7 @@ class ExportData(basetask.StandardTaskTemplate):
                 tar.add(antpos_file, arcname=os.path.basename(antpos_file))
                 LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
             else:
-                LOG.info('Auxiliary data product antennapos.csv does not exist')
+                LOG.info('Auxiliary data product antennapos file does not exist')
 
             # Save continuum regions file
             if os.path.exists(cont_file):

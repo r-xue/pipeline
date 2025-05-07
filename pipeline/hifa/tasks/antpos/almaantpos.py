@@ -115,8 +115,8 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 Example: `"manual"`
 
             antposfile: 
-                Path to a csv file containing antenna position offsets.
-                Required if `hm_antpos="file"`. Defaults to "antennapos.json" for `hm_antpos="online"`.
+                Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
+                 of the outfile created by `getantposalma` for `hm_antpos="online"` (defaults to 'antennapos.json').
 
                 Example: `"antennapos.csv"`
 
@@ -164,8 +164,11 @@ class ALMAAntposInputs(antpos.AntposInputs):
         self.snr = snr
         self.search = search
 
-        if hm_antpos == 'file' and antposfile is None:
-            raise ValueError("`antposfile` must be defined for `hm_antpos='file'`.")
+        if antposfile is None:
+            if hm_antpos == 'file':
+                raise ValueError("`antposfile` must be defined for `hm_antpos='file'`.")
+            if hm_antpos == 'online':
+                self.antposfile = 'antennapos.json'
         elif hm_antpos == 'manual':
             # Validate `antenna` and `offsets`
             if antenna:
@@ -198,16 +201,13 @@ class ALMAAntposInputs(antpos.AntposInputs):
         if self.hm_antpos == 'online':
             infile = os.path.join(self.output_dir, self.antposfile)
         # Get the antenna and offset lists.
-        if self.hm_antpos == 'manual':
-            antenna = self.antenna
-            offsets = self.offsets
-        elif self.hm_antpos == 'file':
+        if self.hm_antpos == 'file':
             filename = os.path.join(self.output_dir, self.antposfile)
             antenna, offsets = self._read_antpos_csvfile(
                 filename, os.path.basename(self.vis))
         else:
-            antenna = ''
-            offsets = []
+            antenna = self.antenna
+            offsets = self.offsets
 
         return {'vis': self.vis,
                 'caltable': self.caltable,
@@ -221,11 +221,13 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
         Returns:
             outfile: Name of file to write antenna positions retrieved from DB.
+            overwrite: Tells `getantposalma` whether to overwrite the file if it exists. If False and the file exists, it will throw an error.
             asdm: The execution block ID (ASDM) of the dataset.
             snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will not be retrieved.
             search: Search algorithm to use. Supports 'both_latest' and 'both_closest'.
         """
         return {'outfile': self.antposfile,
+                'overwrite': True,
                 'asdm': self.context.observing_run.measurement_sets[0].execblock_id,
                 'snr': self.snr,
                 'search': self.search}
@@ -254,6 +256,8 @@ class ALMAAntpos(antpos.Antpos):
         if inputs.hm_antpos == 'online':
             # PIPE-51: retrieve json file for MS to include in the call to gencal
             antpos_args = inputs.to_antpos_args()
+            if os.path.exists(antpos_args['outfile']):
+                LOG.warning('Antenna position file %s exists. Task getantposalma will overwrite.', antpos_args['outfile'])
             antpos_job = run_with_retry(casa_tasks.getantposalma, **antpos_args)
             self._executor.execute(antpos_job)
 

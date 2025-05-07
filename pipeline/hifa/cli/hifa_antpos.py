@@ -16,17 +16,22 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
     Corrections can be input by hand, read from a file on disk, or by querying an ALMA 
     database service.
 
-    The antenna positions file is in 'csv' format containing 6 comma-delimited
-    columns as shown below. This file should not include blank lines, including
-    after the end of the last entry. The default name of this file is 'antennapos.csv'.
+    The `antposfile` parameter serves a dual purpose, depending on which mode is set.
 
-    Example of contents for an 'antennapos.csv' file::
+    For `hm_antpos='file'`, `antposfile` defines the antenna positions file in 'csv' format containing
+    6 comma-delimited columns as shown below. This file should not include blank lines, including
+    after the end of the last entry. This parameter is required for `hm_antpos='file'`.
+
+    Example of contents for a .csv file::
 
         ms,antenna,xoffset,yoffset,zoffset,comment
         uid___A002_X30a93d_X43e.ms,DV11,0.000,0.010,0.000,"No comment"
         uid___A002_X30a93d_X43e.dup.ms,DV11,0.000,-0.010,0.000,"No comment"
 
     The offset values in this file are in meters.
+
+    For `hm_antpos='online'`, `antposfile` defines the outfile produced by the CASA task
+    `getantposalma` in JSON format. If no value is set, it will default to `antennapos.json`.
 
     The corrections are used to generate a calibration table which is recorded
     in the pipeline context and applied to the raw visibility data, on the fly to
