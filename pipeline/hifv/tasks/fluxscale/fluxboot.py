@@ -483,6 +483,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
         scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
 
         for field in calfieldlist:
+            if utils.get_row_count(calMs, str(field)) == 0:
+                LOG.warning("No data found for field {!s}, skipping fluxscale for field {!s}".format(field, field))
+                continue
             fitorder = self.inputs.fitorder
             spwlist = []
 
@@ -509,11 +512,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                              'append': False,
                              'refspwmap': [-1],
                              'fitorder': fitorder}
-
-                job = casa_tasks.fluxscale(**task_args)
-                fs_result = self._executor.execute(job)
-                fluxscale_result.append(fs_result)
-
+                try:
+                    job = casa_tasks.fluxscale(**task_args)
+                    fs_result = self._executor.execute(job)
+                    fluxscale_result.append(fs_result)
+                except Exception as e:
+                    LOG.warning("Fluxscale failed for field {!s}", field)
         return fluxscale_result
 
     def find_fitorder(self, spwlist: List[str] = []) -> int:

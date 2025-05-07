@@ -994,20 +994,19 @@ class Finalcals(basetask.StandardTaskTemplate):
             fieldobj, = scanobj.fields
             if str(fieldobj.id) not in fieldidlist:
                 fieldidlist.append(str(fieldobj.id))
-
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            task_args['selectdata'] = True
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            if utils.get_row_count(calMs, fieldidstring) != 0:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True
-
 
