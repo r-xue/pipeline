@@ -7,7 +7,6 @@ import pipeline.h.tasks.exportdata.exportdata as exportdata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.renderer import stats_extractor
 
 from . import almaifaqua
 
