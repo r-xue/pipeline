@@ -1,10 +1,10 @@
-"""
-The conversion module contains utility functions.
+"""Utility functions for data type conversion and string formatting.
 
 The conversion module contains utility functions that convert between data
 types and assist in formatting objects as strings for presentation to the
 user.
 """
+
 import collections
 import decimal
 import math
@@ -14,7 +14,7 @@ import string
 import typing
 from datetime import datetime, timedelta
 from numbers import Number
-from typing import Any, Dict, Iterator, List, Optional, Sequence, Tuple, Union, Iterable
+from typing import Any, Dict, Iterable, Iterator, List, Optional, Sequence, Tuple, Union
 
 import astropy.units as u
 import cachetools
@@ -28,7 +28,7 @@ LOG = logging.get_logger(__name__)
 
 __all__ = ['commafy', 'flatten', 'mjd_seconds_to_datetime', 'get_epoch_as_datetime', 'range_to_list', 'to_CASA_intent',
            'to_pipeline_intent', 'field_arg_to_id', 'spw_arg_to_id', 'ant_arg_to_id', 'safe_split', 'dequote',
-           'format_datetime', 'format_timedelta', 'record_to_quantity']
+           'format_datetime', 'format_timedelta', 'record_to_quantity', 'human_file_size']
 
 # By default we use CASA to parse arguments into spw/field/ant IDs. However, this
 # requires access to the data. Setting this property to False uses the pipeline's
@@ -756,3 +756,65 @@ def refcode_to_skyframe(refcode):
         frame = 'fk4'
 
     return frame
+
+
+def human_file_size(size_in_bytes: int | float) -> str:
+    """Converts a file size in bytes to a human-readable string format.
+
+    Uses binary prefixes (KB, MB, GB, TB, PB, EB, ZB, YB) where 1 KB = 1024 bytes.
+
+    Args:
+        size_in_bytes: The size in bytes (integer or float).
+
+    Returns:
+        A string representing the human-readable file size (e.g., "1.2 KB", "3.45 MB").
+
+    Raises:
+        ValueError: If the input size_in_bytes is negative.
+
+    Examples:
+        >>> bytes_to_human_readable(0)
+        '0 Bytes'
+        >>> bytes_to_human_readable(500)
+        '500 Bytes'
+        >>> bytes_to_human_readable(1024)
+        '1.0 KB'
+        >>> bytes_to_human_readable(1500)
+        '1.46 KB'
+        >>> bytes_to_human_readable(1024 * 1024)
+        '1.0 MB'
+        >>> bytes_to_human_readable(2500000)
+        '2.38 MB'
+        >>> bytes_to_human_readable(1024**3 * 1.5)
+        '1.5 GB'
+        >>> bytes_to_human_readable(1024**6)
+        '1.0 EB'
+    """
+    if size_in_bytes < 0:
+        raise ValueError("File size cannot be negative.")
+
+    if size_in_bytes == 0:
+        return "0 Bytes"
+
+    # Define the units and the base (1024 for binary prefixes)
+    unit_labels = ("Bytes", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+    base = 1024
+
+    # Calculate the index of the appropriate unit
+    unit_index = int(math.floor(math.log(size_in_bytes, base)))
+
+    # Ensure the index does not exceed the available units
+    unit_index = min(unit_index, len(unit_labels) - 1)
+
+    # Calculate the size in the chosen unit
+    human_readable_size = size_in_bytes / (base**unit_index)
+
+    # Get the unit label
+    unit = unit_labels[unit_index]
+
+    # Format the output string
+    if unit == "Bytes":
+        return f"{int(human_readable_size)} {unit}"
+    else:
+        # Format to one decimal place, adjust as needed
+        return f"{human_readable_size:.1f} {unit}"
