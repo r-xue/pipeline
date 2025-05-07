@@ -16,7 +16,7 @@ def h_init(loglevel='info', plotlevel='default', weblog=True):
     state (h_init) or be loading a saved pipeline state (h_resume).
 
     h_init creates an empty pipeline context but does not load visibility data
-    into the context. hif_importdata or hsd_importdata can be used to load data.
+    into the context. hifa_importdata, hifv_importdata, or hsd_importdata can be used to load data.
 
     The pipeline context is returned.
     

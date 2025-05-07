@@ -118,7 +118,7 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
                 have a transmissivity below this level.
 
             fileonline: File containing the online flags. These are computed by the
-                h_init or hif_importdata data tasks. If the online flags files
+                h_init or <hifa,hifv>_importdata data tasks. If the online flags files
                 are undefined a name of the form 'msname.flagonline.txt' is assumed.
 
             template: Apply flagging templates

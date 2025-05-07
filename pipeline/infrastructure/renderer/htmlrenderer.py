@@ -2090,7 +2090,7 @@ class LogCopier(object):
 #
 #        # Task executions are bookended by statements log entries like this:
 #        #
-#        # 2013-02-15 13:55:47 INFO    hif_importdata::::casa+ ##########################################
+#        # 2013-02-15 13:55:47 INFO    hifa_importdata::::casa+ ##########################################
 #        #
 #        # This regex matches this pattern, and therefore the start and end
 #        # sections of the CASA log for this task 
