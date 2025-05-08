@@ -29,7 +29,6 @@ import glob
 import os.path
 import re
 from collections import OrderedDict
-from typing import Dict, List, Union, Tuple
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -79,7 +78,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
     # all results of this type regardless of which task generated it
     generating_task = None
 
-    def is_handler_for(self, result:Union[Results, ResultsList]) -> bool:
+    def is_handler_for(self, result: Results | ResultsList) -> bool:
         """
         Return True if this RegressionExtractor can process the Result.
 
@@ -156,7 +155,7 @@ class RegressionExtractorRegistry(object):
         self.__handlers.append(handler)
 
 
-    def handle(self, result:Union[Results, ResultsList]) -> OrderedDict:
+    def handle(self, result: Results | ResultsList) -> OrderedDict:
         """
         Extract values from corresponding Extractor object of Result object.
 
@@ -1042,7 +1041,7 @@ def extract_qa_score_regression(prefix: str, result: Results) -> dict:
     return d
 
 
-def extract_regression_results(context: Context) -> List[str]:
+def extract_regression_results(context: Context) -> list[str]:
     """
     Extract regression result and return logs.
 
@@ -1061,7 +1060,7 @@ def extract_regression_results(context: Context) -> List[str]:
     return ['{}={}'.format(k, v)for k, v in unified.items()]
 
 
-def missing_directories(context: Context) -> List[str]:
+def missing_directories(context: Context) -> list[str]:
     """
     Check if all of rawdata/, working/, and products/ are present.
 
@@ -1131,7 +1130,7 @@ def errorexit_present(context: Context) -> bool:
 #     return sanity_checks
 
 
-def get_all_subclasses(cls: RegressionExtractor) -> List[RegressionExtractor]:
+def get_all_subclasses(cls: RegressionExtractor) -> list[RegressionExtractor]:
     """
     Get all subclasses from RegressionExtractor classes tree recursively.
 
