@@ -22,6 +22,7 @@ from .jobrequest import JobRequest
 from .launcher import Context, Pipeline
 from .logging import get_logger
 
+
 LOG = logging.get_logger(__name__)
 PLOT_LEVEL = '20'
 

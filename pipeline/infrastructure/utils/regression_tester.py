@@ -22,6 +22,7 @@ from casatasks.private import tec_maps
 from pipeline import environment, infrastructure, recipereducer
 from pipeline.infrastructure import casa_tools, executeppr, executevlappr, launcher, utils
 from pipeline.infrastructure.renderer import regression
+from pipeline.infrastructure import mpihelpers
 
 if TYPE_CHECKING:
     from packaging.version import Version
@@ -266,67 +267,33 @@ class PipelineRegression:
         # set datapath in ~/.casa/config.py, e.g. datapath = ['/users/jmasters/pl-testdata.git']
         input_vis = [casa_tools.utils.resolve(testinput) for testinput in self.testinput]
 
-        if not self.compare_only:
+        if not self.compare_only and omp_num_threads is not None:
             # optionally set OpenMP nthreads to a specified value.
-            if omp_num_threads is not None:
-                # casa_tools.casalog.ompGetNumThreads() and get_casa_session_details()['omp_num_threads'] are equivalent.
-                default_nthreads = utils.get_casa_session_details()['omp_num_threads']
-                casa_tools.casalog.ompSetNumThreads(omp_num_threads)
-
-            last_casa_logfile = casa_tools.casalog.logfile()
+            # casa_tools.casalog.ompGetNumThreads() and utils.get_casa_session_details()['omp_num_threads'] are equivalent.
+            default_nthreads = utils.get_casa_session_details()['omp_num_threads']
+            casa_tools.casalog.ompSetNumThreads(omp_num_threads)
 
         try:
-            # run the pipeline for new results
+            with utils.working_directory(os.path.join(self.output_dir, 'working'), create=True) as cwd:
+                if not self.compare_only:
+                    # run the pipeline for new results
+                    if self.ppr:
+                        self.__run_ppr(input_vis, self.ppr, telescope)
+                    else:
+                        self.__run_reducer(input_vis)
+                # Get new results
+                new_results = self.__get_results_of_from_current_context()
 
-            # switch from the pytest-call working directory to the root folder for this test.
-            os.chdir(self.output_dir)
+                # new results file path
+                new_file = f'{self.visname[0]}.NEW.results.txt'
 
-            if not(self.compare_only):
-                # create the sub-directory structure for this test and switch to "working/"
-                dd_list = ['products', 'working', 'rawdata'] if self.ppr else ['products', 'working']
-                for dd in dd_list:
-                    try:
-                        os.mkdir(dd)
-                    except FileExistsError:
-                        pass
-                os.chdir('working')
+                # Store new results in a file
+                self.__save_new_results_to(new_file, new_results)
 
-                # PIPE-1301: shut down the existing plotms process to avoid side-effects from changing CWD.
-                # This is implemented as a workaround for CAS-13626
-                utils.shutdown_plotms()
-
-                # PIPE-1432: reset casatasks/tec_maps.workDir as it's unaware of a CWD change.
-                if hasattr(tec_maps, 'workDir'):
-                    tec_maps.workDir = os.getcwd()+'/'
-
-                # switch to per-test casa/PL logfile paths and backup the default(initial) casa logfile name
-                self.__reset_logfiles(prepend=True)
-
-                if self.ppr:
-                    self.__run_ppr(input_vis, self.ppr, telescope)
-                else:
-                    self.__run_reducer(input_vis)
-            else:
-                os.chdir('working')
-
-            # Get new results
-            new_results = self.__get_results_of_from_current_context()
-
-            # new results file path
-            new_file = f'{self.visname[0]}.NEW.results.txt'
-
-            # Store new results in a file
-            self.__save_new_results_to(new_file, new_results)
-
-            # Compare new results with expected results
-            self.__compare_results(new_file, default_relative_tolerance)
+                # Compare new results with expected results
+                self.__compare_results(new_file, default_relative_tolerance)
 
         finally:
-            if not self.compare_only:
-                # restore the default logfile state
-                self.__reset_logfiles(casa_logfile=last_casa_logfile)
-
-            os.chdir(self.current_path)
 
             # clean up if requested
             if not self.compare_only and self.remove_workdir and os.path.isdir(self.output_dir):
@@ -448,35 +415,6 @@ class PipelineRegression:
         """
         LOG.warning("Running without Pipeline Processing Request (PPR).  Using recipereducer instead.")
         recipereducer.reduce(vis=input_vis, procedure=self.recipe)
-
-    def __reset_logfiles(self,
-                         casacalls_logfile: Optional[str] = None,
-                         casa_logfile: Optional[str] = None,
-                         prepend: Optional[bool] = False
-                         ) -> None:
-        """Put CASA/Pipeline logfiles into the test working directory."""
-
-        # reset casacalls-*.txt
-        if casacalls_logfile is None:
-            casacalls_logfile = 'casacalls-{!s}.txt'.format(platform.node().split('.')[0])
-        else:
-            casacalls_logfile = casacalls_logfile
-        infrastructure.logging.get_logger('CASACALLS', stream=None, format='%(message)s', addToCasaLog=False,
-                           filename=casacalls_logfile)
-        # reset casa-*.log
-        if casa_logfile is None:
-            now_str = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")
-            casa_logfile = os.path.abspath(f'casa-{now_str}.log')
-        else:
-            casa_logfile = os.path.abspath(casa_logfile)
-        last_casa_logfile = casa_tools.casalog.logfile()
-        casa_tools.casalog.setlogfile(casa_logfile)
-
-        # prepend the content of the last CASA logfile in the new logfile.
-        if prepend and os.path.exists(last_casa_logfile) and casa_logfile != last_casa_logfile:
-            with open(last_casa_logfile, 'r') as infile:
-                with open(casa_logfile, 'a') as outfile:
-                    outfile.write(infile.read())
 
 
 # The methods below are test methods called from pytest.

@@ -22,15 +22,13 @@ import string
 import uuid
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
-from pipeline.infrastructure.basetask import ResultsProxy
-from pipeline.infrastructure.jobrequest import JobRequest
-from pipeline.infrastructure.renderer.logger import Plot
-
 from .. import daskhelpers, jobrequest, logging, mpihelpers
 from .conversion import flatten, safe_split
 
 if TYPE_CHECKING:
+    from pipeline.infrastructure.jobrequest import JobRequest
     from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
 
@@ -322,6 +320,7 @@ def contains_single_dish(context: Context) -> bool:
     result0 = context.results[0]
 
     # if ResultsProxy, read pickled result
+    from pipeline.infrastructure.basetask import ResultsProxy
     if isinstance(result0, ResultsProxy):
         result0 = result0.read()
 

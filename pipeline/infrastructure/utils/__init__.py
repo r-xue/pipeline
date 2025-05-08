@@ -38,6 +38,7 @@ from .positioncorrection import *
 from .ppr import *
 from .sorting import *
 from .weblog import *
+from .conf import *
 
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [

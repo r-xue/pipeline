@@ -6,12 +6,10 @@ import pprint
 import tempfile
 from inspect import signature
 
-from ..domain.unitformat import file_size
 from . import daskhelpers, exceptions, logging
-from .utils import get_obj_size
+from .utils import get_obj_size, human_file_size
 
 mpi_spec = importlib.util.find_spec('casampi')
-
 if mpi_spec is None:
     # casampi not available
     class DummyMPIEnvironment:
@@ -47,7 +45,7 @@ class AsyncTask(object):
         """
         LOG.debug(
             'pushing tier0executable {} from the MPI client: {}'.format(
-                executable, file_size.format(get_obj_size(executable))
+                executable, human_file_size(get_obj_size(executable))
             )
         )
         self.__pid = mpiclient.push_command_request(
@@ -70,7 +68,7 @@ class AsyncTask(object):
         response = mpiclient.get_command_response(self.__pid, block=True, verbose=True)
         LOG.debug(
             'Received the response (%s) from MPIserver-%s for command_request_id=%s executing %s; content:',
-            file_size.format(get_obj_size(response)),
+            human_file_size(get_obj_size(response)),
             response[0]['server'],
             response[0]['id'],
             response[0]['parameters']['tier0_executable'],
@@ -384,7 +382,7 @@ def mpiexec(tier0_executable):
     LOG.info('Executing %s on rank%s@%s', tier0_executable, MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
 
     ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', file_size.format(get_obj_size(ret)), tier0_executable)
+    LOG.debug('Buffering the execution return (%s) of %s', human_file_size(get_obj_size(ret)), tier0_executable)
 
     return ret
 

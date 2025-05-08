@@ -4,7 +4,7 @@ pipeconfig:
   chdir: "./" # not used yet
   vis: # not used yet
   procedure: # not used yet
-  loglevel: "info" # not used yet
+  loglevel: "info" # default Python logging level (not confused with casalogsink level)
   ppr: # not used yet
   vlappr: # not used yet
   xvfb: false # pyvirtualdisplay is required for xvfb=True
@@ -33,7 +33,7 @@ pipeconfig:
         cores: 1 # Total number of cores per job
         memory: "10gb" # Total memory per job
         processes: 1 # Number of Python processes per job
-        interface: "eno1"
+        # interface: "eno1"
         walltime: "01:00:00"
       htcondor:
         # Job resource specifications

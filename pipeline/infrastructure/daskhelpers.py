@@ -24,24 +24,35 @@ import os
 from pprint import pformat
 from typing import Dict, Optional, Tuple, Union
 
-from ..domain.unitformat import file_size
 from . import logging
-from .utils import get_obj_size
+from .utils import get_obj_size, human_file_size
 
 # Check if all required dask modules are available
 dask_spec = importlib.util.find_spec('dask')
 distributed_spec = importlib.util.find_spec('distributed')
 dask_jobqueue_spec = importlib.util.find_spec('dask_jobqueue')
-
 dask_available = all([dask_spec, distributed_spec, dask_jobqueue_spec])
 
-if dask_available:
+
+# mpi_spec = importlib.util.find_spec('casampi')
+
+is_mpi_session = False
+if importlib.util.find_spec('casampi'):
+    from casampi.MPIEnvironment import MPIEnvironment
+    is_mpi_session=MPIEnvironment.is_mpi_enabled
+
+
+
+if dask_available and not is_mpi_session:
     import dask
     from dask.distributed import Client, LocalCluster, WorkerPlugin
     from dask.distributed.worker import Worker
     from dask_jobqueue import HTCondorCluster, SLURMCluster
 else:
     Client = None
+    Worker = None
+    LocalCluster = None
+    SLURMCluster = None
 
 
 daskclient: Optional[Client] = None
@@ -66,8 +77,9 @@ def is_dask_worker() -> bool:
         bool: True if the process is a Dask worker, False otherwise.
     """
     is_worker = False
-    if dask_available and Worker._instances:
-        is_worker = True
+    # if Worker:
+    if dask_available and not is_mpi_session and Worker._instances:
+        is_worker = True        
     return is_worker
 
 
@@ -88,7 +100,7 @@ class FutureTask:
         LOG.debug(
             'submitting a FutureTask %s from the dask client: %s',
             executable,
-            file_size.format(get_obj_size(executable)),
+            human_file_size(get_obj_size(executable)),
         )
         self.future = daskclient.submit(future_exec, executable)
 
@@ -104,7 +116,7 @@ class FutureTask:
         task_result, tier0_executable = self.future.result()
         LOG.debug(
             'Received the task executation result (%s) from a worker for executing %s; content:',
-            file_size.format(get_obj_size(task_result)),
+            human_file_size(get_obj_size(task_result)),
             tier0_executable,
         )
         LOG.debug(pformat(task_result))
@@ -148,7 +160,7 @@ def future_exec(tier0_executable):
     executable = tier0_executable.get_executable()
 
     ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', file_size.format(get_obj_size(ret)), tier0_executable)
+    LOG.debug('Buffering the execution return (%s) of %s', human_file_size(get_obj_size(ret)), tier0_executable)
 
     return ret, tier0_executable
 
@@ -256,7 +268,7 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
     if not dask_available:
         LOG.warning('dask[distributed] not installed; skipping...')
         return None
-    from ..pipeconfig import config
+    from pipeline.config import config
 
     dask_config_session = config['pipeconfig']['dask']
     LOG.debug('dask config (session): \n %s', pformat(dask_config_session))
@@ -289,17 +301,32 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
             threads_per_worker=1,
         )
     elif clustertype == 'slurm':
-        cluster = SLURMCluster(n_workers=n_workers, scheduler_options={'dashboard_address': dashboard_address})
-        LOG.debug(pformat(cluster.job_script()))
+        cluster = SLURMCluster(n_workers=n_workers,
+                               silence_logs='debug',
+                               # log_directory='dask-logs',
+                               scheduler_options={'dashboard_address': dashboard_address})
+        cluster.scale(n_workers)
+        LOG.debug('dask SLURMCluster job script: \n %s', pformat(cluster.job_script()))
     elif clustertype == 'htcondor':
         cluster = HTCondorCluster(n_workers=n_workers, scheduler_options={'dashboard_address': dashboard_address})
-        LOG.debug(pformat(cluster.job_script()))
+        LOG.debug('dask HTCondorCluster job script: \n %s', pformat(cluster.job_script()))
     else:
         LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
         return None
 
     if daskclient is None:
         daskclient = Client(cluster)
+  
+
+        import datetime
+
+        QUEUE_WAIT=5
+      # Wait for all the workers to be ready before continuing.
+        # nesscaryfor htcondor/slurmcluster to spawn the worker
+        # otherwise it 
+        LOG.info('wait for workers %s', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        daskclient.wait_for_workers(n_workers,timeout=QUEUE_WAIT)
+        LOG.info('workers aqauired: %s', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
         # prefer using plugin which automatically applied to new workers joined by scaling
         daskclient.register_plugin(CustomInitPlugin())
@@ -322,14 +349,41 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
         LOG.info('Cluster dashboard: %s', daskclient.dashboard_link)
         LOG.info('   client:  %s', daskclient)
         LOG.info('   cluster: %s', daskclient.cluster)
+        # daskclient.run(print,'!!!')
 
         def get_status(dask_worker: Worker) -> tuple[str, str]:
             return dask_worker.status, dask_worker.id
 
         status: Dict[str, tuple[str, str]] = daskclient.run(get_status)
-        LOG.info('worker status: \n %s', pformat(status))
+        if status:
+            LOG.info('worker status: \n %s', pformat(status))
 
     return daskclient
+
+
+def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> None:
+    """Execute the same function on both client and MPI server processes.
+
+    This function enables synchronized execution across MPI infrastructure. It's particularly useful
+    for setup tasks that need consistent state across all processes, such as changing the working directory.
+
+    Args:
+        fn: The function to execute.
+        *args: Positional arguments to pass to the function.
+        include_client: If True, the function is also executed on the client process.
+        **kwargs: Keyword arguments to pass to the function.
+    """
+    # Execute on client if requested
+
+    global daskclient, tier0futures
+
+    if include_client:
+        fn(*args, **kwargs)
+    
+
+    # Execute on all server processes in a blocking operation
+    if daskclient is not None:
+        daskclient.run(fn, *args, **kwargs)
 
 
 def stop_daskcluster() -> None:
