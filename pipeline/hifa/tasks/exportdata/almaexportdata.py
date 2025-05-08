@@ -129,7 +129,7 @@ class ALMAExportData(exportdata.ExportData):
         else:
             prefix = oussid + '.' + recipe_name
         auxfproducts = self._do_if_auxiliary_products(prefix, self.inputs.output_dir, self.inputs.products_dir, vislist,
-                                                   self.inputs.imaging_products_only, pipeline_stats_file, antposfile_name='antennapos,json')
+                                                   self.inputs.imaging_products_only, pipeline_stats_file, antposfile_name='antennapos.json')
 
         # Export the AQUA report
         pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
