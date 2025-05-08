@@ -422,7 +422,7 @@ class PipelineRegression:
         """
         context = launcher.Pipeline(context='last').context
 
-        # The rawdata, working, and products directories are only present for PPR runs
+        # The rawdata directory is only present for PPR runs
         if self.ppr:
             # 1. rawdata, working, products directories are present
             missing_directories = regression.missing_directories(context)
@@ -431,11 +431,11 @@ class PipelineRegression:
                 LOG.warning(msg)
                 pytest.fail(msg)
 
-            # 2. *.pipeline_manifest.xml is present under the products directory
-            if not regression.manifest_present(context):
-                msg = "pipeline_manifest.xml is not present under the products directory"
-                LOG.warning(msg)
-                pytest.fail(msg)
+        # 2. *.pipeline_manifest.xml is present under the products directory
+        if not regression.manifest_present(context):
+            msg = "pipeline_manifest.xml is not present under the products directory"
+            LOG.warning(msg)
+            pytest.fail(msg)
 
         # 3. Non-existence of errorexit-*.txt in working directory
         if regression.errorexit_present(context):
