@@ -81,6 +81,9 @@ docs/casa-*.log
 docs/source/casa-*.log
 *.last
 
+# Slurm
+**/*.out
+
 # PyBuilder
 target/
 

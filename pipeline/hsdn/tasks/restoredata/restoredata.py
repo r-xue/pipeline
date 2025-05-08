@@ -6,19 +6,18 @@ recalibrating a subset of the MSes belonging to a member OUS, using pipeline
 flagging and calibration data products.
 """
 import os
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
 import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
-from pipeline import Context
 from pipeline.h.tasks.applycal import ApplycalResults
 from pipeline.hsd.tasks.applycal import applycal
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import Context, casa_tools, task_registry
 from pipeline.infrastructure.basetask import ResultsList
-from . import ampcal
+
 from ..importdata import importdata as importdata
+from . import ampcal
 
 LOG = infrastructure.get_logger(__name__)
 

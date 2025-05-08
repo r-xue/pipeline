@@ -14,11 +14,9 @@ from typing import Iterable, Sequence
 
 import numpy
 
-import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tools
-from . import measures
 
-LOG = infrastructure.get_logger(__name__)
+from . import measures
 
 
 class ArithmeticProgression(object):
