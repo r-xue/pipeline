@@ -59,7 +59,7 @@ class SDImagingResultItem(common.SingleDishResults):
         if isinstance(self.outcome, dict):
             image_item = self.outcome.get('image', None)
             assert isinstance(image_item, imagelibrary.ImageItem)
-            return self.outcome['image'].imagename
+            return image_item.imagename
         else:
             return 'None'
 
