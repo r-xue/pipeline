@@ -1137,7 +1137,8 @@ class MeasurementSet(object):
             spw: spw string list - '1,7,11,18'.
             science_windows_only: Use integration time of science spws only to compute the given statistics.
             stat_type: Type of the statistics.
-            band: return maximum integration time for the given band, default None
+            band: return maximum integration time for the given VLA band.
+                Ignored for non-VLA datasets; has no effect in that case. Default is None.default None
         Returns
             Computed statistics value.
         """
@@ -1171,8 +1172,10 @@ class MeasurementSet(object):
             except:
                 LOG.error("Incorrect spw string format.")
         if band is not None:
+            if self.antenna_array.name not in ('VLA', 'EVLA'):
+                LOG.warning("The band parameter is only applicable to VLA data. For non-VLA datasets, it has no effect on the maximum integration time calculation.")
             spw2band = self.get_vla_spw2band()
-            spws = [spw for spw in spws if spw2band[spw.id].lower() == band.lower()]
+            spws = [spw_obj for spw_obj in spws if spw2band[spw_obj.id].lower() == band.lower()]
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in spws]
         if science_windows_only:
             # now get the science spws, those used for scientific intent
@@ -1204,7 +1207,7 @@ class MeasurementSet(object):
         spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only or band is not None else ""
 
         taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
-            (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only or band is not None else "") + ")"
+            (f" AND DATA_DESC_ID IN {spw_str}" if spw_str else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:

@@ -71,25 +71,32 @@ class SolintResults(basetask.Results):
     The class inherits from basetask.Results.
 
     """
-    def __init__(self, final=None, pool=None, preceding=None, longsolint=None, gain_solint2=None,
-                 shortsol2=None, short_solint=None, new_gain_solint1=None, vis=None,
-                 bpdgain_touse=None):
-        """
+
+    def __init__(self,
+                 final: list | None = None,
+                 pool: list | None = None,
+                 preceding: list | None = None,
+                 longsolint: dict | None = None,
+                 gain_solint2: dict | None = None,
+                 shortsol2: dict | None = None,
+                 short_solint: dict | None = None,
+                 new_gain_solint1: dict | None = None,
+                 vis: str | None = None,
+                 bpdgain_touse: dict | None = None):
+        """Initializes the object with various calibration and visibility parameters.
+
         Args:
-
-            vis(str, optional): String name of the measurement set
-            final(List, optional): Calibration list applied - not used
-            pool(List, optional): Calibration list assesed - not used
-            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
-            longsolint(Dict): numerical value of the long solution interval
-            gain_solint2(Dict):  str representation of longsolint with 's' seconds units
-            shortsol2(Dict): values based on the vla max integration time
-            short_solint(Dict): short solution interval numerical value
-            new_gain_solint1(Dict): str representation of short_solint with 's' seconds units.
-            bpdgain_touse(Dict):  Dictionary of tables per band
-
+            final: Calibration list applied (not used).
+            pool: Calibration list assessed (not used).
+            preceding: DEPRECATED results from worker tasks executed by this task.
+            longsolint: Numerical value of the long solution interval.
+            gain_solint2: String representation of longsolint with 's' seconds units.
+            shortsol2: Values based on the VLA maximum integration time.
+            short_solint: Short solution interval numerical value.
+            new_gain_solint1: String representation of short_solint with 's' seconds units.
+            vis: String name of the measurement set.
+            bpdgain_touse: Dictionary of tables per band.
         """
-
         if final is None:
             final = []
         if pool is None:
