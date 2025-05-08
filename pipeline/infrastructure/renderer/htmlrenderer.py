@@ -11,11 +11,11 @@ import pydoc
 import re
 import shutil
 import sys
+from importlib.resources import files
 from typing import Any, Dict, List
 
 import mako
-import numpy
-import pkg_resources
+import numpy as np
 
 import pipeline as pipeline
 import pipeline.domain.measures as measures
@@ -26,16 +26,17 @@ import pipeline.infrastructure.displays.summary as summary
 import pipeline.infrastructure.logging as logging
 from pipeline import environment
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.infrastructure import casa_tools, mpihelpers
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
+from pipeline.infrastructure import casa_tools, mpihelpers, task_registry, utils
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.renderer.templates import resources
+
+from .. import eventbus, pipelineqa
+from ..eventbus import (
+    WebLogStageRenderingAbnormalExitEvent,
+    WebLogStageRenderingCompleteEvent,
+    WebLogStageRenderingStartedEvent,
+)
 from . import qaadapter, weblog
-from .. import eventbus
-from .. import pipelineqa
-from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
-    WebLogStageRenderingAbnormalExitEvent
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -280,7 +281,7 @@ class RendererBase(object):
         if os.path.exists(path) and not cls.rerender(context):
             return
 
-        path_to_resources_pkg = pkg_resources.resource_filename(resources.__name__, '')
+        path_to_resources_pkg = str(files(resources.__name__))
         path_to_js = os.path.join(path_to_resources_pkg, 'js', 'pipeline_common.min.js')
         use_minified_js = os.path.exists(path_to_js)
 
@@ -456,7 +457,7 @@ class T1_1Renderer(RendererBase):
             baseline_max = ms.antenna_array.baseline_max.length
 
             baseline_rms = measures.Distance(
-                value=numpy.sqrt(numpy.mean(numpy.square(ms.antenna_array.baselines_m))),
+                value=np.sqrt(np.mean(np.square(ms.antenna_array.baselines_m))),
                 units=measures.DistanceUnits.METRE
             )
 
@@ -660,7 +661,7 @@ class T1_2Renderer(RendererBase):
             baseline_max = ms.antenna_array.baseline_max.length
 
             baseline_rms = measures.Distance(
-                value=numpy.sqrt(numpy.mean(numpy.square(ms.antenna_array.baselines_m))),
+                value=np.sqrt(np.mean(np.square(ms.antenna_array.baselines_m))),
                 units=measures.DistanceUnits.METRE
             )
 
@@ -1910,7 +1911,7 @@ class WebLogGenerator(object):
                  T2_4MRenderer,        # task tree
                  T2_4MDetailsRenderer, # task details
         # some summary renderers are placed last for access to scores
-                 T1_4MRenderer]        # task summary
+                 T1_4MRenderer]  # task summary
 
     @staticmethod
     def copy_resources(context):
@@ -1921,14 +1922,10 @@ class WebLogGenerator(object):
             shutil.rmtree(outdir)
 
         # copy all uncompressed non-python resources to output directory
-        src = pkg_resources.resource_filename(resources.__name__, '')
+        src = str(files(resources.__name__))
         dst = outdir
-        ignore_fn = shutil.ignore_patterns('*.zip', '*.py', '*.pyc', 'CVS*',
-                                           '.svn')
-        shutil.copytree(src, 
-                        dst, 
-                        symlinks=False, 
-                        ignore=ignore_fn)
+        ignore_fn = shutil.ignore_patterns('*.zip', '*.py', '*.pyc', 'CVS*', '.svn')
+        shutil.copytree(src, dst, symlinks=False, ignore=ignore_fn)
 
     @staticmethod
     def render(context):
@@ -2160,8 +2157,8 @@ def compute_az_el_to_field(field, epoch, observatory):
     myazel = me.measure(field.mdirection, 'AZELGEO')
     myaz = myazel['m0']['value']
     myel = myazel['m1']['value']
-    myaz = (myaz * 180 / numpy.pi) % 360
-    myel *= 180 / numpy.pi
+    myaz = (myaz * 180 / np.pi) % 360
+    myel *= 180 / np.pi
 
     return [myaz, myel]
 

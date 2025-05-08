@@ -40,10 +40,8 @@ import collections
 import os
 import tempfile
 import traceback
-from typing import Any, Callable, List, Optional, Tuple
 import xml.etree.ElementTree as ElementTree
-
-import pkg_resources
+from typing import Any, Callable, List, Optional, Tuple
 
 import pipeline.cli as cli
 import pipeline.h.cli.cli as h_cli
@@ -53,7 +51,9 @@ from pipeline.infrastructure import exceptions, utils
 
 LOG = logging.get_logger(__name__)
 
-RECIPES_DIR = pkg_resources.resource_filename(__name__, 'recipes')
+
+RECIPES_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), 'recipes'))
+
 
 TaskArgs = collections.namedtuple('TaskArgs', 'vis infiles session')
 
