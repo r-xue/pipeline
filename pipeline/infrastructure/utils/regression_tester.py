@@ -309,7 +309,7 @@ class PipelineRegression:
             else:
                 os.chdir('working')
 
-             # Do sanity checks
+            # Do sanity checks
             self.__do_sanity_checks()
 
             # Get new results
@@ -422,18 +422,20 @@ class PipelineRegression:
         """
         context = launcher.Pipeline(context='last').context
 
-        # 1. rawdata, working, products directories are present
-        missing_directories = regression.missing_directories(context)
-        if len(missing_directories) > 0:
-            msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
-            LOG.warning(msg)
-            pytest.fail(msg)
+        # The rawdata, working, and products directories are only present for PPR runs
+        if self.ppr:
+            # 1. rawdata, working, products directories are present
+            missing_directories = regression.missing_directories(context)
+            if len(missing_directories) > 0:
+                msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
+                LOG.warning(msg)
+                pytest.fail(msg)
 
-        # 2. *.pipeline_manifest.xml is present under the products directory
-        if not regression.manifest_present(context):
-            msg = "pipeline_manifest.xml is not present under the products directory"
-            LOG.warning(msg)
-            pytest.fail(msg)
+            # 2. *.pipeline_manifest.xml is present under the products directory
+            if not regression.manifest_present(context):
+                msg = "pipeline_manifest.xml is not present under the products directory"
+                LOG.warning(msg)
+                pytest.fail(msg)
 
         # 3. Non-existence of errorexit-*.txt in working directory
         if regression.errorexit_present(context):
