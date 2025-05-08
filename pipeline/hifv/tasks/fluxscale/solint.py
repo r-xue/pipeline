@@ -13,6 +13,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -219,11 +220,9 @@ class Solint(basetask.StandardTaskTemplate):
         # Solint section
 
         (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist), band)
-
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1

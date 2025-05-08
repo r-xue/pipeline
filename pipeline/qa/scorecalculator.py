@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import collections
 import datetime
+import enum
 import functools
 import math
 import operator
@@ -1694,13 +1695,22 @@ def score_missing_derived_fluxes(ms, reqfields, reqintents, measurements):
     scifields = {field for field in ms.get_fields(reqfields, intent=reqintents)}
 
     # Expected science windows
-    scispws = {spw.id for spw in ms.get_spectral_windows(science_windows_only=True)}
+    scispws = ms.get_spectral_windows(science_windows_only=True)
+
+    # Requested intents as set.
+    reqintents = set(reqintents.split(','))
 
     # Loop over the expected fields
     nexpected = 0
     for scifield in scifields:
-        validspws = {spw.id for spw in scifield.valid_spws}
-        nexpected += len(validspws.intersection(scispws))
+        # PIPE-2458: flux measurements are only expected for science SpWs that
+        # are valid for this field and that cover one or more of the requested
+        # intents. This will filter out cases where a SpW is a science SpW
+        # but not used for one of the requested intents for this field.
+        scifield_req_intents = scifield.intents.intersection(reqintents)
+        scifield_valid_spws = {spw for spw in scifield.valid_spws
+                               if spw in scispws and spw.intents.intersection(scifield_req_intents)}
+        nexpected += len(scifield_valid_spws)
 
     # Loop over measurements
     nmeasured = 0
@@ -2802,6 +2812,9 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     _edge = result.outcome['edge']
     edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
+    # enumeration to represent overlap status
+    Overlap = enum.Enum('Overlap', [('NO', 0), ('PARTIAL', 1), ('FULL', 2)])
+
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
@@ -2811,9 +2824,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         # sideband is 1 for USB, -1 for LSB
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
+        lines = get_line_ranges(bl['lines'])
+
+        LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
+
+        # line mask for checking overlap with deviation mask
+        # 1: channels detected as line, 0: line-free channels
+        line_mask = np.zeros(nchan, dtype=np.uint8)
+        for left, right in lines:
+            line_mask[max(0, left):right + 1] = 1
 
         # deviation mask
         for member_id in member_list:
+            LOG.debug('Processing member %s', member_id)
+
             reduction_group_member = reduction_group_desc[member_id]
             deviation_masks = select_deviation_masks(
                 deviation_mask_all, reduction_group_member
@@ -2824,10 +2848,21 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 spw_id = reduction_group_member.spw_id
                 ms_name = reduction_group_member.ms.origin_ms
                 antenna_name = reduction_group_member.antenna_name
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks))
+                is_overlap = []
+                for left, right in deviation_masks:
+                    mask_range = line_mask[left:right + 1]
+                    if np.all(mask_range == 1):
+                        overlap = Overlap.FULL
+                    elif np.any(mask_range == 1):
+                        overlap = Overlap.PARTIAL
+                    else:
+                        overlap = Overlap.NO
+                    is_overlap.append(overlap)
+                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
+
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
 
         # spectral lines
-        lines = get_line_ranges(bl['lines'])
         if len(lines) > 0:
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
@@ -2903,10 +2938,31 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         for ms_name, data in data_per_ms.items():
             spw_ids = {x[0] for x in data}
             antenna_names = {x[1] for x in data}
+            is_overlaps = {y for x in data for y in x[3]}
+            LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
 
-            # score is fixed to 0.65. See PIPE-2136 and PIPEREQ-304.
-            score = 0.65
-            msg = 'Deviation mask was triggered'
+            # score depends on whether deviation masks overlap with lines
+            # see PIPEREQ-293 for detail
+            if Overlap.NO in is_overlaps:
+                # by default score is 0.65
+                score = 0.65
+                msg = 'Deviation mask was triggered'
+                LOG.debug(
+                    'Found deviation mask with no overlap. '
+                    'Set deviation mask QA score to %s', score
+                )
+            elif is_overlaps.intersection({Overlap.PARTIAL, Overlap.FULL}):
+                # score is 0.88 if all deviation masks partially/fullly
+                # overlap with detected line
+                score = 0.88
+                msg = 'Deviation mask overlapped with spectral lines was triggered'
+                LOG.debug(
+                    'All deviation masks overlap with lines. '
+                    'Set deviation mask QA score to %s', score
+                )
+            else:
+                raise ValueError('Unexpected overlap status')
+
             shortmsg = f'{msg}.'
             spw_string = ', '.join(map(str, sorted(spw_ids)))
             antenna_string = ', '.join(sorted(antenna_names))
@@ -2914,7 +2970,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
             # get list of unique mask ranges per spw
             deviation_masks_per_spw = collections.defaultdict(set)
-            for spw_id, _, deviation_mask in data:
+            for spw_id, _, deviation_mask, _ in data:
                 deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
 
             # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
@@ -3645,7 +3701,8 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
                           metric_score=float(k_spw),
                           metric_units='Number of spws with missing SNR measurements')
 
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin)
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin,
+                       applies_to=pqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
 
 
 @log_qa
