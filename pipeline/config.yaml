@@ -4,15 +4,15 @@ pipeconfig:
   chdir: "./" # not used yet
   vis: # not used yet
   procedure: # not used yet
-  loglevel: "info" # default Python logging level (not confused with casalogsink level)
+  loglevel: "info" # default Python logging level, e.g. 'debug' (note: not confused with the global casalogsink level), 
   ppr: # not used yet
   vlappr: # not used yet
-  xvfb: false # pyvirtualdisplay is required for xvfb=True
+  xvfb: false # option for directly spawn xvfb server from the python session, pyvirtualdisplay is required for xvfb=True
   omp_num_threads: 4 # not used yet
   dask:
     dashboard_address: "localhost:0"
-    clustertype: "local"
-    n_workers: 4
+    clustertype: "local" # htcondor / slurm
+    n_workers: null
     distributed:
       worker:
         nthreads: 1 # Number of threads per worker
@@ -28,35 +28,37 @@ pipeconfig:
         heartbeat_interval: 10000 # Heartbeat interval in milliseconds
     jobqueue:
       slurm:
-        name: pipe-dask-worker
+        name: "pipe-dask-worker"
         queue: "queue"
         cores: 1 # Total number of cores per job
+        processes: 1 # Number of Python processes per job        
         memory: "10gb" # Total memory per job
-        processes: 1 # Number of Python processes per job
         # interface: "eno1"
-        walltime: "01:00:00"
+        # walltime: "01:00:00"
       htcondor:
-        # Job resource specifications
-        cores: 4 # Number of cores per job
+        name: "pipe-dask-worker" # Name of the worker jobs
+        cores: 1 # Number of cores per job
+        processes: 1 # Number of processes per worker        
         memory: "8GB" # Memory per job
         disk: "10GB" # Disk space per job
         # Job submission details
         job_extra:
-          universe: "vanilla"
+          # universe: "vanilla"
           getenv: "True"
-          initialdir: "$(PWD)" # Start job in current directory
+          # initialdir: "$(PWD)" # Start job in current directory
           # should_transfer_files: "YES"
           # when_to_transfer_output: "ON_EXIT"
           max_retries: 3
         # Other settings
-        name: "pipe-dask-worker" # Name of the worker jobs
-        processes: 1 # Number of processes per worker
-        interface: "eno1" # Network interface to use
+        
+
+        # interface: "eno1" # Network interface to use
         death_timeout: "60s" # Timeout for worker death
         # local_directory: "/tmp"     # Directory to store local worker files
-        log_directory: "htcondor_logs/" # Directory to store logs
+        log_directory: "/tmp/htcondor_logs/" # Directory to store logs
 
     tier0futures: true
+    autostart: false
 
 casaconfig: # all values are null for now, so the settings determined by casaconfig remain unchanged.
   measures_auto_update: null
@@ -69,3 +71,14 @@ casaconfig: # all values are null for now, so the settings determined by casacon
   measurespath: null # this should be a path or null
   cachedir: null # this should be a path or null
   logfile: null # this should be a path or null
+  nologfile: null
+  startupfile: null 
+  cachedir: null
+  nogui: null
+  colors: null
+  pipeline: null
+  iplog: null
+  iplogfile: null
+  user_site: null
+  casaconfig_verbose: null
+  

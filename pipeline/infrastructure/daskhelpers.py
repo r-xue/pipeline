@@ -19,10 +19,14 @@ using Dask.
 from __future__ import annotations
 
 import atexit
+import datetime
 import importlib.util
 import os
+import socket
 from pprint import pformat
 from typing import Dict, Optional, Tuple, Union
+
+import casatasks
 
 from . import logging
 from .utils import get_obj_size, human_file_size
@@ -34,14 +38,11 @@ dask_jobqueue_spec = importlib.util.find_spec('dask_jobqueue')
 dask_available = all([dask_spec, distributed_spec, dask_jobqueue_spec])
 
 
-# mpi_spec = importlib.util.find_spec('casampi')
-
 is_mpi_session = False
 if importlib.util.find_spec('casampi'):
     from casampi.MPIEnvironment import MPIEnvironment
-    is_mpi_session=MPIEnvironment.is_mpi_enabled
 
-
+    is_mpi_session = MPIEnvironment.is_mpi_enabled
 
 if dask_available and not is_mpi_session:
     import dask
@@ -60,11 +61,17 @@ tier0futures: bool = False
 
 LOG = logging.get_logger(__name__)
 
-__all__ = ['is_dask_worker', 'daskclient', 'tier0futures', 'dask_available', 'is_dask_ready']
+__all__ = [
+    'is_worker',
+    'daskclient',
+    'tier0futures',
+    'dask_available',
+    'is_dask_ready',
+]
 
 
-def is_dask_worker() -> bool:
-    """Determine if the current process is running within a Dask worker.
+def is_worker() -> bool:
+    """Determine if the current process is running as a Dask worker or MPI-Server
 
     This function checks if the current Python process is executing inside a Dask
     worker. It uses a reliable method that works even during the worker setup
@@ -73,13 +80,16 @@ def is_dask_worker() -> bool:
 
     See: https://stackoverflow.com/questions/78589634/what-is-the-cleanest-way-to-detect-whether-im-running-in-a-dask-worker
 
+    Note that currently is it's running a mpicasa session, this will always return
+    true before the hybride-mod (co-operating mpi cluster + dask cluster) is fully
+    tested.
+
     Returns:
         bool: True if the process is a Dask worker, False otherwise.
     """
     is_worker = False
-    # if Worker:
-    if dask_available and not is_mpi_session and Worker._instances:
-        is_worker = True        
+    if (dask_available and Worker._instances) or is_mpi_session:
+        is_worker = True
     return is_worker
 
 
@@ -115,7 +125,7 @@ class FutureTask:
         """
         task_result, tier0_executable = self.future.result()
         LOG.debug(
-            'Received the task executation result (%s) from a worker for executing %s; content:',
+            'Received the task execution result (%s) from a worker for executing %s; content:',
             human_file_size(get_obj_size(task_result)),
             tier0_executable,
         )
@@ -160,7 +170,11 @@ def future_exec(tier0_executable):
     executable = tier0_executable.get_executable()
 
     ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', human_file_size(get_obj_size(ret)), tier0_executable)
+    LOG.debug(
+        'Buffering the execution return (%s) of %s',
+        human_file_size(get_obj_size(ret)),
+        tier0_executable,
+    )
 
     return ret, tier0_executable
 
@@ -208,7 +222,6 @@ def session_startup(casa_config: Dict[str, Optional[str]], loglevel: Optional[st
                 pass
                 # casatasks.casalog.setlogfile(value)
     # Initialize casatasks and get log file
-    import casatasks
 
     casalogfile = casatasks.casalog.logfile()
 
@@ -221,17 +234,13 @@ def session_startup(casa_config: Dict[str, Optional[str]], loglevel: Optional[st
         casaloglevel = logging.CASALogHandler.get_casa_priority(logging.LOGGING_LEVELS[loglevel])
 
     casatasks.casalog.filter(casaloglevel)
-    print('last-state:', casalogfile)
-
-    # from pprint import pprint
-    # import dask
-    # pprint(dask.config.config)
-    # print('---')
 
     return casalogfile, casaloglevel
 
 
-def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = None) -> Optional[Client]:
+def start_daskcluster(
+    dask_config: Optional[Dict[str, Union[str, int, bool]]] = None,
+) -> Optional[Client]:
     """Start a Dask cluster based on configuration settings.
 
     This function initializes a Dask cluster, either locally or via SLURM,
@@ -249,17 +258,11 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
     global daskclient, tier0futures
 
     def custom_worker_init(logfile):
-        import os
-
         # os.environ['_CASA_LOGFILE'] = logfile
         print(f'Initialized worker with PID: {os.getpid()}, logfile: {logfile}')
 
     class CustomInitPlugin(WorkerPlugin):
         def setup(self, worker):
-            import socket
-
-            import casatasks
-
             logfile = casatasks.casalog.logfile()
             print(
                 f'Initialized {worker.id} @ {worker.address} - {socket.gethostname()} - PID: {os.getpid()}\n    logfile: {logfile}'
@@ -267,7 +270,8 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
 
     if not dask_available:
         LOG.warning('dask[distributed] not installed; skipping...')
-        return None
+        return
+
     from pipeline.config import config
 
     dask_config_session = config['pipeconfig']['dask']
@@ -290,43 +294,68 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
     n_workers: Optional[int] = dask.config.get('n_workers', default=None)
     clustertype: Optional[str] = dask.config.get('clustertype', default=None)
 
-    cluster: Union[LocalCluster, SLURMCluster, None] = None
+    if daskclient is None and not is_worker():
+        cluster: Union[LocalCluster, SLURMCluster, None] = None
 
-    if clustertype == 'local':
-        cluster = LocalCluster(
-            n_workers=n_workers,
-            # worker_class=Nanny,
-            dashboard_address=dashboard_address,
-            processes=True,  # True to avoid GIL
-            threads_per_worker=1,
-        )
-    elif clustertype == 'slurm':
-        cluster = SLURMCluster(n_workers=n_workers,
-                               silence_logs='debug',
-                               # log_directory='dask-logs',
-                               scheduler_options={'dashboard_address': dashboard_address})
-        cluster.scale(n_workers)
-        LOG.debug('dask SLURMCluster job script: \n %s', pformat(cluster.job_script()))
-    elif clustertype == 'htcondor':
-        cluster = HTCondorCluster(n_workers=n_workers, scheduler_options={'dashboard_address': dashboard_address})
-        LOG.debug('dask HTCondorCluster job script: \n %s', pformat(cluster.job_script()))
-    else:
-        LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
-        return None
+        if clustertype == 'local':
+            if n_workers is None or n_workers <= 0:
+                n_workers, _ = _default_n_workers()
+            cluster = LocalCluster(
+                n_workers=n_workers,
+                # worker_class=Nanny,
+                dashboard_address=dashboard_address,
+                processes=True,  # True to avoid GIL
+                threads_per_worker=1,
+            )
+        elif clustertype == 'slurm':
+            if n_workers is None or n_workers <= 0:
+                _, n_workers = _default_n_workers()
+            cluster = SLURMCluster(
+                n_workers=n_workers,
+                name=dask.config.get('jobqueue.slurm.name', default=None),
+                silence_logs='debug',
+                # log_directory='dask-logs',
+                scheduler_options={'dashboard_address': dashboard_address},
+            )
+            cluster.scale(n_workers)
+            LOG.debug('dask SLURMCluster job script: \n %s', pformat(cluster.job_script()))
+        elif clustertype == 'htcondor':
+            if n_workers is None or n_workers <= 0:
+                _, n_workers = _default_n_workers()
+            cluster = HTCondorCluster(
+                n_workers=n_workers,
+                name=dask.config.get('jobqueue.htcondor.name', default=None),
+                scheduler_options={'dashboard_address': dashboard_address},
+            )
+            LOG.debug('dask HTCondorCluster job script: \n %s', pformat(cluster.job_script()))
+        else:
+            LOG.warning('dask cluster specification (%s) not valid, skipping!', clustertype)
+            return None
 
-    if daskclient is None:
+        QUEUE_WAIT = 30
+
         daskclient = Client(cluster)
-  
 
-        import datetime
+        # Wait for all workers to become available.
+        # This is necessary on HTCondor/SLURM clusters where workers are spawned asynchronously.
+        start_time = datetime.datetime.now()
+        LOG.info(
+            'starting %d workers at %s (waiting up to %d seconds)',
+            start_time.strftime('%Y-%m-%d %H:%M:%S'),
+            n_workers,
+            QUEUE_WAIT,
+        )
 
-        QUEUE_WAIT=5
-      # Wait for all the workers to be ready before continuing.
-        # nesscaryfor htcondor/slurmcluster to spawn the worker
-        # otherwise it 
-        LOG.info('wait for workers %s', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-        daskclient.wait_for_workers(n_workers,timeout=QUEUE_WAIT)
-        LOG.info('workers aqauired: %s', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        daskclient.wait_for_workers(n_workers, timeout=QUEUE_WAIT)
+
+        end_time = datetime.datetime.now()
+        elapsed = (end_time - start_time).total_seconds()
+        LOG.info(
+            'Acquired %d workers at %s (waited %.1f seconds)',
+            n_workers,
+            end_time.strftime('%Y-%m-%d %H:%M:%S'),
+            elapsed,
+        )
 
         # prefer using plugin which automatically applied to new workers joined by scaling
         daskclient.register_plugin(CustomInitPlugin())
@@ -349,7 +378,6 @@ def start_daskcluster(dask_config: Optional[Dict[str, Union[str, int, bool]]] = 
         LOG.info('Cluster dashboard: %s', daskclient.dashboard_link)
         LOG.info('   client:  %s', daskclient)
         LOG.info('   cluster: %s', daskclient.cluster)
-        # daskclient.run(print,'!!!')
 
         def get_status(dask_worker: Worker) -> tuple[str, str]:
             return dask_worker.status, dask_worker.id
@@ -379,7 +407,6 @@ def exec_func(fn: callable, *args, include_client: bool = True, **kwargs) -> Non
 
     if include_client:
         fn(*args, **kwargs)
-    
 
     # Execute on all server processes in a blocking operation
     if daskclient is not None:
@@ -411,3 +438,25 @@ def stop_daskcluster() -> None:
         daskclient = None
 
     return
+
+
+def _default_n_workers():
+    """default n_worker heuristics."""
+
+    from dask.system import CPU_COUNT as _num_core_cgroup
+
+    # cape the fallback local worker number at 4
+    _default_n_workers_local = min(_num_core_cgroup, 4)
+
+    # set the fallback jobqueue (slurm/htcondor) worker number at 5
+    _default_n_workers_jobqueue = 4
+
+    # discover the cores assigned to slurm/htcondor jobs
+    _num_slurm_core = int(os.getenv('SLURM_NTASKS', 0))
+    if _num_slurm_core > 0:
+        _default_n_workers_jobqueue = _num_slurm_core
+    _num_condor_core = int(os.getenv('PYTHON_CPU_COUNT', 0))
+    if _num_condor_core > 0:
+        _default_n_workers_jobqueue = _num_condor_core
+
+    return _default_n_workers_local, _default_n_workers_jobqueue

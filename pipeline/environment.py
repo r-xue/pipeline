@@ -1,5 +1,13 @@
-"""
-environment.py defines functions and variables related to the execution environment.
+"""Module for managing and querying the execution environment.
+
+This module provides functions and variables to detect, represent, and
+interact with the characteristics of the Python execution environment,
+including details about the host system (CPU, memory, OS), container
+or cgroup limits, and user resource limits (ulimits).
+
+It aims to consolidate environment-specific information for use by
+other parts of the application, facilitating adaptation to different
+runtime contexts.
 """
 from __future__ import annotations
 
@@ -15,8 +23,8 @@ import shutil
 import subprocess
 import sys
 import typing
-from importlib.metadata import PackageNotFoundError, version
-from importlib.util import find_spec
+from importlib.metadata import (PackageNotFoundError, distribution, metadata,
+                                version)
 from io import StringIO
 from pathlib import Path
 from typing import AnyStr, Optional, TextIO, Union
@@ -771,34 +779,63 @@ casa_version_string = casatasks.version_string()
 compare_casa_version = casa_tools.utils.compare_version
 
 
-def _get_dependency_details(package_list=None):
-    """Get dependency package version/path.
+def _get_dependency_details(package_names):
+    """Get dependency package version/path."""
 
-    See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
-    """
-    if package_list is None:
-        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'casampi', 'casaplotms']
-
-    package_details = dict.fromkeys(package_list)
-    for package in package_list:
+    package_details = dict.fromkeys(package_names)
+    for package_name in package_names:
         try:
-            package_version = version(package)
-            module_spec = find_spec(package)
-            if module_spec is not None:
-                package_details[package] = {
-                    'version': package_version,
-                    'path': os.path.dirname(module_spec.origin)
-                }
+            dist = distribution(package_name)
+            package_details[package_name] = {'version': dist.version, 'path': dist.locate_file('')}
         except PackageNotFoundError:
             pass
     return package_details
 
 
-dependency_details = _get_dependency_details()
+def _get_required_dependencies(package_name):
+    """Get required package dependencies, excluding optional ones.
+
+    Args:
+        package_name: Name of an installed package
+
+    Returns:
+        List of required dependency package names without version info
+    """
+    try:
+        meta = metadata(package_name)
+        requirements = meta.get_all('Requires-Dist') or []
+
+        required_deps = []
+        for req in requirements:
+            # Skip if it's an optional dependency (has a marker with "extra")
+            if ';' in req and ('extra ==' in req.lower() or 'extra =' in req.lower()):
+                continue
+            # Skip conditions that aren't extras but still optional
+            if ';' in req and (
+                'python_version' in req.lower()
+                or 'platform_' in req.lower()
+                or 'sys_platform' in req.lower()
+                or 'implementation_name' in req.lower()
+            ):
+                continue
+            # Extract just the package name
+            match = re.match(r'^([A-Za-z0-9._-]+)', req)
+            if match:
+                required_deps.append(match.group(1))
+
+        if required_deps:
+            return required_deps
+    except (ImportError, AttributeError, Exception):
+        pass
+
+    return []
+
+
+_casa6_packages = ['numpy', 'scipy', 'matplotlib', 'casaconfig', 'casatools', 'casatasks', 'casampi', 'casaplotms']
+dependency_details = _get_dependency_details(_casa6_packages + _get_required_dependencies('pipeline'))
+
 iers_info = utils.IERSInfo()
 pipeline_revision = _pipeline_revision()
-
 ENVIRONMENT = EnvironmentFactory.create()
 
 

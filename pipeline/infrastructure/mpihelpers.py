@@ -512,7 +512,7 @@ if MPIEnvironment.is_mpi_enabled:
         LOG.warning('Problem initialising MPI. Pipeline falling back to single host mode.')
         mpiclient = None
 else:
-    if not daskhelpers.is_dask_worker():
+    if not daskhelpers.is_worker():
         LOG.info('Environment is not MPI enabled. Pipeline operating in single host mode')
     mpiclient = None
 

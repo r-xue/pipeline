@@ -6,6 +6,7 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from typing import IO, Generator
+import traceback
 
 import casaplotms
 import casatasks.private.tec_maps as tec_maps
@@ -48,8 +49,6 @@ def change_stream_for_all_streamhandlers(new_stream: IO, package_prefix: str | N
     # this module has a delayed import in the codebase, originatally code as an workaround from circular importing.
     try:
         import pipeline.infrastructure.renderer.htmlrenderer
-        import pipeline.domain.antennaarray
-        import pipeline.h.tasks.importdata.qa
     except ImportError:
         pass
 
@@ -242,7 +241,13 @@ def working_directory(
             exec_func(capture_start, ret_casa_logfile)
         yield ret_casa_logfile
     except Exception as ex:
-        pass
+        LOG.info(
+            'An error occurred while setting up the environment (e.g., changing directory to %s): %s - %s',
+            path,
+            type(ex).__name__,
+            ex,
+        )
+        LOG.debug(traceback.format_exc())
     finally:
         exec_func(os.chdir, current_dir)
         if reset:

@@ -53,27 +53,58 @@ def get_config(conf_files, conf_user=None, env=True, verbose=False):
     return conf
 
 
-def get_all_keys(d, parent_key=''):
-    keys = set()
+def _get_flat_keys_and_values(d: Any, parent_key: str = '') -> list[tuple[str, Any]]:
+    """Recursively flattens a nested dictionary into a list of key-value pairs.
+
+    Each key in the output represents the full path to the value in the
+    original nested structure, with path components joined by dots.
+
+    Args:
+        d: The dictionary or value to flatten.
+        parent_key: The base key to prepend to the keys found in `d`.
+                    Used for recursive calls to build the full path.
+
+    Returns:
+        A list of (key, value) tuples representing the flattened structure.
+    """
+    ret = []  # Initialize the list to store flattened key-value pairs
+
+    # Check if the current item is a dictionary
     if isinstance(d, dict):
+        # Iterate through key-value pairs if it's a dictionary
         for k, v in d.items():
+            # Construct the full key path, adding a dot separator if not the top level
             full_key = f'{parent_key}.{k}' if parent_key else k
-            keys.add(full_key)
-            keys.update(get_all_keys(v, full_key))
-    return keys
-
-
-def get_all_keys_and_values(d: Any, parent_key: str = '') -> list[tuple[str, Any]]:
-    ret = []
-
-    if isinstance(d, dict):
-        for k, v in d.items():
-            full_key = f'{parent_key}.{k}' if parent_key else k
-            ret.extend(get_all_keys_and_values(v, full_key))
+            # Recursively call the function for the value and extend the results
+            ret.extend(_get_flat_keys_and_values(v, full_key))
     else:
+        # If the item is not a dictionary, it's a value to append
         ret.append((parent_key, d))
 
+    # Return the accumulated list of flattened key-value pairs
     return ret
+
+
+def show_config(verbose: bool = True) -> list:
+    """Shows or returns the current configuration.
+
+    Retrieves the flattened key-value pairs of the global configuration
+    object. If verbose mode is enabled, it also pretty-prints the
+    configuration details to standard output.
+
+    Args:
+        verbose: If True, pretty-prints the configuration details.
+
+    Returns:
+        A list containing the flattened key-value pairs of the configuration.
+    """
+
+    config_list = _get_flat_keys_and_values(config)
+
+    if verbose:
+        pprint.pprint(config_list)
+
+    return config_list
 
 
 def nested_update(d: dict[str, Any], u: dict[str, Any]) -> dict[str, Any]:
@@ -143,7 +174,9 @@ def casatasks_startup(casa_config: dict[str, Optional[str]], loglevel: Optional[
 
     # Update casaconfig attributes
     for key, value in config['casaconfig'].items():
-        if hasattr(casaconfig.config, key) and value is not None:
+        if value is None:
+            config['casaconfig'][key] = getattr(casaconfig.config, key, None)
+        else:
             setattr(casaconfig.config, key, value)
     # Initial import of casatasks with modified casaconfig setup
     import casatasks

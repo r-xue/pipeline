@@ -250,7 +250,7 @@ def log_host_environment():
             f'\tAvailable memory: {domain.measures.FileSize(env.casa_memory, domain.measures.FileSizeUnits.BYTES)}'
         )
 
-        if not infrastructure.daskhelpers.is_dask_worker():
+        if not infrastructure.daskhelpers.is_worker():
             LOG.debug('Dependency details:')
             for dep_name, dep_detail in environment.dependency_details.items():
                 if dep_detail is None:
@@ -317,8 +317,11 @@ def inherit_docstring_and_type_hints():
 
 inherit_docstring_and_type_hints()
 
-if not infrastructure.daskhelpers.is_dask_worker():
+if not infrastructure.daskhelpers.is_worker():
     log_host_environment()
 
 if config.config['pipeconfig'].get('xvfb', False):
     start_xvfb()
+
+if config.config['pipeconfig']['dask']['autostart']:
+    infrastructure.daskhelpers.start_daskcluster()
