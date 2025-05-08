@@ -1060,18 +1060,25 @@ def extract_regression_results(context: Context) -> list[str]:
     return ['{}={}'.format(k, v)for k, v in unified.items()]
 
 
-def missing_directories(context: Context) -> list[str]:
+def missing_directories(context: Context, include_rawdata: bool = False) -> list[str]:
     """
-    Check if all of rawdata/, working/, and products/ are present.
+    Check whether working/ and and products/ are present, and rawdata/ if
+    applicable (see include_rawdata argument.)
 
     Args:
         context: Context object
-
+        include_rawdata: whether to include the rawdata directory in the check
     Returns:
         True if all directories are present, False otherwise
     """
     missing = []
-    for directory in ['rawdata', 'working', 'products']:
+
+    if include_rawdata:
+        directories = ['rawdata', 'working', 'products']
+    else:
+        directories = ['working', 'products']
+
+    for directory in directories:
         if not os.path.exists(os.path.join(context.output_dir, '..', directory)):
             missing.append(directory)
 

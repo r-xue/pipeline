@@ -422,14 +422,13 @@ class PipelineRegression:
         """
         context = launcher.Pipeline(context='last').context
 
+        # 1. rawdata, working, products directories are present
         # The rawdata directory is only present for PPR runs
-        if self.ppr:
-            # 1. rawdata, working, products directories are present
-            missing_directories = regression.missing_directories(context)
-            if len(missing_directories) > 0:
-                msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
-                LOG.warning(msg)
-                pytest.fail(msg)
+        missing_directories = regression.missing_directories(context, include_rawdata=self.ppr)
+        if len(missing_directories) > 0:
+            msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
+            LOG.warning(msg)
+            pytest.fail(msg)
 
         # 2. *.pipeline_manifest.xml is present under the products directory
         if not regression.manifest_present(context):
