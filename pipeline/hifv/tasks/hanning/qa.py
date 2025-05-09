@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 import collections
 import os
+from typing import TYPE_CHECKING
 
-import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
-from . import hanning
+from pipeline import infrastructure
+from pipeline.hifv.tasks import hanning
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.api import Results
+    from pipeline.infrastructure.launcher import Context
 
 
 class HanningQAHandler(pqa.QAPlugin):
@@ -15,18 +22,25 @@ class HanningQAHandler(pqa.QAPlugin):
     child_cls = None
     generating_task = hanning.Hanning
 
-    def handle(self, context, result):
+    def handle(self, context: Context, result: Results) -> None:
         # Check for existence of the the target MS.
         score1 = self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))
-        scores = [score1]
+        score2 = self._task_success(result.task_successful)
+        scores = [score1, score2]
 
         result.qa.pool.extend(scores)
 
-    def _ms_exists(self, output_dir, ms):
+    def _ms_exists(self, output_dir: str, ms: str) -> pqa.QAScore:
         """
         Check for the existence of the target MS
         """
         return qacalc.score_path_exists(output_dir, ms, 'Hanning smoothed ms')
+
+    def _task_success(self, task_successful: bool) -> pqa.QAScore:
+        """
+        Check whether task completed successfully.
+        """
+        return qacalc.score_hanning(task_successful)
 
 
 class HanningListQAHandler(pqa.QAPlugin):
@@ -37,7 +51,7 @@ class HanningListQAHandler(pqa.QAPlugin):
     child_cls = hanning.HanningResults
     generating_task = hanning.Hanning
 
-    def handle(self, context, result):
+    def handle(self, context: Context, result: Results) -> None:
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])

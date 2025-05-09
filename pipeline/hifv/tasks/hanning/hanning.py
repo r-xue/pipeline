@@ -69,14 +69,16 @@ class HanningResults(basetask.Results):
             final: list = None,
             pool: list= None,
             preceding: list = None,
-            smoothed_spws: dict[int, tuple[bool, str]] = None
+            smoothed_spws: dict[int, tuple[bool, str]] = None,
+            task_successful: bool = None,
             ):
         """
         Args:
-            final: final list of tables (not used in this task)
-            pool: pool list (not used in this task)
-            preceding: preceding list (not used in this task)
+            final: Final list of tables (not used in this task)
+            pool: Pool list (not used in this task)
+            preceding: Preceding list (not used in this task)
             smoothed_spws: Information about spws, including whether they were smoothed and the reason for it.
+            task_successful: Indicates if the task completed successfully or not.
 
         """
         if final is None:
@@ -96,6 +98,7 @@ class HanningResults(basetask.Results):
         self.preceding = preceding[:]
         self.error = set()
         self.smoothed_spws = smoothed_spws
+        self.task_successful = task_successful
 
     def merge_with_context(self, context: Context) -> None:
         """
@@ -172,7 +175,7 @@ class Hanning(basetask.StandardTaskTemplate):
         elif all(hs_dict.values()):
             LOG.info("All science spectral windows were selected for hanning smoothing")
             try:
-                self._do_hanningsmooth()
+                job_result = self._do_hanningsmooth()
                 LOG.info("Removing original VIS " + self.inputs.vis)
                 shutil.rmtree(self.inputs.vis)
                 LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
@@ -194,7 +197,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults(smoothed_spws=smoothing_dict)
+        return HanningResults(smoothed_spws=smoothing_dict, task_successful=job_result['success'])
 
     def analyse(self, results: Results) -> Results:
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.

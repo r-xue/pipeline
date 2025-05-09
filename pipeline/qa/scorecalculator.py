@@ -94,7 +94,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_mom8_fc_image',
            'score_iersstate',
            'score_tsysflagcontamination_contamination_flagged',
-           'score_tsysflagcontamination_external_heuristic']
+           'score_tsysflagcontamination_external_heuristic',
+           'score_hanning']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -2323,7 +2324,7 @@ def score_derived_fluxes_snr(ms, measurements):
 
 
 @log_qa
-def score_path_exists(mspath, path, pathtype):
+def score_path_exists(mspath: str, path: str, pathtype: str) -> pqa.QAScore:
     """
     Score the existence of the path
         1.0 if it exist
@@ -4409,3 +4410,21 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_hanning(task_successful: bool) -> pqa.QAScore:
+    """
+    Check if hifv_hanning task was successful.
+    """
+    score = 0.0
+    message = "Task hifv_hanning did not complete successfully."
+    if task_successful:
+        score = 1.0
+        message = "Task hifv_hanning completed successfully."
+
+    origin = pqa.QAOrigin(metric_name='score_hanning',
+                          metric_score=score,
+                          metric_units='task success')
+
+    return pqa.QAScore(score, longmsg=message, shortmsg=message, origin=origin)
