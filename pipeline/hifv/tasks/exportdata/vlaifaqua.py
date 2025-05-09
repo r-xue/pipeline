@@ -180,7 +180,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 ElementTree.SubElement(nx, 'ID').text = str(sc.id)
                 ElementTree.SubElement(nx, 'Start').text = str(sc.start_time["m0"]["value"])
                 ElementTree.SubElement(nx, 'End').text = str(sc.end_time["m0"]["value"])
-                ElementTree.SubElement(nx, 'SPWIDs').text = ",".join([str(spw.id) for spw in sc.spws])
+                ElementTree.SubElement(nx, 'SPWIDs').text = ",".join(str(spw.id) for spw in sorted(sc.spws, key=lambda x: x.id))
                 ElementTree.SubElement(nx, 'FieldIDs').text = ",".join([str(field.id) for field in sc.fields])
                 ElementTree.SubElement(nx, 'Intents').text = ",".join([str(intent) for intent in sc.intents])
                 root.append(nx)
@@ -223,12 +223,12 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 sub_element.text = str(fraction)
             root.append(nx)
 
-            time_on_source = utils.total_time_on_source(ms.scans)
+            science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
+            time_on_source = utils.total_time_on_source(science_scans)
             nx = ElementTree.Element("TimeOnSource", Units="sec")
             nx.text = str(time_on_source.total_seconds())
             root.append(nx)
 
-            science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
             target_exposure = {}
             for sc in science_scans:
                 for field in sc.fields:
@@ -236,6 +236,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                         target_exposure[field.name] = datetime.timedelta(0)
                     for spw in field.valid_spws:
                         target_exposure[field.name] += sc.exposure_time(spw.id)
+                        break
 
             nx = ElementTree.Element("TimeOnScienceTarget")
             for target, exposure in target_exposure.items():
