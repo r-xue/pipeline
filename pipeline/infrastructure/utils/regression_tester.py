@@ -430,7 +430,7 @@ class PipelineRegression:
             LOG.warning(msg)
             pytest.fail(msg)
 
-        # 2. *.pipeline_manifest.xml is present under the products directory
+        # 2. *pipeline_manifest.xml is present under the products directory
         if not regression.manifest_present(context):
             msg = "pipeline_manifest.xml is not present under the products directory"
             LOG.warning(msg)
