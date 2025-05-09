@@ -1095,7 +1095,7 @@ def manifest_present(context: Context) -> bool:
     Returns:
         True if *.pipeline_manifest.xml is present, False otherwise
     """
-    manifest_path = os.path.join(context.products_dir, '*.pipeline_manifest.xml')
+    manifest_path = os.path.join(context.products_dir, '*pipeline_manifest.xml')
     manifest_files = glob.glob(manifest_path)
     return len(manifest_files) > 0
 
