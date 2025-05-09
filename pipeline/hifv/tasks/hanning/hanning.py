@@ -1,18 +1,21 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import os
 import shutil
-from typing import Type, Dict
+from typing import TYPE_CHECKING, Dict, Type
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-from pipeline.infrastructure.utils import conversion
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure.utils import find_ranges
+from pipeline import infrastructure
 from pipeline.domain.measures import FrequencyUnits
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, task_registry, vdp
+from pipeline.infrastructure.utils import conversion, find_ranges
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.api import Results
+    from pipeline.infrastructure.jobrequest import JobRequest
+    from pipeline.infrastructure.launcher import Context
 
 
 class HanningInputs(vdp.StandardInputs):
@@ -25,19 +28,27 @@ class HanningInputs(vdp.StandardInputs):
     spws_to_smooth = vdp.VisDependentProperty(default=None)
 
     # docstring and type hints: supplements hifv_hanning
-    def __init__(self, context, vis=None, maser_detection=None, spws_to_smooth=None):
+    def __init__(
+            self,
+            context: Context,
+            vis: str = None,
+            maser_detection: bool = None,
+            spws_to_smooth: str = None,
+            ):
         """
         Args:
-            context (:obj:): Pipeline context
+            context: Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
 
             maser_detection: Run maser detect algorithm on spectral line windows. Defaults to True.
 
-            spws_to_smooth:
+            spws_to_smooth: A CASA-style range of spw IDs indicating which ones to smooth.
+
+                Example: '1,2~4,7' indicates spws 1, 2, 3, 4, and 7 should be smoothed.
 
         """
-        super(HanningInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.vis = vis
         self.maser_detection = maser_detection
@@ -53,12 +64,19 @@ class HanningResults(basetask.Results):
     The class inherits from basetask.Results
 
     """
-    def __init__(self, final=None, pool=None, preceding=None, smoothed_spws=None):
+    def __init__(
+            self,
+            final: list = None,
+            pool: list= None,
+            preceding: list = None,
+            smoothed_spws: dict[int, tuple[bool, str]] = None
+            ):
         """
         Args:
-            final(list): final list of tables (not used in this task)
-            pool(list): pool list (not used in this task)
-            preceding(list): preceding list (not used in this task)
+            final: final list of tables (not used in this task)
+            pool: pool list (not used in this task)
+            preceding: preceding list (not used in this task)
+            smoothed_spws: Information about spws, including whether they were smoothed and the reason for it.
 
         """
         if final is None:
@@ -70,7 +88,7 @@ class HanningResults(basetask.Results):
         if smoothed_spws is None:
             smoothed_spws = {}
 
-        super(HanningResults, self).__init__()
+        super().__init__()
 
         self.vis = None
         self.pool = pool[:]
@@ -79,7 +97,7 @@ class HanningResults(basetask.Results):
         self.error = set()
         self.smoothed_spws = smoothed_spws
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
         """
         Args:
             context(:obj:): Pipeline context object
@@ -119,7 +137,6 @@ class Hanning(basetask.StandardTaskTemplate):
         smoothing_dict = {}
 
         # Smooth input spws only if applicable. Overrides everything else
-        # At this time, only used by hifv_restoredata and not exposed to the user
         if self.inputs.spws_to_smooth is not None:
             for spw in spws:
                 if spw.id in self.inputs.spws_to_smooth:
@@ -179,7 +196,7 @@ class Hanning(basetask.StandardTaskTemplate):
 
         return HanningResults(smoothed_spws=smoothing_dict)
 
-    def analyse(self, results):
+    def analyse(self, results: Results) -> Results:
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
 
         Override method of basetask.StandardTaskTemplate.analyze()
@@ -193,7 +210,7 @@ class Hanning(basetask.StandardTaskTemplate):
         """
         return results
 
-    def _do_hanningsmooth(self):
+    def _do_hanningsmooth(self) -> JobRequest:
         """Execute the CASA task hanningsmooth
 
         Return:
@@ -265,7 +282,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 return True
         return False
 
-    def _track_hsmooth(self, hs_dict: Dict[int, bool]):
+    def _track_hsmooth(self, hs_dict: Dict[int, bool]) -> None:
         """Modify SPECTRAL_WINDOW table to track hanning smoothing
 
         Args:
