@@ -19,6 +19,8 @@ from . import plotter
 from .. import common
 from ..common import utils
 
+from .typing import FitOrder, FitFunc
+
 if TYPE_CHECKING:
     import numpy as np
 
@@ -174,7 +176,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
         fit_func: Optional[FitFunc] = None,
-        fit_order: Optional[Union[str, int, Dict[Union[int, str], int]]] = None,
+        fit_order: Optional[FitOrder] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
         deviationmask: Optional[Union[dict, List[dict]]] = None,
@@ -380,11 +382,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   antenna_id_list,
                   spw_id_list)
         
-        uniquee_spws = set(spw_id_list)
+        unique_spws = set(spw_id_list)
         
         # Convert the fitting parameters into dictionaries mapping each SPW.
-        fit_order_dict = self.get_fit_order_dict(fit_order, uniquee_spws, ms)
-        spw_funcs_dict = self.get_fit_func_dict(fit_func, uniquee_spws, ms)
+        fit_order_dict = self.get_fit_order_dict(fit_order, unique_spws, ms)
+        spw_funcs_dict = self.get_fit_func_dict(fit_func, unique_spws, ms)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -447,7 +449,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             return {spw_id: 'automatic' for spw_id in spw_id_list}
         
         elif isinstance(fit_order, (int, str)):
-            if isinstance(fit_order, int) and fit_order <= 0:
+            if isinstance(fit_order, int) and fit_order < 0:
                 value = 'automatic'
             else:
                 value = fit_order
@@ -457,7 +459,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             fit_order_dict = {}
             for k, v in fit_order.items():
                 key = str(self.inputs.context.observing_run.virtual2real_spw_id(k, ms))
-                if isinstance(v, int) and v <= 0:
+                if isinstance(v, int) and v < 0:
                     fit_order_dict[key] = 'automatic'
                 else:
                     fit_order_dict[key] = v
