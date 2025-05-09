@@ -12,7 +12,7 @@ from pipeline.infrastructure.renderer import rendererutils
 
 % for ms in summary_plots:
     <h4>Plots:  <a class="replace"
-           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testdelay_subpages[ms])}">Test delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, delay_subpages[ms])}">Test delay plots </a>|
         <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampgain_subpages[ms])}">Gain Amplitude </a>|
         <a class="replace"
