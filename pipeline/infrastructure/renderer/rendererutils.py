@@ -1,3 +1,6 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import html
 import itertools
 import os
@@ -6,12 +9,13 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 from pipeline import infrastructure
-from pipeline.infrastructure import basetask, casa_tasks, casa_tools, filenamer, logging, pipelineqa, utils
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, filenamer, utils
 from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.basetask import Results
     from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.pipelineqa import QAScore
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -165,7 +169,7 @@ def get_failures_badge(result):
 
 
 def get_attentions_badge(result):
-    attention_logrecords = utils.get_logrecords(result, logging.ATTENTION)
+    attention_logrecords = utils.get_logrecords(result, infrastructure.logging.ATTENTION)
     l = len(attention_logrecords)
     if l > 0:
         return '<span class="badge alert-attention pull-right">%s</span>' % l
@@ -174,7 +178,7 @@ def get_attentions_badge(result):
 
 
 def get_warnings_badge(result):
-    warning_logrecords = utils.get_logrecords(result, logging.WARNING)
+    warning_logrecords = utils.get_logrecords(result, infrastructure.logging.WARNING)
     warning_qascores = utils.get_qascores(result, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING)
     l = len(warning_logrecords) + len(warning_qascores)
     if l > 0:
@@ -184,7 +188,7 @@ def get_warnings_badge(result):
 
 
 def get_errors_badge(result):
-    error_logrecords = utils.get_logrecords(result, logging.ERROR)
+    error_logrecords = utils.get_logrecords(result, infrastructure.logging.ERROR)
     error_qascores = utils.get_qascores(result, -0.1, SCORE_THRESHOLD_ERROR)
     l = len(error_logrecords) + len(error_qascores)
     if l > 0:
@@ -290,7 +294,7 @@ def num_lines(path):
         return 'N/A'
 
 
-def scores_in_range(pool: list[pipelineqa.QAScore], lo: float, hi: float) -> list[pipelineqa.QAScore]:
+def scores_in_range(pool: list[QAScore], lo: float, hi: float) -> list[QAScore]:
     """
     Filter QA scores by range.
     """
@@ -303,7 +307,7 @@ def get_notification_trs(result, alerts_info, alerts_success):
     # suppress scores not intended for the banner, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    all_scores: list[pipelineqa.QAScore] = result.qa.pool
+    all_scores: list[QAScore] = result.qa.pool
     # PIPE-1481 potentially asks for the removal of banner QA notification.
     # Thus disabling these for now.
     #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
@@ -324,17 +328,17 @@ def get_notification_trs(result, alerts_info, alerts_success):
             if most_severe_render_class is None:
                 most_severe_render_class = 'warning alert-warning'
 
-    for logrecord in utils.get_logrecords(result, logging.ERROR):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
             most_severe_render_class = 'danger alert-danger'
-    for logrecord in utils.get_logrecords(result, logging.WARNING):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
             most_severe_render_class = 'warning alert-warning'
-    for logrecord in utils.get_logrecords(result, logging.ATTENTION):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ATTENTION):
         n = format_notification('attention alert-attention', 'Attention!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
@@ -453,7 +457,11 @@ def summarise_fields(fields: str) -> str:
     return field_str
 
 
-def make_parang_plots(context: Context, result: Results) -> dict:
+def make_parang_plots(
+        context: Context,
+        result: Results,
+        intent_to_plot: str='CALIBRATE_POLARIZATION#ON_SOURCE'
+        ) -> dict:
     """
     Create parallactic angle plots for each session.
     """
@@ -461,7 +469,6 @@ def make_parang_plots(context: Context, result: Results) -> dict:
                    'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
                    '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
 
-    intent_to_plot = 'CALIBRATE_POLARIZATION#ON_SOURCE'
     parang_plots = {}
     stage_id = 'stage{}'.format(result.stage_number)
     ous_id = context.project_structure.ousstatus_entity_id
