@@ -173,7 +173,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
-        fit_func: Optional[Union[str, Dict[Union[int, str], str]]] = None,
+        fit_func: Optional[FitFunc] = None,
         fit_order: Optional[Union[str, int, Dict[Union[int, str], int]]] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
