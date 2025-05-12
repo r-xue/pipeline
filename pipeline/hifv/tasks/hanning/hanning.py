@@ -186,9 +186,9 @@ class Hanning(basetask.StandardTaskTemplate):
                 LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
                 os.rename('temphanning.ms', self.inputs.vis)
             except Exception as ex:
-                LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+                qa_message = f'Problem encountered with Hanningsmooth task: {ex}'
+                LOG.warning(qa_message)
                 task_successful = False
-                qa_message = "Hanningsmooth task failed to complete successfully."
         else:
             smoothing_windows = [str(x) for x, y in hs_dict.items() if y]
             message = find_ranges(smoothing_windows)
@@ -199,9 +199,9 @@ class Hanning(basetask.StandardTaskTemplate):
                     mset.msselect(staql)
                     mset.hanningsmooth('data')
             except Exception as ex:
-                LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+                qa_message = f'Problem encountered with Hanningsmooth task: {ex}'
+                LOG.warning(qa_message)
                 task_successful = False
-                qa_message = "Hanningsmooth task failed to complete successfully."
 
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
