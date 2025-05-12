@@ -66,20 +66,21 @@ class HanningResults(basetask.Results):
     """
     def __init__(
             self,
+            task_successful: bool,
+            qa_message: str,
             final: list = None,
             pool: list= None,
             preceding: list = None,
             smoothed_spws: dict[int, tuple[bool, str]] = None,
-            job_result: Results = None,
             ):
         """
         Args:
+            task_successful: Indicates if the task completed successfully or not.
+            qa_message: Information about the outcome of hanningsmooth task to be displayed in the weblog.
             final: Final list of tables (not used in this task)
             pool: Pool list (not used in this task)
             preceding: Preceding list (not used in this task)
             smoothed_spws: Information about spws, including whether they were smoothed and the reason for it.
-            job_result: The results of the hanningsmooth task or None if not executed.
-
         """
         if final is None:
             final = []
@@ -92,13 +93,14 @@ class HanningResults(basetask.Results):
 
         super().__init__()
 
+        self.task_successful = task_successful
+        self.qa_message = qa_message
         self.vis = None
         self.pool = pool[:]
         self.final = final[:]
         self.preceding = preceding[:]
         self.error = set()
         self.smoothed_spws = smoothed_spws
-        self.job_result = job_result
 
     def merge_with_context(self, context: Context) -> None:
         """
@@ -170,19 +172,23 @@ class Hanning(basetask.StandardTaskTemplate):
         for key, val in smoothing_dict.items():
             hs_dict[key] = val[0]
 
-        job_result: Results | None = None
+        task_successful = True
+        qa_message = "Hanningsmooth task completed successfully."
         if not any(hs_dict.values()):
-            LOG.info("None of the science spectral windows were selected for smoothing.")
+            qa_message = "None of the science spectral windows were selected for smoothing."
+            LOG.info(qa_message)
         elif all(hs_dict.values()):
             LOG.info("All science spectral windows were selected for hanning smoothing")
             try:
-                job_result = self._do_hanningsmooth()
+                self._do_hanningsmooth()
                 LOG.info("Removing original VIS " + self.inputs.vis)
                 shutil.rmtree(self.inputs.vis)
                 LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
                 os.rename('temphanning.ms', self.inputs.vis)
             except Exception as ex:
                 LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+                task_successful = False
+                qa_message = "Hanningsmooth task failed to complete successfully."
         else:
             smoothing_windows = [str(x) for x, y in hs_dict.items() if y]
             message = find_ranges(smoothing_windows)
@@ -194,11 +200,13 @@ class Hanning(basetask.StandardTaskTemplate):
                     mset.hanningsmooth('data')
             except Exception as ex:
                 LOG.warning('Problem encountered with hanning smoothing. ' + str(ex))
+                task_successful = False
+                qa_message = "Hanningsmooth task failed to complete successfully."
 
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults(smoothed_spws=smoothing_dict, job_result=job_result)
+        return HanningResults(task_successful=task_successful, qa_message=qa_message, smoothed_spws=smoothing_dict)
 
     def analyse(self, results: Results) -> Results:
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.

@@ -23,25 +23,17 @@ class HanningQAHandler(pqa.QAPlugin):
     generating_task = hanning.Hanning
 
     def handle(self, context: Context, result: Results) -> None:
-        # Check for existence of the the target MS.
-        scores = [self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))]
-        if result.job_result:
-            score2 = self._task_success(result.job_result['success'])
-            scores.extend([score2])
+        # Check if the hanningsmooth task was successful or not
+        score1 = self._task_success(result.task_successful, result.qa_message)
+        scores = [score1]
 
-        result.qa.pool.extend(scores)
+        result.qa.pool[:] = scores
 
-    def _ms_exists(self, output_dir: str, ms: str) -> pqa.QAScore:
-        """
-        Check for the existence of the target MS
-        """
-        return qacalc.score_path_exists(output_dir, ms, 'Hanning smoothed ms')
-
-    def _task_success(self, task_successful: bool) -> pqa.QAScore:
+    def _task_success(self, task_successful: bool, qa_message: str) -> pqa.QAScore:
         """
         Check whether task completed successfully.
         """
-        return qacalc.score_hanning(task_successful)
+        return qacalc.score_hanning(task_successful, qa_message)
 
 
 class HanningListQAHandler(pqa.QAPlugin):

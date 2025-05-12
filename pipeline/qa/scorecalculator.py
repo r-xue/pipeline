@@ -4413,18 +4413,16 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_hanning(task_successful: bool) -> pqa.QAScore:
+def score_hanning(task_successful: bool, qa_message: str) -> pqa.QAScore:
     """
     Check if hifv_hanning task was successful.
     """
     score = 0.0
-    message = "Task hifv_hanning did not complete successfully."
     if task_successful:
         score = 1.0
-        message = "Task hifv_hanning completed successfully."
 
     origin = pqa.QAOrigin(metric_name='score_hanning',
                           metric_score=score,
                           metric_units='task success')
 
-    return pqa.QAScore(score, longmsg=message, shortmsg=message, origin=origin)
+    return pqa.QAScore(score, longmsg=qa_message, shortmsg=qa_message, origin=origin)
