@@ -4022,12 +4022,17 @@ def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
       1. Flux catalog service usage and flux origin
       2. Age of the nearest monitoring point (if applicable)
     """
-    flux_score, flux_msg = {
+    flux_qa_dict = {
         'FIRSTURL': (1.0, "Flux catalog service used."),
         'BACKUPURL': (0.9, "Backup flux catalog service used."),
         'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
         None: (1.0, "Flux catalog service not used.")
-    }.get(result.fluxservice, (1.0, "Flux catalog service not used."))
+    }
+
+    if result.fluxservice not in flux_qa_dict:
+        LOG.warning(f"Unrecognized flux catalog service result: {result.fluxservice}. Falling back to default suboptimal qa score of 0.9.")
+
+    flux_score, flux_msg = flux_qa_dict.get(result.fluxservice, (0.9, "Unknown result from flux catalogue service."))
 
     ampcal = None
     ampcal_spws = []
