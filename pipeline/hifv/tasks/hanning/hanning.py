@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
-from typing import TYPE_CHECKING, Dict, Type
+from typing import TYPE_CHECKING, Callable, Dict, Type
 
 from pipeline import infrastructure
 from pipeline.domain.measures import FrequencyUnits
@@ -70,7 +70,7 @@ class HanningResults(basetask.Results):
             pool: list= None,
             preceding: list = None,
             smoothed_spws: dict[int, tuple[bool, str]] = None,
-            task_successful: bool = None,
+            job_result: Results = None,
             ):
         """
         Args:
@@ -78,7 +78,7 @@ class HanningResults(basetask.Results):
             pool: Pool list (not used in this task)
             preceding: Preceding list (not used in this task)
             smoothed_spws: Information about spws, including whether they were smoothed and the reason for it.
-            task_successful: Indicates if the task completed successfully or not.
+            job_result: The results of the hanningsmooth task or None if not executed.
 
         """
         if final is None:
@@ -98,7 +98,7 @@ class HanningResults(basetask.Results):
         self.preceding = preceding[:]
         self.error = set()
         self.smoothed_spws = smoothed_spws
-        self.task_successful = task_successful
+        self.job_result = job_result
 
     def merge_with_context(self, context: Context) -> None:
         """
@@ -170,6 +170,7 @@ class Hanning(basetask.StandardTaskTemplate):
         for key, val in smoothing_dict.items():
             hs_dict[key] = val[0]
 
+        job_result: Results | None = None
         if not any(hs_dict.values()):
             LOG.info("None of the science spectral windows were selected for smoothing.")
         elif all(hs_dict.values()):
@@ -197,7 +198,7 @@ class Hanning(basetask.StandardTaskTemplate):
         # Adding column to SPECTRAL_WINDOW table to indicate whether the SPW was smoothed (True) or not (False)
         self._track_hsmooth(hs_dict)
 
-        return HanningResults(smoothed_spws=smoothing_dict, task_successful=job_result['success'])
+        return HanningResults(smoothed_spws=smoothing_dict, job_result=job_result)
 
     def analyse(self, results: Results) -> Results:
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -213,11 +214,11 @@ class Hanning(basetask.StandardTaskTemplate):
         """
         return results
 
-    def _do_hanningsmooth(self) -> JobRequest:
+    def _do_hanningsmooth(self) -> Callable[[JobRequest], Results]:
         """Execute the CASA task hanningsmooth
 
         Return:
-            Executor class
+            The `execute` function of an Executor class, which returns a result dictionary
         """
 
         task = casa_tasks.hanningsmooth(vis=self.inputs.vis,

@@ -24,9 +24,10 @@ class HanningQAHandler(pqa.QAPlugin):
 
     def handle(self, context: Context, result: Results) -> None:
         # Check for existence of the the target MS.
-        score1 = self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))
-        score2 = self._task_success(result.task_successful)
-        scores = [score1, score2]
+        scores = [self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))]
+        if result.job_result:
+            score2 = self._task_success(result.job_result['success'])
+            scores.extend([score2])
 
         result.qa.pool.extend(scores)
 
