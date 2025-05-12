@@ -1,14 +1,13 @@
 from __future__ import annotations
 
 import collections
-import os
 from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 from pipeline import infrastructure
-from pipeline.hifv.tasks import hanning
+from pipeline.infrastructure import utils
+from . import hanning
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -47,7 +46,7 @@ class HanningListQAHandler(pqa.QAPlugin):
     def handle(self, context: Context, result: Results) -> None:
         # collate the QAScores from each child result, pulling them into our
         # own QAscore list
-        collated = utils.flatten([r.qa.pool for r in result])
+        collated = utils.flatten([r.qa.pool[:] for r in result])
         result.qa.pool[:] = collated
         mses = [r.inputs['vis'] for r in result]
         longmsg = 'No missing target MS(s) for %s' % utils.commafy(mses, quotes=False, conjunction='or')
