@@ -15,7 +15,7 @@ LOG = infrastructure.logging.get_logger(__name__)
 
 
 def mjdsec_to_time_selection(t: float) -> str:
-    """Convert datetime to time selection string.
+    """Convert MJD seconds to time selection string.
 
     Args:
         t: MJD second to convert
