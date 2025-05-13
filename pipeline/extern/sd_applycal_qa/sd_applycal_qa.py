@@ -289,7 +289,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         reason = 'XX-YY.deviation'
         applies_to = pqa.TargetDataSelection(vis={msname}, scan={'all'}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={'N/A'})
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-        qascore = pqa.QAScore(1.0, longmsg='All data flagged for spw {0:s}, antenna {1:s} in scan {2:s} (field {3:s}).'.format(str(msw.spw), msw.antenna, 'all', fieldname), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+        qascore = pqa.QAScore(1.0, longmsg=f'{msname}: All data flagged for spw {msw.spw}, antenna {msw.antenna} in scan all (field {fieldname}).', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
         return (msw, qascore, [qascore], 'N/A')
 
     #If this is Pol XX only dataset, return default QA score of 1.0
@@ -297,7 +297,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         reason = 'XX-YY.deviation'
         applies_to = pqa.TargetDataSelection(vis={msname}, scan={'all'}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={0})
         comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-        thisqascore = pqa.QAScore(1.0, longmsg='Only XX polarization available, no XX-YY QA possible for spw {0:d}, antenna {1:s} in scan {2:s}.'.format(msw.spw, msw.antenna, 'all'), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+        thisqascore = pqa.QAScore(1.0, longmsg=f'{msname}: Only XX polarization available, no XX-YY QA possible for spw {msw.spw}, antenna {msw.antenna} in scan all.', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
         return (msw, thisqascore, [thisqascore], 'N/A')
 
     #Create 2D outlier map initialized
@@ -359,7 +359,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             reason = 'XX-YY.deviation'
             applies_to = pqa.TargetDataSelection(vis={msname}, scan={scan}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={'N/A'})
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-            thisqascore = pqa.QAScore(1.0, longmsg='All data flagged for spw {0:d}, antenna {1:s} in scan {2:s} (field {3:s}).'.format(msw.spw, msw.antenna, str(scan), fieldname), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+            thisqascore = pqa.QAScore(1.0, longmsg=f'{msname}: All data flagged for spw {msw.spw}, antenna {msw.antenna} in scan {scan} (field {fieldname}).', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
             qascores_scans.append(thisqascore)
             analysis[scan] = None
             if qascore_lowest == 1.0:
@@ -372,7 +372,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             reason = 'XX-YY.deviation'
             applies_to = pqa.TargetDataSelection(vis={msname}, scan={scan}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={flaggedpol})
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-            thisqascore = pqa.QAScore(0.34, longmsg='Data flagged for one polarization only for spw {0:d}, antenna {1:s} in scan {2:s} (field {3:s}), pol {4:s}.'.format(msw.spw, msw.antenna, str(scan), fieldname, flaggedpol), shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+            thisqascore = pqa.QAScore(0.34, longmsg=f'{msname}: Data flagged for one polarization only for spw {msw.spw}, antenna {1:s} in scan {msw.antenna} (field {fieldname}), pol {flaggedpol}.', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
             qascores_scans.append(thisqascore)
             analysis[scan] = None
             if qascore_lowest < 0.34:
@@ -466,7 +466,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             qascore_lowest = qascore_value
             idx_lowest = k
 
-        thisqascore = pqa.QAScore(qascore_value, longmsg=longmsg, shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+        thisqascore = pqa.QAScore(qascore_value, longmsg=f"{msname}: {longmsg}", shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
         qascores_scans.append(thisqascore)
 
         analysis[scan] = {'ondata': ondata_results, 'trecX': trecX_results, 'trecY': trecY_results,
