@@ -11,25 +11,6 @@ PointingOutlierHeuristicsResult = collections.namedtuple(
     ["cx", "cy", "med_dist", "factor", "mask", "dist"]
 )
 
-# Variables below are the threshold factors for the heuristics.
-# Which factor to use depends on the situation of the scan,
-# especially, whether the last scan can be interrupted or not,
-# and the number of raster rows per map.
-
-# (1) Interrupted scan is not allowed by the system
-#     The factor is 2.0 in this case.
-FACTOR_NO_INTERRUPT = 2
-
-# (2) Raster scan can be interrupted in the middle, and
-#     number of raster rows per map is always greater than 2.
-#     The factor is sqrt(13 * pi / 8) in this case.
-FACTOR_INTERRUPT = 2.26
-
-# (3) Raster scan can be interrupted in the middle, and
-#     number of raster rows per map can be 2.
-#     The factor is 4 * sqrt(5) / 3 in this case.
-FACTOR_INTERRUPT_LESS_RASTER_ROWS = 2.982
-
 
 def compute_distance(dir_frame: str,
                      ra: np.ndarray,
@@ -70,6 +51,25 @@ def compute_distance(dir_frame: str,
 
 
 class PointingOutlierHeuristics(api.Heuristic):
+    # Variables below are the threshold factors for the heuristics.
+    # Which factor to use depends on the situation of the scan,
+    # especially, whether the last scan can be interrupted or not,
+    # and the number of raster rows per map.
+
+    # (1) Interrupted scan is not allowed by the system.
+    #     The factor is 2.0 in this case.
+    FACTOR_NO_INTERRUPT = 2
+
+    # (2) Raster scan can be interrupted in the middle, and
+    #     number of raster rows per map is always greater than 2.
+    #     The factor is sqrt(13 * pi / 8) in this case.
+    FACTOR_INTERRUPT = 2.26
+
+    # (3) Raster scan can be interrupted in the middle, and
+    #     number of raster rows per map can be 2.
+    #     The factor is 4 * sqrt(5) / 3 in this case.
+    FACTOR_INTERRUPT_LESS_RASTER_ROWS = 2.982
+
     def calculate(self,
                   dir_frame: str,
                   x: np.ndarray,
@@ -84,13 +84,7 @@ class PointingOutlierHeuristics(api.Heuristic):
             3. take median of distance array, dist -> med_dist
             4. mask data if dist > threshold * med_dist
                (mask is False if dist > threshold * med_dist)
-               threshold depends on the observing strategy
-               - if interrupted scan can happen,
-                 and there is a guarantee that number of raster rows > 2,
-                 then threshold will be 2.26
-               - if interrupted scan can happen, and number of raster
-                 rows can be 2, then threshold will be 2.982
-               - if interrupted scan should not happen, threshold will be 2.0
+               please see below for threshold factor
             5. if iterate is True, do the following:
                 5-1. re-compute med_x and med_y using a subset of
                      the data where mask is True
@@ -98,6 +92,21 @@ class PointingOutlierHeuristics(api.Heuristic):
                      to update dist
                 5-3. take median of updated dist
                 5-4. update mask using updated med_dist
+
+        Regarding the step 4, three threshold factors are available.
+        They are defined as class attributes. Which factor should use
+        depends on the observing strategy. Current observing strategy
+        in ALMA corresponds to the first case, so the current
+        implementation uses FACTOR_INTERRUPT.
+
+            - If interrupted scan can happen, and there is a guarantee
+              that number of raster rows > 2, then threshold will be
+              FACTOR_INTERRUPT.
+            - if interrupted scan can happen, and number of raster
+              rows can be 2, then threshold will be
+              FACTOR_INTERRUPT_LESS_RASTER_ROWS.
+            - if interrupted scan should not happen, threshold will be
+              FACTOR_NO_INTERRUPT.
 
         Args:
             dir_frame: direction reference frame
@@ -126,7 +135,7 @@ class PointingOutlierHeuristics(api.Heuristic):
         distance = compute_distance(dir_frame, x, y, med_x, med_y)
         median_distance = np.median(distance)
         # raster scan can be interrupted, and number of raster rows > 2
-        threshold = FACTOR_INTERRUPT
+        threshold = self.FACTOR_INTERRUPT
         if iterate:
             unflagged = distance <= threshold * median_distance
             med_x = np.median(x[unflagged])
