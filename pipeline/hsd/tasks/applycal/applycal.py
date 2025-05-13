@@ -259,7 +259,10 @@ class SerialSDApplycal(SerialApplycal):
                 plot_output_path=stage_dir,
             )
             qascore_list, plots_fnames, qascore_per_scan_list = qa_result
-            results.xy_deviation_score.extend(qascore_list)
+            qascore_list_all_scans = [
+                x for x in qascore_list if "all" in x.applies_to.scan
+            ]
+            results.xy_deviation_score.extend(qascore_list_all_scans)
 
         return results
 
