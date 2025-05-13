@@ -30,7 +30,7 @@ def merge_timerange(timerange_list: list[list[float]]) -> list[list[float]]:
     """Merge time ranges.
 
     Args:
-        timerange_list: list of timerange
+        timerange_list: list of timeranges
     Returns:
         List: merged time ranges
     """
