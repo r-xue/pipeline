@@ -10,18 +10,18 @@ from __future__ import annotations
 import decimal
 import itertools
 import operator
-from typing import Iterable, Sequence
+from typing import Iterable, Iterator, Sequence
 
 import numpy
 
-import pipeline.infrastructure as infrastructure
+from pipeline import infrastructure
 from pipeline.infrastructure import casa_tools
-from . import measures
+from pipeline.domain import measures
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
-class ArithmeticProgression(object):
+class ArithmeticProgression:
     """
     A representation of an arithmetic progression that can generate sequence
     elements on demand.
@@ -79,7 +79,7 @@ def compress(values: Sequence[int | float]) -> Sequence[int | float] | Arithmeti
         return values
 
 
-class ChannelList(object):
+class ChannelList:
     """
     A container/generator for Channel objects.
 
@@ -106,7 +106,7 @@ class ChannelList(object):
         self.chan_widths = chan_widths
         self.chan_effbws = effbw
 
-    def __iter__(self) -> Channel:
+    def __iter__(self) -> Iterator[Channel]:
         raw_channel_data = list(zip(self.chan_freqs, self.chan_widths, self.chan_effbws))
         for chan_centre, chan_width, chan_effective_bw in raw_channel_data:
             yield self.__create_channel(chan_centre, chan_width, chan_effective_bw)
@@ -148,7 +148,7 @@ class ChannelList(object):
         return Channel(f_lo, f_hi, f_bw)
 
 
-class Channel(object):
+class Channel:
     """
     Representation of a channel within a spectral window.
 
@@ -291,7 +291,7 @@ class Channel(object):
         self.frequency_range.set(frequency1, frequency2)
 
 
-class SpectralWindow(object):
+class SpectralWindow:
     """
     SpectralWindow is a logical representation of a spectral window (spw).
 
@@ -317,18 +317,37 @@ class SpectralWindow(object):
         correlation_bits: Number of bits used for correlation.
         median_receptor_angle: Median feed receptor angle.
         specline_window: Whether spw is intended for spectral line or continuum (VLA only).
+        grouping_id: Grouping ID to uniquely identify this spw in different MOUS within the same GOUS (ALMA-only, introduced in Cycle 12).
     """
     __slots__ = ('id', 'band', 'bandwidth', 'type', 'intents', 'ref_frequency', 'name', 'baseband', 'sideband',
                  'receiver', 'freq_lo', 'mean_frequency', '_min_frequency', '_max_frequency', '_centre_frequency',
                  'channels', '_ref_frequency_frame', 'spectralspec', 'transitions', 'sdm_num_bin', 'correlation_bits',
-                 'median_receptor_angle', 'specline_window')
+                 'median_receptor_angle', 'specline_window', 'grouping_id')
 
-    def __init__(self, spw_id: int, name: str, spw_type: str, bandwidth: float, ref_freq: dict, mean_freq: float,
-                 chan_freqs: numpy.ndarray, chan_widths: numpy.ndarray, chan_effective_bws: numpy.ndarray,
-                 sideband: int, baseband: int, receiver: str | None, freq_lo: list[float] | numpy.ndarray | None,
-                 band: str = 'Unknown', spectralspec: str | None = None, transitions: list[str] | None = None,
-                 sdm_num_bin: int | None = None, correlation_bits: str | None = None,
-                 median_receptor_angle: numpy.ndarray | None = None, specline_window: bool = False) -> None:
+    def __init__(
+            self,
+            spw_id: int,
+            name: str,
+            spw_type: str,
+            bandwidth: float,
+            ref_freq: dict,
+            mean_freq: float,
+            chan_freqs: numpy.ndarray,
+            chan_widths: numpy.ndarray,
+            chan_effective_bws: numpy.ndarray,
+            sideband: int,
+            baseband: int,
+            receiver: str | None,
+            freq_lo: list[float] | numpy.ndarray | None,
+            band: str = 'Unknown',
+            spectralspec: str | None = None,
+            transitions: list[str] | None = None,
+            sdm_num_bin: int | None = None,
+            correlation_bits: str | None = None,
+            median_receptor_angle: numpy.ndarray | None = None,
+            specline_window: bool = False,
+            grouping_id: str | None = None
+            ):
         """
         Initialize SpectralWindow class.
 
@@ -353,6 +372,7 @@ class SpectralWindow(object):
             correlation_bits: Number of bits used for correlation.
             median_receptor_angle: Median feed receptor angle.
             specline_window: Whether spw is intended for spectral line or continuum (VLA only).
+            grouping_id: GOUS ID used to identify project group level (new in Cycle 12 ALMA data)  TODO improve description
         """
         if transitions is None:
             transitions = ['Unknown']
@@ -396,6 +416,7 @@ class SpectralWindow(object):
         self.correlation_bits = correlation_bits
         self.median_receptor_angle = median_receptor_angle
         self.specline_window = specline_window
+        self.grouping_id = grouping_id
 
     def __getstate__(self) -> tuple:
         """Define what to pickle as a class instance."""
@@ -403,14 +424,14 @@ class SpectralWindow(object):
                 self.baseband, self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency,
                 self._max_frequency, self._centre_frequency, self.channels, self._ref_frequency_frame,
                 self.spectralspec, self.transitions, self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle,
-                self.specline_window)
+                self.specline_window, self.grouping_id)
 
     def __setstate__(self, state: tuple) -> None:
         """Define how to unpickle a class instance."""
         (self.id, self.band, self.bandwidth, self.type, self.intents, self.ref_frequency, self.name, self.baseband,
          self.sideband, self.receiver, self.freq_lo, self.mean_frequency, self._min_frequency, self._max_frequency,
          self._centre_frequency, self.channels, self._ref_frequency_frame, self.spectralspec, self.transitions,
-         self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle, self.specline_window) = state
+         self.sdm_num_bin, self.correlation_bits, self.median_receptor_angle, self.specline_window, self.grouping_id) = state
 
     def __repr__(self) -> str:
         chan_freqs = self.channels.chan_freqs
@@ -426,7 +447,7 @@ class SpectralWindow(object):
             chan_effective_bws = numpy.array(list(chan_effective_bws))
 
         return ('SpectralWindow({0!r}, {1!r}, {2!r}, {3!r}, {4!r}, {5!r}, {6}, {7}, {8}, {9!r}, {10!r}, {11!r}, '
-                '{12!r}, {13}, {14}, {15!r}, {16})').format(
+                '{12!r}, {13}, {14}, {15!r}, {16}, {17})').format(
             self.id,
             self.name,
             self.type,
@@ -446,7 +467,8 @@ class SpectralWindow(object):
             self.sdm_num_bin,
             self.correlation_bits,
             self.median_receptor_angle,
-            self.specline_window
+            self.specline_window,
+            self.grouping_id
         )
 
     @property
@@ -530,7 +552,7 @@ class SpectralWindow(object):
         return 'SpectralWindow({0})'.format(', '.join(args))
 
 
-class SpectralWindowWithChannelSelection(object):
+class SpectralWindowWithChannelSelection:
     """
     SpectralWindowWithChannelSelection decorates a SpectralWindow so that the
     spectral window ID also contains a channel selection.
