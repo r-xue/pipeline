@@ -125,7 +125,7 @@ class PointingOutlierHeuristics(api.Heuristic):
         med_y = np.median(y)
         distance = compute_distance(dir_frame, x, y, med_x, med_y)
         median_distance = np.median(distance)
-        # raster scan can be interrupted, and numberr of raster rows > 2
+        # raster scan can be interrupted, and number of raster rows > 2
         threshold = FACTOR_INTERRUPT
         if iterate:
             unflagged = distance <= threshold * median_distance
