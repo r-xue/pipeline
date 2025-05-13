@@ -47,16 +47,24 @@ class BandpassQAPool(pqa.QAScorePool):
 
         # Compute QA score based on bandpass_pipereq234.
         bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms)
-        self.pool.extend(bandpass_pipereq234_scores)
+        self.pool[:] = bandpass_pipereq234_scores
 
-    def _get_bandpass_pipereq234_scores(self, vis):
-        spws = set(bandpass_pipereq234.bandpass_platforming())
-        print(spws)
-        f_spw = 0.0
+    def _get_bandpass_pipereq234_scores(self, ms):
+        spws = bandpass_pipereq234.bandpass_platforming()
+        print("Spws affected", spws)
+        # Get set of spws and antennas impacted
+
+        f_spw = len(spws.keys())/len(ms.get_spectral_windows())
+
+        # Check if reference spw is impacted
+        ref_spw_impacted = False
+        if ms.get_representative_source_spw() in spws.keys():
+            ref_spw_impacted = True
+
         if f_spw <= 0.0:
             score = 1.0
-            shortmsg = 'No correlator subband issues detected'
-            longmsg = 'No correlator subband issues detected'
+            shortmsg = "No correlator subband issues detected"
+            longmsg = "No correlator subband issues detected"
         else:
             qa_max = 0.65
             qa_min = 0.5
@@ -65,10 +73,17 @@ class BandpassQAPool(pqa.QAScorePool):
                 qa_ref = 0.15
             else:
                 qa_ref = 0.0
-            score = qa_max - (qa_max-qa_min)*f_spw - qa_ref
-            shortmsg = 'Correlator subband issues detected'
-            longmsg = f"{vis} correlator subband issues may be affecting the following solutions: spw x: Ant1, Ant2, Ant3; spw y: Ant1, Ant2"
-        return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis)]
+            score = qa_max - (qa_max-qa_min) * f_spw - qa_ref
+            shortmsg = "Correlator subband issues detected"
+
+            longmsg = f"{ms.basename}: correlator subband issues may be affecting the following solutions: "
+            for spw in spws.keys():
+                longmsg += f"Spw {spw}:"
+                longmsg += ",".join(spws[spw])
+
+        print(f"creating score {longmsg} {shortmsg} {score}")
+        
+        return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename)]
 
     def _get_qascore(self, ms, score_type):
         (min_score, spw_str, qa_id) = self._get_min(score_type)
@@ -157,7 +172,10 @@ class BandpassQAHandler(pqa.QAPlugin):
             finally:
                 if os.path.exists(qa_dir):
                     shutil.rmtree(qa_dir)
-
+                # Compute QA score based on bandpass_pipereq234.
+#                bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms)
+#                result.qa.pool[:] = bandpass_pipereq234_scores
+                
         else:
             result.qa = pqa.QAScorePool()
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='No bandpass solution', shortmsg='No solution', vis=vis)]
