@@ -41,7 +41,8 @@ def merge_timerange(timerange_list: list[list[float]]) -> list[list[float]]:
     LOG.debug(f'timegap_list is {timegap_list}')
 
     # regard timegap <= 0.1msec as continuous
-    gap_index = [-1] + np.where(timegap_list > 1e-4)[0].tolist() + [len(timegap_list)]
+    time_gap_threshold = 1e-4
+    gap_index = [-1] + np.where(timegap_list > time_gap_threshold)[0].tolist() + [len(timegap_list)]
 
     timerange_merged = [[timerange_list[i + 1][0], timerange_list[j][1]] for i, j in zip(gap_index, gap_index[1:])]
     LOG.debug(f'timerange_merged is {timerange_merged}')
