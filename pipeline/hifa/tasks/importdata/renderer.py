@@ -21,8 +21,10 @@ class T2_4MDetailsALMAImportDataRenderer(renderer.T2_4MDetailsImportDataRenderer
 
         minparang = result.inputs['minparang']
         parang_ranges = result.parang_ranges
-        if parang_ranges['pol_intents_found']:
-            parang_plots = rendererutils.make_parang_plots(pipeline_context, result)
+        if parang_ranges['intents_found']:
+            parang_plots = rendererutils.make_parang_plots(
+                pipeline_context, result, 'CALIBRATE_POLARIZATION#ON_SOURCE'
+                )
         else:
             parang_plots = {}
 

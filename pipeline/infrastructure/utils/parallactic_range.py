@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.logging.get_logger(__name__)
 
+__all__ = ['ous_parallactic_range']
+
 # Type aliases for the parallactic angle computations.
 ParallacticAngle = float
 SignedAngle = float

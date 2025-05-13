@@ -460,7 +460,7 @@ def summarise_fields(fields: str) -> str:
 def make_parang_plots(
         context: Context,
         result: Results,
-        intent_to_plot: str='CALIBRATE_POLARIZATION#ON_SOURCE'
+        intent_to_plot: str,
         ) -> dict:
     """
     Create parallactic angle plots for each session.

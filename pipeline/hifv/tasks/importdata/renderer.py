@@ -39,8 +39,10 @@ class T2_4MDetailsVLAImportDataRenderer(basetemplates.T2_4MDetailsDefaultRendere
 
         minparang = result.inputs['minparang']
         parang_ranges = result.parang_ranges
-        if parang_ranges['pol_intents_found']:
-            parang_plots = rendererutils.make_parang_plots(pipeline_context, result)
+        if parang_ranges['intents_found']:
+            parang_plots = rendererutils.make_parang_plots(
+                pipeline_context, result, intent_to_plot="CALIBRATE_PHASE#UNSPECIFIED"
+                )
         else:
             parang_plots = {}
 

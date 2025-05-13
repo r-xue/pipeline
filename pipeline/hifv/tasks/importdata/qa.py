@@ -6,7 +6,6 @@ import pipeline.qa.scorecalculator as qacalc
 from pipeline import infrastructure
 from pipeline.infrastructure import utils
 from pipeline.h.tasks.importdata import qa as hqa
-from pipeline.hifa.tasks.importdata import qa as hifaqa
 from . import importdata
 
 LOG = infrastructure.logging.get_logger(__name__)
@@ -62,9 +61,10 @@ class VLAImportDataListQAHandler(pqa.QAPlugin):
         # gather mses into a flat list
         mses = list(itertools.chain(*(r.mses for r in result)))
 
-        # PIPE-597 spec states to test POLARIZATION intent
-        intents_to_test = {'POLARIZATION'}
-        parang_scores, parang_ranges = hifaqa._check_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
+        # PIPE-836: retrieve parallactic angle from PHASE intents
+        # parang_scores not currently needed but could be used in the future
+        intents_to_test = {'PHASE'}
+        parang_scores, parang_ranges = qacalc.score_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
 
         # result.qa.pool.extend(parang_scores)
         result.parang_ranges = parang_ranges

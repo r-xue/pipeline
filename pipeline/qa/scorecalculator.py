@@ -16,7 +16,7 @@ import os
 import re
 import shutil
 import traceback
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import interpolate, special
@@ -27,6 +27,7 @@ from pipeline.domain import datatable, measures
 from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.qa import checksource
+from pipeline.infrastructure.utils import ous_parallactic_range
 
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
@@ -410,7 +411,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
 
 
 @log_qa
-def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     This QA heuristic evaluates a list of measurement sets, creating a QA score
     for each MS, and returning the aggregate list of QA scores for all MSes.
@@ -528,7 +529,7 @@ def score_bands(mses):
 @log_qa
 def score_parallactic_range(
         pol_intents_present: bool, session_name: str, field_name: str, coverage: float, threshold: float
-        ) -> List[pqa.QAScore]:
+        ) -> list[pqa.QAScore]:
     """
     Score a session based on parallactic angle coverage.
 
@@ -536,7 +537,7 @@ def score_parallactic_range(
     for full spec.
     """
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     # are polarisation intents expected? true if pol recipe, false if not
     # Polcal detected in session (this function was called!) but this is not a
@@ -589,7 +590,7 @@ def score_parallactic_range(
 
 
 @log_qa
-def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_polintents(recipe_name: str, mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
@@ -605,7 +606,7 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.Q
     pol_intents_expected = recipe_name in pol_recipes
 
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     # Spec from PIPE-606:
     #
@@ -695,7 +696,7 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.Q
 
 
 @log_qa
-def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_samecalobjects(recipe_name: str, mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
         Check if BP/Phcal/Ampcal are all the same object and score appropriately
     """
@@ -708,7 +709,7 @@ def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[p
     alma_recipes_expected = recipe_name in alma_recipes
 
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     if alma_recipes_expected:
         for ms in mses:
@@ -2612,7 +2613,7 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
-def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, int]]:
+def get_line_ranges(lines: list[list[float | bool]]) -> list[tuple[int, int]]:
     """Get valid line ranges from list of line properties.
 
     Args:
@@ -2635,7 +2636,7 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
 
 
 @log_qa
-def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+def examine_sd_edge_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: tuple[int, int] = (0, 0)) -> float:
     """Examine the existence of lines at edge channels.
 
     This function checks if there are lines that spans edge channels.
@@ -2660,7 +2661,7 @@ def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: 
 
 
 @log_qa
-def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+def examine_sd_wide_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: tuple[int, int] = (0, 0)) -> float:
     """Examine the existence of wide lines.
 
     This function returns True if there is a line with the width
@@ -2696,7 +2697,7 @@ def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: 
     return line_coverage > effective_nchan * fraction
 
 
-def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
+def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> list[tuple[int, int]]:
     """Select deviation masks that belongs to given reduction group member.
 
     Args:
@@ -2713,7 +2714,7 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
 
-def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
     Frequency coordinates are different between MS and image product.
@@ -2759,7 +2760,7 @@ def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, r
 
 
 @log_qa
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
     """Compute QA score based on the line detection result.
 
     QA scores are evaluated based on the line detection result for
@@ -2999,7 +3000,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
-                              pol: str, stat: List[tuple]) -> pqa.QAScore:
+                              pol: str, stat: list[tuple]) -> pqa.QAScore:
     """
     Return Pipeline QA score of baseline quality.
 
@@ -3749,7 +3750,7 @@ def score_renorm(result):
 
 @log_qa
 def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
-                            threshold: float = 0.1) -> List[pqa.QAScore]:
+                            threshold: float = 0.1) -> list[pqa.QAScore]:
     """
     This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
     and creates a score based on how large the deviation from one is.
@@ -3805,7 +3806,7 @@ def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: 
 
 
 @log_qa
-def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
+def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: tuple[list, list], threshold: float = 0.02) \
         -> pqa.QAScore:
     """
     This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
@@ -3846,7 +3847,7 @@ def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, L
 
 @log_qa
 def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
-                         th_bad: float = 0.15) -> List[pqa.QAScore]:
+                         th_bad: float = 0.15) -> list[pqa.QAScore]:
     """
     This heuristic inspects the polarization calibrator leakage (D-terms)
     solutions caltable and create a score based on how large the deviation from
@@ -3939,7 +3940,7 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
 
 
 @log_qa
-def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pqa.QAScore]:
+def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> list[pqa.QAScore]:
     """
     This heuristic inspects the dictionary returned by CASA's polfromgain and
     scores the residual polarization in Q and U, compared to a threshold.
@@ -4210,71 +4211,71 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
 
 
 @log_qa
-def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> list[pqa.QAScore]:
     """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> list[pqa.QAScore]:
     """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> list[pqa.QAScore]:
     """Calculate QAScore of gap existence in raster pattern of imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Unable to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_rgap, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> list[pqa.QAScore]:
     """Calculate QAScore when raster scan analysis was incomplete in imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
 
 
-def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
+def _score_rasterscan_correctness(rasterscan_heuristics_results: dict[str, RasterScanHeuristicsResult], msg: str) -> list[pqa.QAScore]:
     """Generate score of raster scan correctness of importdata or imaging.
 
     Args:
-        rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
+        rasterscan_heuristics_results (dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
             treats QAScore of raster scan analysis.
         msg (str): short message for QA
 
     Returns:
-        List[pqa.QAScore]: lists contains QAScore objects.
+        list[pqa.QAScore]: lists contains QAScore objects.
     """
 
     qa_scores = []  # [pqa.QAScore]
@@ -4342,7 +4343,7 @@ def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pqa.QAS
 
 
 @log_qa
-def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QAScore]) -> List[pqa.QAScore]:
+def score_tsysflagcontamination_external_heuristic(foreign_qascores: list[pqa.QAScore]) -> list[pqa.QAScore]:
     """
     Adopt QA scores that originate from the Tsysflag line contamination
     heuristic.
@@ -4370,7 +4371,7 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QA
 
 
 @log_qa
-def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
@@ -4409,3 +4410,61 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_parallactic_angle_range(
+        mses: list[MeasurementSet],
+        intents: set[str],
+        threshold: float
+        ) -> tuple[list[pqa.QAScore], dict[str, Any]]:
+    """
+    Check that the parallactic angle coverage of the intent(s) meets the required threshold.
+
+    Args:
+        mses: a list of MeasurementSet objects
+        intents: a set containing all data intent(s) to check for
+        threshold: the minimum acceptable value of parallactic angle coverage
+
+    Returns:
+        a tuple containing a list of QA scores and a dictionary with information related to the
+         parallactic angle of the intent(s)
+    """
+    # holds list of all QA scores for this metric
+    all_scores: list[pqa.QAScore] = []
+    # holds all parallactic angle ranges for all
+    # session names, intents and calibrator names
+    all_metrics = {'sessions': {}, 'intents_found': False}
+
+    intents_present = any([intents.intersection(ms.intents) for ms in mses])
+
+    # group MSes per sessions, adding to default 'Shared' session if not
+    # defined
+    session_to_mses = collections.defaultdict(list)
+    for ms in mses:
+        session_to_mses[getattr(ms, 'session', 'Shared')].append(ms)
+
+    # Check parallactic angle for each calibrator in each session
+    for session_name, session_mses in session_to_mses.items():
+        all_metrics['sessions'][session_name] = {'min_parang_range': 360.0,
+                                                 'vis': [ms_do.name for ms_do in session_mses]}
+        for intent in intents:
+            all_metrics['sessions'][session_name][intent] = {}
+            cal_names = {cal.name
+                         for ms in session_mses
+                         for cal in ms.get_fields(intent=intent)}
+            if len(cal_names) > 0:
+                all_metrics['intents_found'] = True
+            for cal_name in cal_names:
+                parallactic_range = ous_parallactic_range(session_mses, cal_name, intent)
+                all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
+                all_metrics['sessions'][session_name]['min_parang_range'] = min(
+                    all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
+                LOG.info(f'Parallactic angle range for {cal_name} ({intent}) in session {session_name}: '
+                         f'{parallactic_range}')
+                session_scores = score_parallactic_range(
+                    intents_present, session_name, cal_name, parallactic_range, threshold
+                )
+                all_scores.extend(session_scores)
+
+    return all_scores, all_metrics
