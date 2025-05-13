@@ -511,15 +511,15 @@ class LineWindowParser(object):
 
     def __init__(self,
                  ms: 'MeasurementSet',
-                 context: 'Context',
-                 window: LineWindow) -> None:
+                 window: LineWindow,
+                 context: 'Context' = None) -> None:
         """
         Construct LineWindowParser instance.
 
         Args:
             ms: ms domain object
-            context: Pipeline context
             window: line window parameter
+            context: Pipeline context
         """
         self.ms = ms
         self.window = window
@@ -597,7 +597,7 @@ class LineWindowParser(object):
         for spwid in self.science_spw:
             assert spwid in self.parsed
 
-    def get_result(self, spw_id: int) -> Optional[List[int]]:
+    def get_result(self, spw_id: int) -> List[int] | None:
         """Return parsed line windows for given spw id.
 
         Args:
@@ -658,8 +658,10 @@ class LineWindowParser(object):
 
             new_window[spwid].append(chansel)
 
+        real_window = self._virtual_to_real_spws(new_window)
+
         for spwid in self.science_spw:
-            if spwid not in new_window:
+            if spwid not in real_window:
                 new_window[spwid] = []
 
         return new_window

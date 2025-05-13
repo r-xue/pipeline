@@ -447,14 +447,18 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         """
         if not fit_order:
             return {spw_id: 'automatic' for spw_id in spw_id_list}
-        
+
         elif isinstance(fit_order, (int, str)):
-            if isinstance(fit_order, int) and fit_order < 0:
+            if isinstance(fit_order, str):
+                if fit_order != 'automatic':
+                    raise ValueError(f"Unsupported fit_order string: {fit_order}")
+                value = fit_order
+            elif isinstance(fit_order, int) and fit_order < 0:
                 value = 'automatic'
             else:
                 value = fit_order
             return {spw_id: value for spw_id in spw_id_list}
-        
+
         elif isinstance(fit_order, dict):
             fit_order_dict = {}
             for k, v in fit_order.items():
@@ -465,7 +469,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                     fit_order_dict[key] = v
             return {spw_id: fit_order_dict.get(str(spw_id), 'automatic')
                     for spw_id in spw_id_list}
-        
+
         else:
             raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
@@ -474,15 +478,15 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                       spw_id_list: List[int], ms: MeasurementSet) -> Dict[int, BaselineFitParamConfig]:
         """
         Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
-        
+
         If fit_func is None or falsy, the default 'cspline' is used.
         If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
         If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
-        
+
         Args:
             fit_func: The fit function parameter (str, dict, or None).
             spw_id_list: List of spectral window IDs to process.
-        
+
         Returns:
             A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
         """
@@ -491,7 +495,11 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         else:
             fit_func_value = fit_func
 
+        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial'}
         if not isinstance(fit_func_value, dict):
+            # Validate string
+            if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
+                raise ValueError(f"Unsupported fit_func string: {fit_func_value}")
             # Single string: Create one instance for all SPWs.
             blparam_heuristic = BaselineFitParamConfig(
                 fitfunc=fit_func_value,
@@ -501,6 +509,8 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         else:
             processed_fit_func = {}
             for k, v in fit_func_value.items():
+                if v not in valid_funcs:
+                    raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
                 key = str(self.inputs.context.observing_run.virtual2real_spw_id(k, ms))
                 processed_fit_func[key] = v
 
