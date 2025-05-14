@@ -256,10 +256,11 @@ class ALMAAntpos(antpos.Antpos):
         if inputs.hm_antpos == 'online':
             # PIPE-51: retrieve json file for MS to include in the call to gencal
             antpos_args = inputs.to_antpos_args()
-            if os.path.exists(antpos_args['outfile']):
-                LOG.warning('Antenna position file %s exists. Task getantposalma will overwrite.', antpos_args['outfile'])
-            antpos_job = run_with_retry(casa_tasks.getantposalma, **antpos_args)
-            self._executor.execute(antpos_job)
+            if not os.path.exists(antpos_args['outfile']):
+                antpos_job = run_with_retry(casa_tasks.getantposalma, **antpos_args)
+                self._executor.execute(antpos_job)
+            else:
+                LOG.warning('Antenna position file %s exists. Skipping getantposalma task.', antpos_args['outfile'])
 
         return super().prepare()
 
