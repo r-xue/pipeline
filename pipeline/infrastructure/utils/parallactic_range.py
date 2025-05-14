@@ -20,15 +20,21 @@ SignedAngle = float
 PositiveDefiniteAngle = float
 
 
-def ous_parallactic_range(mses: list[MeasurementSet], field_name: str, intent: str):
+def ous_parallactic_range(
+        mses: list[MeasurementSet],
+        field_name: str,
+        intent: str
+        ) -> tuple[float, float] | None:
     """
-    Get the parallactic angle range across all measurement sets for field f
-    when observed with the specifiedintent.
+    Get the parallactic angle range across all measurement sets for field when observed with the specified intent.
 
-    :param mses: MeasurementSets to process
-    :param field_name: Field to inspect
-    :param intent: observing intent to consider
-    :return: angular range expressed as (min angle, max angle) tuple
+    Args:
+        mses: MeasurementSets to process
+        field_name: Field to inspect
+        intent: observing intent to consider
+
+    Returns:
+        angular range expressed as (min angle, max angle) tuple or None
     """
     angles = []
     for ms in mses:
@@ -55,13 +61,18 @@ def ous_parallactic_range(mses: list[MeasurementSet], field_name: str, intent: s
 
 def _parallactic_range_for_field(ms: MeasurementSet, f: Field, intent: str) -> tuple[float, float]:
     """
-    Get the parallactic angle range for field f when observed with the specified
-    intent.
+    Get the parallactic angle range for field f when observed with the specified intent.
 
-    :param ms: MeasurementSet to process
-    :param f: Field to inspect
-    :param intent: observing intent to consider
-    :return: angular range expressed as (min angle, max angle) tuple
+    Args:
+        ms: MeasurementSet to process
+        f: Field to inspect
+        intent: observing intent to consider
+
+    Returns:
+        angular range expressed as (min angle, max angle) tuple
+
+    Raises:
+        ValueError: if no scans are found in the MS for specified field and intent
     """
     # get the scans when the field was observed with the required intent
     scans = ms.get_scans(field=f.id, scan_intent=intent)
@@ -75,8 +86,9 @@ def _parallactic_range_for_field(ms: MeasurementSet, f: Field, intent: str) -> t
     min_utc = min([s.start_time for s in scans], key=utils.get_epoch_as_datetime)
     max_utc = max([s.end_time for s in scans], key=utils.get_epoch_as_datetime)
 
-    min_pa = _parallactic_angle_at_epoch(f, min_utc)
-    max_pa = _parallactic_angle_at_epoch(f, max_utc)
+    observatory = ms.antenna_array.name
+    min_pa = _parallactic_angle_at_epoch(f, min_utc, observatory)
+    max_pa = _parallactic_angle_at_epoch(f, max_utc, observatory)
 
     if min_pa > max_pa:
         min_pa, max_pa = max_pa, min_pa
@@ -84,19 +96,22 @@ def _parallactic_range_for_field(ms: MeasurementSet, f: Field, intent: str) -> t
     return min_pa, max_pa
 
 
-def _parallactic_angle_at_epoch(f: Field, e: dict) -> float:
+def _parallactic_angle_at_epoch(f: Field, e: dict, observatory: str) -> float:
     """
     Get the instantaneous parallactic angle for field f at epoch e.
 
-    :param f: Field domain object
-    :param e: CASA epoch
-    :return: angular separation in degrees
+    Args:
+        f: Field domain object
+        e: CASA epoch
+
+    Returns
+        angular separation in degrees
     """
     me = casa_tools.measures
     qa = casa_tools.quanta
 
     try:
-        me.doframe(me.observatory('ALMA'))
+        me.doframe(me.observatory(observatory))
         me.doframe(e)
 
         pole_direction = me.direction('J2000', '0deg', '+90deg')
