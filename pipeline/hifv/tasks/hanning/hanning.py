@@ -31,9 +31,9 @@ class HanningInputs(vdp.StandardInputs):
     def __init__(
             self,
             context: Context,
-            vis: str = None,
-            maser_detection: bool = None,
-            spws_to_smooth: str = None,
+            vis: str | None = None,
+            maser_detection: bool | None = None,
+            spws_to_smooth: str | None = None,
             ):
         """
         Args:
@@ -68,10 +68,10 @@ class HanningResults(basetask.Results):
             self,
             task_successful: bool,
             qa_message: str,
-            final: list = None,
-            pool: list= None,
-            preceding: list = None,
-            smoothed_spws: dict[int, tuple[bool, str]] = None,
+            final: list | None = None,
+            pool: list | None = None,
+            preceding: list | None = None,
+            smoothed_spws: dict[int, tuple[bool, str]] | None = None,
             ):
         """
         Args:
@@ -173,12 +173,12 @@ class Hanning(basetask.StandardTaskTemplate):
             hs_dict[key] = val[0]
 
         task_successful = True
-        qa_message = "Hanningsmooth task completed successfully."
+        qa_message = "Hanning smoothing task completed successfully."
         if not any(hs_dict.values()):
             qa_message = "None of the science spectral windows were selected for smoothing."
             LOG.info(qa_message)
         elif all(hs_dict.values()):
-            LOG.info("All science spectral windows were selected for hanning smoothing")
+            LOG.info("All science spectral windows were selected for hanning smoothing.")
             try:
                 self._do_hanningsmooth()
                 LOG.info("Removing original VIS " + self.inputs.vis)
@@ -186,7 +186,7 @@ class Hanning(basetask.StandardTaskTemplate):
                 LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
                 os.rename('temphanning.ms', self.inputs.vis)
             except Exception as ex:
-                qa_message = f'Problem encountered with Hanningsmooth task: {ex}'
+                qa_message = f'Problem encountered with hanning smoothing task: {ex}'
                 LOG.warning(qa_message)
                 task_successful = False
         else:
@@ -199,7 +199,7 @@ class Hanning(basetask.StandardTaskTemplate):
                     mset.msselect(staql)
                     mset.hanningsmooth('data')
             except Exception as ex:
-                qa_message = f'Problem encountered with Hanningsmooth task: {ex}'
+                qa_message = f'Problem encountered with hanning smoothing task: {ex}'
                 LOG.warning(qa_message)
                 task_successful = False
 
