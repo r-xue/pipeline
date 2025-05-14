@@ -291,11 +291,8 @@ class QAScoreEvalFunc:
         # Case of no data selected as outlier for this metric,
         # fill values with default values for non-outlier QA scores
         if len(selscan) == 0 and len(selspw) == 0 and len(selintent) == 0 and len(selant) == 0:
-            # if subscore is in the dict then we've processed this before
-            if 'finalscore' in self.qascoremetrics:
-                return self.qascoremetrics['finalscore']
             d = dict(significance=0.0, is_amp_sym_off=False, outliers=False)
-            for s_dict in self.qascoremetrics.values():
+            for s_dict in [v for v in self.qascoremetrics.values() if isinstance(v, dict)]:
                 for m_dict in [v for v in s_dict.values() if isinstance(v, dict)]:
                     for m in m_dict.values():
                         m.update(d)
@@ -632,7 +629,6 @@ def in_casa_format(data_selections: DataSelectionToScores) -> DataSelectionToSco
         new_ds = DataSelection(**formatted_args)
         formatted[new_ds] = scores
     return formatted
-
 
 
 def summarise_scores(
