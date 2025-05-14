@@ -99,7 +99,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_mom8_fc_image',
            'score_iersstate',
            'score_tsysflagcontamination_contamination_flagged',
-           'score_tsysflagcontamination_external_heuristic']
+           'score_tsysflagcontamination_external_heuristic',
+           'score_syspowerdata']
 
 LOG = logging.get_logger(__name__)
 
@@ -4412,3 +4413,39 @@ def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
+
+@log_qa
+def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+    """Calculates QA score as the average of per-band scores based on data points outside 0.7-1.2 range.
+
+        For each band:
+        - Band QA = 1.0 - (fraction of values outside [0.7, 1.2])
+        Final QA = average of all band QA scores.
+
+        Args:
+            data (dict[str, list[float]]): Dictionary with band as key and list of float values.
+
+        Returns:
+            pqa.QAScore: QA score object
+        """
+
+    band_scores = []
+    msg_parts = []
+
+    for band, values in data.items():
+        outliers = [v for v in values.data.flatten() if v < 0.7 or v > 1.2]
+        fraction_outside = len(outliers) / len(values.data.flatten())
+        msg_parts.append(f"Band {band} has {fraction_outside*100:.2f}%")
+        band_scores.append(1 - fraction_outside)
+
+    final_score = sum(band_scores) / len(band_scores)
+
+    longmsg = ", ".join(msg_parts) + " data outside the range 0.7-1.2"
+    num_low_score = sum(score < 0.5 for score in band_scores)
+    shortmsg = (f"{num_low_score} of {len(band_scores)} has more than 50% data outside the range")
+
+
+    origin = pqa.QAOrigin(metric_name='score_syspowerdata',
+                          metric_score=final_score,
+                          metric_units='')
+    return pqa.QAScore(final_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
