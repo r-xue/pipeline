@@ -484,7 +484,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
         scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
 
         for field in calfieldlist:
-            if utils.get_row_count(calMs, str(field)) == 0:
+            taql = (f"FIELD_ID == {field}")
+            if utils.get_row_count(calMs, str(taql)) == 0:
                 LOG.warning("No data found for field {!s}, skipping fluxscale for field {!s}".format(field, field))
                 continue
             fitorder = self.inputs.fitorder
@@ -1115,7 +1116,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-                if utils.get_row_count(calMs, fieldidstring) != 0:
+                taql = (f"FIELD_ID == {fieldidstring}")
+                if utils.get_row_count(calMs, taql) != 0:
                     job = casa_tasks.gaincal(**task_args)
                     self._executor.execute(job)
                 else:
@@ -1136,8 +1138,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-
-                if utils.get_row_count(calMs, fieldid) != 0:
+                taql = (f"FIELD_ID == {fieldidstring}")
+                if utils.get_row_count(calMs, taql) != 0:
                     job = casa_tasks.gaincal(**task_args)
                     self._executor.execute(job)
                 else:

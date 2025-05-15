@@ -1175,17 +1175,23 @@ def validate_url(url: str) -> bool:
     return all([parsed.scheme, parsed.netloc])
 
 
-def get_row_count(calMs, fieldid):
+def get_row_count(table_name: str, taql: str) -> int:
+    """Return the number of rows in the specified table that match the given TaQL query.
+
+    Parameters:
+        table_name: Path to the CASA table.
+        taql: The TaQL query string used to filter the table rows.
+
+    Returns:
+        The number of rows matching the query, or 0 if an error occurs.
     """
-    Returns the number of rows in the specified table for a given fieldid.
-    """
+
     nrows = 0
     try:
-        tb = casa_tools.table
-        tb.open(calMs)
-        subtb = tb.query('FIELD_ID==' + fieldid)
-        nrows = subtb.nrows()
-        tb.close()
+        with casa_tools.TableReader(table_name) as table:
+            subtb = table.query(taql)
+            nrows = subtb.nrows()
+            subtb.close()
     except Exception as ex:
         nrows = 0
         LOG.warning(ex)

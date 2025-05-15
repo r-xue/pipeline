@@ -2,6 +2,7 @@ import os
 import math
 import ast
 import collections
+import traceback
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
@@ -139,6 +140,7 @@ class Circfeedpolcal(polarization.Polarization):
                 self.do_prepare()
             except Exception as ex:
                 LOG.warning(ex)
+                LOG.debug(traceback.format_exc())
 
         return CircfeedpolcalResults(vis=self.inputs.vis, pool=self.callist, final=self.callist,
                                      refant=self.RefAntOutput[0].lower(), calstrategy=self.calstrategy,

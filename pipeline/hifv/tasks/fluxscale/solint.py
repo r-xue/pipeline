@@ -598,7 +598,8 @@ class Solint(basetask.StandardTaskTemplate):
         for fieldidstring in fieldidlist:
             # PIPE-1729: passing fieldidstring instead of field id to avoid
             # warning while concatenating string and int
-            if utils.get_row_count(calMs, fieldidstring) != 0:
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
                 uvrangestring = uvrange(self.setjy_results, fieldidstring)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring

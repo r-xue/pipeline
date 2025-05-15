@@ -313,18 +313,18 @@ class Finalcals(basetask.StandardTaskTemplate):
         for band, spwlist in band2spw.items():
             try:
                 new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
-                phaseshortgaincal_results = self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
-                                                                   new_gain_solint1, 3.0, 'p', [''], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+                self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
+                                           new_gain_solint1, 3.0, 'p', [''], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
                 gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-                finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
-                                                                    'ap', [phaseshortgaincaltable], refAnt,
-                                                                    refantmode=refantmode, spw=','.join(spwlist))
+                self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
+                                           'ap', [phaseshortgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
-                finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
-                                                                    3.0, 'p', [finalampgaincaltable], refAnt,
-                                                                    refantmode=refantmode, spw=','.join(spwlist))
+                self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
+                                           3.0, 'p', [finalampgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
             except KeyError as ex:
                 LOG.warning("No data found for {!s} band".format(ex))
             except Exception as ex:
@@ -849,6 +849,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
         fluxdensity, standard = [-1, standard.Standard()(field)] if os.path.isdir('fluxgaincalFcal_{!s}.g'.format(field)) else [1, 'manual']
+        if fluxdensity:
+            LOG.warning(f'Running setjy for field {field} with 1.0 Jy fluxdensity.')
         try:
             task_args = {'vis': calMs,
                          'field': field,
@@ -995,7 +997,8 @@ class Finalcals(basetask.StandardTaskTemplate):
             if str(fieldobj.id) not in fieldidlist:
                 fieldidlist.append(str(fieldobj.id))
         for fieldidstring in fieldidlist:
-            if utils.get_row_count(calMs, fieldidstring) != 0:
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
                 fieldid = int(fieldidstring)
                 uvrangestring = uvrange(self.setjy_results, fieldid)
                 task_args['field'] = fieldidstring

@@ -178,8 +178,16 @@ class Applycals(applycal.SerialIFApplycal):
                 args['antenna'] = self.antenna_to_apply
                 # Note this is a temporary workaround ###
                 # PIPE-1729: including only the gain tables that are present.
+                taql = ''
+                if gainfield:
+                    ms = inputs.context.observing_run.get_measurement_sets()[0]
+                    gainfield_obj = ms.get_fields(gainfield)
+                    if gainfield_obj:
+                        taql = (f"FIELD_ID == {gainfield_obj[0].id}")
+                    else:
+                        LOG.warning(f"Unable to get ID for gainfield {gainfield}")
                 for gaintable, field, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
-                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, gainfield) != 0:
+                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, taql) != 0:
                         args['gaintable'] = gaintable
                         args['gainfield'] = gainfield
                         args['spwmap'] = spwmap
