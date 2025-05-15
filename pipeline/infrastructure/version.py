@@ -11,27 +11,8 @@ import re
 import subprocess
 import sys
 from io import StringIO
+from logging import getLogger
 from typing import Optional
-
-try:
-    from logging import getLogger
-except (ModuleNotFoundError, AttributeError):
-    # * ModuleNotFoundError = when running setup.py without CASA libs
-    #   installed, e.g., a pristine venv
-    # * AttributeError = CASA libs present but pipeline.infrastructure.logging
-    #   module cannot be imported, resulting in this error:
-    #
-    #   AttributeError: partially initialized module 'logging' has no attribute
-    #   'getLogger' (most likely due to a circular import)
-    #
-    # For both cases, which only occur when run through setup.py, detect the
-    # failure and fake the logger functionality required by this module.
-    def getLogger(name):
-        class FakeLogger:
-            def exception(self, msg, *args, **kwargs):
-                print('Exception: {msg}')
-
-        return FakeLogger()
 
 LOG = getLogger(__name__)
 
