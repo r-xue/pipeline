@@ -26,7 +26,7 @@ from . import sd_qa_reports
 # plot_threshold: Value of QA scores below which triggers plotting routines.
 #
 default_thresholds = {'X-Y_freq_dev': 15.0, 'Trec_freq_dev': 5.0,
-                      'sci_threshold': 10.0, 'XYcorr_threshold': 10.0,
+                      'sci_threshold': 15.0, 'XYcorr_threshold': 15.0,
                       'min_freq_dev_percent': 50.0, 'nsigma_bottom': 100.0,
                       'plot_threshold': 0.95}
 
@@ -70,6 +70,10 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
                           'XYcorr': np.ma.MaskedArray(np.zeros(nchan), mask=np.ones(nchan, dtype=bool))}
         return
 
+    #Selection of skylines
+    skylinesel = sd_qa_utils.get_skysel_from_msw(msw)
+    idxskylines = np.arange(nchan)[skylinesel]
+
     #Make a copy of the data and apply the per-chan filter
     print('Copying and filtering per channel...')
     Fmsw = copy.deepcopy(msw)
@@ -84,9 +88,10 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
     mask_sections = None
     last_chdata_mask = np.zeros(nrows, dtype=bool)
     for ch in range(nchan):
-        if maskfreq1D[ch]:
+        if maskfreq1D[ch] or (ch in idxskylines):
             peak_fft_pwr.append(0.0)
             XYcorr.append(0.0)
+            maskfreq1D[ch] = True
             continue
         if (ch%nstep == 0):
             print('Processing channel '+str(ch)+'/'+str(nchan))
@@ -189,7 +194,7 @@ def sci_line_det(data_stats_comb:dict, sci_threshold:float = 10.0, XYcorr_thresh
 
             #Select science line channels
             fft_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][str(spw)]['comb_peak_data'], sci_threshold, mode = 'one-sided')
-            XYcorr_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][str(spw)]['comb_XYcorr'], XYcorr_threshold, mode = 'one-sided')
+            XYcorr_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][str(spw)]['comb_XYcorr'], XYcorr_threshold, mode = 'one-sided', fixedwidth=fft_results['widthmax'])
             sci_line_sel = fft_results['outliers'] & XYcorr_results['outliers']
             #Enlarge selection according to enlarge_box parameter
             nchan = len(data_stats_comb[fieldname][str(spw)]['comb_peak_data'])
@@ -388,11 +393,11 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
         #Define type of outliers selection arrays
         #Outliers that appear in the Trec difference tables and coincide with on-data outliers
-        trecX_results = sd_qa_utils.smoothed_sigma_clip(atmdata[scan]['trecdiffX'], thresholds['Trec_freq_dev'], mode = 'two-sided')
+        trecX_results = sd_qa_utils.smoothed_sigma_clip(atmdata[scan]['trecdiffX'], thresholds['Trec_freq_dev'], mode = 'two-sided', fixedwidth=ondata_results['widthmax'])
         trecdiffX = trecX_results['normdata']
         outlier_trecX = trecX_results['outliers']
         nsigma_trecX = trecX_results['snrmax']
-        trecY_results = sd_qa_utils.smoothed_sigma_clip(atmdata[scan]['trecdiffY'], thresholds['Trec_freq_dev'], mode = 'two-sided')
+        trecY_results = sd_qa_utils.smoothed_sigma_clip(atmdata[scan]['trecdiffY'], thresholds['Trec_freq_dev'], mode = 'two-sided', fixedwidth=ondata_results['widthmax'])
         trecdiffY = trecY_results['normdata']
         outlier_trecY = trecY_results['outliers']
         nsigma_trecY = trecY_results['snrmax']
@@ -432,7 +437,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             # unrealistic value to disable second condition in the if statement below
             peak_outlier_percent = 120.0
         #width detection as percentage of BW
-        #width_bw_percent = 100.0*ondata_results['widthmax']/nchan
+        width_bw_percent = 100.0*ondata_results['widthmax']/nchan
 
         #Create objects to create QAscore
         reason = 'XX-YY.deviation'
@@ -457,6 +462,13 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             qascore_value = qascorefunc(nsigma_ondata, score_top = 0.9, score_bottom = 0.68, nsigma_threshold = thresholds['X-Y_freq_dev'], nsigma_bottom = thresholds['nsigma_bottom'])
             longmsg = 'XX-YY deviation for spw {0:d}, antenna {1:s}, polarization {2:s} in scan {3:s} (field {4:s})'.format(msw.spw, msw.antenna, badpol, str(scan), fieldname)
             #longmsg = 'XX-YY polarization difference ({0:.1f}% of RMS) at {1:.3f}-sigma for spw {2:d}, antenna {3:s}, polarization {4:s} in scan {5:s} (field {6:s}), likely due to atmosphere instability, check deviation mask at baseline subtraction; nsigma Trec: {7:.3f},{8:.3f}; width: {9:.2f}%'.format(peak_outlier_percent, nsigma_ondata, msw.spw, msw.antenna, badpol, str(scan), fieldname, nsigma_trecX, nsigma_trecY, width_bw_percent)
+            #Mark outliers in outlier array for plotting
+            if scan != 'all':
+                for row in np.where(msw.scantimesel[scan])[0]:
+                    msw.outliers[:,row] = outlier_data
+            else:
+                for row in range(nrows):
+                    msw.outliers[:,row] = outlier_data
         else:
             #Case of no outliers and no information
             qascore_value = 1.0
@@ -518,9 +530,10 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             tmpmsw = mswrapper_sd.MSWrapperSD.create_from_ms(fname=msw.fname, spw=msw.spw, antenna=msw.antenna, fieldid=msw.fieldid, column='CORRECTED_DATA', onoffsel='ON', spw_setup=msw.spw_setup, attach_tsys_data=thistsysdata)
             tmpmsw.filter(type = 'rowmedian')
             msw.data = tmpmsw.data
-        plotfnameheatmap = sd_qa_reports.show_heat_XYdiff(msw=msw, plot_output_path=plot_output_path, colorlist=colorlist)
+        _ = sd_qa_reports.show_heat_XYdiff(msw=msw, plot_output_path=plot_output_path, colorlist=colorlist)
         #Make diagnostic plots
-        plotfname = sd_qa_reports.plot_data_trec(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=plot_output_path, detmsg = detmsg)
+        _ = sd_qa_reports.plot_data_trec(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=plot_output_path, detmsg = detmsg)
+        plotfname = sd_qa_reports.plot_data(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=plot_output_path, detmsg = detmsg)
     else:
         plotfname = 'N/A'
 
