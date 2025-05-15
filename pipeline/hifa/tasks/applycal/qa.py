@@ -286,7 +286,13 @@ class QAScoreEvalFunc:
         selspw = np.array(list(qascore.applies_to.spw))
         selintent = np.array(list(qascore.applies_to.intent))
         selant = np.array(list(qascore.applies_to.ant))
-        selmetric = qascore.origin.metric_name
+        # QA scores retain the full metric ID, whereas the ID in this
+        # function's score dicts are stripped of the gt90deg_offset prefix.
+        # Ideally we'd refactor the metric ID so that gt90deg_offset is a
+        # subcomponent of the ID (e.g., phase_vs_freq.intercept.gt90deg_offset
+        # or similar), but that's too risky a change at this stage so we just
+        # strip the gt90deg_offset prefix.
+        selmetric = qascore.origin.metric_name.replace('gt90deg_offset_','')
 
         # Case of no data selected as outlier for this metric,
         # fill values with default values for non-outlier QA scores
@@ -667,7 +673,7 @@ def summarise_scores(
     processed_scores = []
     # Collect scores. The phase scores (normal and > 90 deg offset) should
     # get just one single 1.0 score in case of no outliers.
-    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq']]:
+    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq', 'gt90deg_offset_phase_vs_freq']]:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
