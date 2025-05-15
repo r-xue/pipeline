@@ -2720,6 +2720,23 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
 
+def get_masked_channel_ranges(mask: np.ndarray) -> List[Tuple[int, int]]:
+    """
+    Convert a boolean mask into a list of (start, end) channel ranges where mask is True.
+    """
+    indices = np.where(mask)[0]
+    if len(indices) == 0:
+        return []
+    ranges = []
+    start = indices[0]
+    for i in range(1, len(indices)):
+        if indices[i] != indices[i - 1] + 1:
+            ranges.append((start, indices[i - 1]))
+            start = indices[i]
+    ranges.append((start, indices[-1]))
+    return ranges
+
+
 def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
@@ -2822,6 +2839,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     # enumeration to represent overlap status
     Overlap = enum.Enum('Overlap', [('NO', 0), ('PARTIAL', 1), ('FULL', 2)])
+    # enumeration to represent atm overlap status
+    AtmOverlap = enum.Enum('AtmOverlap', [('NO', 0), ('OFFLINE', 1), ('ONLINE', 2)])
 
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
@@ -2856,18 +2875,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 spw_id = reduction_group_member.spw_id
                 ms_name = reduction_group_member.ms.origin_ms
                 antenna_name = reduction_group_member.antenna_name
-                is_overlap = []
-                for left, right in deviation_masks:
-                    mask_range = line_mask[left:right + 1]
-                    if np.all(mask_range == 1):
-                        overlap = Overlap.FULL
-                    elif np.any(mask_range == 1):
-                        overlap = Overlap.PARTIAL
-                    else:
-                        overlap = Overlap.NO
-                    is_overlap.append(overlap)
-                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-            
+                
                 #atm lines    
                 if not ms_name in atm_masks:
                     spwsetup = sdatm.getSpecSetup(ms_name)
@@ -2882,14 +2890,34 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                         spw: sdatm.skysel(skylines[spw], linestouse='all')
                         for spw in spwlist
                     }
+                atm_mask = atm_masks[ms_name].get(spw_id, np.zeros_like(line_mask, dtype=bool))
+            
+                is_overlap = []
+                is_atm_overlap = []
+                for left, right in deviation_masks:
+                    line_mask_range = line_mask[left:right + 1]
+                    if np.all(line_mask_range == 1):
+                        overlap = Overlap.FULL
+                    elif np.any(line_mask_range == 1):
+                        overlap = Overlap.PARTIAL
+                    else:
+                        overlap = Overlap.NO
+                    is_overlap.append(overlap)
+                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
                     
-                # Determine if any DM segment overlaps an ATM mask
-                atm_overlap = any(
-                    np.any(atm_masks[ms_name].get(spw_id, np.zeros_like(line_mask, dtype=bool))[left:right+1])
-                    for left, right in deviation_masks
-                )
+                    atm_mask_range = atm_mask[left:right + 1]
+                    atm_dm_line_overlap = np.logical_and(atm_mask_range, line_mask_range)
+                    
+                    if np.any(atm_dm_line_overlap):
+                        atm_overlap = AtmOverlap.ONLINE
+                    elif np.any(atm_mask_range):
+                        atm_overlap = AtmOverlap.OFFLINE
+                    else:
+                        atm_overlap = AtmOverlap.NO
+                    is_atm_overlap.append(atm_overlap)
+                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
                 
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap, atm_overlap))
+                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap, is_atm_overlap))
 
         # spectral lines
         if len(lines) > 0:
@@ -2963,25 +2991,63 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     # generate deviation mask QA scores with merged spws and antennas
     deviation_mask_scores = []
+    atm_overlap_scores = []
     for field_name, data_per_ms in deviation_mask_qa_data.items():
         for ms_name, data in data_per_ms.items():
             spw_ids = {x[0] for x in data}
             antenna_names = {x[1] for x in data}
             is_overlaps = {y for x in data for y in x[3]}
-            atm_overlaps = any(x[4] for x in data)
+            atm_overlaps = {y for x in data for y in x[4]}
             LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
 
-            # score depends on whether deviation masks overlap with lines
-            # see PIPEREQ-293 for detail
-            if atm_overlaps:  
-                # atm_overlap flag
-                score = 0.88
-                msg = 'Deviation mask overlaps with atmospheric lines'
+
+            if AtmOverlap.ONLINE in atm_overlaps:  
+                atm_score = 0.88
+                atm_msg = 'Deviation mask overlaps with atmospheric lines and spectral lines'
+                LOG.debug(
+                    'Deviation mask overlaps with atmospheric lines and spectral lines'
+                    'Set atm overlap QA score to %s', score
+                )
+            elif AtmOverlap.OFFLINE in atm_overlaps:  
+                atm_score = 0.88
+                atm_msg = 'Deviation mask overlaps with atmospheric lines'
                 LOG.debug(
                     'Deviation mask overlaps with atmospheric lines'
-                    'Set deviation mask QA score to %s', score
+                    'Set atm overlap QA score to %s', score
                 )
-            elif Overlap.NO in is_overlaps:
+            elif np.all(atm_overlaps == AtmOverlap.NO): 
+                atm_score = 0.88
+                atm_msg = 'No overlap between deviation mask and atmospheric lines detected'
+                LOG.debug(
+                    'No overlap between deviation mask and atmospheric lines detected'
+                    'Set atm overlap QA score to %s', score
+                )
+            else:
+                raise ValueError('Unexpected overlap status')
+                 
+            #atm overlap
+            shortmsg = f'{atm_msg}.'
+            spw_string = ', '.join(map(str, sorted(spw_ids)))
+            antenna_string = ', '.join(sorted(antenna_names))
+            longmsg = f'{atm_msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
+            atm_ranges = get_masked_channel_ranges(atm_masks[ms_name].get(spw_id, np.zeros_like(line_mask, dtype=bool)))
+            atm_image = channel_ranges_for_image(edge, nchan, sideband, atm_ranges)
+            metric_value = ';'.join([f'{left}~{right}' for left, right in atm_image])
+            origin = pqa.QAOrigin(metric_name='score_atm__overlap',
+                                  metric_score=metric_value,
+                                  metric_units='Deviation Mask range(s) possibly caused by atmospheric conditions')
+            selection = pqa.TargetDataSelection(vis=set([ms_name]),
+                                                spw=spw_ids,
+                                                field=set([field_name]),
+                                                ant=antenna_names,
+                                                intent={'TARGET'})
+            atm_overlap_scores.append(
+                pqa.QAScore(atm_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+            )
+            
+            # score depends on whether deviation masks overlap with lines
+            # see PIPEREQ-293 for detail           
+            if Overlap.NO in is_overlaps:
                 # by default score is 0.65
                 score = 0.65
                 msg = 'Deviation mask was triggered'
@@ -3001,6 +3067,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             else:
                 raise ValueError('Unexpected overlap status')
 
+            #deviation mask
             shortmsg = f'{msg}.'
             spw_string = ', '.join(map(str, sorted(spw_ids)))
             antenna_string = ', '.join(sorted(antenna_names))
@@ -3036,7 +3103,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
             )
 
-    return line_detection_scores + deviation_mask_scores
+    return line_detection_scores + deviation_mask_scores + atm_overlap_scores
 
 
 
