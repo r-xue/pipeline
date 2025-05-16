@@ -146,7 +146,7 @@ class Hanning(basetask.StandardTaskTemplate):
         if self.inputs.spws_to_smooth is not None:
             for spw in spws:
                 if spw.id in self.inputs.spws_to_smooth:
-                    smoothing_dict[spw.id] = (True, "restored smoothing or user-defined")
+                    smoothing_dict[spw.id] = (True, "restored or user-defined smoothing")
                 else:
                     smoothing_dict[spw.id] = (False, "")
         else:
