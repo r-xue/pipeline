@@ -1,4 +1,5 @@
 import datetime
+import numpy
 import operator
 import os
 import xml.etree.ElementTree as ElementTree
@@ -116,7 +117,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         root = ElementTree.Element("Calibrators")
 
         for ms in mslist:
-            if ms.name not in context.evla['msinfo'].keys():
+            if ms.name not in context.evla['msinfo']:
                 continue
             if len(context.evla['msinfo'][ms.name].spindex_results) != 0:
                 for calibrator in context.evla['msinfo'][ms.name].spindex_results:
@@ -159,10 +160,19 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
         for ms in mslist:
             spwlist = ms.get_spectral_windows(science_windows_only=True)
             for spw in spwlist:
+                channel0 = spw.channels.chan_freqs[0]
+                NChannels = len(spw.channels.chan_freqs)
+
+                chan_diff = numpy.diff(spw.channels.chan_freqs)
+                if NChannels != 0 and numpy.allclose(chan_diff, chan_diff[0]):
+                    ChannelWidth = chan_diff[0]
+                else:
+                    LOG.warning("Channels are not equally spaced. Unable to determine channel width reliably. Setting channel width to -1.")
+                    ChannelWidth = -1
                 nx = ElementTree.Element("SPW")
-                ElementTree.SubElement(nx, 'Channel0', Units="Hz").text = str(spw.channels.chan_freqs.start)
-                ElementTree.SubElement(nx, 'ChannelWidth', Units="Hz").text = str(spw.channels.chan_freqs.delta)
-                ElementTree.SubElement(nx, 'NChannels').text = str(spw.channels.chan_freqs.num_terms)
+                ElementTree.SubElement(nx, 'Channel0', Units="Hz").text = str(channel0)
+                ElementTree.SubElement(nx, 'ChannelWidth', Units="Hz").text = str(ChannelWidth)
+                ElementTree.SubElement(nx, 'NChannels').text = str(NChannels)
                 root.append(nx)
 
         return root
