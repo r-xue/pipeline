@@ -81,11 +81,13 @@ class ObservingRun(object):
             raise Exception(msg)
 
         # Initialise virtual science spw IDs from first MS
-        if self.measurement_sets == []:
-            self.virtual_science_spw_ids = \
-                dict((int(s.id), s.name) for s in ms.get_spectral_windows(science_windows_only=True))
-            self.virtual_science_spw_names = \
-                dict((s.name, int(s.id)) for s in ms.get_spectral_windows(science_windows_only=True))
+        if not self.measurement_sets:
+            self.virtual_science_spw_ids = dict(
+                (int(s.id), s.name) for s in ms.get_spectral_windows(science_windows_only=True)
+            )
+            self.virtual_science_spw_names = dict(
+                (s.name, int(s.id)) for s in ms.get_spectral_windows(science_windows_only=True)
+            )
             self.virtual_science_spw_shortnames = {}
             for name in self.virtual_science_spw_names:
                 if 'ALMA' in name:
@@ -98,10 +100,28 @@ class ObservingRun(object):
                     self.virtual_science_spw_shortnames[name] = name
         else:
             for s in ms.get_spectral_windows(science_windows_only=True):
-                if s.name not in self.virtual_science_spw_names:
-                    msg = 'Science spw name {0} (ID {1}) of EB {2} does not match spw names of first EB. Virtual spw' \
-                          ' ID mapping will not work.'.format(s.name, s.id,
-                                                              os.path.basename(ms.name).replace('.ms', ''))
+                find_match = 0
+                for name in list(self.virtual_science_spw_names):
+                    # PIPE-2616: match shared ending substrings to accommodate SPW naming 
+                    # convention changes introduced in ALMA Cycle12 with additional group ID tags                    
+                    if _spw_name_match(s.name, name):
+                        find_match += 1
+                        if s.name != name:
+                            self.virtual_science_spw_names[s.name] = self.virtual_science_spw_names[name]
+                            self.virtual_science_spw_shortnames[s.name] = self.virtual_science_spw_shortnames[name]
+
+                eb_name = os.path.basename(ms.name).replace('.ms', '')
+                if not find_match:
+                    msg = (
+                        f'Science spw name {s.name} (ID {s.id}) of EB {eb_name} does not match any spw name of first EB. '
+                        'Virtual spw ID mapping will not work.'
+                    )
+                    LOG.error(msg)
+                if find_match > 1:
+                    msg = (
+                        f'Found multiple matches of the science spw name {s.name} (ID {s.id}) of EB {eb_name} in the spw '
+                        'names of first EB. Virtual spw ID mapping will not work.'
+                    )
                     LOG.error(msg)
 
         self.measurement_sets.append(ms)
@@ -254,8 +274,7 @@ class ObservingRun(object):
 
     @staticmethod
     def get_real_spw_id_by_name(spw_name: str | None, target_ms: MeasurementSet) -> int | None:
-        """
-        Translate a (science) spw name to the real spw ID for a given MS.
+        """Translate a (science) spw name to the real spw ID for a given MS.
 
         Args:
             spw_name: The spectral window name to convert to ID.
@@ -267,7 +286,14 @@ class ObservingRun(object):
         """
         spw_id = None
         for spw in target_ms.get_spectral_windows(science_windows_only=True):
-            if spw.name == spw_name:
+            if _spw_name_match(spw.name, spw_name):
+                if spw_id is not None:
+                    eb_name = os.path.basename(target_ms.name).replace('.ms', '')
+                    msg = (
+                        f'Found more than one match for SPW name "{spw_name}" in '
+                        f'MS "{eb_name}". Virtual SPW ID mapping might be incorrect.'
+                    )
+                    LOG.warning(msg)
                 spw_id = spw.id
         return spw_id
 
@@ -412,3 +438,28 @@ class ObservingRun(object):
     def observers(self) -> set[str]:
         """Return unique observer(s) associated with the MSes in this observing run."""
         return {ms.observer for ms in self.measurement_sets}
+
+
+def _spw_name_match(name1: str, name2: str) -> bool:
+    """Checks if one spectral window (SPW) name is an ending substring of the other.
+
+    This function determines if `name1` ends with `name2` or vice versa. It also
+    performs a length check to ensure names are of a reasonable length before matching.
+
+    Args:
+        name1: The first spectral window name to compare.
+        name2: The second spectral window name to compare.
+
+    Returns:
+        True if one name ends with the other; False otherwise.
+
+    Raises:
+        Exception: If either `name1` or `name2` is too short (less than 10 characters).
+    """
+    # Validate minimum length for spectral window names.
+    if len(name1) < 10 or len(name2) < 10:
+        msg = f'One or both the spectral SPW names to match seem to be too short: name1={name1}, name2={name2}.'
+        LOG.error(msg)
+        raise Exception(msg)
+
+    return name1.endswith(name2) or name2.endswith(name1)
