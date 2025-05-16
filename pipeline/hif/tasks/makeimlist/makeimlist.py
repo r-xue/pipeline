@@ -45,6 +45,7 @@ class MakeImListInputs(vdp.StandardInputs):
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
     allow_wproject = vdp.VisDependentProperty(default=False)
+    stokes = vdp.VisDependentProperty(default='')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -187,7 +188,7 @@ class MakeImListInputs(vdp.StandardInputs):
             return mitigated_hm_imsize
 
     # docstring and type hints: supplements hif_makeimlist
-    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
+    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None, stokes= None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
@@ -219,6 +220,9 @@ class MakeImListInputs(vdp.StandardInputs):
                 "" Fields matching intent, one image per target source.
 
             spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
+
+            stokes: Select the Stokes parameters to image. "": Stokes I will computed except for polarization calibrators, where the
+                automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are 'I' and 'IQUV'.
 
             contfile: Name of file with frequency ranges to use for continuum images.
 
@@ -335,6 +339,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.intent = intent
         self.field = field
         self.spw = spw
+        self.stokes = stokes
         self.contfile = contfile
         self.linesfile = linesfile
         self.uvrange = uvrange
@@ -1415,7 +1420,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # (inputs.intent) is used to decide whether to do IQUV
                             # for ALMA as PIPE-1829 asked for Stokes I only if other
                             # calibration intents are done together with POLARIZATION.
-                            stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
+                            if inputs.stokes not in ('', None):
+                                stokes = inputs.stokes.upper()
+                            else:
+                                stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(
@@ -1455,7 +1463,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
                                 nfrms_multiplier = self._get_nfrms_multiplier(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
-                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
