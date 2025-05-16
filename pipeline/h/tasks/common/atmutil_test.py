@@ -132,16 +132,16 @@ def test_calc_transmission(in_param: Tuple[float, Union[float, np.ndarray],
 
 @pytest.mark.parametrize(
         "in_param, expected",
-        (({}, 48.135443881030234),
-         (dict(humidity=10.0), 48.13438655147836),
-         (dict(pressure=590.0), 71.9255021742992),
-         (dict(atmtype=AtmType.midLatitudeSummer), 48.183451347527715),
-         (dict(atmtype=AtmType.tropical), 49.17959626425098),
-         (dict(atmtype=AtmType.subarcticSummer), 47.17390377363715),
-         (dict(atmtype=AtmType.midLatitudeWinter), 48.135443881030234),
-         (dict(fcenter=350.0), 99.28050952919153),
-         (dict(nchan=128), 1.395500829957058),
-         (dict(resolution=0.000015), 44.65368805886007)
+        (({}, 47.97799117173652),
+         (dict(humidity=10.0), 47.97692204026754),
+         (dict(pressure=590.0), 52.83346335445199),
+         (dict(atmtype=AtmType.midLatitudeSummer), 47.699469623464736),
+         (dict(atmtype=AtmType.tropical), 48.47759847965915),
+         (dict(atmtype=AtmType.subarcticSummer), 47.177987716625275),
+         (dict(atmtype=AtmType.midLatitudeWinter), 47.97799117173652),
+         (dict(fcenter=350.0), 97.4814491261267),
+         (dict(nchan=128), 1.3969374062965147),
+         (dict(resolution=0.000015), 44.69951867516774)
          ))
 def test_get_dry_opacity(in_param: dict, expected: float):
     """
@@ -163,16 +163,16 @@ def test_get_dry_opacity(in_param: dict, expected: float):
 
 @pytest.mark.parametrize(
         "in_param, expected",
-        (({}, 45.44895888932035),
-         (dict(humidity=10.0), 22.740003586706898),
-         (dict(pressure=590.0), 48.32597615284148),
-         (dict(atmtype=AtmType.midLatitudeSummer), 45.54326843570722),
-         (dict(atmtype=AtmType.tropical), 45.57186180675734),
-         (dict(atmtype=AtmType.subarcticSummer), 45.45064451055434),
-         (dict(atmtype=AtmType.midLatitudeWinter), 45.44895888932035),
-         (dict(fcenter=350.0), 1040.320478812408),
-         (dict(nchan=128), 1.4198806069942795),
-         (dict(resolution=0.000015), 45.436160024392436)
+        (({}, 45.69641110432566),
+         (dict(humidity=10.0), 22.863805083506872),
+         (dict(pressure=590.0), 48.14782023258896),
+         (dict(atmtype=AtmType.midLatitudeSummer), 45.69813369056101),
+         (dict(atmtype=AtmType.tropical), 45.70706972843769),
+         (dict(atmtype=AtmType.subarcticSummer), 45.694188468935124),
+         (dict(atmtype=AtmType.midLatitudeWinter), 45.69641110432566),
+         (dict(fcenter=350.0), 1046.3702374546874),
+         (dict(nchan=128), 1.4276360828433052),
+         (dict(resolution=0.000015), 45.68434620611521)
          ))
 def test_get_wet_opacity(in_param: dict, expected: float):
     """
@@ -193,9 +193,9 @@ def test_get_wet_opacity(in_param: dict, expected: float):
 
 
 @pytest.mark.parametrize("in_param, expected",
-                         (((1.0, 90.0), 0.9813479717655601),
-                          ((1.0, 30.0), 0.9630496887893027),
-                          ((1.5, 90.0), 0.9778805819476384),
+                         (((1.0, 90.0), 0.9813874324999965),
+                          ((1.0, 30.0), 0.9631266292255092),
+                          ((1.5, 90.0), 0.9779208925243648),
                           ))
 def test_test(in_param: Tuple[float, float], expected: float):
     """
@@ -250,8 +250,8 @@ def test_get_median_elevation(antid: int, expected: float):
 
 @pytest.mark.skip(reason='need_vis')
 @pytest.mark.parametrize("antid, spwid, expected",
-                         ((0, 15, 0.8433381888309945),
-                          (1, 17, 0.9683929298207594)
+                         ((0, 15, 0.8427800044848566),
+                          (1, 17, 0.9685033492155325)
                           ))
 def test_get_transmission(antid: int, spwid: int, expected: float):
     """
