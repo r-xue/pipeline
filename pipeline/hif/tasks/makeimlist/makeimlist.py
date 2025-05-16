@@ -458,6 +458,14 @@ class MakeImList(basetask.StandardTaskTemplate):
             result.error_msg = msg
             return result
 
+        # validate stokes
+        if inputs.stokes.upper() not in ('', 'I', 'IQUV'):
+            msg = '"stokes" must be "I" or "IQUV"'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
         # make sure inputs.vis is a list, even it is one that contains a
         # single measurement set
         if not isinstance(inputs.vis, list):
