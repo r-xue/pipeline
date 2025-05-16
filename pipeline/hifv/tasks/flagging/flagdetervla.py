@@ -276,7 +276,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
 
             online: Apply the online flags.
 
-            fileonline: File containing the online flags. These are computed by the h_init or <hifa,hifv>_importdata data tasks. If the online flags files
+            fileonline: File containing the online flags. These are computed by the h_init or hifv_importdata data tasks. If the online flags files
                 are undefined a name of the form 'msname.flagonline.txt' is assumed.
 
             template: Apply a flagging template.
