@@ -11,6 +11,7 @@ import itertools
 import math
 import operator
 import os
+import re
 from pathlib import Path
 from typing import Iterable, Reversible, Optional, overload
 
@@ -234,6 +235,54 @@ class QAScoreEvalFunc:
     QAEVALF_SCALE = 1.55
 
     def __init__(self, ms: MeasurementSet, intents: list[str], outliers: list[Outlier]):
+        # intents = [
+        #     "BANDPASS",
+        #     "AMPLITUDE",
+        #     "PHASE",
+        #     "CHECK",
+        #     "POLARIZATION",
+        #     "DIFFGAINREF",
+        #     "DIFFGAINSRC",
+        #     "POLANGLE",
+        #     "POLLEAKAGE",
+        # ]
+        # outliers = [
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={5}, spw={17}, ant={2}, pol={0}, num_sigma=-172.3, delta_physical=0.348, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={5}, spw={17}, ant={2}, pol={1}, num_sigma=182.8, delta_physical=0.331, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        #
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={9}, spw={17}, ant={2}, pol={0}, num_sigma=-28.7, delta_physical=0.050, amp_freq_sym_off=False, reason={'amp_vs_freq.slope'}),
+        #
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={9}, spw={17}, ant={2}, pol={0}, num_sigma=-58.4, delta_physical=0.346, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={9}, spw={17}, ant={2}, pol={1}, num_sigma=63.2, delta_physical=0.345, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        #
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={11}, spw={17}, ant={2}, pol={0}, num_sigma=-26.1, delta_physical=0.053, amp_freq_sym_off=False, reason={'amp_vs_freq.slope'}),
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={-1}, spw={17}, ant={2}, pol={0}, num_sigma=-48.7, delta_physical=0.052, amp_freq_sym_off=False, reason={'amp_vs_freq.slope'}),
+        #
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={-1}, spw={17}, ant={2}, pol={0}, num_sigma=-65.7, delta_physical=0.339, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        #     Outlier(vis={'uid___A002_Xb925ef_Xf8c.ms'}, intent={'PHASE'}, scan={-1}, spw={17}, ant={2}, pol={1}, num_sigma=77.2, delta_physical=0.367, amp_freq_sym_off=True, reason={'amp_vs_freq.intercept'}),
+        # ]
+        # s1 = pqa.QAScore(
+        #     1.0,
+        #     longmsg="s1",
+        #     shortmsg="s2",
+        #     origin=pqa.QAOrigin(metric_name="phase_vs_freq"),
+        #     applies_to=pqa.TargetDataSelection(vis={"uid___A002_Xb925ef_Xf8c.ms"}),
+        # )
+        # s2 = pqa.QAScore(
+        #     1.0,
+        #     longmsg="s2",
+        #     shortmsg="s2",
+        #     origin=pqa.QAOrigin(metric_name="amp_vs_freq.slope"),
+        #     applies_to=pqa.TargetDataSelection(vis={"uid___A002_Xb925ef_Xf8c.ms"}, intent={'PHASE'}, scan={11}, spw={17}, ant={2}),
+        # )
+        # s3 = pqa.QAScore(
+        #     1.0,
+        #     longmsg="s3",
+        #     shortmsg="s3",
+        #     origin=pqa.QAOrigin(metric_name="amp_vs_freq.slope"),
+        #     applies_to=pqa.TargetDataSelection(vis={"uid___A002_Xb925ef_Xf8c.ms"}, intent={'PHASE'}, scan={-1}, spw={17}, ant={2}),
+        # )
+
         # Save basic data and MeasurementSet domain object
         self.ms = ms
 
@@ -670,23 +719,37 @@ def summarise_scores(
     # that level of detail can be suppressed to keep the number of accordion
     # messages down. I have changed the example in the description accordingly.
 
+    # Rescoring must happen BEFORE score aggregation, as the scoring algorithm
+    # makes a distinction between metrics of different origins. This also needs
+    # to happen *before* the banner scores are compiled, as further dimension
+    # erasure leads to complaints from the QA evaluation function for score in
+    # processed_scores:
+    for score in all_scores:
+        adjusted_score = qaevalf(score)
+        score.score = adjusted_score
+        # Note that we adopt the score but not the QAScoreEvalFunc long/short
+        # messages, as those messages refer to a single vis/spw/ant/intent
+        # selection. Instead, we prefer to keep the original aggregated
+        # message that applies to the union data selection.
+
     processed_scores = []
     # Collect scores. The phase scores (normal and > 90 deg offset) should
     # get just one single 1.0 score in case of no outliers.
-    for hierarchy_roots in [['amp_vs_freq'], ['phase_vs_freq', 'gt90deg_offset_phase_vs_freq']]:
+    for metric_root, metric_regex in [
+        ('amp_vs_freq', '^amp_vs_freq'),
+        ('phase_vs_freq', '^(phase_vs_freq|gt90deg_offset_phase_vs_freq)')
+    ]:
         # erase just the polarisation dimension for accordion messages,
         # leaving the messages specific enough to identify the plot that
         # caused the problem
         discard = ['pol']
-        num_scores = 0
-        for hierarchy_root in hierarchy_roots:
-            msgs = combine_scores(all_scores, hierarchy_root, discard, ms, pqa.WebLogLocation.ACCORDION)
-            num_scores += len(msgs)
-            processed_scores.extend(msgs)
+        msgs = combine_scores(all_scores, metric_root, metric_regex, discard, ms, pqa.WebLogLocation.ACCORDION)
+        num_scores = len(msgs)
+        processed_scores.extend(msgs)
 
         # add a single 1.0 accordion score for metrics that generated no outlier
         if num_scores == 0:
-            metric_axes, outlier_description, _ = REASONS_TO_TEXT[hierarchy_roots[0]]
+            metric_axes, outlier_description, _ = REASONS_TO_TEXT[metric_root]
             # Correct capitalisation as we'll prefix the metric with 'No '
             metric_axes = metric_axes.lower()
             short_msg = 'No {} outliers'.format(metric_axes)
@@ -694,24 +757,13 @@ def summarise_scores(
             score = pqa.QAScore(1.0,
                                 longmsg=long_msg,
                                 shortmsg=short_msg,
-                                hierarchy=hierarchy_roots[0],
+                                hierarchy=metric_root,
                                 weblog_location=pqa.WebLogLocation.ACCORDION,
                                 applies_to=pqa.TargetDataSelection(vis={ms.basename}))
-            score.origin = pqa.QAOrigin(metric_name=hierarchy_roots[0],
+            score.origin = pqa.QAOrigin(metric_name=metric_root,
                                         metric_score=0,
                                         metric_units='number of outliers')
             processed_scores.append(score)
-
-    # Use continuum scoring function.
-    # This needs to happen *before* the banner scores are compiled, as further
-    # dimension erasure leads to complaints from the QA evaluation function
-    for score in processed_scores:
-        adjusted_score = qaevalf(score)
-        score.score = adjusted_score
-        # Note that we adopt the score but not the QAScoreEvalFunc long/short
-        # messages, as those messages refer to a single vis/spw/ant/intent
-        # selection. Instead, we prefer to keep the original aggregated
-        # message that applies to the union data selection.
 
     # scores destined for the weblog accordion
     accordion_scores: list[QAScore] = []
@@ -721,8 +773,11 @@ def summarise_scores(
     #   outliers by antenna & scan (i.e., so it is only reports outlier
     #   type/spw for each ms).
     check_scores = [s for s in processed_scores if 'CHECK' in s.applies_to.intent]
-    for hierarchy_root in ['amp_vs_freq', 'phase_vs_freq']:
-        msgs = combine_scores(check_scores, hierarchy_root, ['ant', 'scan'], ms, pqa.WebLogLocation.ACCORDION)
+    for metric_root, metric_regex in [
+        ('amp_vs_freq', '^amp_vs_freq'),
+        ('phase_vs_freq', '^(phase_vs_freq|gt90deg_offset_phase_vs_freq)')
+    ]:
+        msgs = combine_scores(check_scores, metric_root, metric_regex, ['ant', 'scan'], ms, pqa.WebLogLocation.ACCORDION)
         accordion_scores.extend(msgs)
 
     # PIPE-1770 spec:
@@ -754,7 +809,8 @@ def summarise_scores(
 
 
 def combine_scores(all_scores: list[pqa.QAScore],
-                   hierarchy_base: str,
+                   hierarchy_root: str,
+                   hierarchy_regex: str,
                    discard: list[str],
                    ms: MeasurementSet,
                    location: pqa.WebLogLocation) -> list[pqa.QAScore]:
@@ -774,7 +830,7 @@ def combine_scores(all_scores: list[pqa.QAScore],
     # too.
 
     # create a filter function to leave the scores we want to process
-    filter_fn = lambda qa_score: qa_score.hierarchy.startswith(f'{hierarchy_base}')
+    filter_fn = lambda qa_score: bool(re.match(hierarchy_regex, qa_score.hierarchy))
 
     # get all QA scores generated by a '<metric> vs X' algorithm
     scores_for_metric = [o for o in all_scores if filter_fn(o)]
@@ -807,10 +863,10 @@ def combine_scores(all_scores: list[pqa.QAScore],
         # shares enough of the Outlier interface (vis, spw, scan, intent,
         # etc.) that we can pass QAMessage directly without converting to
         # an Outlier
-        msgs = QAMessage(ms, qa_score.applies_to, reason=hierarchy_base)
+        msgs = QAMessage(ms, qa_score.applies_to, reason=hierarchy_root)
         qa_score.shortmsg = msgs.short_message
         qa_score.longmsg = msgs.full_message
-        qa_score.hierarchy = hierarchy_base
+        qa_score.hierarchy = hierarchy_root
         qa_score.weblog_location = location
 
     return qa_scores
