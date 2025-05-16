@@ -36,6 +36,7 @@ import pipeline.infrastructure.project as project
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults
+from pipeline.hsd.tasks.common.utils import is_nro
 from . import almasdaqua
 
 # the logger for this module
@@ -104,14 +105,15 @@ class SDExportData(exportdata.ExportData):
             auxcaltables = None
             auxcalapplys = None
 
-        # Create and export the pipeline stats file
+        # Create and export the pipeline stats file for ALMA single dish data
         pipeline_stats_file = None
-        try:
-            pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid, data_type="SD")
-        except Exception as e:
-            LOG.info("Unable to output pipeline statistics file: {}".format(e))
-            LOG.debug(traceback.format_exc())
-            pass
+        if not is_nro(self.inputs.context):
+            try:
+                pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid, data_type="SD")
+            except Exception as e:
+                LOG.info("Unable to output pipeline statistics file: {}".format(e))
+                LOG.debug(traceback.format_exc())
+                pass
 
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
