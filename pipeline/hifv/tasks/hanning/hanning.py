@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 import shutil
-from typing import TYPE_CHECKING, Callable, Dict, Type
+from typing import TYPE_CHECKING, Callable, Dict
 
 from pipeline import infrastructure
 from pipeline.domain.measures import FrequencyUnits
@@ -119,7 +119,7 @@ class Hanning(basetask.StandardTaskTemplate):
     """
     Inputs = HanningInputs
 
-    def prepare(self) -> Type[HanningResults]:
+    def prepare(self) -> HanningResults:
         """Method where the hanning smoothing operation is executed.
 
         The MS SPECTRAL_WINDOW table is examined to see if the SDM_NUM_BIN value is greater than 1.
@@ -135,8 +135,9 @@ class Hanning(basetask.StandardTaskTemplate):
 
         with casa_tools.TableReader(self.inputs.vis + '/SPECTRAL_WINDOW') as table:
             if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
-                LOG.warning("MS has already had offline hanning smoothing applied. Skipping this stage.")
-                return HanningResults()
+                qa_message = "MS has already had offline hanning smoothing applied. Skipping this stage."
+                LOG.warning(qa_message)
+                return HanningResults(task_successful=True, qa_message=qa_message)
 
         spws = self.inputs.context.observing_run.get_ms(self.inputs.vis).get_spectral_windows(science_windows_only=True)
         smoothing_dict = {}
@@ -145,7 +146,7 @@ class Hanning(basetask.StandardTaskTemplate):
         if self.inputs.spws_to_smooth is not None:
             for spw in spws:
                 if spw.id in self.inputs.spws_to_smooth:
-                    smoothing_dict[spw.id] = (True, "restored smoothing")
+                    smoothing_dict[spw.id] = (True, "restored smoothing or user-defined")
                 else:
                     smoothing_dict[spw.id] = (False, "")
         else:
@@ -181,9 +182,9 @@ class Hanning(basetask.StandardTaskTemplate):
             LOG.info("All science spectral windows were selected for hanning smoothing.")
             try:
                 self._do_hanningsmooth()
-                LOG.info("Removing original VIS " + self.inputs.vis)
+                LOG.info("Removing original VIS %s", self.inputs.vis)
                 shutil.rmtree(self.inputs.vis)
-                LOG.info("Renaming temphanning.ms to " + self.inputs.vis)
+                LOG.info("Renaming temphanning.ms to %s", self.inputs.vis)
                 os.rename('temphanning.ms', self.inputs.vis)
             except Exception as ex:
                 qa_message = f'Problem encountered with hanning smoothing task: {ex}'
