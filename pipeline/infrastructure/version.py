@@ -11,10 +11,7 @@ import re
 import subprocess
 import sys
 from io import StringIO
-from logging import getLogger
 from typing import Optional
-
-LOG = getLogger(__name__)
 
 
 def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
@@ -65,7 +62,7 @@ def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, lo
         exit_code = _run(command, stdout=stdout, stderr=subprocess.DEVNULL, cwd=cwd)
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         if log_errors:
-            LOG.exception(f'Error running {command}', exc_info=e)
+            print(f'Error running {command}:\n  '+str(e))
     else:
         if exit_code == 0:
             return stdout.getvalue().strip()
