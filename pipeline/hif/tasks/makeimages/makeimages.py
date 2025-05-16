@@ -407,7 +407,6 @@ class MakeImages(basetask.StandardTaskTemplate):
 
     def _vlass_cube_set_miscinfo(self, tclean_result):
         """Add the VLASS cube plane rejection header keyword."""
-
         imagename = tclean_result.image
         reject = not tclean_result.imaging_metadata['keep']
         imlist = utils.glob_ordered(imagename.replace('.image', '.*'))
@@ -422,7 +421,6 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSRMS'] = tclean_result.image_rms
                 info['VLASSPT'] = tclean_result.imaging_mode
                 info['VLASSPV'] = environment.pipeline_revision
-                info['VLASSBWN'] = tclean_result.effective_bw
                 info['VLASSPK'] = tclean_result.image_max
                 info['VLASSBW'] = tclean_result.eff_ch_bw
                 info['VLASSITY'] = self._get_vlass_image_type(name)
@@ -430,6 +428,14 @@ class MakeImages(basetask.StandardTaskTemplate):
                 info['VLASSTN'] = tile
                 info['VLASSEP'] = epoch
                 info['VLASSVR'] = version
+                if tclean_result.specmode == 'cube':
+                    msobj = self.inputs.context.observing_run.get_ms(name=tclean_result.vis[0])
+                    nbin = tclean_result.inputs["nbin"] if tclean_result.inputs["nbin"] > 0 else 1
+                    SCF, physicalBW_of_1chan, effectiveBW_of_1chan, _ = tclean_result.inputs["image_heuristics"].get_bw_corr_factor(msobj, tclean_result.spw, nbin)
+                    nominal_bw = casa_tools.quanta.quantity(nbin / SCF**2 * effectiveBW_of_1chan, 'Hz')
+                else:
+                    nominal_bw = casa_tools.quanta.convert(tclean_result.aggregate_bw, 'Hz')
+                info['VLASSBWN'] = nominal_bw["value"]
                 image.setmiscinfo(info)
 
     def _get_vlass_epoch_tile_version(self, filename):
@@ -469,6 +475,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             "INTENSITY_PBCOR" if ".pbcor." in filename else
             "UNKNOWN"
         )
+
     def _is_target_for_sensitivity(self, clean_result, heuristics):
         """
         Returns True if the clean target is one to export image sensitivity
