@@ -748,7 +748,8 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band][vis]['per_spw_stats'] = {}
 
                     spw_bandwidths_dict[vis], spw_effective_bandwidths_dict[vis] = get_spw_bandwidth(
-                        vis, spwsarray_dict, target, vislist)
+                        vis, target, self.image_heuristics.observing_run
+                    )
 
                     selfcal_library[target][band][vis]['total_bandwidth'] = 0.0
                     selfcal_library[target][band][vis]['total_effective_bandwidth'] = 0.0
@@ -775,7 +776,8 @@ class SelfcalHeuristics(object):
                     for vis in selfcal_library[target][band][fid]['vislist']:
                         selfcal_library[target][band][fid][vis]['per_spw_stats'] = {}
                         spw_bandwidths, spw_effective_bandwidths = get_spw_bandwidth(
-                            vis, spwsarray_dict, target, vislist)
+                            vis, target, self.image_heuristics.observing_run
+                        )
                         selfcal_library[target][band][fid][vis]['total_bandwidth'] = 0.0
                         selfcal_library[target][band][fid][vis]['total_effective_bandwidth'] = 0.0
                         if len(spw_effective_bandwidths.keys()) != len(spw_bandwidths.keys()):

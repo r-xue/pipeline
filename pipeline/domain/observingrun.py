@@ -54,7 +54,7 @@ class ObservingRun(object):
             (Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
             spectral window ID (key) to corresponding science spectral window
-            name (value) that is shared across all measurement sets in the
+            name (value) presented in the reference (first) measurement sets in the
             observing run.
         virtual_science_spw_names: Dictionary mapping each science spectral
             window name (key) to corresponding virtual spectral window ID (value).
@@ -101,9 +101,9 @@ class ObservingRun(object):
         else:
             for s in ms.get_spectral_windows(science_windows_only=True):
                 find_match = 0
-                for name in list(self.virtual_science_spw_names):
-                    # PIPE-2616: match shared ending substrings to accommodate SPW naming 
-                    # convention changes introduced in ALMA Cycle12 with additional group ID tags                    
+                for name in self.virtual_science_spw_ids.values():
+                    # PIPE-2616: match shared ending substrings to accommodate SPW naming convention
+                    # changes introduced in ALMA Cycle-12 with additional group ID tags.
                     if _spw_name_match(s.name, name):
                         find_match += 1
                         if s.name != name:
