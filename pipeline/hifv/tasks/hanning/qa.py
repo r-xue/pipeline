@@ -4,7 +4,6 @@ import collections
 from typing import TYPE_CHECKING
 
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.qa.scorecalculator as qacalc
 from pipeline import infrastructure
 from pipeline.infrastructure import utils
 from . import hanning
@@ -32,7 +31,15 @@ class HanningQAHandler(pqa.QAPlugin):
         """
         Check whether task completed successfully.
         """
-        return qacalc.score_hanning(task_successful, qa_message)
+        score = 0.0
+        if task_successful:
+            score = 1.0
+
+        origin = pqa.QAOrigin(metric_name='score_hanning',
+                              metric_score=score,
+                              metric_units='task success')
+
+        return pqa.QAScore(score, longmsg=qa_message, shortmsg=qa_message, origin=origin)
 
 
 class HanningListQAHandler(pqa.QAPlugin):
