@@ -549,6 +549,8 @@ class CleanTaskFactory(object):
         # POLARIZATION intent when imaging IQUV because of a
         # potential CASA bug. This should be undone when this
         # bug is fixed.
+        # PIPE-2464 implements TARGET IQUV imaging. Maybe the parallel
+        # settings have to be adjusted for that use case too.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
             is_tier0_job = False
             if is_mpi_ready:
@@ -635,7 +637,14 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                task_args['hm_masking'] = 'auto'
+                if task_args['stokes'] == 'IQUV':
+                    # TODO: Preliminary setting until re-use of auto-mask from
+                    # previous I imaging is implemented. Final setup for PIPE-2464
+                    # is supposed to omit masking completely, so 'centralregion'
+                    # must also be replaced by anohter (new?) option.
+                    task_args['hm_masking'] = 'centralregion'
+                else:
+                    task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:

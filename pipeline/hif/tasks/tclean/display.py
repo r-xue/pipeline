@@ -127,8 +127,10 @@ class CleanSummary(object):
                 # MOM0_FC for this iteration (currently only last but allow for others in future).
                 if 'mom0_fc' in iteration and os.path.exists(iteration['mom0_fc'] + extension):
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM0_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom0_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list))
+                                                         intent=r.intent, stokes_list=['I']))
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
@@ -149,8 +151,10 @@ class CleanSummary(object):
                         extra_args = {}
 
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM8_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, **extra_args))
+                                                         intent=r.intent, stokes_list=['I'], **extra_args))
 
                 # cleanmask - not for iter 0
                 if i > 0:

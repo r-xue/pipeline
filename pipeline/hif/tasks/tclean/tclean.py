@@ -1530,8 +1530,8 @@ class Tclean(cleanbase.CleanBase):
         if "_fc" in outfile:
             mom_type += "_fc"
 
-        # Execute job to create the MOM8_FC image.
-        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans)
+        # Execute job to create the MOM0/8/10_FC image.
+        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans, stokes='I')
         self._executor.execute(job)
         assert os.path.exists(outfile)
 

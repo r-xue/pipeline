@@ -739,7 +739,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             fileobj.write(tab_renderer.render())
                         values['tab_url'] = tab_renderer.path
 
-                    if stokes_parameters != ['I']:
+                    if row.intent == 'POLARIZATION' and stokes_parameters != ['I']:
                         # Save POLI/POLA paths which is known only after plot() has been called
                         values['poli_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
@@ -958,7 +958,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
+        # because hif_tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:
