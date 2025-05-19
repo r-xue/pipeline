@@ -9,7 +9,7 @@ from pipeline.infrastructure import casa_tools
 
 from .atmutil import init_at, calc_airmass, calc_transmission
 from .atmutil import get_dry_opacity, get_wet_opacity
-from .atmutil import test
+from .atmutil import _test
 from .atmutil import get_spw_spec, get_median_elevation, get_transmission
 from .atmutil import AtmType
 
@@ -206,7 +206,7 @@ def test_test(in_param: Tuple[float, float], expected: float):
                   invoke method, test.
         expected: Expected mean of transmission.
     """
-    transmission = test(in_param[0], in_param[1])
+    transmission = _test(in_param[0], in_param[1])
     assert np.allclose(np.mean(transmission), expected, rtol=1.e-5, atol=0.0)
 
 
