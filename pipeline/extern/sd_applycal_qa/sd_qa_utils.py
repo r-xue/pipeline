@@ -554,9 +554,9 @@ def smooth_gauss(y: np.ma.core.MaskedArray, box_pts: float, box_sigma_ratio = 3.
 
     return smoothed_masked
 
-def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_frac: float = 0.3,
-                             smooth_box_sigma: int = 20, mode: str = 'two-sided') -> dict:
-    '''Perform sigma-clipping selection of outlier datapoints in a 1-D dataset, after applying a boxcar smoothing of varing
+def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_frac: float = 0.1,
+                             smooth_box_sigma: int = 20, mode: str = 'two-sided', fixedwidth = None) -> dict:
+    '''Perform sigma-clipping selection of outlier datapoints in a 1-D dataset, after applying a boxcar smoothing of varying
     amount to the data. The amount of smoothing is selected by the maximizing the peak of the outliers. Then the resulting
     boolean selection vector of outlier, the coordinate (channel), the SNR, the data value of the maximum outlier and the
     smoothing width used to maximize SNR are given as output in a dictionary. Additionally the normalization sigma (stdev of data)
@@ -568,13 +568,14 @@ def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_fr
         smooth_box_sigma: (int) Smoothing box size used to subtract large scale trends and obtain a channel-to-channel standard deviation value,
                                 used for data normalization into number of sigmas.
         mode: (str) Either 'two-sided' for positive and negative sigma-clipping, or 'one-sided' for only positive sigma-clipping.
+        fixedwidth: (float) Return result without maximizing SNR but rather a fixed value of smoothing width.
     returns:
         Dictionary, with keys:
         chanmax:  Channel number of the maximum outlier.
         snrmax: SNR of the maximum outlier.
         outliers: Numpy boolean array for selection of outliers.
         widthmax: Smoothing width that maximizes SNR of maximum outlier.
-        smsigma: Channel-to-channel standard deviation
+        smsigma: Channel-to-channel standard deviation 
         datamax: Data value of the maximum outlier.
         widths: List of boxcar smoothing widths used.
         normdata: Normalized data used for outlier detection, in units of number of sigmas.
@@ -587,24 +588,28 @@ def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_fr
     mudata, _ = robuststats(data)
     smdata_baseline = smooth(data, smooth_box_sigma)
     _, smsigma = robuststats(data - smdata_baseline)
-    if mode == 'two-sided':
-        def min_neg_snr(w):
-            smy = smooth_gauss(data, w)
-            snr = (smy - mudata)/(smsigma/np.sqrt(w))
-            return np.min(-np.abs(snr))
-    elif mode == 'one-sided':
-        def min_neg_snr(w):
-            smy = smooth_gauss(data, w)
-            snr = (smy - mudata)/(smsigma/np.sqrt(w))
-            return np.min(-snr)
-    #Find best w that maximizes SNR
-    wfit = minimize_scalar(min_neg_snr, bounds=(1.0, maxsmbox), method='bounded')
-    widthmax = wfit.x
-    snrmax = -wfit.fun
+    if fixedwidth is None:
+        if mode == 'two-sided':
+            def min_neg_snr(w):
+                smy = smooth_gauss(data, w)
+                snr = (smy - mudata)/(smsigma/np.sqrt(w))
+                return np.ma.min(-np.abs(snr))
+        elif mode == 'one-sided':
+            def min_neg_snr(w):
+                smy = smooth_gauss(data, w)
+                snr = (smy - mudata)/(smsigma/np.sqrt(w))
+                return np.ma.min(-snr)
+        #Find best w that maximizes SNR
+        wfit = minimize_scalar(min_neg_snr, bounds=(1.0, maxsmbox), method='bounded')
+        widthmax = wfit.x
+        #snrmax = -wfit.fun
+    else:
+        widthmax = fixedwidth
     smdata = smooth_gauss(data, widthmax)
     normdata = (smdata - mudata)/(smsigma/np.sqrt(widthmax))
+    snrmax = np.ma.max(normdata)
     if mode == 'two-sided':
-        thresdata = np.abs(normdata)
+        thresdata = np.ma.abs(normdata)
     elif mode == 'one-sided':
         thresdata = normdata
     outliers = (thresdata > threshold)

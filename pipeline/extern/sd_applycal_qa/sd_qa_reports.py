@@ -86,8 +86,12 @@ def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: 
     scanlist = msw.spw_setup['scansforfield'][str(msw.fieldid)]
     for scan in scanlist:
         timesel = time[msw.scantimesel[scan]]
-        mintime_scan.append(np.min(timesel))
-        maxtime_scan.append(np.max(timesel))
+        if len(timesel) >= 2:
+            mintime_scan.append(np.min(timesel))
+            maxtime_scan.append(np.max(timesel))
+        else:
+            mintime_scan.append(-1.0)
+            maxtime_scan.append(-1.0)
 
     chan_freq = chan_freq.flatten()
 
@@ -215,9 +219,10 @@ def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: 
     #Draw scan boudaries
     for j in [0, 1, 2]:
         for k, scan in enumerate(scanlist):
-            axs[1, j].plot([freqmin, freqmax], [mintime_scan[k], mintime_scan[k]], '-k')
-            axs[1, j].plot([freqmin, freqmax], [maxtime_scan[k], maxtime_scan[k]], '-k')
-            axs[1, j].text(freqmax, 0.5*(mintime_scan[k]+maxtime_scan[k]), str(scan), fontsize=8)
+            if (mintime_scan[k] > 0) and (maxtime_scan[k] > 0):
+                axs[1, j].plot([freqmin, freqmax], [mintime_scan[k], mintime_scan[k]], '-k')
+                axs[1, j].plot([freqmin, freqmax], [maxtime_scan[k], maxtime_scan[k]], '-k')
+                axs[1, j].text(freqmax, 0.5*(mintime_scan[k]+maxtime_scan[k]), str(scan), fontsize=8)
         axs[1, j].text(freqmax+0.05*(freqmax-freqmin), 0.5*(mintime+maxtime), "scan number", fontsize=10, rotation=90)
 
     if remove_skylines:
@@ -409,6 +414,86 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
     plt.suptitle(title)
     #Save file and return filename
     filename = f'{plot_output_path}/{msname}_{fieldname}_{msw.antenna}_Spw{msw.spw}_data_trec_excess.png'
+    print('Plot filename: '+str(filename))
+    plt.savefig(filename, bbox_inches='tight')
+    plt.close()
+
+    return filename
+
+def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = None, plot_output_path: str = '.',
+                  colorlist: Union[list, str] = 'auto', detmsg: str = '') -> str:
+    '''Task used the diagnostic plot of ON-source XX-YY data for pipeline weblog.
+    param:
+        msw: MSWrapperSD object with the data to be plotted
+        thresholds (dict): Dictionary containing the thresholds used in the QA analysis of the dataset.
+        plot_output_path (str): Path to the output plot image file.
+        colorlist (str or list): Either list of colors to use for each Trec curve, or 'auto' to assign
+                                 random colors.
+        detmsg (str): Detail message (optional) to be put under the title of the plot.
+    Returns:
+        List of filenames of produced plots
+    '''
+
+    #List of science scan list
+    scanlist = msw.analysis.keys()
+    #Channel frequencies in GHz and separation in MHz, and min and max frequency
+    freqs = msw.spw_setup[msw.spw]['chanfreqs']*1.e-09
+    chansep = msw.spw_setup[msw.spw]['chansep']*(1.e-06)
+    minfreq = np.min(freqs)
+    maxfreq = np.max(freqs)
+    nchan = len(freqs)
+    msname = msw.fname.split('/')[-1]
+    antenna_id = msw.spw_setup['antids'][msw.spw_setup['antnames'] == msw.antenna][0]
+    fieldname = msw.spw_setup['namesfor'][str(msw.fieldid)][0]
+    if str(colorlist) == 'auto':
+        colorlist = sd_qa_utils.genColorList(len(scanlist))
+
+    #If science line detected, get the data from the 'all' scans data
+    if (msw.data_stats is not None) and ('sci_line_sel' in msw.data_stats.keys()):
+        sciline = msw.data_stats['sci_line_sel']
+    else:
+        sciline = []
+
+    #Turn off interactive plotting
+    plt.ioff()
+    plt.clf()
+    #Set plot size
+    fig = plt.gcf()
+    fig.set_size_inches(10, 8)
+    #Upper section, data
+    ax1 = plt.subplot(111)
+    for k, scan in enumerate(scanlist):
+        if msw.analysis[scan] is None:
+            continue
+        plt.plot(freqs, msw.analysis[scan]['ondata']['normdata'], '.', color=colorlist[k], label=str(scan))
+        #If there are outliers, plot them in bold
+        sel = msw.analysis[scan]['ondata']['outliers']
+        if np.sum(sel) > 0:
+            plt.plot(freqs[sel], msw.analysis[scan]['ondata']['normdata'][sel], 's', color=colorlist[k])
+        #Plot threshold lines
+        if thresholds is not None:
+            plt.plot([minfreq, maxfreq], [thresholds['X-Y_freq_dev'], thresholds['X-Y_freq_dev']], '--k')
+            plt.plot([minfreq, maxfreq], [-thresholds['X-Y_freq_dev'], -thresholds['X-Y_freq_dev']], '--k')
+        #Plot science line point, if any detected.
+        if (np.sum(sciline) > 0) and scan == 'all':
+            plt.plot(freqs[sciline], msw.analysis[scan]['ondata']['normdata'][sciline], 'sk', label='Sci.Line Chan')
+        elif (np.sum(sciline) > 0):
+            plt.plot(freqs[sciline], msw.analysis[scan]['ondata']['normdata'][sciline], 'sk')
+
+    plt.legend(loc='upper left', ncol=3, fontsize='x-small', title='XX-YY data')
+    #Y-axis
+    plt.ylabel('XX-YY (data)')
+    #X-axis
+    plt.xlabel('Freq [GHz]')
+    plt.xlim(minfreq, maxfreq)
+
+    #write titles and detections info
+    title = f'{msname}, {fieldname}, {antenna_id}:{msw.antenna}, Spw {msw.spw}'
+    if len(detmsg) > 0:
+        title = title + '\nOutliers '+detmsg
+    plt.suptitle(title)
+    #Save file and return filename
+    filename = f'{plot_output_path}/{msname}_{fieldname}_{msw.antenna}_Spw{msw.spw}_XX-YY_excess.png'
     print('Plot filename: '+str(filename))
     plt.savefig(filename, bbox_inches='tight')
     plt.close()
