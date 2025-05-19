@@ -5,16 +5,17 @@ import collections
 import itertools
 import operator
 import os
-from typing import Iterable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-from .datatype import DataType, TYPE_PRIORITY_ORDER
-from . import MeasurementSet
+
+from .datatype import TYPE_PRIORITY_ORDER, DataType
 
 if TYPE_CHECKING:
     from datetime import datetime
-
+    from . import MeasurementSet
+    
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -339,6 +340,36 @@ class ObservingRun(object):
             if the spectral window name was not found.
         """
         return self.get_virtual_spw_id_by_name(target_ms.get_spectral_window(int(spw_id)).name)
+
+    def real2real_spw_id(self, spw_id: int | str, target_ms: MeasurementSet, source_ms: MeasurementSet) -> int | None:
+        """Translates a real spectral window (SPW) ID from one MS to another.
+
+        The translation is done via via the pipeline's virtual SPW ID mapping.
+
+        Args:
+            spw_id: The real spectral window ID to translate. Can be an integer or a string.
+            target_ms: The target MeasurementSet to which the SPW ID should be mapped.
+            source_ms: The source MeasurementSet from which the SPW ID originates.
+
+        Returns:
+            The corresponding real SPW ID in the target MS, or None if the mapping
+            could not be performed (e.g., if the virtual SPW ID was not found for the source SPW).
+        """
+        # Obtain the virtual SPW ID from the source MeasurementSet
+        virtual_spw_id = self.real2virtual_spw_id(spw_id, source_ms)
+
+        # If a virtual SPW ID was successfully found, map it to the target MS
+        if virtual_spw_id is not None:
+            return self.virtual2real_spw_id(virtual_spw_id, target_ms)
+        else:
+            LOG.warning(
+                'Cannot map real SPW ID %s from %s to %s via a virtual SPW ID; '
+                'the virtual ID for the source SPW was not found.',
+                spw_id,
+                source_ms.name,
+                target_ms.name,
+            )
+            return None
 
     def get_real_spwsel(self, spwsel: list[str], vis: list[str]) -> list[str]:
         """

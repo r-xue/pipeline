@@ -497,8 +497,8 @@ class Polcal(basetask.StandardTaskTemplate):
         spwmaps = {}
         for vis in vislist:
             target_ms = self.inputs.context.observing_run.get_ms(name=vis)
-            mapped = sessionutils.get_spwmap(session_ms, target_ms)
-            spwmaps[vis] = list(range(max(mapped.values())+1))
+            mapped = sessionutils.get_spwmap(session_ms, target_ms, observing_run=self.inputs.context.observing_run)
+            spwmaps[vis] = list(range(max(mapped.values()) + 1))
             for k, v in mapped.items():
                 spwmaps[vis][v] = k
 

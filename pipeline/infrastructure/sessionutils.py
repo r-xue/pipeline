@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import abc
 import collections
 import datetime
@@ -6,13 +8,11 @@ import os
 import tempfile
 import traceback
 from inspect import signature
+from typing import TYPE_CHECKING
 
-from pipeline.infrastructure import basetask
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import logging
-from . import mpihelpers
-from . import utils
-from . import vdp
+from pipeline.infrastructure import basetask, exceptions, logging
+
+from . import mpihelpers, utils, vdp
 
 __all__ = [
     'as_list',
@@ -24,6 +24,9 @@ __all__ = [
     'VDPTaskFactory',
     'VisResultTuple'
 ]
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, ObservingRun
 
 LOG = logging.get_logger(__name__)
 
@@ -287,16 +290,23 @@ def validate_args(inputs_cls, task_args):
     return valid_args
 
 
-def get_spwmap(source_ms, target_ms):
-    """
-    Get a map of spectral windows IDs that map from a source spw ID in
-    the source MS to its equivalent spw in the target MS.
+def get_spwmap_by_name(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
+    """Generates a mapping of spw IDs from the source MS to a target MS by matching spw names.
 
-    :param source_ms: the MS to map spws from
-    :type source_ms: domain.MeasurementSet
-    :param target_ms: the MS to map spws to
-    :type target_ms: domain.MeasurementSet
-    :return: dict of integer spw IDs
+    This function identifies spectral windows with a 'science' intent in both the
+    source and target MeasurementSets. It then creates a dictionary mapping
+    the source spw ID to the corresponding target spw ID only if their names match.
+    Only source science spws that have a corresponding science spw (with a
+    matching name) in the target MS will be included in the output map.
+    Non-science spectral windows or science spws without a name match are excluded.
+
+    Args:
+        source_ms: The MeasurementSet from which to map spws.
+        target_ms: The MeasurementSet to which to map spws.
+
+    Returns:
+        A dictionary where keys are spw IDs from the source MS and values are
+        the corresponding spw IDs in the target MS for science spws with matching names.
     """
     # spw names are not guaranteed to be unique. They seem to be unique
     # across science intents, but they could be repeated for other
@@ -326,7 +336,51 @@ def get_spwmap(source_ms, target_ms):
             if v in name_to_id}
 
 
-def remap_spw_int(source_ms, target_ms, spws):
+def get_spwmap(
+    source_ms: MeasurementSet, target_ms: MeasurementSet, observing_run: ObservingRun | None = None
+) -> dict[int, int]:
+    """Generates a SPW mapping between two MeasurementSets.
+
+    This function determines how spectral windows from the source MeasurementSet
+    map to spectral windows in the target MeasurementSet. If an `observing_run`
+    object is provided, it leverages the `real2real_spw_id` method for mapping.
+    Otherwise, it falls back to a simpler mapping based on spectral window names.
+
+    Args:
+        source_ms: The source MeasurementSet object from which SPWs are mapped.
+        target_ms: The target MeasurementSet object to which SPWs are mapped.
+        observing_run: An optional object containing real-to-real observation
+            mapping information. If None, a name-based fallback is used.
+
+    Returns:
+        A dictionary where keys are SPW IDs from the `source_ms` and
+        values are their corresponding SPW IDs in the `target_ms`.
+    """
+    if observing_run is None:
+        # Fall back to get_spwmap_by_name if no observing_run is provided.
+        return get_spwmap_by_name(source_ms, target_ms)
+
+    # Initialize the spwmap with a 1:1 identity mapping for all source SPWs.
+    spwmap = {spw.id: spw.id for spw in source_ms.spectral_windows}
+
+    # Identify science spectral window IDs from the source MeasurementSet.
+    # These are typically the SPWs that require explicit mapping.
+    sci_spw_id_list = [spw.id for spw in source_ms.get_spectral_windows(science_windows_only=True)]
+
+    # Iterate through all SPW IDs in the initial spwmap to refine mappings.
+    for spw_id in spwmap:
+        # Attempt to map science SPWs using the observing_run object.
+        if spw_id in sci_spw_id_list:
+            spw_id_in_target_ms = observing_run.real2real_spw_id(spw_id, target_ms, source_ms)
+
+            # Update the mapping if a valid target-ms SPW ID was successfully found.
+            if spw_id_in_target_ms is not None:
+                spwmap[spw_id] = spw_id_in_target_ms
+
+    return spwmap
+
+
+def remap_spw_int(source_ms, target_ms, spws, observing_run=None):
     """
     Map integer spw arguments from one MS to their equivalent spw in
     the target ms.
@@ -339,11 +393,11 @@ def remap_spw_int(source_ms, target_ms, spws):
     :return: a list of remapped integer spw IDs
     :rtype: list
     """
-    int_spw_map = get_spwmap(source_ms, target_ms)
+    int_spw_map = get_spwmap(source_ms, target_ms, observing_run=observing_run)
     return [int_spw_map[spw_id] for spw_id in spws]
 
 
-def remap_spw_str(source_ms, target_ms, spws):
+def remap_spw_str(source_ms, target_ms, spws, observing_run=None):
     """
     Remap a string spw argument, e.g., '16,18,20,22', from one MS to
     the equivalent map in the target ms.
@@ -357,14 +411,15 @@ def remap_spw_str(source_ms, target_ms, spws):
     :rtype: str
     """
     spw_ints = [int(i) for i in spws.split(',')]
-    l = remap_spw_int(source_ms, target_ms, spw_ints)
+    l = remap_spw_int(source_ms, target_ms, spw_ints, observing_run=observing_run)
     return ','.join([str(i) for i in l])
 
 
 class ParallelTemplate(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def Task(self):
         """
         A reference to the :class:`Task` class containing the implementation
