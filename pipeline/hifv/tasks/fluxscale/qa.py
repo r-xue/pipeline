@@ -22,8 +22,9 @@ class SolintQAHandler(pqa.QAPlugin):
 
         # Check for existence of the the target MS.
         score1 = self._ms_exists(os.path.dirname(result.inputs['vis']), os.path.basename(result.inputs['vis']))
-        scores = [score1]
-
+        score_score_solint = qacalc.score_solint(result.short_solint, result.longsolint)
+        score_longsolint = qacalc.score_longsolint(context, result.longsolint)
+        scores = [score1, score_score_solint, score_longsolint]
         result.qa.pool.extend(scores)
 
     def _ms_exists(self, output_dir, ms):
