@@ -13,8 +13,8 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+import pipeline.hsd.heuristics.SDcalatmcorr as SDcalatmcorr
 from pipeline.domain import DataType
-from pipeline.extern import SDcalatmcorr
 from pipeline.h.heuristics import fieldnames
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from pipeline.infrastructure import task_registry

@@ -205,7 +205,8 @@ class ImageParamsHeuristics(object):
                     min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                     max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                     spw_sel_intervals = utils.spw_intersect([min_frequency, max_frequency], merged_line_ranges_GHz)
-                    spw_selection = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
+                    spw_selection = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(
+                        spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
 
                     # Skip selection syntax completely if the whole spw is selected
                     if (spw_selection == '%.10f~%.10fGHz' % (float(min_frequency), float(max_frequency))):
@@ -214,7 +215,7 @@ class ImageParamsHeuristics(object):
                     for source_name in [s.name for s in ms.sources]:
                         cont_ranges_spwsel[source_name][str(spwid)] = '%s LSRK' % (spw_selection)
                 except Exception as e:
-                    LOG.warn(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
 
         return cont_ranges_spwsel, all_continuum_spwsel, low_bandwidth_spwsel, low_spread_spwsel
 
@@ -329,7 +330,7 @@ class ImageParamsHeuristics(object):
             try:
                 largest_primary_beam_size = max(largest_primary_beam_size, self.primary_beam_size(spwid, intent))
             except Exception as e:
-                LOG.warn(f'Could not determine primary beam size for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine primary beam size for spw {spwid}. Exception: {str(e)}')
 
         return largest_primary_beam_size
 
@@ -457,7 +458,7 @@ class ImageParamsHeuristics(object):
 
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
-                        LOG.warn('No data for field %s' % (field))
+                        LOG.warning('No data for field %s' % (field))
                         utils.set_nested_dict(local_known_beams,
                                               (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
                                               'invalid')
@@ -637,7 +638,7 @@ class ImageParamsHeuristics(object):
                         nchan = min_nchan
                         width = str(bandwidth / nchan)
             except Exception as e:
-                LOG.warn(f'Could not determine nchan and width for spw {spwids[0]}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine nchan and width for spw {spwids[0]}. Exception: {str(e)}')
                 nchan = -1
                 width = ''
         else:
@@ -1069,7 +1070,7 @@ class ImageParamsHeuristics(object):
                 except:
                     b2bMode = False
                 if not b2bMode:
-                    LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
 
         aggregate_bandwidth_Hz = np.sum([r[1] - r[0] for r in utils.merge_ranges(spw_frequency_ranges)])
 
@@ -1301,7 +1302,7 @@ class ImageParamsHeuristics(object):
             # width = decimal.Decimal('1.0001') * width
             width = str(width)
         except Exception as e:
-            LOG.warn(f'Could not determine width for spw {spwid}. Exception: {str(e)}')
+            LOG.warning(f'Could not determine width for spw {spwid}. Exception: {str(e)}')
             width = ''
 
         return width
@@ -1327,7 +1328,7 @@ class ImageParamsHeuristics(object):
                 ncorr = 0
 
         except Exception as e:
-            LOG.warn(f'Could not determine ncorr for spw {spwid}. Exception: {str(e)}')
+            LOG.warning(f'Could not determine ncorr for spw {spwid}. Exception: {str(e)}')
             ncorr = 0
 
         return ncorr
@@ -1410,7 +1411,7 @@ class ImageParamsHeuristics(object):
                     abs_max_frequency = max_frequency
                     max_freq_spwid = spwid
             except Exception as e:
-                LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
         return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
                 'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
@@ -1550,7 +1551,7 @@ class ImageParamsHeuristics(object):
                     if (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                         LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
             except Exception as e:
-                LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
             aggregate_lsrk_bw = qaTool.add(aggregate_lsrk_bw, aggregate_spw_lsrk_bw)
 
