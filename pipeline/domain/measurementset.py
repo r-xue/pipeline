@@ -1336,10 +1336,25 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False) -> None:
+    def set_data_type_dicts(self, data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
         """
-        Set data type and column.
+        Set the data type lookup dictionaries directly without writing new
+        MS HISTORY entries as they would already exist when calling this
+        method. Also do not auto-generate the per source and spw lookup
+        dictionary from the per column information since it might have a
+        sparse structure (e.g. selfcal use case).
+
+        Args:
+            data_type_per_column: Data type per column lookup dictionary
+            data_types_per_source_and_spw: Data type per source and spw
+                lookup dictionary.
+        """
+        self.data_column = data_type_per_column
+        self.data_types_per_source_and_spw = data_types_per_source_and_spw
+
+    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
+                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+        """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
         data types per (source,spw) tuple. If source or spw are unset, they
@@ -1355,6 +1370,8 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
+            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping
+                to the MS history subtable. Defaults to True.                
 
         Raises:
             ValueError: An error raised when the column does not exist
@@ -1400,6 +1417,20 @@ class MeasurementSet(object):
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
+
+        # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
+        # minimum fallback implementation and should be replaced by a properly
+        # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
+        if save_to_ms:
+            with casa_tools.MSReader(self.name) as ms:
+                ms.writehistory(
+                    f"data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}",
+                    origin="Datatype Handler",
+                )
+                ms.writehistory(
+                    f"data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}",
+                    origin="Datatype Handler",
+                )
 
     def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """

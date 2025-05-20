@@ -87,15 +87,14 @@ class ImportDataQAHandler(pqa.QAPlugin):
                     origin_col = table.getcol('ORIGIN')
                     if createmms:
                         # special treatment is needed when createmms mode is turned on
-                        for i in range(len(origin_col)):
-                            if (origin_col[i] == 'importasdm' or origin_col[i] == 'partition' or
-                                    origin_col[i] == 'im::calcuvw()'):
+                        for origin in origin_col:
+                            if origin in ('importasdm', 'partition', 'im::calcuvw()', 'Datatype Handler'):
                                 continue
                             bad_mses.append(ms)
                             break
                     else:
-                        for i in range(len(origin_col)):
-                            if origin_col[i] == 'importasdm' or origin_col[i] == 'im::calcuvw()':
+                        for origin in origin_col:
+                            if origin in ('importasdm', 'im::calcuvw()', 'Datatype Handler'):
                                 continue
                             bad_mses.append(ms)
                             break

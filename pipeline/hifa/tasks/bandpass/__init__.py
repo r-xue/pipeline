@@ -1,6 +1,7 @@
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
 from pipeline.hif.tasks.bandpass import common
+from . import qa
 from . import renderer
 from .almaphcorbandpass import ALMAPhcorBandpass, SessionALMAPhcorBandpass
 

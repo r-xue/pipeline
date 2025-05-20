@@ -14,6 +14,7 @@ from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -185,11 +186,9 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         """
         LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
         except Exception as e:
@@ -203,7 +202,6 @@ class semiFinalBPdcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'BPinitialgain'
 
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
         # PIPE-1637: adding ',' in the manual and auto refantignore parameter
         refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])

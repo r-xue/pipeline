@@ -598,6 +598,114 @@ class ImageParamsHeuristicsVlassSeContAWPP001(ImageParamsHeuristicsVlassSeCont):
         return 'awproject'
 
 
+class ImageParamsHeuristicsVlassSeContAWP2(ImageParamsHeuristicsVlassSeCont):
+    """Special heuristics case for AWP2 gridder with the default wprojplanes=32."""
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-AWP2'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
+        return 'awp2'
+
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.2, pblimit_cleanmask
+
+
+class ImageParamsHeuristicsVlassSeContAWP2P001(ImageParamsHeuristicsVlassSeCont):
+    """Special heuristics case for AWP2 gridder with the default wprojplanes=1."""
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-AWP2-P001'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
+        return 'awp2'
+
+    def wprojplanes(self, gridder=None, spwspec=None) -> int:
+        """Tclean wprojplanes parameter heuristics."""
+        return 1
+
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.2, pblimit_cleanmask
+
+
+class ImageParamsHeuristicsVlassSeContHPG(ImageParamsHeuristicsVlassSeCont):
+    """Special heuristics case for AWPHPG gridder with the default wprojplanes=32."""
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-HPG'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
+        return 'awphpg'
+
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.2, pblimit_cleanmask
+
+
+class ImageParamsHeuristicsVlassSeContHPGP001(ImageParamsHeuristicsVlassSeCont):
+    """Special heuristics case for AWPHPG gridder with the default wprojplanes=1."""
+
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
+                 linesfile=None, imaging_params={}):
+        ImageParamsHeuristicsVlassSeCont.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params,
+                                                  contfile, linesfile, imaging_params)
+        self.imaging_mode = 'VLASS-SE-CONT-HPG-P001'
+        # Update it explicitly when populating context.clean_list_pending (i.e. in hif_editimlist)
+        self.vlass_stage = 0
+
+    def gridder(self, intent, field) -> str:
+        """Tclean gridder parameter heuristics."""
+        return 'awphpg'
+
+    def wprojplanes(self, gridder=None, spwspec=None) -> int:
+        """Tclean wprojplanes parameter heuristics."""
+        return 1
+
+    def pblimits(self, pb: Union[None, str], specmode: Optional[str] = None) -> Tuple[float, float]:
+        """Tclean pblimit parameter and cleanmask pblimit heuristics."""
+
+        pblimit_image, pblimit_cleanmask = super().pblimits(pb)
+
+        # Overwrite pblimit_image (to be used in tclean as pblimit parameter) with
+        # the VLASS-SE-CONT-MOSAIC specific value.
+        return 0.2, pblimit_cleanmask
+
+
 class ImageParamsHeuristicsVlassSeContMosaic(ImageParamsHeuristicsVlassSeCont):
     """
     Special heuristics case when gridder is awproject and the wprojplanes parameter

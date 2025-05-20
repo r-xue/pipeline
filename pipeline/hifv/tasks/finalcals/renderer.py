@@ -1,5 +1,4 @@
 import collections
-import contextlib
 import itertools
 import operator
 import os
@@ -9,261 +8,22 @@ import pipeline.infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
-import pipeline.infrastructure.renderer.weblog as weblog
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common.displays import applycal
-from . import display as finalcalsdisplay
+from pipeline.hifv.tasks.common.renderer import renderer as baseRenderer
+
 
 LOG = logging.get_logger(__name__)
 
 
-class VLASubPlotRenderer(object):
-    #template = 'testdelays_plots.html'
-
-    def __init__(self, context, result, plots, json_path, template, filename_prefix, bandlist, spwlist=None, spw_plots=None):
-        self.context = context
-        self.result = result
-        self.plots = plots
-        self.ms = os.path.basename(self.result.inputs['vis'])
-        self.template = template
-        self.filename_prefix = filename_prefix
-        self.bandlist = bandlist
-        self.spwlist = spwlist
-        self.spw_plots = spw_plots
-
-        if self.spwlist is None:
-            self.spwlist = []
-
-        if self.spw_plots is None:
-            self.spw_plots = []
-
-        self.summary_plots = {}
-        self.finaldelay_subpages = {}
-        self.phasegain_subpages = {}
-        self.bpsolamp_subpages = {}
-        self.bpsolphase_subpages = {}
-        self.bpsolphaseshort_subpages = {}
-        self.finalamptimecal_subpages = {}
-        self.finalampfreqcal_subpages = {}
-        self.finalphasegaincal_subpages = {}
-
-        self.finaldelay_subpages[self.ms] = filenamer.sanitize('finaldelays' + '-%s.html' % self.ms)
-        self.phasegain_subpages[self.ms] = filenamer.sanitize('phasegain' + '-%s.html' % self.ms)
-        self.bpsolamp_subpages[self.ms] = filenamer.sanitize('bpsolamp' + '-%s.html' % self.ms)
-        self.bpsolphase_subpages[self.ms] = filenamer.sanitize('bpsolphase' + '-%s.html' % self.ms)
-        self.bpsolphaseshort_subpages[self.ms] = filenamer.sanitize('bpsolphaseshort' + '-%s.html' % self.ms)
-        self.finalamptimecal_subpages[self.ms] = filenamer.sanitize('finalamptimecal' + '-%s.html' % self.ms)
-        self.finalampfreqcal_subpages[self.ms] = filenamer.sanitize('finalampfreqcal' + '-%s.html' % self.ms)
-        self.finalphasegaincal_subpages[self.ms] = filenamer.sanitize('finalphasegaincal' + '-%s.html' % self.ms)
-
-        if os.path.exists(json_path):
-            with open(json_path, 'r') as json_file:
-                self.json = json_file.readlines()[0]
-        else:
-            self.json = '{}'
-
-    def _get_display_context(self):
-        return {'pcontext': self.context,
-                'result': self.result,
-                'plots': self.plots,
-                'spw_plots': self.spw_plots,
-                'dirname': self.dirname,
-                'json': self.json,
-                'finaldelay_subpages': self.finaldelay_subpages,
-                'phasegain_subpages': self.phasegain_subpages,
-                'bpsolamp_subpages': self.bpsolamp_subpages,
-                'bpsolphase_subpages': self.bpsolphase_subpages,
-                'bpsolphaseshort_subpages': self.bpsolphaseshort_subpages,
-                'finalamptimecal_subpages': self.finalamptimecal_subpages,
-                'finalampfreqcal_subpages': self.finalampfreqcal_subpages,
-                'finalphasegaincal_subpages': self.finalphasegaincal_subpages,
-                'spwlist': self.spwlist,
-                'bandlist': self.bandlist}
-
-    @property
-    def dirname(self):
-        stage = 'stage%s' % self.result.stage_number
-        return os.path.join(self.context.report_dir, stage)
-
-    @property
-    def filename(self):
-        filename = filenamer.sanitize(self.filename_prefix + '-%s.html' % self.ms)
-        return filename
-
-    @property
-    def path(self):
-        return os.path.join(self.dirname, self.filename)
-
-    def get_file(self):
-        if not os.path.exists(self.dirname):
-            os.makedirs(self.dirname)
-
-        file_obj = open(self.path, 'w')
-        return contextlib.closing(file_obj)
-
-    def render(self):
-        display_context = self._get_display_context()
-        t = weblog.TEMPLATE_LOOKUP.get_template(self.template)
-        return t.render(**display_context)
-
-
-class T2_4MDetailsfinalcalsRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
+class T2_4MDetailsfinalcalsRenderer(baseRenderer.calsRenderer):
     def __init__(self, uri='finalcals.mako', description='Final Calibration Tables',
                  always_rerender=False):
-        super(T2_4MDetailsfinalcalsRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description,
+                         always_rerender=always_rerender, taskname="finalcals")
 
     def get_display_context(self, context, results):
-        super_cls = super(T2_4MDetailsfinalcalsRenderer, self)
-        ctx = super_cls.get_display_context(context, results)
-
-        weblog_dir = os.path.join(context.report_dir,
-                                  'stage%s' % results.stage_number)
-
-        summary_plots = {}
-        finaldelay_subpages = {}
-        phasegain_subpages = {}
-        bpsolamp_subpages = {}
-        bpsolphase_subpages = {}
-        bpsolphaseshort_subpages = {}
-        finalamptimecal_subpages = {}
-        finalampfreqcal_subpages = {}
-        finalphasegaincal_subpages = {}
-
-        band2spw = collections.defaultdict(list)
-
-        for result in results:
-
-            m = context.observing_run.get_ms(result.inputs['vis'])
-            spw2band = m.get_vla_spw2band()
-            spwobjlist = m.get_spectral_windows(science_windows_only=True)
-            listspws = [spw.id for spw in spwobjlist]
-            for spw, band in spw2band.items():
-                if spw in listspws:  # Science intents only
-                    band2spw[band].append(str(spw))
-
-            # plotter = finalcalsdisplay.finalcalsSummaryChart(context, result)
-            # plots = plotter.plot()
-            ms = os.path.basename(result.inputs['vis'])
-            summary_plots[ms] = None
-
-            # Create list of spws for per-spw plots used for spectral window spws
-            spws = m.get_spectral_windows(science_windows_only=True)
-            spwlist = [str(spw.id) for spw in spws if spw.specline_window]
-
-            # generate testdelay plots and JSON file
-            plotter = finalcalsdisplay.finalDelaysPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finaldelays', band2spw)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                finaldelay_subpages[ms] = renderer.filename
-
-            # generate phase Gain plots and JSON file
-            plotter = finalcalsdisplay.finalphaseGainPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'phasegain', band2spw)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                phasegain_subpages[ms] = renderer.filename
-
-            # generate amp bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolAmpPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # generate amp bandpass solution per-spw plots
-            plotter = finalcalsdisplay.finalbpSolAmpPerAntennaPerSpwChart(context, result)
-            spw_plots = plotter.plot()
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolamp', band2spw, spwlist, spw_plots=spw_plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                bpsolamp_subpages[ms] = renderer.filename
-
-            # generate phase bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolPhasePerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # generate phase bandpass per spw solution plots
-            plotter = finalcalsdisplay.finalbpSolPhasePerAntennaPerSpwChart(context, result)
-            spw_plots = plotter.plot()
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphase', band2spw, spwlist, spw_plots=spw_plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                bpsolphase_subpages[ms] = renderer.filename
-
-            # generate phase short bandpass solution plots and JSON file
-            plotter = finalcalsdisplay.finalbpSolPhaseShortPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'bpsolphaseshort', band2spw)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                bpsolphaseshort_subpages[ms] = renderer.filename
-
-            # generate final amp time cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalAmpTimeCalPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            plotter = finalcalsdisplay.finalAmpTimeCalPerAntennaPerSpwChart(context, result)
-            spw_plots = plotter.plot()
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalamptimecal', band2spw, spwlist, spw_plots=spw_plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                finalamptimecal_subpages[ms] = renderer.filename
-
-            # generate final amp freq cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalAmpFreqCalPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalampfreqcal', band2spw)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                finalampfreqcal_subpages[ms] = renderer.filename
-
-            # generate final phase gain cal solution plots and JSON file
-            plotter = finalcalsdisplay.finalPhaseGainCalPerAntennaChart(context, result)
-            plots = plotter.plot()
-            json_path = plotter.json_filename
-
-            plotter = finalcalsdisplay.finalPhaseGainCalPerAntennaPerSpwChart(context, result)
-            spw_plots = plotter.plot()
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'finalcals_plots.mako', 'finalphasegaincal', band2spw, spwlist, spw_plots=spw_plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                finalphasegaincal_subpages[ms] = renderer.filename
-
-        ctx.update({'summary_plots': summary_plots,
-                    'finaldelay_subpages': finaldelay_subpages,
-                    'phasegain_subpages': phasegain_subpages,
-                    'bpsolamp_subpages': bpsolamp_subpages,
-                    'bpsolphase_subpages': bpsolphase_subpages,
-                    'bpsolphaseshort_subpages': bpsolphaseshort_subpages,
-                    'finalamptimecal_subpages': finalamptimecal_subpages,
-                    'finalampfreqcal_subpages': finalampfreqcal_subpages,
-                    'finalphasegaincal_subpages': finalphasegaincal_subpages,
-                    'dirname': weblog_dir})
-
+        ctx = super().get_display_context(context, results)
         return ctx
 
 

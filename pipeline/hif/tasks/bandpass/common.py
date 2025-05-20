@@ -1,6 +1,5 @@
 import copy
 import os
-from typing import List
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -76,15 +75,15 @@ class BandpassResults(basetask.Results):
     calibration tasks.
     """
 
-    def __init__(self, 
-                 final: List[CalApplication]=None, 
-                 pool: List[CalApplication]=None, 
-                 # TODO preceding was intended to hold child results but it
-                 # does not appear to be used anywhere. I suspect it can be
-                 # removed.
-                 preceding: List[basetask.Results]=None,
-                 applies_adopted: bool=False,
-                 unregister_existing: bool=False):
+    def __init__(
+            self,
+            final: list[CalApplication] = None,
+            pool: list[CalApplication] = None,
+            preceding: list = None,
+            applies_adopted: bool = False,
+            unregister_existing: bool = False,
+            phaseup_snr_expected: float = None,
+    ):
         """
         Construct and return a new BandpassResults.
 
@@ -96,12 +95,14 @@ class BandpassResults(basetask.Results):
 
         :param final: calibrations to be applied by this task (optional)
         :param pool: calibrations assessed by this task (optional)
-        :param preceding: DEPRECATED results from worker tasks executed by
-            this task (optional)
+        :param preceding: list of CalApplications from worker tasks executed by
+            this task, e.g. for phase-up solutions (optional)
         :param applies_adopted: True if this Results applies a bandpass
             caltable generated from another measurement set
         :param unregister_existing: True if existing bandpass calibrations
             should be unregistered before registering new calibration
+        :param phaseup_snr_expected: Expected SNR for bandpass phase-up
+            solutions, used in QA (optional)
         """
         if final is None:
             final = []
@@ -111,13 +112,15 @@ class BandpassResults(basetask.Results):
             preceding = []
 
         super(BandpassResults, self).__init__()
-        self.pool: List[CalApplication] = []
-        self.final: List[CalApplication] = []
-        self.preceding: List[basetask.Results] = []
+        self.pool: list[CalApplication] = []
+        self.final: list[CalApplication] = []
+        self.preceding: list = []
         self.error = set()
         self.qa = {}
         self.applies_adopted: bool = applies_adopted
         self.unregister_existing: bool = unregister_existing
+        # PIPE-2442: Expected bandpass phase-up SNR is stored for QA evaluation.
+        self.phaseup_snr_expected: float = phaseup_snr_expected
 
         # defensive programming: deepcopy the CalApplications as they're
         # adopted just in case the caller updates them after this object is

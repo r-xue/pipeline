@@ -351,4 +351,8 @@ class Flagtargetsdata(basetask.StandardTaskTemplate):
             if ms:
                 mses.append(ms[0])
 
+        # PIPE-2560: fix case for VLASS data without any of the registered datatypes
+        if not mses:
+            mses = inputs.context.observing_run.get_measurement_sets_of_type([DataType.RAW])
+
         return mses

@@ -21,6 +21,13 @@ LOG = infrastructure.get_logger(__name__)
 #            included bl-name, bl-len, phase RMS in log
 # K Berry - NRAO
 #          -  July 2023 moved into PL
+# V Geers - UKATC
+#          - April 2024: updates to handle Band-to-Band datasets
+#            (PIPE-2079, PIPE-2081) for PL2024 release.
+#          - June 2024: updates to restrict SpW candidates to spectralspec,
+#            for PL2024 release.
+# L T Maud - ESO
+#          - Dec 2024 check caltable spw and match with spw_candidates
 ##################
 
 
@@ -57,7 +64,7 @@ class PhaseStabilityHeuristics(object):
                 self.refantid = ant.id
             self.antlist.append(ant.name)
 
-        # Select which SpW to use for phase stability analysis.
+        # Identify SpW candidates for phase stability analysis.
         spw_candidates = self._get_spw_candidates(inputsin)
 
         ##################
@@ -364,7 +371,20 @@ class PhaseStabilityHeuristics(object):
         
         # order irrelavant as keyed here with BL Name
         return baselineLen
-    
+
+    @staticmethod
+    def _get_spws_in_caltable(caltable) -> set[str]:
+        """
+        Return set of spectral window IDs present in a caltable file.
+
+        Returns:
+            Set of spectral window IDs present in caltable as strings.
+        """
+        with casa_tools.TableReader(caltable) as tb:
+            spwids = tb.getcol('SPECTRAL_WINDOW_ID')
+
+        return {str(spwid) for spwid in spwids}
+
     def _get_bandpass_scan_time(self) -> Tuple[float, float]:
         """
         Read a caltable file and return time
@@ -669,22 +689,39 @@ class PhaseStabilityHeuristics(object):
         # that we read in - just in case we 'need' this information
         rms_results['blflags'] = []
 
-        nant = len(self.antlist)
-        iloop = np.arange(nant-1)
+        # Get phase for the reference antenna.
+        pHrefant = self._get_cal_phase(self.refantid)
 
+        # Number of antennas.
+        nant = len(self.antlist)
+
+        # Loop over every antenna ID.
+        iloop = np.arange(nant-1)
         for i in iloop:
             # Ant based parameters
             pHant1 = self._get_cal_phase(i)
             rms_results['antname'].append(self.antlist[i])
 
+            # Subtract the phase for reference antenna from the phase for the
+            # current antenna. Because phases can be non-zero, use
+            # pHant1- pHrefant (or) pHrefant - pHant1, depending on which is
+            # smaller antenna index.
+            if self.refantid <= i:
+                pHantalone = pHrefant - pHant1
+            else:
+                pHantalone = pHant1 - pHrefant
+
             # Make an assessment of flagged data for that antenna
-            if len(pHant1[np.isnan(pHant1)]) > self.flag_tolerance*len(pHant1):
+            if len(pHantalone[np.isnan(pHantalone)]) > self.flag_tolerance*len(pHantalone):
                 rms_results['antphaserms'].append(np.nan)
                 rms_results['antphasermscycle'].append(np.nan)
-                
+
             else:
-                # Do averaing -> 10s
-                pHant_ave = self.ave_phase(pHant1, self.difftime, over=10.0)  # for thermal/short term noise
+                # Perform averaging over 10s, but work on the corrected w.r.t.
+                # refant. This should be zero but in case there is a jump
+                # (i.e. refant change), then this should now correctly have
+                # taken this out.
+                pHant_ave = self.ave_phase(pHantalone, self.difftime, over=10.0)
                 rmspHant_ave = np.std(np.array(pHant_ave)[np.isfinite(pHant_ave)])
                 rms_results['antphaserms'].append(rmspHant_ave)
                 if timeScale:
@@ -701,7 +738,7 @@ class PhaseStabilityHeuristics(object):
                 pHant2 = self._get_cal_phase(j)
                 # phases from cal table come in an order, baseline then is simply the subtraction
                 pH = pHant1 - pHant2
-                    
+
                 # fill baseline information now
                 rms_results['blname'].append(self.antlist[i]+'-'+self.antlist[j])
                 # OLD (new) WAY from context - average all as overview
@@ -746,7 +783,7 @@ class PhaseStabilityHeuristics(object):
 
         # set RMS output in degrees as we want
         for key_res in ['blphaserms', 'blphasermscycle', 'antphaserms', 'antphasermscycle']:
-            rms_results[key_res]= np.degrees(rms_results[key_res])
+            rms_results[key_res] = np.degrees(rms_results[key_res])
         
         return rms_results
     
@@ -840,9 +877,7 @@ class PhaseStabilityHeuristics(object):
 
         return spwid, blflags
 
-    # Static methods
-    @staticmethod
-    def _get_spw_candidates(inputsin) -> List[str]:
+    def _get_spw_candidates(self, inputsin) -> list[str]:
         """
         Retrieves a list of spectral window candidates for the phase decoherence
         analysis, ranked based on atmosphere heuristics.
@@ -879,10 +914,18 @@ class PhaseStabilityHeuristics(object):
         # PIPE-1871: as potential fall-back candidates, keep only those SpWs
         # that have the same SpectralSpec as the top candidate.
         qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
-        qa_spws = [inputsin.ms.get_spectral_window(spwid) for spwid in qa_spw_list]
         qa_spw_list = [str(spw.id) for spw in qa_spws if spw.spectralspec == qa_spws[0].spectralspec]
 
-        return qa_spw_list
+        # PIPE-2442: Filter initial SpW candidates to restrict to SpWs available
+        # in the bandpass phase-up caltable. Log if this filtering changes the
+        # list of SpW candidates.
+        spws_in_caltable = self._get_spws_in_caltable(self.caltable)
+        qa_spw_list_filtered = list(set(qa_spw_list) & spws_in_caltable)
+        if len(qa_spw_list_filtered) <= len(qa_spw_list):
+            LOG.info(f"{inputsin.ms.basename}: updated SpW candidates to reject SpWs that are not present in the"
+                     f" bandpass phase-up caltable.")
+
+        return qa_spw_list_filtered
 
     @staticmethod
     def phase_unwrap(phase: np.ndarray) -> np.ndarray:

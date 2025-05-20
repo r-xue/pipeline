@@ -445,6 +445,8 @@ class Editimlist(basetask.StandardTaskTemplate):
         # We set the imlist_entry spw before the heuristics object because the heursitics class
         # uses it in initialization.
         if img_mode in ('VLASS-QL', 'VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
+                        'VLASS-SE-CONT-AWP2', 'VLASS-SE-CONT-AWP2-P001', 'VLASS-SE-CONT-AWP2-P032',
+                        'VLASS-SE-CONT-HPG', 'VLASS-SE-CONT-HPG-P001', 'VLASS-SE-CONT-HPG-P032',
                         'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE', 'VLASS-SE-TAPER'):
             if not inpdict['spw']:
                 imlist_entry['spw'] = ','.join([str(x) for x in range(2, 18)])

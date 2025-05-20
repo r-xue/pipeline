@@ -25,21 +25,36 @@ import abc
 import collections
 import enum
 import operator
-from typing import Optional, Set, List
+import traceback
+from typing import List, NamedTuple, Optional, Set
 
-from . import eventbus
 from . import logging
 
 LOG = logging.get_logger(__name__)
 
 
-# QAOrigin holds information to help understand how and from where the QA scores are derived
-QAOrigin = collections.namedtuple('QAOrigin', 'metric_name metric_score metric_units')
+class QAOrigin(NamedTuple):
+    """Information about the origin of a QA score measurement.
+    
+    This class stores metadata about quality assurance metrics to provide traceability
+    for QA scores.
+    
+    Attributes:
+        metric_name: Name of the quality assessment metric (default: "Unknown metric").
+        metric_score: Numeric value or string representation of the quality score 
+            (default: 'N/A').
+        metric_units: Units of measurement for the metric_score, if applicable 
+            (default: '').
+    
+    """
+
+    metric_name: str = "Unknown metric"
+    metric_score: float | str = 'N/A'
+    metric_units: str = ''
+
 
 # Default origin for QAScores that do not define their own origin
-NULL_ORIGIN = QAOrigin(metric_name='Unknown metric',
-                       metric_score='N/A',
-                       metric_units='')
+NULL_ORIGIN = QAOrigin()
 
 
 class WebLogLocation(enum.Enum):
@@ -296,12 +311,12 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
         pass
 
     def handle_with_exception_catch(self, context, result):
-        """
-        Handle QA scoring with an exception catch.
+        """Handle QA scoring with an exception catch.
 
         Args:
             context: Pipeline context
             result: A Pipeline task result instance
+        
         """
         try:
             self.handle(context, result)
@@ -310,6 +325,9 @@ class QAPlugin(object, metaclass=abc.ABCMeta):
             # present the exception error message in warning.
             result.qa.pool.append(QAScore(-0.1, 'Unable to calculate QA scores.', 'Unable to calculate QA scores'))
             LOG.warning('QA execution failed with an exception: %s', ex)
+            traceback_msg = traceback.format_exc()
+            LOG.info(traceback_msg)
+
 
 class QARegistry(object):
     """

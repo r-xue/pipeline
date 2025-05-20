@@ -201,6 +201,10 @@
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">recal</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 

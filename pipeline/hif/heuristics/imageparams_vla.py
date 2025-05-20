@@ -374,6 +374,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             return niter
 
+    def nmajor(self, iteration: int) -> Union[None, int]:
+        """Tclean nmajor parameter heuristics."""
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-2495: default value of nmajor=300 for all imaging stages of the VLA workflow
+            return 300
+
     def specmode(self) -> str:
         """Tclean specmode parameter heuristics.
         See PIPE-683 and CASR-543"""

@@ -17,21 +17,18 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import FluxMeasurement
-from pipeline.domain import MeasurementSet
+from pipeline.domain import FluxMeasurement, MeasurementSet
 from pipeline.h.tasks.common import commonfluxresults, mstools
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
-from pipeline.hif.tasks import applycal
-from pipeline.hif.tasks import gaincal
+from pipeline.hif.tasks import applycal, gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
 from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hif.tasks.setmodel import setjy
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
-from . import fluxes
+from pipeline.infrastructure import (casa_tasks, casa_tools, exceptions,
+                                     task_registry)
+
 from ... import heuristics
+from . import fluxes
 
 __all__ = [
     'GcorFluxscale',
@@ -532,7 +529,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         # Use only valid science spws
         fieldlist = inputs.ms.get_fields(task_arg=field)
-        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True))
+        sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True, intent=intent))
         spw_ids = {spw.id for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)}
         spw_ids = ','.join(map(str, spw_ids))
 
@@ -817,8 +814,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                 gaintype = 'T'
                 interp = 'linearPD,linear'
 
-                # Compute optimal solint.
-                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
+                # Compute optimal solint for science SpWs for current intent.
+                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True, intent=intent)]
                 exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
                 solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:

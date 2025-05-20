@@ -13,9 +13,9 @@ bandsort = {'4':0, 'P':1, 'L':2, 'S':3, 'C':4, 'X':5, 'U':6, 'K':7, 'A':8, 'Q':9
 
 <br>
 
-% for ms in testdelay_subpages.keys():
+% for ms in delay_subpages.keys():
     <h4>Plots:  <a class="replace"
-           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, testdelay_subpages[ms])}">Test delay plots </a>|
+           href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, delay_subpages[ms])}">Test delay plots </a>|
         <a class="replace"
            href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, ampgain_subpages[ms])}">Gain Amplitude </a>|
         <a class="replace"

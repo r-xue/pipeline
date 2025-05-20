@@ -200,8 +200,10 @@ class VersionCommand(distutils.cmd.Command):
 
 def _get_git_version() -> str:
     try:
+        # PIPE-2600: run version.py in isolation to avoid interference between standard
+        # Python logging module and pipeline.infrastructure.logging.
         return subprocess.check_output(
-            [sys.executable, 'pipeline/infrastructure/version.py'],
+            [sys.executable, '-I', 'pipeline/infrastructure/version.py'],
             stderr=subprocess.DEVNULL
         ).decode().rstrip()
     except (FileNotFoundError, subprocess.CalledProcessError):

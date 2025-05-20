@@ -131,7 +131,7 @@ def score_kspw(context, result):
 
     # Create QA scores for each field with flux measurements.
     all_scores = []
-    for field_id, measurements in result.measurements.items():
+    for field_id, measurements in sorted(result.measurements.items()):
         # get domain object for the field.
         fields = ms.get_fields(task_arg=field_id)
         assert len(fields) == 1

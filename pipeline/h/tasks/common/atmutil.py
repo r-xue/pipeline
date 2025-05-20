@@ -180,7 +180,7 @@ def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
     return wet_opacity
 
 
-def test(pwv: float = 1.0, elevation: float = 45.0) -> np.ndarray:
+def _test(pwv: float = 1.0, elevation: float = 45.0) -> np.ndarray:
     """
     Calculate atmospheric transmission and generate a plot.
 

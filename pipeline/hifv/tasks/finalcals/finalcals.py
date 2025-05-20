@@ -111,10 +111,13 @@ class FinalcalsResults(basetask.Results):
         self.flaggedSolnApplycaldelay = flaggedSolnApplycaldelay
 
     def merge_with_context(self, context):
+
         if not self.final:
             LOG.error('No results to merge')
             return
-
+        m = context.observing_run.get_ms(self.vis)
+        context.evla['msinfo'][m.name].phaseshortgaincaltable = self.phaseshortgaincaltable
+        context.evla['msinfo'][m.name].finalampgaincaltable = self.finalampgaincaltable
         for calapp in self.final:
             LOG.debug('Adding calibration to callibrary:\n'
                       '%s\n%s' % (calapp.calto, calapp.calfrom))
@@ -186,10 +189,9 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
 
         self.parang = True
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -203,8 +205,6 @@ class Finalcals(basetask.StandardTaskTemplate):
         bpcaltable = tableprefix + str(stage_number) + '_4.' + 'finalBPcal.tbl'
         tablebase = tableprefix + str(stage_number) + '_3.' + 'finalBPinitialgain'
         table_suffix = ['.tbl', '3.tbl', '10.tbl']
-
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
 
