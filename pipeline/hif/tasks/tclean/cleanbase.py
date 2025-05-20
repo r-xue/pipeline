@@ -295,7 +295,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 else:
                     rename_image(old_name=old_model_name, new_name=model_name)
 
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             image_name = ''
         else:
             image_name = '%s.%s.iter%s.image' % (
@@ -500,7 +500,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['nterms'] = result.multiterm
 
         # Select whether to restore image
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             tclean_job_parameters['restoration'] = False
             tclean_job_parameters['pbcor'] = False
         else:
@@ -706,7 +706,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Using virtual spw setups for all interferometry pipelines
         virtspw = True
 
-        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             im_names['model'] = model_name
             im_names['image'] = image_name
             im_names['pbcorimage'] = pbcor_image_name

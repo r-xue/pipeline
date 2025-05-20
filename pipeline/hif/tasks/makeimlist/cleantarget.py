@@ -44,6 +44,7 @@ class CleanTarget(dict):
         self['nmajor'] = None               # int
         self['sensitivity'] = None          # string
         self['threshold'] = None            # string
+        self['mask'] = None                 # string
         self['reffreq'] = None              # string
         self['restfreq'] = None             # string
         self['heuristics'] = None           # object

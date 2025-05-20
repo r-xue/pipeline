@@ -639,10 +639,8 @@ class CleanTaskFactory(object):
             if 'TARGET' in task_args['intent']:
                 if task_args['stokes'] == 'IQUV':
                     # TODO: Preliminary setting until re-use of auto-mask from
-                    # previous I imaging is implemented. Final setup for PIPE-2464
-                    # is supposed to omit masking completely, so 'centralregion'
-                    # must also be replaced by anohter (new?) option.
-                    task_args['hm_masking'] = 'centralregion'
+                    # previous I imaging is implemented.
+                    task_args['hm_masking'] = 'none'
                 else:
                     task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':

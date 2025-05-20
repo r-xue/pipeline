@@ -1163,8 +1163,12 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('    Residual min: %s', residual_min)
         LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
 
-        # All continuum
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Determine if we keep iterating past the dirty image. This is currently the case for
+        # 1) All continuum case
+        # 2) TARGET IQUV imaging without previous auto-mask from a stokes I imaging stage
+        if (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or \
+           (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
+
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
             ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
                          +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
@@ -1194,7 +1198,10 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
-            result.cube_all_cont = True
+
+            if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+                result.cube_all_cont = True
+
             keep_iterating = False
         else:
             keep_iterating = True
@@ -1213,9 +1220,8 @@ class Tclean(cleanbase.CleanBase):
                                                            residual_max, new_threshold, residual_robust_rms, intent=inputs.intent)
         sequence_manager.niter = new_niter
 
-        # Save corrected sensitivity in iter0 result object for 'cube' and
-        # 'all continuum' since there is no further iteration.
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Save corrected sensitivity in iter0 result object if there is no further iteration.
+        if not keep_iterating:
             result.set_dirty_dynamic_range(dirty_dynamic_range)
             result.set_DR_correction_factor(DR_correction_factor)
             result.set_maxEDR_used(maxEDR_used)
