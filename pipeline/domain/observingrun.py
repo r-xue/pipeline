@@ -15,7 +15,7 @@ from .datatype import TYPE_PRIORITY_ORDER, DataType
 if TYPE_CHECKING:
     from datetime import datetime
     from . import MeasurementSet
-    
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -43,8 +43,7 @@ def sort_measurement_set(ms: MeasurementSet) -> tuple[int, datetime]:
 
 
 class ObservingRun(object):
-    """
-    ObservingRun is a logical representation of an observing run.
+    """Logical representation of an observing run.
 
     Attributes:
         measurement_sets: List of measurementSet objects associated with run.
@@ -55,82 +54,106 @@ class ObservingRun(object):
             (Single-Dish only).
         virtual_science_spw_ids: Dictionary mapping each virtual science
             spectral window ID (key) to corresponding science spectral window
-            name (value) presented in the reference (first) measurement sets in the
-            observing run.
+            name (value) that first appears in the imported measurement sets.
         virtual_science_spw_names: Dictionary mapping each science spectral
             window name (key) to corresponding virtual spectral window ID (value).
-        virtual_science_spw_shortnames: Dictionary mapping each science spectral
-            window name (key) to a shortened version of the name (value).
+            Multiple SPW names may map to the same virtual spw ID.
+        virtual_science_spw_shortnames: Property returning a dictionary mapping
+            each science spectral window name to its shortened version.
     """
+
     def __init__(self) -> None:
-        """
-        Initialize an ObservingRun object.
-        """
+        """Initialize an ObservingRun object."""
         self.measurement_sets: list[MeasurementSet] = []
         self.ms_datatable_name = ''
         self.ms_reduction_group = {}
         self.org_directions = {}
-        self.virtual_science_spw_ids: dict[int, str] = {}  # PIPE-123
-        self.virtual_science_spw_names: dict[str, int] = {}  # PIPE-123
-        self.virtual_science_spw_shortnames: dict[str, str] = {}  # PIPE-123
+        self.virtual_science_spw_ids: dict[int, str] = {}  # PIPE-59/PIPE-123
+        self.virtual_science_spw_names: dict[str, int] = {}  # PIPE-59/PIPE-123
+
+    @property
+    def virtual_science_spw_shortnames(self) -> dict[str, str]:
+        """Generate SPW shortnames derived from full SPW names.
+
+        If the name contains 'ALMA', it attempts to remove any suffix starting
+        from the last '#' character. Otherwise, the name is returned unchanged.
+        This was originally implemented from PIPE-59/PIPE-123.
+
+        Returns:
+            Dictionary mapping full SPW names to their shortened versions.
+        """
+        result = {}
+        for full_name in self.virtual_science_spw_names:
+            if 'ALMA' in full_name:
+                result[full_name] = full_name.rpartition('#')[0]
+            else:
+                result[full_name] = full_name
+        return result
 
     def add_measurement_set(self, ms: MeasurementSet) -> None:
         """Add a MeasurementSet to the ObservingRun."""
         if ms.basename in [m.basename for m in self.measurement_sets]:
-            msg = '{0} is already in the pipeline context'.format(ms.name)
+            msg = f'{ms.name} is already in the pipeline context.'
             LOG.error(msg)
             raise Exception(msg)
 
-        # Initialise virtual science spw IDs from first MS
-        if not self.measurement_sets:
-            self.virtual_science_spw_ids = dict(
-                (int(s.id), s.name) for s in ms.get_spectral_windows(science_windows_only=True)
-            )
-            self.virtual_science_spw_names = dict(
-                (s.name, int(s.id)) for s in ms.get_spectral_windows(science_windows_only=True)
-            )
-            self.virtual_science_spw_shortnames = {}
-            for name in self.virtual_science_spw_names:
-                if 'ALMA' in name:
-                    i = name.rfind('#')
-                    if i != -1:
-                        self.virtual_science_spw_shortnames[name] = name[:i]
-                    else:
-                        self.virtual_science_spw_shortnames[name] = name
-                else:
-                    self.virtual_science_spw_shortnames[name] = name
-        else:
-            for s in ms.get_spectral_windows(science_windows_only=True):
-                find_match = 0
-                for name in self.virtual_science_spw_ids.values():
-                    # PIPE-2616: match shared ending substrings to accommodate SPW naming convention
-                    # changes introduced in ALMA Cycle-12 with additional group ID tags.
-                    if _spw_name_match(s.name, name):
-                        find_match += 1
-                        if s.name != name:
-                            self.virtual_science_spw_names[s.name] = self.virtual_science_spw_names[name]
-                            self.virtual_science_spw_shortnames[s.name] = self.virtual_science_spw_shortnames[name]
+        eb_name = os.path.basename(ms.name).replace('.ms', '')
 
-                eb_name = os.path.basename(ms.name).replace('.ms', '')
-                if not find_match:
+        for s in ms.get_spectral_windows(science_windows_only=True):
+            # Find all close-matching SPW names from the virtual-id->spw-name mapping table
+            # PIPE-2616: match shared ending substrings to accommodate SPW naming convention
+            # changes introduced in ALMA Cycle-12 with additional group ID tags.
+            matches = [name for name in self.virtual_science_spw_ids.values() if has_shared_spw_basename(s.name, name)]
+
+            match_count = len(matches)
+
+            if match_count == 1:
+                # Exactly one close match found
+                matched_name = matches[0]
+                if s.name != matched_name:
+                    # conditionally Link another new spw name to a pre-existing virtual spw ID, in cases SPW name
+                    # slightly changed, e.g. cycle2->3 or cycle11->13 naming convention changes.
+                    self.virtual_science_spw_names[s.name] = self.virtual_science_spw_names[matched_name]
                     msg = (
-                        f'Science spw name {s.name} (ID {s.id}) of EB {eb_name} does not match any spw name of first EB. '
-                        'Virtual spw ID mapping will not work.'
+                        f'Virtual SPW mapping: Linked the science SPW name {s.name} (ID {s.id}) from EB {eb_name} to '
+                        f'an existing virtual-ID-to-name mapping: {self.virtual_science_spw_names[matched_name]} - {matched_name}.'
                     )
-                    LOG.error(msg)
-                if find_match > 1:
+                    LOG.info(msg)
+            elif match_count > 1:
+                # Multiple matches found - unlikely situation - log error
+                msg = (
+                    f'Virtual SPW mapping: Found multiple matches ({match_count}) for science SPW {s.name} (ID {s.id}) from EB {eb_name} '
+                    'in the virtual-ID-to-name mapping. Virtual SPW ID mapping will not work.'
+                )
+                LOG.error(msg)
+            else:
+                # No match found
+                if s.id not in self.virtual_science_spw_ids:
+                    # No ID conflict - safe to add the virtual spw entry using real ID / spw name
+                    new_virtual_spw_id = s.id
                     msg = (
-                        f'Found multiple matches of the science spw name {s.name} (ID {s.id}) of EB {eb_name} in the spw '
-                        'names of first EB. Virtual spw ID mapping will not work.'
+                        f'Virtual SPW Mapping: Created new mapping for science SPW {s.name} (ID {s.id}) from EB {eb_name}. '
+                        f'Assigned new virtual-ID-to-name mapping: {new_virtual_spw_id} - {s.name}'
                     )
-                    LOG.error(msg)
+                    LOG.info(msg)
+                else:
+                    # ID conflict - log warning / apply spw id offset - proceed with cautions
+                    new_virtual_spw_id = max(self.virtual_science_spw_ids) + 1
+                    msg = (
+                        f'Virtual SPW ID conflict: Created new mapping for science SPW {s.name} (ID {s.id}) from EB {eb_name}. '
+                        f"Original virtual ID {s.id} already mapped to '{self.virtual_science_spw_ids[s.id]}'. "
+                        f'Assigned new virtual-ID-to-name mapping: {new_virtual_spw_id} - {s.name}'
+                    )
+                    LOG.warning(msg)
+                # Create new virtual SPW entry
+                self.virtual_science_spw_ids[new_virtual_spw_id] = s.name
+                self.virtual_science_spw_names[s.name] = new_virtual_spw_id
 
         self.measurement_sets.append(ms)
         self.measurement_sets.sort(key=sort_measurement_set)
 
     def get_ms(self, name: str = None, intent: str = None) -> MeasurementSet:
-        """
-        Returns the first measurement set matching the given identifier.
+        """Returns the first measurement set matching the given identifier.
 
         Identifier precedence is name then intent.
 
@@ -169,8 +192,7 @@ class ObservingRun(object):
 
     def get_measurement_sets(self, names: str | None = None, intents: Iterable | str | None = None,
                              fields: Iterable | str | None = None) -> list[MeasurementSet]:
-        """
-        Returns measurement sets matching the given arguments.
+        """Returns measurement sets matching the given arguments.
 
         Args:
             names: Name(s) to find matching measurement set(s) for.
@@ -211,8 +233,7 @@ class ObservingRun(object):
     def get_measurement_sets_of_type(self, dtypes: list[DataType], msonly: bool = True, source: str | None = None,
                                      spw: str | None = None, vis: list[str] | None = None) \
             -> list[MeasurementSet] | tuple[collections.OrderedDict, DataType | None]:
-        """
-        Return a list of MeasurementSet domain object with matching DataType.
+        """Return a list of MeasurementSet domain object with matching DataType.
 
         The method returns a list of MSes of the first matching DataType in the
         list of dtypes.
@@ -287,7 +308,7 @@ class ObservingRun(object):
         """
         spw_id = None
         for spw in target_ms.get_spectral_windows(science_windows_only=True):
-            if _spw_name_match(spw.name, spw_name):
+            if has_shared_spw_basename(spw.name, spw_name):
                 if spw_id is not None:
                     eb_name = os.path.basename(target_ms.name).replace('.ms', '')
                     msg = (
@@ -299,8 +320,7 @@ class ObservingRun(object):
         return spw_id
 
     def get_virtual_spw_id_by_name(self, spw_name: str) -> int | None:
-        """
-        Translate a (science) spw name to the virtual spw ID for this pipeline run.
+        """Translate a (science) spw name to the virtual spw ID for this pipeline run.
 
         Args:
             spw_name: The spectral window name to convert.
@@ -312,8 +332,7 @@ class ObservingRun(object):
         return self.virtual_science_spw_names.get(spw_name, None)
 
     def virtual2real_spw_id(self, spw_id: int | str, target_ms: MeasurementSet) -> int | None:
-        """
-        Translate a virtual (science) spw ID to the real one for a given MS.
+        """Translate a virtual (science) spw ID to the real one for a given MS.
 
         Args:
             spw_id: The virtual spectral window ID (as integer or string) to convert.
@@ -327,8 +346,7 @@ class ObservingRun(object):
         return self.get_real_spw_id_by_name(self.virtual_science_spw_ids.get(int(spw_id), None), target_ms)
 
     def real2virtual_spw_id(self, spw_id: int | str, target_ms: MeasurementSet) -> int | None:
-        """
-        Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
+        """Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
 
         Args:
             spw_id: The real spectral window ID (as integer or string) to convert.
@@ -372,8 +390,7 @@ class ObservingRun(object):
             return None
 
     def get_real_spwsel(self, spwsel: list[str], vis: list[str]) -> list[str]:
-        """
-        Translate a virtual (science) spw selection to the real one for a given MS.
+        """Translate a virtual (science) spw selection to the real one for a given MS.
 
         Args:
             spwsel: The list of spw selections to convert.
@@ -400,8 +417,7 @@ class ObservingRun(object):
 
     @property
     def start_time(self) -> dict | None:
-        """
-        Return start time of earliest measurement set in this observing run.
+        """Return start time of earliest measurement set in this observing run.
 
         Returns earliest MS start time as a CASA 'epoch' measure dictionary, or
         None if there are no measurement sets registered in this observing run.
@@ -414,8 +430,7 @@ class ObservingRun(object):
 
     @property
     def start_datetime(self) -> datetime | None:
-        """
-        Return start date and time of earliest measurement set in this observing run.
+        """Return start date and time of earliest measurement set in this observing run.
 
         Returns earliest MS start time as a datetime object, or None if there
         are no measurement sets registered in this observing run.
@@ -426,8 +441,7 @@ class ObservingRun(object):
 
     @property
     def end_time(self) -> dict | None:
-        """
-        Return end time of latest measurement set in this observing run.
+        """Return end time of latest measurement set in this observing run.
 
         Returns latest MS end time as a CASA 'epoch' measure dictionary, or
         None if there are no measurement sets registered in this observing run.
@@ -440,8 +454,7 @@ class ObservingRun(object):
 
     @property
     def end_datetime(self) -> datetime | None:
-        """
-        Return end date and time of latest measurement set in this observing run.
+        """Return end date and time of latest measurement set in this observing run.
 
         Returns latest MS end time as a datetime object, or None if there
         are no measurement sets registered in this observing run.
@@ -471,26 +484,43 @@ class ObservingRun(object):
         return {ms.observer for ms in self.measurement_sets}
 
 
-def _spw_name_match(name1: str, name2: str) -> bool:
+def has_shared_spw_basename(name1: str, name2: str) -> bool:
     """Checks if one spectral window (SPW) name is an ending substring of the other.
 
     This function determines if `name1` ends with `name2` or vice versa. It also
     performs a length check to ensure names are of a reasonable length before matching.
 
+    This function is primarily used to identify spectral window settings that are
+    effectively the same across different observation cycles, despite varying
+    naming conventions. Examples of such naming conventions include:
+
+    * From Cycle 1-2 to Cycle 3-11 (additional part ID for ALMA):
+        * before: `ALMA_RB_03#BB_1#SW-01#FULL_RES`
+        * after:  `X425992413#ALMA_RB_03#BB_2#SW-01#FULL_RES`
+    * From Cycle 3-11 to Cycle 12 (additional group ID):
+        * before: `X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
+        * after:  `X127/X45069401/X3370#X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
+
+    Note that cycle0 data doe not have spw name.
+
     Args:
-        name1: The first spectral window name to compare.
-        name2: The second spectral window name to compare.
+        name1: The first spectral window name string to compare.
+        name2: The second spectral window name string to compare.
 
     Returns:
-        True if one name ends with the other; False otherwise.
+        True if one name ends with the other (i.e., one is a basename of the other);
+        False otherwise.
 
     Raises:
-        Exception: If either `name1` or `name2` is too short (less than 10 characters).
+        ValueError: If either `name1` or `name2` is too short (less than 10 characters).
     """
-    # Validate minimum length for spectral window names.
+    # Ensure spectral window names meet the minimum length requirement.
     if len(name1) < 10 or len(name2) < 10:
-        msg = f'One or both the spectral SPW names to match seem to be too short: name1={name1}, name2={name2}.'
+        msg = (
+            f'One or both spectral window names are too short for comparison: '
+            f'name1="{name1}", name2="{name2}". Minimum length is 10 characters.'
+        )
         LOG.error(msg)
-        raise Exception(msg)
+        raise ValueError(msg)
 
     return name1.endswith(name2) or name2.endswith(name1)
