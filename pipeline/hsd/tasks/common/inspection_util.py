@@ -6,6 +6,7 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.tablereader as tablereader
 from pipeline.domain import MeasurementSet, ObservingRun
+from pipeline.domain.observingrun import _spw_name_match
 from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import relative_path
@@ -216,7 +217,7 @@ def __find_match_by_name(spw_name: str, field_name: str,
         group_field_name = names[1]
         if group_spw_name == '':
             raise RuntimeError("Got empty group spectral window name")
-        elif spw_name == group_spw_name and field_name == group_field_name:
+        elif _spw_name_match(spw_name, group_spw_name) and field_name == group_field_name:
             match = group_key
             break
     return match

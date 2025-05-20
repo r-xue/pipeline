@@ -20,6 +20,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.observingrun import _spw_name_match
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path, relative_path, list_to_str
@@ -1099,7 +1100,7 @@ def make_spwid_map(srcvis: str, dstvis: str) -> dict:
     map_byname = collections.defaultdict(list)
     for src_spw in src_spws:
         for dst_spw in dst_spws:
-            if src_spw.name == dst_spw.name:
+            if _spw_name_match(src_spw.name, dst_spw.name):
                 map_byname[src_spw].append(dst_spw)
 
     spwid_map = {}
