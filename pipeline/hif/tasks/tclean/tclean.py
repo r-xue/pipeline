@@ -718,7 +718,7 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
-        if self.image_heuristics.imaging_mode.startswith('VLASS-SE'):
+        if self.image_heuristics.imaging_mode.startswith('VLASS-SE-'):
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         elif '-SCAL' in self.image_heuristics.imaging_mode:
             result = self._do_scal_imaging(sequence_manager=sequence_manager)
