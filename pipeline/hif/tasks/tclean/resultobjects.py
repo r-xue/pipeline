@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.hif.tasks.makeimlist.cleantarget import CleanTargetInfo
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -117,6 +118,12 @@ class TcleanResult(basetask.Results):
                 del context.per_spw_cont_sensitivities_all_chan['recalc']
             else:
                 utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, self.per_spw_cont_sensitivities_all_chan)
+
+        # Clean masks and thresholds for later stages
+        if self.stokes == 'I' and (self.cleanmask not in (None, '')):
+            cleanTargetKey = CleanTargetInfo(datatype=self.datatype, field=self.sourcename, intent=self.intent, virtspw=self.spw, stokes=self.stokes, specmode=self.specmode)
+            context.clean_masks[cleanTargetKey] = self.cleanmask
+            context.clean_thresholds[cleanTargetKey] = self.threshold
 
         # Remove heuristics objects to avoid accumulating large amounts of unnecessary memory
         try:
