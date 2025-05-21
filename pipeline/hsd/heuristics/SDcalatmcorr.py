@@ -11,7 +11,7 @@
 #                The code is based on the commit mentioned above, but will be updated by SDPL team
 #                for bug fix/refactoring/enhancement.
 # 19/mar/2025: - SDPL team took over maintenance responsibility of this code from original author.
-# 13/mar/2025: - (v2.7) Update to optimize, simplify and reduce this code in order ot pass resposability to PLWG
+# 13/mar/2025: - (v2.7) Update to optimize, simplify and reduce this code in order to pass resposability to PLWG
 #              - Removed 'maxabs' and 'intabs' metrics, and the associated baseline fitting routines, and science line
 #                channels detection functions, which never worked very well.
 # 08/apr/2022: - (v2.6) Change logic of best model evaluation to be done inside the atmcor() method.
@@ -337,7 +337,7 @@ def getskylines(tauspec, spw, spwsetup, fraclevel = 0.5, minpeaklevel = 0.0, spw
 
 def gradeskylines(skylines: dict, cntrweight: float = 1.0):
     '''Function to calculate a "grade" for each skyline detected by the getskylines() function.
-    These "grades" are based ona  normalized value of the opacity at the skyline peak and the position of
+    These "grades" are based on a normalized value of the opacity at the skyline peak and the position of
     the line in the SPW, and is aimed at providing a decision on which skyline to used for model evaluation.
     param:
         skylines: (dict) Dictionary of detected skylines indexed by SPW, where each sub-dictionary is as obtained
@@ -348,7 +348,7 @@ def gradeskylines(skylines: dict, cntrweight: float = 1.0):
     returns:
         A tuple of (spw, peak) that identifies the SPW and id number of the skyline in that SPW that has the best grade.
         The skyline id number is the same as in the dictionary output from getskylines().
-        Additionally, the grades calculated are saved in the input skylines dictionary, modifiying the original variable.
+        Additionally, the grades calculated are saved in the input skylines dictionary, modifying the original variable.
     '''
 
     spwlist = np.sort(list(skylines.keys()))
