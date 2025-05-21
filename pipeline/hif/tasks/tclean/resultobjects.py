@@ -144,7 +144,7 @@ class TcleanResult(basetask.Results):
         self._flux = image
 
     @property
-    def cleanmask(self, iter, image):
+    def cleanmask(self):
         iters = sorted(self.iterations.keys())
         if len(iters) > 0:
             return self.iterations[iters[-1]].get('cleanmask', None)
@@ -155,8 +155,12 @@ class TcleanResult(basetask.Results):
         self.iterations[iter]['cleanmask'] = image
 
     @property
-    def imaging_params(self, iteration):
-        return self.iterations[iteration].get('imaging_params', None)
+    def imaging_params(self):
+        iters = sorted(self.iterations.keys())
+        if len(iters) > 0:
+            return self.iterations[iters[-1]].get('imaging_params', None)
+        else:
+            return None
 
     def set_imaging_params(self, iteration, imaging_parameters):
         self.iterations[iteration]['imaging_params'] = imaging_parameters
@@ -607,6 +611,7 @@ class TcleanResult(basetask.Results):
     def set_image_robust_rms_and_spectra(self, image_robust_rms_and_spectra):
         self._image_robust_rms_and_spectra = image_robust_rms_and_spectra
 
+    # TODO: Store command per iteration like for many other properties?
     @property
     def tclean_command(self):
         return self._tclean_command

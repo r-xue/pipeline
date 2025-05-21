@@ -491,6 +491,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 # to heuristic class method (see PIPE-977)
                 tclean_job_parameters['usemask'] = 'pb'
                 tclean_job_parameters['pbmask'] = inputs.pbmask if inputs.pbmask else inputs.heuristics.pbmask()
+            # TODO: The next block should be hm_masking == 'manual'. Check and change "if" statement if it is so.
             elif (inputs.hm_masking != 'none') and (inputs.mask != ''):
                 tclean_job_parameters['usemask'] = 'user'
                 tclean_job_parameters['mask'] = inputs.mask
