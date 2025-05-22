@@ -249,7 +249,7 @@ def qascorefunc(nsigma: float, score_top: float = 0.67, score_bottom: float = 0.
     return max(score_top - (score_top - score_bottom)*(nsigma - nsigma_threshold)/(nsigma_bottom - nsigma_threshold), score_bottom)
 
 def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_thresholds, plot_output_path: str = '.',
-                    plot_sciline: str = 'on-detection') -> Tuple[mswrapper_sd.MSWrapperSD, pqa.QAScore, list, list]:
+                    plot_sciline: str = 'on-detection', weblog_output_path: str = '.') -> Tuple[mswrapper_sd.MSWrapperSD, pqa.QAScore, list, list]:
     '''Function that calculates the applycal QA score for a given dataset msw.
     param:
         msw: MSWrapper_SD object containing the data statistics used for the QA scores calculation. This method will use the
@@ -260,6 +260,8 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         plot_output_path: (str) Path to save output plots.
         plot_sciline: (str) String stating whether a diagnostic plot about science line detection should be done. options:
                       "always"/"on-detection"/"never"
+        weblog_output_path: (str) Path to save output plots that are intended to be
+                            a part of the pipeline weblog.
     returns:
         Tuple of MSWrapperSD object with added analysis attribute, worst QA score, list of all per-scan QA scores, list of summary plot made
     '''
@@ -517,9 +519,9 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         sciplotfname = sd_qa_reports.plot_science_det(msw = msw, thresholds = thresholds, plot_output_path = plot_output_path)
 
     #Plot heatmap if QA score < plot_threshold
+    colorlist = sd_qa_utils.genColorList(len(extscanlist))
     if (idx_lowest >= 0) and (qascore.score <= thresholds['plot_threshold']):
         print('Creating plot outputs in '+str(plot_output_path))
-        colorlist = sd_qa_utils.genColorList(len(extscanlist))
         #Make heat map
         if msw.data is None:
             if msw.tsysdata is not None:
@@ -533,9 +535,9 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         _ = sd_qa_reports.show_heat_XYdiff(msw=msw, plot_output_path=plot_output_path, colorlist=colorlist)
         #Make diagnostic plots
         _ = sd_qa_reports.plot_data_trec(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=plot_output_path, detmsg = detmsg)
-        plotfname = sd_qa_reports.plot_data(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=plot_output_path, detmsg = detmsg)
-    else:
-        plotfname = 'N/A'
+
+    plotfname = sd_qa_reports.plot_data(msw=msw, thresholds = thresholds, colorlist=colorlist, plot_output_path=weblog_output_path, detmsg = detmsg)
+
 
     return (msw, qascore, qascores_scans, plotfname)
 
@@ -592,7 +594,7 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: 
 
 def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thresholds, plot_output_path: str = '.',
                             use_tsys_data: bool = True, sciline_det: bool = True,
-                            plot_sciline: str = 'on-detection') -> Tuple[list, list, list]:
+                            plot_sciline: str = 'on-detection', weblog_output_path: str = '.') -> Tuple[list, list, list]:
     '''Function used to obtain applycal X-Y QA score on a list of calibrated MSs, at the
     applycal stage of SD pipeline.
     param:
@@ -605,6 +607,8 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
                      to exclude them for triggering a false XX-YY deviation.
         plot_sciline: (str) String stating whether a diagnostic plot about science line detection should be done. options:
                       "always"/"on-detection"/"never"
+        weblog_output_path: (str) Path to save output plots if the plots are intended to
+                            be a part of the pipeline weblog.
 
     '''
 
@@ -628,7 +632,7 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
     for key, msw in mswCollection.items():
         (ms, spw, ant, fieldid) = key
         #Calculate QAscores
-        (msw_on, qascore, qascores_scans, plotfname) = outlier_detection(msw = msw, thresholds = thresholds, plot_output_path = plot_output_path, plot_sciline = plot_sciline)
+        (msw_on, qascore, qascores_scans, plotfname) = outlier_detection(msw = msw, thresholds = thresholds, plot_output_path = plot_output_path, plot_sciline = plot_sciline, weblog_output_path = weblog_output_path)
         #Collect QA scores
         qascore_list.append(qascore)
         plots_fnames.append(plotfname)
