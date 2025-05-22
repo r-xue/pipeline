@@ -330,10 +330,9 @@ class testBPdcals(basetask.StandardTaskTemplate):
 
         LOG.info("Executing for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
         self.parang = True
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -348,7 +347,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         tablebase = tableprefix + str(stage_number) + '_3.' + 'testBPdinitialgain'
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band), '10_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         integration_time = m.get_integration_time_stats(stat_type="max")
         soltimes = [integration_time * x for x in soltimes]
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']

@@ -19,31 +19,26 @@ import traceback
 from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
-from scipy import interpolate
-from scipy.special import erf
+from scipy import interpolate, special
 
-import pipeline.domain as domain
-import pipeline.domain.measures as measures
-import pipeline.infrastructure.basetask
-import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.renderer.rendererutils as rutils
-import pipeline.infrastructure.utils as utils
-import pipeline.qa.checksource as checksource
-from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
-from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
-from pipeline.infrastructure import casa_tools
+from pipeline import infrastructure
+from pipeline.domain import datatable, measures
+from pipeline.infrastructure import basetask, casa_tools, utils
+from pipeline.infrastructure.renderer import rendererutils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
+    from pipeline.domain.measurementset import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
+    from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
     from pipeline.hsd.tasks.flagging.flagdeteralmasd import PointingOutlierStats
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+    from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
     from pipeline.infrastructure.launcher import Context
 
 __all__ = ['score_polintents',                                # ALMA specific
@@ -102,7 +97,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_tsysflagcontamination_contamination_flagged',
            'score_tsysflagcontamination_external_heuristic']
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -116,12 +111,12 @@ def log_qa(method):
     def f(self, *args, **kw):
         # get the size of the CASA log before task execution
         qascore = method(self, *args, **kw)
-        if pipeline.infrastructure.basetask.DISABLE_WEBLOG:
+        if basetask.DISABLE_WEBLOG:
             if isinstance(qascore, tuple):
                 _qascore = qascore[0]
             else:
                 _qascore = qascore
-            if _qascore.score >= rutils.SCORE_THRESHOLD_SUBOPTIMAL:
+            if _qascore.score >= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
                 LOG.info(_qascore.longmsg)
             else:
                 LOG.warning(_qascore.longmsg)
@@ -528,7 +523,7 @@ def score_bands(mses):
                           metric_units='MS score based on presence of high-frequency data')
 
     # Make score linear
-    return pqa.QAScore(max(rutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(max(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -595,7 +590,7 @@ def score_parallactic_range(
 
 
 @log_qa
-def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
@@ -701,7 +696,7 @@ def score_polintents(recipe_name: str, mses: List[domain.MeasurementSet]) -> Lis
 
 
 @log_qa
-def score_samecalobjects(recipe_name: str, mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
         Check if BP/Phcal/Ampcal are all the same object and score appropriately
     """
@@ -905,11 +900,11 @@ def score_lowtrans_flagcmds(ms, result):
         # Get representative SpW for MS.
         _, rspw = ms.get_representative_source_spw()
         if rspw in spws:
-            score = rutils.SCORE_THRESHOLD_ERROR
+            score = rendererutils.SCORE_THRESHOLD_ERROR
             longmsg = f"Representative SpW {rspw} flagged for low transmission"
             shortmsg = f"Representative SpW flagged for low transmission"
         else:
-            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
             longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
             shortmsg = f"Non-representative SpW(s) flagged for low transmission"
     else:
@@ -1320,7 +1315,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
                               metric_units='Presence of unflagged data.')
 
     # Append extra warning to QA message if score falls at-or-below the "warning" threshold.
-    if score <= rutils.SCORE_THRESHOLD_WARNING:
+    if score <= rendererutils.SCORE_THRESHOLD_WARNING:
         longmsg += ' Please investigate!'
         shortmsg += ' Please investigate!'
 
@@ -1675,7 +1670,7 @@ def score_number_antenna_offsets(ms, offsets):
     else:
         # CAS-8877: if at least 1 antenna needed correction, then set the score
         # to the "suboptimal" threshold.
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = '%d nonzero antenna position offsets for %s ' % (nant_with_offsets, ms.basename)
         shortmsg = 'Nonzero antenna position offsets'
 
@@ -1783,7 +1778,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
             shortmsg = 'No mapped science spws'
         else:
             # Replace the previous score with a warning
-            score = rutils.SCORE_THRESHOLD_WARNING
+            score = rendererutils.SCORE_THRESHOLD_WARNING
             longmsg = 'There are %d mapped science spws for %s ' % (nexpected - nunmapped, ms.basename)
             shortmsg = 'There are mapped science spws'
 
@@ -1802,7 +1797,7 @@ def score_combine_spwmapping(ms, intent, field, spwmapping):
     threshold (for blue info message).
     """
     if spwmapping.combine:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Using combined spw mapping'
     else:
@@ -1832,7 +1827,7 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         shortmsg = 'No spw mapping'
     elif spwmapping.combine:
         nunmapped = 0
-        score = rutils.SCORE_THRESHOLD_WARNING
+        score = rendererutils.SCORE_THRESHOLD_WARNING
         longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Combined spw mapping'
     else:
@@ -1857,11 +1852,11 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         else:
             # Replace the previous score with a warning
             if samesideband is True:
-                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+                score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
                 longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping within sidebands'
             else:
-                score = rutils.SCORE_THRESHOLD_WARNING
+                score = rendererutils.SCORE_THRESHOLD_WARNING
                 longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
@@ -1881,17 +1876,17 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     Introduced for hifa_spwphaseup (PIPE-665).
     """
     if median_snr <= 0.3 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_ERROR
+        score = rendererutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_WARNING
+        score = rendererutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
@@ -3388,7 +3383,7 @@ def generate_metric_mask(context, result, cs, mask):
 
         with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag.extend(permanent_flag[0, OnlineFlagIndex])
+            online_flag.extend(permanent_flag[0, datatable.OnlineFlagIndex])
 
     if org_direction is None:
         ra = np.asarray(ofs_ra)
@@ -3609,7 +3604,7 @@ def score_sdimage_masked_pixels(context, result):
 
 
 @log_qa
-def score_sdimage_contamination(context: 'Context', result: 'SDImagingResultItem') -> pqa.QAScore:
+def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """Evaluate QA score based on the absorption feature in the image.
 
     If there is an emission at OFF_SOURCE position (contamination),
@@ -3703,7 +3698,7 @@ def score_gfluxscale_k_spw(vis, field, spw_id, k_spw, ref_spw):
                           metric_units='Number of spws with missing SNR measurements')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=origin,
-                       applies_to=pqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
+                              applies_to=pqa.TargetDataSelection(vis={vis}, field={field.id}, spw={spw_id}))
 
 
 @log_qa
@@ -3742,7 +3737,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Restore successful with renormalization applied'
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
         msg = 'Restore successful'
         score = 1.0
@@ -4022,74 +4017,76 @@ def score_polcal_results(session_name: str, caltables: list) -> pqa.QAScore:
 
 
 @log_qa
-def score_fluxservice(result):
+def score_fluxservice(result: ALMAImportDataResults) -> list[pqa.QAScore]:
     """
-    If the primary FS query fails and the backup is invoked,
-    the severity level should be BLUE (below standard; numerically, on its own, 0.9).
-    If the backup FS query also fails, the warning should be YELLOW (WARNING; numerically, on its own, 0.6).
-    But it should keep running as it currently does.
+    Returns QA scores based on:
+      1. Flux catalog service usage and flux origin
+      2. Age of the nearest monitoring point (if applicable)
     """
+    flux_qa_dict = {
+        'FIRSTURL': (1.0, "Flux catalog service used."),
+        'BACKUPURL': (0.9, "Backup flux catalog service used."),
+        'FAIL': (0.3, "Neither primary nor backup flux service could be queried. ASDM values used."),
+        None: (1.0, "Flux catalog service not used.")
+    }
 
-    if result.inputs['dbservice'] is False:
-        score = 1.0
-        msg = "Flux catalog service not used."
+    if result.fluxservice not in flux_qa_dict:
+        LOG.warning(f"Unrecognized flux catalog service result: {result.fluxservice}. Falling back to default suboptimal qa score of 0.9.")
+
+    flux_score, flux_msg = flux_qa_dict.get(result.fluxservice, (0.9, "Unknown result from flux catalogue service."))
+
+    ampcal = None
+    ampcal_spws = []
+    agecounter = 0
+    scores = []
+
+    if result.fluxservice in ('FIRSTURL', 'BACKUPURL'):
         for setjy_result in result.setjy_results:
-            measurements = setjy_result.measurements
-            for measurement in measurements.items():
-                try:
-                    fluxorigin = measurement[1][0].origin
-                    if fluxorigin == 'Source.xml':
-                        score = 0.3
-                        msg = "Flux catalog service not used.  Source.xml is the origin."
-                except Exception as e:
-                    LOG.debug("Skip since there is not a flux measurement")
+            for fieldid, measurements in setjy_result.measurements.items():
+                fieldobjs = result.mses[0].get_fields(field_id=fieldid)
+                ampcals = [f for f in fieldobjs if 'AMPLITUDE' in f.intents]
+                if not ampcals:
+                    continue
 
-        origin = pqa.QAOrigin(metric_name='score_fluxservice',
-                              metric_score=score,
-                              metric_units='flux service')
-        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
-    elif result.inputs['dbservice'] is True:
-        msg = ""
-        if result.fluxservice == 'FIRSTURL':
-            msg += "Flux catalog service used.  "
-            score = 1.0
-        elif result.fluxservice == 'BACKUPURL':
-            msg += "Backup flux catalog service used.  "
-            score = 0.9
-        elif result.fluxservice == 'FAIL':
-            msg += "Neither primary or backup flux service could be queried.  ASDM values used."
-            score = 0.3
+                ampcal = ampcals[0]
 
-        agecounter = 0
-        if result.fluxservice in ['FIRSTURL', 'BACKUPURL']:
-            for setjy_result in result.setjy_results:
-                measurements = setjy_result.measurements
-                for measurement in measurements.items():
-                    try:
-                        fieldid = measurement[0]
-                        mm = result.mses[0]
-                        fieldobjs = mm.get_fields(field_id=fieldid)
-                        intentlist = []
-                        for fieldobj in fieldobjs:
-                            intentlist.append(fieldobj.intents)
+                for m in measurements:
+                    if getattr(m, 'origin', None) == 'Source.xml':
+                        flux_score = min(flux_score, 0.3)
+                        ampcal_spws.append(str(m.spw_id))
 
-                        # PIPE-1124.  Only determine QA age scoring if 'AMPLITUDE' intent is present for a source.
-                        if 'AMPLTIUDE' in intentlist:
-                            age = measurement[1][0].age  # second element of a tuple, first element of list of flux objects
-                            if int(abs(age)) > 14:
-                                agecounter = agecounter + 1
-                    except IndexError:
-                        LOG.debug("Skip since there is no age present")
+                    age = getattr(m, 'age', None)
+                    if age is None:
+                        LOG.debug("Skipping measurement due to missing age data.")
+                    elif abs(int(age)) > 14:
+                        agecounter += 1
 
-            # Any sources with age of nearest monitoring point greater than 14 days?
-            if agecounter > 0:
-                score = 0.5
-                msg += "Age of nearest monitor point is greater than 14 days."
+        if ampcal_spws and ampcal:
+            flux_msg = (
+                f"For {result.mses[0].basename}, the origin of the adopted flux for the flux "
+                f"calibrator {ampcal.name} is the ASDM for the following spws: {', '.join(ampcal_spws)}."
+            )
 
-        origin = pqa.QAOrigin(metric_name='score_fluxservice',
-                              metric_score=score,
-                              metric_units='flux service')
-        return pqa.QAScore(score, longmsg=msg, shortmsg=msg, origin=origin)
+        # Score based on monitor point age
+        age_score = 0.5 if agecounter > 0 else 1.0
+        age_msg = (
+            f"Age of nearest monitoring point exceeds 14 days for {agecounter} measurement(s)."
+            if agecounter > 0 else
+            "All monitoring points are within acceptable age range."
+        )
+
+        scores.append(pqa.QAScore(
+            age_score, longmsg=age_msg, shortmsg=age_msg,
+            origin=pqa.QAOrigin('flux_monitor_age', age_score, 'days')
+        ))
+
+    # Score for flux catalog usage
+    scores.append(pqa.QAScore(
+        flux_score, longmsg=flux_msg, shortmsg=flux_msg,
+        origin=pqa.QAOrigin('flux_catalog_service', flux_score, 'flux service')
+    ))
+
+    return scores
 
 
 @log_qa
@@ -4182,7 +4179,7 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
     mom8_fc_score_max = 1.00
     mom8_fc_metric_scale = 100.0
     if mom8_fc_frac_max_segment != 0.0:
-        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
+        mom8_fc_score = mom8_fc_score_min + 0.5 * (mom8_fc_score_max - mom8_fc_score_min) * (1.0 + special.erf(-np.log10(mom8_fc_metric_scale * mom8_fc_frac_max_segment)))
     else:
         mom8_fc_score = mom8_fc_score_max
 
@@ -4374,7 +4371,7 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QA
 
 
 @log_qa
-def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
+def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
