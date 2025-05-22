@@ -27,7 +27,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_cleaning = vdp.VisDependentProperty(default='rms')
+    hm_cleaning = vdp.VisDependentProperty(default='')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
     hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
@@ -637,9 +637,9 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                if task_args['stokes'] == 'IQUV':
-                    # TODO: Preliminary setting until re-use of auto-mask from
-                    # previous I imaging is implemented.
+                if task_args['mask'] not in (None, ''):
+                    task_args['hm_masking'] = 'manual'
+                elif task_args['stokes'] == 'IQUV':
                     task_args['hm_masking'] = 'none'
                 else:
                     task_args['hm_masking'] = 'auto'
@@ -662,7 +662,10 @@ class CleanTaskFactory(object):
             task_args['hm_fastnoise'] = inputs.hm_fastnoise
 
         if inputs.hm_cleaning == '':
-            task_args['hm_cleaning'] = 'rms'
+            if task_args['threshold'] not in (None, ''):
+                task_args['hm_cleaning'] = 'manual'
+            else:
+                task_args['hm_cleaning'] = 'rms'
         else:
             task_args['hm_cleaning'] = inputs.hm_cleaning
 

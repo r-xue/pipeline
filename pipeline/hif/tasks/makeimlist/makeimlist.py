@@ -13,7 +13,7 @@ from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools, task_registry
 
-from .cleantarget import CleanTarget
+from .cleantarget import CleanTarget, CleanTargetInfo
 from .resultobjects import MakeImListResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -1493,6 +1493,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
                                                     field_intent[0], actual_spwspec, ex)
 
+                                # Check for pre-existing Stokes I masks to be re-used for TARGET IQUV imaging
+                                if field_intent[1] == 'TARGET' and stokes == 'IQUV':
+                                    cleanTargetKey = CleanTargetInfo(datatype=local_selected_datatype_str, field=field_intent[0], intent=field_intent[1], virtspw=actual_spwspec, stokes='I', specmode=inputs.specmode)
+                                    mask = inputs.context.clean_masks.get(cleanTargetKey, None)
+                                    threshold = inputs.context.clean_thresholds.get(cleanTargetKey, None)
+                                else:
+                                    mask = None
+                                    threshold = None
+
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1532,7 +1541,9 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     drcorrect=drcorrect,
                                     deconvolver=deconvolver,
                                     nterms=nterms,
-                                    reffreq=reffreq)
+                                    reffreq=reffreq,
+                                    mask=mask,
+                                    threshold=threshold)
 
                                 result.add_target(target)
 

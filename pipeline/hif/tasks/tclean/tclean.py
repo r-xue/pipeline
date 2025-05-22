@@ -1206,14 +1206,21 @@ class Tclean(cleanbase.CleanBase):
         else:
             keep_iterating = True
 
-        # Adjust threshold based on the dirty image statistics
-        dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
-        tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
-        new_threshold, DR_correction_factor, maxEDR_used = \
-            self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
+        if inputs.hm_cleaning == 'rms':
+            # Adjust threshold based on the dirty image statistics
+            dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
+            tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+            new_threshold, DR_correction_factor, maxEDR_used = \
+                self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, tlimit, inputs.drcorrect)
-        sequence_manager.threshold = new_threshold
-        sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
+            sequence_manager.threshold = new_threshold
+            sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
+        elif inputs.hm_cleaning == 'manual':
+            dirty_dynamic_range = None
+            new_threshold = sequence_manager.threshold
+            DR_correction_factor = None
+            maxEDR_used = None
+            sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
@@ -1240,8 +1247,11 @@ class Tclean(cleanbase.CleanBase):
 
             if inputs.hm_masking == 'auto':
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
-            elif inputs.hm_masking == 'manual':
-                new_cleanmask = inputs.mask
+            elif inputs.hm_masking == 'auto':
+                # Note the same issue reported in the VLA image iteration above about
+                # tclean not accepting a user mask of the same name as it would create
+                # itself. Hence ".cleanmask" instead of ".mask".
+                new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
             elif inputs.hm_masking == 'none':
                 new_cleanmask = ''
             else:
