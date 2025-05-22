@@ -221,7 +221,7 @@ class MakeImListInputs(vdp.StandardInputs):
 
             spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
 
-            stokes: Select the Stokes parameters to image. "": Stokes I will computed except for polarization calibrators, where the
+            stokes: Select the Stokes parameters to image. "": Stokes I will be computed except for polarization calibrators, where the
                 automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are 'I' and 'IQUV'.
 
             contfile: Name of file with frequency ranges to use for continuum images.
