@@ -10,6 +10,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -144,8 +145,34 @@ class SyspowerInputs(vdp.StandardInputs):
         return [0.7, 1.2]
 
 
+    # docstring and type hints: supplements hifv_syspower
     def __init__(self, context, vis=None, clip_sp_template=None, antexclude=None,
                  apply=None, do_not_apply=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            clip_sp_template: Acceptable range for Pdiff data; data are clipped outside this range and flagged.
+
+            antexclude: dictionary in the format of:
+
+                {'L': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'X': {'ea02': {'usemedian': True}, 'ea03': {'usemedian': False}},
+                'S': {'ea12': {'usemedian': False}, 'ea22': {'usemedian': False}}}
+
+                If antexclude is specified with 'usemedian': False, the template values are replaced with 1.0.
+                If 'usemedian': True, the template values are replaced with the median of the good antennas.
+
+            apply: Apply task results to RQ table.
+
+            do_not_apply: csv string of band names to not apply.
+
+                Example: 'L,X,S'
+
+        """
         self.context = context
         self.vis = vis
         self.clip_sp_template = clip_sp_template
@@ -174,12 +201,9 @@ class Syspower(basetask.StandardTaskTemplate):
         elif isinstance(self.inputs.antexclude, dict):
             antexclude_dict = self.inputs.antexclude
 
+        # PIPE-2164: getting rq table from context
         # Assumes hifv_priorcals was executed as the previous stage
-        try:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result[0].final[0].gaintable
-        except Exception as ex:
-            rq_table = self.inputs.context.results[-1].read()[0].rq_result.final[0].gaintable
-            LOG.debug(ex)
+        rq_table = next(iter(self.inputs.context.callibrary.active.get_caltable('rq')))
 
         band_baseband_spw = collections.defaultdict(dict)
 
@@ -432,13 +456,12 @@ class Syspower(basetask.StandardTaskTemplate):
                         sp_template.mask = sp_median_mask
                         LOG.info('    restored {0:.2f}% template flags after interpolation'.format(
                                  100.0 * np.sum(sp_median_mask) / sp_median_mask.size))
-
                         # repeat after square root
                         if isinstance(sp_data.mask, bool):
                             sp_data.mask = np.ma.getmaskarray(sp_data)
                         sp_data.mask[sp_data < 0] = True
-                        sp_data = sp_data ** .5
-                        sp_template = sp_template ** .5
+                        sp_data = np.ma.masked_array(sp_data ** 0.5, mask=sp_data.mask)
+                        sp_template = np.ma.masked_array(sp_template ** 0.5, mask=sp_template.mask)
                         sp_data.mask[sp_data != sp_data] = True
                         sp_data, flag_percent = self.flag_with_medfilt(sp_data, sp_template, flag_rms=True,
                                                                        flag_median=True,

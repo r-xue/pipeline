@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.flagging.flagtargetsalma.FlagTargetsALMAInputs.__init__
 @utils.cli_wrapper
 def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None):
     """Do science target flagging
@@ -11,19 +12,6 @@ def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None
     science target MeasurementSets, including:
 
     - applying a flagging template
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list
-            of MeasurementSets defined in the pipeline context.
-
-        template: Apply flagging templates; defaults to True.
-
-        filetemplate: The name of a text file that contains the flagging
-            template for issues with the science target data etc.
-            If the template flags files is undefined a name of the
-            form 'msname_flagtargetstemplate.txt' is assumed.
-
-        flagbackup: Back up any pre-existing flags; defaults to False.
 
     Returns:
         The results object for the pipeline task is returned.

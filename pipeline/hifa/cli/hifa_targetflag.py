@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.targetflag.targetflag.TargetflagInputs.__init__
 @utils.cli_wrapper
 def hifa_targetflag(vis=None):
     """Flag target source outliers
@@ -24,12 +25,6 @@ def hifa_targetflag(vis=None):
     the amp vs. uv distance plots are made for only those spws that generated flags.
     Also, to avoid confusion in mosaics and single field surveys, the amp vs. uv distance
     plots only show field IDs with new flags.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of
-            MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
     Returns:
         The results object for the pipeline task is returned.

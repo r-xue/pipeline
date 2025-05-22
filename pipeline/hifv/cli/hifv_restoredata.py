@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifv.tasks.restoredata.vlarestoredata.VLARestoreDataInputs.__init__
 @utils.cli_wrapper
 def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, rawdata_dir=None, lazy=None,
                      bdfflags=None, ocorr_mode=None, gainmap=None, asis=None):
@@ -46,38 +47,6 @@ def hifv_restoredata(vis=None, session=None, products_dir=None, copytoraw=None, 
     - restores the final calibration state of the MS
     - restores the final calibration tables for each MS
     - applies the calibration tables to each MS
-
-    Args:
-        vis: List of visibility data files. These may be ASDMs, tar files of ASDMs, MSes, or tar files of MSes, If ASDM files are specified, they will be
-            converted  to MS format.
-            example: vis=['X227.ms', 'asdms.tar.gz']
-
-        session: List of sessions one per visibility file. Example: session=['session_3']
-
-        products_dir: Name of the data products directory to copy calibration products from.
-            Default: '../products'
-            The parameter is effective only when ``copytoraw`` = True.
-            When ``copytoraw`` = False, calibration products in
-            ``rawdata_dir`` will be used.
-            example: products_dir='myproductspath'
-
-        copytoraw: Copy calibration and flagging tables from ``products_dir`` to ``rawdata_dir`` directory.
-            Default: True
-            Example: copytoraw=False.
-
-        rawdata_dir: Name of the raw data directory. Default: '../rawdata'
-            Example: rawdata_dir='myrawdatapath'
-
-        lazy: Use the lazy filler option. Default: False
-
-        bdfflags: Set the BDF flags. Default: False
-
-        ocorr_mode: Correlation import mode. Default: 'co'
-
-        gainmap: If True, map gainfields to a particular list of scans when applying calibration tables.
-            Default: False
-
-        asis: List of tables to import asis. Default: 'Receiver CalAtmosphere'
 
     Returns:
         The results object for the pipeline task is returned.

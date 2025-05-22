@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hif.tasks.mstransform.mstransform.MstransformInputs.__init__
 @utils.cli_wrapper
 def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None, chanbin=None, timebin=None):
 
@@ -13,31 +14,6 @@ def hif_mstransform(vis=None, outputvis=None, field=None, intent=None, spw=None,
     By default, all science target data is copied to the new MS. The
     new MeasurementSet is not re-indexed to the selected data and the new MS will
     have the same source, field, and spw names and ids as it does in the parent MS.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
-            '': use all MeasurementSets in the context
-            Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-        outputvis: The list of output transformed MeasurementSets to be used for imaging. The output list must be the same length as the input
-            list. The default output name defaults to
-            <msrootname>_targets.ms
-            Examples: 'ngc5921.ms',
-            ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
-
-        field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
-            Examples: '3C279', 'Centaurus*', '3C279,J1427-421'
-
-        intent: Select intents for which associated fields will be imaged. By default only TARGET data is selected.
-            Examples: 'PHASE,BANDPASS'
-
-        spw: Select spectral window/channels to image. By default all science spws for which the specified intent is valid are
-            selected.
-
-        chanbin: Width (bin) of input channels to average to form an output channel. If chanbin > 1 then chanaverage is automatically
-            switched to True.
-
-        timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
     Returns:
         The results object for the pipeline task is returned.

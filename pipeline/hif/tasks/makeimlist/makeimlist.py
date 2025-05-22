@@ -44,6 +44,7 @@ class MakeImListInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
+    allow_wproject = vdp.VisDependentProperty(default=False)
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -70,8 +71,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_cell(self):
-        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_cell']
         return []
 
     @hm_cell.convert
@@ -91,8 +90,6 @@ class MakeImListInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def hm_imsize(self):
-        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
-            return self.context.size_mitigation_parameters['hm_imsize']
         return []
 
     @hm_imsize.convert
@@ -154,37 +151,182 @@ class MakeImListInputs(vdp.StandardInputs):
         returned.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
+
         mitigated_hm_cell = None
+        if 'TARGET' in self.intent and 'hm_cell' in self.context.size_mitigation_parameters:
+            mitigated_hm_cell = self.context.size_mitigation_parameters['hm_cell']
+
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_cell = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_cell')
-        if mitigated_hm_cell not in [None, {}]:
-            return mitigated_hm_cell
-        else:
+
+        if mitigated_hm_cell in [None, {}] or self.hm_cell:
             return self.hm_cell
+        else:
+            return mitigated_hm_cell
 
     def get_spw_hm_imsize(self, spwlist):
         """If possible obtain spwlist specific hm_imsize, otherwise return generic value.
 
         TODO: refactor and make hif_checkproductsize() (or a new task) spwlist aware."""
         mitigated_hm_imsize = None
+        if 'TARGET' in self.intent and 'hm_imsize' in self.context.size_mitigation_parameters:
+            mitigated_hm_imsize = self.context.size_mitigation_parameters['hm_imsize']
         multi_target_size_mitigation = self.context.size_mitigation_parameters.get('multi_target_size_mitigation', {})
         if multi_target_size_mitigation:
-            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(spwlist.split(',')).issubset(set(spws.split(',')))]
+            multi_target_spwlist = [spws for spws in multi_target_size_mitigation.keys() if set(
+                spwlist.split(',')).issubset(set(spws.split(',')))]
             if len(multi_target_spwlist) == 1:
                 mitigated_hm_imsize = multi_target_size_mitigation.get(multi_target_spwlist[0], {}).get('hm_imsize')
-        if mitigated_hm_imsize not in [None, {}]:
-            return mitigated_hm_imsize
-        else:
+        if mitigated_hm_imsize in [None, {}] or self.hm_imsize:
             return self.hm_imsize
+        else:
+            return mitigated_hm_imsize
 
+    # docstring and type hints: supplements hif_makeimlist
     def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
-                 datacolumn=None, parallel=None, known_synthesized_beams=None, scal=False):
+                 datacolumn=None, parallel=None, known_synthesized_beams=None, allow_wproject=False, scal=False):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+                "": use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            imagename: Prefix for output image names, "" for automatic.
+
+            intent: Select intents for which associated fields will be imaged. Possible choices are PHASE, BANDPASS, AMPLITUDE, CHECK and
+                TARGET or combinations thereof.
+
+                Examples: 'PHASE,BANDPASS', 'TARGET'
+
+            field: Select fields to image. Use field name(s) NOT id(s). Mosaics are assumed to have common source / field names.  If intent is
+                specified only fields with data matching the intent will be
+                selected. The fields will be selected from MeasurementSets in
+                "vis".
+                "" Fields matching intent, one image per target source.
+
+            spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
+
+            contfile: Name of file with frequency ranges to use for continuum images.
+
+            linesfile: Name of file with line frequency ranges to exclude for continuum images.
+
+            uvrange: Select a set of uv ranges to image. "": All uv data is included
+
+                Examples: '0~1000klambda', ['0~100klambda', 100~1000klambda]
+
+            specmode: Frequency imaging mode, 'mfs', 'cont', 'cube', 'repBW'. '' defaults to 'cube' if ``intent`` parameter includes 'TARGET'
+                otherwise 'mfs'.
+                specmode='mfs' produce one image per source and spw
+                specmode='cont' produce one image per source and aggregate
+                over all specified spws
+                specmode='cube' produce an LSRK frequency cube, channels are
+                specified in frequency
+                specmode='repBW' produce an LSRK frequency cube at
+                representative channel width
+
+            outframe: velocity frame of output image (LSRK, '' for automatic) (not implemented)
+
+            hm_imsize: Image X and Y size in pixels or PB level for single fields. The explicit sizes must be even and divisible by 2,3,5,7 only.
+                The default values are derived as follows:
+                1. Determine phase center and spread of field centers
+                around it.
+                2. Set the size of the image to cover the spread of field
+                centers plus a border of width 0.75 * beam radius, to
+                first null.
+                3. Divide X and Y extents by cell size to arrive at the
+                number of pixels required.
+                The PB level setting for single fields leads to an imsize
+                extending to the specified level plus 5% padding in all
+                directions.
+
+                Examples: '0.3pb', [120, 120]
+
+            hm_cell: Image X and Y cell sizes. "" computes the cell size based on the UV coverage of all the fields to be imaged and uses a
+                5 pix per beam sampling.
+                The pix per beam specification ('<number>ppb') uses the above
+                default cell size ('5ppb') and scales it accordingly.
+                The cells can also be specified as explicit measures.
+
+                Examples: '3ppb', ['0.5arcsec', '0.5arcsec']
+
+            calmaxpix: Maximum image X or Y size in pixels if a calibrator is being imaged ('PHASE', 'BANDPASS', 'AMPLITUDE' or 'FLUX' intent).
+
+            phasecenter: Direction measure or field id of the image center. The default phase center is set to the mean of the field
+                directions of all fields that are to be image together.
+
+                Examples: 'J2000 19h30m00 -40d00m00', 0
+
+            psf_phasecenter:
+
+            nchan: Total number of channels in the output image(s) -1 selects enough channels to cover the data selected by
+                spw consistent with start and width.
+
+            start: Start of image frequency axis as frequency or velocity. "" selects start frequency automatically.
+
+            width: Output channel width. Difference in frequency between 2 selected channels for
+                frequency mode images.
+                'pilotimage' for 15 MHz / 8 channel heuristic
+
+            nbins: Channel binning factors for each spw. Format: 'spw1:nb1,spw2:nb2,...' with optional wildcards: '*:nb'
+
+                Examples: '9:2,11:4,13:2,15:8', '*:2'
+
+            robust: Briggs robustness parameter Values range from -2.0 (uniform) to 2.0 (natural)
+
+            uvtaper: uv-taper on outer baselines
+
+            clearlist: Clear any existing target list
+
+            per_eb: Make an image target per EB
+
+            per_session: Make an image target per session
+
+            calcsb: Force (re-)calculation of sensitivities and beams
+
+            datatype: Data type(s) to image. The default '' selects the best available data type (e.g. selfcal over regcal) with
+                an automatic fallback to the next available data type.
+                With the ``datatype`` parameter one can force the use of only
+                given data type(s) without a fallback. The data type(s) are
+                specified as comma separated string of keywords. Accepted
+                values are the standard data types such as
+                'REGCAL_CONTLINE_ALL', 'REGCAL_CONTLINE_SCIENCE',
+                'SELFCAL_CONTLINE_SCIENCE', 'REGCAL_LINE_SCIENCE',
+                'SELFCAL_LINE_SCIENCE'. The shortcuts 'regcal' and 'selfcal'
+                are also accepted. They are expanded into the full data types
+                using the ``specmode`` parameter and the available data types for
+                the given MSes. In addition the strings 'best' and 'all' are
+                accepted, where 'best' means the above mentioned automatic
+                mode and 'all' means all available data types for a given
+                specmode. The data type strings are case insensitive.
+
+                Examples: 'selfcal', 'regcal, 'selfcal,regcal',
+                'REGCAL_LINE_SCIENCE,selfcal_line_science'
+
+            datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
+
+            parallel: Use MPI cluster where possible
+
+            known_synthesized_beams:
+
+            allow_wproject: Allow the wproject heuristics for imaging
+
+            scal:
+
+        """
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -217,6 +359,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.datacolumn = datacolumn
         self.parallel = parallel
         self.known_synthesized_beams = known_synthesized_beams
+        self.allow_wproject = allow_wproject
         self.scal = scal
 
 
@@ -409,10 +552,11 @@ class MakeImList(basetask.StandardTaskTemplate):
             LOG.info(f'Using data type {selected_datatype.name} for imaging.')
 
             if selected_datatype == DataType.RAW:
-                LOG.warn('Falling back to raw data for imaging.')
+                LOG.warning('Falling back to raw data for imaging.')
 
             if not all(global_column == global_columns[0] for global_column in global_columns):
-                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+                details_string = ','.join(f'{k.basename}: {v}' for k, v in ms_objects_and_columns.items())
+                LOG.warning(f'Data type based column selection changes among MSes: {details_string}.')
 
         if inputs.datacolumn not in (None, ''):
             ms_datacolumn = inputs.datacolumn.upper()
@@ -433,14 +577,20 @@ class MakeImList(basetask.StandardTaskTemplate):
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = False
-            LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
+            automatic_datacolumn_guess = 'DATA' if global_columns[0] == 'DATA' else 'CORRECTED'
+            LOG.info(
+                f'Manual override of datacolumn to {global_datacolumn}. '
+                f'Automatic data type ({selected_datatype.name}) based datacolumn '
+                f'would have been "{automatic_datacolumn_guess}". '
+                f'Data type of {global_datacolumn} column is {global_datatype_str}.'
+            )
         else:
             if global_columns[0] == 'DATA':
                 global_datacolumn = 'data'
             elif global_columns[0] == 'CORRECTED_DATA':
                 global_datacolumn = 'corrected'
             else:
-                LOG.warn(f'Unknown column name {global_columns[0]}')
+                LOG.warning(f'Unknown column name {global_columns[0]}')
                 global_datacolumn = ''
 
         datacolumn = global_datacolumn
@@ -861,7 +1011,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 max_freq = spwid_centre_freq
                                 max_freq_spwid = spwid
                         except Exception as e:
-                            LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
@@ -1110,7 +1260,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype is None:
                                     expected_num_targets -= 1
-                                    LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                    LOG.warning(
+                                        f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                     continue
 
                                 local_selected_datatype_str = local_selected_datatype.name
@@ -1119,17 +1270,20 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype_str != selected_datatype_str:
                                     if automatic_datatype_choice:
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
                                         local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str} due to source/spw selection'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
                                         expected_num_targets -= 1
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                         continue
 
                                 if local_columns != []:
                                     if not all(local_column == local_columns[0] for local_column in local_columns):
-                                        LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
+                                        LOG.warning(
+                                            f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in local_ms_objects_and_columns.items())}.')
 
                                 if local_columns != []:
                                     if local_columns[0] == 'DATA':
@@ -1137,10 +1291,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     elif local_columns[0] == 'CORRECTED_DATA':
                                         local_datacolumn = 'corrected'
                                     else:
-                                        LOG.warn(f'Unknown column name {local_columns[0]}')
+                                        LOG.warning(f'Unknown column name {local_columns[0]}')
                                         local_datacolumn = ''
                                 else:
-                                    LOG.warn(f'Empty list of columns')
+                                    LOG.warning(f'Empty list of columns')
                                     local_datacolumn = ''
 
                                 datacolumn = local_datacolumn
@@ -1148,12 +1302,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if not inputs.per_eb and original_vislist_field_intent_spw_combinations[field_intent]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                     vislist_field_intent_spw_combinations[field_intent]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
                                     if automatic_datatype_choice and local_selected_datatype_str != selected_datatype_str:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
                                     else:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
 
                                     if vislist_field_intent_spw_combinations[field_intent]['vislist'] == []:
-                                        LOG.warn(f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
                                         continue
                             else:
                                 datacolumn = global_datacolumn
@@ -1280,7 +1437,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 # Save the filtered vislist
                                 if target_heuristics.vislist != filtered_vislist:
-                                    LOG.warn(f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
+                                    LOG.warning(
+                                        f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
                                     target_heuristics.vislist = filtered_vislist
 
                                 # Get list of antenna IDs
@@ -1295,12 +1453,16 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 drcorrect, maxthreshold = self._get_drcorrect_maxthreshold(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
+                                nfrms_multiplier = self._get_nfrms_multiplier(
+                                    field_intent[0], actual_spwspec, local_selected_datatype_str)
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
                                                                                    local_selected_datatype_str, target_heuristics)
 
                                 reffreq = target_heuristics.reffreq(deconvolver, inputs.specmode, spwsel)
+                                target_heuristics.imaging_params['allow_wproject'] = inputs.allow_wproject
                                 gridder = target_heuristics.gridder(field_intent[1], field_intent[0], spwspec=actual_spwspec)
 
                                 # Get field-specific uvrange value
@@ -1314,7 +1476,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         # Nevertheless, we retain this exception handler as an extra precaution.
                                         LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
                                                     field_intent[0], actual_spwspec, ex)
-                                              
+
                                 target = CleanTarget(
                                     antenna=antenna,
                                     field=field_intent[0],
@@ -1332,6 +1494,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     psf_phasecenter=psf_phasecenters[field_intent[0]],
                                     specmode=inputs.specmode,
                                     gridder=gridder,
+                                    wprojplanes=target_heuristics.wprojplanes(gridder=gridder, spwspec=actual_spwspec),
                                     imagename=imagename,
                                     start=inputs.start,
                                     width=widths[(field_intent[0], spwspec)],
@@ -1388,6 +1551,48 @@ class MakeImList(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _get_nfrms_multiplier(self, field, spw, datatype_str):
+        """Get the nfrms multiplier for the selfcal-succesfull imaging target for VLA."""
+        nfrms_multiplier = None
+        context = self.inputs.context
+
+        if (
+            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
+            and hasattr(context, "selfcal_targets")
+            and datatype_str.startswith("SELFCAL_")
+            and self.inputs.specmode == "cont"
+        ):
+            for sc_target in context.selfcal_targets:
+                sc_spw = set(sc_target["spw"].split(","))
+                im_spw = set(spw.split(","))
+                # PIPE-1878: use previous succesfully selfcal results to derive the optimal nfrms multiplier value
+                if sc_target["field"] == field and im_spw.intersection(sc_spw) and sc_target["sc_success"]:
+                    try:
+                        nfrms = sc_target["sc_lib"]["RMS_NF_final"]
+                        rms = sc_target["sc_lib"]["RMS_final"]
+                        LOG.info(
+                            "The ratio of nf_rms and rms from the selfcal-final imaging for field %s and spw %s: %s",
+                            field,
+                            spw,
+                            nfrms / rms,
+                        )
+                        nfrms_multiplier = max(nfrms / rms, 1.0)
+                        LOG.info(
+                            "Using nfrms_multiplier=%s for field %s and spw %s based "
+                            "on previous selfcal aggregate continuum imaging results.",
+                            nfrms_multiplier,
+                            field,
+                            spw,
+                        )
+                    except Exception as ex:
+                        LOG.warning(
+                            f"Error calculating the nfrms multiplier value for field {field} spw {spw} from previous succesful self-calibration outcome: {ex}"
+                        )
+
+                    break
+
+        return nfrms_multiplier
 
     def _get_deconvolver_nterms(self, field, intent, spw, stokes, specmode, datatype_str, image_heuristics):
         """

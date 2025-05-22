@@ -96,9 +96,111 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     # PIPE-629: parameter to unregister existing phaseup tables before appending to callibrary
     unregister_existing = vdp.VisDependentProperty(default=False)
 
+    # docstring and type hints: supplements hifa_spwphaseup
     def __init__(self, context, vis=None, output_dir=None, caltable=None, intent=None, hm_spwmapmode=None,
                  phasesnr=None, bwedgefrac=None, hm_nantennas=None, maxfracflagged=None,
                  maxnarrowbw=None, minfracmaxbw=None, samebb=None, unregister_existing=None, **parameters):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: vis=['M82A.ms', 'M82B.ms']
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            caltable: The list of output calibration tables. Defaults to the standard
+                pipeline naming convention.
+
+                Example: caltable=['M82.gcal', 'M82B.gcal']
+
+            intent: A string containing a comma delimited list of intents against
+                which the selected fields are matched. Defaults to the BANDPASS
+                observations.
+
+                Example: intent='PHASE'
+
+            hm_spwmapmode: The spectral window mapping mode. The options are: 'auto',
+                'combine', 'simple', and 'default'. In 'auto' mode hifa_spwphaseup
+                estimates the SNR of the phase calibrator observations and uses these
+                estimates to choose between 'combine' mode (low SNR) and 'default' mode
+                (high SNR). In combine mode all spectral windows are combined and mapped to
+                one spectral window. In 'simple' mode narrow spectral windows are mapped to
+                wider ones using an algorithm defined by 'maxnarrowbw', 'minfracmaxbw', and
+                'samebb'. In 'default' mode the spectral window map defaults to the
+                standard one to one mapping.
+
+                Example: hm_spwmapmode='combine'
+
+            phasesnr: The required gaincal solution signal-to-noise.
+
+                Example: phaseupsnr=20.0
+
+            bwedgefrac: The fraction of the bandwidth edges that is flagged.
+
+                Example: bwedgefrac=0.0
+
+            hm_nantennas: The heuristics for determines the number of antennas to use
+                in the signal-to-noise estimate. The options are 'all' and 'unflagged'.
+                The 'unflagged' options is not currently supported.
+
+                Example: hm_nantennas='unflagged'
+
+            maxfracflagged: The maximum fraction of an antenna that can be flagged
+                before it is excluded from the signal-to-noise estimate.
+
+                Example: maxfracflagged=0.80
+
+            maxnarrowbw: The maximum bandwidth defining narrow spectral windows. Values
+                must be in CASA compatible frequency units.
+
+                Example: maxnarrowbw=''
+
+            minfracmaxbw: The minimum fraction of the maximum bandwidth in the set of
+                spws to use for matching.
+
+                Example: minfracmaxbw=0.75
+
+            samebb: Match within the same baseband if possible.
+
+                Example: samebb=False
+
+            unregister_existing: Unregister previous spwphaseup calibrations from the pipeline context
+                before registering the new calibrations from this task.
+
+            field: The list of field names or field ids for which phase offset solutions
+                are to be computed. Defaults to all fields with the default intent.
+
+                Example: field='3C279', field='3C279, M82'
+
+            spw: The list of spectral windows and channels for which gain solutions are
+                computed. Defaults to all the science spectral windows.
+
+                Example: spw='13,15'
+
+            combine: Data axes to combine for solving. Options are '', 'scan', 'spw',
+                'field' or any comma-separated combination.
+
+                Example: combine=''
+
+            refant: Reference antenna name(s) in priority order. Defaults to most recent
+                values set in the pipeline context.  If no reference antenna is defined in
+                the pipeline context the CASA defaults are used.
+
+                Example: refant='DV01', refant='DV05,DV07'
+
+            minblperant: Minimum number of baselines required per antenna for each solve.
+                Antennas with fewer baselines are excluded from solutions.
+
+                Example: minblperant=2
+
+            minsnr: Solutions below this SNR are rejected.
+
+        """
         super().__init__(context, vis=vis, output_dir=output_dir, **parameters)
         self.caltable = caltable
         self.intent = intent
@@ -140,8 +242,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Derive the optimal spectral window maps.
         spwmaps = self._derive_spwmaps(spwmap_intents, exclude_intents)
 
-        # Compute the spw-to-spw phase offsets ("phaseup") cal table and accept
-        # into local context.
+        # Compute the spw-to-spw phase offsets caltable and accept into local
+        # context.
         phaseupresult = self._do_phaseup()
 
         # Compute diagnostic phase caltables for both phase calibrator fields
@@ -785,7 +887,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             LOG.error(traceback.format_exc())
 
         return phaserms_results, phaserms_cycletime, phaserms_totaltime, phaserms_antout
-    
+
     @staticmethod
     def _get_intent_field(ms: MeasurementSet, intents: str, exclude_intents: str = None) -> List[Tuple[str, str]]:
         # If provided, convert "intents to exclude" into set of strings.

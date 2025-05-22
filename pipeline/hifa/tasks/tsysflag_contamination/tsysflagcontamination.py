@@ -83,6 +83,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     diagnostic_plots = vdp.VisDependentProperty(default=True)
     continue_on_failure = vdp.VisDependentProperty(default=True)
 
+    # docstring and type hints: supplements hifa_tsysflagcontamination
     def __init__(
         self,
         context,
@@ -96,6 +97,44 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         diagnostic_plots=None,
         continue_on_failure=None,
     ):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input MeasurementSets (Not used).
+
+            caltable: List of input Tsys calibration tables.
+                Default: [] - Use the table currently stored in the pipeline context.
+
+                Example: caltable=['X132.ms.tsys.s2.tbl']
+
+            filetemplate: output file to which regions to flag will be written
+
+            logpath: output file to which heuristic log statements will be
+                written
+
+            remove_n_extreme: expert parameter for contamination heuristic
+
+                Default: 2
+
+            relative_detection_factor: expert parameter for contamination detection heuristic
+
+                Default: 0.005
+
+            diagnostic_plots: create diagnostic plots for the line contamination heuristic
+
+                Default: True
+
+            continue_on_failure: controls whether pipeline execution continues if a failure
+                occurs in the underlying contamination detection heuristic.
+
+                Default: True
+
+        """
         super(TsysFlagContaminationInputs, self).__init__()
 
         # pipeline inputs

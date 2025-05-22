@@ -3,6 +3,7 @@ import sys
 import pipeline.h.cli.utils as utils
 
 
+# docstring and type hints: inherits from hifa.tasks.diffgaincal.diffgaincal.DiffGaincalInputs.__init__
 @utils.cli_wrapper
 def hifa_diffgaincal(vis=None):
     """Derive SpW phase offsets from differential gain calibrator.
@@ -16,11 +17,6 @@ def hifa_diffgaincal(vis=None):
     observations. In very long observations, there may be a group of scans
     occurring during the middle. Scan groups are combined while solving for SpW
     offsets between "reference" and "on-source" spectral setups.
-
-    Args:
-        vis: The list of input MeasurementSets. Defaults to the list of
-            MeasurementSets specified in the pipeline context.
-            Example: ['M32A.ms', 'M32B.ms']
 
     Returns:
         The results object for the pipeline task is returned.

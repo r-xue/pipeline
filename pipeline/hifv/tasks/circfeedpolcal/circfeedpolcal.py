@@ -11,8 +11,13 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
+from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -74,8 +79,33 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     def clipminmax(self):
         return [0.0, 0.25]
 
+    # docstring and type hints: supplements hifv_circfeedpolcal
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
                  mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            Dterm_solint: D-terms spectral averaging.
+
+                Example: refantignore='ea02,ea03'.
+
+            refantignore: String list of antennas to ignore.
+
+            leakage_poltype: poltype to use in first polcal execution - blank string means use default heuristics.
+
+            mbdkcross: Run gaincal KCROSS grouped by baseband.
+
+            clipminmax: Acceptable range for leakage amplitudes, values outside will be flagged.
+
+            refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
+
+            run_setjy: Run setjy for amplitude/flux calibrator, default set to True.
+
+        """
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -94,12 +124,10 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
-
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
+
         intents = list(m.intents)
 
         self.RefAntOutput = ['']
@@ -273,17 +301,16 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: replaces the finalphasegaincal name with the phaseshortgaincal table from hifv_finalcals
 
         '''
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         idx = -1  # Should be last element
         newtable = ''
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
                 try:
-                    finalcals_result = self.inputs.context.results[-1].read()[0]
-                except Exception as e:
-                    finalcals_result = self.inputs.context.results[-1].read()
-                newtable = finalcals_result.phaseshortgaincaltable
+                    newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
+                except AttributeError:
+                    LOG.warning("Exception: 'phaseshortgaincaltable' is not present.")
         GainTables[idx] = newtable
 
         return GainTables
@@ -291,7 +318,7 @@ class Circfeedpolcal(polarization.Polarization):
     def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         append = False
         if os.path.exists(caltable):
@@ -376,7 +403,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         GainTables = GainTables[0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         spwmap = []
         for gaintable in GainTables:

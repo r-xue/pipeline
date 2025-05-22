@@ -11,6 +11,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure.tablereader import find_EVLA_band
 from pipeline.hifv.heuristics import standard as standard
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
@@ -18,6 +19,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.measures import FrequencyUnits
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -35,17 +37,35 @@ class FluxbootInputs(vdp.StandardInputs):
     fitorder = vdp.VisDependentProperty(default=-1)
     refant = vdp.VisDependentProperty(default='')
 
+    # docstring and type hints: supplements hifv_fluxboot
     def __init__(self, context, vis=None, caltable=None, refantignore=None, fitorder=None, refant=None):
-        """
+        """Initialize Inputs.
+
         Args:
-            vis(str or list):  measurement set
-            caltable(str):  fluxgaincal table from user input.  If None, task uses default name.
+            context: Pipeline context.
+
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+
+            caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
                 and we proceed directly to the flux density bootstrapping.
-            refantignore(str):  csv string of referance antennas to ignore   'ea24, ea18, ea12'
-            fitorder(int):  User input value of the fit order.  Default is -1 (heuristics will determine)
-            refant(str): A csv string of reference antenna(s). When used, disables refantignore.
-        """
+
+            refantignore(str): String list of antennas to ignore
+
+                Example:  refantignore='ea02, ea03'
+
+            fitorder(int): Polynomial order of the spectral fitting for valid flux densities with multiple spws.  The default value of -1 means that the heuristics determine the fit order based on
+                fractional bandwidth and receiver bands present in the observation.
+                An override value of 1,2,3 or 4 may be specified by the user.
+                Spectral index (1) and, if applicable, curvature (2) are reported in the weblog.
+                If no determination can be made by the heuristics, a fitorder of 1 will be used.
+                Default is -1 (heuristics will determine).
+
+            refant(str): A csv string of reference antenna(s). When used, disables ``refantignore``.
+
+                Example: refant = 'ea01, ea02'
+
+       """
 
         if fitorder is None:
             fitorder = -1
@@ -175,10 +195,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
@@ -189,7 +208,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
             spw2band = m.get_vla_spw2band()
 
@@ -414,6 +432,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
+
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
             nfldobj = len(fieldobj[0].intents)
@@ -424,7 +443,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents and
+                    not any(intent in ['PHASE', 'BANDPASS'] for intent in fieldobj[0].intents)):
 
                 LOG.warning("Field {!s}: {!s}, "
                             "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
@@ -524,7 +544,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         elif len(unique_bands) == 2 and 'A' in unique_bands and 'Q' in unique_bands:
             fitorder = 1
         elif ((len(unique_bands) > 2) or
-              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
+              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands or unique_bands[0] in 'KAQ' or unique_bands[1] in 'KAQ'))):
             # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
             if fractional_bandwidth >= 1.5:
                 fitorder = 4
@@ -1017,7 +1037,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     fluxflag: bool = False, vlassmode: bool = False, spw: str = ''):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 

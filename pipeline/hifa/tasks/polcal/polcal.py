@@ -112,7 +112,48 @@ class PolcalInputs(vdp.StandardInputs):
     vs_stats = vdp.VisDependentProperty(default='min,max,mean')
     vs_thresh = vdp.VisDependentProperty(default=1e-3)
 
+    # docstring and type hints: supplements hifa_polcal
     def __init__(self, context, vis=None, intent=None, minpacov=None, solint_chavg=None, vs_stats=None, vs_thresh=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: ['M32A.ms', 'M32B.ms']
+
+            intent:
+
+            minpacov: Minimum Parallactic Angle Coverage (degrees) required for
+                Q, U estimation in task polfromgain. This enables avoiding
+                pathological cases of antennas with insufficient parallactic
+                angle coverage which can yield spurious source polarization
+                solutions or cause polfromgain to fail to find any
+                solutions.
+
+                Default: 30.0
+
+            solint_chavg: Channel averaging to include in solint for gaincal steps
+                producing cross-hand delay, cross-hand phase, and leakage
+                (D-terms) solutions.
+
+                Default: '5MHz'
+
+            vs_stats: List of visstat statistics to use for diagnostic comparison
+                between the concatenated session MS and individual MSes in
+                that session after applying polarization calibration tables.
+
+                Default: ['min','max','mean']
+
+            vs_thresh: Threshold to use in diagnostic comparison of visstat
+                statistics; relative differences larger than this threshold
+                are reported in the CASA log.
+
+                Default: 1e-3
+
+        """
         self.context = context
         self.vis = vis
         self.intent = intent
