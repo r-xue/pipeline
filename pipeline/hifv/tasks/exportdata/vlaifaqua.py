@@ -168,7 +168,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     ChannelWidth = chan_diff[0]
                 else:
                     LOG.warning("Channels are not equally spaced. Setting channel width to median of channel differences.")
-                    ChannelWidth = numpy.median(chan_diff)
+                    ChannelWidth = numpy.median(numpy.abs(chan_diff))
                 nx = ElementTree.Element("SPW")
                 ElementTree.SubElement(nx, 'Channel0', Units="Hz").text = str(channel0)
                 ElementTree.SubElement(nx, 'ChannelWidth', Units="Hz").text = str(ChannelWidth)
