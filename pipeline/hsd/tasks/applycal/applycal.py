@@ -135,6 +135,7 @@ class SDApplycalResults(ApplycalResults):
         """
         super().__init__(applied, data_type=data_type)
         self.xy_deviation_score = []
+        self.xy_deviation_plots = []
 
 
 class SerialSDApplycal(SerialApplycal):
@@ -256,13 +257,14 @@ class SerialSDApplycal(SerialApplycal):
         if self.inputs.ms.antenna_array.name == 'ALMA':
             qa_result = sd_applycal_qa.get_ms_applycal_qascores(
                 msNames=[ms_name],
-                plot_output_path=stage_dir,
+                weblog_output_path=stage_dir,
             )
             qascore_list, plots_fnames, qascore_per_scan_list = qa_result
             qascore_list_all_scans = [
                 x for x in qascore_list if "all" in x.applies_to.scan
             ]
             results.xy_deviation_score.extend(qascore_list_all_scans)
+            results.xy_deviation_plots.extend(plots_fnames)
 
         return results
 

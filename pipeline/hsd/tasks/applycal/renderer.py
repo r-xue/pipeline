@@ -5,26 +5,31 @@ Created on 24 Oct 2014
 
 @author: sjw
 """
+from __future__ import annotations
+
 import collections
 import os
+import re
 from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as super_renderer
 import pipeline.infrastructure
 import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.filenamer as filenamer
+import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
+from pipeline.infrastructure.renderer.logger import Plot
 
 if TYPE_CHECKING:
     from pipeline.domain.source import Source
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
-    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
 
@@ -109,6 +114,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
             'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
+        })
+
+        # PIPE-2450: XY-deviation plots
+        xy_deviation_plots, xy_deviation_subpages = self.create_xy_deviation_plots(context, result)
+        # set to determine that this dict is for hsd_applycal.
+        # it should be removed in template before rendering
+        xy_deviation_plots['__hsd_applycal__'] = []
+
+        ctx.update({
+            'xy_deviation_plots': xy_deviation_plots,
+            'xy_deviation_plot_subpages': xy_deviation_subpages
         })
 
         # members for parent template applycal.mako
@@ -220,3 +236,90 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         for plot in plots:
             plot.parameters['source'] = source
         return plots
+
+    def create_xy_deviation_plots(self, ctx: Context, results: ResultsList):
+        xy_deviation_summary_plots = {}
+        xy_deviation_subpages = {}
+
+        for r in results:
+            vis = os.path.basename(r.inputs['vis'])
+            xy_deviation_plots = collections.defaultdict(list)
+            xy_deviation_subpages = {}
+
+            # get the xy-deviation plots
+            xy_deviation_plots = [
+                generate_plot_object_from_name(ctx, plot_name)
+                for plot_name in r.xy_deviation_plots
+            ]
+
+            # create detail pages
+            xy_deviation_subpage = None
+            if xy_deviation_plots:
+                summaries = xy_deviation_summary_plots.setdefault(vis, [])
+                plots_per_field = collections.defaultdict(list)
+                for plot in xy_deviation_plots:
+                    field = plot.field
+                    _plots = plots_per_field.setdefault(field, [])
+                    spw_list = [p.parameters['spw'] for p in _plots]
+                    if plot.parameters['spw'] not in spw_list:
+                        _plots.append(plot)
+                for field, plots in plots_per_field.items():
+                    summaries.append([field, plots])
+
+                detail_page_title = 'Amplitude difference vs frequency'
+                detail_renderer = basetemplates.JsonPlotRenderer(
+                    'generic_x_vs_y_field_spw_ant_detail_plots.mako',
+                    ctx,
+                    r,
+                    xy_deviation_plots,
+                    detail_page_title,
+                    filenamer.sanitize(f'{detail_page_title.lower()}-{vis}.html')
+                )
+                with detail_renderer.get_file() as fileobj:
+                    fileobj.write(detail_renderer.render())
+                xy_deviation_subpage = detail_renderer.path
+                xy_deviation_subpages[vis] = xy_deviation_subpage
+
+        return xy_deviation_summary_plots, xy_deviation_subpages
+
+
+def generate_plot_object_from_name(ctx: Context, plot_name: str) -> Plot:
+    pattern = re.compile(r"(.*\.ms)_(.*)_XX-YY_excess.png")
+    m = pattern.match(os.path.basename(plot_name))
+    if m:
+        groups = m.groups(default=())
+        assert len(groups) == 2
+        vis = groups[0]
+        # attributes should be like "FIELD_NAME_PM01_Spw17"
+        # where FIELD_NAME can contain arbitrary numbers of "_"
+        attributes = groups[1]
+        elements = attributes.split("_")
+        assert len(elements) > 3
+        spw = int(elements[-1][3:])
+        ms = ctx.observing_run.get_ms(vis)
+        spw_object = ms.get_spectral_window(spw)
+        receiver = spw_object.band
+        antenna = elements[-2]
+        field = "_".join(elements[:-2])
+        field_objects = (f for f in ms.fields if f.name == field or f.clean_name == field)
+        field_object = next(field_objects, None)
+        assert field_object is not None
+        field_name = field_object.name
+        source = field_object.source
+        plot = Plot(
+            plot_name,
+            x_axis="freq",
+            y_axis="amp_diff",
+            field=field_name,
+            parameters={
+                'vis': vis,
+                'spw': spw,
+                'ant': antenna,
+                'source': source,
+                'receiver': [receiver]
+            }
+        )
+    else:
+        plot = Plot(plot_name)
+
+    return plot
