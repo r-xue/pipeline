@@ -167,8 +167,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 if NChannels != 0 and numpy.allclose(chan_diff, chan_diff[0]):
                     ChannelWidth = chan_diff[0]
                 else:
-                    LOG.warning("Channels are not equally spaced. Unable to determine channel width reliably. Setting channel width to -1.")
-                    ChannelWidth = -1
+                    LOG.warning("Channels are not equally spaced. Setting channel width to median of channel differences.")
+                    ChannelWidth = numpy.median(chan_diff)
                 nx = ElementTree.Element("SPW")
                 ElementTree.SubElement(nx, 'Channel0', Units="Hz").text = str(channel0)
                 ElementTree.SubElement(nx, 'ChannelWidth', Units="Hz").text = str(ChannelWidth)
@@ -244,9 +244,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                 for field in sc.fields:
                     if field.name not in target_exposure:
                         target_exposure[field.name] = datetime.timedelta(0)
-                    for spw in field.valid_spws:
-                        target_exposure[field.name] += sc.exposure_time(spw.id)
-                        break
+
+                    target_exposure[field.name] += sc.time_on_source
 
             nx = ElementTree.Element("TimeOnScienceTarget")
             for target, exposure in target_exposure.items():
