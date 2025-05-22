@@ -379,7 +379,7 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
             reason = 'XX-YY.deviation'
             applies_to = pqa.TargetDataSelection(vis={msname}, scan={scan}, intent={'*OBSERVE_TARGET#ON_SOURCE*'}, spw={msw.spw}, ant={msw.antenna}, pol={flaggedpol})
             comes_from = pqa.QAOrigin(metric_name=reason, metric_score=0.0, metric_units='n-sigma deviation')
-            thisqascore = pqa.QAScore(0.34, longmsg=f'{msname}: Data flagged for one polarization only for spw {msw.spw}, antenna {1:s} in scan {msw.antenna} (field {fieldname}), pol {flaggedpol}.', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
+            thisqascore = pqa.QAScore(0.34, longmsg=f'{msname}: Data flagged for one polarization only for spw {msw.spw}, antenna {msw.antenna} in scan {scan} (field {fieldname}), pol {flaggedpol}.', shortmsg='XX-YY v/s Frequency deviation', origin=comes_from, applies_to=applies_to, hierarchy=reason)
             qascores_scans.append(thisqascore)
             analysis[scan] = None
             if qascore_lowest < 0.34:
