@@ -11,6 +11,7 @@ import matplotlib.dates as mdates
 import casatools
 import copy
 
+from pipeline.infrastructure.filenamer import sanitize
 from . import sd_qa_utils
 from . import mswrapper_sd
 
@@ -45,7 +46,7 @@ def show_heat_XYdiff(msw: mswrapper_sd.MSWrapperSD, nchanbin: int = 1, nvisbin: 
     antenna_id = msw.spw_setup['antids'][msw.spw_setup['antnames'] == msw.antenna][0]
     #Get field name
     #fieldname = msw.spw_setup['fieldname']['*OBSERVE_TARGET#ON_SOURCE*'][msw.spw_setup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*'].index(msw.fieldid)]
-    fieldname = msw.spw_setup['namesfor'][str(msw.fieldid)][0]
+    fieldname = sanitize(msw.spw_setup['namesfor'][str(msw.fieldid)][0])
     if str(colorlist) == 'auto':
         colorlist = sd_qa_utils.genColorList(len(scanlist))
 
@@ -319,7 +320,7 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
     nchan = len(freqs)
     msname = msw.fname.split('/')[-1]
     antenna_id = msw.spw_setup['antids'][msw.spw_setup['antnames'] == msw.antenna][0]
-    fieldname = msw.spw_setup['namesfor'][str(msw.fieldid)][0]
+    fieldname = sanitize(msw.spw_setup['namesfor'][str(msw.fieldid)][0])
     if str(colorlist) == 'auto':
         colorlist = sd_qa_utils.genColorList(len(scanlist))
 
@@ -444,7 +445,7 @@ def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = Non
     nchan = len(freqs)
     msname = msw.fname.split('/')[-1]
     antenna_id = msw.spw_setup['antids'][msw.spw_setup['antnames'] == msw.antenna][0]
-    fieldname = msw.spw_setup['namesfor'][str(msw.fieldid)][0]
+    fieldname = sanitize(msw.spw_setup['namesfor'][str(msw.fieldid)][0])
     if str(colorlist) == 'auto':
         colorlist = sd_qa_utils.genColorList(len(scanlist))
 
@@ -522,7 +523,7 @@ def plot_science_det(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None
     nchan = len(freqs)
     msname = msw.fname.split('/')[-1]
     antenna_id = msw.spw_setup['antids'][msw.spw_setup['antnames'] == msw.antenna][0]
-    fieldname = msw.spw_setup['namesfor'][str(msw.fieldid)][0]
+    fieldname = sanitize(msw.spw_setup['namesfor'][str(msw.fieldid)][0])
 
     #If science line detected, get the data from the 'all' scans data
     if (msw.data_stats is not None) and ('sci_line_sel' in msw.data_stats.keys()):
@@ -617,7 +618,7 @@ def makeSummaryTable(qascore_list, plots_fnames, plfolder, working_folder = '.',
         match = re.search(r"\(field (?P<field>.+)\)", qascore.longmsg)
         if match:
             fieldmatch = match.groupdict()
-            fieldname = fieldmatch['field']
+            fieldname = sanitize(fieldmatch['field'])
         else:
             fieldname = 'NNN'
         #Find filename of plot, if present.
