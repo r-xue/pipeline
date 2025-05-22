@@ -244,7 +244,6 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         for r in results:
             vis = os.path.basename(r.inputs['vis'])
             xy_deviation_plots = collections.defaultdict(list)
-            xy_deviation_subpages = {}
 
             # get the xy-deviation plots
             xy_deviation_plots = [
@@ -294,7 +293,7 @@ def generate_plot_object_from_name(ctx: Context, plot_name: str) -> Plot:
         # where FIELD_NAME can contain arbitrary numbers of "_"
         attributes = groups[1]
         elements = attributes.split("_")
-        assert len(elements) > 3
+        assert len(elements) >= 3
         spw = int(elements[-1][3:])
         ms = ctx.observing_run.get_ms(vis)
         spw_object = ms.get_spectral_window(spw)
