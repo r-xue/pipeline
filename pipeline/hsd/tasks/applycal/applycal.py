@@ -263,8 +263,9 @@ class SerialSDApplycal(SerialApplycal):
             qascore_list_all_scans = [
                 x for x in qascore_list if "all" in x.applies_to.scan
             ]
+            valid_plots_fnames = [x for x in plots_fnames if x != "N/A"]
             results.xy_deviation_score.extend(qascore_list_all_scans)
-            results.xy_deviation_plots.extend(plots_fnames)
+            results.xy_deviation_plots.extend(valid_plots_fnames)
 
         return results
 
