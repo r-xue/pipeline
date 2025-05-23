@@ -466,7 +466,8 @@ def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = Non
     for k, scan in enumerate(scanlist):
         if msw.analysis[scan] is None:
             continue
-        plt.plot(freqs, msw.analysis[scan]['ondata']['normdata'], '.', color=colorlist[k], label=str(scan))
+        data_label = "all scans" if str(scan) == "all" else f"scan {scan}"
+        plt.plot(freqs, msw.analysis[scan]['ondata']['normdata'], '.', color=colorlist[k], label=data_label)
         #If there are outliers, plot them in bold
         sel = msw.analysis[scan]['ondata']['outliers']
         if np.sum(sel) > 0:
