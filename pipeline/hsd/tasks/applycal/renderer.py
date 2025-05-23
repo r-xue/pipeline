@@ -265,7 +265,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 for field, plots in plots_per_field.items():
                     summaries.append([field, plots])
 
-                detail_page_title = 'Amplitude difference vs frequency'
+                detail_page_title = f'Amplitude difference vs frequency for {vis}'
                 detail_renderer = basetemplates.JsonPlotRenderer(
                     'generic_x_vs_y_field_spw_ant_detail_plots.mako',
                     ctx,
