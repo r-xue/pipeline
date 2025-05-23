@@ -1556,7 +1556,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
             elif inputs.per_eb and (not all(have_targets.values())):
                 info_msg = 'No check source data found in EBs %s.' % (','.join([os.path.basename(k)
                                                                                 for k, v in have_targets.items()
