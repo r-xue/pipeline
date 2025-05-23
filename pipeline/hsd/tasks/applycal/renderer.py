@@ -118,9 +118,10 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         # PIPE-2450: XY-deviation plots
         xy_deviation_plots, xy_deviation_subpages = self.create_xy_deviation_plots(context, result)
-        # set to determine that this dict is for hsd_applycal.
-        # it should be removed in template before rendering
-        xy_deviation_plots['__hsd_applycal__'] = []
+        if len(xy_deviation_plots) > 0:
+            # set to determine that this dict is for hsd_applycal.
+            # it should be removed in template before rendering
+            xy_deviation_plots['__hsd_applycal__'] = []
 
         ctx.update({
             'xy_deviation_plots': xy_deviation_plots,
@@ -250,6 +251,9 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 generate_plot_object_from_name(ctx, plot_name)
                 for plot_name in r.xy_deviation_plots
             ]
+
+            if len(xy_deviation_plots) == 0:
+                continue
 
             # create detail pages
             xy_deviation_subpage = None
