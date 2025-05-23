@@ -300,7 +300,7 @@ def generate_plot_object_from_name(ctx: Context, plot_name: str) -> Plot:
         receiver = spw_object.band
         antenna = elements[-2]
         field = "_".join(elements[:-2])
-        field_objects = (f for f in ms.fields if f.name == field or f.clean_name == field)
+        field_objects = (f for f in ms.fields if f.name.strip('"') == field or f.clean_name == field)
         field_object = next(field_objects, None)
         assert field_object is not None
         field_name = field_object.name
