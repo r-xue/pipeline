@@ -54,7 +54,7 @@ class MakeImagesResult(basetask.Results):
             except:
                 pass
 
-        # Calculated sensitivities for later stages
+        # Save quantities in the context for later stages
         skip_recalc = False
         for result in self.results:
             # Calculated beams for later stages
@@ -75,11 +75,11 @@ class MakeImagesResult(basetask.Results):
                 else:
                     utils.update_sens_dict(context.per_spw_cont_sensitivities_all_chan, result.per_spw_cont_sensitivities_all_chan)
 
-        # Clean masks and thresholds for later stages
-        if result.stokes == 'I' and (result.cleanmask not in (None, '')):
-            cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename, intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.specmode)
-            context.clean_masks[cleanTargetKey] = result.cleanmask
-            context.clean_thresholds[cleanTargetKey] = result.threshold
+            # Clean masks and thresholds for later stages
+            if result.stokes == 'I' and (result.cleanmask not in (None, '')):
+                cleanTargetKey = CleanTargetInfo(datatype=result.datatype, field=result.sourcename, intent=result.intent, virtspw=result.spw, stokes=result.stokes, specmode=result.specmode)
+                context.clean_masks[cleanTargetKey] = result.cleanmask
+                context.clean_thresholds[cleanTargetKey] = result.threshold
 
         # empty the pending list and message
         context.clean_list_pending = []
