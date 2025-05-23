@@ -287,14 +287,14 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         description = {
             # map specmode to description for every clean target
-            _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
+            _get_description_map(target['intent'], target['stokes']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
         result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target
-            _get_sidebar_map(target['intent']).get(target['specmode'], '')
+            _get_sidebar_map(target['intent'], target['stokes']).get(target['specmode'], '')
             for target in target_list
         }
         result.metadata['sidebar suffix'] = '/'.join(sidebar)
@@ -549,8 +549,6 @@ class CleanTaskFactory(object):
         # POLARIZATION intent when imaging IQUV because of a
         # potential CASA bug. This should be undone when this
         # bug is fixed.
-        # PIPE-2464 implements TARGET IQUV imaging. Maybe the parallel
-        # settings have to be adjusted for that use case too.
         if target['intent'] == 'POLARIZATION' and target['stokes'] == 'IQUV':
             is_tier0_job = False
             if is_mpi_ready:
@@ -702,7 +700,7 @@ class CleanTaskFactory(object):
         return task_args
 
 
-def _get_description_map(intent):
+def _get_description_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'Make calibrator images',
@@ -724,18 +722,28 @@ def _get_description_map(intent):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'Make target per-spw continuum images',
-            'cont': 'Make target aggregate continuum images',
-            'cube': 'Make target cubes',
-            'repBW': 'Make representative bandwidth target cube'
+        if stokes == 'I':
+            return {
+                'mfs': 'Make target per-spw continuum images',
+                'cont': 'Make target aggregate continuum images',
+                'cube': 'Make target cubes',
+                'repBW': 'Make representative bandwidth target cube'
+            }
+        elif stokes == 'IQUV':
+            return {
+                'mfs': 'Make target fullpol per-spw continuum images',
+                'cont': 'Make target fullpol aggregate continuum images',
+                'cube': 'Make target fullpol cubes',
+                'repBW': 'Make fullpol representative bandwidth target cube'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
 
-        }
     else:
         return {}
 
 
-def _get_sidebar_map(intent):
+def _get_sidebar_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
         return {
             'mfs': 'cals',
@@ -752,11 +760,21 @@ def _get_sidebar_map(intent):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'mfs',
-            'cont': 'cont',
-            'cube': 'cube',
-            'repBW': 'cube_repBW'
-        }
+        if stokes == 'I':
+            return {
+                'mfs': 'mfs',
+                'cont': 'cont',
+                'cube': 'cube',
+                'repBW': 'cube_repBW'
+            }
+        elif stokes == 'IQUV':
+            return {
+                'mfs': 'mfs_fullpol',
+                'cont': 'cont_fullpol',
+                'cube': 'cube_fullpol',
+                'repBW': 'cube_repBW_fullpol'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
     else:
         return {}
