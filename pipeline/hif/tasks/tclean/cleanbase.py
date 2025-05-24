@@ -314,12 +314,12 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
-        if inputs.intent == 'TARGET' and inputs.specmode == 'cont' and inputs.stokes == 'IQUV':
+        if inputs.intent == 'TARGET' and inputs.specmode in ('mfs', 'cont') and inputs.stokes == 'IQUV':
             # There seems to be a tclean parallelization bug with usemask='user'
             # and an explict mask for specmode='cont' mode (PIPE-2464)
             parallel = False
             if mpihelpers.is_mpi_ready():
-                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV target aggregate continuum imaging (PIPE-2464).')
+                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV target continuum imaging (PIPE-2464).')
         else:
             # For ephemeris objects, tclean/parallel was explicit set to False between 2018/07/10 and
             # 2021-02/16 due to a tclean bug (see CAS-11631 and PIPE-981)

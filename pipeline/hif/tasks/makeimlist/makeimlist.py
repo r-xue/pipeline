@@ -410,7 +410,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
             result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
                                  'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+                                 'specmode': inputs.specmode,
+                                 'stokes': inputs.stokes})
             result.contfile = None
             result.linesfile = None
             return result
@@ -421,7 +422,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.mitigation_error = True
                 result.set_info({'msg': 'Size mitigation had failed. No imaging targets were created.',
                                  'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+                                 'specmode': inputs.specmode,
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -532,7 +534,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not ms_objects_and_columns:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
             result.contfile = None
             result.linesfile = None
             return result
@@ -713,7 +716,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 LOG.info('No representative target found. No PI cube will be made.')
                 result.set_info({'msg': 'No representative target found. No PI cube will be made.',
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -724,7 +728,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies aggregate continuum. No PI cube will"
                                         " be made since specmode='cont' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -734,7 +739,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies per spw continuum. No PI cube will"
                                         " be made since specmode='mfs' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -770,7 +776,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             ' averaged default cube channel width. No PI cube will be made since the'
                                             ' default cube already covers this case.',
                                      'intent': 'TARGET',
-                                     'specmode': 'repBW'})
+                                     'specmode': 'repBW',
+                                     'stokes': inputs.stokes})
                     result.contfile = None
                     result.linesfile = None
                     return result
@@ -1550,7 +1557,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
 
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
@@ -1562,7 +1570,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                                                                 for k, v in have_targets.items()
                                                                                 if not v]))
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
 
         # Record total number of expected clean targets
         result.set_expected_num_targets(expected_num_targets)
