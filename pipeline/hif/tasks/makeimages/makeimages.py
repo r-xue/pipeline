@@ -722,7 +722,7 @@ def _get_description_map(intent, stokes):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        if stokes == 'I':
+        if stokes in ('', 'I'):
             return {
                 'mfs': 'Make target per-spw continuum images',
                 'cont': 'Make target aggregate continuum images',
@@ -760,7 +760,7 @@ def _get_sidebar_map(intent, stokes):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        if stokes == 'I':
+        if stokes in ('', 'I'):
             return {
                 'mfs': 'mfs',
                 'cont': 'cont',

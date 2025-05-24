@@ -400,10 +400,10 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         # describe the function of this task by interpreting the inputs
         # parameters to give an execution context
-        long_descriptions = [_DESCRIPTIONS.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')]
+        long_descriptions = [_get_description(intent.strip(), inputs.specmode, intent.stokes) for intent in inputs.intent.split(',')]
         result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(utils.deduplicate(long_descriptions))
 
-        sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
+        sidebar_suffixes = {_get_sidebar_suffix(intent.strip(), inputs.specmode, inputs.stokes) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
         # Check if this stage has been disabled for vla (never set for ALMA)
@@ -1697,53 +1697,62 @@ class MakeImList(basetask.StandardTaskTemplate):
         return drcorrect, maxthreshold
 
 
-# maps intent and specmode Inputs parameters to textual description of execution context.
-_DESCRIPTIONS = {
-    ('PHASE', 'mfs'): 'phase calibrator',
-    ('PHASE', 'cont'): 'phase calibrator',
-    ('BANDPASS', 'mfs'): 'bandpass calibrator',
-    ('BANDPASS', 'cont'): 'bandpass calibrator',
-    ('AMPLITUDE', 'mfs'): 'flux calibrator',
-    ('AMPLITUDE', 'cont'): 'flux calibrator',
-    ('POLARIZATION', 'mfs'): 'polarization calibrator',
-    ('POLARIZATION', 'cont'): 'polarization calibrator',
-    ('POLANGLE', 'mfs'): 'polarization calibrator',
-    ('POLANGLE', 'cont'): 'polarization calibrator',
-    ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
-    ('POLLEAKAGE', 'cont'): 'polarization calibrator',
-    ('DIFFGAINREF', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINREF', 'cont'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'cont'): 'diffgain calibrator',
-    ('CHECK', 'mfs'): 'check source',
-    ('CHECK', 'cont'): 'check source',
-    ('TARGET', 'mfs'): 'target per-spw continuum',
-    ('TARGET', 'cont'): 'target aggregate continuum',
-    ('TARGET', 'cube'): 'target cube',
-    ('TARGET', 'repBW'): 'representative bandwidth target cube'
-}
+# maps intent, specmode and stokes inputs parameters to textual description of execution context.
 
-_SIDEBAR_SUFFIX = {
-    ('PHASE', 'mfs'): 'cals',
-    ('PHASE', 'cont'): 'cals',
-    ('BANDPASS', 'mfs'): 'cals',
-    ('BANDPASS', 'cont'): 'cals',
-    ('AMPLITUDE', 'mfs'): 'cals',
-    ('AMPLITUDE', 'cont'): 'cals',
-    ('DIFFGAINREF', 'mfs'): 'cals',
-    ('DIFFGAINREF', 'cont'): 'cals',
-    ('DIFFGAINSRC', 'mfs'): 'cals',
-    ('DIFFGAINSRC', 'cont'): 'cals',
-    ('POLARIZATION', 'mfs'): 'pol',
-    ('POLARIZATION', 'cont'): 'pol',
-    ('POLANGLE', 'mfs'): 'pol',
-    ('POLANGLE', 'cont'): 'pol',
-    ('POLLEAKAGE', 'mfs'): 'pol',
-    ('POLLEAKAGE', 'cont'): 'pol',
-    ('CHECK', 'mfs'): 'checksrc',
-    ('CHECK', 'cont'): 'checksrc',
-    ('TARGET', 'mfs'): 'mfs',
-    ('TARGET', 'cont'): 'cont',
-    ('TARGET', 'cube'): 'cube',
-    ('TARGET', 'repBW'): 'cube_repBW'
-}
+def _get_description(intent, specmode, stokes):
+    if intent == 'PHASE':
+        return 'phase calibrator'
+    elif intent == 'BANDPASS':
+        return 'bandpass calibrator'
+    elif intent == 'AMPLITUDE':
+        return 'flux calibrator'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'polarization calibrator'
+    elif intent in ('DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'diffgain calibrator'
+    elif intent == 'CHECK':
+        return 'check source'
+    elif intent == 'TARGET':
+        if stokes in ('', 'I'):
+            pol_str = ''
+        elif stokes ==' IQUV':
+            pol_str = 'fullpol '
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'target per-spw {pol_str}continuum'
+        elif specmode == 'cont':
+            return f'target {pol_str}aggregate continuum'
+        elif specmode == 'cube':
+            return f'target {pol_str}cube'
+        elif specmode == 'cube':
+            return f'representative bandwidth target {pol_str}cube'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')
+
+def _get_sidebar_suffix(intent, specmode, stokes):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'cals'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'pol'
+    elif intent == 'CHECK':
+        return 'checksrc'
+    elif intent == 'TARGET':
+        if stokes in ('', 'I'):
+            pol_str = ''
+        elif stokes ==' IQUV':
+            pol_str = 'fullpol '
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'{pol_str}mfs'
+        elif specmode == 'cont':
+            return f'{pol_str}cont'
+        elif specmode == 'cube':
+            return f'{pol_str}cube'
+        elif specmode == 'cube':
+            return f'{pol_str}cube_repBW'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')
