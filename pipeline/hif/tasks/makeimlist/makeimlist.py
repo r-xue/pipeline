@@ -1715,7 +1715,7 @@ def _get_description(intent, specmode, stokes):
     elif intent == 'TARGET':
         if stokes in ('', 'I'):
             pol_str = ''
-        elif stokes ==' IQUV':
+        elif stokes =='IQUV':
             pol_str = 'fullpol '
         else:
             raise Exception(f'Unknown Stokes value "{stokes}"')
@@ -1741,7 +1741,7 @@ def _get_sidebar_suffix(intent, specmode, stokes):
     elif intent == 'TARGET':
         if stokes in ('', 'I'):
             pol_str = ''
-        elif stokes ==' IQUV':
+        elif stokes =='IQUV':
             pol_str = 'fullpol '
         else:
             raise Exception(f'Unknown Stokes value "{stokes}"')
