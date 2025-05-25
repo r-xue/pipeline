@@ -1713,9 +1713,9 @@ def _get_description(intent, specmode, stokes):
     elif intent == 'CHECK':
         return 'check source'
     elif intent == 'TARGET':
-        if stokes in ('', 'I'):
+        if stokes.upper() in ('', 'I'):
             pol_str = ''
-        elif stokes =='IQUV':
+        elif stokes.upper() =='IQUV':
             pol_str = 'fullpol '
         else:
             raise Exception(f'Unknown Stokes value "{stokes}"')
@@ -1726,7 +1726,7 @@ def _get_description(intent, specmode, stokes):
             return f'target {pol_str}aggregate continuum'
         elif specmode == 'cube':
             return f'target {pol_str}cube'
-        elif specmode == 'cube':
+        elif specmode == 'repBW':
             return f'representative bandwidth target {pol_str}cube'
         else:
             raise Exception(f'Unknown specmode value "{specmode}"')
@@ -1739,20 +1739,20 @@ def _get_sidebar_suffix(intent, specmode, stokes):
     elif intent == 'CHECK':
         return 'checksrc'
     elif intent == 'TARGET':
-        if stokes in ('', 'I'):
+        if stokes.upper() in ('', 'I'):
             pol_str = ''
-        elif stokes =='IQUV':
-            pol_str = 'fullpol '
+        elif stokes.upper() =='IQUV':
+            pol_str = '_fullpol'
         else:
             raise Exception(f'Unknown Stokes value "{stokes}"')
 
         if specmode == 'mfs':
-            return f'{pol_str}mfs'
+            return f'mfs{pol_str}'
         elif specmode == 'cont':
-            return f'{pol_str}cont'
+            return f'cont{pol_str}'
         elif specmode == 'cube':
-            return f'{pol_str}cube'
-        elif specmode == 'cube':
-            return f'{pol_str}cube_repBW'
+            return f'cont{pol_str}'
+        elif specmode == 'repBW':
+            return f'repBW{pol_str}'
         else:
             raise Exception(f'Unknown specmode value "{specmode}"')

@@ -722,14 +722,14 @@ def _get_description_map(intent, stokes):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        if stokes in ('', 'I'):
+        if stokes.upper() in ('', 'I'):
             return {
                 'mfs': 'Make target per-spw continuum images',
                 'cont': 'Make target aggregate continuum images',
                 'cube': 'Make target cubes',
                 'repBW': 'Make representative bandwidth target cube'
             }
-        elif stokes == 'IQUV':
+        elif stokes.upper() == 'IQUV':
             return {
                 'mfs': 'Make target fullpol per-spw continuum images',
                 'cont': 'Make target fullpol aggregate continuum images',
@@ -760,14 +760,14 @@ def _get_sidebar_map(intent, stokes):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        if stokes in ('', 'I'):
+        if stokes.upper() in ('', 'I'):
             return {
                 'mfs': 'mfs',
                 'cont': 'cont',
                 'cube': 'cube',
                 'repBW': 'cube_repBW'
             }
-        elif stokes == 'IQUV':
+        elif stokes.upper() == 'IQUV':
             return {
                 'mfs': 'mfs_fullpol',
                 'cont': 'cont_fullpol',
