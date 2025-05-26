@@ -613,7 +613,7 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
     '''
 
     #Load data and gather statistics
-    mswCollection = load_and_stats(msNames, use_tsys_data = use_tsys_data, sciline_det = sciline_det)
+    mswCollection = load_and_stats(msNames, use_tsys_data=use_tsys_data, sciline_det=sciline_det, buffer_data=False)
 
     #Combine stats for science line detection, if requested
     if sciline_det:
