@@ -241,10 +241,10 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
     def create_xy_deviation_plots(self, ctx: Context, results: ResultsList):
         xy_deviation_summary_plots = {}
         xy_deviation_subpages = {}
+        xy_deviation_plots_all = []
 
         for r in results:
             vis = os.path.basename(r.inputs['vis'])
-            xy_deviation_plots = collections.defaultdict(list)
 
             # get the xy-deviation plots
             xy_deviation_plots = [
@@ -256,8 +256,8 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 continue
 
             # create detail pages
-            xy_deviation_subpage = None
             if xy_deviation_plots:
+                xy_deviation_plots_all.extend(xy_deviation_plots)
                 summaries = xy_deviation_summary_plots.setdefault(vis, [])
                 plots_per_field = collections.defaultdict(list)
                 for plot in xy_deviation_plots:
@@ -269,18 +269,21 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 for field, plots in plots_per_field.items():
                     summaries.append([field, plots])
 
-                detail_page_title = f'Amplitude difference vs frequency for {vis}'
-                detail_renderer = basetemplates.JsonPlotRenderer(
-                    'generic_x_vs_y_field_spw_ant_detail_plots.mako',
-                    ctx,
-                    r,
-                    xy_deviation_plots,
-                    detail_page_title,
-                    filenamer.sanitize(f'{detail_page_title.lower()}-{vis}.html')
-                )
-                with detail_renderer.get_file() as fileobj:
-                    fileobj.write(detail_renderer.render())
-                xy_deviation_subpage = detail_renderer.path
+        if xy_deviation_plots_all:
+            detail_page_title = f'Amplitude difference vs frequency'
+            detail_renderer = basetemplates.JsonPlotRenderer(
+                'generic_x_vs_y_field_spw_ant_detail_plots.mako',
+                ctx,
+                results,
+                xy_deviation_plots_all,
+                detail_page_title,
+                filenamer.sanitize(f'{detail_page_title.lower()}.html')
+            )
+            with detail_renderer.get_file() as fileobj:
+                fileobj.write(detail_renderer.render())
+            xy_deviation_subpage = detail_renderer.path
+            for r in results:
+                vis = os.path.basename(r.inputs['vis'])
                 xy_deviation_subpages[vis] = xy_deviation_subpage
 
         return xy_deviation_summary_plots, xy_deviation_subpages
