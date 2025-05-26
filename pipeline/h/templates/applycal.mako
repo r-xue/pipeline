@@ -746,7 +746,7 @@ def format_spwmap(spwmap, scispws):
                   data_vis="${True}"
 				  title_id="xydeviation"
                   break_rows_by="field"
-                  sort_row_by="antenna,spw">
+                  sort_row_by="baseband,spw">
 
 	<%def name="title()">
 		Science target: amplitude difference (XX-YY) vs frequency
