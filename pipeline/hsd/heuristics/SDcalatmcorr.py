@@ -68,16 +68,14 @@ from matplotlib import pyplot as plt
 import time as systime
 import datetime
 from scipy.interpolate import CubicSpline
-from casatools import msmetadata as msmdtool
-from casatools import table as tbtool
-from casatools import quanta as qatool
-from casatools import atmosphere as attool
-from casatools import agentflagger as aftool
-from casaplotms import plotms
-from casatasks import sdatmcor
-from casatasks import mstransform
 
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.logging as logging
+import pipeline.infrastructure.casa_tools as casa_tools
+import pipeline.infrastructure.casa_tasks as casa_tasks
+
+LOG = logging.get_logger(__name__)
+
 pipelineloaded = True
 
 #Useful function for fully flattening array
@@ -85,22 +83,6 @@ flattenlist = lambda l: [item for sublist in l for item in sublist]
 
 version = '2.7'
 
-def createCasaTool(mytool):
-    """
-    A wrapper to handle the changing ways in which casa tools are invoked.
-    For CASA < 6, it relies on "from taskinit import *" in the preamble above.
-    mytool: a tool name, like tbtool
-    Todd Hunter
-    """
-    if 'casac' in locals():
-        if (type(casac.Quantity) != type):  # casa 4.x and 5.x
-            myt = mytool()
-        else:  # casa 3.x
-            myt = mytool.create()
-    else:
-        # this is CASA 6
-        myt = mytool()
-    return(myt)
 
 def robuststats(A):
     '''Return median and estimate standard deviation
@@ -576,7 +558,7 @@ def getSpecSetup(myms, spwlist = []):
     #Else read in the information from the MS
     #if spwlist is empty, get all science SPWs
     intentlist = ['*OBSERVE_TARGET#ON_SOURCE*', '*OBSERVE_TARGET#OFF_SOURCE*']
-    msmd = createCasaTool(msmdtool)
+    msmd = casa_tools.msmd
     msmd.open(myms)
     if len(spwlist) == 0:
         spwlist = getSpwList(msmd)
@@ -658,7 +640,7 @@ def getAntennaFlagFrac(ms, fieldid, spwid, spwsetup):
     spwid: SPW used to select data
     spwsetup: Spectral setup dictionary, as obtained from getSpecSetup()
     '''
-    af = createCasaTool(aftool)
+    af = casa_tools.agentflagger
     af.open(ms)
     af.selectdata(field = str(fieldid), spw = str(spwid))
     af.parsesummaryparameters()
@@ -677,13 +659,15 @@ def getCalAtmData(ms: str, spws: list, spwsetup: dict):
         spwsetup: Dictionary of metadata obtained from getSpecSetup()
     '''
 
-    tb = createCasaTool(tbtool)
+    tb = casa_tools.table
     #Open CALATMOSPHERE table
     tb.open(os.path.join(ms, 'ASDM_CALATMOSPHERE'))
     #Get weather parameters
+    LOG.debug("Start reading weather parameters from ASDM_CALATMOSPHERE table")
     tground_all = tb.getcol('groundTemperature')
     pground_all = tb.getcol('groundPressure')
     hground_all = tb.getcol('groundRelHumidity')
+    LOG.debug("Done reading weather parameters from ASDM_CALATMOSPHERE table")
     #Get the spectra of the ATM measurements
     tmatm_all = {}
     tsys = {}
@@ -947,7 +931,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     scaleht: h0 parameter for at (water scale height; km). Default is 2.0
     '''
 
-    qa = createCasaTool(qatool)
+    qa = casa_tools.quanta
     ms = str(ms)
     #Do a backup of the MS if requested
     backupms = ms.replace('.ms','.ms.backup')
@@ -969,7 +953,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     print('Obtaining metadata for MS: '+ms)
     spwsetup = getSpecSetup(ms)
     #chanfreqs = {}
-    msmd = createCasaTool(msmdtool)
+    msmd = casa_tools.msmd
     msmd.open(ms)
     #Get data times for OBSERVE_TARGET
     tmonsource = msmd.timesforintent('OBSERVE_TARGET#ON_SOURCE')
@@ -999,10 +983,12 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     ### Get atmospheric parameters for ATM
     ################################################################
     print('Obtaining atmospheric parameters for MS: '+ms)
-    tb = createCasaTool(tbtool)
+    tb = casa_tools.table
     tb.open(os.path.join(ms, 'ASDM_CALWVR'))
+    LOG.debug("Start reading water data from ASDM_CALWVR table")
     tmpwv_all = tb.getcol('startValidTime')
     pwv_all = tb.getcol('water')
+    LOG.debug("Done reading water data from ASDM_CALWVR table")
     tb.close()
 
     #Open CALATMOSPHERE table
@@ -1114,7 +1100,6 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     testspws = ','.join([str(s) for s in spwstoprocess])
     #Split out the relevant fields and SPWs to a smaller MS for testing models
     testms = ms + '.modeltest'
-    #mstransform(vis = ms, outputvis = tmpfolder+'/'+testms, field = testfields, spw = testspws, antenna = str(iant)+'&&'+str(iant), datacolumn = 'all', reindex = False)
 
     #Select antenna to be used, if not selected
     if (type(iant) == int) or ((type(iant) == str) and iant.isnumeric()):
@@ -1137,13 +1122,23 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             strmodel = '{0:d}/{1:d}: (atmType,maxAlt,scaleht,lapserate)=({2:d},{3:.2f}km,{4:.2f}km,{5:.2f}K/km)'.format(k+1, nmodels, models['atmtype'][k], models['maxalt'][k], models['scaleht'][k], models['lapserate'][k])
             print('Correcting data with model '+strmodel)
             outfname = tmpfolder+'/'+ms.replace('.ms','.spw'+str(spwid)+'.model'+str(k)+'.ms')
-            sdatmcor(infile=ms, datacolumn=sddatacolumn, outfile=outfname,
-                     overwrite=False, spw=str(spwid), antenna = str(iantsel)+'&&'+str(iantsel), field = testfields,
-                     gainfactor=jyperkfactor[ms][str(spwid)],
-                     dtem_dh=str(models['lapserate'][k])+'K/km', h0=str(models['scaleht'][k])+'km',
-                     atmtype=int(models['atmtype'][k]), atmdetail=False)
+            task_args = dict(
+                infile=ms, datacolumn=sddatacolumn, outfile=outfname,
+                overwrite=False, spw=str(spwid), antenna = str(iantsel)+'&&'+str(iantsel), field = testfields,
+                gainfactor=jyperkfactor[ms][str(spwid)],
+                dtem_dh=str(models['lapserate'][k])+'K/km', h0=str(models['scaleht'][k])+'km',
+                atmtype=int(models['atmtype'][k]), atmdetail=False
+            )
+            sdatmcor_task = casa_tasks.sdatmcor(**task_args)
+            sdatmcor_task.execute()
 
     #Open uncorrected data to measure skylines and presence of science target
+    tb.open(ms + '/STATE')
+    tb_on = tb.query('OBS_MODE ~ m/^OBSERVE_TARGET#ON_SOURCE/')
+    state_ids_on = tb_on.rownumbers()
+    tb_on.close()
+    tb.close()
+
     tb.open(ms, nomodify=False)
     for spwid in spwstoprocess:
         print('Processing spw '+str(spwid))
@@ -1153,28 +1148,17 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         ### Calculate and apply correction values
         ################################################################
         querystr = 'DATA_DESC_ID in {0:s} && FIELD_ID in {1:s}'.format(str(spwsetup[spwid]['ddi']), str(fieldid))
+        querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_ids_on.tolist()}'
         print('Reading data for TaQL query: '+querystr)
         subtb = tb.query(querystr)
-        tmdata = subtb.getcol('TIME')
-        data = subtb.getcol(datacolumn)
+        LOG.debug("Start reading_data_spw%d for TaQL query: %s", spwid, querystr)
+        data = subtb.getcol(datacolumn).real
         flag = subtb.getcol('FLAG')
-        flagrow = subtb.getcol('FLAG_ROW')
+        subtb.close()
+        LOG.debug("Done reading_data_spw%d for TaQL query", spwid)
         npol = data.shape[0]
-        #Add the flag ROW flag to the individual row flag arrays,
-        #in order to use only one array.
-        flaggedrowlist = np.where(flagrow)[0]
-        for row in flaggedrowlist:
-            flag[:,:,row] = True
-            #flag[:,:,row] = np.logical_or(flag[:,:,row],~flag[:,:,row])
-        #Create selection vector for on-source rows
-        onsel = selectRanges(tmdata, onsourcetab)
 
-        #Create masked data numpy array for ease of use, cdata to contain the data before correction
-        #and diffbuffer after correction
-        cdata = np.ma.masked_array(np.real(data.copy()), mask=flag, fill_value=0.0)
-
-        #Search for science target channels
-        dataon = np.transpose(np.transpose(cdata)[onsel])
+        dataon = np.ma.masked_array(data, mask=flag, fill_value=0.0)
         #Pre-correction average
         precorravedataon = np.ma.mean(dataon, axis = 2)
         maskedchans = np.any(precorravedataon.mask, axis = 0)
@@ -1213,10 +1197,9 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     tb.close()
 
     #Delete big variables to reduce memory consumption
-    del(tmdata)
+    # del(tmdata)
     del(data)
     del(flag)
-    del(flagrow)
 
     #Lists of plots to do after looping over all models
     plotlist = []
@@ -1237,31 +1220,21 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             ################################################################
             tb.open(msk, nomodify=False)
             querystr = 'DATA_DESC_ID in {0:s} && FIELD_ID in {1:s}'.format(str(spwsetup[spwid]['ddi']), str(fieldid))
+            querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_ids_on.tolist()}'
             print('Reading data for TaQL query: '+querystr)
             subtb = tb.query(querystr)
-            tmdatak = subtb.getcol('TIME')
-            datak = subtb.getcol('DATA')
+            LOG.debug("Start reading_data_spw%d_model%d for TaQL query: %s", spwid, k, querystr)
+            datak = subtb.getcol('DATA').real
             flagk = subtb.getcol('FLAG')
-            flagrowk = subtb.getcol('FLAG_ROW')
-            #Add the flag ROW flag to the individual row flag arrays,
-            #in order to use only one array.
-            flaggedrowlistk = np.where(flagrowk)[0]
-            for row in flaggedrowlistk:
-                flagk[:,:,row] = True
-                #flagk[:,:,row] = np.logical_or(flagk[:,:,row],~flag[:,:,row])
+            subtb.close()
+            LOG.debug("Done reading_data_spw%d_model%d for TaQL query", spwid, k)
 
-            #Create selection vector for on-source rows
-            onselk = selectRanges(tmdatak, onsourcetab)
-
-            #Create masked data numpy array for ease of use, data after correction
-            cdatak = np.ma.masked_array(np.real(datak.copy()), mask=flagk, fill_value=0.0)
-
-            #Calculate metrics for model k
-            #First select channel range, and average over time
-            diffdataonk = np.transpose(np.transpose(cdatak)[onselk])
+            diffdataonk = np.ma.masked_array(datak, mask=flagk, fill_value=0.0)
             npolk, nchk, nrowk = np.shape(diffdataonk)
             tmavedataonk = np.ma.mean(diffdataonk, axis = 2)
             tmstddataonk = np.ma.std(diffdataonk, axis = 2)/np.sqrt(nrowk)
+
+            del diffdataonk
 
             #Plot corrected data with baseline fit, etc.
             plotlist.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel,
@@ -1341,7 +1314,7 @@ def getJyperKfromCaltable(mslist, context):
 
     This method could raise RuntimeError when Jy/K caltable associated with any of given MS does not exist.
     '''
-    tb = createCasaTool(tbtool)
+    tb = casa_tools.table
     callib = context.callibrary
 
     def _extract_jyperk_table(vis: str) -> str:
@@ -1373,9 +1346,11 @@ def getJyperKfromCaltable(mslist, context):
         spwsetup = getSpecSetup(ms)
         #Open Jy/K Amp table
         tb.open(jyperktables[i])
+        LOG.debug("Start reading k2jy caltable")
         ant1 = tb.getcol('ANTENNA1')
         spw = tb.getcol('SPECTRAL_WINDOW_ID')
         cparam = tb.getcol('CPARAM')
+        LOG.debug("Done reading k2jy caltable")
         jyperk = 1./np.square(np.real(cparam[0][0]))
         tb.close()
         output[ms] = {str(thisspw): np.mean(jyperk[(spw == thisspw)]) for thisspw in spw if thisspw in spwsetup['spwlist']}

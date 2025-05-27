@@ -100,6 +100,7 @@ def create_logging_class(cls, level=logging.TRACE, to_log=None):
 # loglevel=INFO. The default log level is TRACE.
 #
 # Example:
+_logging_agentflagger_cls = create_logging_class(casatools.agentflagger)
 _logging_atmosphere_cls = create_logging_class(casatools.atmosphere)
 _logging_calanalysis_cls = create_logging_class(casatools.calanalysis)
 _logging_calibrater_cls = create_logging_class(casatools.calibrater)
@@ -117,6 +118,7 @@ _logging_synthesisutils_cls = create_logging_class(casatools.synthesisutils)
 _logging_table_cls = create_logging_class(casatools.table)
 _logging_utils_cls = create_logging_class(casatools.utils.utils)
 
+agentflagger = _logging_agentflagger_cls()
 atmosphere = _logging_atmosphere_cls()
 calanalysis = _logging_calanalysis_cls()
 calibrater = _logging_calibrater_cls()
