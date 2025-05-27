@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -43,7 +43,7 @@ class MDirection(TypedDict):
 def compute_mosaic_data(
         ms: MeasurementSet,
         source: Source
-        ) -> Tuple[np.ndarray, np.ndarray, float, List[Distance], List[float]]:
+        ) -> tuple[np.ndarray, np.ndarray, float, list[Distance], list[float]]:
     """Extract and compute relevant data for plotting.
 
     Args:
@@ -76,7 +76,7 @@ def compute_mosaic_data(
     return ra, dec, median_ref_freq, dish_diameters, beam_diameters
 
 
-def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float, float]:
+def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> tuple[np.ndarray, np.ndarray, float, float]:
     """Compute RA/Dec offsets for plotting.
 
     Args:
@@ -101,11 +101,11 @@ def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> Tuple[np.ndarray, np.nda
 def create_mosaic_figure(
         delta_ra: np.ndarray,
         delta_dec: np.ndarray,
-        beam_diameters: List[float],
+        beam_diameters: list[float],
         margin_x: int = 100,
         margin_y: int = 80,
         dpi: int = 100
-        ) -> Tuple[Figure, Axes, int]:
+        ) -> tuple[Figure, Axes, int]:
     """Initialize a figure with correct dimensions.
 
     Args:
@@ -139,10 +139,10 @@ def create_mosaic_figure(
 
 def add_elements_to_plot(
         ax: Axes,
-        plot_dict: Dict[str, Dict[str, Dict[int, Dict[str, Any]] | float]],
+        plot_dict: dict[str, dict[str, dict[int, dict[str, Any]] | float]],
         fontsize: int = 10,
         draw_labels: bool = False
-        ) -> Tuple[Dict[str, lines.Line2D], Dict[str, str]]:
+        ) -> tuple[dict[str, lines.Line2D], dict[str, str]]:
     """Plot element circles and labels
 
     Args:
@@ -194,12 +194,12 @@ def add_elements_to_plot(
 
 def compute_element_locs(
         source: Source,
-        delta_ra: List[float],
-        delta_dec: List[float],
-        dish_diameters: List[Distance],
-        beam_diameters: List[float],
-        tsys_scans_dict: Dict[int, Dict[str, Tuple[float, float] | bool]] | None = None,
-        ) -> Dict[str, Dict[str, Dict[int, Dict[str, Any]] | float]]:
+        delta_ra: list[float],
+        delta_dec: list[float],
+        dish_diameters: list[Distance],
+        beam_diameters: list[float],
+        tsys_scans_dict: dict[int, dict[str, tuple[float, float] | bool]] | None = None,
+        ) -> dict[str, dict[str, dict[int, dict[str, Any]] | float]]:
     """Compute the field locations to use for plotting.
 
     Args:
@@ -236,8 +236,8 @@ def compute_element_locs(
 
 def configure_labels(
         ax: Axes,
-        legend_labels: Dict[str, lines.Line2D],
-        legend_colors: Dict[str, str],
+        legend_labels: dict[str, lines.Line2D],
+        legend_colors: dict[str, str],
         mean_ra: float,
         mean_dec: float,
         median_ref_freq: float,
@@ -337,7 +337,7 @@ def plot_mosaic_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> 
     # Retrieve correct Tsys field for source based on mapping
     tsys_fields = tsyscal.get_gainfield_map(ms, is_single_dish=False)['TARGET'].split(',')
     if not tsys_fields:
-        raise Exception('No TSYS fields associated with TARGET.')
+        raise Exception('No Tsys fields associated with TARGET.')
 
     try:
         # Grabs correct field if more that one Tsys field and/or the returned ID or name match
@@ -427,7 +427,7 @@ def is_tsys_only(field: Field) -> bool:
     return 'TARGET' not in field.intents and 'ATMOSPHERE' in field.intents
 
 
-def primary_beam_fwhm(wavelength: Distance, diameter: List[Distance], taper: float) -> EquatorialArc:
+def primary_beam_fwhm(wavelength: Distance, diameter: list[Distance], taper: float) -> EquatorialArc:
     """
     Implements the Baars formula: b*lambda / D.
       if use2007formula==True, use the formula from Baars 2007 book
@@ -518,7 +518,7 @@ def tsys_off_source_radec(
         tsys_field: Field,
         intent: str = 'CALIBRATE_ATMOSPHERE#OFF_SOURCE',
         observatory: str = 'ALMA',
-        ) -> Dict[int, Dict[str, Tuple[float, float] | bool]] | None:
+        ) -> dict[int, dict[str, tuple[float, float] | bool]] | None:
     """
     Computes the off-source RA/Dec based on pointing and ASDM_POINTING tables.
     Adapted from Todd Hunter's AU tool tsysOffSourceRADec
@@ -529,13 +529,13 @@ def tsys_off_source_radec(
         observatory: Observatory name for Az/El to RA/Dec conversion.
 
     Returns:
-        Computed scan offset values in radians.
+        Computed scan offset values in radians or None if the POINTING table is empty.
     """
     vis = ms.basename
     # Read POINTING table and return if it's empty
     with casa_tools.TableReader(os.path.join(vis, 'POINTING')) as mytb:
         if mytb.nrows() < 1:
-            mytb.close()
+            LOG.warning("The POINTING table is empty.")
             raise Exception("The POINTING table is empty.")
 
         pointing_times = mytb.getcol('TIME')  # MJD seconds
@@ -657,9 +657,9 @@ def tsys_off_source_radec(
 
 def apply_offset_to_radec(
         direction: MDirection,
-        offsets: Tuple[float, float] = (0.0, 0.0),
+        offsets: tuple[float, float] = (0.0, 0.0),
         use_euler_angles: bool = True
-        ) -> Tuple[float, float]:
+        ) -> tuple[float, float]:
     """
     Computes the right ascension (RA) and declination (Dec) with optional offsets.
     Adapted from Todd Hunter's AU tool radecOffsetToRadec
@@ -698,7 +698,7 @@ def radec_to_sexagesimal(ra: float, dec: float) -> str:
     return f"{ra_hms}, {dec_dms}"
 
 
-def rotation_euler(rao: float, deco: float, r_long: float, r_lat: float) -> Tuple[float, float]:
+def rotation_euler(rao: float, deco: float, r_long: float, r_lat: float) -> tuple[float, float]:
     """
     Rotates a point (rao, deco) using an Euler rotation defined by (r_long, r_lat).
     Adapted from Todd Hunter's AU tool rotationEuler
@@ -758,7 +758,7 @@ def radec_to_direction(ra: float, dec: float, unit: str = "rad", frame: str = 'I
     return casa_tools.measures.direction(frame, f'{ra}{unit}', f'{dec}{unit}')
 
 
-def direction_to_radec(direction: MDirection) -> Tuple[float, float]:
+def direction_to_radec(direction: MDirection) -> tuple[float, float]:
     """
     Extracts RA and Dec values from a CASA direction dictionary.
     Adapted from Todd Hunter's AU tool direction2rad
@@ -772,7 +772,7 @@ def direction_to_radec(direction: MDirection) -> Tuple[float, float]:
     return direction['m0']['value'], direction['m1']['value']
 
 
-def diff_directions(orig_direction: MDirection, offset_direction: MDirection) -> Tuple[float, float]:
+def diff_directions(orig_direction: MDirection, offset_direction: MDirection) -> tuple[float, float]:
     """
     Compute the relative difference between the original position and an offset position.
 

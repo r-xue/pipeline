@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import ssl
 import urllib
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 import certifi
 
@@ -40,12 +40,24 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 
     # docstring and type hints: supplements hifa_importdata
     def __init__(
-            self, context: Context, vis: Optional[List[str]] = None, output_dir: Optional[str] = None,
-            asis: Optional[str] = None, process_caldevice: Optional[bool] = None, session: Optional[str] = None,
-            overwrite: Optional[bool] = None, nocopy: Optional[bool] = None, bdfflags: Optional[bool] = None,
-            lazy: Optional[bool] = None, save_flagonline: Optional[bool] = None, dbservice: Optional[bool] = None,
-            createmms: Optional[str] = None, ocorr_mode: Optional[str] = None, datacolumns: Optional[Dict[str, str]] = None,
-            minparang: Optional[float] = None, parallel: Optional[bool] = None
+            self,
+            context: Context,
+            vis: list[str] | None = None,
+            output_dir: str | None = None,
+            asis: str | None = None,
+            process_caldevice: bool | None = None,
+            session: str | None = None,
+            overwrite: bool | None = None,
+            nocopy: bool | None = None,
+            bdfflags: bool | None = None,
+            lazy: bool | None = None,
+            save_flagonline: bool | None = None,
+            dbservice: bool | None = None,
+            createmms: str | None = None,
+            ocorr_mode: str | None = None,
+            datacolumns: dict[str, str] | None = None,
+            minparang: float | None = None,
+            parallel: bool | None = None
             ):
         """Initialize Inputs.
 
@@ -146,8 +158,8 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 class ALMAImportDataResults(importdata.ImportDataResults):
     def __init__(
             self,
-            mses: Optional[List[MeasurementSet]] = None,
-            setjy_results: Optional[List[FluxCalibrationResults]] = None
+            mses: list[MeasurementSet] | None = None,
+            setjy_results: list[FluxCalibrationResults] | None = None
             ):
         super().__init__(mses=mses, setjy_results=setjy_results)
         self.parang_ranges = {}
@@ -163,7 +175,7 @@ class SerialALMAImportData(importdata.ImportData):
 
     def _get_fluxes(
             self, context: Context, observing_run: ObservingRun
-            ) -> Tuple[str, List[FluxCalibrationResults], Union[List[Dict[str, Union[str, None]]], None]]:
+            ) -> tuple[str | None, list[FluxCalibrationResults], list[dict[str, str | None]] | None]:
         # get the flux measurements from Source.xml for each MS
 
         if self.inputs.dbservice:

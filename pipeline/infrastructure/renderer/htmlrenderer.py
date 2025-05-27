@@ -14,17 +14,18 @@ import pydoc
 import re
 import shutil
 import sys
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 import mako
 import numpy as np
 import pkg_resources
 
 import pipeline
+import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment, infrastructure
 from pipeline.domain import measures
 from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
-    logging, mpihelpers, pipelineqa, task_registry, utils
+    logging, mpihelpers, task_registry, utils
 from pipeline.infrastructure.displays import pointing, summary
 from pipeline.infrastructure.renderer import qaadapter, templates, weblog
 
@@ -357,8 +358,8 @@ class T1_1Renderer(RendererBase):
         def __init__(
                 self,
                 ctx: Context,
-                rows: List["T1_1Renderer.EnvironmentProperty"],
-                data: Dict["T1_1Renderer.EnvironmentProperty", List[str]]
+                rows: list["T1_1Renderer.EnvironmentProperty"],
+                data: dict["T1_1Renderer.EnvironmentProperty", list[str]]
             ):
 
             # 'memory available to pipeline' should not be presented for SD data
@@ -544,7 +545,7 @@ class T1_1Renderer(RendererBase):
         # alias to make the following code more compact and easier to read
         props = T1_1Renderer.EnvironmentProperty
 
-        node_environments: Dict[str, List[environment.Environment]] = {}
+        node_environments: dict[str, list[environment.Environment]] = {}
 
         data = sorted(environment.cluster_details(), key=operator.attrgetter('hostname'))
         for k, g in itertools.groupby(data, operator.attrgetter('hostname')):
@@ -1063,7 +1064,7 @@ class T2_2_1Renderer(T2_2_XRendererBase):
     @staticmethod
     def get_display_context(
         context: Context, ms: MeasurementSet
-    ) -> Dict[str, Union[Context, MeasurementSet, List[Tuple[Source, List[Union[logger.Plot, None]]]]]]:
+    ) -> dict[str, Context | MeasurementSet | list[tuple[Source, list[logger.Plot | None]]]]:
         mosaics = []
         for source in ms.sources:
             pointings = [f for f in ms.fields if f.source_id == source.id]
@@ -1073,7 +1074,9 @@ class T2_2_1Renderer(T2_2_XRendererBase):
             plots = [summary.MosaicPointingsChart(context, ms, source).plot()]
 
             if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
-                plots.append(summary.MosaicTsysChart(context, ms, source).plot())
+                tsys_plot = summary.MosaicTsysChart(context, ms, source).plot()
+                if tsys_plot:
+                    plots.append(tsys_plot)
 
             mosaics.append((source, plots))
 
@@ -1275,7 +1278,7 @@ class T2_2_7Renderer(T2_2_XRendererBase):
             super().render(context)
 
     @staticmethod
-    def get_display_context(context: Context, ms: MeasurementSet) -> Dict[str, Any]:
+    def get_display_context(context: Context, ms: MeasurementSet) -> dict[str, Any]:
         """Get display context and plots points
 
         Args:
@@ -2203,13 +2206,13 @@ def cmp(a, b):
 #   qascores_to_tablerow
 #   logrecords_to_tablerows
 #
-def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
-    all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
+def filter_qascores(results_list, lo:float, hi:float) -> list[pqa.QAScore]:
+    all_scores: list[pqa.QAScore] = results_list.qa.pool
     # suppress scores not intended for the weblog, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    weblog_scores = pipelineqa.scores_with_location(
-        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.ACCORDION, pipelineqa.WebLogLocation.UNSET]
+    weblog_scores = pqa.scores_with_location(
+        all_scores, [pqa.WebLogLocation.BANNER, pqa.WebLogLocation.ACCORDION, pqa.WebLogLocation.UNSET]
     )
     with_score = [s for s in weblog_scores if s.score not in ('', 'N/A', None)]
     return [s for s in with_score if lo < s.score <= hi]
@@ -2230,9 +2233,9 @@ def create_tablerow(results, message: str, msgtype: str, target='') -> MsgTableR
                        target=target)
 
 
-def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
+def qascores_to_tablerows(qascores: list[pqa.QAScore],
                           results,
-                          msgtype: str = 'ERROR') -> List[MsgTableRow]:
+                          msgtype: str = 'ERROR') -> list[MsgTableRow]:
     """
     Convert a list of QAScores to a list of table entries, ready for
     insertion into a Mako template.
@@ -2249,7 +2252,7 @@ def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
             for qascore in qascores]
 
 
-def logrecords_to_tablerows(records, results, msgtype='ERROR') -> List[MsgTableRow]:
+def logrecords_to_tablerows(records, results, msgtype='ERROR') -> list[MsgTableRow]:
     """
     Convert a list of LogRecords to a list of table entries, ready for
     insertion into a Mako template.

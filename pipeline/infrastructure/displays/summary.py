@@ -5,7 +5,7 @@ import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Generator, List, Optional, Tuple
+from typing import TYPE_CHECKING, Generator
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -597,7 +597,7 @@ class MosaicChart(object):
         self.source = source
         self.figfile: str = self._get_figfile()
 
-    def plot(self) -> Optional[logger.Plot]:
+    def plot(self) -> logger.Plot | None:
         """
         Abstract method to generate the mosaic plot.
 
@@ -647,7 +647,7 @@ class MosaicPointingsChart(MosaicChart):
         """
         super().__init__(context, ms, source)
 
-    def plot(self) -> Optional[logger.Plot]:
+    def plot(self) -> logger.Plot | None:
         """
         Generates and saves the mosaic pointings plot.
 
@@ -695,7 +695,7 @@ class MosaicTsysChart(MosaicChart):
         """
         super().__init__(context, ms, source)
 
-    def plot(self) -> Optional[logger.Plot]:
+    def plot(self) -> logger.Plot | None:
         """
         Generates and saves the mosaic Tsys plot.
 
@@ -1063,7 +1063,7 @@ class UVChart(object):
                                        'spw': self.spw_id},
                            command=str(task))
 
-    def _get_spwid_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_spwid_and_field(self) -> tuple[str, str, str, str]:
         # Attempt to get representative source and spwid.
         repr_src, repr_spw = self._get_representative_source_and_spwid()
 
@@ -1088,7 +1088,7 @@ class UVChart(object):
         # If no representative source was identified, then get the preferred source and science spw
         return self._get_preferred_science_spw_and_field()
 
-    def _get_representative_source_and_spwid(self) -> Tuple[str, int]:
+    def _get_representative_source_and_spwid(self) -> tuple[str, int]:
         # Is the representative source in the context or not
         if not self.context.project_performance_parameters.representative_source:
             source_name = None
@@ -1134,7 +1134,7 @@ class UVChart(object):
         spw = str(final_spw.id)
         return spw
 
-    def _get_preferred_science_spw_and_field(self) -> Tuple[str, str, str, str]:
+    def _get_preferred_science_spw_and_field(self) -> tuple[str, str, str, str]:
         # take first TARGET sources, otherwise first AMPLITUDE sources, etc.
         for intent in self.preferred_intent_order:
             sources_with_intent = [s for s in self.ms.sources if intent in s.intents]
@@ -1151,7 +1151,7 @@ class UVChart(object):
 
         return spw, field, field_name, intent
 
-    def _get_field_for_source(self, src_name: str) -> Tuple[str, str, str]:
+    def _get_field_for_source(self, src_name: str) -> tuple[str, str, str]:
         sources_with_name = [s for s in self.ms.sources if s.name == src_name]
         if not sources_with_name:
             LOG.error("Source {} not found in MS.".format(src_name))
@@ -1240,7 +1240,7 @@ class SpwIdVsFreqChart(object):
         self.inputs = inputs
         self.context = context
 
-    def _extract_spwdata_vla(self) -> Generator[List[int], None, None]:
+    def _extract_spwdata_vla(self) -> Generator[list[int], None, None]:
         """Extract list of SPW IDs of VLA from measurement set.
 
         Yields:
@@ -1253,7 +1253,7 @@ class SpwIdVsFreqChart(object):
                 spw_list = [list(spwitem.keys())[0] for spwitem in banddict[band][baseband]]
                 yield spw_list
 
-    def _extract_spwdata_alma_nro(self) -> Generator[List[int], None, None]:
+    def _extract_spwdata_alma_nro(self) -> Generator[list[int], None, None]:
         """Extract list of SPW IDs of ALMA or NRO from measurement set.
 
         Yields:
