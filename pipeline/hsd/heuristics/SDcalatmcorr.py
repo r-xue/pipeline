@@ -58,6 +58,7 @@
 
 import os, sys
 from sys import path
+from typing import Generator
 
 import glob
 import numpy as np
@@ -895,6 +896,276 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
 
     return
 
+
+def select_and_read(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Select data from MS and return data and flag arrays.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+
+    Returns:
+        Two numpy arrays - data and flag
+    """
+    tb = casa_tools.table
+    tb.open(msname)
+    querystr = f'DATA_DESC_ID in {data_desc_id} && FIELD_ID in {field_id}'
+    querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_id_list.tolist()}'
+    print('Reading data for TaQL query: '+querystr)
+    subtb = tb.query(querystr)
+    data = subtb.getcol(datacolumn).real
+    flag = subtb.getcol('FLAG')
+    subtb.close()
+    tb.close()
+
+    return data, flag
+
+
+def get_stats_and_shape(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray
+) -> tuple[np.ndarray, np.ndarray, tuple[int, int, int]]:
+    """Compute statistics and data shape from selected data in the given MS.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+
+    Returns:
+        A tuple containing:
+        - Mean of the data along time axis (masked array)
+        - Standard deviation of the data along time axis (masked array)
+        - Shape of the data as a tuple (npol, nchan, nrow)
+    """
+    LOG.info("get_stats_and_shape: Reading data at once")
+    datak, flagk = select_and_read(msname, datacolumn, data_desc_id, field_id, state_id_list)
+    diffdataonk = np.ma.masked_array(datak, mask=flagk, fill_value=0.0)
+    data_shape = np.shape(diffdataonk)
+    data_mean = np.ma.mean(diffdataonk, axis=2)
+    data_std = np.ma.std(diffdataonk, axis=2)/np.sqrt(data_shape[2])
+
+    return data_mean, data_std, data_shape
+
+
+def get_metric(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray,
+        skychansel: np.ndarray
+) -> tuple[np.ndarray, float, np.ndarray]:
+    """Compute metrics from selected data in the given MS.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+        skychansel: Boolean mask array indicating sky lines
+
+    Returns:
+        A tuple containing:
+        - time averaged data (masked array)
+        - Normalization value for metrics
+        - Updated boolean mask array indicating sky lines that are not masked
+    """
+    LOG.info("get_metric: Reading data at once")
+    data, flag = select_and_read(msname, datacolumn, data_desc_id, field_id, state_id_list)
+    dataon = np.ma.masked_array(data, mask=flag, fill_value=0.0)
+
+    # Pre-correction average
+    precorravedataon = np.ma.mean(dataon, axis=2)
+    maskedchans = np.any(precorravedataon.mask, axis=0)
+
+    skychansel[maskedchans] = False
+
+    normsample = dataon[:, skychansel]
+    # Try to calculate the normalizing value for the metrics
+    # If is cannot calculate it, fill default value of 1
+    # similar thing for plot ranges
+    try:
+        metricnorm = np.ma.max(np.ma.abs(normsample))
+    except Exception:
+        print('Could not determine normalization of data! is all of it flagged??')
+        metricnorm = 1.0
+
+    return precorravedataon, metricnorm, skychansel
+
+
+def select_and_yield(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray
+) -> Generator[tuple[np.ndarray, np.ndarray], None, None]:
+    """Select data from MS and yield data array with mask.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+
+    Yields:
+        Maked data array. Data is read from data column while
+        masks are taken from FLAG column.
+    """
+    tb = casa_tools.table
+    tb.open(msname)
+    querystr = f'DATA_DESC_ID in {data_desc_id} && FIELD_ID in {field_id}'
+    querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_id_list.tolist()}'
+    print('Reading data for TaQL query: '+querystr)
+    subtb = tb.query(querystr)
+    try:
+        for i in range(subtb.nrows()):
+            data = subtb.getcell(datacolumn, i).real
+            flag = subtb.getcell('FLAG', i)
+
+            mdata = np.ma.masked_array(data, mask=flag, fill_value=0.0)
+            data_shape = mdata.shape
+            if len(data_shape) == 2:
+                # If data is 2D, add a third dimension of size 1
+                mdata = mdata.reshape((data_shape[0], data_shape[1], 1))
+
+            yield mdata
+    finally:
+        subtb.close()
+        tb.close()
+
+
+def get_stats_and_shape2(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray
+) -> tuple[np.ndarray, float, np.ndarray]:
+    """Compute metrics from selected data in the given MS.
+
+    This memory-efficient version of get_stats_and_shape
+    but it may take longer to compute as it reads data row-by-row.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+
+    Returns:
+        A tuple containing:
+        - time averaged data (masked array)
+        - Normalization value for metrics
+        - Updated boolean mask array indicating sky lines that are not masked
+    """
+    LOG.info("get_stats_and_shape2: Reading data row-by-row to save memory usage")
+    it = select_and_yield(msname, datacolumn, data_desc_id, field_id, state_id_list)
+    data = next(it)
+    npol, nchan, nrow = data.shape
+    data_data = np.ma.filled(data, 0.0)
+    data_sum = np.sum(data_data, axis=2)
+    data_sqsum = np.sum(data_data * data_data, axis=2)
+    num_data = np.sum(np.logical_not(data.mask), axis=2)
+    for data in it:
+        nrow += data.shape[2]
+        data_data = np.ma.filled(data, 0.0)
+        data_sum += np.sum(data_data, axis=2)
+        data_sqsum += np.sum(data_data * data_data, axis=2)
+        num_data += np.sum(np.logical_not(data.mask), axis=2)
+
+    data_mean = np.ma.masked_array(data_sum, num_data == 0, fill_value=0.0) / num_data
+    data_sqmean = np.ma.masked_array(data_sqsum, num_data == 0, fill_value=0.0) / num_data
+    data_std = np.sqrt(data_sqmean - (data_mean * data_mean)) / np.sqrt(nrow)
+
+    data_shape = (npol, nchan, nrow)
+
+    return data_mean, data_std, data_shape
+
+
+def get_metric2(
+        msname: str,
+        datacolumn: str,
+        data_desc_id: int,
+        field_id: int,
+        state_id_list: np.ndarray,
+        skychansel: np.ndarray
+) -> tuple[np.ndarray, float, np.ndarray]:
+    """Compute metrics from selected data in the given MS.
+
+    This memory-efficient version of get_metric but it may
+    take longer to compute as it reads data row-by-row.
+
+    Args:
+        msname: Name of the MS
+        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        data_desc_id: Data description id for data selection
+        field_id: Field id for data selection
+        state_id_list: List of state ids for data selection
+        skychansel: Boolean mask array indicating sky lines
+
+    Returns:
+        A tuple containing:
+        - time averaged data (masked array)
+        - Normalization value for metrics
+        - Updated boolean mask array indicating sky lines that are not masked
+    """
+    LOG.info("get_metric2: Reading data row-by-row to save memory usage")
+    it = select_and_yield(msname, datacolumn, data_desc_id, field_id, state_id_list)
+    data = next(it)
+    npol, nchan, nrow = data.shape
+    data_data = np.ma.filled(data, 0.0)
+    data_sum = np.sum(data_data, axis=2)
+    data_absmax = np.max(np.abs(data_data), axis=2)
+    num_data = np.sum(np.logical_not(data.mask), axis=2)
+    for data in it:
+        nrow += data.shape[2]
+        data_data = np.ma.filled(data, 0.0)
+        data_sum += np.sum(data_data, axis=2)
+        num_data += np.sum(np.logical_not(data.mask), axis=2)
+        _absmax = np.max(np.abs(data_data), axis=2)
+        data_absmax = np.maximum(data_absmax, _absmax)
+
+    # Pre-correction average
+    precorravedataon = np.ma.masked_array(data_sum, num_data == 0, fill_value=0.0) / num_data
+    maskedchans = np.any(precorravedataon.mask, axis=0)
+
+    skychansel[maskedchans] = False
+
+    # Try to calculate the normalizing value for the metrics
+    # If is cannot calculate it, fill default value of 1
+    # similar thing for plot ranges
+    try:
+        # metricnorm = np.ma.max(np.ma.abs(normsample))
+        metricnorm = np.ma.max(data_absmax[:, skychansel])
+    except Exception:
+        print('Could not determine normalization of data! is all of it flagged??')
+        metricnorm = 1.0
+
+    if metricnorm is np.ma.masked:
+        metricnorm = 1.0
+
+    return precorravedataon, metricnorm, skychansel
+
+
 def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             maxalt = 120.0, lapserate = -5.6, scaleht = 2.0,
             jyperkfactor = None, dobackup = False, forcespws = None, forcefield = None, forcemetricline = None,
@@ -930,7 +1201,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     lapserate: Lapse Rate dTem_dh parameter for at (lapse rate; K/km). Default is -5.6
     scaleht: h0 parameter for at (water scale height; km). Default is 2.0
     '''
-
+    MAX_NUM_CHANNELS = 8000
     qa = casa_tools.quanta
     ms = str(ms)
     #Do a backup of the MS if requested
@@ -1140,7 +1411,6 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     tb_on.close()
     tb.close()
 
-    tb.open(ms, nomodify=False)
     for spwid in spwstoprocess:
         print('Processing spw '+str(spwid))
         nu = spwsetup[spwid]['chanfreqs']/(1.e+09)
@@ -1148,27 +1418,19 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         ################################################################
         ### Calculate and apply correction values
         ################################################################
-        querystr = 'DATA_DESC_ID in {0:s} && FIELD_ID in {1:s}'.format(str(spwsetup[spwid]['ddi']), str(fieldid))
-        querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_ids_on.tolist()}'
-        print('Reading data for TaQL query: '+querystr)
-        subtb = tb.query(querystr)
-        LOG.debug("Start reading_data_spw%d for TaQL query: %s", spwid, querystr)
-        data = subtb.getcol(datacolumn).real
-        flag = subtb.getcol('FLAG')
-        subtb.close()
-        LOG.debug("Done reading_data_spw%d for TaQL query", spwid)
-        npol = data.shape[0]
-
-        dataon = np.ma.masked_array(data, mask=flag, fill_value=0.0)
-        #Pre-correction average
-        precorravedataon = np.ma.mean(dataon, axis = 2)
-        maskedchans = np.any(precorravedataon.mask, axis = 0)
-
-        #Narrow sky channels selection for measuring the metrics
+        # Narrow sky channels selection for measuring the metrics
         skychansel = skysel(skylines[spwid], linestouse = metricskylineids)
-        skychansel[maskedchans] = False
-        #Initialize variables for baseline subtraction
-        metricnorm = -99
+
+        LOG.debug("Start reading_data_spw%d", spwid)
+        nchan = spwsetup[spwid]['nchan']
+        metric_func = get_metric if nchan < MAX_NUM_CHANNELS else get_metric2
+        precorravedataon, metricnorm, skychansel = metric_func(
+            ms, datacolumn, spwsetup[spwid]['ddi'], fieldid, state_ids_on,
+            skychansel
+        )
+        LOG.debug("Done reading_data_spw%d", spwid)
+
+        npol = precorravedataon.shape[0]
 
         #If we are left with no channels with skylines, we are in trouble
         if np.sum(skychansel) == 0:
@@ -1178,29 +1440,10 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             fitstatus = 'defaultmodel'
             return (bestmodels, models, metrics, fitstatus, spwstoprocess, metricskylineids)
 
-        #Pre-correction average
-        normsample = dataon[:,skychansel]
-        #Try to calculate the normalizing value for the metrics
-        #If is cannot calculate it, fill default value of 1
-        #similar thing for plot ranges
-        try:
-            metricnorm = np.ma.max(np.ma.abs(normsample))
-        except:
-            print('Could not determine normalization of data! is all of it flagged??')
-            metricnorm = 1.0
-
         #Plot data before correction
         makePlot(nu=nu, tmavedata=precorravedataon, skychansel=skychansel, tau=tau[spwid],
                  title=strmodel, diffsmoothbox=1, takediff=False, ischosen=None, isize = isize, psize = psize,
                  output=plotsfolder+'/'+ms+'.field'+str(fieldid)+'.spw'+str(spwid)+'.nocorr.png')
-
-    #End of processing uncorrected dataset, close it
-    tb.close()
-
-    #Delete big variables to reduce memory consumption
-    # del(tmdata)
-    del(data)
-    del(flag)
 
     #Lists of plots to do after looping over all models
     plotlist = []
@@ -1219,23 +1462,14 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             ################################################################
             ### Read corrected data for model k
             ################################################################
-            tb.open(msk, nomodify=False)
-            querystr = 'DATA_DESC_ID in {0:s} && FIELD_ID in {1:s}'.format(str(spwsetup[spwid]['ddi']), str(fieldid))
-            querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_ids_on.tolist()}'
-            print('Reading data for TaQL query: '+querystr)
-            subtb = tb.query(querystr)
-            LOG.debug("Start reading_data_spw%d_model%d for TaQL query: %s", spwid, k, querystr)
-            datak = subtb.getcol('DATA').real
-            flagk = subtb.getcol('FLAG')
-            subtb.close()
-            LOG.debug("Done reading_data_spw%d_model%d for TaQL query", spwid, k)
-
-            diffdataonk = np.ma.masked_array(datak, mask=flagk, fill_value=0.0)
-            npolk, nchk, nrowk = np.shape(diffdataonk)
-            tmavedataonk = np.ma.mean(diffdataonk, axis = 2)
-            tmstddataonk = np.ma.std(diffdataonk, axis = 2)/np.sqrt(nrowk)
-
-            del diffdataonk
+            LOG.debug("Start reading_data_spw%d_model%d", spwid, k)
+            nchan = spwsetup[spwid]['nchan']
+            stat_func = get_stats_and_shape if nchan < MAX_NUM_CHANNELS else get_stats_and_shape2
+            tmavedataonk, tmstddataonk, shapek = stat_func(
+                msk, "DATA", spwsetup[spwid]['ddi'], fieldid, state_ids_on
+            )
+            npolk, nchank, nrowk = shapek
+            LOG.debug("Done reading_data_spw%d_model%d", spwid, k)
 
             #Plot corrected data with baseline fit, etc.
             plotlist.append({'nu': nu, 'tmavedata': tmavedataonk, 'skychansel': skychansel,
@@ -1257,9 +1491,6 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             (intsqdiff, intsqdifferr) = calcmetric(skysample, skysamplesigma, metrictype='intsqdiff', smoothbox = diffsmoothbox)
             metrics[fieldid][spwid]['intsqdiff'][k] = intsqdiff
             metrics[fieldid][spwid]['intsqdifferr'][k] = intsqdifferr
-
-            #End of processing corrected dataset k, close it
-            tb.close()
 
     #Pick best model
     chosenspw = spwstoprocess[0]
