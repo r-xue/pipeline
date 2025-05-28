@@ -1124,7 +1124,8 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             outfname = tmpfolder+'/'+ms.replace('.ms','.spw'+str(spwid)+'.model'+str(k)+'.ms')
             task_args = dict(
                 infile=ms, datacolumn=sddatacolumn, outfile=outfname,
-                overwrite=False, spw=str(spwid), antenna = str(iantsel)+'&&'+str(iantsel), field = testfields,
+                overwrite=False, spw=str(spwid), outputspw=str(spwid),
+                antenna = str(iantsel)+'&&'+str(iantsel), field = testfields,
                 gainfactor=jyperkfactor[ms][str(spwid)],
                 dtem_dh=str(models['lapserate'][k])+'K/km', h0=str(models['scaleht'][k])+'km',
                 atmtype=int(models['atmtype'][k]), atmdetail=False
