@@ -359,15 +359,15 @@ class ObservingRun(object):
         """
         return self.get_virtual_spw_id_by_name(target_ms.get_spectral_window(int(spw_id)).name)
 
-    def real2real_spw_id(self, spw_id: int | str, target_ms: MeasurementSet, source_ms: MeasurementSet) -> int | None:
+    def real2real_spw_id(self, spw_id: int | str, source_ms: MeasurementSet, target_ms: MeasurementSet) -> int | None:
         """Translates a real spectral window (SPW) ID from one MS to another.
 
         The translation is done via via the pipeline's virtual SPW ID mapping.
 
         Args:
             spw_id: The real spectral window ID to translate. Can be an integer or a string.
-            target_ms: The target MeasurementSet to which the SPW ID should be mapped.
             source_ms: The source MeasurementSet from which the SPW ID originates.
+            target_ms: The target MeasurementSet to which the SPW ID should be mapped.
 
         Returns:
             The corresponding real SPW ID in the target MS, or None if the mapping
@@ -494,10 +494,10 @@ def has_shared_spw_basename(name1: str, name2: str) -> bool:
     effectively the same across different observation cycles, despite varying
     naming conventions. Examples of such naming conventions include:
 
-    * From Cycle 1-2 to Cycle 3-11 (additional part ID for ALMA):
+    * From Cycle 1-2 to Cycle 3-11 (additional partID used for `spectralspec` identifiers):
         * before: `ALMA_RB_03#BB_1#SW-01#FULL_RES`
         * after:  `X425992413#ALMA_RB_03#BB_2#SW-01#FULL_RES`
-    * From Cycle 3-11 to Cycle 12 (additional group ID):
+    * From Cycle 3-11 to Cycle 12 (additional groupID):
         * before: `X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
         * after:  `X127/X45069401/X3370#X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
 

@@ -341,41 +341,30 @@ def get_spwmap(
 ) -> dict[int, int]:
     """Generates a SPW mapping between two MeasurementSets.
 
-    This function determines how spectral windows from the source MeasurementSet
-    map to spectral windows in the target MeasurementSet. If an `observing_run`
-    object is provided, it leverages the `real2real_spw_id` method for mapping.
-    Otherwise, it falls back to a simpler mapping based on spectral window names.
+    Creates a mapping dictionary that associates spectral window IDs from the source MeasurementSet to their
+    corresponding IDs in the target MeasurementSet. Uses the observing run's virtual-SPW-based mapping method
+    when available, otherwise falls back to name-based matching.
 
     Args:
-        source_ms: The source MeasurementSet object from which SPWs are mapped.
-        target_ms: The target MeasurementSet object to which SPWs are mapped.
-        observing_run: An optional object containing real-to-real observation
-            mapping information. If None, a name-based fallback is used.
+        source_ms: Source MeasurementSet containing SPWs to be mapped from.
+        target_ms: Target MeasurementSet containing SPWs to be mapped to.
+        observing_run: Optional observing run object providing virtual-spw mapping. If None, uses name-based
+            fallback mapping.
 
     Returns:
-        A dictionary where keys are SPW IDs from the `source_ms` and
-        values are their corresponding SPW IDs in the `target_ms`.
+        Dictionary mapping source SPW IDs (keys) to target SPW IDs (values).
     """
     if observing_run is None:
-        # Fall back to get_spwmap_by_name if no observing_run is provided.
+        # Use name-based mapping when observing run is unavailable
         return get_spwmap_by_name(source_ms, target_ms)
 
-    # Initialize the spwmap with a 1:1 identity mapping for all source SPWs.
-    spwmap = {spw.id: spw.id for spw in source_ms.spectral_windows}
+    spwmap = {}
 
-    # Identify science spectral window IDs from the source MeasurementSet.
-    # These are typically the SPWs that require explicit mapping.
-    sci_spw_id_list = [spw.id for spw in source_ms.get_spectral_windows(science_windows_only=True)]
-
-    # Iterate through all SPW IDs in the initial spwmap to refine mappings.
-    for spw_id in spwmap:
-        # Attempt to map science SPWs using the observing_run object.
-        if spw_id in sci_spw_id_list:
-            spw_id_in_target_ms = observing_run.real2real_spw_id(spw_id, target_ms, source_ms)
-
-            # Update the mapping if a valid target-ms SPW ID was successfully found.
-            if spw_id_in_target_ms is not None:
-                spwmap[spw_id] = spw_id_in_target_ms
+    for spw in source_ms.get_spectral_windows(science_windows_only=True):
+        target_spw_id = observing_run.real2real_spw_id(spw.id, source_ms, target_ms)
+        # Add mapping only when valid target SPW ID is found
+        if target_spw_id is not None:
+            spwmap[spw.id] = target_spw_id
 
     return spwmap
 
