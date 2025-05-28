@@ -1,6 +1,7 @@
 import collections
 import copy
 
+from astropy.coordinates import SkyCoord
 import numpy as np
 
 import pipeline.infrastructure.api as api
@@ -29,24 +30,12 @@ def compute_distance(dir_frame: str,
     Returns:
         List of distance values from the reference position in degrees.
     """
-    me = casa_tools.measures
-    qa = casa_tools.quanta
-    ref_dir = me.direction(
-        dir_frame,
-        qa.quantity(ref_ra, "deg"),
-        qa.quantity(ref_dec, "deg")
-    )
-    _dir = copy.deepcopy(ref_dir)
+    frame_lower = dir_frame.lower()
+    ref_dir = SkyCoord(ra=ref_ra, dec=ref_dec, unit='deg', frame=frame_lower)
 
-    def _dist(_ra, _dec):
-        _dir['m0'] = qa.quantity(_ra, 'deg')
-        _dir['m1'] = qa.quantity(_dec, 'deg')
-        qdist = me.separation(_dir, ref_dir)
-        return qa.convert(qdist, 'deg')['value']
+    _dir = SkyCoord(ra=ra, dec=dec, unit='deg', frame=frame_lower)
+    dist = ref_dir.separation(_dir).degree
 
-    dist = np.asarray(
-        [_dist(_ra, _dec) for _ra, _dec in zip(ra, dec)]
-    )
     return dist
 
 
