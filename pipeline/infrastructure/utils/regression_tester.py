@@ -609,7 +609,6 @@ def test_uid___A002_X85c183_X36f__procedure_hsd_calimage__regression():
 
     Recipe name:                procedure_hsd_calimage
     Dataset:                    uid___A002_X85c183_X36f
-    Expected results version:   casa-6.2.1-2-pipeline-2021.2.0.94
     """
     pr = PipelineRegression(
         visname=['uid___A002_X85c183_X36f'],
@@ -627,7 +626,6 @@ def test_uid___A002_X85c183_X36f_SPW15_23__PPR__regression():
     """Run ALMA single-dish restoredata regression on the observation data of M100.
 
     Dataset:                    uid___A002_X85c183_X36f_SPW15_23
-    Expected results version:   casa-6.2.1-2-pipeline-2021.2.0.94
     """
     input_dir = 'pl-regressiontest/uid___A002_X85c183_X36f_SPW15_23'
     pr = PipelineRegression(
@@ -652,7 +650,6 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
 
     Recipe name:                procedure_hsdn_calimage
     Dataset:                    mg2-20170525142607-180419
-    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
     pr = PipelineRegression(
         visname=['mg2-20170525142607-180419.ms'],
@@ -669,7 +666,6 @@ def test_uid___mg2_20170525142607_180419__PPR__regression():
     """Run ALMA single-dish cal+image regression for restore nobeyama recipe.
 
     Dataset:                    mg2-20170525142607-180419
-    Expected results version:   casa-6.2.0-119-pipeline-2020.2.0.23
     """
 
     input_dir = 'pl-regressiontest/mg2-20170525142607-180419'
@@ -696,7 +692,6 @@ def test_csv_3899_eb2_small__procedure_hifa_calimage__regression():
     """PIPE-2245: Run small ALMA cal+image regression to cover various heuristics
 
     Dataset:                    CSV-3899-EB2-small
-    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
 
     input_dir = 'pl-regressiontest/CSV-3899-EB2-small'
@@ -717,15 +712,13 @@ def test_uid___A002_Xee1eb6_Xc58d_pipeline__procedure_hifa_calsurvey__regression
  
     Recipe name:                procedure_hifa_calsurvey
     Dataset:                    uid___A002_Xee1eb6_Xc58d_original.ms
-    Expected results version:   casa-6.3.0-48-pipeline-2021.3.0.5
     """
     input_directory = 'pl-regressiontest/uid___A002_Xee1eb6_Xc58d_calsurvey/'
     pr = PipelineRegression(
         visname=['uid___A002_Xee1eb6_Xc58d_original.ms'],
         recipe='procedure_hifa_calsurvey.xml',
         input_dir=input_directory,
-        expectedoutput_file=(input_directory +
-                             'uid___A002_Xee1eb6_Xc58d.casa-6.3.0-482-pipeline-2021.3.0.5.results.txt'),
+        expectedoutput_dir=input_directory,
         output_dir='uid___A002_Xee1eb6_Xc58d_calsurvey_output'
         )
 
@@ -782,15 +775,13 @@ def test_13A_537__restore__PPR__regression():
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_file=(f'{input_dir}/restore/' +
-                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt'),
+        expectedoutput_dir=f'{input_dir}/restore/',
         output_dir='13A_537__restore__PPR__regression'
         )
 
@@ -809,15 +800,13 @@ def test_13A_537__restore__post1553__PPR__regression():
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
-    Expected results version:   casa-6.6.6-5-pipeline-2025.0.0.10
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_file=(f'{input_dir}/restore/' +
-                             '13A-537.casa-6.6.6-5-pipeline-2025.0.0.10.restore.results.txt'),
+        expectedoutput_dir=f'{input_dir}/restore/',
         output_dir='13A_537__restore__post1553__PPR__regression'
         )
 
@@ -1106,8 +1095,7 @@ class TestSlowerRegression:
             ppr=(test_directory + 'PPR.xml'),
             input_dir=test_directory,
             project_id="2019_1_01056_S",
-            expectedoutput_file=(f'{ref_directory}' +
-                                 'uid___A002_Xe1f219_X6d0b.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt')
+            expectedoutput_dir=f'{ref_directory}'
             )
 
         setup_flux_antennapos(test_directory, pr.output_dir)
@@ -1151,7 +1139,7 @@ class TestSlowerRegression:
             recipe='procedure_hsd_calimage.xml',
             input_dir=test_directory,
             project_id="2019_1_01056_S",
-            expectedoutput_file=f'{ref_directory}uid___A002_Xe1d2cb_X110f1.casa-6.5.4-2-pipeline-2023.0.0.17.results.txt'
+            expectedoutput_dir=f'{ref_directory}'
             )
 
         setup_flux_antennapos(test_directory, pr.output_dir)
