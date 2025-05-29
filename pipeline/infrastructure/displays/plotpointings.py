@@ -40,11 +40,11 @@ class MDirection(TypedDict):
     type: str
 
 
-def compute_mosaic_data(
+def compute_obs_data(
         ms: MeasurementSet,
         source: Source
         ) -> tuple[np.ndarray, np.ndarray, float, list[Distance], list[float]]:
-    """Extract and compute relevant data for plotting.
+    """Extract and compute relevant observation data for plotting.
 
     Args:
         ms: MeasurementSet object.
@@ -98,7 +98,7 @@ def compute_offsets(ra: np.ndarray, dec: np.ndarray) -> tuple[np.ndarray, np.nda
     return delta_ra, delta_dec, mean_ra, mean_dec
 
 
-def create_mosaic_figure(
+def create_figure(
         delta_ra: np.ndarray,
         delta_dec: np.ndarray,
         beam_diameters: list[float],
@@ -133,7 +133,10 @@ def create_mosaic_figure(
 
     fig = plt.figure(figsize=((pixels_x + margin_x) / dpi, (pixels_y + margin_y) / dpi))
     ax = fig.add_subplot(1, 1, 1)
-    fontsize = max(6, min(12, 0.1 * smallest_beam / max(ra_range_arcsec / pixels_x, dec_range_arcsec / pixels_y)))
+    beam_res = max(ra_range_arcsec / pixels_x, dec_range_arcsec / pixels_y)
+    fontsize = 6
+    if beam_res > 0:
+        fontsize = max(fontsize, min(12, 0.1 * smallest_beam / beam_res))
     return fig, ax, fontsize
 
 
@@ -298,11 +301,11 @@ def plot_mosaic_source(ms: MeasurementSet, source: Source, figfile: str) -> None
         None: The function saves the plot to a file and does not return any value.
     """
     # Retrieve field positions and configurations
-    ra, dec, median_ref_freq, dish_diameters, beam_diameters = compute_mosaic_data(ms, source)
+    ra, dec, median_ref_freq, dish_diameters, beam_diameters = compute_obs_data(ms, source)
     delta_ra, delta_dec, mean_ra, mean_dec = compute_offsets(ra, dec)
 
     # Create mosaic plot
-    fig, ax, fontsize = create_mosaic_figure(delta_ra, delta_dec, beam_diameters)
+    fig, ax, fontsize = create_figure(delta_ra, delta_dec, beam_diameters)
     draw_field_labels = len(source.fields) <= 500  # field labels become hard to read if there are too many of them
     plot_dict = compute_element_locs(source, delta_ra, delta_dec, dish_diameters, beam_diameters)
     legend_labels, legend_colors = add_elements_to_plot(
@@ -322,14 +325,14 @@ def plot_mosaic_source(ms: MeasurementSet, source: Source, figfile: str) -> None
     plt.close(fig)
 
 
-def plot_mosaic_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
+def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
     """
     Produce a plot of the Tsys scans relative to the target pointings.
 
     Args:
         ms: MeasurementSet object.
         source: Source object.
-        figfile: file name of the mosaic plot to be created.
+        figfile: file name of the Tsys scans plot to be created.
 
     Returns:
         None: The function saves the plot to a file and does not return any value.
@@ -351,15 +354,15 @@ def plot_mosaic_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> 
         else:
             tsys_field = ms.get_fields(name=tsys_fields[0])[0]
 
-    # Calculate Tsys scan(s) offset to apply to plot
+    # Calculate Tsys scans offset to apply to plot
     tsys_scans_dict = tsys_off_source_radec(ms, source, tsys_field)
 
     # Retrieve TARGET field positions and configurations
-    ra, dec, median_ref_freq, dish_diameters, beam_diameters = compute_mosaic_data(ms, source)
+    ra, dec, median_ref_freq, dish_diameters, beam_diameters = compute_obs_data(ms, source)
     delta_ra, delta_dec, mean_ra, mean_dec = compute_offsets(ra, dec)
 
-    # Create mosaic plot
-    fig, ax, fontsize = create_mosaic_figure(delta_ra, delta_dec, beam_diameters)
+    # Create Tsys scans plot
+    fig, ax, fontsize = create_figure(delta_ra, delta_dec, beam_diameters)
     plot_dict = compute_element_locs(source, delta_ra, delta_dec, dish_diameters, beam_diameters, tsys_scans_dict=tsys_scans_dict)
     legend_labels, legend_colors = add_elements_to_plot(ax, plot_dict, fontsize=fontsize)
 
@@ -384,7 +387,7 @@ def get_arc_formatter(precision: int) -> unitformat.UnitFormat:
         precision: number of significant figures used by formatter
 
     Returns:
-        a UnitFormat object used to create the mosaic plot
+        a UnitFormat object used to create the plot
     """
     s = '{0:.' + str(precision) + 'f}'
     f = unitformat.UnitFormat(prefer_integers=True)
@@ -508,7 +511,7 @@ def antenna_taper_factor(array_name: str) -> float:
     try:
         return antenna_taper[array_name]
     except KeyError:
-        LOG.warning('Unknown array name: {}. Using null antenna taper factor in mosaic plots'.format(array_name))
+        LOG.warning('Unknown array name: {}. Using null antenna taper factor in plots'.format(array_name))
         return 0.0
 
 
@@ -525,8 +528,10 @@ def tsys_off_source_radec(
 
     Args:
         ms: MeasurementSet object.
-        tsys_scans: a list of Scan objects used for TARGET Tsys
-        observatory: Observatory name for Az/El to RA/Dec conversion.
+        tsys_scans: A list of Scan objects used for TARGET Tsys.
+        intent: The intent to retrieve the desired Tsys scans. Default is 
+            'CALIBRATE_ATMOSPHERE#OFF_SOURCE'.
+        observatory: Observatory name for Az/El to RA/Dec conversion. Default is 'ALMA'.
 
     Returns:
         Computed scan offset values in radians or None if the POINTING table is empty.
