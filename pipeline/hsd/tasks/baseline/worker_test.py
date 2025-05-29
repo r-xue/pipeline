@@ -17,7 +17,7 @@ AUTO = "automatic"
         (None,  {17: DEF,      19: DEF,      23: DEF},      False),
         ({},    {17: DEF,      19: DEF,      23: DEF},      False),
         ("spline",         
-                 {17: "spline", 19: "spline", 23: "spline"},False),
+                 {17: "cspline", 19: "cspline", 23: "cspline"},False), #   SPLINE = CSPLINE in the FittingFunction class of fitrorder.py
         ({30: "poly"},     
                  {17: DEF, 19: DEF, 23: DEF},               False),
         ("poly",
@@ -25,12 +25,12 @@ AUTO = "automatic"
         ({"23":"poly"},
                  {17: DEF,      19: DEF,      23: "poly"},  False),
         ({"17":"poly", 19:"spline"},
-                 {"17":"poly",  19:"spline",  23: DEF},     False),
+                 {17:"poly",  19:"cspline",  23: DEF},     False),
         ({17:"poly", 19:"spline", 23:"poly"},
-                 {17:"poly",    19:"spline",  23:"poly"},   False),
+                 {17:"poly",    19:"cspline",  23:"poly"},   False),
         # error inputs 
         ("badfunc",         ValueError,                     True),
-        ({"19":"invalid"},  ValueError,                     True),
+        ({19:"invalid"},  ValueError,                     True),
     ],
 )
 def test_get_fit_func_dict(inp, expected, should_raise):
@@ -61,7 +61,7 @@ def test_get_fit_func_dict(inp, expected, should_raise):
         ({17: 0, 19: 3, 23: 5},
                           {17: 0,    19: 3,    23: 5},       False),
         # error inputs 
-        ("bad",            TypeError,                        True),
+        ("bad",            ValueError,                       True),
         (1.5,              TypeError,                        True),
     ],
 )
