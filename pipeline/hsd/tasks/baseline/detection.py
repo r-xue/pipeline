@@ -731,7 +731,7 @@ class LineWindowParser(object):
         """
         new_window = {}
         for v_spwid, w in window.items():
-                r_spwid = self.context.observing_run.virtual2real_spw_id(v_spwid, self.ms)
+                r_spwid = self.context.observing_run.virtual2real_spw_id(v_spwid, self.ms) if self.context else v_spwid # for unit tests
                 if w is None:
                     new_window[r_spwid] = None
                 else:

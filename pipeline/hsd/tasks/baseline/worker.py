@@ -553,7 +553,7 @@ def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]
     elif isinstance(fit_order, dict):
         fit_order_dict = {}
         for k, v in fit_order.items():
-            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context and ms else str(k)
+            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context and ms else str(k) # for unit tests
             if isinstance(v, int) and v < 0:
                 fit_order_dict[key] = 'automatic'
             else:
@@ -602,7 +602,7 @@ def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]]
         for k, v in fit_func_value.items():
             if v not in valid_funcs:
                 raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
-            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k)
+            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
             processed_fit_func[key] = v
 
         # For each spw, use its provided value or default to 'cspline'
