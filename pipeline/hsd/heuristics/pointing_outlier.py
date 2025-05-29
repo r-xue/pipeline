@@ -5,7 +5,7 @@ from astropy.coordinates import SkyCoord
 import numpy as np
 
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.casa_tools as casa_tools
+import pipeline.infrastructure.utils.conversion as conversion
 
 PointingOutlierHeuristicsResult = collections.namedtuple(
     "PointingOutlierHeuristicsResult",
@@ -30,10 +30,10 @@ def compute_distance(dir_frame: str,
     Returns:
         List of distance values from the reference position in degrees.
     """
-    frame_lower = dir_frame.lower()
-    ref_dir = SkyCoord(ra=ref_ra, dec=ref_dec, unit='deg', frame=frame_lower)
+    sky_frame = conversion.refcode_to_skyframe(dir_frame)
+    ref_dir = SkyCoord(ra=ref_ra, dec=ref_dec, unit='deg', frame=sky_frame)
 
-    _dir = SkyCoord(ra=ra, dec=dec, unit='deg', frame=frame_lower)
+    _dir = SkyCoord(ra=ra, dec=dec, unit='deg', frame=sky_frame)
     dist = ref_dir.separation(_dir).degree
 
     return dist
