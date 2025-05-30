@@ -772,16 +772,20 @@ def test_13A_537__calibration__PPR__regression():
 @pytest.mark.fast
 def test_13A_537__restore__PPR__regression():
     """Run VLA calibration restoredata regression with a PPR file
+    NOTE: results file frozen to CASA/Pipeline version below since products were created
+    with that Pipeline version
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_dir=f'{input_dir}/restore/',
+        expectedoutput_file=f'{input_dir}/restore/' +
+                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt',
         output_dir='13A_537__restore__PPR__regression'
         )
 
