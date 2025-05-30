@@ -118,7 +118,7 @@ def segmentEdges(seq, gap, label, sortdata = True):
     n = len(seq)
     diff = seq[1:] - seq[0:n-1]
     if np.any(diff < 0):
-        print('Array is not sorted, use sortdata = True')
+        LOG.info('Array is not sorted, use sortdata = True')
         return None
     isgap = (diff > gap)
     if np.sum(isgap) > 0:
@@ -187,7 +187,7 @@ def sigclipfit(x, A, Asig, fitdeg, nclips, nsigma, bordertokeep = 0.05, progdegr
                 coefs = np.polyfit(x[thissel], A[thissel], fitdeg, w=1/Asig[thissel])
             except:
                 coefs = [0.0 for i in range(degree+1)]
-                print('No data!!!\nx='+str(x[thissel])+'\nA='+str(A[thissel])+'\nAsig='+str(Asig[thissel]))
+                LOG.info('No data!!!\nx='+str(x[thissel])+'\nA='+str(A[thissel])+'\nAsig='+str(Asig[thissel]))
             model = np.ma.sum([coefs[i]*(x**(degree-i)) for i in range(degree+1)], axis=0)
             diff = A - model
             (mu, sigma) = robuststats(diff)
@@ -626,9 +626,9 @@ def getSpecSetup(myms, spwlist = []):
         spwsetup[spwid]['istdm2'] = (nchanperbb[spwsetup[spwid]['BB'] - 1] in [128, 256])
         spwsetup[spwid]['dosmooth'] = (nchanperbb[spwsetup[spwid]['BB'] - 1]*spwsetup[spwid]['npol'] in [256, 8192])
         if spwsetup[spwid]['dosmooth']:
-            print('Spw %d in BB_%d (total Nchan within BB is %d, sp avg likely not applied).  dosmooth=True' % (spwid, spwsetup[spwid]['BB'], nchanperbb[spwsetup[spwid]['BB'] - 1]*spwsetup[spwid]['npol']))
+            LOG.info('Spw %d in BB_%d (total Nchan within BB is %d, sp avg likely not applied).  dosmooth=True' % (spwid, spwsetup[spwid]['BB'], nchanperbb[spwsetup[spwid]['BB'] - 1]*spwsetup[spwid]['npol']))
         else:
-            print('Spw %d in BB_%d (total Nchan within BB is %d, sp avg likely applied).  dosmooth=False' % (spwid, spwsetup[spwid]['BB'], nchanperbb[spwsetup[spwid]['BB'] - 1]*spwsetup[spwid]['npol']))
+            LOG.info('Spw %d in BB_%d (total Nchan within BB is %d, sp avg likely applied).  dosmooth=False' % (spwid, spwsetup[spwid]['BB'], nchanperbb[spwsetup[spwid]['BB'] - 1]*spwsetup[spwid]['npol']))
 
     msmd.close()
 
@@ -822,7 +822,7 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
         ymin = mindata - lowbuf*datarange
         ymax = maxdata + highbuf*datarange
     except:
-        print('Could not determine normalization of data! is all of it flagged??')
+        LOG.warning('Could not determine normalization of data! is all of it flagged??')
         datarange = 2.0
         ymin = -1.0
         ymax = 1.0
@@ -920,7 +920,7 @@ def select_and_read(
     tb.open(msname)
     querystr = f'DATA_DESC_ID in {data_desc_id} && FIELD_ID in {field_id}'
     querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_id_list.tolist()}'
-    print('Reading data for TaQL query: '+querystr)
+    LOG.info('Reading data for TaQL query: '+querystr)
     subtb = tb.query(querystr)
     data = subtb.getcol(datacolumn).real
     flag = subtb.getcol('FLAG')
@@ -1003,7 +1003,7 @@ def get_metric(
     try:
         metricnorm = np.ma.max(np.ma.abs(normsample))
     except Exception:
-        print('Could not determine normalization of data! is all of it flagged??')
+        LOG.warning('Could not determine normalization of data! is all of it flagged??')
         metricnorm = 1.0
 
     return precorravedataon, metricnorm, skychansel
@@ -1033,7 +1033,7 @@ def select_and_yield(
     tb.open(msname)
     querystr = f'DATA_DESC_ID in {data_desc_id} && FIELD_ID in {field_id}'
     querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_id_list.tolist()}'
-    print('Reading data for TaQL query: '+querystr)
+    LOG.info('Reading data for TaQL query: '+querystr)
     subtb = tb.query(querystr)
     try:
         for i in range(subtb.nrows()):
@@ -1157,7 +1157,7 @@ def get_metric2(
         # metricnorm = np.ma.max(np.ma.abs(normsample))
         metricnorm = np.ma.max(data_absmax[:, skychansel])
     except Exception:
-        print('Could not determine normalization of data! is all of it flagged??')
+        LOG.warning('Could not determine normalization of data! is all of it flagged??')
         metricnorm = 1.0
 
     if metricnorm is np.ma.masked:
@@ -1221,7 +1221,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     ################################################################
     ### Get metadata
     ################################################################
-    print('Obtaining metadata for MS: '+ms)
+    LOG.info('Obtaining metadata for MS: '+ms)
     spwsetup = getSpecSetup(ms)
     #chanfreqs = {}
     msmd = casa_tools.msmd
@@ -1234,8 +1234,8 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     #Initialize list of all SPWs to work on
     spws = spwsetup['spwlist']
     metricskylineids = 'all'
-    print('>>> forcespws='+str(forcespws)+' >>> metricskylineids='+str(forcemetricline))
-    print('>>> spws='+str(spws)+' >>> metricskylineids='+str(metricskylineids))
+    LOG.info('>>> forcespws='+str(forcespws)+' >>> metricskylineids='+str(forcemetricline))
+    LOG.info('>>> spws='+str(spws)+' >>> metricskylineids='+str(metricskylineids))
     msmd.close()
     #Set fields to correct
     if (forcefield is not None) and (type(forcefield) == int):
@@ -1253,7 +1253,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     ################################################################
     ### Get atmospheric parameters for ATM
     ################################################################
-    print('Obtaining atmospheric parameters for MS: '+ms)
+    LOG.info('Obtaining atmospheric parameters for MS: '+ms)
     tb = casa_tools.table
     tb.open(os.path.join(ms, 'ASDM_CALWVR'))
     LOG.debug("Start reading water data from ASDM_CALWVR table")
@@ -1284,7 +1284,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         spwstoprocess = [forcespws]
     else:
         spwstoprocess = []
-    print('initial spwstoprocess='+str(spwstoprocess))
+    LOG.info('initial spwstoprocess='+str(spwstoprocess))
 
     #If only one SPW is to be processed, pick the best one
     if (len(spwstoprocess) > 0) and (forcemetricline is None) and maxonlyspw:
@@ -1299,7 +1299,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         metricskylineids = forcemetricline
     if (len(spwstoprocess) > 0) and (forcemetricline is not None) and (type(forcespws) == int):
         metricskylineids = [forcemetricline]
-    print('selecting spwstoprocess='+str(spwstoprocess)+' metricskylineids='+str(metricskylineids))
+    LOG.info('selecting spwstoprocess='+str(spwstoprocess)+' metricskylineids='+str(metricskylineids))
     #Smoothing box for diff metrics
     if (len(spwstoprocess) > 0):
         diffsmoothbox = max(1,int(np.round(diffsmooth*np.max([spwsetup[s]['nchan'] for s in spwstoprocess]))))
@@ -1322,19 +1322,19 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     models = np.array([model for model in product(atmtype, maxalt, lapserate, scaleht)], dtype = modtypes)
     nmodels = len(models)
     metricdtypes = np.dtype([('maxabsdiff', float), ('maxabsdifferr', float), ('intabsdiff', float), ('intabsdifferr', float), ('intsqdiff', float), ('intsqdifferr', float)])
-    print('fieldid: '+str(fieldid)+' spwstoprocess: '+str(spwstoprocess))
+    LOG.info('fieldid: '+str(fieldid)+' spwstoprocess: '+str(spwstoprocess))
     #Create metric output dictionary
     if (len(spwstoprocess) > 0) and (jyperkfactor is not None):
         #Case where we have at least one skyline available
-        print('metricskylineids: '+str(metricskylineids))
+        LOG.info('metricskylineids: '+str(metricskylineids))
         metrics = {fieldid: {spwid: np.zeros(nmodels, dtype = metricdtypes) for spwid in spwstoprocess}}
     #If no peak, abort process!!
     else:
         #We either have no skylines or no jy/K factor. Return the correct message
         if len(spwstoprocess) == 0:
-            print('No skylines! Reverting to default model...')
+            LOG.info('No skylines! Reverting to default model...')
         if jyperkfactor is None:
-            print('No Jy/K factor!! Cannot perform calculation, reverting to default model...')
+            LOG.info('No Jy/K factor!! Cannot perform calculation, reverting to default model...')
         spwid = spws[0]
         metrics = makeNANmetrics(fieldid, spwid, nmodels)
         bestmodels = defmodel
@@ -1348,13 +1348,13 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         tground.append(pl.median(tground_all[tmatm_all==tt]))
         pground.append(pl.median(pground_all[tmatm_all==tt]))
         hground.append(pl.median(hground_all[tmatm_all==tt]))
-        print('PWV = %fm, T = %fK, P = %fPa, H = %f%% at %s' % (pwv[-1], tground[-1], pground[-1], hground[-1], qa.time('%fs' % tt, form='fits')[0]))
+        LOG.info('PWV = %fm, T = %fK, P = %fPa, H = %f%% at %s' % (pwv[-1], tground[-1], pground[-1], hground[-1], qa.time('%fs' % tt, form='fits')[0]))
 
     ################################################################
     ### Looping over spws
     ################################################################
-    print('start processing '+ms+' ...')
-    print('will go over SPWs: '+str(spwstoprocess))
+    LOG.info('start processing '+ms+' ...')
+    LOG.info('will go over SPWs: '+str(spwstoprocess))
 
     ################################################################
     ## Apply correction using all the different models
@@ -1375,11 +1375,11 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     #Select antenna to be used, if not selected
     if (type(iant) == int) or ((type(iant) == str) and iant.isnumeric()):
         iantsel = int(iant)
-        print('Test data selected forced to use antenna {0:d} ({1:s})'.format(iantsel,spwsetup['antnames'][iantsel]))
+        LOG.info('Test data selected forced to use antenna {0:d} ({1:s})'.format(iantsel,spwsetup['antnames'][iantsel]))
     else:
         antflagfrac = getAntennaFlagFrac(ms, testfields, spwid, spwsetup)
         iantsel = np.argsort(antflagfrac)[0]
-        print('Test data selected automatically with antenna {0:d} ({1:s})'.format(iantsel,spwsetup['antnames'][iantsel]))
+        LOG.info('Test data selected automatically with antenna {0:d} ({1:s})'.format(iantsel,spwsetup['antnames'][iantsel]))
 
     #String with data column to be used in sdatmcor command
     if datacolumn == 'CORRECTED_DATA':
@@ -1391,7 +1391,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     for k in range(nmodels):
         for spwid in spwstoprocess:
             strmodel = '{0:d}/{1:d}: (atmType,maxAlt,scaleht,lapserate)=({2:d},{3:.2f}km,{4:.2f}km,{5:.2f}K/km)'.format(k+1, nmodels, models['atmtype'][k], models['maxalt'][k], models['scaleht'][k], models['lapserate'][k])
-            print('Correcting data with model '+strmodel)
+            LOG.info('Correcting data with model '+strmodel)
             outfname = tmpfolder+'/'+ms.replace('.ms','.spw'+str(spwid)+'.model'+str(k)+'.ms')
             task_args = dict(
                 infile=ms, datacolumn=sddatacolumn, outfile=outfname,
@@ -1412,7 +1412,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     tb.close()
 
     for spwid in spwstoprocess:
-        print('Processing spw '+str(spwid))
+        LOG.info('Processing spw '+str(spwid))
         nu = spwsetup[spwid]['chanfreqs']/(1.e+09)
 
         ################################################################
@@ -1434,7 +1434,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
 
         #If we are left with no channels with skylines, we are in trouble
         if np.sum(skychansel) == 0:
-            print('Could not select skyline channels! Aborting...')
+            LOG.info('Could not select skyline channels! Aborting...')
             metrics = makeNANmetrics(fieldid, spwid, nmodels)
             bestmodels = defmodel
             fitstatus = 'defaultmodel'
@@ -1453,10 +1453,10 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         #cycle over all models
         for k in range(nmodels):
             strmodel = '{0:d}/{1:d}: ({2:d},{3:.2f}km,{4:.2f}km,{5:.2f}K/km)\nEB:{6:s}\nSPW:{7:s}, Field:{8:s}'.format(k+1, nmodels, models['atmtype'][k], models['maxalt'][k], models['scaleht'][k], models['lapserate'][k], ms, str(spwid), spwsetup['namesfor'][str(fieldid)][0])
-            print('Going over model '+strmodel)
+            LOG.info('Going over model '+strmodel)
             msk = tmpfolder+'/'+ms.replace('.ms','.spw'+str(spwid)+'.model'+str(k)+'.ms')
 
-            print('Processing spw '+str(spwid))
+            LOG.info('Processing spw '+str(spwid))
             nu = spwsetup[spwid]['chanfreqs']/(1.e+09)
 
             ################################################################
@@ -1495,7 +1495,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     #Pick best model
     chosenspw = spwstoprocess[0]
     chosenmetric = metrics[fieldid][chosenspw][decisionmetric]
-    print('for ms: {0:s}, chosenmetric = {1:s}'.format(ms, str(chosenmetric)))
+    LOG.info('for ms: {0:s}, chosenmetric = {1:s}'.format(ms, str(chosenmetric)))
     if not np.any(np.isnan(chosenmetric)):
         idxbestmodel = np.argsort(chosenmetric)[0]
         bestmodels = models[idxbestmodel]
@@ -1621,8 +1621,8 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
         #from context
         jyperkfactor = getJyperKfromCaltable(mslist, context)
     elif (jyperkfactor is None) and (context is None):
-        print('Neither jy/K factor dictionary nor pipeline context given as input!!')
-        print('Could not measure atmospheric line residuals, exiting to default...')
+        LOG.warning('Neither jy/K factor dictionary nor pipeline context given as input!!')
+        LOG.warning('Could not measure atmospheric line residuals, exiting to default...')
 
     #Output dictionaries
     models = {}
@@ -1640,7 +1640,7 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
     if resultsfile is None:
         resultsfile = 'modelparam_'+timestamp+'.txt'
     #Get info from first MS
-    print('Obtaining metadata for First MS: '+mslist[0])
+    LOG.info('Obtaining metadata for First MS: '+mslist[0])
     spwsetup1 = getSpecSetup(mslist[0])
     #Set fields to correct
     if (forcefield is None) and (context is not None):
@@ -1651,12 +1651,12 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
         forcefield = [f for f in spwsetup1['namesfor'].keys() if spwsetup1['namesfor'][f] == repfield][0]
     elif (forcefield is None) and (context is None):
         #We could not get the fieldid from the context, default to first field
-        print('No context to obtain the representative field from! using first field...')
+        LOG.info('No context to obtain the representative field from! using first field...')
         forcefield = None
     elif (forcefield is not None) and (type(forcefield) == int):
         fieldid = forcefield
     else:
-        print('Could not understand FIELDID='+str(forcefield)+'! Taking first instead...')
+        LOG.info('Could not understand FIELDID='+str(forcefield)+'! Taking first instead...')
         forcefield = None
 
     #If the SPW and/or the metric line is force to a value, will keep using it for all MSs
@@ -1674,9 +1674,9 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
                     defatmtype=defatmtype, defmaxalt=defmaxalt, deflapserate=deflapserate, defscaleht=defscaleht,
                     decisionmetric = decisionmetric)
 
-    print('metrics: '+str(metrics))
-    print('bestmodels: '+str(bestmodels))
-    print('fitstatus: '+str(fitstatus))
+    LOG.info('metrics: '+str(metrics))
+    LOG.info('bestmodels: '+str(bestmodels))
+    LOG.info('fitstatus: '+str(fitstatus))
 
     ms1 = mslist[0]
     f1 = list(metrics[ms1].keys())[0]
@@ -1704,7 +1704,7 @@ def selectModelParams(mslist, context = None, jyperkfactor = None, decisionmetri
     for ms in mslist:
         for m in range(nmodels):
             mdata = ','.join(['{0:.6f},{1:.8f}'.format(metrics[ms][f1][s1][m][met],metrics[ms][f1][s1][m][met+'err']) for met in metricnames])
-            print('ms,m,mdata={0:s} {1:d} {2:s}\n'.format(ms,m,mdata))
+            LOG.info('ms,m,mdata={0:s} {1:d} {2:s}\n'.format(ms,m,mdata))
             f.write('{0:s},{1:d},{2:s}\n'.format(ms,m,mdata))
 
     f.close()
@@ -1762,12 +1762,12 @@ def redPipeSDatmcorr(iant = 'auto', atmtype = [1, 2, 3, 4],
 
     timestamp = getTimeStamp()
     if not pipelineloaded:
-        print('Pipeline tasks not available!')
+        LOG.warning('Pipeline tasks not available!')
         return
 
     uidfilelist = glob.glob('uid___*')
     asdmlist = [item for item in uidfilelist if not '.' in item]
-    print('Found the following ASDMs: '+str(asdmlist))
+    LOG.info('Found the following ASDMs: '+str(asdmlist))
     #Create the working folder...
     os.system('mkdir working')
     for asdm in asdmlist:
