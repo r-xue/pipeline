@@ -29,6 +29,7 @@ from pipeline.infrastructure.renderer import rendererutils
 from pipeline.qa import checksource
 
 if TYPE_CHECKING:
+    from casatools import coordsys
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
@@ -3322,7 +3323,12 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
-def generate_metric_mask(context, result, cs, mask):
+def generate_metric_mask(
+        context: Context,
+        result: SDImagingResultItem,
+        cs: coordsys,
+        mask: np.ndarray
+) -> np.ndarray:
     """
     Generate boolean mask array for metric calculation in
     score_sdimage_masked_pixels. If image pixel contains
@@ -3330,11 +3336,10 @@ def generate_metric_mask(context, result, cs, mask):
     False.
 
     Arguments:
-        context {Context} -- Pipeline context
-        result {SDImagingResultItem} -- result item created by
-                                        hsd_imaging
-        cs {coordsys} -- CASA coordsys tool
-        mask {bool array} -- image mask
+        context: Pipeline context
+        result: result item created by hsd_imaging
+        cs: CASA coordsys tool
+        mask: image mask
 
     Returns:
         bool array -- metric mask (True: valid, False: invalid)
@@ -3486,10 +3491,9 @@ def direction_recover( ra, dec, org_direction ):
 
 
 @log_qa
-def score_sdimage_masked_pixels(context, result):
+def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """
     Evaluate QA score based on the fraction of masked pixels in image.
-
 
     Requirements (PIPE-249):
         - calculate the number of masked pixels in image
@@ -3501,8 +3505,8 @@ def score_sdimage_masked_pixels(context, result):
             *linearly interpolate between 0.5 and 0.0
 
     Arguments:
-        context {Context} -- Pipeline context
-        result {SDImagingResultItem} -- Imaging result instance
+        context: Pipeline context
+        result: Imaging result instance
 
     Returns:
         QAScore -- QAScore instance holding the score based on number of
