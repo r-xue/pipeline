@@ -1115,28 +1115,6 @@ def errorexit_present(context: Context) -> bool:
     return len(errorexit_files) > 0
 
 
-# def sanity_checks(context: Context) -> Dict[str, bool]:
-#     """
-#     Do the following sanity-checks on the pipeline run
-
-#     1. rawdata, working, products directories are present
-#     2. pipeline_manifest.xml is present under the products directory
-#     3. Non-existence of errorexit-*.txt in working directory
-
-#     Args:
-#         context: Context object
-
-#     Returns:
-#         Dict[str, bool] of sanity check values
-#     """
-#     # Non-results-based sanity checks
-#     sanity_checks = {}
-#     sanity_checks['directories_present'] = directories_present(context)
-#     sanity_checks['manifest_present'] = manifest_present(context)
-#     sanity_checks["errorexit"] = errorexit_present(context)
-#     return sanity_checks
-
-
 def get_all_subclasses(cls: RegressionExtractor) -> list[RegressionExtractor]:
     """
     Get all subclasses from RegressionExtractor classes tree recursively.
