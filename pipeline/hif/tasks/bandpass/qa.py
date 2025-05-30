@@ -30,7 +30,7 @@ class BandpassQAPool(pqa.QAScorePool):
         self.rawdata = rawdata
         self._num_pols = utils.get_num_caltable_polarizations(caltable)
 
-    def update_scores(self, ms):
+    def update_scores(self, ms, caltable):
         """
         MeasurementSet is needed to convert from integer identifier stored in
         QA dictionary to the antenna, spw and pol it represents.
@@ -46,12 +46,13 @@ class BandpassQAPool(pqa.QAScorePool):
         # self.pool.extend(phaseup_combine_scores)
 
         # Compute QA score based on bandpass_pipereq234.
-        bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms)
+        bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms, caltable)
         self.pool[:] = bandpass_pipereq234_scores
 
-    def _get_bandpass_pipereq234_scores(self, ms):
-        spws = bandpass_pipereq234.bandpass_platforming()
-        print("Spws affected", spws)
+    def _get_bandpass_pipereq234_scores(self, ms, caltable):
+        print(f"Fetching platforming QA info for MS {ms.basename} and caltable {caltable}")
+        spws = bandpass_pipereq234.bandpass_platforming(ms, caltable)
+        print(f"Spws affected {spws}")
         # Get set of spws and antennas impacted
 
         f_spw = len(spws.keys())/len(ms.get_spectral_windows())
@@ -76,13 +77,14 @@ class BandpassQAPool(pqa.QAScorePool):
             score = qa_max - (qa_max-qa_min) * f_spw - qa_ref
             shortmsg = "Correlator subband issues detected"
 
-            longmsg = f"{ms.basename}: correlator subband issues may be affecting the following solutions: "
+            longmsg = f"For {ms.basename}: correlator subband issues may be affecting the following solutions: "
+            spw_message_parts = []
             for spw in spws.keys():
-                longmsg += f"Spw {spw}:"
-                longmsg += ",".join(spws[spw])
+                part = f"Spw {spw}: " + ", ".join(spws[spw])
+                spw_message_parts.append(part)
+            longmsg += "; ".join(spw_message_parts)
 
         print(f"creating score {longmsg} {shortmsg} {score}")
-        
         return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename)]
 
     def _get_qascore(self, ms, score_type):
@@ -161,7 +163,7 @@ class BandpassQAHandler(pqa.QAPlugin):
                     try:
                         qa_results = bpcal.bpcal(calapp.gaintable, qa_dir)
                         result.qa = BandpassQAPool(qa_results, calapp.gaintable)
-                        result.qa.update_scores(ms)
+                        result.qa.update_scores(ms, calapp.gaintable)
 
                     except Exception as e:
                         result.qa = pqa.QAScorePool()
@@ -193,3 +195,5 @@ class BandpassListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
+        # HERE: Could also do it for all MSes and caltables in here.
