@@ -1,5 +1,5 @@
 #################################################################################################################
-# Pipeline Dependency Requirements File - CASA Version >=6.6.6; Python 3.10 (monolithic)
+# Pipeline Dependency Requirements File - CASA Version >=6.6.6; Python 3.10/3.12 (monolithic)
 #################################################################################################################
 #
 # Usage:
@@ -31,5 +31,6 @@ ps_mem==3.14                            # https://pypi.org/project/ps-mem
 astropy==7.1.0;python_version>'3.10'    # https://docs.astropy.org/en/stable/changelog.html
 astropy==6.1.7;python_version<='3.10'   # last version compatible with Python 3.10    
 docstring-inheritance==2.2.2            # https://pypi.org/project/docstring-inheritance
-bdsf==1.13.0.post2                      # https://github.com/lofar-astron/PyBDSF
-                                        # Only required for the VLASS pipeline
+bdsf==1.13.0.post2; sys_platform == "linux" or (sys_platform == "darwin" and platform_machine == "arm64")                      
+                                        # https://github.com/lofar-astron/PyBDSF
+                                        # Only required for the VLASS pipeline and installed for Linux or macOS-arm64
