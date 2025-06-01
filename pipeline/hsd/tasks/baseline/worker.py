@@ -384,8 +384,10 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         unique_spws = set(spw_id_list)
         
         # Convert the fitting parameters into dictionaries mapping each SPW.
-        fit_order_dict = get_fit_order_dict(fit_order, unique_spws, ms, self.context)
-        spw_funcs_dict = get_fit_func_dict(fit_func, unique_spws, ms, self.context, self.switchpoly)
+        fit_order_dict = SerialBaselineSubtractionWorker.get_fit_order_dict(
+            fit_order, unique_spws, ms, self.inputs.context)
+        spw_funcs_dict = SerialBaselineSubtractionWorker.get_fit_func_dict(
+            fit_func, unique_spws, ms, self.inputs.context, self.inputs.switchpoly)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -517,107 +519,107 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         return results
     
 
-def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
-                spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
-    """
-    Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
-    
-    If fit_order is None or falsy, every SPW is assigned 'automatic' (triggering heuristics).
-    If a single integer (or string) is provided, it is applied to all SPWs.
-    If a dictionary is provided, keys are normalized to integers; missing SPWs default to 'automatic'.
-    
-    Args:
-        fit_order: The fit order parameter (int, dict, or None).
-        spw_id_list: List of spectral window IDs to process.
-    
-    Returns:
-        A dictionary mapping each SPW ID (int) to its fit order (int or 'automatic').
-    
-    Raises:
-        TypeError: Value of fit_order has unsupported data type
-    """
-    if not fit_order:
-        return {spw_id: 'automatic' for spw_id in spw_id_list}
+    def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
+                    spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
+        """
+        Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
+        
+        If fit_order is None or falsy, every SPW is assigned 'automatic' (triggering heuristics).
+        If a single integer (or string) is provided, it is applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; missing SPWs default to 'automatic'.
+        
+        Args:
+            fit_order: The fit order parameter (int, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
+        
+        Returns:
+            A dictionary mapping each SPW ID (int) to its fit order (int or 'automatic').
+        
+        Raises:
+            TypeError: Value of fit_order has unsupported data type
+        """
+        if not fit_order:
+            return {spw_id: 'automatic' for spw_id in spw_id_list}
 
-    elif isinstance(fit_order, (int, str)):
-        if isinstance(fit_order, str):
-            if fit_order != 'automatic':
-                raise ValueError(f"Unsupported fit_order string: {fit_order}")
-            value = fit_order
-        elif isinstance(fit_order, int) and fit_order < 0:
-            value = 'automatic'
-        else:
-            value = fit_order
-        return {spw_id: value for spw_id in spw_id_list}
-
-    elif isinstance(fit_order, dict):
-        fit_order_dict = {}
-        for k, v in fit_order.items():
-            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context and ms else str(k) # for unit tests
-            if isinstance(v, int) and v < 0:
-                fit_order_dict[key] = 'automatic'
+        elif isinstance(fit_order, (int, str)):
+            if isinstance(fit_order, str):
+                if fit_order != 'automatic':
+                    raise ValueError(f"Unsupported fit_order string: {fit_order}")
+                value = fit_order
+            elif isinstance(fit_order, int) and fit_order < 0:
+                value = 'automatic'
             else:
-                fit_order_dict[key] = v
-        return {spw_id: fit_order_dict.get(str(spw_id), 'automatic')
-                for spw_id in spw_id_list}
+                value = fit_order
+            return {spw_id: value for spw_id in spw_id_list}
 
-    else:
-        raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
+        elif isinstance(fit_order, dict):
+            fit_order_dict = {}
+            for k, v in fit_order.items():
+                key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context and ms else str(k) # for unit tests
+                if isinstance(v, int) and v < 0:
+                    fit_order_dict[key] = 'automatic'
+                else:
+                    fit_order_dict[key] = v
+            return {spw_id: fit_order_dict.get(str(spw_id), 'automatic')
+                    for spw_id in spw_id_list}
+
+        else:
+            raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
 
-def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
-                    spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> Dict[int, BaselineFitParamConfig]:
-    """
-    Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
+    def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
+                        spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> Dict[int, BaselineFitParamConfig]:
+        """
+        Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
 
-    If fit_func is None or falsy, the default 'cspline' is used.
-    If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
-    If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
+        If fit_func is None or falsy, the default 'cspline' is used.
+        If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
 
-    Args:
-        fit_func: The fit function parameter (str, dict, or None).
-        spw_id_list: List of spectral window IDs to process.
+        Args:
+            fit_func: The fit function parameter (str, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
 
-    Returns:
-        A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
-    """
-    if not fit_func:
-        fit_func_value = 'cspline'
-    else:
-        fit_func_value = fit_func
+        Returns:
+            A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
+        """
+        if not fit_func:
+            fit_func_value = 'cspline'
+        else:
+            fit_func_value = fit_func
 
-    valid_funcs = {'spline', 'cspline', 'poly', 'polynomial'}
-    if not isinstance(fit_func_value, dict):
-        # Validate string
-        if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
-            raise ValueError(f"Unsupported fit_func string: {fit_func_value}")
-        # Single string: Create one instance for all SPWs.
-        blparam_heuristic = BaselineFitParamConfig(
-            fitfunc=fit_func_value,
-            switchpoly=switchpoly
-        )
-        return {spw_id: blparam_heuristic for spw_id in spw_id_list}
-    else:
-        processed_fit_func = {}
-        for k, v in fit_func_value.items():
-            if v not in valid_funcs:
-                raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
-            key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
-            processed_fit_func[key] = v
-
-        # For each spw, use its provided value or default to 'cspline'
-        unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
-
-        # Create one BaselineFitParamConfig instance per unique function string.
-        heuristics_map = {
-            func_str: BaselineFitParamConfig(
-                fitfunc=func_str,
+        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial'}
+        if not isinstance(fit_func_value, dict):
+            # Validate string
+            if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
+                raise ValueError(f"Unsupported fit_func string: {fit_func_value}")
+            # Single string: Create one instance for all SPWs.
+            blparam_heuristic = BaselineFitParamConfig(
+                fitfunc=fit_func_value,
                 switchpoly=switchpoly
             )
-            for func_str in unique_fit_funcs
-        }
-        return {spw_id: heuristics_map[processed_fit_func.get(str(spw_id), 'cspline')]
-                for spw_id in spw_id_list}
+            return {spw_id: blparam_heuristic for spw_id in spw_id_list}
+        else:
+            processed_fit_func = {}
+            for k, v in fit_func_value.items():
+                if v not in valid_funcs:
+                    raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
+                key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
+                processed_fit_func[key] = v
+
+            # For each spw, use its provided value or default to 'cspline'
+            unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
+
+            # Create one BaselineFitParamConfig instance per unique function string.
+            heuristics_map = {
+                func_str: BaselineFitParamConfig(
+                    fitfunc=func_str,
+                    switchpoly=switchpoly
+                )
+                for func_str in unique_fit_funcs
+            }
+            return {spw_id: heuristics_map[processed_fit_func.get(str(spw_id), 'cspline')]
+                    for spw_id in spw_id_list}
         
 class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """Template class for parallel baseline subtraction task.

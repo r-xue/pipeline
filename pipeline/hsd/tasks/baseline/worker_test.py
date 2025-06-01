@@ -1,7 +1,6 @@
 import pytest
 from pipeline.hsd.tasks.baseline.worker import (
-    get_fit_func_dict,
-    get_fit_order_dict,
+    SerialBaselineSubtractionWorker as worker,
     BaselineFitParamConfig,
 )
 
@@ -36,9 +35,9 @@ AUTO = "automatic"
 def test_get_fit_func_dict(inp, expected, should_raise):
     if should_raise:
         with pytest.raises(expected):
-            get_fit_func_dict(inp, SPWS)
+            worker.get_fit_func_dict(inp, SPWS)
         return
-    cfg = get_fit_func_dict(inp, SPWS)
+    cfg = worker.get_fit_func_dict(inp, SPWS)
     assert isinstance(cfg, dict) and set(cfg.keys()) == set(SPWS)
     assert all(isinstance(v, BaselineFitParamConfig) for v in cfg.values())
     plain = {k: v.fitfunc.blfunc for k, v in cfg.items()}
@@ -68,8 +67,8 @@ def test_get_fit_func_dict(inp, expected, should_raise):
 def test_get_fit_order_dict(inp, expected, should_raise):
     if should_raise:
         with pytest.raises(expected):
-            get_fit_order_dict(inp, SPWS)
+            worker.get_fit_order_dict(inp, SPWS)
         return
-    cfg = get_fit_order_dict(inp, SPWS)
+    cfg = worker.get_fit_order_dict(inp, SPWS)
     assert isinstance(cfg, dict) and set(cfg.keys()) == set(SPWS)
     assert cfg == expected
