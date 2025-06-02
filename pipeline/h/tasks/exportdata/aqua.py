@@ -805,7 +805,7 @@ def xml_for_sensitivity(d):
         imagename = 'N/A'
         
     try:
-        if d['theoretical_rms'] is None or d['theoretical_rms'] < 0:
+        if d['theoretical_rms'] is None or float(d['theoretical_rms']) < 0:
             theoretical_rms_jy_per_beam = 'N/A'
         else:
             theoretical_rms_jy_per_beam = d['theoretical_rms']
