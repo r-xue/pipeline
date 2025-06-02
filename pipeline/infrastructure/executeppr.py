@@ -589,7 +589,7 @@ def _getProcessingIntents(intentsDict: dict, procedureName: str) -> dict:
     # Dictionary with known processing intents and their possible recipe
     # names. The latter is fragile, but initially necessary until the PPR
     # contains the actual intents.
-    knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polcalimage_totalintensity']}
+    knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage', 'hifa_polcalimage_totalintensity']}
 
     # Initial filtering of PPR intents
     processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
