@@ -421,6 +421,9 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     nx_pbcor_image_max = ElementTree.SubElement(nx, "pbcor_image_max", Units=str(sensitivity['pbcor_image_max']["unit"]))
                     nx_pbcor_image_max.text = str(sensitivity['pbcor_image_max']["value"])
 
+                    datatype = ElementTree.SubElement(nx, "datatype")
+                    datatype.text = str(sensitivity['datatype'])
+
                     if index < len(topic.results):
                         ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['sensitivity']["unit"])).text = str(topic.results[index].sensitivity)
                     root.append(nx)
