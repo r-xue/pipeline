@@ -897,118 +897,6 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
     return
 
 
-def select_and_read(
-        msname: str,
-        datacolumn: str,
-        data_desc_id: int,
-        field_id: int,
-        state_id_list: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
-    """Select data from MS and return data and flag arrays.
-
-    Args:
-        msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
-        data_desc_id: Data description id for data selection
-        field_id: Field id for data selection
-        state_id_list: List of state ids for data selection
-
-    Returns:
-        Two numpy arrays - data and flag
-    """
-    tb = casa_tools.table
-    tb.open(msname)
-    querystr = f'DATA_DESC_ID in {data_desc_id} && FIELD_ID in {field_id}'
-    querystr += f' && NOT FLAG_ROW && STATE_ID IN {state_id_list.tolist()}'
-    LOG.info('Reading data for TaQL query: '+querystr)
-    subtb = tb.query(querystr)
-    data = subtb.getcol(datacolumn).real
-    flag = subtb.getcol('FLAG')
-    subtb.close()
-    tb.close()
-
-    return data, flag
-
-
-def get_stats_and_shape(
-        msname: str,
-        datacolumn: str,
-        data_desc_id: int,
-        field_id: int,
-        state_id_list: np.ndarray
-) -> tuple[np.ndarray, np.ndarray, tuple[int, int, int]]:
-    """Compute statistics and data shape from selected data in the given MS.
-
-    Args:
-        msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
-        data_desc_id: Data description id for data selection
-        field_id: Field id for data selection
-        state_id_list: List of state ids for data selection
-
-    Returns:
-        A tuple containing:
-        - Mean of the data along time axis (masked array)
-        - Standard deviation of the data along time axis (masked array)
-        - Shape of the data as a tuple (npol, nchan, nrow)
-    """
-    LOG.info("get_stats_and_shape: Reading data at once")
-    datak, flagk = select_and_read(msname, datacolumn, data_desc_id, field_id, state_id_list)
-    diffdataonk = np.ma.masked_array(datak, mask=flagk, fill_value=0.0)
-    data_shape = np.shape(diffdataonk)
-    data_mean = np.ma.mean(diffdataonk, axis=2)
-    data_std = np.ma.std(diffdataonk, axis=2)/np.sqrt(data_shape[2])
-
-    return data_mean, data_std, data_shape
-
-
-def get_metric(
-        msname: str,
-        datacolumn: str,
-        data_desc_id: int,
-        field_id: int,
-        state_id_list: np.ndarray,
-        skychansel: np.ndarray
-) -> tuple[np.ndarray, float, np.ndarray]:
-    """Compute metrics from selected data in the given MS.
-
-    Args:
-        msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
-        data_desc_id: Data description id for data selection
-        field_id: Field id for data selection
-        state_id_list: List of state ids for data selection
-        skychansel: Boolean mask array indicating sky lines
-
-    Returns:
-        A tuple containing:
-        - time averaged data (masked array)
-        - Normalization value for metrics
-        - Updated boolean mask array indicating sky lines that are not masked
-    """
-    LOG.info("get_metric: Reading data at once")
-    data, flag = select_and_read(msname, datacolumn, data_desc_id, field_id, state_id_list)
-    dataon = np.ma.masked_array(data, mask=flag, fill_value=0.0)
-
-    # Pre-correction average
-    precorravedataon = np.ma.mean(dataon, axis=2)
-    maskedchans = np.any(precorravedataon.mask, axis=0)
-
-    skychansel[maskedchans] = False
-
-    normsample = dataon[:, skychansel]
-    # Try to calculate the normalizing value for the metrics
-    # If is cannot calculate it, fill default value of 1
-    # similar thing for plot ranges
-    try:
-        metricnorm = np.ma.max(np.ma.abs(normsample))
-    except Exception:
-        LOG.warning('Could not determine normalization of data! is all of it flagged??')
-        metricnorm = 1.0
-
-    return precorravedataon, metricnorm, skychansel
-
-
 def select_and_yield(
         msname: str,
         datacolumn: str,
@@ -1020,7 +908,8 @@ def select_and_yield(
 
     Args:
         msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        datacolumn: Name of the data column to read (e.g., 'DATA',
+            'CORRECTED_DATA')
         data_desc_id: Data description id for data selection
         field_id: Field id for data selection
         state_id_list: List of state ids for data selection
@@ -1052,7 +941,7 @@ def select_and_yield(
         tb.close()
 
 
-def get_stats_and_shape2(
+def get_stats_and_shape(
         msname: str,
         datacolumn: str,
         data_desc_id: int,
@@ -1061,12 +950,15 @@ def get_stats_and_shape2(
 ) -> tuple[np.ndarray, float, np.ndarray]:
     """Compute metrics from selected data in the given MS.
 
-    This memory-efficient version of get_stats_and_shape
-    but it may take longer to compute as it reads data row-by-row.
+    Core part of this function computes the mean and standard deviation
+    for three-dimensional data (npol, nchan, nrow) by iterating over
+    the data in the Measurement Set (MS) row-by-row to save memory usage.
+    The implementation emulates the behavior of np.ma.mean and np.ma.std.
 
     Args:
         msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        datacolumn: Name of the data column to read (e.g., 'DATA',
+            'CORRECTED_DATA')
         data_desc_id: Data description id for data selection
         field_id: Field id for data selection
         state_id_list: List of state ids for data selection
@@ -1077,10 +969,11 @@ def get_stats_and_shape2(
         - Normalization value for metrics
         - Updated boolean mask array indicating sky lines that are not masked
     """
-    LOG.info("get_stats_and_shape2: Reading data row-by-row to save memory usage")
+    LOG.debug("get_stats_and_shape: Reading data row-by-row to save memory usage")
     it = select_and_yield(msname, datacolumn, data_desc_id, field_id, state_id_list)
     data = next(it)
     npol, nchan, nrow = data.shape
+    # The following code emulates the behavior of np.ma.mean and np.ma.std
     data_data = np.ma.filled(data, 0.0)
     data_sum = np.sum(data_data, axis=2)
     data_sqsum = np.sum(data_data * data_data, axis=2)
@@ -1101,7 +994,7 @@ def get_stats_and_shape2(
     return data_mean, data_std, data_shape
 
 
-def get_metric2(
+def get_metric(
         msname: str,
         datacolumn: str,
         data_desc_id: int,
@@ -1111,12 +1004,15 @@ def get_metric2(
 ) -> tuple[np.ndarray, float, np.ndarray]:
     """Compute metrics from selected data in the given MS.
 
-    This memory-efficient version of get_metric but it may
-    take longer to compute as it reads data row-by-row.
+    Core part of this function computes the mean and maximum
+    for three-dimensional data (npol, nchan, nrow) by iterating over
+    the data in the Measurement Set (MS) row-by-row to save memory usage.
+    The implementation emulates the behavior of np.ma.mean and np.ma.max.
 
     Args:
         msname: Name of the MS
-        datacolumn: Name of the data column to read (e.g., 'DATA', 'CORRECTED_DATA')
+        datacolumn: Name of the data column to read (e.g., 'DATA',
+            'CORRECTED_DATA')
         data_desc_id: Data description id for data selection
         field_id: Field id for data selection
         state_id_list: List of state ids for data selection
@@ -1128,10 +1024,11 @@ def get_metric2(
         - Normalization value for metrics
         - Updated boolean mask array indicating sky lines that are not masked
     """
-    LOG.info("get_metric2: Reading data row-by-row to save memory usage")
+    LOG.debug("get_metric: Reading data row-by-row to save memory usage")
     it = select_and_yield(msname, datacolumn, data_desc_id, field_id, state_id_list)
     data = next(it)
     npol, nchan, nrow = data.shape
+    # The following code emulates the behavior of np.ma.mean and np.ma.max
     data_data = np.ma.filled(data, 0.0)
     data_sum = np.sum(data_data, axis=2)
     data_absmax = np.max(np.abs(data_data), axis=2)
@@ -1201,7 +1098,6 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
     lapserate: Lapse Rate dTem_dh parameter for at (lapse rate; K/km). Default is -5.6
     scaleht: h0 parameter for at (water scale height; km). Default is 2.0
     '''
-    MAX_NUM_CHANNELS = 8000
     qa = casa_tools.quanta
     ms = str(ms)
     #Do a backup of the MS if requested
@@ -1422,9 +1318,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
         skychansel = skysel(skylines[spwid], linestouse = metricskylineids)
 
         LOG.debug("Start reading_data_spw%d", spwid)
-        nchan = spwsetup[spwid]['nchan']
-        metric_func = get_metric if nchan < MAX_NUM_CHANNELS else get_metric2
-        precorravedataon, metricnorm, skychansel = metric_func(
+        precorravedataon, metricnorm, skychansel = get_metric(
             ms, datacolumn, spwsetup[spwid]['ddi'], fieldid, state_ids_on,
             skychansel
         )
@@ -1463,9 +1357,7 @@ def atmcorr(ms, datacolumn = 'CORRECTED_DATA', iant = 'auto', atmtype = 1,
             ### Read corrected data for model k
             ################################################################
             LOG.debug("Start reading_data_spw%d_model%d", spwid, k)
-            nchan = spwsetup[spwid]['nchan']
-            stat_func = get_stats_and_shape if nchan < MAX_NUM_CHANNELS else get_stats_and_shape2
-            tmavedataonk, tmstddataonk, shapek = stat_func(
+            tmavedataonk, tmstddataonk, shapek = get_stats_and_shape(
                 msk, "DATA", spwsetup[spwid]['ddi'], fieldid, state_ids_on
             )
             npolk, nchank, nrowk = shapek
