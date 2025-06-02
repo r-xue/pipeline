@@ -19,7 +19,7 @@ import traceback
 from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
-from scipy import interpolate, special
+from scipy import interpolate, special, stats
 
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import infrastructure
@@ -3467,11 +3467,66 @@ def generate_metric_mask(
             metric_mask[x, y, :, :] = True
 
     # exclude edge channels
-    edge_channels = [i for i in range(imshape[3]) if np.all(mask[:, :, :, i] == False)]
-    LOG.debug('edge channels: {}'.format(edge_channels))
-    metric_mask[:, :, :, edge_channels] = False
+    imagename = outcome['image'].imagename
+    edge_channels = detect_edge_channels(mask)
+    LOG.info(
+        f"masked pixel QA for {imagename}: "
+        f"detected edge channels {edge_channels}"
+    )
+    if len(edge_channels) > 0:
+        metric_mask[:, :, :, edge_channels] = False
 
     return metric_mask
+
+
+def detect_edge_channels(mask: np.ndarray) -> np.ndarray:
+    """Detect list of edge channels to be excluded from QA evaluation.
+
+    There are a few edge channels that have less valid spatial pixels
+    than other spectral channels, probably due to the effect of frame
+    conversion from TOPO to LSRK with progressively varying time stamp.
+    Raster OTF scan without frequency tracking can cause this effect.
+
+    Other possible reason is edge channel flagging by hsd_flagdata
+    and/or hsd_tsysflag.
+
+    This function detects such edge channels by calculating the median
+    number of valid spatial pixels in each channel and the median
+    absolute deviation (MAD) of the number of valid spatial pixels.
+    The edge channels are those with fewer valid spatial pixels than
+    the median minus 10 times the MAD.
+
+    Args:
+        mask: boolean numpy array of shape (nx, ny, npol, nchan)
+
+    Returns:
+        List of edge channels to be excluded.
+    """
+    num_valid_pixels = np.sum(mask, axis=(0, 1, 2))
+    nchan = len(num_valid_pixels)
+    median_num_valid_pixels = np.median(num_valid_pixels)
+    mad_num_valid_pixels = stats.median_abs_deviation(num_valid_pixels)
+    LOG.debug(
+        "typical number of valid pxiels %s, MAD %s",
+        median_num_valid_pixels,
+        mad_num_valid_pixels
+    )
+    threshold = median_num_valid_pixels - 10 * mad_num_valid_pixels
+    is_fewer_valid_pixels = num_valid_pixels < threshold
+    edge_channels = []
+    # count channels with fewer valid pixels from both ends
+    for i in range(nchan):
+        if is_fewer_valid_pixels[i]:
+            edge_channels.append(i)
+        else:
+            break
+    for i in range(nchan - 1, -1, -1):
+        if is_fewer_valid_pixels[i]:
+            edge_channels.append(i)
+        else:
+            break
+
+    return np.unique(edge_channels)
 
 
 def direction_recover( ra, dec, org_direction ):
@@ -3535,7 +3590,6 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
         # metric_mask is boolean array that defines the region to be excluded
         #    True: included in the metric calculation
         #   False: excluded from the metric calculation
-        # TODO: decide if any margin is necessary
         metric_mask = generate_metric_mask(context, result, cs, mask)
     finally:
         # done using coordsys tool
