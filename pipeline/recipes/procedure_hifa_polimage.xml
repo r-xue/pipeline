@@ -1,6 +1,6 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_image</ProcedureTitle>
+    <ProcedureTitle>hifa_polimage</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_restoredata</Command>
