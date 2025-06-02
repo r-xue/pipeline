@@ -36,7 +36,6 @@ import os
 import shutil
 import sys
 import tarfile
-import traceback
 import uuid
 
 

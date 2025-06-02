@@ -415,6 +415,7 @@ class SDExportData(exportdata.ExportData):
             oussid : OUS Status UID
             output_dir : path of output directory
             products_dir : path of products directory
+            pipeline_stats: pipeline stats file
 
         Returns:
             tarball file name
@@ -474,6 +475,12 @@ class SDExportData(exportdata.ExportData):
                     LOG.info('Auxiliary data product '
                              '{} does not exist'.format(os.path.basename(flags_file)))
 
+            # PIPE-2380: Save pipeline statistics file
+            if pipeline_stats and os.path.exists(pipeline_stats):
+                tar.add(pipeline_stats, arcname=pipeline_stats)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename
