@@ -2,22 +2,484 @@ import getopt
 import sys
 import os
 import pickle
-sys.path.append("/home/casa/contrib/AIV/science/analysis_scripts/")
 import glob
-import analysisUtils as myau
 import numpy as np
 import numpy.ma as ma
 import matplotlib.pyplot as plt
 import scipy.stats as st
 from scipy import signal
 from scipy import ndimage
+import random
 
 #from casatools import table as tbtool
 from casatools import table
 from casatools import msmetadata as msmdtool
 
+# pipeline imports
+from pipeline.infrastructure import casa_tools
+
 WVR_LO=[38.1927,45.83125,91.6625,183.325,259.7104,274.9875,366.650,458.3125,641.6375]
 
+# Temporarily copy-in AU functions to remove dependency. 
+# This is an incremental step for testing. In the future: do further integration / removal of these.
+def getMeasurementSetFromCaltable(caltable):
+    """                                                                                                                                                                                                          
+    Returns the name of the parent measurement set from a caltable using                                                                                                                                         
+    the casac tool (except for A Mueller tables for which it uses the tb                                                                                                                                         
+    tool instead -- CAS-12595).                                                                                                                                                                                  
+    Todd Hunter                                                                                                                                                                                                  
+    """
+    if not os.path.exists(caltable):
+        print("au.getBasebandNumbersFromCaltable(): caltable not found")
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    if 'VisCal' in mytb.getkeywords():
+        if mytb.getkeyword('VisCal').find('A Mueller') >= 0:
+            # CAS-12595 goes CPU bound on such tables (or is at least very slow)                                                                                                                                 
+            msname = mytb.getkeyword('MSName')
+            mytb.close()
+            return msname
+    mytb.close()
+    myca = calanalysis()
+    goodresult = myca.open(caltable)
+    if goodresult:
+        vis = myca.msname()
+    else:
+        #  look for it in CWD                                                                                                                                                                                    
+        vis = caltable.split('.')[0] + '.ms'
+        if not os.path.exists(vis):
+            vis = ''
+    myca.close()
+    return(vis)
+
+
+def getFieldIDsFromCaltable(caltable):
+    """
+    Returns the field IDs in the specified caltable using casac.calanalysis.
+    (See getFieldsFromCaltable for a different method that uses the tb tool.)
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("caltable not found")
+        return -1
+
+    mytb = tbtool()
+    mytb.open(caltable)
+    tableType = mytb.getkeyword('VisCal')
+    mytb.close()
+    if tableType.find('A Mueller') >= 0:
+        # CAS-12595
+        return getFieldsFromCaltable(caltable)
+    myca = calanalysis()
+    myca.open(caltable)
+    fieldids = [int(i) for i in myca.field(name=False)]
+    myca.close()
+    return fieldids
+
+
+def getFieldsFromCaltable(caltable, asnames=False):
+    """
+    Returns the unique list of field IDs for which solutions exist in 
+    the specified caltable.  See also getFieldIDsFromCaltable (which 
+    uses the casac tool instead of the tb tool.)
+    See also au.getFieldNamesFromCaltable, but it is sometimes wwrong.
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("au.getFieldsFromCaltable(): caltable not found")
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    fields = np.unique(mytb.getcol('FIELD_ID'))
+    mytb.close()
+    if asnames:
+        mytb.open(caltable+'/FIELD')
+        names = mytb.getcol('NAME')
+        fields = list(names[fields])
+    return fields
+
+
+def getSpwsFromCaltable(caltable, getNumberOfChannels=False):
+    """
+    Returns the unique list of spw IDs for which solutions exist in 
+    the specified caltable, using the tb tool. 
+    getNumberOfChannels: if True, then return a dictionary, with values=nchan
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("au.getSpwsFromCaltable(): caltable not found: ", caltable)
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    spws = np.unique(mytb.getcol('SPECTRAL_WINDOW_ID'))
+    mytb.close()
+    if getNumberOfChannels:
+        mytb.open(caltable+'/SPECTRAL_WINDOW')
+        spwdict = {}
+        for spw in spws:
+            spwdict[spw] = len(mytb.getcell('CHAN_FREQ',spw))
+        mytb.close()
+        return spwdict
+    else:
+        return spws
+
+def getAntennaNamesFromCaltable(caltable, withSolutions=False, unique=True):
+    """
+    Returns the antenna names from the specified caltable's ANTENNA table.
+    withSolutions: calls getAntennaIDsFromCaltabe and translates to name
+         which will only include those antennas with solutions
+    unique: passed to getAntennaIDsFromCaltable
+    Todd Hunter
+    """
+    if not os.path.exists(caltable):
+        print("au.getAntennaNamesFromCaltable(): caltable not found")
+        return
+    mytable = os.path.join(caltable,'ANTENNA')
+    if not os.path.exists(mytable):
+        print("au.getAntennaNamesFromCaltable(): caltable's ANTENNA subtable not found")
+        return
+#    myca = calanalysis()
+#    myca.open(caltable)
+#    names = myca.antenna()  # a list
+#    myca.close()
+    mytb = createCasaTool(tbtool)
+    mytb.open(mytable)
+    names = mytb.getcol('NAME')  # an array
+    mytb.close()
+    if withSolutions:
+        ids = getAntennaIDsFromCaltable(caltable, unique)
+        names = names[ids]
+    return names
+
+    
+def getAntennaIDsFromCaltable(caltable, unique=True):
+    """
+    Returns the antenna IDs for which solutions exist in the specified caltable
+    using the tb tool.
+    unique: if False, then return a vector equal in length to the number of rows in the caltable
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("au.AntennaIDsFromCaltable(): caltable not found")
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    if unique:
+        antennas = np.unique(mytb.getcol('ANTENNA1'))
+    else:
+        antennas = mytb.getcol('ANTENNA1')
+    mytb.close()
+    return antennas
+
+
+def getMedianPWV(vis='.', myTimes=[0,999999999999], asdm='', verbose=False):
+    """
+    Extracts the PWV measurements from the WVR on all antennas for the
+    specified time range.  The time range is input as a two-element list of
+    MJD seconds (default = all times).  You can specify either the vis or 
+    the asdm.
+    if vis is set, then first it tries to find the ASDM_CALWVR
+    table in the ms.  If that fails, it then tries to find the 
+    ASDM_CALATMOSPHERE table in the ms.  If that fails, it then tries to find 
+    the CalWVR.xml in the specified ASDM, or failing that, an ASDM of the 
+    same name (minus the .ms).  If neither of these exist, then it tries to find 
+    a CalWVR.xml in the present working directory. If it still fails, it looks 
+    for CalWVR.xml in the .ms directory.  Thus, you only need to copy this 
+    single xml file from the ASDM into your ms, rather than the entire ASDM.
+    For the asdm option, you can set ASDM_LIBRARY_PATH in ~/.casa/startup.py 
+    to point to ASDM python bindings.
+    Returns:
+    The median PWV, and the median absolute deviation (scaled to match rms) in mm
+    For further help and examples, see https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV
+    -- Todd Hunter
+    """
+    pwvmean = 0
+    success = False
+    if (verbose):
+        print("in getMedianPWV with myTimes = ", myTimes)
+    try:
+      if (os.path.exists("%s/ASDM_CALWVR"%vis)):
+          mytb = tbtool()
+          mytb.open("%s/ASDM_CALWVR" % vis)
+          pwvtime = mytb.getcol('startValidTime')  # mjdsec
+          antenna = mytb.getcol('antennaName')
+          pwv = mytb.getcol('water')
+          mytb.close()
+          success = True
+          if (len(pwv) < 1):
+              if (os.path.exists("%s/ASDM_CALATMOSPHERE" % vis)):
+                  pwvtime, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
+                  success = True
+                  if (len(pwv) < 1):
+                      print("Found no data in ASDM_CALWVR nor ASDM_CALATMOSPHERE table")
+                      return(0,-1)
+              else:
+                  if (verbose):
+                      print("Did not find ASDM_CALATMOSPHERE in the ms")
+                  return(0,-1)
+          if (verbose):
+              print("Opened ASDM_CALWVR table, len(pwvtime)=", len(pwvtime))
+      else:
+          if (verbose):
+              print("Did not find ASDM_CALWVR table in the ms. Will look for ASDM_CALATMOSPHERE next.")
+          if (os.path.exists("%s/ASDM_CALATMOSPHERE" % vis)):
+              pwvtime, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
+              success = True
+              if (len(pwv) < 1):
+                  print("Found no data in ASDM_CALATMOSPHERE table")
+                  return(0,-1)
+          else:
+              if (verbose):
+                  print("Did not find ASDM_CALATMOSPHERE in the ms")
+    except:
+        if (verbose):
+            print("Could not open ASDM_CALWVR table in the ms")
+    finally:
+    # try to find the ASDM table
+     if (success == False):
+       if (len(asdm) > 0):
+           if (os.path.exists(asdm) == False):
+               print("Could not open ASDM = ", asdm)
+               return(0,-1)
+           try:
+               [pwvtime,pwv,antenna] = readpwv(asdm)
+           except:
+               if (verbose):
+                   print("Could not open ASDM = %s" % (asdm))
+               return(pwvmean,-1)
+       else:
+           try:
+               tryasdm = vis.split('.ms')[0]
+               if (verbose):
+                   print("No ASDM name provided, so I will try this name = %s" % (tryasdm))
+               [pwvtime,pwv,antenna] = readpwv(tryasdm)
+           except:
+               try:
+                   if (verbose):
+                       print("Still did not find it.  Will look for CalWVR.xml in current directory.")
+                   [pwvtime, pwv, antenna] = readpwv('.')
+               except:
+                   try:
+                       if (verbose):
+                           print("Still did not find it.  Will look for CalWVR.xml in the .ms directory.")
+                       [pwvtime, pwv, antenna] = readpwv('%s/'%vis)
+                   except:
+                       if (verbose):
+                           print("No CalWVR.xml file found, so no PWV retrieved. Copy it to this directory and try again.")
+                       return(pwvmean,-1)
+    try:
+        matches = np.where(np.array(pwvtime)>myTimes[0])[0]
+    except:
+        print("Found no times > %d" % (myTimes[0]))
+        return(0,-1)
+    if (len(pwv) < 1):
+        print("Found no PWV data")
+        return(0,-1)
+    if (verbose):
+        print("%d matches = " % (len(matches)), matches)
+        print("%d pwv = " % (len(pwv)), pwv)
+    ptime = np.array(pwvtime)[matches]
+    matchedpwv = np.array(pwv)[matches]
+    matches2 = np.where(ptime<=myTimes[-1])[0]
+    if (verbose):
+        print("matchedpwv = %s" % (matchedpwv))
+        print("pwv = %s" % (pwv))
+    if (len(matches2) < 1):
+        # look for the value with the closest start time
+        mindiff = 1e12
+        for i in range(len(pwvtime)):
+            if (abs(myTimes[0]-pwvtime[i]) < mindiff):
+                mindiff = abs(myTimes[0]-pwvtime[i])
+#                pwvmean = pwv[i]*1000
+        matchedpwv = []
+        for i in range(len(pwvtime)):
+            if (abs(abs(myTimes[0]-pwvtime[i]) - mindiff) < 1.0):
+                matchedpwv.append(pwv[i])
+        pwvmean = 1000*np.median(matchedpwv)
+        if (verbose):
+            print("Taking the median of %d pwv measurements from all antennas = %.3f mm" % (len(matchedpwv),pwvmean))
+        pwvstd = 1000*MAD(matchedpwv)
+    else:
+        pwvmean = 1000*np.median(matchedpwv[matches2])
+        pwvstd = 1000*MAD(matchedpwv[matches2])
+        if (verbose):
+            print("Taking the median of %d pwv measurements from all antennas = %.3f mm" % (len(matches2),pwvmean))
+    return(pwvmean,pwvstd)
+# end of getMedianPWV
+
+def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None, 
+                   net_sideband=1,P=563,H=20,T=273,airmass=1.0,
+                   verbose=False, atmType=1, siteAltitude_m=5059,
+                   maxAltitude=48.0,   # i.e., top of atmosphere
+                   h0=1.0,    # water vapor scale height in km
+                   dP=5.0,    # model step to use in mbar
+                   dPm=1.1,   # pressure step factor (unitless)
+                   hanning=False
+                   ):
+    """
+    Uses the at tool in CASA to compute atmospheric model.
+    chans: all channels, regardless of whether they are flagged
+    freqs: frequencies (in GHz) corresponding to chans
+    refFreqInTable: frequency of the edge of the spw
+    atmType: 1, 2, or 3, default=1=tropical, 2=midLatSummer, 3=midLatWinter
+    dP: pressure step, has units of pressure (mb)
+    dPm: pressure step factor (unitless) called PstepFact in TelCal
+    maxAltitude: of the atmosphere, in km
+    hanning: if True, then apply Hanning smoothing to the transmission, TebbSky and tau
+    returns 5 arrays:
+       freq, chans, transmission (0..1), TebbSky, tau
+    """
+    if refFreqInTable is None:
+        refFreqInTable = freqs[0]
+    if verbose:
+        print("CalcAtmosphere: len chans, freqs = ", len(chans), len(freqs))
+        print("Using zenith PWV=%.3fmm, airmass=%.3f, P=%.2fmb, H=%.2f%%, T=%.2fK..." % (pwv,airmass,P,H,T))
+    numchan = len(freqs)
+    reffreq = 0.5*(freqs[numchan//2-1]+freqs[numchan//2])  # frequency of the CENTER of the spw
+    chansep = (freqs[-1]-freqs[0])/(numchan-1)
+    resolution = chansep # this assumption appears to be built-in to the at tool, but not true for most ALMA data
+    nbands = 1
+    # from AtmosphereScan.cpp
+    myqa = createCasaTool(qatool)
+    maxAltitude = create_casa_quantity(myqa, maxAltitude,'km')
+    h0 = create_casa_quantity(myqa, h0,'km')
+    dP = create_casa_quantity(myqa, dP,'mbar')
+    fCenter = create_casa_quantity(myqa, reffreq,'GHz')
+    fResolution = create_casa_quantity(myqa, resolution,'GHz')
+    fWidth = create_casa_quantity(myqa, numchan*chansep,'GHz')
+    if verbose:
+        diff = reffreq*1e9 - refFreqInTable
+        print("reffreq= %f, refFreqInTable= %f, difference= %f" % (reffreq*1e9, refFreqInTable, diff))
+    try:
+        myat = createCasaTool(attool)
+        needToCloseAT = True
+    except:  # CASA < 5.0.0
+        needToCloseAT = False
+        myat = at
+    result = myat.initAtmProfile(humidity=H,temperature=create_casa_quantity(myqa, T,"K"),
+                                 altitude=create_casa_quantity(myqa, siteAltitude_m,"m"),
+                                 pressure=create_casa_quantity(myqa, P,'mbar'),atmType=atmType,
+                                 dP=dP, maxAltitude=maxAltitude, h0=h0, dPm=dPm)
+    if verbose: printNumberOfAtmosphericLayers(result)
+    myat.initSpectralWindow(nbands,fCenter,fWidth,fResolution)
+    myat.setUserWH2O(create_casa_quantity(myqa, pwv,'mm'))
+    # This does not affect the opacity, but it does effect TebbSky, so do it manually.
+    myat.setAirMass(airmass)
+    if (casaVersion < '4.0.0'):
+        dry = np.array(myat.getDryOpacitySpec(0)['dryOpacity'])
+        wet = np.array(myat.getWetOpacitySpec(0)['wetOpacity'].value)
+        TebbSky = []
+        for chan in range(numchan):  # do NOT use numchan here, use n
+            TebbSky.append(myat.getTebbSky(nc=chan, spwid=0).value)
+        TebbSky = np.array(TebbSky)
+    else:
+        dry = np.array(myat.getDryOpacitySpec(0)[1])
+        wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
+        TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
+
+    transmission = np.exp(-airmass*(wet+dry))
+#    TebbSky *= (1-np.exp(-airmass*(wet+dry)))/(1-np.exp(-wet-dry))
+
+    numchan = len(transmission)
+    chans = range(len(transmission))
+    startFreq = myqa.convert(myat.getChanFreq(0),'GHz')['value']
+    endFreq = myqa.convert(myat.getChanFreq(numchan-1),'GHz')['value']
+    if needToCloseAT:
+        myat.close()
+    myqa.done()
+    freq = np.linspace(startFreq, endFreq, numchan)
+    if verbose:
+        print("numchan=%d, abs(startFreq-endFreq) = %f" % (numchan, np.abs(startFreq - endFreq)))
+        idx = np.argmax(TebbSky)
+        print("Peak Tsky=%f at freq=%f" % (TebbSky[idx], freq[idx]))
+        print("...median tau = %f, transmission = %f" % (np.median(airmass*(wet+dry)), np.median(transmission)))
+    if hanning:
+        print("Applying Hanning smoothing to the ATM model output. Median transmission=", np.median(transmission))
+        transmission = casaHanning(transmission,padOutput=True)
+        print("Median transmission = ", np.median(transmission))
+        TebbSky = casaHanning(TebbSky,padOutput=True)
+        wet = casaHanning(wet,padOutput=True)
+        dry = casaHanning(dry,padOutput=True)
+    return(freq, chans, transmission, TebbSky, airmass*(wet+dry))
+
+
+def getScienceSpwBandwidths(vis, intent='OBSERVE_TARGET#ON_SOURCE', 
+                             tdm=True, fdm=True, mymsmd=None, sqld=False, 
+                             verbose=False, returnDict=False, returnMHz=False):
+    """
+    Returns: an array of bandwidths (in Hz) in order sorted by spw ID
+    returnDict: if True, then return a dictionary keyed by spw ID
+    -Todd Hunter
+    """
+    if mymsmd is None:
+        mymsmd = createCasaTool(msmdtool)
+        mymsmd.open(vis)
+        needToClose = True
+    else:
+        needToClose = False
+    spws = sorted(getScienceSpws(vis, intent, False, False, tdm, fdm, mymsmd, sqld, verbose))
+    bandwidths = mymsmd.bandwidths(spws)
+    if needToClose:
+        mymsmd.close()
+    mymsmd.close()
+    if returnMHz:
+        bandwidths *= 1e-6
+    if returnDict:
+        mydict = {}
+        for i, spw in enumerate(spws):
+            mydict[spw] = bandwidths[i]
+        return mydict
+    else:
+        return bandwidths
+
+
+def getNChanFromCaltable(caltable, spw=None):
+    """
+    Returns the number of channels of the specified spw in a caltable.
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("caltable not found")
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
+    mytb.close()
+    mytb.open(spectralWindowTable)
+    if spw is None:
+        nchan = mytb.getcol('NUM_CHAN')
+    else:
+        nchan = mytb.getcell('NUM_CHAN',spw)
+    return nchan
+
+def getChanFreqFromCaltable(caltable, spw, channel=None):
+    """
+    Returns the frequency (in GHz) of the specified spw channel in a caltable.
+    channel: if not specified, then return array of all channel frequencies
+    Todd Hunter
+    """
+    if (os.path.exists(caltable) == False):
+        print("caltable not found")
+        return -1
+    mytb = createCasaTool(tbtool)
+    mytb.open(caltable)
+    spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
+    mytb.close()
+    mytb.open(spectralWindowTable)
+    spws = range(len(mytb.getcol('MEAS_FREQ_REF')))
+    chanFreqGHz = {}
+    for i in spws:
+        # The array shapes can vary, so read one at a time.
+        spectrum = mytb.getcell('CHAN_FREQ',i)
+        chanFreqGHz[i] = 1e-9 * spectrum
+    mytb.close()
+    if channel is None:
+        return chanFreqGHz[spw]
+    if channel > len(chanFreqGHz[spw]):
+        print("spw %d has only %d channels"% (spw, len(chanFreqGHz[spw])))
+    else:
+        return chanFreqGHz[spw][channel]
 
 def fitAtmLines(ATMprof, freq):
          """
@@ -133,19 +595,35 @@ def fitAtmLines(ATMprof, freq):
          return centers, scales
 
 
+def get_spws_from_table(caltable):
+    # Identify spws in caltable
+    with casa_tools.TableReader(caltable) as tb:
+        table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+    caltable_spws = sorted([int(spw) for spw in table_spws])
+    return caltable_spws 
+
+
+def get_ant_ids_from_caltable(caltable):
+    with casa_tools.TableReader(caltable) as tb:
+        table_ants = set(tb.getcol('ANTENNA1'))
+
+    caltable_antennas = [int(ant) for ant in table_ants]
+    return caltable_antennas
+
+
 def getInfoFromTable(caltable):
-    myvis=myau.getMeasurementSetFromCaltable(caltable)
-    fieldIds = myau.getFieldIDsFromCaltable(caltable)
-    fieldNames = myau.getFieldsFromCaltable(caltable,asnames=True)
-    spwIds = myau.getSpwsFromCaltable(caltable)
-    antennaNames = myau.getAntennaNamesFromCaltable(caltable)
-    antIds = myau.getAntennaIDsFromCaltable(caltable)
+    myvis=getMeasurementSetFromCaltable(caltable)
+    fieldIds = getFieldIDsFromCaltable(caltable)
+    fieldNames = getFieldsFromCaltable(caltable,asnames=True)
+    spwIds = getSpwsFromCaltable(caltable)
+    antennaNames = getAntennaNamesFromCaltable(caltable)
+    antIds = getAntennaIDsFromCaltable(caltable)
     visname=caltable[0:caltable.find('.ms')+3]
-    pwv,pwv_sigma=myau.getMedianPWV(visname)
+    pwv,pwv_sigma=getMedianPWV(visname)
     return fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv
 
 
-def extractValues(data,caltable):
+def extractValues(data, caltable):
     tabname=caltable.split('/')[-1]
     bandpass_amp=[]; bandpass_phase=[]; bandpass_amp2=[]; bandpass_phase2=[]; bandpass_freq=[]; bandpass_flag=[]
     fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
@@ -199,6 +677,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
     with open(pickle_file, 'rb') as f:
         data=pickle.load(f)
     
+    # Added by kberry - first 3 planned to be removed. 
     note_platform_return = ''
     flagnote_return = ''
     note_platform_start_return = ''
@@ -206,9 +685,9 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
 
     # Iterate through tables
     for i, itab in enumerate(list(data.keys())):
-        pldir=inputpath.split('/')[-1]
-#        caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
-        caltable=glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
+        pldir = inputpath.split('/')[-1]
+        # caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
+        caltable = glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
 
         print(caltable+ ' in Platforming evaluation')
 
@@ -216,9 +695,9 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
         # Construct the multidimensional array containing the bandpass solution (amp and phase) from pickle file and caltable
         # Bandpass_{amp/phase}[spwid][antid][polz]
-        bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag=extractValues(data,caltable)
+        bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag = extractValues(data, caltable)
 
-        eb=itab.split('.')[0]
+        eb = itab.split('.')[0]
 
         outfile=open(itab+'_platform.txt','a')
         outfile_val=open(eb+'_platform_value.txt','a')
@@ -230,9 +709,9 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
 
         # Taking statistical summary values for heuristics
         # per spw, ant, and pol
-        spwIds = myau.getSpwsFromCaltable(caltable)
-        antennaNames = myau.getAntennaNamesFromCaltable(caltable)
-        antIds = myau.getAntennaIDsFromCaltable(caltable)
+        spwIds = getSpwsFromCaltable(caltable)
+        antennaNames = getAntennaNamesFromCaltable(caltable)
+        antIds = getAntennaIDsFromCaltable(caltable)
 
         # Appended string containing the heuristics values 
         note_platform_start=''
@@ -245,19 +724,29 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
         # Therefore we loop through antennas, spwids, polz
         ##############################
 
-        #Loop 1: antenna
+        # temp test return vals
+        # for j, iant in enumerate(antennaNames):
+        #     for k, ispw in enumerate(spwIds):
+        #         if random.choice([True, False]):
+        #             if ispw in spws_affected:
+        #                 spws_affected[ispw].append(iant)
+        #             else: 
+        #                 spws_affected[ispw] = [iant]
+        # return spws_affected
+
+        # Loop 1: antenna
         for j, iant in enumerate(antennaNames):
             note_platform_start=''
             flagnote=''
             
-            #Loop 2: spw
+            # Loop 2: spw
             for k, ispw in enumerate(spwIds):
                 note_platform_start=''
                 flagnote=''
                 #################################
-                #naming plot files
-                #bandpass amp   pol0 pol1
-                #bandpass phase pol0 pol1
+                # naming plot files
+                # bandpass amp   pol0 pol1
+                # bandpass phase pol0 pol1
                 #################################
                 figure_name=itab+'_ant'+iant+'_spw'+str(ispw)+'_platforming.png'
                 fig,((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2,figsize=(18,15))
@@ -265,7 +754,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                 
                 
                 ################################
-                #read ancillary information
+                # Read ancillary information
                 ################################
                 spw_bandwidth=data[itab][fieldname][ispw]['bw']
                 spw_nchan=data[itab][fieldname][ispw]['nchan']
@@ -277,39 +766,39 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
 
  
                 ################################
-                #now generating atmospheric transmission model using median pwv value
-                #this has two purposes
-                #1. the heuristics skips if the subband center frequency is within the frequency range (+/-2FWMH) affected by atmpospheric absorption line
-                #2. the heuristics skips if the transmisison value is less than 0.3 at the subband center frequency even if the subband center frequency is 
+                # now generating atmospheric transmission model using median pwv value
+                # this has two purposes
+                # 1. the heuristics skips if the subband center frequency is within the frequency range (+/-2FWMH) affected by atmpospheric absorption line
+                # 2. the heuristics skips if the transmisison value is less than 0.3 at the subband center frequency even if the subband center frequency is 
                 #   outside the atmopspheric absorptione line
                 ###############################
                 if abs(spw_bandwidth) < 1.9e9:
                    chans=range(len(spw_freq))
-                   frequency, channel, transmission, Tebbsky, tau = myau.CalcAtmosphere(chans, spw_freq, pwv)
+                   frequency, channel, transmission, Tebbsky, tau = CalcAtmosphere(chans, spw_freq, pwv)
                    centers,scales=fitAtmLines(transmission, spw_freq)   #FWHM=2xscale
                    bounds=[]
                    for b in range(len(centers)):
                        bounds.append([centers[b]-2*scales[b],centers[b]+2*scales[b]])
                 ###############################
 
-                #this is a container to keep the value: value[i+4]-value[i]
+                # This is a container to keep the value: value[i+4]-value[i]
                 bp_amp_diff=[]
                 bp_phs_diff=[]
         
-                #Loop 3: Polarization
+                # Loop 3: Polarization
                 for ipol in range(2):
                     note_platform_start=''
                     flagnote=''
                 
-                    #this is a container to keep the value: value[i+4]-value[i]
+                    # This is a container to keep the value: value[i+4]-value[i]
                     bp_amp_diff=[]
                     bp_phs_diff=[]
 
-                    #bandpass amp and phase from a given antenna, spw, pol
+                    # Bandpass amp and phase from a given antenna, spw, pol
                     bp_phs=(bandpass_phase[k][j][ipol])
                     bp_amp=(bandpass_amp[k][j][ipol])
 
-                    #bp_amp2 and bp_phs2 are used for plotting 
+                    # bp_amp2 and bp_phs2 are used for plotting 
                     bp_phs2=(bandpass_phase2[k][j][ipol])
                     bp_amp2=(bandpass_amp2[k][j][ipol])
 
@@ -332,20 +821,20 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                     flagchan_range_phs=[]
                     
                     ################################
-                    #Heuristics are evaluated only if the data is from BLC mode
-                    #Following aoscheck, we check this by spw_bandwidth < 1.9GHz
-                    #But we need to refer to PL meta data information or other information 
-                    #to idenfity the BLC 
+                    # Heuristics are evaluated only if the data is from BLC mode
+                    # Following aoscheck, we check this by spw_bandwidth < 1.9GHz
+                    # But we need to refer to PL meta data information or other information 
+                    # to idenfity the BLC 
                     ################################
                     if abs(spw_bandwidth) < 1.9e9:
                        #########################
-                       #quantities measure for each subband
+                       # Quantities measure for each subband
                        #########################
                        subb_phs_rms=[]; subb_amp_rms=[]; subb_phs=[];  subb_amp=[]; subb_phs_sobel_rms=[]; subb_amp_sobel_rms=[]
                        if subb_num>1:
                             note_platform_start = eb +' '+str(ispw)+' '+iant+' '+str(ipol)+' '
                             #####################
-                            #Sobel filter applied to the amp and phase 
+                            # Sobel filter applied to the amp and phase 
                             #####################
                             kernel=np.array([-1,0,1])
                             check_phs=np.copy(bp_phs)
@@ -359,7 +848,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                             #####################
 
                             #####################
-                            #For each subband, estimate 
+                            # For each subband, estimate 
                             #    standard deviation of amp and phase: subb_{amp/phs}_rms
                             #    mean of amp and phase: subb_{amp/phs}
                             #    standard deviation of 'sobel' filtered amp and phase: subb_{amp/phs}_sobel_rms
@@ -375,10 +864,10 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
 
 
                             ######################
-                            #Heuristics 1: find the subband with anomalously large phase RMS   
+                            # Heuristics 1: find the subband with anomalously large phase RMS   
                             ######################
 
-                            #estimate the median value of the subband RMS by excluding the largest value
+                            # Estimate the median value of the subband RMS by excluding the largest value
                             subb_phs_rms_sort=np.sort(subb_phs_rms)
                             subb_phs_rms_med = np.nanmedian(subb_phs_rms_sort[:-1])
                             subb_phs_sobel_rms_sort=np.sort(subb_phs_sobel_rms)
@@ -426,7 +915,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                     check_subb_phs_var='YES'
 
                               ###################################
-                              # update the maxvalue if the new subb_phs_rms is larger
+                              # Update the maxvalue if the new subb_phs_rms is larger
                               ###################################
                               if maxvalue<subb_phs_rms[isubb]:
                                     maxvalue=subb_phs_rms[isubb]
@@ -505,7 +994,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                             #######################
 
                             ######################
-                            #Heuristics 2: find the subband with anomalously large amplitude RMS   
+                            # Heuristics 2: find the subband with anomalously large amplitude RMS   
                             ######################
                             
                             #estimate the median value of the subband RMS by excluding the largest value
@@ -555,7 +1044,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                  check_subb_amp_var='YES'
                               
                               ###################################
-                              # update the maxvalue if the new subb_amp_rms is larger
+                              # Update the maxvalue if the new subb_amp_rms is larger
                               ###################################
                               if maxvalue<subb_amp_rms[isubb]:
                                     maxvalue=subb_amp_rms[isubb]
@@ -568,12 +1057,12 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                               ###################################                              
                               if ((subb_amp_rms[isubb] > 5.0*subb_amp_rms_med) and (not atmimpact) and (not transimpact)):
                                 ###########################
-                                #  check, the subband is neither of the first and the last subband, and the Sobel filtered RMS pre-check
+                                #  Check, the subband is neither of the first and the last subband, and the Sobel filtered RMS pre-check
                                 ###########################
                                 if (isubb != 0 and isubb != subb_num-1) and (check_subb_amp_var == 'YES'): 
                                     yesorno='YES'
                                     #########################
-                                    # this is verbose message, which can be skipped for PL
+                                    # This is verbose message, which can be skipped for PL
                                     #########################
                                     this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                     note_platform += (this_note_platform+'\n')
@@ -584,7 +1073,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                     #########################
 
                                     #########################
-                                    # this list contains the frequency range of the affected subband
+                                    # This list contains the frequency range of the affected subband
                                     # it is necessary for plotting
                                     #########################
                                     this_flagchan_range=[spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
@@ -592,17 +1081,17 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                     #########################
                                 
                                 #############################
-                                # check, the subband is either the first or the last subband
+                                # Check, the subband is either the first or the last subband
                                 #############################
                                 elif (isubb == 0 or isubb == subb_num-1):
                                        ############################
-                                       # check if the standard deviation of the Sobel filtered value is 10 x larger than
+                                       # Check if the standard deviation of the Sobel filtered value is 10 x larger than
                                        # the median value of the subbands with the Sobel filtered amp value
                                        ############################
                                        if (np.nanstd(sobel_amp[(isubb*subb_nchan):((isubb+1)*subb_nchan)])>10.0*subb_amp_sobel_rms_med):
                                           yesorno='YES'
                                           ###########################
-                                          # this verbose message, which can be skipped for PL
+                                          # This verbose message, which can be skipped for PL
                                           ###########################
                                           this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                           note_platform += (this_note_platform+'\n')
@@ -613,15 +1102,15 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                                           #########################
 
                                           #########################
-                                          # this list contains the frequency range of the affected subband
-                                          # it is necessary for plotting
+                                          # This list contains the frequency range of the affected subband
+                                          # It is necessary for plotting
                                           #########################
                                           this_flagchan_range=[spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
                                           flagchan_range_amp.append(this_flagchan_range)
                                           ######################### 
 
                             #######################
-                            # this string is important and appends the heuristics values for each heuristics
+                            # This string is important and appends the heuristics values for each heuristics
                             #######################
                             note_platform_amprms = 'Platform(HighAmplitudeRMS)'+' '+yesorno+' max amp RMS: '+"%.6f"%(maxvalue)+' amp'+' subb median RMS: '+"%.6f"%(subb_amp_rms_med)+ ' amp'+' ' 
                             note_platform_start+=note_platform_amprms 
@@ -639,7 +1128,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                             ch_step_sigma=3.0     # step threshold at the border of two subbands 
 
                             ######################
-                            # variables with string and numerical values of heuristics 
+                            # Variables with string and numerical values of heuristics 
                             ######################
                             yesorno='NO'
                             maxvalue=-999
@@ -1311,9 +1800,9 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
         outfile.close()
         outfile_val.close()
         outfile_flag.close()
-        return spws_affected#note_platform_return, note_platform_start_return, flagnote_return #not strictly correct, missing all contents
+        return spws_affected
 
-def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
+def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_platforming_qa'):
    mkdirstr='mkdir '+outputpath
 
    if os.path.isdir(outputpath) == False:
@@ -1339,18 +1828,18 @@ def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
    for mytab in mytablelist:
        tb.open(mytab)
        tb_summary=tb.info()
-       if tb_summary['subType']=='B Jones':                           #checking whether this is bandpass gain table (bandtype='B Jones')
-          tabkey.append(mytab.split('/')[-1])                         #bandpass table name 
-          vislist.append(myau.getMeasurementSetFromCaltable(mytab))   #associated MS name
-          tablelist.append(os.path.abspath('./' + mytab))                                     #bandpass table paths 
+       if tb_summary['subType']=='B Jones':                           # checking whether this is bandpass gain table (bandtype='B Jones')
+          tabkey.append(mytab.split('/')[-1])                         # bandpass table name 
+          vislist.append(getMeasurementSetFromCaltable(mytab))   # associated MS name
+          tablelist.append(os.path.abspath('./' + mytab))                                     # bandpass table paths 
        tb.close()
 
    print('tabkey', tabkey)
    print('vislist', vislist)
    print('tablelist', tablelist)
 
-   #go into the output directory to dump the analysis result 
-   #products of the analysis result: bandpass data pickle file, text files, and plots
+   # go into the output directory to dump the analysis result 
+   # products of the analysis result: bandpass data pickle file, text files, and plots
    os.chdir(outputpath)
    
    #creating PL directory to save the data (text files and figures)
@@ -1390,7 +1879,7 @@ def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['flag']=[0,1,1,....,0]
    #
 
-   if os.path.isfile('bandpass_library.pickle')==False:
+   if True:# os.path.isfile('bandpass_library.pickle')==False:
       bandpass_library={}
 
       for i, mytab in enumerate(tabkey):
@@ -1409,10 +1898,10 @@ def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
          bandpass_library[mytab]['RefAnt']=refAnt
 
          #check bandwidth and nchan
-         visname=myau.getMeasurementSetFromCaltable(caltable)
+         visname=getMeasurementSetFromCaltable(caltable)
          myvis=os.path.join(inputpath,visname)
          print('myvis', myvis)
-         spw_bandwidth=myau.getScienceSpwBandwidths(myvis)
+         spw_bandwidth=getScienceSpwBandwidths(myvis)
 
          for j, myfield in enumerate(fieldNames):
             print("doing field:",myfield)
@@ -1423,8 +1912,8 @@ def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
                print("doing spw:",myspw)
 
                bandpass_library[mytab][myfield][myspw]={}
-               spw_nchan=myau.getNChanFromCaltable(caltable,myspw)
-               spw_freq=myau.getChanFreqFromCaltable(caltable,myspw)       #GHz
+               spw_nchan=getNChanFromCaltable(caltable,myspw)
+               spw_freq=getChanFreqFromCaltable(caltable,myspw)       #GHz
                bandpass_library[mytab][myfield][myspw]['bw']=spw_bandwidth[m]
                bandpass_library[mytab][myfield][myspw]['nchan']=spw_nchan
                bandpass_library[mytab][myfield][myspw]['freq']=spw_freq
@@ -1477,7 +1966,7 @@ def bandpass_platforming(inputpath='.', outputpath='./bandpass_platforming_qa'):
           pickle.dump(bandpass_library, f, protocol=pickle.HIGHEST_PROTOCOL)
 
    # Evaluate bandpass platform/spikes
-   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle',inputpath)
+   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle', inputpath)
    os.chdir(inputpath)
    return spws_affected
 
