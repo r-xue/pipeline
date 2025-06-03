@@ -184,7 +184,7 @@ class SelfcalInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or <hifa,hifv>_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
 
                 default = "": use all MeasurementSets in the context
 
