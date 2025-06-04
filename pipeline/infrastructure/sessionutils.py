@@ -341,7 +341,7 @@ def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int
     return spw_id_map
 
 
-def remap_spw_int(source_ms, target_ms, spws, observing_run=None):
+def remap_spw_int(source_ms, target_ms, spws):
     """
     Map integer spw arguments from one MS to their equivalent spw in
     the target ms.
@@ -354,11 +354,11 @@ def remap_spw_int(source_ms, target_ms, spws, observing_run=None):
     :return: a list of remapped integer spw IDs
     :rtype: list
     """
-    int_spw_map = get_spwmap(source_ms, target_ms, observing_run=observing_run)
+    int_spw_map = get_spwmap(source_ms, target_ms)
     return [int_spw_map[spw_id] for spw_id in spws]
 
 
-def remap_spw_str(source_ms, target_ms, spws, observing_run=None):
+def remap_spw_str(source_ms, target_ms, spws):
     """
     Remap a string spw argument, e.g., '16,18,20,22', from one MS to
     the equivalent map in the target ms.
@@ -372,7 +372,7 @@ def remap_spw_str(source_ms, target_ms, spws, observing_run=None):
     :rtype: str
     """
     spw_ints = [int(i) for i in spws.split(',')]
-    l = remap_spw_int(source_ms, target_ms, spw_ints, observing_run=observing_run)
+    l = remap_spw_int(source_ms, target_ms, spw_ints)
     return ','.join([str(i) for i in l])
 
 

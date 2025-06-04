@@ -1140,17 +1140,13 @@ class SessionALMAPhcorBandpass(basetask.StandardTaskTemplate):
 
                         # remap spectral windows to apply calibration
                         # to
-                        my_spw = sessionutils.remap_spw_str(
-                            adopted_ms, no_bandpass_ms, session_calto.spw, observing_run=context.observing_run
-                        )
+                        my_spw = sessionutils.remap_spw_str(adopted_ms, no_bandpass_ms, session_calto.spw)
                         my_calto = callibrary.CalTo(vis=vis, field='', spw=my_spw, antenna='', intent='')
 
                         for cf in session_calfrom:
                             # remap spectral windows to take
                             # calibration from
-                            my_spwmap = sessionutils.remap_spw_int(
-                                adopted_ms, no_bandpass_ms, cf.spwmap, observing_run=context.observing_run
-                            )
+                            my_spwmap = sessionutils.remap_spw_int(adopted_ms, no_bandpass_ms, cf.spwmap)
 
                             my_calfrom = callibrary.CalFrom(gaintable=cf.gaintable,
                                                             gainfield=cf.gainfield,
