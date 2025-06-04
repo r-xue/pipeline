@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from hifa.tasks.gaincalsnr.gaincalsnr.GaincalSnrInputs.__init__
 @utils.cli_wrapper
-def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, phasesnr=None, bwedgefrac=None, hm_nantennas=None,
+def hifa_gaincalsnr(vis=None, field=None, intent=None, spw=None, bwedgefrac=None, hm_nantennas=None,
                     maxfracflagged=None):
     """Compute gaincal signal-to-noise ratios per spw
 

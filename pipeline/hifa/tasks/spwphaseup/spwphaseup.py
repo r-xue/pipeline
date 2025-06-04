@@ -564,7 +564,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             'field': field,
             'intent': intent,
             'spw': spw,
-            'phasesnr': inputs.phasesnr,
             'bwedgefrac': inputs.bwedgefrac,
             'hm_nantennas': inputs.hm_nantennas,
             'maxfracflagged': inputs.maxfracflagged,

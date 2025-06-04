@@ -52,14 +52,12 @@ class GaincalSnrInputs(vdp.StandardInputs):
         spws = [str(spw) for spw in sorted(spws)]
         return ','.join(spws)
 
-    phasesnr = vdp.VisDependentProperty(default=25.0)
     bwedgefrac = vdp.VisDependentProperty(default=0.03125)
     hm_nantennas = vdp.VisDependentProperty(default='unflagged')
     maxfracflagged = vdp.VisDependentProperty(default=0.90)
 
     # docstring and type hints: supplements hifa_gaincalsnr
-    def __init__(self, context, output_dir=None, vis=None, field=None,
-                 intent=None, spw=None, phasesnr=None, bwedgefrac=None,
+    def __init__(self, context, output_dir=None, vis=None, field=None, intent=None, spw=None, bwedgefrac=None,
                  hm_nantennas=None, maxfracflagged=None):
         """Initialize Inputs.
 
@@ -90,10 +88,6 @@ class GaincalSnrInputs(vdp.StandardInputs):
 
                 Example: spw='13,15'
 
-            phasesnr: The required gaincal solution signal to noise.
-
-                Example: phasesnr=20.0
-
             bwedgefrac: The fraction of the bandwidth edges that is flagged.
 
                 Example: bwedgefrac=0.0
@@ -120,7 +114,6 @@ class GaincalSnrInputs(vdp.StandardInputs):
         self.field = field
         self.intent = intent
         self.spw = spw
-        self.phasesnr = phasesnr
         self.bwedgefrac = bwedgefrac
         self.hm_nantennas = hm_nantennas
         self.maxfracflagged = maxfracflagged
@@ -144,7 +137,6 @@ class GaincalSnr(basetask.StandardTaskTemplate):
         LOG.info('    Setting gaincal intent to %s ' % inputs.intent)
         LOG.info('    Selecting gaincal fields %s ' % fieldlist)
         LOG.info('    Selecting gaincal spws %s ' % spwlist)
-        LOG.info('    Setting requested gaincal snr to %0.1f ' % inputs.phasesnr)
         if len(fieldlist) <= 0 or len(spwlist) <= 0:
             LOG.info('    No gaincal data')
             return GaincalSnrResults(vis=inputs.vis)
