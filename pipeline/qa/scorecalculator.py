@@ -3357,11 +3357,9 @@ def generate_metric_mask(
     ms_list = [mses[i] for i in file_index]
     spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
 
-    ra = []
-    dec = []
-    ofs_ra = []
-    ofs_dec = []
-    online_flag = []
+    refval = cs.referencevalue()
+    units = cs.units()
+    metric_mask = np.zeros(imshape, dtype=bool)
 
     for i in range(len(ms_list)):
         origin_basename = os.path.basename(ms_list[i].origin_ms)
@@ -3377,94 +3375,47 @@ def generate_metric_mask(
         _spwlist = spw_list[_index]
 
         with casa_tools.TableReader(rotable_name) as tb:
-            unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
-            unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
             tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(utils.list_to_str(_antlist), utils.list_to_str(_fieldlist), utils.list_to_str(_spwlist)))
-            ofs_ra.extend(tsel.getcol('OFS_RA'))
-            ofs_dec.extend(tsel.getcol('OFS_DEC'))
+            ofs_ra = tsel.getcol('OFS_RA')
+            ofs_dec = tsel.getcol('OFS_DEC')
             rows = tsel.rownumbers()
             tsel.close()
 
+        if org_direction is None:
+            ra_deg = ofs_ra
+            dec_deg = ofs_dec
+        else:
+            ra_deg = np.empty(len(ofs_ra), dtype=float)
+            dec_deg = np.empty(len(ofs_dec), dtype=float)
+            for i, rr, dd in zip(range(len(ofs_ra)), ofs_ra, ofs_dec):
+                shift_ra, shift_dec = direction_recover(rr, dd, org_direction)
+                ra_deg[i] = shift_ra
+                dec_deg[i] = shift_dec
+
         with casa_tools.TableReader(rwtable_name) as tb:
             permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag.extend(permanent_flag[0, datatable.OnlineFlagIndex])
+            online_flag = permanent_flag[0, datatable.OnlineFlagIndex]
 
-    if org_direction is None:
-        ra = np.asarray(ofs_ra)
-        dec = np.asarray(ofs_dec)
-    else:
-        for rr, dd in zip(ofs_ra, ofs_dec):
-            shift_ra, shift_dec = direction_recover( rr, dd, org_direction )
-            ra.append(shift_ra)
-            dec.append(shift_dec)
-        ra = np.asarray(ra)
-        dec = np.asarray(dec)
-    online_flag = np.asarray(online_flag)
+        # world-pixel conversion using cs.topixelmany
+        validity_mask = online_flag == 1
+        ra_deg = ra_deg[validity_mask]
+        dec_deg = dec_deg[validity_mask]
 
-    del ofs_ra, ofs_dec
+        # unit should be either 'rad' or 'deg'
+        deg2rad = np.pi / 180.0
+        ra = ra_deg * deg2rad if units[0] == 'rad' else ra_deg
+        dec = dec_deg * deg2rad if units[1] == 'rad' else dec_deg
+        wpol = np.zeros(len(ra), dtype=float)
+        wfreq = np.zeros(len(ra), dtype=float) + refval['numeric'][3]
+        world_array = np.stack((ra, dec, wpol, wfreq))
+        pixel_array = cs.topixelmany(world_array)['numeric']
+        px = pixel_array[0]
+        py = pixel_array[1]
 
-    metric_mask = np.empty(imshape, dtype=bool)
-    metric_mask[:] = False
-
-    qa = casa_tools.quanta
-
-    # template measure for world-pixel conversion
-    # 2019/06/03 TN
-    # Workaround for memory consumption issue (PIPE-362)
-    # cs.topixel consumes some amount of memory and it accumulates,
-    # too many call of cs.topixel results in unexpectedly large amount of
-    # memory usage. To avoid cs.topixel, approximate mapping to pixel
-    # coordinate is done manually.
-    blc = cs.toworld([-0.5, -0.5, 0, 0], format='q')
-    brc = cs.toworld([imshape[0] - 0.5, -0.5, 0, 0], format='q')
-    tlc = cs.toworld([-0.5, imshape[1] - 0.5, 0, 0], format='q')
-    trc = cs.toworld([imshape[0] - 0.5, imshape[1] - 0.5, 0, 0], format='q')
-    #print('blc {} {}'.format(blc['quantity']['*1'], blc['quantity']['*2']))
-    #print('brc {} {}'.format(brc['quantity']['*1'], brc['quantity']['*2']))
-    #print('tlc {} {}'.format(tlc['quantity']['*1'], tlc['quantity']['*2']))
-    #print('trc {} {}'.format(trc['quantity']['*1'], trc['quantity']['*2']))
-    #print('cen {} {}'.format(cen['quantity']['*1'], cen['quantity']['*2']))
-    cpi = qa.convert(qa.quantity(180, 'deg'), unit_ra)['value']
-    s0 = (qa.convert(tlc['quantity']['*1'], unit_ra)['value'] - qa.convert(blc['quantity']['*1'], unit_ra)['value']) \
-        / (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] - qa.convert(blc['quantity']['*2'], unit_dec)['value'])
-    t0 = ((qa.convert(blc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
-    s1 = (qa.convert(trc['quantity']['*1'], unit_ra)['value'] - qa.convert(brc['quantity']['*1'], unit_ra)['value']) \
-        / (qa.convert(trc['quantity']['*2'], unit_dec)['value'] - qa.convert(brc['quantity']['*2'], unit_dec)['value'])
-    t1 = ((qa.convert(brc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
-    ymax = (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] + qa.convert(trc['quantity']['*2'], unit_dec)['value']) / 2
-    ymin = (qa.convert(blc['quantity']['*2'], unit_dec)['value'] + qa.convert(brc['quantity']['*2'], unit_dec)['value']) / 2
-    dy = (ymax - ymin) / imshape[1]
-    #print('s0 {} t0 {} s1 {} t1 {}'.format(s0, t0, s1, t1))
-    #print('ymax {} ymin {} dy {}'.format(ymax, ymin, dy))
-    #world = cs.toworld([0, 0, 0, 0], format='m')
-    px = np.empty_like(ra)
-    py = np.empty_like(dec)
-    px[:] = -1
-    py[:] = -1
-    for i, (x, y, f) in enumerate(zip(ra, dec, online_flag)):
-        if f != 1:
-            # PIPE-439 flagged pointing data are not taken into account
-            continue
-
-        #world['measure']['direction']['m0']['value'] = qa.quantity(x, unit_ra)
-        #world['measure']['direction']['m1']['value'] = qa.quantity(y, unit_dec)
-        #p = cs.topixel(world)
-        #px[i] = p['numeric'][0]
-        #py[i] = p['numeric'][1]
-        y0 = y
-        xmin = s0 * (y - y0) + t0
-        xmax = s1 * (y - y0) + t1
-        dx = (xmax - xmin) / imshape[0]
-        #print('xmin {} xmax {} dx {}'.format(xmin, xmax, dx))
-        #print('x {} y {}'.format(x, y))
-        py[i] = (y - ymin) / dy - 0.5
-        px[i] = (x - xmin) / dx - 0.5
-        #print('WORLD {} {} <-> PIXEL {} {}'.format(x, y, px[i], py[i]))
-
-    for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
-        #print(x, y)
-        if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
-            metric_mask[x, y, :, :] = True
+        for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
+            #print(x, y)
+            if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
+                metric_mask[x, y, :, :] = True
 
     # exclude edge channels
     imagename = outcome['image'].imagename
