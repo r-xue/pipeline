@@ -1,13 +1,13 @@
 import os
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hif.tasks.gaincal import common
 from pipeline.hif.tasks.gaincal import gtypegaincal
+from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics import exptimes as gexptimes
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.infrastructure import task_registry
@@ -169,11 +169,11 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 class TimeGaincal(gtypegaincal.GTypeGaincal):
     Inputs = TimeGaincalInputs
 
-    def prepare(self, **parameters) -> common.GaincalResults:
+    def prepare(self, **parameters) -> GaincalResults:
         inputs = self.inputs
 
         # Create a results object.
-        result = common.GaincalResults()
+        result = GaincalResults()
         result.phasecal_for_phase_plot = []
 
         # Compute the phase solutions for the science target, check source,
@@ -275,7 +275,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return result
 
-    def analyse(self, result: common.GaincalResults) -> common.GaincalResults:
+    def analyse(self, result: GaincalResults) -> GaincalResults:
         # Double-check that the caltables were actually generated.
         on_disk = [table for table in result.pool if table.exists()]
         result.final[:] = on_disk
@@ -494,14 +494,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return new_calapps
 
-    def _do_phasecal_for_calibrators(self) -> Tuple[List[common.GaincalResults], Optional[float]]:
+    def _do_phasecal_for_calibrators(self) -> tuple[list[GaincalResults], float | None]:
         """
         This method is responsible for creating phase gain caltable(s) that
         are applicable to all calibrators.
         """
         inputs = self.inputs
-
-        # Initialize output list of phase gaincal results.
         phasecal_results = []
 
         # Split intents by PHASE and non-PHASE calibrators.
@@ -549,11 +547,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return phasecal_result
 
-    def _do_phasecal_for_phase_calibrators(self, intent: str) -> Tuple[List[common.GaincalResults], float]:
+    def _do_phasecal_for_phase_calibrators(self, intent: str) -> tuple[list[GaincalResults], float]:
         """
-        This method is responsible for creating phase gain caltable(s) for the
-        each field that covers a PHASE calibrator, using optimal gaincal
-        parameters based on the SpW mapping registered in the measurement set.
+        This method is responsible for creating phase gain caltable(s) for each
+        field that covers a PHASE calibrator, using optimal gaincal parameters
+        based on the SpW mapping registered in the measurement set.
         """
         inputs = self.inputs
 
@@ -624,7 +622,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return phasecal_results, max_solint
 
-    def _do_phasecal_for_phase_calibrators_forcing_combine(self) -> List[common.GaincalResults]:
+    def _do_phasecal_for_phase_calibrators_forcing_combine(self) -> list[GaincalResults]:
         """
         This method will create phase gain caltable(s) for each field that
         both a.) covers a PHASE calibrator, and b.) for which the SpW mapping
@@ -684,10 +682,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
     # Used to calibrate "selfcaled" targets
     def _do_calibrator_phasecal(self, field: str = None, intent: str = None, spw: str = None, gaintype: str = 'G',
                                 combine: str = None, solint: str = None, minsnr: float = None,
-                                interp: str = None, spwmap: List[int] = None) -> common.GaincalResults:
+                                interp: str = None, spwmap: List[int] = None) -> GaincalResults:
         """
         This runs the gaincal for creating phase solutions intended for the
-        calibrators (amplitude, bandpass, polarization, phase).
+        calibrators (amplitude, bandpass, polarization, phase, diffgain(ref/src)).
         """
         inputs = self.inputs
 
@@ -749,7 +747,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return result
 
-    def _do_offsets_phasecal(self) -> common.GaincalResults:
+    def _do_offsets_phasecal(self) -> GaincalResults:
         """
         This method computes a diagnostic phase caltable where the previously
         derived phase caltable is pre-applied, to be used for diagnostic plots
@@ -787,7 +785,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return result
 
-    def _do_caltarget_ampcal(self, solint: Optional[float] = None) -> common.GaincalResults:
+    def _do_caltarget_ampcal(self, solint: Optional[float] = None) -> GaincalResults:
         """
         Create amplitude caltable used for diagnostic plots. Resulting
         caltable will not be registered in the context callibrary, i.e.
@@ -981,7 +979,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         inputs.context.callibrary.unregister_calibrations(phase_no_combine_matcher)
 
 
-def do_gtype_gaincal(context, executor, task_args) -> common.GaincalResults:
+def do_gtype_gaincal(context, executor, task_args) -> GaincalResults:
     task_inputs = gtypegaincal.GTypeGaincalInputs(context, **task_args)
     task = gtypegaincal.GTypeGaincal(task_inputs)
     result = executor.execute(task)
