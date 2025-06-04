@@ -159,9 +159,11 @@ class CleanSummary(object):
                 # cleanmask - not for iter 0
                 if i > 0:
                     collapse_function = 'mom8' if self._is_cube_repbw(iteration, imagetype='cleanmask') else 'mean'
+                    # Plot only Stokes I since the QUV planes are not present in re-used mask from
+                    # the previous Stokes I imaging step (PIPE-2464).
                     plot_wrappers.extend(
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, collapseFunction=collapse_function,
+                                                         intent=r.intent, stokes_list=['I'], collapseFunction=collapse_function,
                                                          **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra and PSF per channel plot for this iteration
