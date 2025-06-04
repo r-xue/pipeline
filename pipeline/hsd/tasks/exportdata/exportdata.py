@@ -407,7 +407,7 @@ class SDExportData(exportdata.ExportData):
 
     def _do_auxiliary_products(self, context: Context, oussid: str,
                                output_dir: str, products_dir: str,
-                               pipeline_stats: str) -> str:
+                               pipeline_stats_file: str) -> str:
         """Save a K2JY reference file and flag files into tarball.
 
         Args:
@@ -415,7 +415,7 @@ class SDExportData(exportdata.ExportData):
             oussid : OUS Status UID
             output_dir : path of output directory
             products_dir : path of products directory
-            pipeline_stats: pipeline stats file
+            pipeline_stats_file: pipeline stats file
 
         Returns:
             tarball file name
@@ -475,10 +475,10 @@ class SDExportData(exportdata.ExportData):
                     LOG.info('Auxiliary data product '
                              '{} does not exist'.format(os.path.basename(flags_file)))
 
-            # PIPE-2380: Save pipeline statistics file
-            if pipeline_stats and os.path.exists(pipeline_stats):
-                tar.add(pipeline_stats, arcname=pipeline_stats)
-                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats, tarfilename)
+            # PIPE-2380: Save the pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
             else:
                 LOG.info("Pipeline statistics file does not exist.")
             tar.close()
