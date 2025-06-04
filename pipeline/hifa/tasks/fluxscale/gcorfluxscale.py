@@ -527,11 +527,10 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                     append=False):
         inputs = self.inputs
 
-        # Use only valid science spws
+        # Use only valid science spws covered by current intent(s) and field(s).
         fieldlist = inputs.ms.get_fields(task_arg=field)
         sci_spws = set(inputs.ms.get_spectral_windows(science_windows_only=True, intent=intent))
-        spw_ids = {spw.id for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)}
-        spw_ids = ','.join(map(str, spw_ids))
+        spws_to_solve = ','.join({str(spw.id) for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)})
 
         # Initialize gaincal task inputs.
         task_args = {
@@ -540,7 +539,7 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
             'caltable': caltable,
             'field': field,
             'intent': intent,
-            'spw': spw_ids,
+            'spw': spws_to_solve,
             'solint': solint,
             'gaintype': gaintype,
             'calmode': calmode,
@@ -625,7 +624,8 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         phase_results.extend(self._do_phase_for_phase_check_no_overlap(pc_intents, exclude_intents, all_ants, refant))
 
         # PIPE-1490: for PHASE fields that do cover other calibrator intents,
-        # create a separate solve.
+        # create a separate solve to ensure those solutions are put in a
+        # separate caltable.
         phase_results.extend(self._do_phase_for_phase_with_overlap(exclude_intents, all_ants, refant))
 
         # PIPE-1154: for the remaining calibrator intents, compute phase
@@ -682,8 +682,30 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return sorted(intent_field)
 
-    def _do_phasecal_for_amp_calibrator(self, antenna: str, refant: str, minblperant: int,
-                                        uvrange: str, non_pc_intents: Set) -> GaincalResults:
+    def _do_phasecal_for_amp_calibrator(self, antenna: str, refant: str, minblperant: int, uvrange: str,
+                                        non_pc_intents: set) -> GaincalResults:
+        """
+        Worker method to compute the phase calibration for the amplitude
+        calibrator.
+
+        Retrieve optimal gaincal parameters from SpW maps in MS, preferentially
+        for AMPLITUDE intent, but fall-back to BANDPASS intent in cases where
+        amplitude calibrator == bandpass calibrator (PIPE-2499).
+
+        Args:
+            antenna: A comma-delimited string specifying the antenna names or
+                ids to be used.
+            refant: A string specifying the reference antenna(s) to use.
+            minblperant: Minimum number of baselines required per antenna in
+                phase solve.
+            uvrange: String specifying whether and how to select data by
+                length in the phase solve.
+            non_pc_intents: set of non phase/check calibrator intents, that
+                resulting caltable should be registered to as well.
+
+        Returns:
+            GaincalResults object.
+        """
         inputs = self.inputs
 
         # Get optimal phase solution parameters for the amplitude calibrator
@@ -722,8 +744,23 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return phase_result
 
-    def _do_phase_for_phase_check_no_overlap(self, pc_intents: Set, exclude_intents: Set, antenna: str,
-                                             refant: str) -> List[GaincalResults]:
+    def _do_phase_for_phase_check_no_overlap(self, pc_intents: set, exclude_intents: set, antenna: str,
+                                             refant: str) -> list[GaincalResults]:
+        """
+        Compute the phase calibration for the phase and check calibrator fields
+        that have no overlap with the other calibrator intents specified by
+        `exclude_intents`.
+
+        Args:
+            pc_intents: Phase and check intents to compute phase gaincal for.
+            exclude_intents: Exclude fields that also cover these intents.
+            antenna: A comma-delimited string specifying the antenna names or
+                ids to be used.
+            refant: A string specifying the reference antenna(s) to use.
+
+        Returns:
+            List of GaincalResults objects.
+        """
         # Collect phase cal results.
         phase_results = []
 
@@ -735,13 +772,27 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # spwmapping registered in the measurement set.
         intent_field_to_assess = self._get_intent_field(self.inputs.ms, intents=pc_intents,
                                                         exclude_intents=exclude_intents)
-
         for intent, field in intent_field_to_assess:
             phase_results.append(self._do_phasecal_for_intent_field(intent, field, antenna, refant))
 
         return phase_results
 
-    def _do_phase_for_phase_with_overlap(self, exclude_intents: Set, antenna: str, refant: str) -> List[GaincalResults]:
+    def _do_phase_for_phase_with_overlap(self, exclude_intents: set, antenna: str, refant: str) -> list[GaincalResults]:
+        """
+        Compute the phase calibration for the phase calibrator fields that
+        overlap with one or more of the other calibrator intents specified by
+        `exclude_intents`.
+
+        Args:
+            exclude_intents: Only solve for phase calibrator fields that also
+                cover these intents that were excluded before.
+            antenna: A comma-delimited string specifying the antenna names or
+                ids to be used.
+            refant: A string specifying the reference antenna(s) to use.
+
+        Returns:
+            List of GaincalResults objects.
+        """
         # Collect phase cal results.
         phase_results = []
 
@@ -760,6 +811,19 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         return phase_results
 
     def _do_phasecal_for_intent_field(self, intent: str, field: str, antenna: str, refant: str) -> GaincalResults:
+        """
+        Perform the phase gaincal computation for a given intent and field.
+
+        Args:
+            intent: intent(s) to perform phase calibration for.
+            field: field to perform phase calibration for.
+            antenna: A comma-delimited string specifying the antenna names or
+                ids to be used.
+            refant: A string specifying the reference antenna(s) to use.
+
+        Returns:
+            GaincalResults object.
+        """
         # Get optimal phase solution parameters for current intent and
         # field, based on spw mapping info in MS.
         combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent, field)
@@ -773,7 +837,21 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return result
 
-    def _do_phasecal_for_other_calibrators(self, intent: Set, antenna: str, refant: str) -> List[GaincalResults]:
+    def _do_phasecal_for_other_calibrators(self, intents: set, antenna: str, refant: str) -> list[GaincalResults]:
+        """
+        Compute the phase calibration for the "other" (not: phase, check, or
+        amplitude) calibrators, typically bandpass, diffgain, and/or
+        polarization intents.
+
+        Args:
+            intents: set of intents to perform phase calibration for.
+            antenna: A comma-delimited string specifying the antenna names or
+                ids to be used.
+            refant: A string specifying the reference antenna(s) to use.
+
+        Returns:
+            List of GaincalResults objects.
+        """
         inputs = self.inputs
         phase_results = []
 
@@ -849,7 +927,25 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
 
         return phase_results
 
-    def _get_phasecal_params(self, intent: str, field: str):
+    def _get_phasecal_params(self, intent: str, field: str) -> tuple[str, str, str | None, str, list[int]]:
+        """
+        Retrieve the optimal parameters to use for phase calibration for a given
+        single intent and single field. These parameters are retrieved from the
+        SpW maps stored in the MS object for the MS currently being processed.
+
+        Args:
+            intent: intent to retrieve phase cal parameters for.
+            field: field name to retrieve phase cal parameters for.
+
+        Returns:
+            5-tuple containing:
+              * combine parameter ('' or 'spw')
+              * gaintype parameter ('G' or 'T')
+              * interpolation parameter (None, 'linearPD,linear', or 'linear,linear')
+              * solution interval parameter
+              * spwmap: List representing a spectral window map that specifies
+                  which SpW IDs should be re-mapped / combined.
+        """
         inputs = self.inputs
         ms = inputs.ms
 
