@@ -686,15 +686,26 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
                                         uvrange: str, non_pc_intents: Set) -> GaincalResults:
         inputs = self.inputs
 
-        # Compute phase caltable for the amplitude calibrator (set by
-        # "refintent"). PIPE-1154: for amplitude calibrator, always use
-        # combine='' and gaintype="G", no spwmap or interp.
+        # Get optimal phase solution parameters for the amplitude calibrator
+        # based on spw mapping info in MS. By default, retrieve these for the
+        # amplitude intent (aka inputs.refintent).
+        intent_for_param = inputs.refintent
+        # PIPE-2499: however, if the amplitude calibrator field was also used as
+        # the bandpass calibrator, then assume hifa_spwphaseup will only have
+        # stored SpwMapping for BANDPASS intent (having skipped AMPLITUDE) and
+        # therefore retrieve parameters for BANDPASS intent.
+        if any("BANDPASS" in fld.intents for fld in inputs.ms.get_fields(inputs.reference)):
+            intent_for_param = "BANDPASS"
+        combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent_for_param, inputs.reference)
+
+        # Compute phase caltable for the amplitude calibrator.
         LOG.info(f'Compute phase gaincal table for flux calibrator (intent={inputs.refintent},'
                  f' field={inputs.reference}).')
-        phase_result = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype="G", calmode='p',
-                                        combine='', solint=inputs.phaseupsolint, antenna=antenna, uvrange=uvrange,
-                                        minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=None,
-                                        interp=None)
+        phase_result = self._do_gaincal(field=inputs.reference, intent=inputs.refintent, gaintype=gaintype, calmode='p',
+                                        combine=combine, solint=solint, antenna=antenna, uvrange=uvrange,
+                                        minsnr=inputs.minsnr, refant=refant, minblperant=minblperant, spwmap=spwmap,
+                                        interp=interp)
+
         # PIPE-1831: update the CalApplication to add the other non-phase/check
         # calibrator intents as valid intents that this phase caltable can be
         # applied to. This is necessary for datasets where a field that covers
@@ -770,21 +781,72 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # inputs.transfer will skip any field that already covers the intent
         # inputs.refintent (the amplitude calibrator), as that is covered by a
         # separate gaincal.
-        fields = ",".join(f.name for f in inputs.ms.get_fields(inputs.transfer)
-                          if set(intent).intersection(set(f.intents)))
+        fields = [f for f in inputs.ms.get_fields(inputs.transfer) if f.intents.intersection(intents)]
 
-        # Only proceed if valid fields were found.
-        if fields:
-            # Intents as string for CASA input.
-            intents_str = ",".join(intent)
+        # PIPE-2499: for each field, check whether it is used for multiple
+        # calibrator intents, and handle these as special cases.
+        for field in fields:
+            # Matching intents in current field.
+            fld_intents = field.intents.intersection(intents)
+            fld_intents_str = ",".join(fld_intents)
+            LOG.info(f'Compute phase gaincal table for other calibrators (intent={fld_intents_str},'
+                     f' field={field.name}).')
 
-            # PIPE-1154: the phase solves for the remaining calibrators should
-            # always use combine='', gaintype="G", no spwmap or interp.
-            LOG.info(f'Compute phase gaincal table for other calibrators (intent={intents_str}, field={fields}).')
-            phase_results.append(self._do_gaincal(field=fields, intent=intents_str, gaintype='G', calmode='p',
-                                                  combine='', solint=inputs.phaseupsolint, antenna=antenna, uvrange='',
-                                                  minsnr=inputs.minsnr, refant=refant, minblperant=None, spwmap=None,
-                                                  interp=None))
+            # If this field is used both as diffgain and bandpass calibrator,
+            # then assume that hifa_spwphaseup will only have stored SpwMapping
+            # for BANDPASS intent (having skipped DIFFGAINSRC and DIFFGAINREF)
+            # and therefore retrieve parameters for BANDPASS intent, and solve
+            # for all intents at once.
+            # Note: it assumed there is no support for band-to-band polarization
+            # observations, therefore if DIFFGAIN is present, there cannot be
+            # any of the POL* intents (but if there were, those would get solved
+            # for here).
+            if "DIFFGAINSRC" in fld_intents and "BANDPASS" in fld_intents:
+                combine, gaintype, interp, solint, spwmap = self._get_phasecal_params('BANDPASS', field.name)
+                phase_results.append(self._do_gaincal(field=field.name, intent=fld_intents_str, gaintype=gaintype,
+                                                      calmode='p', combine=combine, solint=solint, antenna=antenna,
+                                                      uvrange='', minsnr=self.inputs.minsnr, refant=refant,
+                                                      spwmap=spwmap, interp=interp))
+            # If this field is used as the diffgain calibrator, with no overlap
+            # with bandpass calibrator, then assume that hifa_spwphaseup will
+            # have stored separate SpwMapping info for DIFFGAINREF and
+            # DIFFGAINSRC and create separate solves for those. It is assumed
+            # here that if DIFFGAINSRC is present, DIFFGAINREF must be present
+            # as well. It is further assumed that there is no support for
+            # band-to-band polarization, so this field should not have also POL*
+            # intents (but if there were, then those POL* intents would not get
+            # solved).
+            elif "DIFFGAINSRC" in fld_intents and "BANDPASS" not in fld_intents:
+                for dg_intent in {"DIFFGAINREF", "DIFFGAINSRC"}:
+                    combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(dg_intent, field.name)
+                    phase_results.append(self._do_gaincal(field=field.name, intent=dg_intent, gaintype=gaintype,
+                                                          calmode='p', combine=combine, solint=solint, antenna=antenna,
+                                                          uvrange='', minsnr=self.inputs.minsnr, refant=refant,
+                                                          spwmap=spwmap, interp=interp))
+            # For all other cases, use all intents of current field to retrieve
+            # optimal parameters and compute phase solutions. At present, this
+            # is expected to handle the following cases:
+            #
+            # - field is a bandpass calibrator (no overlap with polarization):
+            #   In this case, a matching SpwMapping should be present in MS, so
+            #   it would use the optimal parameters for BANDPASS.
+            #
+            # - field is a polarization calibrator, with or without overlap with
+            #   bandpass:
+            #   In this case, because it is a polarization calibrator, it is
+            #   required to use the default gaincal parameters. hifa_spwphaseup
+            #   currently explicitly does not derive optimal parameters for any
+            #   field covering polarization intents, so therefore the look-up of
+            #   optimal parameters for current field will find not find a
+            #   matching SpwMapping, and thus it should use default phasecal
+            #   parameters.
+            else:
+                combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(fld_intents_str, field.name)
+                phase_results.append(self._do_gaincal(field=field.name, intent=fld_intents_str, gaintype=gaintype,
+                                                      calmode='p', combine=combine, solint=solint, antenna=antenna,
+                                                      uvrange='', minsnr=self.inputs.minsnr, refant=refant,
+                                                      spwmap=spwmap, interp=interp))
+
         return phase_results
 
     def _get_phasecal_params(self, intent: str, field: str):
@@ -806,18 +868,14 @@ class GcorFluxscale(basetask.StandardTaskTemplate):
         # depending on whether it is a combine spw mapping.
         if spwmapping:
             spwmap = spwmapping.spwmap
+            solint = spwmapping.solint
+            gaintype = spwmapping.gaintype
 
-            # If the spwmap is for combining spws, then override combine,
-            # interp, and gaintype accordingly, and compute an optimal solint.
+            # If the spwmap is for combining spws, then override combine and
+            # interp accordingly.
             if spwmapping.combine:
                 combine = 'spw'
-                gaintype = 'T'
                 interp = 'linearPD,linear'
-
-                # Compute optimal solint for science SpWs for current intent.
-                spwidlist = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True, intent=intent)]
-                exptimes = heuristics.exptimes.get_scan_exptimes(ms, [field], intent, spwidlist)
-                solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:
                 # PIPE-1154: when using a phase up spw mapping, ensure that
                 # interp = 'linear,linear'; though this may need to be changed
