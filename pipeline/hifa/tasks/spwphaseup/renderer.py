@@ -15,7 +15,7 @@ LOG = logging.get_logger(__name__)
 
 PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
-SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
+SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws solint gaintype')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
@@ -140,9 +140,9 @@ def get_spwmaps(context: Context, results: ResultsList) -> List[SpwMapInfo]:
 
                 # Append info on spwmap to list.
                 spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
-                                          scanids, science_spw_ids))
+                                          scanids, science_spw_ids, spwmapping.solint, spwmapping.gaintype))
         else:
-            spwmaps.append(SpwMapInfo(ms.basename, '', '', '', '', '', '', ''))
+            spwmaps.append(SpwMapInfo(ms.basename, '', '', '', '', '', '', '', '', ''))
 
     return spwmaps
 
@@ -189,16 +189,24 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     for result in results:
         ms = context.observing_run.get_ms(result.vis)
         if result.spwmaps:
-            # Get phase SNR threshold, and present this in the table if the phase
-            # SNR test was run during task.
-            threshold = result.inputs['phasesnr']
-            spwmapmode = result.inputs['hm_spwmapmode']
-            if spwmapmode == 'auto':
-                thr_str = str(threshold)
-            else:
-                thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
-
+            # Generate entries for each SpW mapping in the result.
             for (intent, field), spwmapping in result.spwmaps.items():
+                # Get phase SNR threshold based on intent, and present this in
+                # the table if the phase SNR test was run during task.
+                # PIPE-2499: CHECK and PHASE use the scan-based threshold; the
+                # other calibrators use the integration-time-based threshold.
+                if intent in {'CHECK', 'PHASE'}:
+                    thr_str = f"{result.inputs['phasesnr']} (scan)"
+                    threshold = result.inputs['phasesnr']
+                else:
+                    thr_str = f"{results.inputs['intphasesnr']} (int)"
+                    threshold = results.inputs['intphasesnr']
+
+                # If hm_spwmapmode input parameter was not "auto", then no need
+                # to report the SNR threshold in the table.
+                if result.inputs['hm_spwmapmode'] != 'auto':
+                    thr_str = f"N/A <p>(hm_spwmapmode='{result.inputs['hm_spwmapmode']}')"
+
                 # Compose field string.
                 fieldid = ms.get_fields(name=[field])[0].id
                 field_str = f"{field} (#{fieldid})"
@@ -213,7 +221,6 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                         snr = f'<strong class="alert-danger">{row[1]:.1f}</strong>'
                     else:
                         snr = f'{row[1]:.1f}'
-
                     rows.append(SnrTR(ms.basename, thr_str, field_str, intent, spwid, snr))
         else:
             rows.append(SnrTR(ms.basename, '', '', '', '', ''))
