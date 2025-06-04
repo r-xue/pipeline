@@ -11,6 +11,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
 
 from .datatype import TYPE_PRIORITY_ORDER, DataType
+from .spectralwindow import match_spw_basename
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -103,7 +104,7 @@ class ObservingRun(object):
             # Find all close-matching SPW names from the virtual-id->spw-name mapping table
             # PIPE-2616: match shared ending substrings to accommodate SPW naming convention
             # changes introduced in ALMA Cycle-12 with additional group ID tags.
-            matches = [name for name in self.virtual_science_spw_ids.values() if has_shared_spw_basename(s.name, name)]
+            matches = [name for name in self.virtual_science_spw_ids.values() if match_spw_basename(s.name, name)]
 
             match_count = len(matches)
 
@@ -308,7 +309,7 @@ class ObservingRun(object):
         """
         spw_id = None
         for spw in target_ms.get_spectral_windows(science_windows_only=True):
-            if has_shared_spw_basename(spw.name, spw_name):
+            if match_spw_basename(spw.name, spw_name):
                 if spw_id is not None:
                     eb_name = os.path.basename(target_ms.name).replace('.ms', '')
                     msg = (
@@ -482,45 +483,3 @@ class ObservingRun(object):
     def observers(self) -> set[str]:
         """Return unique observer(s) associated with the MSes in this observing run."""
         return {ms.observer for ms in self.measurement_sets}
-
-
-def has_shared_spw_basename(name1: str, name2: str) -> bool:
-    """Checks if one spectral window (SPW) name is an ending substring of the other.
-
-    This function determines if `name1` ends with `name2` or vice versa. It also
-    performs a length check to ensure names are of a reasonable length before matching.
-
-    This function is primarily used to identify spectral window settings that are
-    effectively the same across different observation cycles, despite varying
-    naming conventions. Examples of such naming conventions include:
-
-    * From Cycle 1-2 to Cycle 3-11 (additional partID used for `spectralspec` identifiers):
-        * before: `ALMA_RB_03#BB_1#SW-01#FULL_RES`
-        * after:  `X425992413#ALMA_RB_03#BB_2#SW-01#FULL_RES`
-    * From Cycle 3-11 to Cycle 12 (additional groupID):
-        * before: `X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
-        * after:  `X127/X45069401/X3370#X870829884#ALMA_RB_03#BB_1#SW-01#FULL_RES`
-
-    Note that cycle0 data doe not have spw name.
-
-    Args:
-        name1: The first spectral window name string to compare.
-        name2: The second spectral window name string to compare.
-
-    Returns:
-        True if one name ends with the other (i.e., one is a basename of the other);
-        False otherwise.
-
-    Raises:
-        ValueError: If either `name1` or `name2` is too short (less than 10 characters).
-    """
-    # Ensure spectral window names meet the minimum length requirement.
-    if len(name1) < 10 or len(name2) < 10:
-        msg = (
-            f'One or both spectral window names are too short for comparison: '
-            f'name1="{name1}", name2="{name2}". Minimum length is 10 characters.'
-        )
-        LOG.error(msg)
-        raise ValueError(msg)
-
-    return name1.endswith(name2) or name2.endswith(name1)

@@ -10,6 +10,7 @@ import traceback
 from inspect import signature
 from typing import TYPE_CHECKING
 
+from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import basetask, exceptions, logging
 
 from . import mpihelpers, utils, vdp
@@ -290,83 +291,54 @@ def validate_args(inputs_cls, task_args):
     return valid_args
 
 
-def get_spwmap_by_name(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
-    """Generates a mapping of spw IDs from the source MS to a target MS by matching spw names.
+def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
+    """Generates a SPW ID mapping between two MeasurementSets.
 
-    This function identifies spectral windows with a 'science' intent in both the
-    source and target MeasurementSets. It then creates a dictionary mapping
-    the source spw ID to the corresponding target spw ID only if their names match.
-    Only source science spws that have a corresponding science spw (with a
-    matching name) in the target MS will be included in the output map.
-    Non-science spectral windows or science spws without a name match are excluded.
-
-    Args:
-        source_ms: The MeasurementSet from which to map spws.
-        target_ms: The MeasurementSet to which to map spws.
-
-    Returns:
-        A dictionary where keys are spw IDs from the source MS and values are
-        the corresponding spw IDs in the target MS for science spws with matching names.
-    """
-    # spw names are not guaranteed to be unique. They seem to be unique
-    # across science intents, but they could be repeated for other
-    # scans (pointing, sideband, etc.) in non-science spectral windows.
-    # if not eliminated, these non-science window names collide with
-    # the science windows and you end up having science windows map to
-    # non-science windows and vice versa. Not what we want! This set
-    # will be used to filter for the spectral windows we want to
-    # consider.
-    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK', 'POLARIZATION'}
-
-    # map spw id to spw name for source MS - just for science intents
-    id_to_name = {spw.id: spw.name
-                  for spw in source_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
-
-    # map spw name to spw id for target MS - just for science intents
-    name_to_id = {spw.name: spw.id
-                  for spw in target_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
-
-    # note the get(v, k) here. This says that for non-science windows,
-    # which have been filtered from the maps, use the original spw ID -
-    # hence non-science spws are not remapped.
-    return {k: name_to_id.get(v, k)
-            for k, v in id_to_name.items()
-            if v in name_to_id}
-
-
-def get_spwmap(
-    source_ms: MeasurementSet, target_ms: MeasurementSet, observing_run: ObservingRun | None = None
-) -> dict[int, int]:
-    """Generates a SPW mapping between two MeasurementSets.
-
-    Creates a mapping dictionary that associates spectral window IDs from the source MeasurementSet to their
-    corresponding IDs in the target MeasurementSet. Uses the observing run's virtual-SPW-based mapping method
-    when available, otherwise falls back to name-based matching.
+    This function creates a mapping dictionary that associates SPW IDs from the
+    source MeasurementSet to their corresponding IDs in the target MeasurementSet.
+    The mapping relies on matching SPW basenames. Only science SPWs whose basenames are
+    found in both the source and target MeasurementSets will be included in the
+    final mapping.
 
     Args:
         source_ms: Source MeasurementSet containing SPWs to be mapped from.
         target_ms: Target MeasurementSet containing SPWs to be mapped to.
-        observing_run: Optional observing run object providing virtual-spw mapping. If None, uses name-based
-            fallback mapping.
 
     Returns:
-        Dictionary mapping source SPW IDs (keys) to target SPW IDs (values).
+        A dictionary mapping source SPW IDs (keys) to target SPW IDs (values).
     """
-    if observing_run is None:
-        # Use name-based mapping when observing run is unavailable
-        return get_spwmap_by_name(source_ms, target_ms)
+    spw_id_map = {}
 
-    spwmap = {}
+    # SPW names aren't guaranteed to be unique over the entire MS.
+    # While they tend to be unique within science intents, they can repeat
+    # in non-science spectral windows (e.g., for pointing or sideband scans).
+    # If not filtered, these non-science SPWs could lead to incorrect mappings
+    # or collisions with science windows. Therefore, we only consider
+    # relevant science spectral windows for mapping.
 
-    for spw in source_ms.get_spectral_windows(science_windows_only=True):
-        target_spw_id = observing_run.real2real_spw_id(spw.id, source_ms, target_ms)
-        # Add mapping only when valid target SPW ID is found
-        if target_spw_id is not None:
-            spwmap[spw.id] = target_spw_id
+    for spw_source in source_ms.get_spectral_windows(science_windows_only=True):
+        matched_target_spw_id = None
 
-    return spwmap
+        for spw_target in target_ms.get_spectral_windows(science_windows_only=True):
+            # Check if the base names of the SPWs match
+            if match_spw_basename(spw_source.name, spw_target.name):
+                if matched_target_spw_id is not None:
+                    target_ms_basename = os.path.basename(target_ms.name).replace('.ms', '')
+                    source_ms_basename = os.path.basename(source_ms.name).replace('.ms', '')
+                    msg = (
+                        f'Multiple matches found for SPW name "{spw_source.name}" in MS '
+                        f'"{target_ms_basename}". The SPW ID mapping from {target_ms_basename} to '
+                        f'{source_ms_basename} might be incorrect.'
+                    )
+                    LOG.warning(msg)
+                matched_target_spw_id = spw_target.id
+
+        # Only science SPWs with their basenames referenced in both target and source MSes
+        # will be present in the mapping dictionary.
+        if matched_target_spw_id is not None:
+            spw_id_map[spw_source.id] = matched_target_spw_id
+
+    return spw_id_map
 
 
 def remap_spw_int(source_ms, target_ms, spws, observing_run=None):

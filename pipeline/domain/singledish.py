@@ -1,5 +1,5 @@
 import pipeline.infrastructure as infrastructure
-from pipeline.domain.observingrun import has_shared_spw_basename
+from pipeline.domain.spectralwindow import match_spw_basename
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -120,7 +120,7 @@ class MSReductionGroupDesc(list):
                 and self.nchan == other.nchan \
                 and self.field_name == other.field_name
         else:
-            return has_shared_spw_basename(self.spw_name, other.spw_name) \
+            return match_spw_basename(self.spw_name, other.spw_name) \
                 and self.field_name == other.field_name
 
     def __ne__(self, other):
@@ -130,7 +130,7 @@ class MSReductionGroupDesc(list):
                 or self.nchan != other.nchan \
                 or self.field_name != other.field_name
         else:
-            return (not has_shared_spw_basename(self.spw_name, other.spw_name)) \
+            return (not match_spw_basename(self.spw_name, other.spw_name)) \
                 or self.field_name != other.field_name
 
     def __repr__(self):
