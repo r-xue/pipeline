@@ -8,12 +8,6 @@ from astropy import units as u
 from casatools import msmetadata as msmdtool
 from casatools import table as tbtool
 import colorsys
-#from casatools import quanta as qatool
-#from casatools import atmosphere as attool
-#from casatools import agentflagger as aftool
-#from casaplotms import plotms
-#from casatasks import sdatmcor
-#from casatasks import mstransform
 
 #Useful function for fully flattening array
 flattenlist = lambda l: [item for sublist in l for item in sublist]
@@ -78,7 +72,7 @@ def segment_edges_optimized(seq):
         return np.array([(seq[0] if n == 1 else np.nan, seq[-1] if n == 1 else np.nan)],
                         dtype=[('tstart', np.float64), ('tend', np.float64)])
 
-    is_gap = np.diff(seq)
+    is_gap = (np.diff(seq) > 2)
     gap_indices = np.where(is_gap)[0]
 
     if not gap_indices.size:
@@ -114,10 +108,10 @@ def sci_line_sel_2str(data_stats_comb: dict) -> str:
     for fieldname in data_stats_comb['comb_metadata']['fieldnames']:
         outputstr += fieldname + '='
         spwstr = []
-        for spw in data_stats_comb['comb_metadata']['spwlist']:
-            scilinesel = data_stats_comb[fieldname][str(spw)]['sci_line_sel']
+        for spwname in data_stats_comb['comb_metadata']['spwnamelist']:
+            scilinesel = data_stats_comb[fieldname][spwname]['sci_line_sel']
             if np.sum(scilinesel) > 0:
-                spwstr.append(str(spw)+':'+range2str(scilinesel))
+                spwstr.append(spwname+':'+range2str(scilinesel))
         outputstr += ','.join(spwstr)
         outputstr += '\n'
     return outputstr
@@ -147,7 +141,7 @@ def abs_rfft_wmask(data, minsectionsize = 20, full_freqfft=None, mask_sections=N
         return np.zeros_like(full_freqfft)
 
     if mask_sections is None:
-        mask_sections = segment_edges_optimized(~data.mask)
+        mask_sections = segment_edges_optimized(unmasked_indices)
 
     absfft_list = []
 
@@ -155,7 +149,7 @@ def abs_rfft_wmask(data, minsectionsize = 20, full_freqfft=None, mask_sections=N
         start, end = int(section['tstart']), int(section['tend'])
         n_section = end - start
         if n_section >= minsectionsize:
-            segment = data.data[start:end] # Access underlying data
+            segment = data.data[start:end]
             absfft = np.abs(np.fft.rfft(segment))
             freqfft = np.fft.rfftfreq(n_section)
             resamp_absfft = np.interp(full_freqfft, freqfft, absfft)
@@ -602,7 +596,6 @@ def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_fr
         #Find best w that maximizes SNR
         wfit = minimize_scalar(min_neg_snr, bounds=(1.0, maxsmbox), method='bounded')
         widthmax = wfit.x
-        #snrmax = -wfit.fun
     else:
         widthmax = fixedwidth
     smdata = smooth_gauss(data, widthmax)

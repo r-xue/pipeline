@@ -360,7 +360,7 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
             plt.plot(freqs[sciline], msw.analysis[scan]['ondata']['normdata'][sciline], 'sk')
 
     plt.legend(loc='upper left', ncol=3, fontsize='x-small', title='XX-YY data')
-    plt.ylabel('XX-YY (data)')
+    plt.ylabel('(XX-YY)/sigma (data norm. excess)')
     plt.tick_params('x', labelbottom=False)
 
     if (msw.tsysdata is not None):
@@ -381,7 +381,7 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
                 plt.plot([minfreq, maxfreq], [thresholds['Trec_freq_dev'], thresholds['Trec_freq_dev']], '--k')
                 plt.plot([minfreq, maxfreq], [-thresholds['Trec_freq_dev'], -thresholds['Trec_freq_dev']], '--k')
         plt.legend(loc='upper left', ncol=3, fontsize='x-small', title='Trec scan-to-scan diff (XX)')
-        plt.ylabel('Trec diff (XX)')
+        plt.ylabel('Trec diff (XX)/sigma (norm. excess)')
         # make these tick labels invisible
         plt.tick_params('x', labelbottom=False)
 
@@ -402,7 +402,7 @@ def plot_data_trec(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] 
                 plt.plot([minfreq, maxfreq], [thresholds['Trec_freq_dev'], thresholds['Trec_freq_dev']], '--k')
                 plt.plot([minfreq, maxfreq], [-thresholds['Trec_freq_dev'], -thresholds['Trec_freq_dev']], '--k')
         plt.legend(loc='upper left', ncol=3, fontsize='x-small', title='Trec scan-to-scan diff (YY)')
-        plt.ylabel('Trec diff (YY)')
+        plt.ylabel('Trec diff (YY)/sigma (norm. excess)')
 
     #X-axis
     plt.xlabel('Freq [GHz]')
@@ -484,7 +484,7 @@ def plot_data(msw: mswrapper_sd.MSWrapperSD, thresholds: Union[dict, None] = Non
 
     plt.legend(loc='upper left', ncol=3, fontsize='x-small', title='XX-YY data')
     #Y-axis
-    plt.ylabel('XX-YY (data)')
+    plt.ylabel('(XX-YY)/sigma (data norm. excess)')
     #X-axis
     plt.xlabel('Freq [GHz]')
     plt.xlim(minfreq, maxfreq)

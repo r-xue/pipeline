@@ -7,7 +7,6 @@ from itertools import product
 import matplotlib.dates as mdates
 import casatools
 from scipy import stats
-from scipy import signal
 
 import pipeline.infrastructure.pipelineqa as pqa
 from . import mswrapper_sd
@@ -30,8 +29,8 @@ default_thresholds = {'X-Y_freq_dev': 15.0, 'Trec_freq_dev': 5.0,
                       'min_freq_dev_percent': 50.0, 'nsigma_bottom': 100.0,
                       'plot_threshold': 0.95}
 
-def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, filter_cutoff: float = 0.01,
-                       loworder_to_zero: int = 3, peak_modes: list = [2,3,4,5,6], peak_minsnr: float = 2.0):
+def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5,
+                       filter_cutoff: float = 0.01, loworder_to_zero: int = 3):
     '''Function that calculates summary statistics per channel for a MSWrapperSD object. This comprises the FFT peak (along
     the time dimension) and Pearson correlation coefficient between the XX and YY polarization, also in the time dimension.
     These vector are stored in the "data_stats" attribute from the MSWrapper_SD object and are later used by the function
@@ -113,13 +112,8 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
         last_chdata_mask = chdataSum.mask
         #Zero out constant and neighboring modes
         absfft_data[0:loworder_to_zero] = 0.0
-        #Get peaks
-        peaks_fft = signal.find_peaks_cwt(absfft_data, peak_modes, min_snr=peak_minsnr)
-        if len(peaks_fft) > 0:
-            pwr_peaks_fft = np.take(absfft_data, np.int64(peaks_fft))
-            peak_fft_pwr.append(np.max(pwr_peaks_fft))
-        else:
-            peak_fft_pwr.append(0.0)
+        #Get peak
+        peak_fft_pwr.append(np.max(absfft_data))
     peak_fft_pwr = np.ma.MaskedArray(peak_fft_pwr, mask=maskfreq1D)
     XYcorr = np.ma.MaskedArray(XYcorr, mask=maskfreq1D)
     if npol == 1:
@@ -127,7 +121,7 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5, fil
 
     #Release memory taken up by the copy of the dataset
     del(Fmsw)
-
+    
     #Save results in the original MSWrapper object
     msw.data_stats = {'peak_fft_pwr': peak_fft_pwr, 'XYcorr': XYcorr}
 
@@ -154,28 +148,29 @@ def combine_msw_stats(mswCollection: dict) -> dict:
     names_for = {ms: mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['namesfor'] for ms in mslist}
     fieldid_for = {ms: {fieldname[0]: fieldid for (fieldid, fieldname) in names_for[ms].items()} for ms in mslist}
     antnames_for = {ms: mswCollection[mswCollectionKeys[idxfirst[ms]]].spw_setup['antnames'] for ms in mslist}
-    #assuming all EBs have the same numbering for SPWs, we can take the first one. If not one would need to
-    #make this more general.
+    #assuming all EBs have the same SPW names, no matter what numbering, and we can take the first one. If not one would need to
+    #make this more general. SPW list taken is the one form the first SPW
     spwlist = mswCollection[mswCollectionKeys[idxfirst[mslist[0]]]].spw_setup['spwlist']
+    spwnamelist = mswCollection[mswCollectionKeys[idxfirst[mslist[0]]]].spw_setup['spwnames']
     #Some MSs could have less fields, lets create a list of the MS that do for each field
     mslist_for_fieldname = {fieldname: [ms for ms in mslist if fieldname in fieldid_for[ms].keys()] for fieldname in fieldnames}
 
     #Initialize output dictionary with metadata from the combination
-    data_stats_comb = {'comb_metadata': {'mslist': mslist, 'mskeys': mskeys, 'idxfirst': idxfirst, 'fieldnames': fieldnames, 'names_for': names_for, 'fieldid_for': fieldid_for, 'antnames_for': antnames_for, 'spwlist': spwlist}}
+    data_stats_comb = {'comb_metadata': {'mslist': mslist, 'mskeys': mskeys, 'idxfirst': idxfirst, 'fieldnames': fieldnames, 'names_for': names_for, 'fieldid_for': fieldid_for, 'antnames_for': antnames_for, 'spwlist': spwlist, 'spwnamelist': spwnamelist}}
 
     #Iterate over field and SPW and combine
     #Combination done assuming LSRK velocity is being tracked by the online software, so science lines should
     #align in channel number. If not, a regrid to a LSRK frame would be necessary.
     for fieldname in fieldnames:
         data_stats_comb[fieldname] = {}
-        for spw in spwlist:
-            comb_peak_data = np.ma.sum([np.ma.sum([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['peak_fft_pwr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
-            comb_XYcorr = np.ma.mean([np.ma.mean([mswCollection[(ms, str(spw), ant, str(fieldid_for[ms][fieldname]))].data_stats['XYcorr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
-            data_stats_comb[fieldname][str(spw)] = {'comb_peak_data': comb_peak_data, 'comb_XYcorr': comb_XYcorr}
+        for spwname in spwnamelist:
+            comb_peak_data = np.ma.sum([np.ma.sum([mswCollection[(ms, spwname, ant, str(fieldid_for[ms][fieldname]))].data_stats['peak_fft_pwr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
+            comb_XYcorr = np.ma.mean([np.ma.mean([mswCollection[(ms, spwname, ant, str(fieldid_for[ms][fieldname]))].data_stats['XYcorr'] for ant in antnames_for[ms]], axis=0) for ms in mslist_for_fieldname[fieldname]], axis=0)
+            data_stats_comb[fieldname][spwname] = {'comb_peak_data': comb_peak_data, 'comb_XYcorr': comb_XYcorr}
 
     return data_stats_comb
 
-def sci_line_det(data_stats_comb:dict, sci_threshold:float = 10.0, XYcorr_threshold:float = 10.0, enlarge_box:float = 0.02):
+def sci_line_det(data_stats_comb:dict, sci_threshold:float = 15.0, XYcorr_threshold:float = 15.0, enlarge_box:float = 0.02):
     '''Function to create selection vector for science emission line channels, based on the "comb_peak_data" and "comb_XYcorr"
     produced by the combine_msw_stats() function.
     param:
@@ -190,23 +185,23 @@ def sci_line_det(data_stats_comb:dict, sci_threshold:float = 10.0, XYcorr_thresh
     '''
 
     for fieldname in data_stats_comb['comb_metadata']['fieldnames']:
-        for spw in data_stats_comb['comb_metadata']['spwlist']:
+        for spwname in data_stats_comb['comb_metadata']['spwnamelist']:
 
             #Select science line channels
-            fft_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][str(spw)]['comb_peak_data'], sci_threshold, mode = 'one-sided')
-            XYcorr_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][str(spw)]['comb_XYcorr'], XYcorr_threshold, mode = 'one-sided', fixedwidth=fft_results['widthmax'])
+            fft_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][spwname]['comb_peak_data'], sci_threshold, mode = 'one-sided')
+            XYcorr_results = sd_qa_utils.smoothed_sigma_clip(data_stats_comb[fieldname][spwname]['comb_XYcorr'], XYcorr_threshold, mode = 'one-sided', fixedwidth=fft_results['widthmax'])
             sci_line_sel = fft_results['outliers'] & XYcorr_results['outliers']
             #Enlarge selection according to enlarge_box parameter
-            nchan = len(data_stats_comb[fieldname][str(spw)]['comb_peak_data'])
+            nchan = len(data_stats_comb[fieldname][spwname]['comb_peak_data'])
             enlarge_box_pix = int(nchan*enlarge_box)
             sci_line_sel = sd_qa_utils.enlargesel(sci_line_sel, enlarge_box_pix)
             #Continuum selection
             contsel = (~fft_results['outliers']) & (~XYcorr_results['outliers'])
             #Store resulting selection vectors back in the data_stats_comb dictionary
-            data_stats_comb[fieldname][str(spw)]['sci_line_sel'] = sci_line_sel
-            data_stats_comb[fieldname][str(spw)]['cont_sel'] = contsel
-            data_stats_comb[fieldname][str(spw)]['fft_results'] = fft_results
-            data_stats_comb[fieldname][str(spw)]['XYcorr_results'] = XYcorr_results
+            data_stats_comb[fieldname][spwname]['sci_line_sel'] = sci_line_sel
+            data_stats_comb[fieldname][spwname]['cont_sel'] = contsel
+            data_stats_comb[fieldname][spwname]['fft_results'] = fft_results
+            data_stats_comb[fieldname][spwname]['XYcorr_results'] = XYcorr_results
 
     return
 
@@ -223,14 +218,14 @@ def attach_sci_line_res(mswCollection: dict, data_stats_comb: dict):
     '''
 
     for key, msw in mswCollection.items():
-        (ms, spw, ant, fieldid) = key
+        (ms, spwname, ant, fieldid) = key
         fieldname = data_stats_comb['comb_metadata']['names_for'][ms][str(fieldid)][0]
         if msw.data_stats is None:
             msw.data_stats = {}
-        msw.data_stats['sci_line_sel'] = data_stats_comb[fieldname][str(spw)]['sci_line_sel']
-        msw.data_stats['cont_sel'] = data_stats_comb[fieldname][str(spw)]['cont_sel']
-        msw.data_stats['fft_results'] = data_stats_comb[fieldname][str(spw)]['fft_results']
-        msw.data_stats['XYcorr_results'] = data_stats_comb[fieldname][str(spw)]['XYcorr_results']
+        msw.data_stats['sci_line_sel'] = data_stats_comb[fieldname][spwname]['sci_line_sel']
+        msw.data_stats['cont_sel'] = data_stats_comb[fieldname][spwname]['cont_sel']
+        msw.data_stats['fft_results'] = data_stats_comb[fieldname][spwname]['fft_results']
+        msw.data_stats['XYcorr_results'] = data_stats_comb[fieldname][spwname]['XYcorr_results']
 
     return
 
@@ -541,7 +536,8 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
 
     return (msw, qascore, qascores_scans, plotfname)
 
-def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: bool = True, buffer_data: bool = True) -> dict:
+def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: bool = True,
+                   buffer_data: bool = False) -> dict:
     '''Load a collection of MSWrapper_SD objects, and run a basic filter and statistics on each of them.
     Return a dictionary of MSWrapper_SD objects, indexed by tuples in the form (ms, spw, ant, fieldid).
     param:
@@ -572,17 +568,18 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: 
         datapieces = product(spw_setup['spwlist'], spw_setup['antnames'], spw_setup['fieldid']['*OBSERVE_TARGET#ON_SOURCE*'])
         for datapiece in datapieces:
             (spw, ant, fieldid) = datapiece
+            spwname = spw_setup['spwnames'][spw_setup['spwlist'].index(spw)]
             print('Processing MS {0:s}, SPW {1:d}, antenna {2:s}, FieldID {3:d}'.format(ms,spw,ant,fieldid))
             #Load ON-SOURCE data and create MSWrapperSD object
-            mswCollection[(msonly, str(spw), ant, str(fieldid))] = mswrapper_sd.MSWrapperSD.create_from_ms(fname=ms, spw=spw, antenna=ant, fieldid=fieldid, column='CORRECTED_DATA', onoffsel='ON', spw_setup=spw_setup, attach_tsys_data=use_tsys_data)
+            mswCollection[(msonly, spwname, ant, str(fieldid))] = mswrapper_sd.MSWrapperSD.create_from_ms(fname=ms, spw=spw, antenna=ant, fieldid=fieldid, column='CORRECTED_DATA', onoffsel='ON', spw_setup=spw_setup, attach_tsys_data=use_tsys_data)
             #Apply preliminary filters to ON-data
             print('Applying filter rowmedian...')
-            mswCollection[(msonly, str(spw), ant, str(fieldid))].filter(type = 'rowmedian')
+            mswCollection[(msonly, spwname, ant, str(fieldid))].filter(type = 'rowmedian')
             #Gather statistics per channel, if requested
             if sciline_det:
-                data_stats_perchan(mswCollection[(msonly, str(spw), ant, str(fieldid))])
+                data_stats_perchan(mswCollection[(msonly, spwname, ant, str(fieldid))])
             #Clear raw data from MSWrapper object to release memory
-            mswCollection[(msonly, str(spw), ant, str(fieldid))].data = None
+            mswCollection[(msonly, spwname, ant, str(fieldid))].data = None
 
     if buffer_data:
         print('Buffering mswCollection...')
@@ -593,14 +590,15 @@ def load_and_stats(msNames: List[str], use_tsys_data: bool = True, sciline_det: 
     return mswCollection
 
 def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thresholds, plot_output_path: str = '.',
-                            use_tsys_data: bool = True, sciline_det: bool = True,
-                            plot_sciline: str = 'on-detection', weblog_output_path: str = '.') -> Tuple[list, list, list]:
+                             use_tsys_data: bool = True, sciline_det: bool = True,
+                             plot_sciline: str = 'on-detection', weblog_output_path: str = '.',
+                             buffer_data: bool = False) -> Tuple[list, list, list]:
     '''Function used to obtain applycal X-Y QA score on a list of calibrated MSs, at the
     applycal stage of SD pipeline.
     param:
         msNames: List of MS to process
-        thresholds: Dictionary containing threshold parameters for ON-source XX-YY deviations, Trec deviations, minimum deviation level,
-                    and QA score scaling.
+        thresholds: Dictionary containing threshold parameters for ON-source XX-YY deviations,
+                    Trec deviations, minimum deviation level, and QA score scaling.
         plot_output_path: (str) Path to save output plots.
         use_tsys_data: True/False whether to load CalAtmosphere data from dataset
         sciline_det: True/False whether to attempt strong science line detection. The detected channels are passed to outlier_detection()
@@ -609,11 +607,12 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
                       "always"/"on-detection"/"never"
         weblog_output_path: (str) Path to save output plots if the plots are intended to
                             be a part of the pipeline weblog.
-
+        buffer_data: True/False whether to buffer the data loaded from the MS into a pickle file.
     '''
 
     #Load data and gather statistics
-    mswCollection = load_and_stats(msNames, use_tsys_data=use_tsys_data, sciline_det=sciline_det, buffer_data=False)
+    mswCollection = load_and_stats(msNames, use_tsys_data=use_tsys_data, sciline_det=sciline_det,
+                                   buffer_data=buffer_data)
 
     #Combine stats for science line detection, if requested
     if sciline_det:
@@ -646,3 +645,4 @@ def get_ms_applycal_qascores(msNames: List[str], thresholds: dict = default_thre
         f.close()
 
     return (qascore_list, plots_fnames, qascore_per_scan_list)
+
