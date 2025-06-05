@@ -8,7 +8,6 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hif.tasks.gaincal.common import GaincalResults
-from pipeline.hifa.heuristics import exptimes as gexptimes
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.infrastructure import task_registry
 
@@ -372,10 +371,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 caltable = f'{root}.{field.name}{ext}'
 
             # Get optimal phase solution parameters for current PHASE field,
-            # based on spw mapping info in MS.
-            # No need to catch the values for optimal solint or "low SNR SpWs",
-            # as the solint will be fixed to inputs.targetsolint.
-            combine, gaintype, interp, _, _, spwmap = self._get_phasecal_params(p_intent, field.name)
+            # based on spw mapping info in MS. No need to catch the value for
+            # optimal solint as solint will be fixed to inputs.targetsolint.
+            combine, gaintype, interp, _, spwmap = self._get_phasecal_params(p_intent, field.name)
 
             # PIPE-2087: for BandToBand override interp, for these phase
             # solutions that will apply to the science target.
@@ -497,20 +495,20 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
     def _do_phasecal_for_calibrators(self) -> tuple[list[GaincalResults], float | None]:
         """
         This method is responsible for creating phase gain caltable(s) that
-        are applicable to all calibrators.
+        are applicable to all calibrators specified in inputs.intent, typically:
+        phase, amplitude, bandpass, diffgain(ref/src), and polarization.
         """
         inputs = self.inputs
         phasecal_results = []
 
         # Split intents by PHASE and non-PHASE calibrators.
         p_intent = 'PHASE'
-        np_intents = ','.join(set(inputs.intent.split(',')) - {p_intent})
+        np_intents = set(inputs.intent.split(',')) - {p_intent}
 
         # PIPE-1154: first create a phase caltable for the non-PHASE
         # calibrators.
         if np_intents:
-            np_phasecal_result = self._do_phasecal_for_non_phase_calibrators(np_intents)
-            phasecal_results.append(np_phasecal_result)
+            phasecal_results.extend(self._do_phasecal_for_non_phase_calibrators(np_intents))
 
         # PIPE-1154: next, compute the phase gain solutions for the PHASE
         # calibrator fields. These solutions for the PHASE fields are not
@@ -526,26 +524,75 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return phasecal_results, max_phase_solint
 
-    def _do_phasecal_for_non_phase_calibrators(self, intent: str):
+    def _do_phasecal_for_non_phase_calibrators(self, intents: set) -> list[GaincalResults]:
         """
-        This method is responsible for creating phase gain caltable(s) for the
-        non-PHASE calibrators.
+        Compute phase gain caltable(s) for the non-PHASE calibrators, typically:
+        amplitude, bandpass, diffgain(ref/src), and polarization.
         """
         inputs = self.inputs
-
-        # Identify fields covered by non-phase calibrators.
-        fields = ','.join([f.name for f in inputs.ms.get_fields(intent=intent)])
+        phasecal_results = []
 
         # PIPE-645: for bandpass, amplitude, diffgain, and polarisation intents,
         # always use minsnr set to 3.
-        # PIPE-1154: for bandpass, amplitude, diffgain, and polarisation
-        # intents, always use combine='', solint=inputs.calsolint, no spwmap,
-        # and no interp.
-        phasecal_result = self._do_calibrator_phasecal(field=fields, intent=intent, spw=inputs.spw, gaintype='G',
-                                                       combine='', solint=inputs.calsolint, minsnr=3.0, interp=None,
-                                                       spwmap=None)
+        minsnr = 3.0
 
-        return phasecal_result
+        # Create separate gaincal for each non-phase calibrator field.
+        fields = [f for f in inputs.ms.get_fields(intent=','.join(intents))]
+        for field in fields:
+            # Matching intents in current field.
+            fld_intents = field.intents.intersection(intents)
+            fld_intents_str = ",".join(fld_intents)
+            LOG.info(f'Compute phase gaincal table for intent={fld_intents_str}, field={field.name}.')
+
+            # If this field is used as a bandpass calibrator, then retrieve the
+            # optimal phase cal parameters for BANDPASS, and solve for all
+            # matching intents at once. This case can cover a number of cases
+            # of overlapping calibrators:
+            # - BP == AMP: should use optimal parameters for BANDPASS.
+            # - BP == DIFFGAIN*: should use optimal parameters for BANDPASS.
+            # - BP == POL*: in this case, hifa_spwphaseup will not have
+            #     derived any optimal parameters for this field (explicitly
+            #     skips fields with POL*), so the look-up should return the
+            #     default gaincal parameters, as is required for polarization
+            #     calibrators.
+            if "BANDPASS" in fld_intents:
+                combine, gaintype, interp, solint, spwmap = self._get_phasecal_params('BANDPASS', field.name)
+                phasecal_results.append(
+                    self._do_calibrator_phasecal(field=field.name, intent=fld_intents_str, spw=inputs.spw,
+                                                 gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
+                                                 spwmap=spwmap, interp=interp))
+            # If this field is a diffgain calibrator (while no overlap with
+            # bandpass), then assume that hifa_spwphaseup will have stored
+            # separate SpwMapping info for DIFFGAINREF and DIFFGAINSRC and
+            # create separate solves for those. It is assumed here that if
+            # DIFFGAINSRC is present, DIFFGAINREF must be present as well.
+            # It is further assumed that there is no support for band-to-band
+            # polarization, so this field should not have also POL* intents.
+            # It is further assumed that the diffgain calibrator cannot also be
+            # the amplitude calibrator. If it was, then the amplitude scans
+            # would not get a phase-up solution here.
+            elif "DIFFGAINSRC" in fld_intents:
+                for dg_intent in {"DIFFGAINREF", "DIFFGAINSRC"}:
+                    combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(dg_intent, field)
+                    phasecal_results.append(
+                        self._do_calibrator_phasecal(field=field.name, intent=dg_intent, spw=inputs.spw,
+                                                     gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
+                                                     spwmap=spwmap, interp=interp))
+            # For all other cases, use all intents of current field to retrieve
+            # optimal parameters and compute phase solutions.
+            # Typically, this would cover amplitude and/or polarization
+            # calibrators.
+            # Note: if this field covers both AMP and POL*, then hifa_spwphaseup
+            # would not have derived optimal parameters as it currently skips
+            # polarization fields; so instead this step would use default
+            # phasecal parameters.
+            else:
+                combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(fld_intents_str, field.name)
+                self._do_calibrator_phasecal(field=field.name, intent=fld_intents_str, spw=inputs.spw,
+                                             gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
+                                             spwmap=spwmap, interp=interp)
+
+        return phasecal_results
 
     def _do_phasecal_for_phase_calibrators(self, intent: str) -> tuple[list[GaincalResults], float]:
         """
@@ -569,7 +616,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         for field in inputs.ms.get_fields(intent=intent):
             # Get optimal phase solution parameters for current PHASE field,
             # based on spw mapping info in MS.
-            combine, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
+            combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent, field.name)
 
             # PIPE-390: if not combining across spw, then no need to deal with
             # SpectralSpec for solint considerations, so create a gaincal
@@ -593,18 +640,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
                 # Loop through each grouping of SpWs.
                 for ref_spw, sspec, spw_sel in spw_groups:
                     LOG.info(f'Processing spectral spec {sspec} with SpWs {spw_sel}')
-
-                    # PIPE-163: low/high SNR heuristic choice for the other
-                    # calibrators, typically PHASE.
-                    # Check if the reference SpW appears on the list of low SNR SpWs
-                    # registered in the MS for current field and intent.
-                    #  * if so, then as per low-SNR heuristics request, keep using the
-                    #  provided solint (which is normally based on SpW mapping mode).
-                    #  * if not, then override the provided solint to instead use
-                    #  inputs.calsolint, just like for the other calibrator intents.
-                    if ref_spw not in lowsnr_spws:
-                        solint = inputs.calsolint
-
                     phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_sel,
                                                                          gaintype=gaintype, combine=combine,
                                                                          solint=solint, minsnr=inputs.calminsnr,
@@ -644,7 +679,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         for field in inputs.ms.get_fields(intent="PHASE"):
             # Get optimal phase solution parameters for current PHASE field,
             # based on spw mapping info in MS.
-            combine, gaintype, interp, lowsnr_spws, solint, spwmap = self._get_phasecal_params(intent, field.name)
+            combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(intent, field.name)
 
             # Skip any field where the recommended combine was already 'spw'.
             if combine == 'spw':
@@ -886,8 +921,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         return [cal_calapp, target_calapp]
 
-    def _get_phasecal_params(self, intent: str, field: str)\
-            -> Tuple[str, str, Optional[str], List[int], str, List[int]]:
+    def _get_phasecal_params(self, intent: str, field: str) -> tuple[str, str, str | None, str, list[int]]:
         inputs = self.inputs
 
         # By default, no spw mapping or combining, no interp, gaintype='G',
@@ -898,10 +932,6 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         solint = inputs.calsolint
         spwmap = []
 
-        # Define a placeholder list of low snr SpWs, that needs to be returned
-        # if a spwmap needs to be used.
-        lowsnr_spws = []
-
         # Try to fetch spwmapping info from MS for requested intent and field.
         spwmapping = inputs.ms.spwmaps.get((intent, field), None)
 
@@ -909,26 +939,20 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # depending on whether it is a combine spw mapping.
         if spwmapping:
             spwmap = spwmapping.spwmap
-
-            # If the spwmap is for combining spws, then override combine,
-            # interp, and gaintype accordingly, and compute an optimal solint.
+            solint = spwmapping.solint 
+            gaintype = spwmapping.gaintype 
+            # If the spwmap is for combining spws, then override combine and
+            # interp accordingly.
             if spwmapping.combine:
                 combine = 'spw'
-                gaintype = 'T'
                 interp = 'linearPD,linear'
-                lowsnr_spws = spwmapping.low_combinedsnr_spws
-
-                # Compute optimal solint.
-                spwidlist = [spw.id for spw in inputs.ms.get_spectral_windows(science_windows_only=True)]
-                exptimes = gexptimes.get_scan_exptimes(inputs.ms, [field], intent, spwidlist)
-                solint = '%0.3fs' % (min([exptime[1] for exptime in exptimes]) / 4.0)
             else:
                 # PIPE-1154: when using a phase up spw mapping, ensure that
                 # interp = 'linear,linear'; though this may need to be changed
                 # in the future, see PIPEREQ-85.
                 interp = 'linear,linear'
 
-        return combine, gaintype, interp, lowsnr_spws, solint, spwmap
+        return combine, gaintype, interp, solint, spwmap
 
     def _unregister_phasecal_with_no_combine(self):
         """
