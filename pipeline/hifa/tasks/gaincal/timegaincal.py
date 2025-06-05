@@ -700,13 +700,22 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             field_str = f'.{field}' if intent == 'PHASE' else ''
             caltable = f'{root}.{intent}{field_str}{ext}'
 
+        # Filter provided SpWs to only use science SpWs that were covered by
+        # current intent(s) and field(s). In principle, it should suffice to
+        # only provide intent and field to gaincal, but restricting SpWs here
+        # ensures that the filename of the output caltable only contains the
+        # SpWs for which solutions are computed.
+        fieldlist = inputs.ms.get_fields(task_arg=field)
+        sci_spws = set(inputs.ms.get_spectral_windows(task_arg=spw, intent=intent))
+        spws_to_solve = ','.join({str(spw.id) for fld in fieldlist for spw in fld.valid_spws.intersection(sci_spws)})
+
         task_args = {
             'output_dir': inputs.output_dir,
             'vis': inputs.vis,
             'caltable': caltable,
             'field': field,
             'intent': intent,
-            'spw': spw,
+            'spw': spws_to_solve,
             'solint': solint,
             'gaintype': gaintype,
             'calmode': 'p',
