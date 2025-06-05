@@ -559,13 +559,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         phasecal_results = []
         solints = []
 
-        # Determine which SpWs to solve for. By default, use all input SpWs.
-        spw_to_solve = inputs.spw
-        if inputs.ms.is_band_to_band:
-            # PIPE-2087: for BandToBand, restrict the solve to the diffgain
-            # reference SpWs.
-            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
-            spw_to_solve = ','.join(str(spw.id) for spw in dg_refspws)
+        # Determine which SpWs to solve for: use all input SpWs, filtered for
+        # phase calibrator intent.
+        spw_to_solve = ','.join(str(s.id) for s in inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent=intent))
 
         # Create separate phase solutions for each PHASE field. These solutions
         # are intended to be used as a temporary pre-apply when generating the
@@ -640,13 +636,9 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         # Initialize list of phase gaincal results.
         phasecal_results = []
 
-        # Determine which SpWs to solve for. By default, use all input SpWs.
-        spw_to_solve = inputs.spw
-        if inputs.ms.is_band_to_band:
-            # PIPE-2087: for BandToBand, restrict the solve to the diffgain
-            # reference SpWs.
-            dg_refspws = inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent='DIFFGAINREF')
-            spw_to_solve = ','.join(str(spw.id) for spw in dg_refspws)
+        # Determine which SpWs to solve for: use all input SpWs, filtered for
+        # phase calibrator intent.
+        spw_to_solve = ','.join(str(s.id) for s in inputs.ms.get_spectral_windows(task_arg=inputs.spw, intent=intent))
 
         # Create separate phase solutions for each PHASE field.
         for field in inputs.ms.get_fields(intent="PHASE"):
