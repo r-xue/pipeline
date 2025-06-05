@@ -141,7 +141,9 @@ def truncate_paths(arg):
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
-    # Special case: Ensure ASDM UIDs are not truncated
+    # PIPE-51: 'asdm' can be either a full path location used by `importasdm`
+    # or a UID parameter for `getantposalma`. This logic ensures that the
+    # latter is not truncated.
     if arg.name == "asdm" and isinstance(arg.value, str) and is_uid(arg.value):
         return arg  # Return unmodified if it's a UID
 

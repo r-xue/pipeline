@@ -5,7 +5,7 @@ import json
 import os
 import random
 import time
-from typing import TYPE_CHECKING, Any, Callable, Literal, Optional
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
 import numpy as np
 
@@ -57,7 +57,8 @@ def run_with_retry(
             if attempt == max_retries:
                 LOG.error("Max retries reached. Raising exception.")
                 raise e
-            time.sleep(base_delay + random.uniform(0, jitter))
+            delay = base_delay * (2 ** attempt) + random.uniform(0, jitter)
+            time.sleep(delay)
 
 
 class ALMAAntposInputs(antpos.AntposInputs):
@@ -68,7 +69,18 @@ class ALMAAntposInputs(antpos.AntposInputs):
     # the base class.
 
     hm_antpos = vdp.VisDependentProperty(default='online')
-    antposfile = vdp.VisDependentProperty(default="antennapos.json")
+
+    @vdp.VisDependentProperty
+    def antposfile(self):
+        return "antennapos.json"
+
+    @antposfile.convert
+    def antposfile(self, value):
+        if not value and self.hm_antpos == 'online':
+            value = "antennapos.json"
+            LOG.info("Input parameter antposfile cannot be empty when hm_antpos='online', using antposfile=%s instead.", value)
+        return value
+
     threshold = vdp.VisDependentProperty(default=1.0)
     snr = vdp.VisDependentProperty(default=5.0)
     search = vdp.VisDependentProperty(default='both_latest')
@@ -76,16 +88,16 @@ class ALMAAntposInputs(antpos.AntposInputs):
     def __init__(
             self,
             context: Context,
-            output_dir: Optional[str] = None,
-            vis: Optional[list[str]] = None,
-            caltable: Optional[list[str]] = None,
-            hm_antpos: Optional[Literal['online', 'manual', 'file']] = None,
-            antposfile: Optional[str] = None,
-            antenna: Optional[str] = None,
-            offsets: Optional[list[float]] = None,
-            threshold: Optional[float] = None,
-            snr: Optional[float] = None,
-            search: Optional[Literal['both_latest', 'both_closest']] = None
+            output_dir: str | None = None,
+            vis: list[str] | None = None,
+            caltable: list[str] | None = None,
+            hm_antpos: Literal['online', 'manual', 'file'] | None = None,
+            antposfile: str | None = None,
+            antenna: str | None = None,
+            offsets: list[float] | None = None,
+            threshold: float | None = None,
+            snr: float | None = None,
+            search: Literal['both_latest', 'both_closest'] | None = None,
             ):
         """
         Initializes the pipeline input parameters for antenna position corrections.
@@ -140,7 +152,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
             snr:
                 A float value describing the signal-to-noise threshold used by the getantposalma task. Antennas with 
-                snr below the threshold will not be retrieved. Only used with `hm_antpos="online"`. Defaults to `0.0`.
+                snr below the threshold will not be retrieved. Only used with `hm_antpos="online"`. Defaults to `5.0`.
 
                 Example: `5.0`
 
@@ -164,27 +176,6 @@ class ALMAAntposInputs(antpos.AntposInputs):
         self.snr = snr
         self.search = search
 
-        if antposfile is None:
-            if hm_antpos == 'file':
-                raise ValueError("`antposfile` must be defined for `hm_antpos='file'`.")
-            if hm_antpos == 'online':
-                self.antposfile = 'antennapos.json'
-        elif hm_antpos == 'manual':
-            # Validate `antenna` and `offsets`
-            if antenna:
-                antenna_list = [a.strip() for a in antenna.split(",") if a.strip()]
-                if not antenna_list:
-                    raise ValueError("`antenna` must be a non-empty comma-separated string if provided.")
-
-            if offsets:
-                if not all(isinstance(x, (int, float)) for x in offsets):
-                    raise TypeError("`offsets` must be a list of float values.")
-
-                expected_length = 3 * len(antenna_list)
-                if expected_length > 0 and len(offsets) != expected_length:
-                    raise ValueError(
-                        f"`offsets` must have {expected_length} values (3 per antenna), but got {len(offsets)}."
-                    )
 
     def to_casa_args(self) -> dict[str, str | list[float]]:
         """
@@ -215,22 +206,26 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 'antenna': antenna,
                 'parameter': offsets}
 
-    def to_antpos_args(self) -> dict[str, str | list[str]]:
+    def to_antpos_args(self) -> dict[str, str | bool | list[str] | Literal['both_latest', 'both_closest'] | None]:
         """
         Configure getantposalma task arguments and return them in dictionary format.
 
         Returns:
             outfile: Name of file to write antenna positions retrieved from DB.
-            overwrite: Tells `getantposalma` whether to overwrite the file if it exists. If False and the file exists, it will throw an error.
+            overwrite: Tells `getantposalma` whether to overwrite the file if it exists. If False and the file exists,
+                it will throw an error.
             asdm: The execution block ID (ASDM) of the dataset.
-            snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will not be retrieved.
+            snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will 
+                not be retrieved.
             search: Search algorithm to use. Supports 'both_latest' and 'both_closest'.
+            hosts: Priority-ranked list of hosts to query.
         """
         return {'outfile': self.antposfile,
                 'overwrite': True,
-                'asdm': self.context.observing_run.measurement_sets[0].execblock_id,
+                'asdm': self.context.observing_run.get_ms(self.vis).execblock_id,
                 'snr': self.snr,
-                'search': self.search}
+                'search': self.search,
+                'hosts': ['https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/']}
 
     def __str__(self):
         return (
@@ -274,7 +269,7 @@ class ALMAAntpos(antpos.Antpos):
             if antenna_names:
                 result.antenna = ",".join(antenna_names)
                 result.offsets = offsets
-                LOG.info("Antenna corrections applied to the following antennas: %s", result.antenna)
+                LOG.info("Antennas with non-zero corrections applied: %s", result.antenna)
 
         return result
 
@@ -309,14 +304,12 @@ class ALMAAntpos(antpos.Antpos):
     def _get_antennas_with_significant_offset(
             self,
             offsets_dict: dict[np.str_, np.ndarray[float]],
-            threshold: float = 1e-9
             ) -> tuple[list[np.str_], list[np.float64]]:
         """
         Identifies antennas with significant non-zero coordinate offsets.
 
         Args:
             offsets_dict: Dictionary mapping antenna names to (x, y, z) offset tuples.
-            threshold: Threshold above which an offset is considered significant.
 
         Returns:
             A list of antenna names with significant offsets, and a flattened list of their 
@@ -326,7 +319,7 @@ class ALMAAntpos(antpos.Antpos):
         flattened_offsets = []
 
         for antenna, offsets in offsets_dict.items():
-            if np.any(np.abs(offsets) > threshold):
+            if np.any(np.abs(offsets) > 0):
                 names.append(antenna)
                 flattened_offsets.extend(offsets)
 
