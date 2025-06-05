@@ -663,10 +663,11 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             spws = inputs.ms.get_spectral_windows(inputs.spw)
             spwmap = combine_spwmap(spws)
 
-            # Run the phase calibration, forcing combination of SpWs.
+            # Run the phase calibration, forcing combination of SpWs with
+            # appropriate values for interp and spwmap.
             phasecal_results.append(self._do_calibrator_phasecal(field=field.name, intent=intent, spw=spw_to_solve,
                                                                  gaintype=gaintype, combine='spw', solint=solint,
-                                                                 minsnr=inputs.calminsnr, interp=interp,
+                                                                 minsnr=inputs.calminsnr, interp='linearPD,linear',
                                                                  spwmap=spwmap))
 
         return phasecal_results
