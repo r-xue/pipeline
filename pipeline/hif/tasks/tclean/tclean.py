@@ -1206,21 +1206,18 @@ class Tclean(cleanbase.CleanBase):
         else:
             keep_iterating = True
 
-        if inputs.hm_cleaning == 'rms':
+        if inputs.hm_cleaning in ('manual', 'rms'):
             # Adjust threshold based on the dirty image statistics
             dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
             tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
             new_threshold, DR_correction_factor, maxEDR_used = \
                 self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, tlimit, inputs.drcorrect)
-            sequence_manager.threshold = new_threshold
+            if inputs.hm_cleaning == 'manual':
+                sequence_manager.threshold = sequence_manager.threshold
+            else:
+                sequence_manager.threshold = new_threshold
             sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
-        elif inputs.hm_cleaning == 'manual':
-            dirty_dynamic_range = None
-            new_threshold = sequence_manager.threshold
-            DR_correction_factor = None
-            maxEDR_used = None
-            sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,

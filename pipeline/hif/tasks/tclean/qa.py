@@ -109,7 +109,10 @@ class TcleanQAHandler(pqa.QAPlugin):
         try:
             # For the score we compare the image RMS with the DR corrected
             # sensitivity as an estimate of the expected RMS.
-            rms_score = imageScorer(result.image_rms / result.dr_corrected_sensitivity)
+            if result.stokes == 'I':
+                rms_score = imageScorer(result.image_rms / result.dr_corrected_sensitivity)
+            else:
+                rms_score = imageScorer(result.image_rms_iquv[0] / result.dr_corrected_sensitivity)
 
             if (np.isnan(rms_score)):
                 rms_score = 0.0
