@@ -520,7 +520,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             # set start and step values to make the frequency axis of all FITS in ascending order.
             if numpy.logical_not(self.inputs.is_freq_axis_ascending):
                 step = -1
-                start = nchan - edge[1] - 1
+                start = total_nchan - edge[1] - 1
             else:
                 step = 1
                 start = edge[0]
