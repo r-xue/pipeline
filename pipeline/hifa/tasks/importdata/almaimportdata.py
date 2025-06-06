@@ -1,17 +1,21 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import ssl
 import urllib
+from typing import TYPE_CHECKING
 
 import certifi
 
-import pipeline.h.tasks.importdata.fluxes as fluxes
-import pipeline.h.tasks.importdata.importdata as importdata
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.sessionutils as sessionutils
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure import task_registry
+from pipeline import infrastructure
+from pipeline.h.tasks.importdata import fluxes, importdata
+from pipeline.hifa.tasks.importdata import dbfluxes
+from pipeline.infrastructure import sessionutils, vdp, task_registry
 
-from . import dbfluxes
-
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, ObservingRun
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 
 __all__ = [
     'ALMAImportData',
@@ -20,11 +24,14 @@ __all__ = [
     'ALMAImportDataResults'
 ]
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class ALMAImportDataInputs(importdata.ImportDataInputs):
-    asis = vdp.VisDependentProperty(default='Annotation Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver SBSummary Source Station')
+    # PIPE-2067: Added Pointing to retrieve ASDM_POINTING table for offset information
+    asis = vdp.VisDependentProperty(
+        default='Annotation Antenna CalAtmosphere CalPointing CalWVR ExecBlock Receiver Pointing SBSummary Source Station'
+        )
     dbservice = vdp.VisDependentProperty(default=False)
     createmms = vdp.VisDependentProperty(default='false')
     # sets threshold for polcal parallactic angle coverage. See PIPE-597
@@ -32,9 +39,26 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifa_importdata
-    def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
-                 overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, dbservice=None,
-                 createmms=None, ocorr_mode=None, datacolumns=None, minparang=None, parallel=None):
+    def __init__(
+            self,
+            context: Context,
+            vis: list[str] | None = None,
+            output_dir: str | None = None,
+            asis: str | None = None,
+            process_caldevice: bool | None = None,
+            session: str | None = None,
+            overwrite: bool | None = None,
+            nocopy: bool | None = None,
+            bdfflags: bool | None = None,
+            lazy: bool | None = None,
+            save_flagonline: bool | None = None,
+            dbservice: bool | None = None,
+            createmms: str | None = None,
+            ocorr_mode: str | None = None,
+            datacolumns: dict[str, str] | None = None,
+            minparang: float | None = None,
+            parallel: bool | None = None
+            ):
         """Initialize Inputs.
 
         Args:
@@ -132,11 +156,15 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
 
 
 class ALMAImportDataResults(importdata.ImportDataResults):
-    def __init__(self, mses=None, setjy_results=None):
+    def __init__(
+            self,
+            mses: list[MeasurementSet] | None = None,
+            setjy_results: list[FluxCalibrationResults] | None = None
+            ):
         super().__init__(mses=mses, setjy_results=setjy_results)
         self.parang_ranges = {}
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'ALMAImportDataResults:\n\t{0}'.format(
             '\n\t'.join([ms.name for ms in self.mses]))
 
@@ -145,7 +173,9 @@ class SerialALMAImportData(importdata.ImportData):
     Inputs = ALMAImportDataInputs
     Results = ALMAImportDataResults
 
-    def _get_fluxes(self, context, observing_run):
+    def _get_fluxes(
+            self, context: Context, observing_run: ObservingRun
+            ) -> tuple[str | None, list[FluxCalibrationResults], list[dict[str, str | None]] | None]:
         # get the flux measurements from Source.xml for each MS
 
         if self.inputs.dbservice:
