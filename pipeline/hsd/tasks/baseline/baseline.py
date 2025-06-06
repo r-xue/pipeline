@@ -22,7 +22,7 @@ from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
-from .typing import LineWindow, FitOrder, FitFunc
+from .typing import FitFunc, FitOrder, LineWindow
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.api import Heuristic

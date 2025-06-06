@@ -2,7 +2,7 @@
 import numpy
 import os
 
-from typing import TYPE_CHECKING, Any, List, Dict, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -20,7 +20,7 @@ from . import plotter
 from .. import common
 from ..common import utils
 
-from .typing import FitOrder, FitFunc
+from .typing import FitFunc, FitOrder
 
 if TYPE_CHECKING:
     import numpy as np
@@ -351,9 +351,6 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
 
         Returns:
             BaselineSubtractionResults instance
-            
-        Raises:
-            TypeError: Value of fit_order has unsupported data type
         """
         vis = self.inputs.vis
         ms = self.inputs.ms
@@ -532,11 +529,12 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             fit_order: The fit order parameter (int, dict, or None).
             spw_id_list: List of spectral window IDs to process.
         
+        Raises:
+            ValueError: fit_order of string type has unsupported value.
+            TypeError: Value of fit_order has unsupported data type.
+            
         Returns:
             A dictionary mapping each SPW ID (int) to its fit order (int or 'automatic').
-        
-        Raises:
-            TypeError: Value of fit_order has unsupported data type
         """
         if not fit_order:
             return {spw_id: 'automatic' for spw_id in spw_id_list}
@@ -580,8 +578,12 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             fit_func: The fit function parameter (str, dict, or None).
             spw_id_list: List of spectral window IDs to process.
 
+        Raises:
+            ValueError: fit_func has unsupported value.
+
         Returns:
             A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
+            
         """
         if not fit_func:
             fit_func_value = 'cspline'
@@ -592,7 +594,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         if not isinstance(fit_func_value, dict):
             # Validate string
             if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
-                raise ValueError(f"Unsupported fit_func string: {fit_func_value}")
+                raise ValueError(f"Unsupported fit_func value: {fit_func_value}")
             # Single string: Create one instance for all SPWs.
             blparam_heuristic = BaselineFitParamConfig(
                 fitfunc=fit_func_value,
