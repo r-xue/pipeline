@@ -180,6 +180,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                                 sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
                                                 specmode=specmode,
+                                                stokes='N/A',
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             outcome = {'image': image_item}
