@@ -56,18 +56,15 @@
 #                metrics for a family of model parameters.
 # 24/jul/2020: - Aligned with script atmcorr_20200722.py
 
-import os, sys
-from sys import path
+import os
 from typing import Generator
 
 import glob
 import numpy as np
-from scipy import stats
 import pylab as pl
 from itertools import product
 from matplotlib import pyplot as plt
 import time as systime
-import datetime
 from scipy.interpolate import CubicSpline
 
 import pipeline.infrastructure.callibrary as callibrary
