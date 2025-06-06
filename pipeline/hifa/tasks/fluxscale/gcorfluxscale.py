@@ -17,21 +17,18 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import FluxMeasurement
-from pipeline.domain import MeasurementSet
+from pipeline.domain import FluxMeasurement, MeasurementSet
 from pipeline.h.tasks.common import commonfluxresults, mstools
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
-from pipeline.hif.tasks import applycal
-from pipeline.hif.tasks import gaincal
+from pipeline.hif.tasks import applycal, gaincal
 from pipeline.hif.tasks.fluxscale import fluxscale
 from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hif.tasks.setmodel import setjy
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import task_registry
-from . import fluxes
+from pipeline.infrastructure import (casa_tasks, casa_tools, exceptions,
+                                     task_registry)
+
 from ... import heuristics
+from . import fluxes
 
 __all__ = [
     'GcorFluxscale',

@@ -20,7 +20,7 @@ class FindContQAHandler(pqa.QAPlugin):
         if context.vla_skip_mfs_and_cube_imaging:
             scores.append(
                 pqa.QAScore(
-                    None, longmsg='Skip the VLA continuum finding due to absence of required datatype: CONTLINE_SCIECNE',
+                    None, longmsg='Skip the VLA continuum finding due to absence of required datatype: CONTLINE_SCIENCE',
                     shortmsg='Stage skipped'))
             result.qa.pool.extend(scores)
             return

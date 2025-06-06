@@ -557,14 +557,17 @@ class ImportData(basetask.StandardTaskTemplate):
 
     def _set_column_data_types(self, ms: domain.MeasurementSet, data_types: dict, datacolumn_name: str, correcteddatacolumn_name: str) -> None:
 
+        # PIPE-2555: if we are not copying .ms to the working directory, avoid writing datatype info to be the original input data.
+        save_to_ms = not self.inputs.nocopy
+
         # Set data_type for DATA and CORRECTED_DATA columns if specified
         if 'DATA' in data_types:
             LOG.info(f'Setting data type for data column of {ms.basename} to {data_types["DATA"].name}')
-            ms.set_data_column(data_types['DATA'], datacolumn_name)
+            ms.set_data_column(data_types['DATA'], datacolumn_name, save_to_ms=save_to_ms)
 
         if 'CORRECTED' in data_types:
-            ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name)
             LOG.info(f'Setting data type for corrected data column of {ms.basename} to {data_types["CORRECTED"].name}')
+            ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name, save_to_ms=save_to_ms)
 
 
 def get_datacolumn_name(msname: str) -> Optional[str]:
