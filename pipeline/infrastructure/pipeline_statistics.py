@@ -8,6 +8,7 @@ from pipeline import environment
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
 from pipeline.domain.measurementset import MeasurementSet
+import pipeline.infrastructure.utils as utils
 
 from . import logging
 
@@ -42,7 +43,7 @@ class PipelineStatistics(object):
     def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
                  longdesc: str, origin: str='', units: str='',
                  level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None, 
-                 source: str=None, data_type: str = "IF"):
+                 source: str=None)
 
         self.name = name
         self.value = value
@@ -55,7 +56,6 @@ class PipelineStatistics(object):
         self.eb = eb
         self.spw = spw
         self.source = source
-        self.data_type = data_type
         self.origin = origin
 
         # Convert initial value from the pipeline to a value that can be serialized by JSON
@@ -66,14 +66,6 @@ class PipelineStatistics(object):
             self.value = int(self.value)
         elif type(value) is np.ndarray:
             self.value = list(self.value)
-
-        # Set default import program name
-        if data_type == "IF":
-            self.import_program = "hifa_importdata"
-        elif data_type == "SD":
-            self.import_program = "hsd_importdata"
-        else:
-            raise ValueError("Invalid data_type: {}".format(data_type))
 
     def __str__(self) -> str:
         return 'PipelineStatistics({!s}, {!r}, {!r}, {!s})'.format(self.name, self.value, self.origin, self.units)
@@ -99,12 +91,18 @@ class PipelineStatistics(object):
 
         return stats_dict
 
-    def import_program(data_type="IF") -> str:
-        if data_type == "IF":
-            return "hifa_importdata"
-        elif data_type == "SD":
-            return "hsd_importdata"
-        else:
+    def import_program(self, context: Context, ms: MeasurementSet) -> str:
+        """
+        Returns the name of the import program used to create the MS
+        """
+        if ms.antenna_array.name == 'ALMA':
+            if utils.contains_single_dish(context):
+                return "hsd_importdata"
+            else:
+                return "hifa_importdata"
+        elif ms.antenna_array.name == "VLA":
+            return "hifv_importdata"
+        else: 
             return "unknown"
 
 
@@ -119,7 +117,7 @@ def to_nested_dict(stats_collection) -> Dict:
     spw_section_key = "SPW"
     source_section_key = "TARGET"
 
-    # Step through the collect statistics values and construct
+    # Step through the collected statistics values and construct
     # a dictionary representation. The output format is as follows:
     # { mous_name: {
     #    mous_property: { ...
@@ -190,15 +188,16 @@ def _generate_header() -> Dict:
     return version_dict
 
 
-def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
-                     data_type: str = "IF") -> List[PipelineStatistics]:
+def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]
+                    ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given MOUS
     """
     level = PipelineStatisticsLevel.MOUS
     stats_collection = []
+    first_ms = ms_list[0]
 
-    import_program = PipelineStatistics.import_program(data_type)
+    import_program = PipelineStatistics.import_program(context, first_ms)
 
     p1 = PipelineStatistics(
         name='project_id',
@@ -207,7 +206,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p1)
 
@@ -218,7 +216,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p2)
 
@@ -229,7 +226,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p3)
 
@@ -240,7 +236,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p4)
 
@@ -251,7 +246,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p5)
 
@@ -262,7 +256,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p6)
 
@@ -274,11 +267,9 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p7)
 
-    first_ms = ms_list[0]
     science_source_names = sorted({source.name for source in first_ms.sources if 'TARGET' in source.intents})
     p8 = PipelineStatistics(
         name='n_target',
@@ -287,7 +278,6 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         mous=mous,
         level=level,
-        data_type=data_type,
         )
     stats_collection.append(p8)
 
@@ -322,13 +312,13 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
 
 
 def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
-                   data_type: str = "IF") -> List[PipelineStatistics]:
+                  ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given EB
     """
     level = PipelineStatisticsLevel.EB
     stats_collection = []
-    import_program = PipelineStatistics.import_program(data_type)
+    import_program = PipelineStatistics.import_program(context, ms_list[0])
 
     for ms in ms_list:
         eb = ms.name
@@ -341,7 +331,6 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
             eb=eb,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p1)
 
@@ -353,7 +342,6 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
             eb=eb,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p2)
 
@@ -367,7 +355,6 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
             mous=mous,
             eb=eb,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p3)
 
@@ -375,7 +362,7 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
 
 
 def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
-                    data_type: str = "IF") -> List[PipelineStatistics]:
+                   ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given SPW
     """
@@ -383,8 +370,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
     stats_collection = []
     ms = ms_list[0]
     spw_list = ms.get_all_spectral_windows()
-    import_program = PipelineStatistics.import_program(data_type)
-
+    import_program = PipelineStatistics.import_program(context, ms)
 
     for spw in spw_list:
         p1 = PipelineStatistics(
@@ -396,7 +382,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             spw=spw.id,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p1)
 
@@ -409,7 +394,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             spw=spw.id,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p2)
 
@@ -421,7 +405,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             mous=mous,
             spw=spw.id,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p3)
 
@@ -433,7 +416,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             spw=spw.id,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p4)
 
@@ -447,7 +429,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             spw=spw.id,
             mous=mous,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p5)
 
@@ -462,7 +443,6 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
             mous=mous,
             spw=spw.id,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p6)
 
@@ -470,14 +450,14 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
 
 
 def _get_source_values(context, mous: str, ms_list: List[MeasurementSet], 
-                       data_type: str = "IF") -> List[PipelineStatistics]:
+                      ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given source
     """
     level = PipelineStatisticsLevel.SOURCE
     stats_collection = []
     first_ms = ms_list[0]
-    import_program = PipelineStatistics.import_program(data_type)
+    import_program = PipelineStatistics.import_program(context, first_ms)
 
     science_sources = sorted({source for source in first_ms.sources
                               if 'TARGET' in source.intents}, key=lambda source: source.name)
@@ -493,14 +473,13 @@ def _get_source_values(context, mous: str, ms_list: List[MeasurementSet],
             mous=mous,
             source=source.name,
             level=level,
-            data_type=data_type,
         )
         stats_collection.append(p1)
 
     return stats_collection
 
 
-def generate_product_pl_run_info(context, data_type: str = "IF") -> List[PipelineStatistics]:
+def generate_product_pl_run_info(context) -> List[PipelineStatistics]:
     """
     Gather statistics results for the pipleline run information and pipeline product information
     These can be directly obtained from the context.
@@ -517,20 +496,20 @@ def generate_product_pl_run_info(context, data_type: str = "IF") -> List[Pipelin
     ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
 
     # Add MOUS-level information
-    mous_values = _get_mous_values(context, mous, ms_list, data_type)
+    mous_values = _get_mous_values(context, mous, ms_list)
     stats_collection.extend(mous_values)
 
     # Add per-EB information:
-    eb_values = _get_eb_values(context, mous, ms_list, data_type)
+    eb_values = _get_eb_values(context, mous, ms_list)
     stats_collection.extend(eb_values)
 
     # Add per-SPW stats information
     # The spw ids from the first MS are used so the information will be included once per MOUS.
-    spw_values = _get_spw_values(context, mous, ms_list, data_type)
+    spw_values = _get_spw_values(context, mous, ms_list)
     stats_collection.extend(spw_values)
 
     # Add per-SOURCE stats information
-    source_values = _get_source_values(context, mous, ms_list, data_type)
+    source_values = _get_source_values(context, mous, ms_list)
     stats_collection.extend(source_values)
 
     return stats_collection

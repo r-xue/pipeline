@@ -203,7 +203,7 @@ def union(lst: List, new: Union[pstats.PipelineStatistics, List[pstats.PipelineS
     return union
 
 
-def generate_stats(context, data_type="IF") -> Dict:
+def generate_stats(context: Context) -> Dict:
     """
     Gathers statistics from the context and results and returns a representation
     of them as a dict.
@@ -212,7 +212,7 @@ def generate_stats(context, data_type="IF") -> Dict:
 
     # First, gather statistics about the project and pipeline run info
     # directly from the context
-    product_run_info = pstats.generate_product_pl_run_info(context, data_type=data_type)
+    product_run_info = pstats.generate_product_pl_run_info(context)
     stats_collection.extend(product_run_info)
 
     # Next, gather statistics from the results objects
