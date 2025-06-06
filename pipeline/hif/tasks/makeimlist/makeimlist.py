@@ -1751,7 +1751,7 @@ def _get_sidebar_suffix(intent, specmode, stokes):
         elif specmode == 'cont':
             return f'cont{pol_str}'
         elif specmode == 'cube':
-            return f'cont{pol_str}'
+            return f'cube{pol_str}'
         elif specmode == 'repBW':
             return f'repBW{pol_str}'
         else:
