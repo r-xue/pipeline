@@ -49,17 +49,24 @@ def combine_spwmap(scispws: list[SpectralWindow]) -> list:
 def snr_n2wspwmap(scispws: list[SpectralWindow], snrs: list, snrlimit: float) -> tuple[bool, list]:
     """
     Compute a spectral window map based on signal-to-noise information.
-    Loops spectral specs and gets best SNR for them if above the limit set
-    If a good SNR SpW is found it can be use for the mapping, otherwise 
-    the SpW maps to itself and sets goodmap to False for the main
-    spwphaseup code to take action to combine instead
+
+    This will group input spectral windows into Spectral Specs, then loop over
+    Spectral Specs, and identify within each Spectral Spec the SpW with the best
+    SNR above the input minimum SNR limit. Finally, a spectral window maps is
+    created, where each SpW is mapped to:
+     - itself if its SNR is good enough, or
+     - a good-SNR SpW within the same Spectral Spec, or
+     - itself if there is no good-SNR SpW within the same Spectral Spec.
+
+    If all spectral specs have at least one good SpW to re-map to, then all SpWs
+    will have a good mapping and therefore the returned goodmap = True.
+    Otherwise, goodmap is returned as False.
 
     Args:
         scispws: List of spectral window objects for science spectral windows.
         snrs: List of snr values for scispws
-        snrlimit: the required SNR as required to be considereed 'good' for
-                using the SpW to be mapped to - replaces function of 'goodsnr' 
-                because it allows this function to act with independent inputs if required
+        snrlimit: Minimum SNR a SpW needs to exceed to be considered good enough
+            for SpWs to be mapped to.
 
     Returns:
         Two-tuple containing:
