@@ -225,6 +225,7 @@ ImagepolReader = context_manager_factory(_logging_imagepol_cls)
 # C extensions cannot be pickled, so ignore the CASA logger on pickle and
 # replace with it with the current CASA logger on unpickle
 __tools = [
+    'agentflagger',
     'atmosphere',
     'calibrater',
     'image',
