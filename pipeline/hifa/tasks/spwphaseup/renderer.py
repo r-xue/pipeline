@@ -191,16 +191,22 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
         if result.spwmaps:
             # Generate entries for each SpW mapping in the result.
             for (intent, field), spwmapping in result.spwmaps.items():
-                # Get phase SNR threshold based on intent, and present this in
-                # the table if the phase SNR test was run during task.
-                # PIPE-2499: CHECK and PHASE use the scan-based threshold; the
-                # other calibrators use the integration-time-based threshold.
-                if intent in {'CHECK', 'PHASE'}:
-                    thr_str = f"{result.inputs['phasesnr']} (scan)"
-                    threshold = result.inputs['phasesnr']
+                # Present in the table which phase SNR threshold was used.
+                # If this info is populated in the SpW mapping, then the SNR
+                # threshold was used to compute optimal solint based on
+                # estimated SNR, so report this used value.
+                if spwmapping.snr_threshold_used is not None:
+                    threshold = spwmapping.snr_threshold_used
+                # Otherwise, the SNR threshold was never used, so instead
+                # report what the appropriate value would have been based on
+                # intent.
                 else:
-                    thr_str = f"{results.inputs['intphasesnr']} (int)"
-                    threshold = results.inputs['intphasesnr']
+                    threshold = result.inputs['phasesnr'] if intent in {'CHECK', 'PHASE'} else results.inputs['intphasesnr']
+                # Create string representation of threshold, and indicated based
+                # on intent whether it would have been scan or integration time
+                # based.
+                thr_str = f"{threshold}"
+                thr_str += " (scan)" if intent in {'CHECK', 'PHASE'} else " (int)"
 
                 # If hm_spwmapmode input parameter was not "auto", then no need
                 # to report the SNR threshold in the table.

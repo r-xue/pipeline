@@ -35,7 +35,7 @@ __all__ = [
 ]
 
 IntentField = collections.namedtuple('IntentField', 'intent field')
-SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info solint gaintype')
+SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype')
 
 
 class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
@@ -71,14 +71,19 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     # a spw to be a match.
     minfracmaxbw = vdp.VisDependentProperty(default=0.8)
 
-    # Phase SNR threshold to use in spw mapping assessment to identify low
-    # SNR spws.
+    # Phase SNR threshold to use in spw mapping assessment to derive the optimal
+    # solution interval (scan-time based).
     phasesnr = vdp.VisDependentProperty(default=32.0)
 
-    # Phase SNR threshold to use in spw mapping assessment to identify low
-    # SNR spws w.r.t. 'int' solves on bright calibrators such as bandpass,
-    # amplitude, differential gain.
+    # Phase SNR threshold to use in spw mapping assessment to derive the optimal
+    # solution interval w.r.t. bright calibrators bandpass and differential
+    # gain (integration-time based).
     intphasesnr = vdp.VisDependentProperty(default=5.0)
+
+    # Phase SNR threshold to use in spw mapping assessment to derive the optimal
+    # solution interval w.r.t. bright calibrator fields that cover the amplitude
+    # calibrator intent.
+    intphasesnrmin = vdp.VisDependentProperty(default=3.0)
 
     # Maximum phase-up solution interval.
     phaseupmaxsolint = vdp.VisDependentProperty(default=60.0)
@@ -108,9 +113,9 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
 
     # docstring and type hints: supplements hifa_spwphaseup
     def __init__(self, context, vis=None, output_dir=None, caltable=None, intent=None, hm_spwmapmode=None,
-                 phasesnr=None, intphasesnr=None, phaseupmaxsolint=None, bwedgefrac=None, hm_nantennas=None,
-                 maxfracflagged=None, maxnarrowbw=None, minfracmaxbw=None, samebb=None, unregister_existing=None,
-                 **parameters):
+                 phasesnr=None, intphasesnr=None, intphasesnrmin=None, phaseupmaxsolint=None, bwedgefrac=None,
+                 hm_nantennas=None, maxfracflagged=None, maxnarrowbw=None, minfracmaxbw=None, samebb=None,
+                 unregister_existing=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -153,7 +158,13 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
 
             intphasesnr: The required solint='int' phase gaincal solution signal-to-noise.
 
-                Example: intphasesnr=20.0
+                Example: intphasesnr=4.0
+
+            intphasesnrmin: The required solint='int' phase gaincal solution
+                signal-to-noise for fields that cover the AMPLITUDE calibrator
+                intent.
+
+                Example: intphasesnrmin=3.0
 
             phaseupmaxsolint: Maximum phase correction solution interval (in
                 seconds) allowed in very low-SNR cases. Used only when
@@ -228,6 +239,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
         self.hm_spwmapmode = hm_spwmapmode
         self.phasesnr = phasesnr
         self.intphasesnr = intphasesnr
+        self.intphasesnrmin = intphasesnrmin
         self.phaseupmaxsolint = phaseupmaxsolint
         self.bwedgefrac = bwedgefrac
         self.hm_nantennas = hm_nantennas
@@ -439,6 +451,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # The list of combined SpW SNRs is empty; only updated if SpW
         # combination is necessary; needed for SNR info shown in task weblog.
         combined_snrs = []
+        # The SNR threshold used is initially unknown, and only updated if an
+        # SNR-based optimal solint gets computed; needed in task weblog.
+        snr_thr_used = None
 
         # PIPE-1436: if there is only one SpW, then no SpW re-mapping can be
         # done. In this case, just run the SNR test, and compute an optimal
@@ -457,7 +472,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                             f" setting gaincal solint to {solint} and gaintype to {gaintype}.")
             else:
                 # Compute the optimal solint and gaintype based on estimated SNR.
-                solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='single')
+                solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                      mappingmode='single')
 
         # If there are multiple SpWs, then continue with computing the SpW
         # optimal map according to the rules defined by each mapping mode.
@@ -490,7 +506,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             elif all(goodsnrs):
                 # Compute the optimal solint and gaintype based on estimated
                 # SNR, while assuming no SpW-remapping mode.
-                solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='single')
+                solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                      mappingmode='single')
 
                 # If the optimal solint is 'int', then proceed with this, and
                 # the default of no SpW mapping.
@@ -524,7 +541,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     if goodmap:
                         LOG.info(f"{inputs.ms.basename}, intent={intent}, field={field}: found good match for all spws"
                                  f" using spw map {spwmap}.")
-                        solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='mapping')
+                        solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                              mappingmode='mapping')
                     # Otherwise, proceed with SpW combination instead of SpW
                     # mapping, and re-compute the optimal solint and gaintype
                     # assuming "combine" mode.
@@ -539,7 +557,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                         # Re-compute the optimal solint and gaintype based on
                         # estimated SNR, while assuming SpW combination mode,
                         # and compute the expected combined SpW SNRs.
-                        solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='combine')
+                        solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                              mappingmode='combine')
                         combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
             # No spws have good SNR values, so force combined spw mapping.
@@ -559,7 +578,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 # Re-compute the optimal solint and gaintype based on estimated
                 # SNR, while assuming SpW combination mode, and compute the
                 # expected combined SpW SNRs.
-                solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='combine')
+                solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                      mappingmode='combine')
                 combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
             # If some, but not all, spws have good SNR values, then try to use
@@ -583,7 +603,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 # gaintype assuming the "mapping" mode.
                 if goodmap:
                     LOG.info(f'Using spw map {spwmap} for {inputs.ms.basename}, intent={intent}, field={field}')
-                    solint, gaintype  = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='mapping')
+                    solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                          mappingmode='mapping')
 
                 # Otherwise, proceed with SpW combination instead of SpW
                 # mapping, and re-compute the optimal solint and gaintype
@@ -599,7 +620,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     # Re-compute the optimal solint and gaintype based on
                     # estimated SNR, while assuming SpW combination mode,
                     # and compute the expected combined SpW SNRs.
-                    solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='combine')
+                    solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                          mappingmode='combine')
                     combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
 
@@ -634,7 +656,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # estimated SNR assuming SpW combination mode, and compute expected
             # combined SpW SNRs.
             else:
-                solint, gaintype = self._compute_solint(spwids, snrs, reftime, inttime, intent, mappingmode='combine')
+                solint, gaintype, snr_thr_used = self._compute_solint(spwids, snrs, reftime, inttime, intent,
+                                                                      mappingmode='combine')
                 combined_snrs = self._do_combined_snr_test(spwids, snrs, spwmap)
 
         # For the "hm_spwmapmode=simple" spw mapping mode, force the use of a
@@ -668,7 +691,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Collect SNR info.
         snr_info = self._get_snr_info(spwids, snrs, combined_snrs)
 
-        return SpwMapping(combine, spwmap, snr_info, solint, gaintype)
+        return SpwMapping(combine, spwmap, snr_info, snr_thr_used, solint, gaintype)
 
     def _do_snrtest(self, intent: str, field: str, spws: list[SpectralWindow]) -> tuple[bool, list, list, list, list, list]:
         """
@@ -1067,7 +1090,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
     def _compute_solint(
             self, spwids: list, snrs: list, ref_times: list, int_times: list, intent: str, mappingmode: str
-    ) -> tuple[str, str]:
+    ) -> tuple[str, str, float]:
         """ 
         Compute the optimal solution interval and gaintype.
 
@@ -1101,9 +1124,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 options: 'single', 'mapping', 'combine'.
 
         Returns:
-            2-tuple containing:
+            3-tuple containing:
               * Solution interval to use, as string (e.g. "int", or "10.0s")
               * Gaintype to use ("G" or "T")
+              * SNR threshold used
         """
         inputs = self.inputs
         quanta = casa_tools.quanta
@@ -1166,10 +1190,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # For the CHECK and PHASE intents, scale the SNR thresholds.
             int_snr = numpy.sqrt(int_time/ref_time) * snr_to_use
             req_snr = numpy.sqrt(int_time/ref_time) * inputs.phasesnr
+            snr_threshold_used = inputs.phasesnr
         else:
             # No scaling for the other calibrators (BANDPASS, DIFFGAIN, ...).
             int_snr = snr_to_use
             req_snr = inputs.intphasesnr
+            snr_threshold_used = inputs.intphasesnr
 
         # Compute the required solint by scaling the integration time by the
         # ratio of required SNR over integration-time-based SNR.
@@ -1183,7 +1209,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # the optimal (lowest) solint to use, so return early with this (and 'G'
         # as the corresponding default gaintype).
         if req_solint < 1.5 * int_time:
-            return 'int', gaintype
+            return 'int', gaintype, snr_threshold_used
 
         # If the required solint (with default gaintype) is above 'int', and the
         # phase-up will use SpW combination, then prefer to use gaintype "T",
@@ -1201,7 +1227,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # at/below the integration time, then return early with this as the
             # optimal solint.
             if req_solint < 1.5 * int_time:
-                return 'int', gaintype
+                return 'int', gaintype, snr_threshold_used
 
         # If the required solint is definitely above the integration time, even
         # after considering the options of using SpW combination and
@@ -1254,6 +1280,28 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Set solint to nearest integer multiple of the integration time.
             solint = round_half_up(req_solint / int_time) * int_time
 
+            # If any of the fields for this bright calibrator are used as the
+            # flux calibrator, then use the lowest allowed integration-time
+            # based SNR limit instead, to minimize the solint and associated
+            # decoherence error that would impact flux scaling (PIPE-2499).
+            if any("AMPLITUDE" in f.intents for f in inputs.ms.get_fields(intent=intent)):
+                LOG.info(f"{inputs.ms.basename}: the optimal solution interval found for intent {intent} is larger than"
+                         f" 'int', but this intent is shared with the AMPLITUDE intent on at least one field, and the"
+                         f" amplitude calibrator requires the shortest viable solint. Re-computing optimal solint based"
+                         f" on reduced SNR limit of {inputs.intphasesnrmin} ('intphasesnrmin').")
+
+                # Re-compute the required solint based on re-scaling from
+                # normal integration-time based SNR threshold to the minimum
+                # integration-time based SNR threshold.
+                solint = solint * (inputs.intphasesnrmin / inputs.intphasesnr) ** 2
+                snr_threshold_used  = inputs.intphasesnrmin
+
+                # If this adjusted solint after rounding would be at/below the
+                # integration time (i.e. < 1.5 integration time), then return
+                # early with 'int' as the optimal solint.
+                if solint < 1.5 * int_time:
+                    return 'int', gaintype, snr_threshold_used
+
             # If the optimal solint exceeds the maximum solint threshold, then
             # set the final solint to this maximum threshold, rounded to nearest
             # integer multiple of the integration time.
@@ -1271,7 +1319,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         else:
             solint = quanta.tos(quanta.quantity(solint, 's'), 3)
 
-        return solint, gaintype
+        return solint, gaintype, snr_threshold_used
 
     def _unregister_spwphaseup(self):
         inputs = self.inputs
