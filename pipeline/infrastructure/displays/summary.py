@@ -5,7 +5,7 @@ import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING, Generator, Literal
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -681,23 +681,28 @@ class MosaicPointingsChart(PointingsChart):
         )
 
 
-class TsysOFFScansChart(PointingsChart):
-    """Generates a plot of OFF_SOURCE system temperature (Tsys) scan(s) for a given source."""
+class TsysScansChart(PointingsChart):
+    """Generates a plot of system temperature (Tsys) scan(s) for a given source."""
 
-    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            source: Source,
+            ):
         """
-        Initializes the TsysOFFScansChart with the given parameters.
+        Initializes the TsysScansChart with the given parameters.
 
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the OFF_SOURCE Tsys scan(s) plot is created.
+            source: The source for which the Tsys scan(s) plot is created.
         """
         super().__init__(context, ms, source)
 
     def plot(self) -> logger.Plot | None:
         """
-        Generates and saves the OFF_SOURCE Tsys scan(s) plot.
+        Generates and saves the Tsys scan(s) plot.
 
         Returns:
             The plot object if successful, otherwise None.
@@ -709,23 +714,23 @@ class TsysOFFScansChart(PointingsChart):
         try:
             plotpointings.plot_tsys_scans(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warning('Could not create OFF_SOURCE Tsys scan(s) plot: %s', e)
+            LOG.warning('Could not create Tsys scan(s) plot: %s', e)
             return None
 
         return self._get_plot_object()
 
     def _get_figfile(self) -> str:
         """
-        Determines the file path for the OFF_SOURCE Tsys scan(s) plot.
+        Determines the file path for the Tsys scan(s) plot.
 
         Returns:
-            The file path for storing the OFF_SOURCE Tsys scan(s) plot.
+            The file path for storing the Tsys scan(s) plot.
         """
         return os.path.join(
             self.context.report_dir,
             f"session{self.ms.session}",
             self.ms.basename,
-            f"source{self.source.id}_off_source_tsys_scans.png"
+            f"source{self.source.id}_tsys_scans.png"
         )
 
 

@@ -1073,9 +1073,11 @@ class T2_2_1Renderer(T2_2_XRendererBase):
                 continue
             else:
                 if num_pointings > 1:
-                    plots.append(summary.MosaicPointingsChart(context, ms, source).plot())
+                    mosaic_plot = summary.MosaicPointingsChart(context, ms, source).plot()
+                    if mosaic_plot:
+                        plots.append(mosaic_plot)
                 if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
-                    tsys_plot = summary.TsysOFFScansChart(context, ms, source).plot()
+                    tsys_plot = summary.TsysScansChart(context, ms, source).plot()
                     if tsys_plot:
                         plots.append(tsys_plot)
             if plots:
