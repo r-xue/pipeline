@@ -13,28 +13,6 @@ import sys
 from io import StringIO
 from typing import Optional
 
-try:
-    from logging import getLogger
-except (ModuleNotFoundError, AttributeError):
-    # * ModuleNotFoundError = when running setup.py without CASA libs
-    #   installed, e.g., a pristine venv
-    # * AttributeError = CASA libs present but pipeline.infrastructure.logging
-    #   module cannot be imported, resulting in this error:
-    #
-    #   AttributeError: partially initialized module 'logging' has no attribute
-    #   'getLogger' (most likely due to a circular import)
-    #
-    # For both cases, which only occur when run through setup.py, detect the
-    # failure and fake the logger functionality required by this module.
-    def getLogger(name):
-        class FakeLogger:
-            def exception(self, msg, *args, **kwargs):
-                print('Exception: {msg}')
-
-        return FakeLogger()
-
-LOG = getLogger(__name__)
-
 
 def _run(command: str, stdout=None, stderr=None, cwd=None, shell=True) -> int:
     """
@@ -84,7 +62,7 @@ def _safe_run(command: str, on_error: str = 'N/A', cwd: Optional[str] = None, lo
         exit_code = _run(command, stdout=stdout, stderr=subprocess.DEVNULL, cwd=cwd)
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         if log_errors:
-            LOG.exception(f'Error running {command}', exc_info=e)
+            print(f'Error running {command}:\n  '+str(e))
     else:
         if exit_code == 0:
             return stdout.getvalue().strip()
