@@ -16,12 +16,19 @@ from casatools import table
 from casatools import msmetadata as msmdtool
 
 # pipeline imports
+import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools
+from pipeline.domain.measurementset import MeasurementSet
+import pipeline.domain.measures as measures
 
-WVR_LO=[38.1927,45.83125,91.6625,183.325,259.7104,274.9875,366.650,458.3125,641.6375]
+WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.3125, 641.6375]
 
 # Temporarily copy-in AU functions to remove dependency. 
-# This is an incremental step for testing. In the future: do further integration / removal of these.
+# This is an incremental step for testing. These are actively being integrated, removed, or moved into adopted.py as needed. 
+
+
+# Current status: copied over and lightly modified to work in PL
+# Goal: elminate entirely - replace with passing in the correct information which is actually already being passed in
 def getMeasurementSetFromCaltable(caltable):
     """                                                                                                                                                                                                          
     Returns the name of the parent measurement set from a caltable using                                                                                                                                         
@@ -32,28 +39,37 @@ def getMeasurementSetFromCaltable(caltable):
     if not os.path.exists(caltable):
         print("au.getBasebandNumbersFromCaltable(): caltable not found")
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    if 'VisCal' in mytb.getkeywords():
-        if mytb.getkeyword('VisCal').find('A Mueller') >= 0:
-            # CAS-12595 goes CPU bound on such tables (or is at least very slow)                                                                                                                                 
-            msname = mytb.getkeyword('MSName')
-            mytb.close()
-            return msname
-    mytb.close()
-    myca = calanalysis()
-    goodresult = myca.open(caltable)
-    if goodresult:
-        vis = myca.msname()
-    else:
-        #  look for it in CWD                                                                                                                                                                                    
+    with casa_tools.TableReader(caltable) as mytb:
+        if 'VisCal' in mytb.getkeywords():
+            if mytb.getkeyword('VisCal').find('A Mueller') >= 0:
+                # CAS-12595 goes CPU bound on such tables (or is at least very slow)                                                                                                                                 
+                msname = mytb.getkeyword('MSName')
+                mytb.close()
+                return msname
+    try:
+        with casa_tools.CalAnalysis(caltable) as myca:
+            vis = myca.msname()
+    except:  # FIXME universal except - but this is temp code anyway so okay. Maybe FileNotFoundError if I need to keep? 
         vis = caltable.split('.')[0] + '.ms'
         if not os.path.exists(vis):
             vis = ''
-    myca.close()
-    return(vis)
+
+    #    myca = calanalysis()
+    #    goodresult = myca.open(caltable)
+    #    if goodresult:
+    #       vis = myca.msname()
+    #    else:
+            #  look for it in CWD                                                                                                                                                                                    
+    #        vis = caltable.split('.')[0] + '.ms'
+    #        if not os.path.exists(vis):
+    #            vis = ''
+    #    myca.close()
+    return vis
 
 
+# Current status: copied over and lightly modified to work in PL
+# QUESTION: why don't we already have this in the PL? seems like basic functionality 
+# Goal: eliminate entirely and replace with native PL functionality ... which may need to be added? email Vincent perhaps? 
 def getFieldIDsFromCaltable(caltable):
     """
     Returns the field IDs in the specified caltable using casac.calanalysis.
@@ -64,20 +80,22 @@ def getFieldIDsFromCaltable(caltable):
         print("caltable not found")
         return -1
 
-    mytb = tbtool()
-    mytb.open(caltable)
-    tableType = mytb.getkeyword('VisCal')
-    mytb.close()
+    with casa_tools.TableReader(caltable) as mytb:
+    #mytb.open(caltable)
+        tableType = mytb.getkeyword('VisCal')
+    #    mytb.close()
     if tableType.find('A Mueller') >= 0:
         # CAS-12595
         return getFieldsFromCaltable(caltable)
-    myca = calanalysis()
-    myca.open(caltable)
-    fieldids = [int(i) for i in myca.field(name=False)]
-    myca.close()
+    
+    with casa_tools.CalAnalysis(caltable) as myca:
+    #    myca = calanalysis()
+    #    myca.open(caltable)
+        fieldids = [int(i) for i in myca.field(name=False)]
+    #    myca.close()
     return fieldids
 
-
+# NOTE: same as previous
 def getFieldsFromCaltable(caltable, asnames=False):
     """
     Returns the unique list of field IDs for which solutions exist in 
@@ -89,17 +107,19 @@ def getFieldsFromCaltable(caltable, asnames=False):
     if (os.path.exists(caltable) == False):
         print("au.getFieldsFromCaltable(): caltable not found")
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    fields = np.unique(mytb.getcol('FIELD_ID'))
-    mytb.close()
+    #    mytb = createCasaTool(tbtool)
+    with casa_tools.TableReader(caltable) as mytb: 
+    #    mytb.open(caltable)
+        fields = np.unique(mytb.getcol('FIELD_ID'))
+     #   mytb.close()
     if asnames:
-        mytb.open(caltable+'/FIELD')
-        names = mytb.getcol('NAME')
-        fields = list(names[fields])
+        with casa_tools.TableReader(caltable+'/FIELD') as mytb:
+    #        mytb.open(caltable+'/FIELD')  # Why isn't this closed after? Not my problem, but why? 
+           names = mytb.getcol('NAME')
+           fields = list(names[fields])
     return fields
 
-
+# NOTE: same as previous
 def getSpwsFromCaltable(caltable, getNumberOfChannels=False):
     """
     Returns the unique list of spw IDs for which solutions exist in 
@@ -110,20 +130,23 @@ def getSpwsFromCaltable(caltable, getNumberOfChannels=False):
     if (os.path.exists(caltable) == False):
         print("au.getSpwsFromCaltable(): caltable not found: ", caltable)
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    spws = np.unique(mytb.getcol('SPECTRAL_WINDOW_ID'))
-    mytb.close()
+    with casa_tools.TableReader(caltable) as mytb: 
+    #    mytb = createCasaTool(tbtool)
+    #    mytb.open(caltable)
+       spws = np.unique(mytb.getcol('SPECTRAL_WINDOW_ID'))
+    #    mytb.close()
     if getNumberOfChannels:
-        mytb.open(caltable+'/SPECTRAL_WINDOW')
-        spwdict = {}
-        for spw in spws:
-            spwdict[spw] = len(mytb.getcell('CHAN_FREQ',spw))
-        mytb.close()
+        with casa_tools.TableReader(caltable+'/SPECTRAL_WINDOW') as mytb:
+    #        mytb.open(caltable+'/SPECTRAL_WINDOW')
+            spwdict = {}
+            for spw in spws:
+                spwdict[spw] = len(mytb.getcell('CHAN_FREQ',spw))
+    #        mytb.close()
         return spwdict
     else:
         return spws
 
+# NOTE: same as previous
 def getAntennaNamesFromCaltable(caltable, withSolutions=False, unique=True):
     """
     Returns the antenna names from the specified caltable's ANTENNA table.
@@ -135,24 +158,26 @@ def getAntennaNamesFromCaltable(caltable, withSolutions=False, unique=True):
     if not os.path.exists(caltable):
         print("au.getAntennaNamesFromCaltable(): caltable not found")
         return
-    mytable = os.path.join(caltable,'ANTENNA')
+    mytable = os.path.join(caltable, 'ANTENNA')
     if not os.path.exists(mytable):
         print("au.getAntennaNamesFromCaltable(): caltable's ANTENNA subtable not found")
         return
-#    myca = calanalysis()
-#    myca.open(caltable)
-#    names = myca.antenna()  # a list
-#    myca.close()
-    mytb = createCasaTool(tbtool)
-    mytb.open(mytable)
-    names = mytb.getcol('NAME')  # an array
-    mytb.close()
+    #    myca = calanalysis()
+    #    myca.open(caltable)
+    #    names = myca.antenna()  # a list
+    #    myca.close()
+    with casa_tools.TableReader(mytable) as mytb: 
+    #    mytb = createCasaTool(tbtool)
+    #    mytb.open(mytable)
+        names = mytb.getcol('NAME')  # an array
+    #    mytb.close()
     if withSolutions:
         ids = getAntennaIDsFromCaltable(caltable, unique)
         names = names[ids]
     return names
 
-    
+
+# NOTE: same as prevous
 def getAntennaIDsFromCaltable(caltable, unique=True):
     """
     Returns the antenna IDs for which solutions exist in the specified caltable
@@ -163,151 +188,17 @@ def getAntennaIDsFromCaltable(caltable, unique=True):
     if (os.path.exists(caltable) == False):
         print("au.AntennaIDsFromCaltable(): caltable not found")
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    if unique:
-        antennas = np.unique(mytb.getcol('ANTENNA1'))
-    else:
-        antennas = mytb.getcol('ANTENNA1')
-    mytb.close()
+    with casa_tools.TableReader(caltable) as mytb:
+    #    mytb = createCasaTool(tbtool)
+    #    mytb.open(caltable)
+        if unique:
+            antennas = np.unique(mytb.getcol('ANTENNA1'))
+        else:
+            antennas = mytb.getcol('ANTENNA1')
+    #    mytb.close()
     return antennas
 
-
-def getMedianPWV(vis='.', myTimes=[0,999999999999], asdm='', verbose=False):
-    """
-    Extracts the PWV measurements from the WVR on all antennas for the
-    specified time range.  The time range is input as a two-element list of
-    MJD seconds (default = all times).  You can specify either the vis or 
-    the asdm.
-    if vis is set, then first it tries to find the ASDM_CALWVR
-    table in the ms.  If that fails, it then tries to find the 
-    ASDM_CALATMOSPHERE table in the ms.  If that fails, it then tries to find 
-    the CalWVR.xml in the specified ASDM, or failing that, an ASDM of the 
-    same name (minus the .ms).  If neither of these exist, then it tries to find 
-    a CalWVR.xml in the present working directory. If it still fails, it looks 
-    for CalWVR.xml in the .ms directory.  Thus, you only need to copy this 
-    single xml file from the ASDM into your ms, rather than the entire ASDM.
-    For the asdm option, you can set ASDM_LIBRARY_PATH in ~/.casa/startup.py 
-    to point to ASDM python bindings.
-    Returns:
-    The median PWV, and the median absolute deviation (scaled to match rms) in mm
-    For further help and examples, see https://safe.nrao.edu/wiki/bin/view/ALMA/GetMedianPWV
-    -- Todd Hunter
-    """
-    pwvmean = 0
-    success = False
-    if (verbose):
-        print("in getMedianPWV with myTimes = ", myTimes)
-    try:
-      if (os.path.exists("%s/ASDM_CALWVR"%vis)):
-          mytb = tbtool()
-          mytb.open("%s/ASDM_CALWVR" % vis)
-          pwvtime = mytb.getcol('startValidTime')  # mjdsec
-          antenna = mytb.getcol('antennaName')
-          pwv = mytb.getcol('water')
-          mytb.close()
-          success = True
-          if (len(pwv) < 1):
-              if (os.path.exists("%s/ASDM_CALATMOSPHERE" % vis)):
-                  pwvtime, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
-                  success = True
-                  if (len(pwv) < 1):
-                      print("Found no data in ASDM_CALWVR nor ASDM_CALATMOSPHERE table")
-                      return(0,-1)
-              else:
-                  if (verbose):
-                      print("Did not find ASDM_CALATMOSPHERE in the ms")
-                  return(0,-1)
-          if (verbose):
-              print("Opened ASDM_CALWVR table, len(pwvtime)=", len(pwvtime))
-      else:
-          if (verbose):
-              print("Did not find ASDM_CALWVR table in the ms. Will look for ASDM_CALATMOSPHERE next.")
-          if (os.path.exists("%s/ASDM_CALATMOSPHERE" % vis)):
-              pwvtime, antenna, pwv = readPWVFromASDM_CALATMOSPHERE(vis)
-              success = True
-              if (len(pwv) < 1):
-                  print("Found no data in ASDM_CALATMOSPHERE table")
-                  return(0,-1)
-          else:
-              if (verbose):
-                  print("Did not find ASDM_CALATMOSPHERE in the ms")
-    except:
-        if (verbose):
-            print("Could not open ASDM_CALWVR table in the ms")
-    finally:
-    # try to find the ASDM table
-     if (success == False):
-       if (len(asdm) > 0):
-           if (os.path.exists(asdm) == False):
-               print("Could not open ASDM = ", asdm)
-               return(0,-1)
-           try:
-               [pwvtime,pwv,antenna] = readpwv(asdm)
-           except:
-               if (verbose):
-                   print("Could not open ASDM = %s" % (asdm))
-               return(pwvmean,-1)
-       else:
-           try:
-               tryasdm = vis.split('.ms')[0]
-               if (verbose):
-                   print("No ASDM name provided, so I will try this name = %s" % (tryasdm))
-               [pwvtime,pwv,antenna] = readpwv(tryasdm)
-           except:
-               try:
-                   if (verbose):
-                       print("Still did not find it.  Will look for CalWVR.xml in current directory.")
-                   [pwvtime, pwv, antenna] = readpwv('.')
-               except:
-                   try:
-                       if (verbose):
-                           print("Still did not find it.  Will look for CalWVR.xml in the .ms directory.")
-                       [pwvtime, pwv, antenna] = readpwv('%s/'%vis)
-                   except:
-                       if (verbose):
-                           print("No CalWVR.xml file found, so no PWV retrieved. Copy it to this directory and try again.")
-                       return(pwvmean,-1)
-    try:
-        matches = np.where(np.array(pwvtime)>myTimes[0])[0]
-    except:
-        print("Found no times > %d" % (myTimes[0]))
-        return(0,-1)
-    if (len(pwv) < 1):
-        print("Found no PWV data")
-        return(0,-1)
-    if (verbose):
-        print("%d matches = " % (len(matches)), matches)
-        print("%d pwv = " % (len(pwv)), pwv)
-    ptime = np.array(pwvtime)[matches]
-    matchedpwv = np.array(pwv)[matches]
-    matches2 = np.where(ptime<=myTimes[-1])[0]
-    if (verbose):
-        print("matchedpwv = %s" % (matchedpwv))
-        print("pwv = %s" % (pwv))
-    if (len(matches2) < 1):
-        # look for the value with the closest start time
-        mindiff = 1e12
-        for i in range(len(pwvtime)):
-            if (abs(myTimes[0]-pwvtime[i]) < mindiff):
-                mindiff = abs(myTimes[0]-pwvtime[i])
-#                pwvmean = pwv[i]*1000
-        matchedpwv = []
-        for i in range(len(pwvtime)):
-            if (abs(abs(myTimes[0]-pwvtime[i]) - mindiff) < 1.0):
-                matchedpwv.append(pwv[i])
-        pwvmean = 1000*np.median(matchedpwv)
-        if (verbose):
-            print("Taking the median of %d pwv measurements from all antennas = %.3f mm" % (len(matchedpwv),pwvmean))
-        pwvstd = 1000*MAD(matchedpwv)
-    else:
-        pwvmean = 1000*np.median(matchedpwv[matches2])
-        pwvstd = 1000*MAD(matchedpwv[matches2])
-        if (verbose):
-            print("Taking the median of %d pwv measurements from all antennas = %.3f mm" % (len(matches2),pwvmean))
-    return(pwvmean,pwvstd)
-# end of getMedianPWV
-
+# replace with atmutils? <--- FIXME! Come back to this one.  
 def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None, 
                    net_sideband=1,P=563,H=20,T=273,airmass=1.0,
                    verbose=False, atmType=1, siteAltitude_m=5059,
@@ -330,6 +221,8 @@ def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None,
     returns 5 arrays:
        freq, chans, transmission (0..1), TebbSky, tau
     """
+    myat = casa_tools.atmosphere
+    myqa = casa_tools.quanta
     if refFreqInTable is None:
         refFreqInTable = freqs[0]
     if verbose:
@@ -341,42 +234,48 @@ def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None,
     resolution = chansep # this assumption appears to be built-in to the at tool, but not true for most ALMA data
     nbands = 1
     # from AtmosphereScan.cpp
-    myqa = createCasaTool(qatool)
-    maxAltitude = create_casa_quantity(myqa, maxAltitude,'km')
-    h0 = create_casa_quantity(myqa, h0,'km')
-    dP = create_casa_quantity(myqa, dP,'mbar')
-    fCenter = create_casa_quantity(myqa, reffreq,'GHz')
-    fResolution = create_casa_quantity(myqa, resolution,'GHz')
-    fWidth = create_casa_quantity(myqa, numchan*chansep,'GHz')
+    # maxAltitude = create_casa_quantity(myqa, maxAltitude,'km')
+    # h0 = create_casa_quantity(myqa, h0,'km')
+    # dP = create_casa_quantity(myqa, dP,'mbar')
+    # fCenter = create_casa_quantity(myqa, reffreq,'GHz')
+    # fResolution = create_casa_quantity(myqa, resolution,'GHz')
+    # fWidth = create_casa_quantity(myqa, numchan*chansep,'GHz')
+
+    maxAltitude = myqa.quantity(maxAltitude,'km')
+    h0 = myqa.quantity( h0,'km')
+    dP = myqa.quantity(dP,'mbar')
+    fCenter = myqa.quantity(reffreq,'GHz')
+    fResolution = myqa.quantity(resolution,'GHz')
+    fWidth = myqa.quantity(numchan*chansep,'GHz')
+
     if verbose:
         diff = reffreq*1e9 - refFreqInTable
         print("reffreq= %f, refFreqInTable= %f, difference= %f" % (reffreq*1e9, refFreqInTable, diff))
-    try:
-        myat = createCasaTool(attool)
-        needToCloseAT = True
-    except:  # CASA < 5.0.0
-        needToCloseAT = False
-        myat = at
-    result = myat.initAtmProfile(humidity=H,temperature=create_casa_quantity(myqa, T,"K"),
-                                 altitude=create_casa_quantity(myqa, siteAltitude_m,"m"),
-                                 pressure=create_casa_quantity(myqa, P,'mbar'),atmType=atmType,
+#    try:
+    needToCloseAT = True
+#    except:  # CASA < 5.0.0
+#        needToCloseAT = False
+#        myat = at
+    result = myat.initAtmProfile(humidity=H,temperature=myqa.quantity(T,"K"),
+                                 altitude=myqa.quantity(siteAltitude_m,"m"),
+                                 pressure=myqa.quantity(P,'mbar'),atmType=atmType,
                                  dP=dP, maxAltitude=maxAltitude, h0=h0, dPm=dPm)
-    if verbose: printNumberOfAtmosphericLayers(result)
+#    if verbose: printNumberOfAtmosphericLayers(result)
     myat.initSpectralWindow(nbands,fCenter,fWidth,fResolution)
-    myat.setUserWH2O(create_casa_quantity(myqa, pwv,'mm'))
+    myat.setUserWH2O(myqa.quantity(pwv,'mm'))
     # This does not affect the opacity, but it does effect TebbSky, so do it manually.
     myat.setAirMass(airmass)
-    if (casaVersion < '4.0.0'):
-        dry = np.array(myat.getDryOpacitySpec(0)['dryOpacity'])
-        wet = np.array(myat.getWetOpacitySpec(0)['wetOpacity'].value)
-        TebbSky = []
-        for chan in range(numchan):  # do NOT use numchan here, use n
-            TebbSky.append(myat.getTebbSky(nc=chan, spwid=0).value)
-        TebbSky = np.array(TebbSky)
-    else:
-        dry = np.array(myat.getDryOpacitySpec(0)[1])
-        wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
-        TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
+    # if (casaVersion < '4.0.0'):
+    #     dry = np.array(myat.getDryOpacitySpec(0)['dryOpacity'])
+    #     wet = np.array(myat.getWetOpacitySpec(0)['wetOpacity'].value)
+    #     TebbSky = []
+    #     for chan in range(numchan):  # do NOT use numchan here, use n
+    #         TebbSky.append(myat.getTebbSky(nc=chan, spwid=0).value)
+    #     TebbSky = np.array(TebbSky)
+#    else:
+    dry = np.array(myat.getDryOpacitySpec(0)[1])
+    wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
+    TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
 
     transmission = np.exp(-airmass*(wet+dry))
 #    TebbSky *= (1-np.exp(-airmass*(wet+dry)))/(1-np.exp(-wet-dry))
@@ -394,16 +293,19 @@ def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None,
         idx = np.argmax(TebbSky)
         print("Peak Tsky=%f at freq=%f" % (TebbSky[idx], freq[idx]))
         print("...median tau = %f, transmission = %f" % (np.median(airmass*(wet+dry)), np.median(transmission)))
-    if hanning:
-        print("Applying Hanning smoothing to the ATM model output. Median transmission=", np.median(transmission))
-        transmission = casaHanning(transmission,padOutput=True)
-        print("Median transmission = ", np.median(transmission))
-        TebbSky = casaHanning(TebbSky,padOutput=True)
-        wet = casaHanning(wet,padOutput=True)
-        dry = casaHanning(dry,padOutput=True)
+    # if hanning:
+    #     print("Applying Hanning smoothing to the ATM model output. Median transmission=", np.median(transmission))
+    #     transmission = casaHanning(transmission,padOutput=True)
+    #     print("Median transmission = ", np.median(transmission))
+    #     TebbSky = casaHanning(TebbSky,padOutput=True)
+    #     wet = casaHanning(wet,padOutput=True)
+    #     dry = casaHanning(dry,padOutput=True)
     return(freq, chans, transmission, TebbSky, airmass*(wet+dry))
 
 
+# NOTE: This can be replaced with existing PL functionality. 
+# Current status: copied over and lightly modified from AU for testing. 
+# GOAL: completely replace with pipeline functionality after get tests passing in current form. 
 def getScienceSpwBandwidths(vis, intent='OBSERVE_TARGET#ON_SOURCE', 
                              tdm=True, fdm=True, mymsmd=None, sqld=False, 
                              verbose=False, returnDict=False, returnMHz=False):
@@ -412,28 +314,35 @@ def getScienceSpwBandwidths(vis, intent='OBSERVE_TARGET#ON_SOURCE',
     returnDict: if True, then return a dictionary keyed by spw ID
     -Todd Hunter
     """
-    if mymsmd is None:
-        mymsmd = createCasaTool(msmdtool)
-        mymsmd.open(vis)
-        needToClose = True
-    else:
-        needToClose = False
-    spws = sorted(getScienceSpws(vis, intent, False, False, tdm, fdm, mymsmd, sqld, verbose))
-    bandwidths = mymsmd.bandwidths(spws)
-    if needToClose:
-        mymsmd.close()
-    mymsmd.close()
-    if returnMHz:
-        bandwidths *= 1e-6
-    if returnDict:
-        mydict = {}
-        for i, spw in enumerate(spws):
-            mydict[spw] = bandwidths[i]
-        return mydict
-    else:
-        return bandwidths
+    # if mymsmd is None:
+    #     mymsmd = createCasaTool(msmdtool)
+    #     mymsmd.open(vis)
+    #     needToClose = True
+    # else:
+    #     needToClose = False
+    #    spws = sorted(getScienceSpws(vis, intent, False, False, tdm, fdm, mymsmd, sqld, verbose))
+    print("getting science spw bandwidths")
+    spws = vis.get_spectral_windows(science_windows_only=True)
+    print("spws:")
+    print(spws)
+#    bandwidths = mymsmd.bandwidths(spws)
+    bandwidths = [float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ)) for spw in spws]
+    #    if needToClose:
+    #        mymsmd.close()
+    #    mymsmd.close()
+    #    if returnMHz:
+    #        bandwidths *= 1e-6
+    # if returnDict:
+    #     mydict = {}
+    #     for i, spw in enumerate(spws):
+    #         mydict[spw] = bandwidths[i]
+    #     return mydict
+    # else:
+    print("Bandwidths")
+    print(bandwidths)
+    return bandwidths
 
-
+# PL utils for interacting with caltables? 
 def getNChanFromCaltable(caltable, spw=None):
     """
     Returns the number of channels of the specified spw in a caltable.
@@ -442,17 +351,20 @@ def getNChanFromCaltable(caltable, spw=None):
     if (os.path.exists(caltable) == False):
         print("caltable not found")
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-    mytb.close()
-    mytb.open(spectralWindowTable)
-    if spw is None:
-        nchan = mytb.getcol('NUM_CHAN')
-    else:
-        nchan = mytb.getcell('NUM_CHAN',spw)
+    #    mytb = createCasaTool(tbtool)
+    #    mytb.open(caltable)
+    with casa_tools.TableReader(caltable) as mytb:
+        spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
+    #    mytb.close()
+    #    mytb.open(spectralWindowTable)
+    with casa_tools.TableReader(spectralWindowTable) as mytb:
+        if spw is None:
+            nchan = mytb.getcol('NUM_CHAN')
+        else:
+            nchan = mytb.getcell('NUM_CHAN',spw)
     return nchan
 
+# PL utils for interacting with caltables? 
 def getChanFreqFromCaltable(caltable, spw, channel=None):
     """
     Returns the frequency (in GHz) of the specified spw channel in a caltable.
@@ -462,24 +374,27 @@ def getChanFreqFromCaltable(caltable, spw, channel=None):
     if (os.path.exists(caltable) == False):
         print("caltable not found")
         return -1
-    mytb = createCasaTool(tbtool)
-    mytb.open(caltable)
-    spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-    mytb.close()
-    mytb.open(spectralWindowTable)
-    spws = range(len(mytb.getcol('MEAS_FREQ_REF')))
-    chanFreqGHz = {}
-    for i in spws:
-        # The array shapes can vary, so read one at a time.
-        spectrum = mytb.getcell('CHAN_FREQ',i)
-        chanFreqGHz[i] = 1e-9 * spectrum
-    mytb.close()
+    #    mytb = createCasaTool(tbtool)
+    #    mytb.open(caltable)
+    with casa_tools.TableReader(caltable) as mytb:
+        spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
+    #    mytb.close()
+    #    mytb.open(spectralWindowTable)
+    with casa_tools.TableReader(spectralWindowTable) as mytb:
+        spws = range(len(mytb.getcol('MEAS_FREQ_REF')))
+        chanFreqGHz = {}
+        for i in spws:
+            # The array shapes can vary, so read one at a time.
+            spectrum = mytb.getcell('CHAN_FREQ',i)
+            chanFreqGHz[i] = 1e-9 * spectrum
+    #mytb.close()
     if channel is None:
         return chanFreqGHz[spw]
     if channel > len(chanFreqGHz[spw]):
         print("spw %d has only %d channels"% (spw, len(chanFreqGHz[spw])))
     else:
         return chanFreqGHz[spw][channel]
+
 
 def fitAtmLines(ATMprof, freq):
          """
@@ -619,7 +534,7 @@ def getInfoFromTable(caltable):
     antennaNames = getAntennaNamesFromCaltable(caltable)
     antIds = getAntennaIDsFromCaltable(caltable)
     visname=caltable[0:caltable.find('.ms')+3]
-    pwv,pwv_sigma=getMedianPWV(visname)
+    pwv, pwv_sigma = adopted.getMedianPWV(visname)
     return fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv
 
 
@@ -663,7 +578,7 @@ def extractValues(data, caltable):
     return bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag
 
 
-def evalPerAntBP_Platform(pickle_file,inputpath):
+def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
     print('Doing Platforming evaluation')
     if glob.glob('*platform.txt'):
         os.system("rm -rf *platform.txt")  # PLANS: Update these to overwrite if present rather than rm -rf 
@@ -677,17 +592,14 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
     with open(pickle_file, 'rb') as f:
         data=pickle.load(f)
     
-    # Added by kberry - first 3 planned to be removed. 
-    note_platform_return = ''
-    flagnote_return = ''
-    note_platform_start_return = ''
+    # added by kberry
     spws_affected = {}  # Format spw: [ant1...n]
 
     # Iterate through tables
     for i, itab in enumerate(list(data.keys())):
         pldir = inputpath.split('/')[-1]
         # caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
-        caltable = glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
+        # caltable = glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
 
         print(caltable+ ' in Platforming evaluation')
 
@@ -1789,10 +1701,6 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
                     outfile.write(note_platform)
                     outfile_val.write(note_platform_start)
                     outfile_flag.write(flagnote)
-                    
-                    note_platform_return += note_platform
-                    flagnote_return += flagnote
-                    note_platform_start_return += note_platform_start
 
                 plt.savefig(figure_name)
                 plt.close()
@@ -1802,7 +1710,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath):
         outfile_flag.close()
         return spws_affected
 
-def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_platforming_qa'):
+def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath='./bandpass_platforming_qa'):
    mkdirstr='mkdir '+outputpath
 
    if os.path.isdir(outputpath) == False:
@@ -1813,7 +1721,9 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
    tabkey=[]
    tablelist=[]
 
-   # Path to the bandpass tables for analysis
+   # kberry: switch to using the passed in ms and caltable
+   # mytablelist = [caltable]
+   # myworkdir = 
 #    mytablelist=glob.glob(inputpath+'/S*/G*/M*/working/uid*bandpass.s*channel.solintinf.bcal.tbl')
 #    myworkdir=glob.glob(inputpath+'/S*/G*/M*/working/')
    mytablelist=glob.glob('uid*bandpass.s*channel.solintinf.bcal.tbl')
@@ -1830,7 +1740,7 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
        tb_summary=tb.info()
        if tb_summary['subType']=='B Jones':                           # checking whether this is bandpass gain table (bandtype='B Jones')
           tabkey.append(mytab.split('/')[-1])                         # bandpass table name 
-          vislist.append(getMeasurementSetFromCaltable(mytab))   # associated MS name
+          vislist.append(ms.name)#getMeasurementSetFromCaltable(mytab))   # associated MS name
           tablelist.append(os.path.abspath('./' + mytab))                                     # bandpass table paths 
        tb.close()
 
@@ -1840,14 +1750,17 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
 
    # go into the output directory to dump the analysis result 
    # products of the analysis result: bandpass data pickle file, text files, and plots
-   os.chdir(outputpath)
+    #FIXME: kberry - A better approach here is to just append the output path to files that need to be in it. 
+    # Why? TBD but seems to mess with MS &c
+#   os.chdir(outputpath)
    
-   #creating PL directory to save the data (text files and figures)
-   outdir='./bandpass_qa' #mytablelist[0].split('/')[-6]
+   # Creating PL directory to save the data (text files and figures)
+   # FIXME: one for all MS/caltable okay? or needs to be per-MS or caltable? 
+   outdir='./bandpass_qa' #mytablelist[0].split('/')[-6] - 
    if os.path.isdir(outdir) == False:
       os.system('mkdir '+outdir)
-   os.chdir(outdir)
-   print("changed dir to:", outdir)
+#   os.chdir(outdir)
+#   print("changed dir to:", outdir)
 
    #define structure of pickle file, bandpass_library
    #bandpass_library[mytab][myfield][myspw][myant][mypol]['amp']=amp2
@@ -1879,6 +1792,7 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['flag']=[0,1,1,....,0]
    #
 
+   # FIXME: force-run during development
    if True:# os.path.isfile('bandpass_library.pickle')==False:
       bandpass_library={}
 
@@ -1897,11 +1811,12 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
          print("RefAnt", refAnt)
          bandpass_library[mytab]['RefAnt']=refAnt
 
-         #check bandwidth and nchan
-         visname=getMeasurementSetFromCaltable(caltable)
-         myvis=os.path.join(inputpath,visname)
-         print('myvis', myvis)
-         spw_bandwidth=getScienceSpwBandwidths(myvis)
+         # Check bandwidth and nchan
+         # FIXME: kberry - can we eliminate these? 
+#         visname = ms.name #  getMeasurementSetFromCaltable(caltable)
+#         myvis=os.path.join(inputpath,visname)
+#         print('myvis', myvis)
+         spw_bandwidth=getScienceSpwBandwidths(ms)#myvis)
 
          for j, myfield in enumerate(fieldNames):
             print("doing field:",myfield)
@@ -1961,18 +1876,19 @@ def bandpass_platforming(ms, caltable, inputpath='.', outputpath='./bandpass_pla
                       bandpass_library[mytab][myfield][myspw][myant][mypol]['flag']=myflag
 
          tb.close()
+      
 
       with open('bandpass_library.pickle', 'wb') as f:
           pickle.dump(bandpass_library, f, protocol=pickle.HIGHEST_PROTOCOL)
 
    # Evaluate bandpass platform/spikes
-   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle', inputpath)
-   os.chdir(inputpath)
+   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle', inputpath, caltable)
+#   os.chdir(inputpath)
    return spws_affected
 
 def main(argv):
    # Output path needs to be modified 
-   def_output_path = ""#/home/zuul07/kberry/repos/clean/pipeline/pipeline/extern/QA0_Bandpass/"
+   def_output_path = ""
 
    # Input path need to be modified
    inputpath='./'

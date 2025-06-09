@@ -4,6 +4,7 @@ import shutil
 import tempfile
 
 from pipeline.extern import bandpass_pipereq234
+import pipeline.extern.adopted as adopted
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
