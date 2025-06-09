@@ -17,6 +17,7 @@ from casatools import msmetadata as msmdtool
 
 # pipeline imports
 import pipeline.extern.adopted as adopted
+from pipeline.infrastructure.utils import caltable_tools # FIXME: consider adding caltable interaction tools here! 
 from pipeline.infrastructure import casa_tools
 from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
@@ -25,46 +26,6 @@ WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.
 
 # Temporarily copy-in AU functions to remove dependency. 
 # This is an incremental step for testing. These are actively being integrated, removed, or moved into adopted.py as needed. 
-
-
-# Current status: copied over and lightly modified to work in PL
-# Goal: elminate entirely - replace with passing in the correct information which is actually already being passed in
-def getMeasurementSetFromCaltable(caltable):
-    """                                                                                                                                                                                                          
-    Returns the name of the parent measurement set from a caltable using                                                                                                                                         
-    the casac tool (except for A Mueller tables for which it uses the tb                                                                                                                                         
-    tool instead -- CAS-12595).                                                                                                                                                                                  
-    Todd Hunter                                                                                                                                                                                                  
-    """
-    if not os.path.exists(caltable):
-        print("au.getBasebandNumbersFromCaltable(): caltable not found")
-        return -1
-    with casa_tools.TableReader(caltable) as mytb:
-        if 'VisCal' in mytb.getkeywords():
-            if mytb.getkeyword('VisCal').find('A Mueller') >= 0:
-                # CAS-12595 goes CPU bound on such tables (or is at least very slow)                                                                                                                                 
-                msname = mytb.getkeyword('MSName')
-                mytb.close()
-                return msname
-    try:
-        with casa_tools.CalAnalysis(caltable) as myca:
-            vis = myca.msname()
-    except:  # FIXME universal except - but this is temp code anyway so okay. Maybe FileNotFoundError if I need to keep? 
-        vis = caltable.split('.')[0] + '.ms'
-        if not os.path.exists(vis):
-            vis = ''
-
-    #    myca = calanalysis()
-    #    goodresult = myca.open(caltable)
-    #    if goodresult:
-    #       vis = myca.msname()
-    #    else:
-            #  look for it in CWD                                                                                                                                                                                    
-    #        vis = caltable.split('.')[0] + '.ms'
-    #        if not os.path.exists(vis):
-    #            vis = ''
-    #    myca.close()
-    return vis
 
 
 # Current status: copied over and lightly modified to work in PL
@@ -81,19 +42,15 @@ def getFieldIDsFromCaltable(caltable):
         return -1
 
     with casa_tools.TableReader(caltable) as mytb:
-    #mytb.open(caltable)
         tableType = mytb.getkeyword('VisCal')
-    #    mytb.close()
     if tableType.find('A Mueller') >= 0:
         # CAS-12595
         return getFieldsFromCaltable(caltable)
     
     with casa_tools.CalAnalysis(caltable) as myca:
-    #    myca = calanalysis()
-    #    myca.open(caltable)
         fieldids = [int(i) for i in myca.field(name=False)]
-    #    myca.close()
     return fieldids
+
 
 # NOTE: same as previous
 def getFieldsFromCaltable(caltable, asnames=False):
@@ -107,240 +64,14 @@ def getFieldsFromCaltable(caltable, asnames=False):
     if (os.path.exists(caltable) == False):
         print("au.getFieldsFromCaltable(): caltable not found")
         return -1
-    #    mytb = createCasaTool(tbtool)
     with casa_tools.TableReader(caltable) as mytb: 
-    #    mytb.open(caltable)
         fields = np.unique(mytb.getcol('FIELD_ID'))
-     #   mytb.close()
     if asnames:
         with casa_tools.TableReader(caltable+'/FIELD') as mytb:
-    #        mytb.open(caltable+'/FIELD')  # Why isn't this closed after? Not my problem, but why? 
            names = mytb.getcol('NAME')
            fields = list(names[fields])
     return fields
 
-# NOTE: same as previous
-def getSpwsFromCaltable(caltable, getNumberOfChannels=False):
-    """
-    Returns the unique list of spw IDs for which solutions exist in 
-    the specified caltable, using the tb tool. 
-    getNumberOfChannels: if True, then return a dictionary, with values=nchan
-    Todd Hunter
-    """
-    if (os.path.exists(caltable) == False):
-        print("au.getSpwsFromCaltable(): caltable not found: ", caltable)
-        return -1
-    with casa_tools.TableReader(caltable) as mytb: 
-    #    mytb = createCasaTool(tbtool)
-    #    mytb.open(caltable)
-       spws = np.unique(mytb.getcol('SPECTRAL_WINDOW_ID'))
-    #    mytb.close()
-    if getNumberOfChannels:
-        with casa_tools.TableReader(caltable+'/SPECTRAL_WINDOW') as mytb:
-    #        mytb.open(caltable+'/SPECTRAL_WINDOW')
-            spwdict = {}
-            for spw in spws:
-                spwdict[spw] = len(mytb.getcell('CHAN_FREQ',spw))
-    #        mytb.close()
-        return spwdict
-    else:
-        return spws
-
-# NOTE: same as previous
-def getAntennaNamesFromCaltable(caltable, withSolutions=False, unique=True):
-    """
-    Returns the antenna names from the specified caltable's ANTENNA table.
-    withSolutions: calls getAntennaIDsFromCaltabe and translates to name
-         which will only include those antennas with solutions
-    unique: passed to getAntennaIDsFromCaltable
-    Todd Hunter
-    """
-    if not os.path.exists(caltable):
-        print("au.getAntennaNamesFromCaltable(): caltable not found")
-        return
-    mytable = os.path.join(caltable, 'ANTENNA')
-    if not os.path.exists(mytable):
-        print("au.getAntennaNamesFromCaltable(): caltable's ANTENNA subtable not found")
-        return
-    #    myca = calanalysis()
-    #    myca.open(caltable)
-    #    names = myca.antenna()  # a list
-    #    myca.close()
-    with casa_tools.TableReader(mytable) as mytb: 
-    #    mytb = createCasaTool(tbtool)
-    #    mytb.open(mytable)
-        names = mytb.getcol('NAME')  # an array
-    #    mytb.close()
-    if withSolutions:
-        ids = getAntennaIDsFromCaltable(caltable, unique)
-        names = names[ids]
-    return names
-
-
-# NOTE: same as prevous
-def getAntennaIDsFromCaltable(caltable, unique=True):
-    """
-    Returns the antenna IDs for which solutions exist in the specified caltable
-    using the tb tool.
-    unique: if False, then return a vector equal in length to the number of rows in the caltable
-    Todd Hunter
-    """
-    if (os.path.exists(caltable) == False):
-        print("au.AntennaIDsFromCaltable(): caltable not found")
-        return -1
-    with casa_tools.TableReader(caltable) as mytb:
-    #    mytb = createCasaTool(tbtool)
-    #    mytb.open(caltable)
-        if unique:
-            antennas = np.unique(mytb.getcol('ANTENNA1'))
-        else:
-            antennas = mytb.getcol('ANTENNA1')
-    #    mytb.close()
-    return antennas
-
-# replace with atmutils? <--- FIXME! Come back to this one.  
-def CalcAtmosphere(chans, freqs, pwv, refFreqInTable=None, 
-                   net_sideband=1,P=563,H=20,T=273,airmass=1.0,
-                   verbose=False, atmType=1, siteAltitude_m=5059,
-                   maxAltitude=48.0,   # i.e., top of atmosphere
-                   h0=1.0,    # water vapor scale height in km
-                   dP=5.0,    # model step to use in mbar
-                   dPm=1.1,   # pressure step factor (unitless)
-                   hanning=False
-                   ):
-    """
-    Uses the at tool in CASA to compute atmospheric model.
-    chans: all channels, regardless of whether they are flagged
-    freqs: frequencies (in GHz) corresponding to chans
-    refFreqInTable: frequency of the edge of the spw
-    atmType: 1, 2, or 3, default=1=tropical, 2=midLatSummer, 3=midLatWinter
-    dP: pressure step, has units of pressure (mb)
-    dPm: pressure step factor (unitless) called PstepFact in TelCal
-    maxAltitude: of the atmosphere, in km
-    hanning: if True, then apply Hanning smoothing to the transmission, TebbSky and tau
-    returns 5 arrays:
-       freq, chans, transmission (0..1), TebbSky, tau
-    """
-    myat = casa_tools.atmosphere
-    myqa = casa_tools.quanta
-    if refFreqInTable is None:
-        refFreqInTable = freqs[0]
-    if verbose:
-        print("CalcAtmosphere: len chans, freqs = ", len(chans), len(freqs))
-        print("Using zenith PWV=%.3fmm, airmass=%.3f, P=%.2fmb, H=%.2f%%, T=%.2fK..." % (pwv,airmass,P,H,T))
-    numchan = len(freqs)
-    reffreq = 0.5*(freqs[numchan//2-1]+freqs[numchan//2])  # frequency of the CENTER of the spw
-    chansep = (freqs[-1]-freqs[0])/(numchan-1)
-    resolution = chansep # this assumption appears to be built-in to the at tool, but not true for most ALMA data
-    nbands = 1
-    # from AtmosphereScan.cpp
-    # maxAltitude = create_casa_quantity(myqa, maxAltitude,'km')
-    # h0 = create_casa_quantity(myqa, h0,'km')
-    # dP = create_casa_quantity(myqa, dP,'mbar')
-    # fCenter = create_casa_quantity(myqa, reffreq,'GHz')
-    # fResolution = create_casa_quantity(myqa, resolution,'GHz')
-    # fWidth = create_casa_quantity(myqa, numchan*chansep,'GHz')
-
-    maxAltitude = myqa.quantity(maxAltitude,'km')
-    h0 = myqa.quantity( h0,'km')
-    dP = myqa.quantity(dP,'mbar')
-    fCenter = myqa.quantity(reffreq,'GHz')
-    fResolution = myqa.quantity(resolution,'GHz')
-    fWidth = myqa.quantity(numchan*chansep,'GHz')
-
-    if verbose:
-        diff = reffreq*1e9 - refFreqInTable
-        print("reffreq= %f, refFreqInTable= %f, difference= %f" % (reffreq*1e9, refFreqInTable, diff))
-#    try:
-    needToCloseAT = True
-#    except:  # CASA < 5.0.0
-#        needToCloseAT = False
-#        myat = at
-    result = myat.initAtmProfile(humidity=H,temperature=myqa.quantity(T,"K"),
-                                 altitude=myqa.quantity(siteAltitude_m,"m"),
-                                 pressure=myqa.quantity(P,'mbar'),atmType=atmType,
-                                 dP=dP, maxAltitude=maxAltitude, h0=h0, dPm=dPm)
-#    if verbose: printNumberOfAtmosphericLayers(result)
-    myat.initSpectralWindow(nbands,fCenter,fWidth,fResolution)
-    myat.setUserWH2O(myqa.quantity(pwv,'mm'))
-    # This does not affect the opacity, but it does effect TebbSky, so do it manually.
-    myat.setAirMass(airmass)
-    # if (casaVersion < '4.0.0'):
-    #     dry = np.array(myat.getDryOpacitySpec(0)['dryOpacity'])
-    #     wet = np.array(myat.getWetOpacitySpec(0)['wetOpacity'].value)
-    #     TebbSky = []
-    #     for chan in range(numchan):  # do NOT use numchan here, use n
-    #         TebbSky.append(myat.getTebbSky(nc=chan, spwid=0).value)
-    #     TebbSky = np.array(TebbSky)
-#    else:
-    dry = np.array(myat.getDryOpacitySpec(0)[1])
-    wet = np.array(myat.getWetOpacitySpec(0)[1]['value'])
-    TebbSky = myat.getTebbSkySpec(spwid=0)[1]['value']
-
-    transmission = np.exp(-airmass*(wet+dry))
-#    TebbSky *= (1-np.exp(-airmass*(wet+dry)))/(1-np.exp(-wet-dry))
-
-    numchan = len(transmission)
-    chans = range(len(transmission))
-    startFreq = myqa.convert(myat.getChanFreq(0),'GHz')['value']
-    endFreq = myqa.convert(myat.getChanFreq(numchan-1),'GHz')['value']
-    if needToCloseAT:
-        myat.close()
-    myqa.done()
-    freq = np.linspace(startFreq, endFreq, numchan)
-    if verbose:
-        print("numchan=%d, abs(startFreq-endFreq) = %f" % (numchan, np.abs(startFreq - endFreq)))
-        idx = np.argmax(TebbSky)
-        print("Peak Tsky=%f at freq=%f" % (TebbSky[idx], freq[idx]))
-        print("...median tau = %f, transmission = %f" % (np.median(airmass*(wet+dry)), np.median(transmission)))
-    # if hanning:
-    #     print("Applying Hanning smoothing to the ATM model output. Median transmission=", np.median(transmission))
-    #     transmission = casaHanning(transmission,padOutput=True)
-    #     print("Median transmission = ", np.median(transmission))
-    #     TebbSky = casaHanning(TebbSky,padOutput=True)
-    #     wet = casaHanning(wet,padOutput=True)
-    #     dry = casaHanning(dry,padOutput=True)
-    return(freq, chans, transmission, TebbSky, airmass*(wet+dry))
-
-
-# NOTE: This can be replaced with existing PL functionality. 
-# Current status: copied over and lightly modified from AU for testing. 
-# GOAL: completely replace with pipeline functionality after get tests passing in current form. 
-def getScienceSpwBandwidths(vis, intent='OBSERVE_TARGET#ON_SOURCE', 
-                             tdm=True, fdm=True, mymsmd=None, sqld=False, 
-                             verbose=False, returnDict=False, returnMHz=False):
-    """
-    Returns: an array of bandwidths (in Hz) in order sorted by spw ID
-    returnDict: if True, then return a dictionary keyed by spw ID
-    -Todd Hunter
-    """
-    # if mymsmd is None:
-    #     mymsmd = createCasaTool(msmdtool)
-    #     mymsmd.open(vis)
-    #     needToClose = True
-    # else:
-    #     needToClose = False
-    #    spws = sorted(getScienceSpws(vis, intent, False, False, tdm, fdm, mymsmd, sqld, verbose))
-    print("getting science spw bandwidths")
-    spws = vis.get_spectral_windows(science_windows_only=True)
-    print("spws:")
-    print(spws)
-#    bandwidths = mymsmd.bandwidths(spws)
-    bandwidths = [float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ)) for spw in spws]
-    #    if needToClose:
-    #        mymsmd.close()
-    #    mymsmd.close()
-    #    if returnMHz:
-    #        bandwidths *= 1e-6
-    # if returnDict:
-    #     mydict = {}
-    #     for i, spw in enumerate(spws):
-    #         mydict[spw] = bandwidths[i]
-    #     return mydict
-    # else:
-    print("Bandwidths")
-    print(bandwidths)
-    return bandwidths
 
 # PL utils for interacting with caltables? 
 def getNChanFromCaltable(caltable, spw=None):
@@ -363,6 +94,7 @@ def getNChanFromCaltable(caltable, spw=None):
         else:
             nchan = mytb.getcell('NUM_CHAN',spw)
     return nchan
+
 
 # PL utils for interacting with caltables? 
 def getChanFreqFromCaltable(caltable, spw, channel=None):
@@ -394,6 +126,54 @@ def getChanFreqFromCaltable(caltable, spw, channel=None):
         print("spw %d has only %d channels"% (spw, len(chanFreqGHz[spw])))
     else:
         return chanFreqGHz[spw][channel]
+
+
+# Helper functions added by kberry, largely adapted from AU functions previously used. 
+def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
+    """
+    Returns a dict of the bandwidths of the science spectral windows, 
+    indexed by the spw id.
+    """
+    spws = vis.get_spectral_windows(science_windows_only=True)
+    bandwidths = {}
+    for spw in spws: 
+        bandwidths[spw.id] = float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ))
+    return bandwidths
+
+
+# FIXME: check to see if caltable exists and if not throw error
+def antenna_names_from_caltable(caltable) -> list[str]:
+    """
+    Returns the antenna names from the specified caltable's ANTENNA table.
+    """
+    mytable = os.path.join(caltable, 'ANTENNA')
+    with casa_tools.TableReader(mytable) as mytb: 
+        names = mytb.getcol('NAME')  # an array
+
+    return list(names)
+
+
+# FIXME: check to see if caltable exists and if not throw error
+def get_ant_ids_from_caltable(caltable) -> list[int]:
+    """
+    Returns a list of all unique antenna ids in the caltable
+    """
+    with casa_tools.TableReader(caltable) as tb:
+        table_ants = set(tb.getcol('ANTENNA1'))
+
+    caltable_antennas = [int(ant) for ant in table_ants]
+    return caltable_antennas
+
+
+# FIXME: check to see if caltable exists and if not throw error
+def get_spws_from_table(caltable) -> list[int]:
+    """
+    Returns a list of all unique spws in the calibration table
+    """
+    with casa_tools.TableReader(caltable) as tb:
+        table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
+    caltable_spws = sorted([int(spw) for spw in table_spws])
+    return caltable_spws 
 
 
 def fitAtmLines(ATMprof, freq):
@@ -510,38 +290,20 @@ def fitAtmLines(ATMprof, freq):
          return centers, scales
 
 
-def get_spws_from_table(caltable):
-    # Identify spws in caltable
-    with casa_tools.TableReader(caltable) as tb:
-        table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
-    caltable_spws = sorted([int(spw) for spw in table_spws])
-    return caltable_spws 
-
-
-def get_ant_ids_from_caltable(caltable):
-    with casa_tools.TableReader(caltable) as tb:
-        table_ants = set(tb.getcol('ANTENNA1'))
-
-    caltable_antennas = [int(ant) for ant in table_ants]
-    return caltable_antennas
-
-
-def getInfoFromTable(caltable):
-    myvis=getMeasurementSetFromCaltable(caltable)
+def getInfoFromTable(vis, caltable):
     fieldIds = getFieldIDsFromCaltable(caltable)
-    fieldNames = getFieldsFromCaltable(caltable,asnames=True)
-    spwIds = getSpwsFromCaltable(caltable)
-    antennaNames = getAntennaNamesFromCaltable(caltable)
-    antIds = getAntennaIDsFromCaltable(caltable)
-    visname=caltable[0:caltable.find('.ms')+3]
-    pwv, pwv_sigma = adopted.getMedianPWV(visname)
+    fieldNames = getFieldsFromCaltable(caltable, asnames=True)
+    spwIds = get_spws_from_table(caltable)
+    antennaNames = antenna_names_from_caltable(caltable)
+    antIds = get_ant_ids_from_caltable(caltable)
+    pwv, pwv_sigma = adopted.getMedianPWV(vis)
     return fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv
 
 
-def extractValues(data, caltable):
+def extractValues(data, vis, caltable):
     tabname=caltable.split('/')[-1]
     bandpass_amp=[]; bandpass_phase=[]; bandpass_amp2=[]; bandpass_phase2=[]; bandpass_freq=[]; bandpass_flag=[]
-    fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
+    fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(vis, caltable)
 
     fieldname=fieldNames[0]
 
@@ -578,7 +340,7 @@ def extractValues(data, caltable):
     return bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag
 
 
-def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
+def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
     print('Doing Platforming evaluation')
     if glob.glob('*platform.txt'):
         os.system("rm -rf *platform.txt")  # PLANS: Update these to overwrite if present rather than rm -rf 
@@ -590,7 +352,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
         os.system("rm -rf *flagging.txt")  # PLANS: Update these to overwrite if present rather than rm -rf
 
     with open(pickle_file, 'rb') as f:
-        data=pickle.load(f)
+        data = pickle.load(f)
     
     # added by kberry
     spws_affected = {}  # Format spw: [ant1...n]
@@ -601,13 +363,13 @@ def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
         # caltable=glob.glob(inputpath+'/S*/G*/M*/working/'+itab)[0]
         # caltable = glob.glob(os.path.abspath(os.path.join('../../', itab)))[0]
 
-        print(caltable+ ' in Platforming evaluation')
+        print(caltable + ' in Platforming evaluation')
 
         # Get the meta data from caltable
-        fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
+        fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(vis, caltable)
         # Construct the multidimensional array containing the bandpass solution (amp and phase) from pickle file and caltable
         # Bandpass_{amp/phase}[spwid][antid][polz]
-        bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag = extractValues(data, caltable)
+        bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag = extractValues(data, vis, caltable)
 
         eb = itab.split('.')[0]
 
@@ -621,14 +383,13 @@ def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
 
         # Taking statistical summary values for heuristics
         # per spw, ant, and pol
-        spwIds = getSpwsFromCaltable(caltable)
-        antennaNames = getAntennaNamesFromCaltable(caltable)
-        antIds = getAntennaIDsFromCaltable(caltable)
+        spwIds = get_spws_from_table(caltable)
+        antennaNames = antenna_names_from_caltable(caltable)
 
         # Appended string containing the heuristics values 
-        note_platform_start=''
+        note_platform_start = ''
         # Appended string containing the flagging commands
-        flagnote=''
+        flagnote = ''
 
 
         ##############################
@@ -686,7 +447,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
                 ###############################
                 if abs(spw_bandwidth) < 1.9e9:
                    chans=range(len(spw_freq))
-                   frequency, channel, transmission, Tebbsky, tau = CalcAtmosphere(chans, spw_freq, pwv)
+                   frequency, channel, transmission, Tebbsky, tau = adopted.CalcAtmosphere(chans, spw_freq, pwv)
                    centers,scales=fitAtmLines(transmission, spw_freq)   #FWHM=2xscale
                    bounds=[]
                    for b in range(len(centers)):
@@ -1711,7 +1472,7 @@ def evalPerAntBP_Platform(pickle_file,inputpath, caltable):
         return spws_affected
 
 def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath='./bandpass_platforming_qa'):
-   mkdirstr='mkdir '+outputpath
+   mkdirstr='mkdir ' + outputpath
 
    if os.path.isdir(outputpath) == False:
       os.system(mkdirstr)
@@ -1740,8 +1501,8 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
        tb_summary=tb.info()
        if tb_summary['subType']=='B Jones':                           # checking whether this is bandpass gain table (bandtype='B Jones')
           tabkey.append(mytab.split('/')[-1])                         # bandpass table name 
-          vislist.append(ms.name)#getMeasurementSetFromCaltable(mytab))   # associated MS name
-          tablelist.append(os.path.abspath('./' + mytab))                                     # bandpass table paths 
+          vislist.append(ms.name)                                     # associated MS name
+          tablelist.append(os.path.abspath('./' + mytab))             # bandpass table paths 
        tb.close()
 
    print('tabkey', tabkey)
@@ -1801,7 +1562,7 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
          tb=table()
          tb.open(caltable)
          print("doing table:",mytab)
-         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(caltable)
+         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(ms.name, caltable)
          bandpass_library[mytab]={}
 
          tmp = tb.getcol('ANTENNA2')
@@ -1812,11 +1573,9 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
          bandpass_library[mytab]['RefAnt']=refAnt
 
          # Check bandwidth and nchan
-         # FIXME: kberry - can we eliminate these? 
-#         visname = ms.name #  getMeasurementSetFromCaltable(caltable)
-#         myvis=os.path.join(inputpath,visname)
-#         print('myvis', myvis)
-         spw_bandwidth=getScienceSpwBandwidths(ms)#myvis)
+         # FIXME: kberry - double-check this
+         spw_bandwidth = science_spw_bandwidths(ms)
+         print(f"Spw bandwidths: {spw_bandwidth}")
 
          for j, myfield in enumerate(fieldNames):
             print("doing field:",myfield)
@@ -1824,12 +1583,12 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
             bandpass_library[mytab][myfield]={}
             
             for m, myspw in enumerate(spwIds):
-               print("doing spw:",myspw)
+               print("doing spw:", myspw)
 
                bandpass_library[mytab][myfield][myspw]={}
                spw_nchan=getNChanFromCaltable(caltable,myspw)
                spw_freq=getChanFreqFromCaltable(caltable,myspw)       #GHz
-               bandpass_library[mytab][myfield][myspw]['bw']=spw_bandwidth[m]
+               bandpass_library[mytab][myfield][myspw]['bw'] = spw_bandwidth[myspw]
                bandpass_library[mytab][myfield][myspw]['nchan']=spw_nchan
                bandpass_library[mytab][myfield][myspw]['freq']=spw_freq
 
@@ -1882,7 +1641,7 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
           pickle.dump(bandpass_library, f, protocol=pickle.HIGHEST_PROTOCOL)
 
    # Evaluate bandpass platform/spikes
-   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle', inputpath, caltable)
+   spws_affected = evalPerAntBP_Platform('bandpass_library.pickle', inputpath, ms.name, caltable)
 #   os.chdir(inputpath)
    return spws_affected
 
