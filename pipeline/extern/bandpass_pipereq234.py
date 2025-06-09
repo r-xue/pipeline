@@ -24,67 +24,48 @@ import pipeline.domain.measures as measures
 
 WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.3125, 641.6375]
 
-# Temporarily copy-in AU functions to remove dependency. 
-# This is an incremental step for testing. These are actively being integrated, removed, or moved into adopted.py as needed. 
 
-
-# Current status: copied over and lightly modified to work in PL
-# Goal: eliminate entirely and replace with native PL functionality ... why didn't we already have this in the PL? Did I just not find it? 
-def getNChanFromCaltable(caltable, spw=None):
+# Adapted from analysisUtils.getNChanFromCaltable()
+def nchan_from_caltable(caltable, spw) -> int:
     """
     Returns the number of channels of the specified spw in a caltable.
-    Todd Hunter
     """
-    if (os.path.exists(caltable) == False):
-        print("caltable not found")
-        return -1
-    #    mytb = createCasaTool(tbtool)
-    #    mytb.open(caltable)
+    if not os.path.exists(caltable):
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
     with casa_tools.TableReader(caltable) as mytb:
         spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-    #    mytb.close()
-    #    mytb.open(spectralWindowTable)
+
     with casa_tools.TableReader(spectralWindowTable) as mytb:
-        if spw is None:
-            nchan = mytb.getcol('NUM_CHAN')
-        else:
-            nchan = mytb.getcell('NUM_CHAN',spw)
+        nchan = mytb.getcell('NUM_CHAN', spw)
+
     return nchan
 
 
-# NOTE: same as previous
-def getChanFreqFromCaltable(caltable, spw, channel=None):
+# Adapted from analysisUtils.getChanFreqFromCaltable()
+def chan_freq_from_caltable(caltable, spw) -> np.array:
     """
     Returns the frequency (in GHz) of the specified spw channel in a caltable.
-    channel: if not specified, then return array of all channel frequencies
-    Todd Hunter
+    Return array of all channel frequencies
     """
-    if (os.path.exists(caltable) == False):
-        print("caltable not found")
-        return -1
-    #    mytb = createCasaTool(tbtool)
-    #    mytb.open(caltable)
+    if not os.path.exists(caltable): 
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
     with casa_tools.TableReader(caltable) as mytb:
         spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-    #    mytb.close()
-    #    mytb.open(spectralWindowTable)
+
     with casa_tools.TableReader(spectralWindowTable) as mytb:
         spws = range(len(mytb.getcol('MEAS_FREQ_REF')))
         chanFreqGHz = {}
         for i in spws:
             # The array shapes can vary, so read one at a time.
-            spectrum = mytb.getcell('CHAN_FREQ',i)
+            spectrum = mytb.getcell('CHAN_FREQ', i)
             chanFreqGHz[i] = 1e-9 * spectrum
-    #mytb.close()
-    if channel is None:
-        return chanFreqGHz[spw]
-    if channel > len(chanFreqGHz[spw]):
-        print("spw %d has only %d channels"% (spw, len(chanFreqGHz[spw])))
-    else:
-        return chanFreqGHz[spw][channel]
+
+    return chanFreqGHz[spw]
 
 
-# Helper functions added by kberry, largely adapted from AU functions previously used. 
+# Additional helper functions added by kberry, largely adapted from AU functions previously used. 
 def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     """
     Returns a dict of the bandwidths of the science spectral windows, 
@@ -1579,12 +1560,12 @@ def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath
             for m, myspw in enumerate(spwIds):
                print("doing spw:", myspw)
 
-               bandpass_library[mytab][myfield][myspw]={}
-               spw_nchan=getNChanFromCaltable(caltable,myspw)
-               spw_freq=getChanFreqFromCaltable(caltable,myspw)       #GHz
+               bandpass_library[mytab][myfield][myspw] = {}
+               spw_nchan = nchan_from_caltable(caltable, myspw)
+               spw_freq = chan_freq_from_caltable(caltable, myspw)       #GHz
                bandpass_library[mytab][myfield][myspw]['bw'] = spw_bandwidth[myspw]
-               bandpass_library[mytab][myfield][myspw]['nchan']=spw_nchan
-               bandpass_library[mytab][myfield][myspw]['freq']=spw_freq
+               bandpass_library[mytab][myfield][myspw]['nchan'] = spw_nchan
+               bandpass_library[mytab][myfield][myspw]['freq'] = spw_freq
 
                for k, myant in enumerate(antennaNames):
                   bandpass_library[mytab][myfield][myspw][myant]={}
