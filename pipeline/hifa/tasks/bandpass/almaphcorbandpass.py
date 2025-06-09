@@ -579,7 +579,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                     adjusted=inputs.phaseupsolint,
                     threshold="",
                     origin=LowSNRPhaseupSolintOrigin.SPWS_MISSING_DATA.value,
-                    reason=f"SNR results not available for all expected spws",
+                    reason=f"SNR results not available for any of the expected spws",
                 )
             )
             return inputs.phaseupsolint, phase_combine, None, adjustments
@@ -605,7 +605,8 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         for i in spwindex:
             # No solution available for this SpW.
             if not snr_result.phsolints[i]:
-                # TODO can never get here due to early return on L585?
+                # This per-spw warning is distinct from the early return on
+                # L585, which is a global warning for all spws
                 LOG.warning('No phaseup solint estimate for spw %s in MS %s' %
                             (snr_result.spwids[i], inputs.ms.basename))
                 continue
@@ -694,7 +695,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         # appropriate reasons and threshold information.
         original_solint: float
         decision_threshold: float
-        metric_identifier: LowSNRPhaseupSolintOrigin
+        metric_identifier: str
         reason: str
         # this will be mutated as required by the metric
         applies_to = TargetDataSelection(vis={inputs.ms.basename})
@@ -1080,7 +1081,7 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
                         inputs.solint = orig_solint + ',' + newsolint
 
                         original = str(to_frequency(snr_result.bpsolints[solindex]))
-                        adjusted = str(to_frequency(newsolint))
+                        adjusted = f'{orig_solint},{str(to_frequency(newsolint))}'
 
                         vis = os.path.basename(inputs.vis)
                         adjustments.append(
