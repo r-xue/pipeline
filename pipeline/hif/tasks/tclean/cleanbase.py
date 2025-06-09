@@ -117,7 +117,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def spw(self):
         first_ms = self.context.observing_run.measurement_sets[0]
-        return ','.join([spw.id for spw in first_ms.get_spectral_windows()])
+        return ','.join([str(spw.id) for spw in first_ms.get_spectral_windows()])
 
     @vdp.VisDependentProperty
     def spwsel(self):
