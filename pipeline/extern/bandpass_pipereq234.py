@@ -29,51 +29,7 @@ WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.
 
 
 # Current status: copied over and lightly modified to work in PL
-# QUESTION: why don't we already have this in the PL? seems like basic functionality 
-# Goal: eliminate entirely and replace with native PL functionality ... which may need to be added? email Vincent perhaps? 
-def getFieldIDsFromCaltable(caltable):
-    """
-    Returns the field IDs in the specified caltable using casac.calanalysis.
-    (See getFieldsFromCaltable for a different method that uses the tb tool.)
-    Todd Hunter
-    """
-    if (os.path.exists(caltable) == False):
-        print("caltable not found")
-        return -1
-
-    with casa_tools.TableReader(caltable) as mytb:
-        tableType = mytb.getkeyword('VisCal')
-    if tableType.find('A Mueller') >= 0:
-        # CAS-12595
-        return getFieldsFromCaltable(caltable)
-    
-    with casa_tools.CalAnalysis(caltable) as myca:
-        fieldids = [int(i) for i in myca.field(name=False)]
-    return fieldids
-
-
-# NOTE: same as previous
-def getFieldsFromCaltable(caltable, asnames=False):
-    """
-    Returns the unique list of field IDs for which solutions exist in 
-    the specified caltable.  See also getFieldIDsFromCaltable (which 
-    uses the casac tool instead of the tb tool.)
-    See also au.getFieldNamesFromCaltable, but it is sometimes wwrong.
-    Todd Hunter
-    """
-    if (os.path.exists(caltable) == False):
-        print("au.getFieldsFromCaltable(): caltable not found")
-        return -1
-    with casa_tools.TableReader(caltable) as mytb: 
-        fields = np.unique(mytb.getcol('FIELD_ID'))
-    if asnames:
-        with casa_tools.TableReader(caltable+'/FIELD') as mytb:
-           names = mytb.getcol('NAME')
-           fields = list(names[fields])
-    return fields
-
-
-# PL utils for interacting with caltables? 
+# Goal: eliminate entirely and replace with native PL functionality ... why didn't we already have this in the PL? Did I just not find it? 
 def getNChanFromCaltable(caltable, spw=None):
     """
     Returns the number of channels of the specified spw in a caltable.
@@ -96,7 +52,7 @@ def getNChanFromCaltable(caltable, spw=None):
     return nchan
 
 
-# PL utils for interacting with caltables? 
+# NOTE: same as previous
 def getChanFreqFromCaltable(caltable, spw, channel=None):
     """
     Returns the frequency (in GHz) of the specified spw channel in a caltable.
@@ -141,11 +97,13 @@ def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     return bandwidths
 
 
-# FIXME: check to see if caltable exists and if not throw error
 def antenna_names_from_caltable(caltable) -> list[str]:
     """
     Returns the antenna names from the specified caltable's ANTENNA table.
     """
+    if not os.path.exists(caltable):
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
     mytable = os.path.join(caltable, 'ANTENNA')
     with casa_tools.TableReader(mytable) as mytb: 
         names = mytb.getcol('NAME')  # an array
@@ -153,11 +111,13 @@ def antenna_names_from_caltable(caltable) -> list[str]:
     return list(names)
 
 
-# FIXME: check to see if caltable exists and if not throw error
 def get_ant_ids_from_caltable(caltable) -> list[int]:
     """
     Returns a list of all unique antenna ids in the caltable
     """
+    if not os.path.exists(caltable): 
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
     with casa_tools.TableReader(caltable) as tb:
         table_ants = set(tb.getcol('ANTENNA1'))
 
@@ -165,15 +125,45 @@ def get_ant_ids_from_caltable(caltable) -> list[int]:
     return caltable_antennas
 
 
-# FIXME: check to see if caltable exists and if not throw error
 def get_spws_from_table(caltable) -> list[int]:
     """
     Returns a list of all unique spws in the calibration table
     """
+    if not os.path.exists(caltable):
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
     with casa_tools.TableReader(caltable) as tb:
         table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
     caltable_spws = sorted([int(spw) for spw in table_spws])
     return caltable_spws 
+
+
+def field_ids_from_caltable(caltable) -> list[int]:
+    """
+    Returns a list of all unique field ids in the calibration table
+    """
+    if not os.path.exists(caltable):
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
+    with casa_tools.TableReader(caltable) as mytb: 
+        fields = list(set(mytb.getcol('FIELD_ID')))
+    return fields
+
+
+def field_names_from_caltable(caltable) -> list[str]:
+    """
+    Returns a list of all unique field names in the calibration table
+    """
+    if not os.path.exists(caltable): 
+        raise FileNotFoundError(f"Caltable {caltable} does not exist")
+
+    fields = field_ids_from_caltable(caltable)
+
+    with casa_tools.TableReader(caltable + '/FIELD') as mytb:
+        names = mytb.getcol('NAME')
+        fields = list(names[fields])
+
+    return fields
 
 
 def fitAtmLines(ATMprof, freq):
@@ -290,9 +280,13 @@ def fitAtmLines(ATMprof, freq):
          return centers, scales
 
 
-def getInfoFromTable(vis, caltable):
-    fieldIds = getFieldIDsFromCaltable(caltable)
-    fieldNames = getFieldsFromCaltable(caltable, asnames=True)
+def getInfoFromTable(vis, caltable) -> tuple[list[int], list[str], list[int], list[str], list[int], float]:
+    """
+    Returns a tuple of field ids, field names, spw ids, antenna names, 
+    and antenna ids from the specified caltable.
+    """
+    fieldIds = field_ids_from_caltable(caltable)
+    fieldNames = field_names_from_caltable(caltable)
     spwIds = get_spws_from_table(caltable)
     antennaNames = antenna_names_from_caltable(caltable)
     antIds = get_ant_ids_from_caltable(caltable)
