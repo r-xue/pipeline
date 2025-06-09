@@ -936,6 +936,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 cmetric_all = np.concatenate((cmetric_copol, cmetric_crosspol), axis=0)
                 flag_all = np.concatenate((flag_copol, flag_crosspol), axis=0)
                 ncorrs = 2
+            # PIPE-2631: cast from MaskedArray back to regular Numpy array to
+            # avoid Numpy warnings in heuristics below (that use regular Numpy
+            # functions that ignore mask); heuristics below already select for
+            # non-flagged (i.e. unmasked) data.
+            cmetric_all = np.array(cmetric_all)
 
         # Evaluate flagging heuristics separately for each polarisation.
         for icorr in range(ncorrs):
