@@ -1307,9 +1307,10 @@ finally:
                         cleanlist_dict[product_key] = image
 
             cleanlist = []
-            for image in cleanlist_dict.values():
-                cleanlist.append(image)
-                images_list.extend(image['imagename_version'])
+            # Store remaining images in original order
+            for k in reversed(cleanlist_dict):
+                cleanlist.append(cleanlist_dict[k])
+                images_list.extend(cleanlist_dict[k]['imagename_version'])
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
