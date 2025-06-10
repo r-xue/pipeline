@@ -743,7 +743,7 @@ def plot_elevation_difference(
         plt.xlabel('UTC', fontsize=10)
         return a0, a1
 
-    def finalize_figure(figure_id: str | int, vis: str, field_name: str, antenna_name: str) -> None:
+    def finalize_figure(figure_id: str | int, vis: str, field_name: str, antenna_name: str, xmin: float, xmax: float) -> None:
         """Set axes, label, legend and title for the elevation difference figure.
 
         Args:
@@ -763,13 +763,17 @@ def plot_elevation_difference(
         plt.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
 
         plt.axhline(threshold, color='red')
-        xmin, xmax = plt.xlim()
         dx = xmax - xmin
-        x = xmax - 0.01 * dx
+        xmin_new = xmin - 0.05 * dx
+        xmax_new = xmax + 0.05 * dx
+        dx_new = xmax_new - xmin_new
+        plt.xlim([xmin_new, xmax_new])
+        x = xmax_new - 0.01 * dx_new
         y = threshold - 0.05
         plt.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
 
         plt.gcf().sca(a0)
+        plt.xlim([xmin_new, xmax_new])
         labelon = False
         labeloff = False
         for l in a0.lines:
@@ -837,6 +841,8 @@ def plot_elevation_difference(
 
         plots_per_field = []
 
+        global_xmin = None
+        global_xmax = None
         for antenna_id, eldant in eldiff_field.items():
             # figure for per-antenna plots
             a0, a1 = init_figure(figure0)
@@ -848,10 +854,16 @@ def plot_elevation_difference(
                     continue
 
                 # Elevation vs. Time
+                # mask: True for valid, False otherwise
+                mask = np.logical_not(eld.flagon)
                 xon = sd_display.mjd_to_plotval(eld.timeon)
+                xmin = xon.min()
+                global_xmin = xmin if global_xmin is None else min(global_xmin, xmin)
+                xmax = xon.max()
+                global_xmax = xmax if global_xmax is None else max(global_xmax, xmax)
                 xoff = sd_display.mjd_to_plotval(eld.timecal)
                 for a in [a0, a2]:
-                    a.plot(xon, eld.elon, '.', color='black', mew=0)
+                    a.plot(xon[mask], eld.elon[mask], '.', color='black', mew=0)
                     a.plot(xoff, eld.elcal, '.', color='blue', mew=0)
 
                 # Elevation Difference vs. Time
@@ -875,7 +887,7 @@ def plot_elevation_difference(
                             a.plot(x, y, ls, mew=0)
 
             # finalize figure for per-antenna plot
-            finalize_figure(figure0, ms.basename, field_name, antenna_name)
+            finalize_figure(figure0, ms.basename, field_name, antenna_name, xmin, xmax)
 
             # generate plot object
             plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
@@ -883,7 +895,7 @@ def plot_elevation_difference(
                 plots_per_field.append(plot)
 
         # finalize figure for summary plot
-        finalize_figure(figure1, ms.basename, field_name, 'ALL')
+        finalize_figure(figure1, ms.basename, field_name, 'ALL', global_xmin, global_xmax)
 
         # generate plot object
         plot = generate_plot(figure1, ms.basename, field_name, '')

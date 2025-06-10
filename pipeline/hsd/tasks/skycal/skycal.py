@@ -17,6 +17,7 @@ from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.domain.datatable import OnlineFlagIndex
 from ..common import SingleDishResults
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 if TYPE_CHECKING:
@@ -391,6 +392,63 @@ class SDSkyCal(sessionutils.ParallelTemplate):
     Inputs = SDSkyCalInputs
     Task = SerialSDSkyCal
 
+
+def get_elevation(
+        datatable_name: str,
+        spw_id: int | str,
+        antenna_id: int | str,
+        field_id: int | str,
+        on_source: bool
+) -> dict[str, np.ndarray]:
+    """Get elevation and associated time and flag from datatable.
+
+    Args:
+        datatable_name: Name of the datatable.
+        spw_id: Spectral window ID.
+        antenna_id: Antenna ID.
+        field_id: Field ID.
+        on_source: If True, get elevation for on-source data,
+            otherwise for off-source data.
+
+    Returns:
+        Dictionary with time and elevation.
+        - time: Array of time in seconds.
+        - el: Array of elevation in radians.
+        - online_flag: Array of online flags
+            (False for valid, True for invalid data).
+    """
+    ro_datatable_name = os.path.join(datatable_name, 'RO')
+    rw_datatable_name = os.path.join(datatable_name, 'RW')
+    with casa_tools.TableReader(ro_datatable_name) as tb:
+        taql = f'IF=={spw_id}&&ANTENNA=={antenna_id}&&FIELD_ID=={field_id}'
+        if on_source:
+            taql += '&&SRCTYPE==0'
+        else:
+            taql += '&&SRCTYPE!=0'
+        selected = tb.query(taql)
+        if selected.nrows() == 0:
+            return {}
+        npol = selected.getcell('NPOL', 0)
+        time = selected.getcol('TIME')
+        el = selected.getcol('EL')
+        rows = selected.rownumbers()
+        selected.close()
+
+    with casa_tools.TableReader(rw_datatable_name) as tb:
+        it = (
+            np.all(tb.getcellslice(
+                'FLAG_PERMANENT',
+                i,
+                blc=[0, OnlineFlagIndex],
+                trc=[npol - 1, OnlineFlagIndex],
+                incr=[1, 1]
+            ) != 1) for i in rows
+        )
+        online_flag = np.fromiter(it, dtype=bool)
+
+    return {'time': time, 'el': el, 'online_flag': online_flag}
+
+
 def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> Dict:
     """Compute elevation difference.
 
@@ -404,8 +462,10 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
             contain the result from one MS (given that SDSkyCal is per-MS task).
     """
     ElevationDifference = collections.namedtuple('ElevationDifference',
-                                                 ['timeon', 'elon', 'timecal', 'elcal',
-                                                  'time0', 'eldiff0', 'time1', 'eldiff1'])
+                                                 ['timeon', 'elon', 'flagon',
+                                                  'timecal', 'elcal',
+                                                  'time0', 'eldiff0',
+                                                  'time1', 'eldiff1'])
 
     if not isinstance(results, SDSkyCalResults):
         raise TypeError('Results type should be SDSkyCalResults')
@@ -462,27 +522,39 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                         selected.close()
 
                     # access DataTable to get elevation
-                    ro_datatable_name = os.path.join(context.observing_run.ms_datatable_name,
-                                                     os.path.basename(ms.origin_ms), 'RO')
-                    with casa_tools.TableReader(ro_datatable_name) as tb:
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE==0'
-                                            ''.format(spw_id, antenna_id, field_id_on))
-                        timeon = selected.getcol('TIME')
-                        elon = selected.getcol('EL')
-                        selected.close()
-                        selected = tb.query('IF=={}&&ANTENNA=={}&&FIELD_ID=={}&&SRCTYPE!=0'
-                                            ''.format(spw_id, antenna_id, field_id_off))
-                        timeoff = selected.getcol('TIME')
-                        eloff = selected.getcol('EL')
-                        selected.close()
-
-                    elcal = eloff[[np.argmin(np.abs(timeoff - t)) for t in timecal]]
+                    datatable_name = os.path.join(
+                        context.observing_run.ms_datatable_name,
+                        os.path.basename(ms.origin_ms)
+                    )
+                    data_on = get_elevation(
+                        datatable_name,
+                        spw_id, antenna_id, field_id_on, True
+                    )
+                    timeon = data_on['time']
+                    elon = data_on['el']
+                    flagon = data_on['online_flag']
+                    data_off = get_elevation(
+                        datatable_name,
+                        spw_id, antenna_id, field_id_off, False
+                    )
+                    timeoff = data_off['time']
+                    eloff = data_off['el']
+                    flagoff = data_off['online_flag']
+                    eloff_valid = eloff[np.logical_not(flagoff)]
+                    timeoff_valid = timeoff[np.logical_not(flagoff)]
+                    elcal = eloff_valid[
+                        [np.argmin(np.abs(timeoff_valid - t)) for t in timecal]
+                    ]
 
                     eldiff0 = []
                     eldiff1 = []
                     time0 = []
                     time1 = []
-                    for t, el in zip(timeon, elon):
+                    for t, el, flg in zip(timeon, elon, flagon):
+                        # do not process flagged data
+                        if flg:
+                            continue
+
                         dt = timecal - t
                         idx0 = np.where(dt < 0)[0]
                         if len(idx0) > 0:
@@ -500,6 +572,7 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                     time1 = np.asarray(time1)
 
                     result = ElevationDifference(timeon=timeon, elon=elon,
+                                                 flagon=flagon,
                                                  timecal=timecal, elcal=elcal,
                                                  time0=time0, eldiff0=eldiff0,
                                                  time1=time1, eldiff1=eldiff1)
