@@ -384,10 +384,11 @@ class Solint(basetask.StandardTaskTemplate):
         integration_time = m.get_integration_time_stats(stat_type="max", band=band)
         if short_solint == float("{:.6f}".format(integration_time)):
             new_gain_solint1 = 'int ({!s}s)'.format(short_solint)
+            gtype_solint = "int"
             LOG.info(
                  'The short solution interval used is: {!s}.'.format(new_gain_solint1))
 
-            testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
+            testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=gtype_solint,
                                                         context=self.inputs.context, combtime=combtime,
                                                         refAnt=refAnt, spw=','.join(spwlist))
             bpdgain_touse = tablebase + table_suffix[4]
