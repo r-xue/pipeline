@@ -63,7 +63,7 @@ class VLAImportDataListQAHandler(pqa.QAPlugin):
 
         # PIPE-836: retrieve parallactic angle from PHASE intents
         # parang_scores not currently needed but could be used in the future
-        intents_to_test = {'PHASE'}
+        intents_to_test = {'PHASE', 'POLLEAKAGE'}
         parang_scores, parang_ranges = qacalc.score_parallactic_angle_range(mses, intents_to_test, parallactic_threshold)
 
         # result.qa.pool.extend(parang_scores)

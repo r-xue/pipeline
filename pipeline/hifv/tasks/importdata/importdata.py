@@ -136,7 +136,6 @@ class VLAImportDataResults(basetask.Results):
         self.mses = mses
         self.setjy_results = setjy_results
         self.origin = {}
-        self.parang_ranges = {}
 
     def merge_with_context(self, context):
         target = context.observing_run

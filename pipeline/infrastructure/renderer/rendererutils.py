@@ -460,7 +460,7 @@ def summarise_fields(fields: str) -> str:
 def make_parang_plots(
         context: Context,
         result: Results,
-        intent_to_plot: str,
+        intent_lookup: dict[str, str],
         ) -> dict:
     """
     Create parallactic angle plots for each session.
@@ -470,44 +470,52 @@ def make_parang_plots(
                    '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
 
     parang_plots = {}
-    stage_id = 'stage{}'.format(result.stage_number)
+    stage_id = f'stage{result.stage_number}'
     ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
-    for session_name in sessions:
-        sanitised_filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
-        plot_name = os.path.join(context.report_dir, stage_id, f'{sanitised_filename_component}_parallactic_angle.png')
-        # translate uid://A123/X12... to uid___A123_X12
-        plot_title = 'MOUS {}, session {}'.format(ous_id, session_name)
-        num_ms = len(sessions[session_name]['vis'])
+
+    for session_name, session_data in sessions.items():
+        vis_list = session_data['vis']
+        intent_keys = [key for key in intent_lookup if key in session_data]
+
+        plot_title = f'MOUS {ous_id}, session {session_name}'
+        filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
+        plot_path = os.path.join(context.report_dir, stage_id, f'{filename_component}_parallactic_angle.png')
+
         clearplots = True
-        for i, msname in enumerate(sessions[session_name]['vis']):
-            symbolcolor = plot_colors[i % len(plot_colors)]
+        combination_index = 0
+        total = len(vis_list) * len(intent_keys)
+
+        for msname, short_key in itertools.product(vis_list, intent_keys):
+            intent = intent_lookup[short_key]
+            color = plot_colors[combination_index % len(plot_colors)]
+
             science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
-            # Specify center channels of science spws
-            spwspec = ','.join('{}:{}'.format(s.id, s.num_channels//2) for s in science_spws)
+            spwspec = ','.join(f'{s.id}:{s.num_channels // 2}' for s in science_spws)
+
+            plot_name = plot_path if combination_index == total - 1 else ''
+
             task_args = {
                 'vis': msname,
-                'plotfile': '',
+                'plotfile': plot_name,
                 'xaxis': 'time',
                 'yaxis': 'parang',
                 'customsymbol': True,
-                'symbolcolor': symbolcolor,
+                'symbolcolor': color,
                 'title': plot_title,
                 'spw': spwspec,
                 'plotrange': [0, 0, 0, 360],
-                'plotindex': i,
+                'plotindex': combination_index,  # optional depending on plotms behavior
                 'clearplots': clearplots,
-                'intent': intent_to_plot,
+                'intent': intent,
                 'showgui': False
-                }
-
-            if i == num_ms-1:
-                task_args['plotfile'] = plot_name
+            }
 
             task = casa_tasks.plotms(**task_args)
             basetask.Executor(context).execute(task)
 
             clearplots = False
+            combination_index += 1
 
         parang_plots[session_name] = {}
         parang_plots[session_name]['name'] = plot_name

@@ -41,7 +41,10 @@ class T2_4MDetailsVLAImportDataRenderer(basetemplates.T2_4MDetailsDefaultRendere
         parang_ranges = result.parang_ranges
         if parang_ranges['intents_found']:
             parang_plots = rendererutils.make_parang_plots(
-                pipeline_context, result, intent_to_plot="CALIBRATE_PHASE#UNSPECIFIED"
+                pipeline_context, result, intent_lookup={
+                    'PHASE': 'CALIBRATE_PHASE#UNSPECIFIED',
+                    'POLLEAKAGE': 'CALIBRATE_POL_LEAKAGE#UNSPECIFIED',
+                    }
                 )
         else:
             parang_plots = {}
