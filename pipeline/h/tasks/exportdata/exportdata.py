@@ -1179,105 +1179,137 @@ finally:
                     intents = ['PHASE', 'BANDPASS', 'CHECK', 'AMPLITUDE', 'POLARIZATION']
                 else:
                     intents = calintents.split(',')
-                cleanlist = context.calimlist.get_imlist()
+                original_cleanlist = context.calimlist.get_imlist()
             else:
                 LOG.info('Exporting target source images')
                 intents = ['TARGET']
-                cleanlist = context.sciimlist.get_imlist()
+                original_cleanlist = context.sciimlist.get_imlist()
 
-            for image_number, image in enumerate(cleanlist):
-                # We need to store the image
-                cleanlist[image_number]['fitsfiles'] = []
-                cleanlist[image_number]['auxfitsfiles'] = []
-                version = image.get('version', 1)
-                # Image name probably includes path
-                if image['sourcetype'] in intents:
-                    if image['multiterm']:
-                        for nt in range(image['multiterm']):
-                            imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        if (image['imagename'].find('.pbcor') != -1):
-                            imagename = image['imagename'].replace('.image.pbcor', '.alpha')
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                            imagename = '%s.error' % (image['imagename'].replace('.image.pbcor', '.alpha'))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            imagename = image['imagename'].replace('.image', '.alpha')
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                            imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
-                            images_list.append((imagename, version))
-                            cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                    elif (image['imagename'].find('image.sd') != -1): # single dish
-                        imagename = image['imagename']
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        imagename = image['imagename'].replace('image.sd', 'image.sd.weight')
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                    else:
-                        imagename = image['imagename']
-                        images_list.append((imagename, version))
-                        cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+            # Walk through image list in reverse order to keep only the latest products
+            # based on the key tuple (field, intent, spw, specmode, stokes, version).
+            # If the key already exists, skip any previous products. In addition, skip
+            # any target Stokes I products if the corresponding Stokes IQUV product also
+            # exists (PIPE-2465).
+            cleanlist_dict = {}
+            product_keys = {}
+            deleted_keys = []
+            for image in reversed(original_cleanlist):
+                product_key = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], image['stokes'], image['version'])
 
-                    # Add PBs for interferometry
-                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
-                        if (image['imagename'].find('.pbcor') != -1):
-                            if (image['multiterm']):
-                                imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                # Store only Stokes IQUV if both I and IQUV exist
+                if image['sourcetype'] == 'TARGET' and image['stokes'] == 'IQUV':
+                    # Make corresponding Stokes I key
+                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], 'I', image['version'])
+
+                    # Keep key to catch arbitrary sequences of I and IQUV
+                    # images of the same data selection.
+                    deleted_keys.append(product_key_stokes_i)
+
+                    # Remove any previously added Stokes I image
+                    if product_key_stokes_i in cleanlist_dict:
+                        del cleanlist_dict[product_key_stokes_i]
+
+                if product_key not in cleanlist_dict and product_key not in deleted_keys:
+                    # We need to store the image
+                    image['fitsfiles'] = []
+                    image['auxfitsfiles'] = []
+                    image['imagename_version'] = []
+                    version = image.get('version', 1)
+                    # Image name probably includes path
+                    if image['sourcetype'] in intents:
+                        if image['multiterm']:
+                            for nt in range(image['multiterm']):
+                                imagename = image['imagename'].replace('.image', '.image.tt%d' % (nt))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            if (image['imagename'].find('.pbcor') != -1):
+                                imagename = image['imagename'].replace('.image.pbcor', '.alpha')
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = '%s.error' % (image['imagename'].replace('.image.pbcor', '.alpha'))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
-                                imagename = image['imagename'].replace('.image.pbcor', '.pb')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = image['imagename'].replace('.image', '.alpha')
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                                imagename = '%s.error' % (image['imagename'].replace('.image', '.alpha'))
+                                image['imagename_version'].append((imagename, version))
+                                image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        elif (image['imagename'].find('image.sd') != -1): # single dish
+                            imagename = image['imagename']
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            imagename = image['imagename'].replace('image.sd', 'image.sd.weight')
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
-                            if (image['multiterm']):
-                                imagename = image['imagename'].replace('.image', '.pb.tt0')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                            imagename = image['imagename']
+                            image['imagename_version'].append((imagename, version))
+                            image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                        # Add PBs for interferometry
+                        if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
+                            if (image['imagename'].find('.pbcor') != -1):
+                                if (image['multiterm']):
+                                    imagename = image['imagename'].replace('.image.pbcor', '.pb.tt0')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                else:
+                                    imagename = image['imagename'].replace('.image.pbcor', '.pb')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                             else:
-                                imagename = image['imagename'].replace('.image', '.pb')
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                if (image['multiterm']):
+                                    imagename = image['imagename'].replace('.image', '.pb.tt0')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                                else:
+                                    imagename = image['imagename'].replace('.image', '.pb')
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
-                    # Add auto-boxing masks for interferometry
-                    if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
-                        if (image['imagename'].find('.pbcor') != -1):
-                            imagename = image['imagename'].replace('.image.pbcor', '.mask')
-                            imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
-                            # Special case of IQUV target imaging (PIPE-2464) can use a '.cleanmask' from a previous
-                            # Stokes I imaging stage in which case '.mask' and '.cleanmask' both exist.
-                            if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
-                               (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            imagename = image['imagename'].replace('.image', '.mask')
-                            imagename2 = image['imagename'].replace('.image', '.cleanmask')
-                            # PIPE-2464 case like above
-                            if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
-                               (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
-                                images_list.append((imagename, version))
-                                cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                        # Add auto-boxing masks for interferometry
+                        if (image['imagename'].find('.image') != -1) and (image['imagename'].find('.image.sd') == -1):
+                            if (image['imagename'].find('.pbcor') != -1):
+                                imagename = image['imagename'].replace('.image.pbcor', '.mask')
+                                imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
+                                # Special case of IQUV target imaging (PIPE-2464) can use a '.cleanmask' from a previous
+                                # Stokes I imaging stage in which case '.mask' and '.cleanmask' both exist.
+                                if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                                   (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
+                            else:
+                                imagename = image['imagename'].replace('.image', '.mask')
+                                imagename2 = image['imagename'].replace('.image', '.cleanmask')
+                                # PIPE-2464 case like above
+                                if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                                   (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
+                                    image['imagename_version'].append((imagename, version))
+                                    image['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
-                    # Add POLI/POLA images for polarization calibrators
-                    if image['sourcetype'] == 'POLARIZATION':
-                        if image['imagename'].find('.pbcor') != -1:
-                            for polcal_imtype in ('POLI', 'POLA'):
-                                imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
-                                if os.path.exists(imagename):
-                                    images_list.append((imagename, version))
-                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
-                        else:
-                            for polcal_imtype in ('POLI', 'POLA'):
-                                imagename = image['imagename'].replace('IQUV', polcal_imtype)
-                                if os.path.exists(imagename):
-                                    images_list.append((imagename, version))
-                                    cleanlist[image_number]['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                        # Add POLI/POLA images for polarization calibrators
+                        if image['sourcetype'] == 'POLARIZATION':
+                            if image['imagename'].find('.pbcor') != -1:
+                                for polcal_imtype in ('POLI', 'POLA'):
+                                    imagename = image['imagename'].replace('.pbcor', '').replace('IQUV', polcal_imtype)
+                                    if os.path.exists(imagename):
+                                        image['imagename_version'].append((imagename, version))
+                                        image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+                            else:
+                                for polcal_imtype in ('POLI', 'POLA'):
+                                    imagename = image['imagename'].replace('IQUV', polcal_imtype)
+                                    if os.path.exists(imagename):
+                                        image['imagename_version'].append((imagename, version))
+                                        image['fitsfiles'].append(fitsname(products_dir, imagename, version))
+
+                        cleanlist_dict[product_key] = image
+
+            cleanlist = []
+            for image in cleanlist_dict.values():
+                cleanlist.append(image)
+                images_list.extend(image['imagename_version'])
         else:
             # Assume only the root image name was given.
             cleanlib = imagelibrary.ImageLibrary()
