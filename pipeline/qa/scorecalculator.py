@@ -4551,11 +4551,11 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_longsolint(context, long_solint:dict) -> List[pqa.QAScore]:
+def score_longsolint(context, result) -> List[pqa.QAScore]:
     bandlist = []
     calscantime = []
-
-    ms = context.observing_run.get_measurement_sets()[0]
+    long_solint = result.longsolint
+    ms = context.observing_run.get_ms(result.inputs['vis'])
 
     for scanid in context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(","):
         calscantime = [calscan.time_on_source for calscan in ms.get_scans(int(scanid))]

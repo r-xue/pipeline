@@ -1,13 +1,13 @@
 import collections
 
-import pipeline.infrastructure.logging as logging
+from pipeline import infrastructure
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.scorecalculator as qacalc
 
 from . import syspower
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class SyspowerQAHandler(pqa.QAPlugin):
