@@ -309,6 +309,9 @@ class PipelineRegression:
             else:
                 os.chdir('working')
 
+            # Do sanity checks
+            self.__do_sanity_checks()
+
             # Get new results
             new_results = self.__get_results_of_from_current_context()
 
@@ -408,6 +411,36 @@ class PipelineRegression:
         context = launcher.Pipeline(context='last').context
         new_results = sorted(regression.extract_regression_results(context))
         return new_results
+
+    def __do_sanity_checks(self):
+        """
+        Do the following sanity-checks on the pipeline run
+
+        1. rawdata, working, products directories are present
+        2. *.pipeline_manifest.xml is present under the products directory
+        3. Non-existence of errorexit-*.txt in working directory
+        """
+        context = launcher.Pipeline(context='last').context
+
+        # 1. rawdata, working, products directories are present
+        # The rawdata directory is only present for PPR runs
+        missing_directories = regression.missing_directories(context, include_rawdata=self.ppr)
+        if len(missing_directories) > 0:
+            msg = f"The following directories are missing from the pipeline run: {', '.join(missing_directories)}"
+            LOG.warning(msg)
+            pytest.fail(msg)
+
+        # 2. *pipeline_manifest.xml is present under the products directory
+        if not regression.manifest_present(context):
+            msg = "pipeline_manifest.xml is not present under the products directory"
+            LOG.warning(msg)
+            pytest.fail(msg)
+
+        # 3. Non-existence of errorexit-*.txt in working directory
+        if regression.errorexit_present(context):
+            msg = "errorexit-*.txt is present in working directory"
+            LOG.warning(msg)
+            pytest.fail(msg)
 
     def __run_ppr(self, input_vis: list[str], ppr: str, telescope: str) -> None:
         """
@@ -772,16 +805,20 @@ def test_13A_537__calibration__PPR__regression():
 @pytest.mark.fast
 def test_13A_537__restore__PPR__regression():
     """Run VLA calibration restoredata regression with a PPR file
+    NOTE: results file frozen to CASA/Pipeline version below since products were created
+    with that Pipeline version
 
     PPR name:                   PPR_13A-537_restore.xml
     Dataset:                    13A-537/13A-537.sb24066356.eb24324502.56514.05971091435
+    Expected results version:   casa-6.2.1.7-pipeline-2021.2.0.128
     """
     input_dir = 'pl-regressiontest/13A-537'
     pr = PipelineRegression(
         visname=['13A-537.sb24066356.eb24324502.56514.05971091435'],
         ppr=f'{input_dir}/PPR_13A-537_restore.xml',
         input_dir=input_dir,
-        expectedoutput_dir=f'{input_dir}/restore/',
+        expectedoutput_file=f'{input_dir}/restore/' +
+                             '13A-537.casa-6.2.1.7-pipeline-2021.2.0.128.restore.results.txt',
         output_dir='13A_537__restore__PPR__regression'
         )
 

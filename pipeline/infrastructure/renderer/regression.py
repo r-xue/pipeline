@@ -25,10 +25,10 @@ QAPlugin.
 """
 import abc
 import collections
+import glob
 import os.path
 import re
 from collections import OrderedDict
-from typing import List, Union
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
@@ -78,7 +78,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
     # all results of this type regardless of which task generated it
     generating_task = None
 
-    def is_handler_for(self, result:Union[Results, ResultsList]) -> bool:
+    def is_handler_for(self, result: Results | ResultsList) -> bool:
         """
         Return True if this RegressionExtractor can process the Result.
 
@@ -155,7 +155,7 @@ class RegressionExtractorRegistry(object):
         self.__handlers.append(handler)
 
 
-    def handle(self, result:Union[Results, ResultsList]) -> OrderedDict:
+    def handle(self, result: Results | ResultsList) -> OrderedDict:
         """
         Extract values from corresponding Extractor object of Result object.
 
@@ -1041,7 +1041,7 @@ def extract_qa_score_regression(prefix: str, result: Results) -> dict:
     return d
 
 
-def extract_regression_results(context: Context) -> List[str]:
+def extract_regression_results(context: Context) -> list[str]:
     """
     Extract regression result and return logs.
 
@@ -1060,7 +1060,62 @@ def extract_regression_results(context: Context) -> List[str]:
     return ['{}={}'.format(k, v)for k, v in unified.items()]
 
 
-def get_all_subclasses(cls: RegressionExtractor) -> List[RegressionExtractor]:
+def missing_directories(context: Context, include_rawdata: bool = False) -> list[str]:
+    """
+    Check whether working/ and and products/ are present, and rawdata/ if
+    applicable (see include_rawdata argument.)
+
+    Args:
+        context: Context object
+        include_rawdata: whether to include the rawdata directory in the check
+    Returns:
+        True if all directories are present, False otherwise
+    """
+    missing = []
+
+    if include_rawdata:
+        directories = ['rawdata', 'working', 'products']
+    else:
+        directories = ['working', 'products']
+
+    for directory in directories:
+        if not os.path.exists(os.path.join(context.output_dir, '..', directory)):
+            missing.append(directory)
+
+    return missing
+
+
+def manifest_present(context: Context) -> bool:
+    """
+    Check if pipeline_manifest.xml is present under products/
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if *pipeline_manifest.xml is present, False otherwise
+    """
+    manifest_path = os.path.join(context.products_dir, '*pipeline_manifest.xml')
+    manifest_files = glob.glob(manifest_path)
+    return len(manifest_files) > 0
+
+
+def errorexit_present(context: Context) -> bool:
+    """
+    Check if any errorexit-*.txt files are present in the working directory
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if any errorexit-*.txt is present, False otherwise
+    """
+    errorexit_path = os.path.join(context.products_dir, 'errorexit-*.xml')
+    errorexit_files = glob.glob(errorexit_path)
+    return len(errorexit_files) > 0
+
+
+def get_all_subclasses(cls: RegressionExtractor) -> list[RegressionExtractor]:
     """
     Get all subclasses from RegressionExtractor classes tree recursively.
 
