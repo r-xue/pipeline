@@ -17,27 +17,14 @@ import pipeline.infrastructure.utils as utils
 
 LOG = infrastructure.get_logger(__name__)
 ORIGIN_DB = 'DB'
-
-
-def get_valid_url(env_var, default):
-    """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
-    url = os.getenv(env_var)
-    if not url:
-        url = default
-        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
-        return default
-    if not utils.validate_url(url):
-        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
-        LOG.info('Switching to default %s.', default)
-        return default
-    LOG.info('Environment variable %s set to URL %s for ALMA flux service.', env_var, url)
-    return url
+FLUX_SERVICE_URL = 'https://almascience.org/sc/flux'
+FLUX_SERVICE_URL_BACKUP = 'https://asa.alma.cl/sc/flux'
 
 
 def get_flux_urls():
     """Returns the primary and backup flux service URLs."""
-    flux_url = get_valid_url('FLUX_SERVICE_URL', 'https://almascience.org/sc/flux')
-    backup_flux_url = get_valid_url('FLUX_SERVICE_URL_BACKUP', 'https://asa.alma.cl/sc/flux')
+    flux_url = utils.get_valid_url('FLUX_SERVICE_URL', FLUX_SERVICE_URL)
+    backup_flux_url = utils.get_valid_url('FLUX_SERVICE_URL_BACKUP', FLUX_SERVICE_URL_BACKUP)
     return flux_url, backup_flux_url
 
 

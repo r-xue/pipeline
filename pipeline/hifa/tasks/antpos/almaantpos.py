@@ -11,7 +11,7 @@ import numpy as np
 
 from pipeline import infrastructure
 from pipeline.hif.tasks.antpos import antpos
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry, vdp
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry, utils, vdp
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
@@ -22,6 +22,7 @@ __all__ = [
 ]
 
 LOG = infrastructure.logging.get_logger(__name__)
+ORIGIN_ANTPOS = 'https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/'
 
 
 def run_with_retry(
@@ -54,7 +55,7 @@ def run_with_retry(
             return func(*args, **kwargs)
         except Exception as e:
             LOG.warning(f"[Attempt {attempt}] Failed with error: {e}")
-            if attempt == max_retries:
+            if attempt == max_retries - 1:
                 LOG.error("Max retries reached. Raising exception.")
                 raise e
             delay = base_delay * (2 ** attempt) + random.uniform(0, jitter)
@@ -220,12 +221,13 @@ class ALMAAntposInputs(antpos.AntposInputs):
             search: Search algorithm to use. Supports 'both_latest' and 'both_closest'.
             hosts: Priority-ranked list of hosts to query.
         """
+        hosts = utils.get_valid_url('ORIGIN_ANTPOS', ORIGIN_ANTPOS)
         return {'outfile': self.antposfile,
                 'overwrite': True,
                 'asdm': self.context.observing_run.get_ms(self.vis).execblock_id,
                 'snr': self.snr,
                 'search': self.search,
-                'hosts': ['https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/']}
+                'hosts': [hosts]}
 
     def __str__(self):
         return (

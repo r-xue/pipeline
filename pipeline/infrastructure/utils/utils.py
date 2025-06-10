@@ -44,7 +44,8 @@ __all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_ca
            'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
            'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
            'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'list_to_str', 'validate_url']
+           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'list_to_str',
+           'validate_url', 'get_valid_url']
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -1173,3 +1174,18 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def get_valid_url(env_var: str, default: str) -> str:
+    """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
+    url = os.getenv(env_var)
+    if not url:
+        url = default
+        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
+        return default
+    if not validate_url(url):
+        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+        LOG.info('Switching to default %s.', default)
+        return default
+    LOG.info('Environment variable %s set to URL %s.', env_var, url)
+    return url
