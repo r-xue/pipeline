@@ -190,7 +190,7 @@ class ExportDataInputs(vdp.StandardInputs):
                 Default: None (equivalent to False)
 
             tarms: Tar final MeasurementSets
-            
+
             pprfile: Name of the pipeline processing request to be exported.
                 Defaults to a file matching the template 'PPR_*.xml'.
 
@@ -446,15 +446,15 @@ class ExportData(basetask.StandardTaskTemplate):
     ) -> Tuple[List[str], List[str], List[List[str]], List[str]]:
         """Create the vis and sessions lists.
 
-        This method processes input parameters to generate lists of sessions, session names, 
+        This method processes input parameters to generate lists of sessions, session names,
         visibility files, and measurement sets based on the provided context and flags.
 
         Args:
             context (Context): The Pipeline context object.
             session (List[str]): Session names
-            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names, 
+            vis (Optional[Union[List[str], str]]): A single visibility file name, a list of such names,
                 or None. If None, the method uses all measurement sets registered in the context.
-            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement 
+            imaging_only_mses (Optional[bool] = False): A flag to determine how to filter measurement
                 sets based on imaging data:
                 True: Includes only measurement sets with imaging data.
                 False: Includes only those without imaging data.
@@ -846,7 +846,7 @@ class ExportData(basetask.StandardTaskTemplate):
     def _export_final_ms(self, context: object, vis: str, products_dir: str) -> Optional[str]:
         """Export a CASA measurement set (MS) to the products directory.
 
-        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory. 
+        If `self.inputs.tarms` is True, the MS will be saved as a compressed tarball (`.tgz`) in the products directory.
         Otherwise, the MS will be copied directly to the products directory as a directory structure.
 
         Args:
@@ -883,7 +883,7 @@ class ExportData(basetask.StandardTaskTemplate):
                 return visname
             except Exception as e:
                 LOG.error('Failed to copy MS %s: %s', target_path, str(e))
-                return None        
+                return None
 
     def _save_final_flagversion(self, vis, flag_version_name):
         """
@@ -1249,13 +1249,18 @@ finally:
                         if (image['imagename'].find('.pbcor') != -1):
                             imagename = image['imagename'].replace('.image.pbcor', '.mask')
                             imagename2 = image['imagename'].replace('.image.pbcor', '.cleanmask')
-                            if os.path.exists(imagename) and not os.path.exists(imagename2):
+                            # Special case of IQUV target imaging (PIPE-2464) can use a '.cleanmask' from a previous
+                            # Stokes I imaging stage in which case '.mask' and '.cleanmask' both exist.
+                            if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                               (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
                         else:
                             imagename = image['imagename'].replace('.image', '.mask')
                             imagename2 = image['imagename'].replace('.image', '.cleanmask')
-                            if os.path.exists(imagename) and not os.path.exists(imagename2):
+                            # PIPE-2464 case like above
+                            if (os.path.exists(imagename) and not os.path.exists(imagename2)) or \
+                               (os.path.exists(imagename) and os.path.exists(imagename2) and 'IQUV' in imagename and 'IQUV' in imagename2):
                                 images_list.append((imagename, version))
                                 cleanlist[image_number]['auxfitsfiles'].append(fitsname(products_dir, imagename, version))
 
