@@ -1,4 +1,6 @@
 """The skycal task module to calibrate sky background."""
+from __future__ import annotations
+
 import collections
 import copy
 import os
@@ -63,7 +65,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
     # docstring and type hints: supplements hsd_skycal
     def __init__(
             self,
-            context: 'Context',
+            context: Context,
             calmode: Optional[str] = None,
             fraction: Optional[float] = None,
             noff: Optional[int] = None,
@@ -223,7 +225,7 @@ class SDSkyCalResults(SingleDishResults):
         super(SDSkyCalResults, self).__init__(task, success, outcome)
         self.final = self.outcome
 
-    def merge_with_context(self, context: 'Context') -> None:
+    def merge_with_context(self, context: Context) -> None:
         """Merge result instance into context.
 
         The CalApplication instance updated by the skycal task is added to
@@ -389,7 +391,7 @@ class SDSkyCal(sessionutils.ParallelTemplate):
     Inputs = SDSkyCalInputs
     Task = SerialSDSkyCal
 
-def compute_elevation_difference(context: 'Context', results: SDSkyCalResults) -> Dict:
+def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> Dict:
     """Compute elevation difference.
 
     Args:
