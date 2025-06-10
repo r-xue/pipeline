@@ -189,6 +189,11 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     for result in results:
         ms = context.observing_run.get_ms(result.vis)
         if result.spwmaps:
+            # In case of Band-to-Band datasets, retrieve which SpWs IDs are
+            # expected. Will be empty and not used for non-B2B datasets.
+            dg_refspwids = [str(s.id) for s in ms.get_spectral_windows(intent='DIFFGAINREF')]
+            dg_srcspwids = [str(s.id) for s in ms.get_spectral_windows(intent='DIFFGAINSRC')]
+
             # Generate entries for each SpW mapping in the result.
             for (intent, field), spwmapping in result.spwmaps.items():
                 # Present in the table which phase SNR threshold was used.
@@ -221,8 +226,23 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                 # the SNR was missing or below the phase SNR threshold.
                 for row in spwmapping.snr_info:
                     spwid = row[0]
+                    # PIPE-2499: for Band-to-Band datasets, it is expected that
+                    # the PHASE and DIFFGAINREF intents only cover the diffgain
+                    # reference (low-frequency) SpWs and that CHECK and
+                    # DIFFGAINSRC intents only cover the diffgain source
+                    # (high-frequency) SpWs.
                     if row[1] is None:
-                        snr = '<strong class="alert-danger">N/A</strong>'
+                        # If info is expected to be missing for a B2B SpW for
+                        # given intent, then skip rather than rendering "N/A".
+                        if ms.is_band_to_band and (
+                            (intent in {'CHECK', 'DIFFGAINSRC'} and spwid in dg_refspwids) or
+                            (intent in {'PHASE', 'DIFFGAINREF'} and spwid in dg_srcspwids)
+                        ):
+                            continue
+                        # Otherwise, for all SpWs where info was not expected to
+                        # be missing, report estimated SNR as "N/A".
+                        else:
+                            snr = '<strong class="alert-danger">N/A</strong>'
                     elif row[1] < threshold:
                         snr = f'<strong class="alert-danger">{row[1]:.1f}</strong>'
                     else:
