@@ -5,7 +5,7 @@ import collections
 import copy
 import os
 
-import numpy
+import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -476,9 +476,7 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                         eloff = selected.getcol('EL')
                         selected.close()
 
-                    elcal = eloff[[numpy.argmin(numpy.abs(timeoff - t)) for t in timecal]]
-
-                    del timeoff, eloff
+                    elcal = eloff[[np.argmin(np.abs(timeoff - t)) for t in timecal]]
 
                     eldiff0 = []
                     eldiff1 = []
@@ -486,20 +484,20 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                     time1 = []
                     for t, el in zip(timeon, elon):
                         dt = timecal - t
-                        idx0 = numpy.where(dt < 0)[0]
+                        idx0 = np.where(dt < 0)[0]
                         if len(idx0) > 0:
-                            i = numpy.argmax(timecal[idx0])
+                            i = np.argmax(timecal[idx0])
                             time0.append(t)
                             eldiff0.append(el - elcal[idx0[i]])
-                        idx1 = numpy.where(dt >= 0)[0]
+                        idx1 = np.where(dt >= 0)[0]
                         if len(idx1) > 0:
-                            i = numpy.argmin(timecal[idx1])
+                            i = np.argmin(timecal[idx1])
                             time1.append(t)
                             eldiff1.append(el - elcal[idx1[i]])
-                    eldiff0 = numpy.asarray(eldiff0)
-                    eldiff1 = numpy.asarray(eldiff1)
-                    time0 = numpy.asarray(time0)
-                    time1 = numpy.asarray(time1)
+                    eldiff0 = np.asarray(eldiff0)
+                    eldiff1 = np.asarray(eldiff1)
+                    time0 = np.asarray(time0)
+                    time1 = np.asarray(time1)
 
                     result = ElevationDifference(timeon=timeon, elon=elon,
                                                  timecal=timecal, elcal=elcal,
