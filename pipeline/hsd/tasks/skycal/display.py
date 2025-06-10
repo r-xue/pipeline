@@ -3,7 +3,7 @@ import collections
 import glob
 import os
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 import traceback
 
 import pipeline.infrastructure.logging as logging
@@ -339,14 +339,14 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         """
         with casa_tools.TableReader(caltable) as tb:
             unique_timestamps_per_antenna = []
-            antennas = numpy.unique(tb.getcol('ANTENNA1'))
+            antennas = np.unique(tb.getcol('ANTENNA1'))
             valid_rows = tb.query('not all(FLAG)')
             intervalcol = valid_rows.getcol('INTERVAL')
             timecol = valid_rows.getcol('TIME')
             antenna1col = valid_rows.getcol('ANTENNA1')
             for a in antennas:
                 unique_timestamps_per_antenna.append(
-                    numpy.unique(timecol[antenna1col == a])
+                    np.unique(timecol[antenna1col == a])
                 )
             valid_rows.close()
 
@@ -354,10 +354,10 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             # return None if no valid caltable rows exist
             return None
 
-        max_interval = int(numpy.ceil(intervalcol.max()))
+        max_interval = int(np.ceil(intervalcol.max()))
 
         # check if number of unique timestamps is less than 2
-        if numpy.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
+        if np.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
             # if True, skip evaluating min_time_diff since
             # time difference cannot be calculated
             min_time_diff = None
@@ -365,10 +365,10 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             # if False, evaluate min_time_diff as a minimum
             # time difference between adjacent timestamps
             min_time_diff_per_antenna = map(
-                lambda x: numpy.diff(x).min(),
+                lambda x: np.diff(x).min(),
                 unique_timestamps_per_antenna
             )
-            min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
+            min_time_diff = int(np.floor(min(min_time_diff_per_antenna)))
 
         LOG.info(f'max_interval is {max_interval}, min_time_diff is {min_time_diff}')
 
@@ -690,6 +690,7 @@ def plot_elevation_difference(
         eldiff: -- dictionary whose value is ElevationDifference named tuple instance that holds
                       'timeon': timestamp for ON-SOURCE pointings
                       'elon': ON-SOURCE elevation
+                      'flagon': flag for ON-SOURCE pointings (True if flagged, False otherwise)
                       'timecal': timestamp for OFF-SOURCE pointings
                       'elcal': OFF-SOURCE elevation
                       'time0': timestamp for preceding OFF-SOURCE pointings
@@ -711,9 +712,9 @@ def plot_elevation_difference(
 
     figure0 = 'PERANTENNA_PLOT'
     figure1 = 'ALLANTENNA_PLOT'
-    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.values() for y in z.values()
+    start_time = np.min([np.min(x.timeon) for z in eldiff.values() for y in z.values()
                             for x in y.values() if len(x.timeon) > 0])
-    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.values() for y in z.values()
+    end_time = np.max([np.max(x.timeon) for z in eldiff.values() for y in z.values()
                           for x in y.values() if len(x.timeon) > 0])
 
     def init_figure(figure_id: str) -> Tuple['Axes', 'Axes']:
@@ -856,10 +857,10 @@ def plot_elevation_difference(
                 eldiff0 = eld.eldiff0
                 time1 = eld.time1
                 eldiff1 = eld.eldiff1
-                io0 = numpy.where(numpy.abs(eldiff0) < threshold)[0]
-                ix0 = numpy.where(numpy.abs(eldiff0) >= threshold)[0]
-                io1 = numpy.where(numpy.abs(eldiff1) < threshold)[0]
-                ix1 = numpy.where(numpy.abs(eldiff1) >= threshold)[0]
+                io0 = np.where(np.abs(eldiff0) < threshold)[0]
+                ix0 = np.where(np.abs(eldiff0) >= threshold)[0]
+                io1 = np.where(np.abs(eldiff1) < threshold)[0]
+                ix1 = np.where(np.abs(eldiff1) >= threshold)[0]
                 index_list = [io0, io1, ix0, ix1]
                 time_list = [time0, time1, time0, time1]
                 eldiff_list = [eldiff0, eldiff1, eldiff0, eldiff1]
@@ -867,7 +868,7 @@ def plot_elevation_difference(
                 for idx, t, ed, ls in zip(index_list, time_list, eldiff_list, style_list):
                     if len(idx) > 0:
                         x = sd_display.mjd_to_plotval(t[idx])
-                        y = numpy.abs(ed[idx])
+                        y = np.abs(ed[idx])
                         for a in [a1, a3]:
                             a.plot(x, y, ls, mew=0)
 
