@@ -351,7 +351,7 @@ class testBPdcals(basetask.StandardTaskTemplate):
         # PIPE-1703: In multi-band data, the maximum integration time returned was determined
         # by considering the integration time of all scans. The get_vla_max_integration_time
         # method has been updated to return the maximum integration time for the input band.
-        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band, science_windows_only=True)
         soltimes = [integration_time * x for x in soltimes]
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
         soltime = soltimes[0]
