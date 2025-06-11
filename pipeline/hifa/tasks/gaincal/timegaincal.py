@@ -588,9 +588,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
             # phasecal parameters.
             else:
                 combine, gaintype, interp, solint, spwmap = self._get_phasecal_params(fld_intents_str, field.name)
-                self._do_calibrator_phasecal(field=field.name, intent=fld_intents_str, spw=inputs.spw,
-                                             gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
-                                             spwmap=spwmap, interp=interp)
+                phasecal_results.append(
+                    self._do_calibrator_phasecal(field=field.name, intent=fld_intents_str, spw=inputs.spw,
+                                                 gaintype=gaintype, combine=combine, solint=solint, minsnr=minsnr,
+                                                 spwmap=spwmap, interp=interp))
 
         return phasecal_results
 
