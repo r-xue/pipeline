@@ -819,7 +819,7 @@ def makePlot(nu = None, tmavedata = None, skychansel = None, scisrcsel = None, b
         ymin = mindata - lowbuf*datarange
         ymax = maxdata + highbuf*datarange
     except:
-        LOG.warning('Could not determine normalization of data! is all of it flagged??')
+        LOG.warning('Could not determine normalization of data! Are all of them flagged??')
         datarange = 2.0
         ymin = -1.0
         ymax = 1.0
@@ -1045,13 +1045,13 @@ def get_metric(
     skychansel[maskedchans] = False
 
     # Try to calculate the normalizing value for the metrics
-    # If is cannot calculate it, fill default value of 1
+    # If it cannot calculate it, fill default value of 1
     # similar thing for plot ranges
     try:
         # metricnorm = np.ma.max(np.ma.abs(normsample))
         metricnorm = np.ma.max(data_absmax[:, skychansel])
     except Exception:
-        LOG.warning('Could not determine normalization of data! is all of it flagged??')
+        LOG.warning('Could not determine normalization of data! Are all of them flagged??')
         metricnorm = 1.0
 
     if metricnorm is np.ma.masked:
