@@ -19,7 +19,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.datatable import OnlineFlagIndex
 from ..common import SingleDishResults
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
 
@@ -49,7 +49,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
         return self.vis
 
     @infiles.convert
-    def infiles(self, value: Union[str, List[str]]) -> Union[str, List[str]]:
+    def infiles(self, value: str | list[str]) -> str | list[str]:
         """Convert value into expected type.
 
         Currently, no conversion is performed.
@@ -67,18 +67,18 @@ class SDSkyCalInputs(vdp.StandardInputs):
     def __init__(
             self,
             context: Context,
-            calmode: Optional[str] = None,
-            fraction: Optional[float] = None,
-            noff: Optional[int] = None,
-            width: Optional[float] = None,
-            elongated: Optional[bool] = None,
-            output_dir: Optional[str] = None,
-            infiles: Optional[str] = None,
-            outfile: Optional[str] = None,
-            field: Optional[str] = None,
-            spw: Optional[str] = None,
-            scan: Optional[str] = None,
-            parallel: Optional[Union[bool, str]] = None
+            calmode: str | None = None,
+            fraction: float | None = None,
+            noff: int | None = None,
+            width: float | None = None,
+            elongated: bool | None = None,
+            output_dir: str | None = None,
+            infiles: str | None = None,
+            outfile: str | None = None,
+            field: str | None = None,
+            spw: str | None = None,
+            scan: str | None = None,
+            parallel: bool | str | None = None
             ):
         """Initialize SDK2JyCalInputs instance.
 
@@ -185,7 +185,7 @@ class SDSkyCalInputs(vdp.StandardInputs):
 
         self.parallel = parallel
 
-    def to_casa_args(self) -> Dict:
+    def to_casa_args(self) -> dict:
         """Convert Inputs instance to the list of keyword arguments for sdcal.
 
         Returns:
@@ -211,9 +211,9 @@ class SDSkyCalResults(SingleDishResults):
 
     def __init__(
             self,
-            task: Optional[str] = None,
-            success: Optional[bool] = None,
-            outcome: Optional[str] = None
+            task: str | None = None,
+            success: bool | None = None,
+            outcome: str | None = None
             ) -> None:
         """Initialize SDSkyCalResults instance.
 
@@ -449,7 +449,7 @@ def get_elevation(
     return {'time': time, 'el': el, 'online_flag': online_flag}
 
 
-def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> Dict:
+def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> dict:
     """Compute elevation difference.
 
     Args:
