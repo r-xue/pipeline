@@ -427,7 +427,12 @@ def get_elevation(
             taql += '&&SRCTYPE!=0'
         selected = tb.query(taql)
         if selected.nrows() == 0:
-            return {}
+            selected.close()
+            return {
+                'time': np.array([], dtype=float),
+                'el': np.array([], dtype=float),
+                'online_flag': np.array([], dtype=bool)
+            }
         npol = selected.getcell('NPOL', 0)
         time = selected.getcol('TIME')
         el = selected.getcol('EL')
