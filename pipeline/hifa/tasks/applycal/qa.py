@@ -898,7 +898,12 @@ def map_data_selection_to_scores(scores: Iterable[pqa.QAScore]) -> DataSelection
 
     :param scores: scores to decompose
     """
-    return {to_data_selection(score.applies_to): [score] for score in scores}
+    # scores for different metrics may have the same data selection, so it's
+    # important to append to a list rather than instantiate as [score]
+    result = collections.defaultdict(list)
+    for score in scores:
+        result[to_data_selection(score.applies_to)].append(score)
+    return dict(result)
 
 
 def compress_data_selections(to_merge: DataSelectionToScores,
