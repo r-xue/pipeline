@@ -854,6 +854,7 @@ def plot_elevation_difference(
                     continue
 
                 # Elevation vs. Time
+                # PIPE-1752 plot valid data points only
                 # mask: True for valid, False otherwise
                 mask = np.logical_not(eld.flagon)
                 xon = sd_display.mjd_to_plotval(eld.timeon)
