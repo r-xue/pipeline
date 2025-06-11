@@ -387,6 +387,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
                                                 spwlist=v_spwids,  # virtual
                                                 specmode=specmode,
                                                 stokes=stokes,
+                                                datatype='N/A',
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             image_item.antenna = ant_name  # name #(group name)

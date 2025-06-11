@@ -1194,12 +1194,12 @@ finally:
             product_keys = {}
             deleted_keys = []
             for image in reversed(original_cleanlist):
-                product_key = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], image['stokes'], image['version'])
+                product_key = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], image['stokes'], image['datatype'], image['version'])
 
                 # Store only Stokes IQUV if both I and IQUV exist
                 if image['sourcetype'] == 'TARGET' and image['stokes'] == 'IQUV':
                     # Make corresponding Stokes I key
-                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], 'I', image['version'])
+                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], 'I', image['datatype'], image['version'])
 
                     # Keep key to catch arbitrary sequences of I and IQUV
                     # images of the same data selection.

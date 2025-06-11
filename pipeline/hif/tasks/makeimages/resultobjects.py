@@ -44,6 +44,7 @@ class MakeImagesResult(basetask.Results):
                     spwlist=result.spw, specmode=result.specmode,
                     sourcetype=result.intent,
                     stokes=result.stokes,
+                    datatype=result.datatype,
                     multiterm=result.multiterm,
                     metadata=result.imaging_metadata,
                     imaging_params=img_params,  # imaging parameters for each iteration

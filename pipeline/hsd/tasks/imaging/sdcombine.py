@@ -181,6 +181,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                                 spwlist=[],  # will be filled in later
                                                 specmode=specmode,
                                                 stokes='N/A',
+                                                datatype='N/A',
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             outcome = {'image': image_item}

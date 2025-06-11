@@ -39,6 +39,7 @@ class MakermsimagesResults(basetask.Results):
                     spwlist=rmsitem['spwlist'], specmode=rmsitem['specmode'],
                     sourcetype=rmsitem['sourcetype'],
                     stokes=rmsitem['stokes'],
+                    datatype=rmsitem['datatype'],
                     multiterm=rmsitem['multiterm'],
                     metadata=rmsitem['metadata'],
                     imageplot=rmsitem['imageplot'])
