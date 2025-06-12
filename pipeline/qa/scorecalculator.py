@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
     from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
+    from pipeline.hsd.tasks.flagging.flagdeteralmasd import PointingOutlierStats
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
     from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
     from pipeline.infrastructure.launcher import Context
@@ -4410,3 +4411,69 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_pointing_outlier(
+    ms: MeasurementSet,
+    pointing: bool,
+    pointing_outlier_stats: dict[tuple[int, int], PointingOutlierStats]
+) -> list[pqa.QAScore]:
+    """Generate QA score for pointing outliers.
+
+    If pointing outliers are detected, the score is set to 0.83.
+    In that case, this function creates QAScore objects for each
+    combination of field and antenna that have pointing outliers.
+    The score is 1.0 if no pointing outliers are detected.
+
+    Args:
+        ms: MS domain object.
+        pointing: Whether pointing flag is applied or not.
+        pointing_outlier_stats: Dictionary of pointing outlier
+            statistics indexed by (field_id, antenna_id).
+
+    Returns:
+        List of QAScore objects.
+    """
+    # If no pointing outliers are detected, return QAScore with score of 1.0
+    if len(pointing_outlier_stats) == 0:
+        score = 1.0
+        longmsg = f'No pointing outliers detected in "{ms.basename}".'
+        shortmsg = "No pointing outliers detected"
+
+        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
+                              metric_score=score,
+                              metric_units='number of pointing outliers')
+        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        return [score]
+
+    # score is 0.83 when pointing outlier is detected (PIPEREQ-358/PIPE-2533)
+    qa_scores = []
+    for (field_id, antenna_id), stats in pointing_outlier_stats.items():
+        num_outliers = len(stats.outliers)
+        field = ms.get_fields(field_id=field_id)[0]
+        antenna = ms.get_antenna(str(antenna_id))[0]
+        assert num_outliers > 0
+        score = 0.83
+        max_separation = np.max(stats.separations)
+        assert len(stats.timerange) > 0
+        time_range_str = ', '.join(stats.timerange)
+        longmsg = (
+            f'Pointing outliers detected in "{ms.basename}" , Field "{field.name}", Antenna "{antenna.name}". '
+            f"Flagged time range is {time_range_str}. "
+            f"Max separation from nominal field center is {max_separation:.2f} deg."
+        )
+        shortmsg = "Pointing outliers detected"
+        if not pointing:
+            longmsg += " However, poinging flag was not applied."
+            shortmsg += " (but not flagged)"
+
+        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
+                              metric_score=score,
+                              metric_units='number of pointing outliers')
+
+        qa_scores.append(
+            pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        )
+
+    return qa_scores
