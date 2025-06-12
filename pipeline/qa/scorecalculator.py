@@ -3456,24 +3456,23 @@ def detect_edge_channels(mask: np.ndarray) -> np.ndarray:
     """
     num_valid_pixels = np.sum(mask, axis=(0, 1, 2))
     nchan = len(num_valid_pixels)
+    # PIPE-1727 threshold for edge channels should be strict,
+    # no tolerance using stddev nor MAD
     median_num_valid_pixels = np.median(num_valid_pixels)
-    mad_num_valid_pixels = stats.median_abs_deviation(num_valid_pixels)
     LOG.debug(
-        "typical number of valid pxiels %s, MAD %s",
-        median_num_valid_pixels,
-        mad_num_valid_pixels
+        "typical number of valid pxiels %s",
+        median_num_valid_pixels
     )
-    threshold = median_num_valid_pixels - 10 * mad_num_valid_pixels
-    is_fewer_valid_pixels = num_valid_pixels < threshold
+    threshold = median_num_valid_pixels
     edge_channels = []
     # count channels with fewer valid pixels from both ends
     for i in range(nchan):
-        if is_fewer_valid_pixels[i]:
+        if num_valid_pixels[i] < threshold:
             edge_channels.append(i)
         else:
             break
     for i in range(nchan - 1, -1, -1):
-        if is_fewer_valid_pixels[i]:
+        if num_valid_pixels[i] < threshold:
             edge_channels.append(i)
         else:
             break
