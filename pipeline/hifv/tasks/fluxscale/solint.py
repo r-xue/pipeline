@@ -358,7 +358,7 @@ class Solint(basetask.StandardTaskTemplate):
         short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
         new_gain_solint1 = str(short_solint) + 's'
-
+        gtype_solint = str(short_solint) + 's'
         if self.inputs.limit_short_solint:
             LOG.warning("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
             limit_short_solint = self.inputs.limit_short_solint
