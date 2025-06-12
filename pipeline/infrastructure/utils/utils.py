@@ -1176,16 +1176,37 @@ def validate_url(url: str) -> bool:
     return all([parsed.scheme, parsed.netloc])
 
 
-def get_valid_url(env_var: str, default: str) -> str:
-    """Fetches a URL from an environment variable, validates it, and falls back to default if needed."""
-    url = os.getenv(env_var)
-    if not url:
-        url = default
-        LOG.info('Environment variable %s not defined.  Switching to default %s.', env_var, default)
+def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
+    """
+    Fetches one or more URLs from an environment variable. If a comma-delimited string is provided,
+    it is split and each URL is validated. Falls back to the default if any URL is invalid or not set.
+
+    Args:
+        env_var: The name of the environment variable.
+        default: A single default URL or a list of default URLs.
+
+    Returns:
+        A valid URL string or a list of valid URL strings.
+    """
+    envvar_value = os.getenv(env_var)
+    if not envvar_value:
+        LOG.info('Environment variable %s not defined. Switching to default %s.', env_var, default)
         return default
-    if not validate_url(url):
-        LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
-        LOG.info('Switching to default %s.', default)
+
+    urls = [u.strip() for u in envvar_value.split(',') if u.strip()]
+    if not urls:
+        LOG.warning('Environment variable %s is empty after parsing. Switching to default %s.', env_var, default)
         return default
-    LOG.info('Environment variable %s set to URL %s.', env_var, url)
-    return url
+
+    for url in urls:
+        if not validate_url(url):
+            LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+            LOG.info('Switching to default %s.', default)
+            return default
+
+    if len(urls) == 1:
+        LOG.info('Environment variable %s set to URL %s.', env_var, urls[0])
+        return urls[0]
+
+    LOG.info('Environment variable %s set to list of URLs %s.', env_var, urls)
+    return urls

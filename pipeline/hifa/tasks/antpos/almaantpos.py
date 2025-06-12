@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 LOG = infrastructure.logging.get_logger(__name__)
-ORIGIN_ANTPOS = 'https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/'
+ANTPOS_SERVICE_URL = ['https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/']
 
 
 def run_with_retry(
@@ -83,7 +83,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
         return value
 
     threshold = vdp.VisDependentProperty(default=1.0)
-    snr = vdp.VisDependentProperty(default=5.0)
+    snr = vdp.VisDependentProperty(default="default")
     search = vdp.VisDependentProperty(default='both_latest')
 
     def __init__(
@@ -219,15 +219,16 @@ class ALMAAntposInputs(antpos.AntposInputs):
             snr: A float value describing the signal-to-noise threshold. Antennas with snr below the threshold will 
                 not be retrieved.
             search: Search algorithm to use. Supports 'both_latest' and 'both_closest'.
-            hosts: Priority-ranked list of hosts to query.
+            hosts: Priority-ranked list of hosts to query. Can be customized with ANTPOS_SERVICE_URL environment
+                variable, a comma-delimited string ordered by priority.
         """
-        hosts = utils.get_valid_url('ORIGIN_ANTPOS', ORIGIN_ANTPOS)
+        hosts = utils.get_valid_url('ANTPOS_SERVICE_URL', ANTPOS_SERVICE_URL)
         return {'outfile': self.antposfile,
                 'overwrite': True,
                 'asdm': self.context.observing_run.get_ms(self.vis).execblock_id,
                 'snr': self.snr,
                 'search': self.search,
-                'hosts': [hosts]}
+                'hosts': hosts}
 
     def __str__(self):
         return (
