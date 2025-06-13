@@ -34,9 +34,15 @@ class SDImagingQAHandler(pqa.QAPlugin):
         score_masked = qacalc.score_sdimage_masked_pixels(context, result)
         result.qa.pool.append(score_masked)
 
+        score_sd_line_emission_off_range_at_peak = qacalc.score_sd_line_emission_off_range_at_peak(context, result)
+        result.qa.pool.append(score_sd_line_emission_off_range_at_peak)
+
+        score_sd_line_emission_off_range_extended = qacalc.score_sd_line_emission_off_range_extended(context, result)
+        result.qa.pool.append(score_sd_line_emission_off_range_extended)
+
         score_contamination = qacalc.score_sdimage_contamination(context, result)
         result.qa.pool.append(score_contamination)
-        
+
         score_resterscan_raster_gap = qacalc.score_rasterscan_correctness_imaging_raster_gap(result)
         result.qa.pool.extend(score_resterscan_raster_gap)
 
@@ -58,6 +64,7 @@ class SDImagingListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
+
 
 aqua_exporter = aqua.xml_generator_for_metric('SingleDishImageMaskedPixels', '{:0.3}')
 aqua.register_aqua_metric(aqua_exporter)

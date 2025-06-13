@@ -561,6 +561,11 @@ class SDImageDisplayInputs(SingleDishDisplayInputs):
         return self.result.outcome['image'].sourcename
 
     @property
+    def missedlines_plot(self) -> str:
+        """Return file name of the missedlines plot."""
+        return self.imagename.rstrip('/') + '.missedlines.png'
+
+    @property
     def contamination_plot(self) -> str:
         """Return file name of the contamination plot."""
         return self.imagename.rstrip('/') + '.contamination.png'

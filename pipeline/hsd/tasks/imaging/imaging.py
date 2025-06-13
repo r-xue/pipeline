@@ -26,7 +26,8 @@ from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
 from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
+from pipeline.hsd.tasks.imaging import (detect_missed_lines,
+                                        detectcontamination, gridding,
                                         imaging_params, resultobjects,
                                         sdcombine, weighting, worker)
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
@@ -270,6 +271,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                     self._calculate_sensitivity(cp, rgp, pp)
                 finally:
                     pp.done()
+
+                self._detect_missed_lines( cp, rgp, pp )
 
                 self._detect_contamination(rgp)
 
@@ -1239,6 +1242,54 @@ class SDImaging(basetask.StandardTaskTemplate):
         """
         return rgp.imager_result_nro is not None and rgp.imager_result_nro.outcome is not None
 
+    def _detect_missed_lines(self,
+                             cp: imaging_params.CommonParameters,
+                             rgp: imaging_params.ReductionGroupParameters,
+                             pp: imaging_params.PostProcessParameters ):
+        """
+        Detect lines that are possibly missed to be identified
+
+        Args:
+            rgp : Reduction group parameter object of prepare()
+            pp  : Imaging post process parameters of prepare()
+            edge : edge parameter
+        Raises:
+            ValueError if unknown mask mode is returned DetectMissedLines.analyze()
+        """
+        do_plot = not basetask.DISABLE_WEBLOG
+
+        # pick valid_lines
+        valid_lines = [ ll[0:2] for ll in rgp.channelmap_range_list[0] if ll[2] is True ]
+
+        # get linefree ranges from pp
+        linefree_ranges = convert_range_list_to_ranges( pp.include_channel_range )
+
+        # initialize
+        missed_lines = detect_missed_lines.DetectMissedLines(
+            self.inputs.context,
+            rgp.msobjs,
+            rgp.spwid_list,
+            rgp.fieldid_list,
+            rgp.imager_result.outcome['image'],
+            rgp.imager_result.frequency_channel_reversed,
+            cp.edge,
+            do_plot
+        )
+
+        # analyze
+        emission_off_range, mask_mode = missed_lines.analyze( valid_lines, linefree_ranges )
+
+        # register the results
+        rgp.imager_result.outcome['line_emission_off_range_at_peak'] = False
+        rgp.imager_result.outcome['line_emission_off_range_extended'] = False
+        if emission_off_range:
+            if mask_mode == "single_beam":
+                rgp.imager_result.outcome['line_emission_off_range_at_peak'] = True
+            elif mask_mode == "moment_mask":
+                rgp.imager_result.outcome['line_emission_off_range_extended'] = True
+            else:
+                raise ValueError( "unknown mask_mode {}".format( mask_mode ) )
+
     def _detect_contamination(self, rgp: imaging_params.ReductionGroupParameters):
         """Detect contamination of image.
 
@@ -2103,6 +2154,25 @@ def convert_range_list_to_string(range_list: List[int]) -> str:
     stat_chans = str(';').join(['{:d}~{:d}'.format(range_list[iseg], range_list[iseg + 1])
                                for iseg in range(0, len(range_list), 2)])
     return stat_chans
+
+
+def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
+    """
+    Convert a list of index ranges to List of signle ranges
+
+    Args:
+        range_list : A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
+
+    Returns:
+        A List of single ranges, e.g. '[ [imin0, imax0], [imin1, imax1], ...]
+
+    Example:
+        >>> convert_range_list_to_string( [5, 10, 15, 20] )
+        '[[5, 10], [15, 20]]'
+    """
+    ranges = [ [range_list[i], range_list[i+1]] for i in range(0, len(range_list), 2) ]
+
+    return ranges
 
 
 def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, Number]]:
