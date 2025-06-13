@@ -3324,6 +3324,40 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
+def log_edge_channels(
+        imagename: str,
+        nchan: int,
+        edge_count_lower: int,
+        edge_count_upper: int
+):
+    LOG.debug("nchan %s: edge lower %s, upper %s",
+              nchan, edge_count_lower, edge_count_upper)
+    edge_chan_list = []
+    # lower edge channels
+    if edge_count_lower == 1:
+        edge_chan_list.append("0")
+    elif edge_count_lower > 1:
+        edge_chan_list.append(f"0~{edge_count_lower - 1}")
+
+    # upper edge channels
+    if edge_count_lower == nchan:
+        # all the channels are invalid, should be covered
+        # by edge_count_lower alone
+        pass
+    elif edge_count_upper == 1:
+        edge_chan_list.append(f"{nchan - 1}")
+    elif edge_count_upper > 1:
+        edge_chan_list.append(
+            f"{nchan - edge_count_upper}~{nchan - 1}"
+        )
+
+    # emit log
+    LOG.info(
+        f"masked pixel QA for {imagename}: "
+        f"detected edge channels: {';'.join(edge_chan_list)}"
+    )
+
+
 def generate_metric_mask(
         context: Context,
         result: SDImagingResultItem,
@@ -3420,18 +3454,18 @@ def generate_metric_mask(
 
     # exclude edge channels
     imagename = outcome['image'].imagename
-    edge_channels = detect_edge_channels(mask)
-    LOG.info(
-        f"masked pixel QA for {imagename}: "
-        f"detected edge channels {edge_channels}"
-    )
-    if len(edge_channels) > 0:
-        metric_mask[:, :, :, edge_channels] = False
+    nchan = metric_mask.shape[3]
+    edge_count_lower, edge_count_upper = detect_edge_channels(mask)
+    log_edge_channels(imagename, nchan, edge_count_lower, edge_count_upper)
+    if edge_count_lower > 0:
+        metric_mask[:, :, :, :edge_count_lower] = False
+    if edge_count_upper > 0:
+        metric_mask[:, :, :, -edge_count_upper:] = False
 
     return metric_mask
 
 
-def detect_edge_channels(mask: np.ndarray) -> np.ndarray:
+def detect_edge_channels(mask: np.ndarray) -> tuple[int, int]:
     """Detect list of edge channels to be excluded from QA evaluation.
 
     There are a few edge channels that have less valid spatial pixels
@@ -3452,7 +3486,8 @@ def detect_edge_channels(mask: np.ndarray) -> np.ndarray:
         mask: boolean numpy array of shape (nx, ny, npol, nchan)
 
     Returns:
-        List of edge channels to be excluded.
+        Number of edge channels excluded from lower and upper
+        side of the spectral axis
     """
     num_valid_pixels = np.sum(mask, axis=(0, 1, 2))
     nchan = len(num_valid_pixels)
@@ -3464,20 +3499,20 @@ def detect_edge_channels(mask: np.ndarray) -> np.ndarray:
         median_num_valid_pixels
     )
     threshold = median_num_valid_pixels
-    edge_channels = []
-    # count channels with fewer valid pixels from both ends
+    edge_count_lower = 0
     for i in range(nchan):
         if num_valid_pixels[i] < threshold:
-            edge_channels.append(i)
+            edge_count_lower += 1
         else:
             break
+    edge_count_upper = 0
     for i in range(nchan - 1, -1, -1):
         if num_valid_pixels[i] < threshold:
-            edge_channels.append(i)
+            edge_count_upper += 1
         else:
             break
 
-    return np.unique(edge_channels)
+    return edge_count_lower, edge_count_upper
 
 
 def direction_recover( ra, dec, org_direction ):
