@@ -210,11 +210,11 @@ class CleanSummary(object):
             # polarization intensity and angle
             if r.intent == 'POLARIZATION' and set(stokes_list) == {'I', 'Q', 'U', 'V'} and r.imaging_mode == 'ALMA':
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLI'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLI'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLA'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLA'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
 
