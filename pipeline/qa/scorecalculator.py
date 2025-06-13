@@ -19,7 +19,7 @@ import traceback
 from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
-from scipy import interpolate, special, stats
+from scipy import interpolate, special
 
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import infrastructure
