@@ -92,6 +92,9 @@ class DetectMissedLines( object ):
         self.nchan = self.image.data.shape[3]  # 4th axis is the spectrum
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
         self.frequency = np.array([refval + increment * (ch - refpix) for ch in range(self.nchan)] )  # in GHz
+        self.frequency_frame = self.image.frequency_frame
+
+        # pixel scale and beam size
         self.pixel_scale = np.abs( self.image.direction_axis( 1, unit='deg' )[2]  )  # 1: Declination
         self.beam_size = self.image.beam_size  # in degrees
 
@@ -313,6 +316,7 @@ class DetectMissedLines( object ):
                     if self.do_plot:
                         plot_outdir = os.path.join(self.context.report_dir,
                                                    f'stage{self.context.task_counter}')
+
                         self._plot( plot_outdir,
                                     line_ranges,
                                     z_all, z_line, z_linefree, z_other,
@@ -378,7 +382,7 @@ class DetectMissedLines( object ):
         # figure parameters
         ax.set_ylim( 1.1 * np.nanmin( z_linefree ),
                      1.1 * np.nanmax( z_linefree ) )
-        ax.set_xlabel( 'frequency (GHz)')
+        ax.set_xlabel( 'frequency (GHz) {}'.format(self.frequency_frame) )
         ax.set_ylabel( 'deviation / sigma' )
         ax.tick_params( direction='in' )
         ax.legend( fontsize='small' )
