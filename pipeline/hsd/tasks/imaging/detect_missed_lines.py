@@ -306,6 +306,12 @@ class DetectMissedLines( object ):
         # deviation/sigma of other ranges
         z_other = np.where( np.isnan( z_line ) & np.isnan( z_linefree ), z_all, np.nan )
 
+        # create the stage_dir if needed but does not yet exist
+        if self.do_plot:
+            stage_dir = os.path.join(self.context.report_dir,
+                                     f'stage{self.context.task_counter}')
+            os.makedirs( stage_dir, exist_ok=True )
+
         # find channels which exceed deviation_threshold
         if np.nanmax( z_linefree ) > dev_threshold:
             labeling_half_maximum, n_labels = label(z_linefree > dev_threshold / 2)
@@ -314,10 +320,7 @@ class DetectMissedLines( object ):
             for idx in range( 1, n_labels ):
                 if np.sum( labeling_half_maximum == idx ) > width_threshold:
                     if self.do_plot:
-                        plot_outdir = os.path.join(self.context.report_dir,
-                                                   f'stage{self.context.task_counter}')
-
-                        self._plot( plot_outdir,
+                        self._plot( stage_dir,
                                     line_ranges,
                                     z_all, z_line, z_linefree, z_other,
                                     dev_threshold, mask_mode )
@@ -325,7 +328,7 @@ class DetectMissedLines( object ):
         return False
 
     def _plot( self,
-               plot_outdir: str,
+               stage_dir: str,
                line_ranges: List[List[int]],
                z_all: 'sdtyping.NpArray1D',
                z_line: 'sdtyping.NpArray1D',
@@ -337,7 +340,7 @@ class DetectMissedLines( object ):
         Create the plot to diagnose the missed-lines
 
         Args:
-            plot_outdir: Directory to write the figure file
+            stage_dir: Stage directory of weblog
             line_range: List of spectral channels of line ranges
             z_all: deviation/sigma of all frequency channels
             z_line: deviation/sigma of line ranges
@@ -399,7 +402,7 @@ class DetectMissedLines( object ):
         plot_title = "Field:{} spw:{} ({})".format( self.field_name, self.spwid_list[0], mode )
         ax.set_title( plot_title )
 
-        # save figre to file
-        plot_outfile = os.path.join( plot_outdir, "{}.missedlines.png".format( self.item.imagename ))
+        # save figure to file
+        plot_outfile = os.path.join( stage_dir, "{}.missedlines.png".format( self.item.imagename ))
         LOG.info( "Saving diagnistic plot for missed-lines to {}".format(plot_outfile) )
         fig.savefig( plot_outfile )
