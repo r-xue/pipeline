@@ -140,14 +140,16 @@ class Results(object, metaclass=abc.ABCMeta):
 
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def uuid(self):
         """
         The unique identifier for this results object.
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def metadata(self):
         """
         Object holding metadata describing this result and the generating task.
@@ -183,7 +185,8 @@ class ResultRenderer(object, metaclass=abc.ABCMeta):
     b ased on sort order.
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def task(self):
         """
         The result class this renderer should handle.
@@ -210,7 +213,8 @@ class Task(object, metaclass=abc.ABCMeta):
     pipeline.infrastructure.JobRequest
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def Inputs(self):
         """A reference to the accompanying :class:`Inputs` partner class that
         comprises the mandatory arguments for this Task.
