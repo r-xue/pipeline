@@ -5,6 +5,7 @@ import datetime
 import math
 import operator
 import os
+import shutil
 from typing import TYPE_CHECKING, Generator
 
 import matplotlib
@@ -1274,9 +1275,14 @@ class SpwIdVsFreqChart(object):
             Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
+        ms = self.inputs.ms
+        origin_filename = filename.replace(ms.basename, ms.origin_ms)
         if os.path.exists(filename):
             return self._get_plot_object()
-        ms = self.inputs.ms
+        elif os.path.exists(origin_filename):
+            LOG.info("Copying frequency coverage plot for origin_ms.")
+            shutil.copyfile(origin_filename, filename)
+            return self._get_plot_object()
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         if len(targeted_scans) == 0:
