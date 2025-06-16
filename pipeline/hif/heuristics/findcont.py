@@ -24,7 +24,7 @@ class FindContHeuristics(object):
             return ['NONE'], 'none'
 
         # Run continuum finder on cube
-        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings, joint_mask_name = \
+        channel_selection, png_name, aggregate_bw, all_continuum, warning_strings, joint_mask_name, momDiffSNR = \
             findContinuum(img=dirty_cube,
                           pbcube=pb_cube,
                           psfcube=psf_cube,
@@ -33,7 +33,8 @@ class FindContHeuristics(object):
                           returnWarnings=True,
                           vis=ref_ms_name,
                           nbin=nbin,
-                          spectralDynamicRangeBandWidth=dynrange_bw)
+                          spectralDynamicRangeBandWidth=dynrange_bw,
+                          returnMomDiffSNR=True)
 
         # PIPE-74
         channel_counts = countChannelsInRanges(channel_selection)
@@ -63,4 +64,4 @@ class FindContHeuristics(object):
 
         cont_ranges_and_flags = {'ranges': frequency_ranges_GHz, 'flags': flags}
 
-        return cont_ranges_and_flags, png_name, single_range_channel_fraction, warning_strings, os.path.basename(joint_mask_name)
+        return cont_ranges_and_flags, png_name, single_range_channel_fraction, warning_strings, os.path.basename(joint_mask_name), momDiffSNR

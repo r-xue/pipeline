@@ -20,11 +20,12 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.h.tasks.common.displays as displays
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import math as utils_math
 
 LOG = logging.get_logger(__name__)
 
 
-TR = collections.namedtuple('TR', 'field spw min max frame status spectrum jointmask')
+TR = collections.namedtuple('TR', 'field spw min max frame status momdiffsnr spectrum jointmask')
 
 
 class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -68,6 +69,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         rows = []
         for field in sorted(set(ranges_dict.keys())):
             for spw in map(str, sorted(map(int, set(ranges_dict[field].keys())))):
+                momdiffsnr = self._get_momdiffsnr(context, result, field, spw)
                 plotfile = self._get_plotfile(context, result, field, spw)
                 jointmaskplot = self._get_jointmaskplot(context, result, field, spw)  # PIPE-201
 
@@ -104,9 +106,14 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         min_freq = measures.Frequency(range_min).str_to_precision(5)
                         max_freq = measures.Frequency(range_max).str_to_precision(5)
                         rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min=min_freq, max=max_freq, frame=refer, status=status,
-                                       spectrum=plotfile, jointmask=jointmaskplot))
+                                       momdiffsnr=momdiffsnr, spectrum=plotfile, jointmask=jointmaskplot))
 
         return utils.merge_td_columns(rows), rows
+
+    def _get_momdiffsnr(self, context, result, field, spw):
+        momDiffSNR = result.momDiffSNRs.get((field, spw), -999.0)
+        momDiffSNR_str = utils_math.round_half_up(momDiffSNR, 2)
+        return momDiffSNR_str
 
     def _get_plotfile(self, context, result, field, spw):
         ranges_dict = result.result_cont_ranges

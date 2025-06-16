@@ -155,8 +155,8 @@ class FindCont(basetask.StandardTaskTemplate):
         cont_ranges = contfile_handler.read()
 
         result_cont_ranges = {}
-
         joint_mask_names = {}
+        momDiffSNRs = {}
 
         num_found = 0
         num_total = 0
@@ -413,7 +413,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     if dynrange_bw is not None:  # None means that a value was not provided, and it should remain None
                         dynrange_bw = qaTool.tos(dynrange_bw)
 
-                    (cont_ranges_and_flags, png, single_range_channel_fraction, warning_strings, joint_mask_name) = \
+                    (cont_ranges_and_flags, png, single_range_channel_fraction, warning_strings, joint_mask_name, momDiffSNR) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
@@ -424,6 +424,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            dynrange_bw=dynrange_bw)
 
                     joint_mask_names[(source_name, spwid)] = joint_mask_name
+                    momDiffSNRs[(source_name, spwid)] = momDiffSNR
 
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
@@ -459,7 +460,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions)
+        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions, momDiffSNRs)
 
         return result
 
