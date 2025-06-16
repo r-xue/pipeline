@@ -17,8 +17,7 @@ class T2_4DetailsHanningRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def update_mako_context(self, mako_context, pipeline_context, results):
         table_rows = make_hanning_table(pipeline_context, results)
-        if table_rows:
-            mako_context.update({'table_rows': table_rows})
+        mako_context.update({'table_rows': table_rows})
 
 
 HanningTR = collections.namedtuple('HanningTR', 'vis spw_id spw_name center_freq spw_bw chan_size smoothed reason')
@@ -33,7 +32,7 @@ def make_hanning_table(context, results):
     for single_result in results:
         if not single_result.smoothed_spws:
             # PIPE-2630: handles case where Hanning smoothing is already applied
-            return
+            continue
         vis = os.path.basename(single_result.inputs['vis'])
         ms = context.observing_run.get_ms(name=vis)
         for spw in ms.get_spectral_windows(science_windows_only=True):
