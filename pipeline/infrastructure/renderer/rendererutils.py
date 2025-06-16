@@ -508,7 +508,10 @@ def make_parang_plots(
                 'plotindex': combination_index,  # optional depending on plotms behavior
                 'clearplots': clearplots,
                 'intent': intent,
-                'showgui': False
+                'showgui': False,
+                'showlegend': True,
+                'coloraxis': 'field',
+                'legendposition': 'exteriorRight',
             }
 
             task = casa_tasks.plotms(**task_args)
