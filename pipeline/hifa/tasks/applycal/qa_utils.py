@@ -29,6 +29,12 @@ def get_intents_to_process(ms: MeasurementSet, intents: list[str]) -> list[str]:
     Optimise a list of intents so that scans with multiple intents are only
     processed once.
 
+    Returns an improved, though not necessarily globally optimal, ordering of
+    intents for processing. The effectiveness of the optimisation is
+    influenced by the sequence in which MSes and their associated intents are
+    evaluated, and may not guarantee minimal total processing due to this
+    ordering dependency.
+
     :param ms: MeasurementSet domain object
     :param intents: list of intents to consider for processing
     :return: optimised list of intents to process

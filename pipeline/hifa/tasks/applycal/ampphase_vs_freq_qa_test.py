@@ -1,11 +1,10 @@
 from pathlib import Path
 
 import pytest
+
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.tablereader import MeasurementSetReader
-
-from .ampphase_vs_freq_qa import score_all_scans, Outlier
-
+from .ampphase_vs_freq_qa import score_all_scans
 
 # # Tests that depend on the pipeline-testdata repository
 TEST_DATA_PATH = casa_tools.utils.resolve('pl-unittest/casa_data')

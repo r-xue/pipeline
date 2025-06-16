@@ -103,7 +103,8 @@ def score_all_scans(
     :param flag_all: True if all data should be flagged as a QA fail.
     :param memory_gb: Max memory allowed in gb.
     :param buffer_path: Folder where saved average visibilities are, if any.
-    :param outlier_score: score to assign to generated QAScores
+    :param export_mswrappers: True if snapshots (pickles) of the computed state
+        should be saved to accelerate subsequent runs during development and debugging.
     :return: list of Outlier objects
     """
     outliers = []
@@ -432,7 +433,7 @@ def score_X_vs_freq_fits(
 def score_fits(
         all_fits: list[AntennaFit],
         reference_value_fn: Callable[[list[AntennaFit], Callable], ValueAndUncertainty],
-        accessor: Callable[[AntennaFit], LinearFitParameters],
+        accessor: Callable[[AntennaFit], ValueAndUncertainty],
         outlier_fn: Callable[..., Outlier],
         sigma_threshold: float,
         unitfactor: UnitFactorType,
@@ -445,7 +446,7 @@ def score_fits(
     :param all_fits: list of AntennaFits
     :param reference_value_fn: function that returns a reference
         ValueAndUncertainty from a list of these objects
-    :param accessor: function that returns one LinearFitParameters from an
+    :param accessor: function that returns one ValueAndUncertainty from an
         AntennaFit
     :param outlier_fn: function that returns an Outlier instance
     :param sigma_threshold: threshold nsigma deviation for comparisons
@@ -492,7 +493,7 @@ def _create_data_buffer(
         all_fits: list[AntennaFit],
         pols: set[int],
         ants: set[int],
-        accessor: Callable[[AntennaFit], LinearFitParameters],
+        accessor: Callable[[AntennaFit], ValueAndUncertainty],
         reference_value_fn: Callable[[list[AntennaFit], Callable], ValueAndUncertainty],
         normfactor: dict[int, float]
 ) -> dict[int, dict[int, dict]]:
@@ -502,7 +503,7 @@ def _create_data_buffer(
     :param all_fits: list of AntennaFits.
     :param pols: set of polarization IDs.
     :param ants: set of antenna IDs.
-    :param accessor: function that returns one LinearFitParameters from an AntennaFit.
+    :param accessor: function that returns a ValueAndUncertainty from an AntennaFit.
     :param reference_value_fn: function that returns a reference ValueAndUncertainty from a list of these objects.
     :param normfactor: dict of normalization factors per polarization.
     :return: dict of fit information.

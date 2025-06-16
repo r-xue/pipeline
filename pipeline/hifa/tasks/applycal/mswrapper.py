@@ -26,9 +26,6 @@ class MSWrapper(object):
     filtered on various criteria, e.g, spw, scan, antenna, etc., to narrow the
     data to a particular data selection.
 
-    The static method MSWrapper.create_from_ms should be used to instantiate
-    MSWrapper objects.
-
     The static methods MSWrapper.create_averages_from_ms and
     MSWrapper.create_averages_from_combination can also be used to create a new
     instance of a MSWrapper object.
@@ -244,7 +241,6 @@ class MSWrapper(object):
         """
         # Get data from first MSWrapper element of the list, scan will be the list of scans
         # discard raw data if present
-        # eps = 1.e-6
         nscans = len(mswlist)
         scan = [mswlist[idxscan].scan for idxscan in range(nscans)]
         filename = mswlist[0].filename
@@ -324,17 +320,14 @@ class MSWrapper(object):
         """
         Save averaged visibilities into a pickle file.
         :param filename: file where visibilities will be stored
-        :param scan: integer scan ID
-        :param spw: integer spw ID
-        :param data: averaged visibilities in format AVERAGED_VISBILITIES_TYPE
         """
 
         if self.V is not None or self.data is not None:
             with open(filename, 'wb') as pklfile:
-                LOG.info('Saving MSWrapper data arrays...')
+                LOG.info(f'Saving MSWrapper data arrays to {self.filename}')
                 pickle.dump((self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V), pklfile, protocol=2)
         else:
-            LOG.info("Nothing to save.")
+            LOG.info(f"Nothing to save for {self.filename}")
 
     def load(self,filename):
         """
@@ -343,4 +336,4 @@ class MSWrapper(object):
         """
         with open(filename, 'rb') as f:
             (self.filename,self.scan,self.spw,self.data,self.corr_axis,self.freq_axis,self.int_axis,self.time_axis,self.V)=pickle.load(f)
-        LOG.info('Loaded MSWrapper data arrays')
+        LOG.info(f'MSWrapper data arrays loaded from {filename}')
