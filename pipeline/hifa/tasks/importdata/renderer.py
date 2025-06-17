@@ -23,7 +23,9 @@ class T2_4MDetailsALMAImportDataRenderer(renderer.T2_4MDetailsImportDataRenderer
         parang_ranges = result.parang_ranges
         if parang_ranges['intents_found']:
             parang_plots = rendererutils.make_parang_plots(
-                pipeline_context, result, intents='CALIBRATE_POLARIZATION#ON_SOURCE'
+                pipeline_context,
+                result,
+                intent_lookup={'POLARIZATION': 'CALIBRATE_POLARIZATION#ON_SOURCE'},
                 )
         else:
             parang_plots = {}

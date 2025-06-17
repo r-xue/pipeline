@@ -460,7 +460,7 @@ def summarise_fields(fields: str) -> str:
 def make_parang_plots(
         context: Context,
         result: Results,
-        intents: str | list[str, str],
+        intent_lookup: dict[str, str],
         ) -> dict:
     """
     Create parallactic angle plots for each session.
@@ -474,11 +474,10 @@ def make_parang_plots(
     ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
 
-    if isinstance(intents, list):
-        intents = ','.join(intents)
-
-    for session_name in sessions.keys():
+    for session_name, session_data in sessions.items():
         num_ms = len(sessions[session_name]['vis'])
+        intents_to_plot = [intent_lookup[key] for key in intent_lookup
+                           if key in session_data and session_data[key]]
 
         plot_title = f'MOUS {ous_id}, session {session_name}'
         filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
@@ -505,7 +504,7 @@ def make_parang_plots(
                 'plotrange': [0, 0, 0, 360],
                 'plotindex': i,
                 'clearplots': clearplots,
-                'intent': intents,
+                'intent': ','.join(intents_to_plot),
                 'showgui': False,
                 'showlegend': True,
                 'coloraxis': 'field',
