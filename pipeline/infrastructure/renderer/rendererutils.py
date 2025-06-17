@@ -460,7 +460,7 @@ def summarise_fields(fields: str) -> str:
 def make_parang_plots(
         context: Context,
         result: Results,
-        intent_lookup: dict[str, str],
+        intents: str | list[str, str],
         ) -> dict:
     """
     Create parallactic angle plots for each session.
@@ -474,26 +474,24 @@ def make_parang_plots(
     ous_id = context.project_structure.ousstatus_entity_id
     sessions = result.parang_ranges['sessions']
 
-    for session_name, session_data in sessions.items():
-        vis_list = session_data['vis']
-        intent_keys = [key for key in intent_lookup if key in session_data]
+    if isinstance(intents, list):
+        intents = ','.join(intents)
+
+    for session_name in sessions.keys():
+        num_ms = len(sessions[session_name]['vis'])
 
         plot_title = f'MOUS {ous_id}, session {session_name}'
         filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
         plot_path = os.path.join(context.report_dir, stage_id, f'{filename_component}_parallactic_angle.png')
 
         clearplots = True
-        combination_index = 0
-        total = len(vis_list) * len(intent_keys)
-
-        for msname, short_key in itertools.product(vis_list, intent_keys):
-            intent = intent_lookup[short_key]
-            color = plot_colors[combination_index % len(plot_colors)]
+        for i, msname in enumerate(sessions[session_name]['vis']):
+            symbolcolor = plot_colors[i % len(plot_colors)]
 
             science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
             spwspec = ','.join(f'{s.id}:{s.num_channels // 2}' for s in science_spws)
 
-            plot_name = plot_path if combination_index == total - 1 else ''
+            plot_name = plot_path if i == num_ms - 1 else ''
 
             task_args = {
                 'vis': msname,
@@ -501,13 +499,13 @@ def make_parang_plots(
                 'xaxis': 'time',
                 'yaxis': 'parang',
                 'customsymbol': True,
-                'symbolcolor': color,
+                'symbolcolor': symbolcolor,
                 'title': plot_title,
                 'spw': spwspec,
                 'plotrange': [0, 0, 0, 360],
-                'plotindex': combination_index,  # optional depending on plotms behavior
+                'plotindex': i,
                 'clearplots': clearplots,
-                'intent': intent,
+                'intent': intents,
                 'showgui': False,
                 'showlegend': True,
                 'coloraxis': 'field',
@@ -518,7 +516,6 @@ def make_parang_plots(
             basetask.Executor(context).execute(task)
 
             clearplots = False
-            combination_index += 1
 
         parang_plots[session_name] = {}
         parang_plots[session_name]['name'] = plot_name
