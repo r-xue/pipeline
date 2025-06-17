@@ -59,7 +59,9 @@ class DetectMissedLines( object ):
             edge: Edge parameter
             do_plot: Set True to make figure. Default is True
         Raises:
-            ValueError if dimensions of image and weight do not match
+            ValueError if
+              - dimensions of image and weight do not match
+              - number of channels in spectral window object and image cube are inconsistent
         """
         self.context = context
         self.msobj_list = msobj_list
@@ -88,10 +90,19 @@ class DetectMissedLines( object ):
             self.weight = copy.deepcopy( self.image )
             self.weight.data = np.ones( np.shape( self.image.data ) )
 
+        # number of spectral channels
+        self.nchan = self.msobj_list[0].spectral_windows[self.spwid_list[0]].num_channels
+
+        # 4th axis of image cube is the spectrum, 'edge' channels excluded.
+        if self.image.data.shape[3] != self.nchan - sum(self.edge):
+            # this vaiolates the assumption of the procdure
+            raise ValueError(
+                "Number of spectral channels of spectral window object and image cube does not match"
+            )
+
         # frequency and channel conversion
-        self.nchan = self.image.data.shape[3]  # 4th axis is the spectrum
         (refpix, refval, increment) = self.image.spectral_axis(unit='GHz')
-        self.frequency = np.array([refval + increment * (ch - refpix) for ch in range(self.nchan)] )  # in GHz
+        self.frequency = np.array([refval + increment * (ch - refpix) for ch in range(self.nchan - sum(self.edge))] )  # in GHz
         self.frequency_frame = self.image.frequency_frame
 
         # pixel scale and beam size
@@ -114,10 +125,14 @@ class DetectMissedLines( object ):
         # convert valid_lines to line_ranges (int) and revert channels if LSB
         line_ranges = []
         for line in valid_lines:
-            if self.frequency_channel_reversed:
+            # 'valid_lines' holds the line center/width in channels BEFORE removing 'edge' channels,
+            # while image cube comes with the 'edge' channels already dropped.
+            # Also note that 'edge' parameters are in the order BEFORE flipping for sidebands.
+            # (NOT in frequency order)
+            if self.frequency_channel_reversed:  # LSB
                 ( line_center, line_width ) = ( self.nchan - line[0] - 1.0, line[1] )
                 line_center -= self.edge[1]
-            else:
+            else:  # USB
                 ( line_center, line_width ) = ( line[0], line[1] )
                 line_center -= self.edge[0]
             line_ranges.append(
