@@ -4,7 +4,6 @@ import shutil
 import tempfile
 
 from pipeline.extern import bandpass_pipereq234
-import pipeline.extern.adopted as adopted
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -51,16 +50,16 @@ class BandpassQAPool(pqa.QAScorePool):
         self.pool[:] = bandpass_pipereq234_scores
 
     def _get_bandpass_pipereq234_scores(self, ms, caltable):
-        print(f"Fetching platforming QA info for MS {ms.basename} and caltable {caltable}")
-        spws = bandpass_pipereq234.bandpass_platforming(ms, caltable)
-        print(f"Spws affected {spws}")
         # Get set of spws and antennas impacted
+        print(f"Fetching platforming QA info for MS {ms.basename} and caltable {caltable}")
+        spw_dict = bandpass_pipereq234.bandpass_platforming(ms, caltable)
+        print(f"Spws affected {spw_dict}")
 
-        f_spw = len(spws.keys())/len(ms.get_spectral_windows())
+        f_spw = len(spw_dict.keys())/len(ms.get_spectral_windows())
 
         # Check if reference spw is impacted
         ref_spw_impacted = False
-        if ms.get_representative_source_spw() in spws.keys():
+        if ms.get_representative_source_spw() in spw_dict.keys():
             ref_spw_impacted = True
 
         if f_spw <= 0.0:
@@ -80,12 +79,12 @@ class BandpassQAPool(pqa.QAScorePool):
 
             longmsg = f"For {ms.basename}: correlator subband issues may be affecting the following solutions: "
             spw_message_parts = []
-            for spw in spws.keys():
-                part = f"Spw {spw}: " + ", ".join(spws[spw])
+            for spw in spw_dict.keys():
+                part = f"Spw {spw} ({spw_dict[spw]['failure']}): " + ", ".join(spw_dict[spw]['antennas'])
                 spw_message_parts.append(part)
             longmsg += "; ".join(spw_message_parts)
 
-        print(f"creating score {longmsg} {shortmsg} {score}")
+        print(f"Creating score {longmsg} {shortmsg} {score}")
         return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename)]
 
     def _get_qascore(self, ms, score_type):

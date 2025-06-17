@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 import scipy.stats as st
 from scipy import signal
 from scipy import ndimage
+from dataclasses import dataclass
+from enum import Enum
 import random
+
 
 #from casatools import table as tbtool
 from casatools import table
@@ -23,6 +26,33 @@ from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
 
 WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.3125, 641.6375]
+
+
+# kberry added code to track failures and associated type
+class FailureType(Enum):
+    PHASE = "phase"
+    AMP = "amp"
+    AMP_AND_PHASE = "amp and phase"
+
+
+@dataclass 
+class SpwFailure():
+    ant_set: set
+    failure_type: FailureType
+
+
+def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
+                    ant_id: int, failure_type: FailureType) -> None:
+    """
+    Adds failure information for a single antenna and associated failure type
+    to the dict of failing spws.
+    """
+    if spw_id in failing_spws:
+        failing_spws[spw_id].ant_set.add(ant_id)
+        if failure_type != failing_spws[spw_id].failure_type:
+            failing_spws[spw_id].failure_type = FailureType.AMP_AND_PHASE
+    else:
+        failing_spws[spw_id] = SpwFailure({ant_id}, failure_type)
 
 
 # Adapted from analysisUtils.getNChanFromCaltable()
@@ -147,6 +177,7 @@ def field_names_from_caltable(caltable) -> list[str]:
     return fields
 
 
+# unmodified by kberry
 def fitAtmLines(ATMprof, freq):
          """
          Purpose:
@@ -330,7 +361,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
         data = pickle.load(f)
     
     # added by kberry
-    spws_affected = {}  # Format spw: [ant1...n]
+    spws_affected = {}  # Format spw: SpwFailure({ant1...n}, FailureType)
 
     # Iterate through tables
     for i, itab in enumerate(list(data.keys())):
@@ -587,11 +618,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                        #########################
                                        this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
                                        note_platform += (this_note_platform+'\n')
-                                       if ispw in spws_affected:
-                                           spws_affected[ispw].append(iant)
-                                       else: 
-                                            spws_affected[ispw] = [iant]
-                                       return spws_affected
+                                       add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
                                        #########################
 
                                        #########################
@@ -617,12 +644,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                           ###########################
                                           this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
                                           note_platform += (this_note_platform+'\n')
-
-                                          if ispw in spws_affected:
-                                            spws_affected[ispw].append(iant)
-                                          else: 
-                                            spws_affected[ispw] = [iant]
-                                          continue
+                                          add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
                                           #########################
 
                                           #########################
@@ -714,10 +736,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                     #########################
                                     this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                     note_platform += (this_note_platform+'\n')
-                                    if ispw in spws_affected:
-                                           spws_affected[ispw].append(iant)
-                                    else: 
-                                        spws_affected[ispw] = [iant]
+                                    add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
                                     #########################
 
                                     #########################
@@ -743,10 +762,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                           ###########################
                                           this_note_platform = ' QA0_High_amp_spectral_rms  subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_amp_rms[isubb]) + 'amp ('+"%.2f" %(subb_amp_rms[isubb]/subb_amp_rms_med)+'sigma)'
                                           note_platform += (this_note_platform+'\n')
-                                          if ispw in spws_affected:
-                                            spws_affected[ispw].append(iant)
-                                          else:
-                                            spws_affected[ispw] = [iant]
+                                          add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
                                           #########################
 
                                           #########################
@@ -849,11 +865,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                   freq_max=(spw_freq[0*subb_nchan]) #GHz
                                   this_note_platform = ' QA0_Platforming  phase  subband : ' + str(0) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                   note_platform += (this_note_platform+'\n')
-                                  if ispw in spws_affected:
-                                    spws_affected[ispw].append(iant)
-                                  else: 
-                                    spws_affected[ispw] = [iant]
-                                  
+                                  add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
                                   #########################
                                   # this list contains the frequency range of the affected subband
                                   # it is necessary for plotting
@@ -928,10 +940,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                   freq_max=(spw_freq[(subb_num-1)*subb_nchan]) #GHz
                                   this_note_platform = ' QA0_Platforming  phase  subband : ' + str(subb_num-1) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                   note_platform += (this_note_platform+'\n')
-                                  if ispw in spws_affected:
-                                   spws_affected[ispw].append(iant)
-                                  else: 
-                                    spws_affected[ispw] = [iant]
+                                  add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
                                   
                                   #########################
                                   # this list contains the frequency range of the affected subband
@@ -1014,11 +1023,8 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                    freq_max=(spw_freq[isubb*subb_nchan]) #GHz
                                    this_note_platform = ' QA0_Platforming  phase  subband : ' + str(isubb) +'Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P'+str(ipol)+' BB'+'TBD'+' ' +"%.1f" %(subb_jump/bp_phs_rms)+ ' '  +"%.1f" %(ch_step/bp_phs_rms)+'sigma   '+ "%.1f" %(subb_jump) +' degrees'
                                    note_platform += (this_note_platform+'\n')
-                                   if ispw in spws_affected:
-                                      spws_affected[ispw].append(iant)
-                                   else: 
-                                      spws_affected[ispw] = [iant]
-                                   
+                                   add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
+
                                    #########################
                                    # this list contains the frequency range of the affected subband
                                    # it is necessary for plotting
@@ -1130,11 +1136,8 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                   this_note_platform = ' QA0_Platforming  amplitude subband: ' + str(0) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(ch_step/bp_amp_rms)
                                   note_platform += (this_note_platform+'\n')
-                                  if ispw in spws_affected:
-                                    spws_affected[ispw].append(iant)
-                                  else: 
-                                    spws_affected[ispw] = [iant]
-                                  
+                                  add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
+
                                   #########################
                                   # this list contains the frequency range of the affected subband
                                   # it is necessary for plotting
@@ -1206,11 +1209,8 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                   this_note_platform = ' QA0_Platforming  amplitude subband: ' + str(subb_num-1) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(ch_step/bp_amp_rms)
                                   note_platform += (this_note_platform+'\n')
-                                  if ispw in spws_affected:
-                                    spws_affected[ispw].append(iant)
-                                  else: 
-                                    spws_affected[ispw] = [iant]
-                                  
+                                  add_spw_failures(spws_affected, ispw, iant, FailureType.AMP)
+
                                   #########################
                                   # this list contains the frequency range of the affected subband
                                   # it is necessary for plotting
@@ -1311,10 +1311,7 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                     this_note_platform = ' QA0_Platforming  amp subband spike: ' + str(isubb) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq1_max +'GHz  P: '+str(ipol)+' BB:'+' TBD'+ \
                                                       ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(spk_step/bp_amp_rms)
                                     note_platform += (this_note_platform+'\n')
-                                    if ispw in spws_affected:
-                                        spws_affected[ispw].append(iant)
-                                    else:
-                                        spws_affected[ispw] = [iant]
+                                    add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
 
                                     #########################
                                     # this list contains the frequency range of the affected subband
@@ -1342,11 +1339,8 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
                                    note_platform += (this_note_platform+'\n')
                                    this_flagchan_range=[spw_freq[isubb*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
                                    flagchan_range_amp.append(this_flagchan_range)
-                                   if ispw in spws_affected:
-                                        spws_affected[ispw].append(iant)
-                                   else: 
-                                        spws_affected[ispw] = [iant]
-                            
+                                   add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
+
                             #######################
                             # this string is important and appends the heuristics values for each heuristics
                             #######################
@@ -1444,7 +1438,16 @@ def evalPerAntBP_Platform(pickle_file, inputpath, vis, caltable):
         outfile.close()
         outfile_val.close()
         outfile_flag.close()
-        return spws_affected
+
+        # Maybe move this to the outer function?
+        spw_affected_return = {}
+        for spw_id, failure in spws_affected.items():
+            spw_affected_return[spw_id] = {
+                'antennas': sorted(failure.ant_set), # return sorted list of antennas
+                'failure': failure.failure_type.value # convert enum back to string 
+            } 
+
+        return spw_affected_return
 
 def bandpass_platforming(ms: MeasurementSet, caltable, inputpath='.', outputpath='./bandpass_platforming_qa'):
    mkdirstr='mkdir ' + outputpath
