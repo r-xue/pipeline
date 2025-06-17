@@ -10,8 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonfluxresults
-from pipeline.infrastructure.tablereader import find_EVLA_band
-from pipeline.hifv.heuristics import standard as standard
+from pipeline.hifv.heuristics import standard
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -399,12 +398,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
                     for spw in spws:
                         inputs.spw = spw.id
                         reference_frequency = center_frequencies[spw.id]
-                        try:
-                            EVLA_band = spw2band[spw.id]
-                        except:
-                            LOG.info('Unable to get band from spw id - using reference frequency instead')
-                            EVLA_band = find_EVLA_band(reference_frequency)
-
+                        EVLA_band = spw2band[spw.id]
                         LOG.info("Center freq for spw " + str(spw.id) + " = "
                                  + str(reference_frequency) + ", observing band = " + EVLA_band)
 
