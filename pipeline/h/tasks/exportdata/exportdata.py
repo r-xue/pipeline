@@ -1522,7 +1522,7 @@ finally:
         stats_file = os.path.join(context.output_dir, statsfile_name)
         LOG.info('Generating pipeline statistics file')
 
-        stats_dict = stats_extractor.generate_stats(context, data_type=data_type)
+        stats_dict = stats_extractor.generate_stats(context)
 
         # Write the stats file to disk
         with open(stats_file, 'w', encoding='utf-8') as f:

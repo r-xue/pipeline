@@ -7,6 +7,7 @@ import numpy as np
 from pipeline import environment
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
+from pipeline.infrastructure.launcher import Context
 from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.utils as utils
 
@@ -28,7 +29,7 @@ class PipelineStatisticsLevel(enum.Enum):
 
 class PipelineStatistics(object):
     """A single unit of pipeline statistics information.
-
+g
     Attributes:
         name: The name of this pipeline statistic
         value: The value for this pipeline statistic
@@ -41,9 +42,9 @@ class PipelineStatistics(object):
         mous: The MOUS this value applies to
     """
     def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
-                 longdesc: str, origin: str='', units: str='',
-                 level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None, 
-                 source: str=None)
+                 longdesc: str, origin: str = '', units: str = '',
+                 level: PipelineStatisticsLevel = None, spw: str = None, mous: str = None, eb: str = None,
+                 source: str = None):
 
         self.name = name
         self.value = value
@@ -91,19 +92,20 @@ class PipelineStatistics(object):
 
         return stats_dict
 
-    def import_program(self, context: Context, ms: MeasurementSet) -> str:
-        """
-        Returns the name of the import program used to create the MS
-        """
-        if ms.antenna_array.name == 'ALMA':
-            if utils.contains_single_dish(context):
-                return "hsd_importdata"
-            else:
-                return "hifa_importdata"
-        elif ms.antenna_array.name == "VLA":
-            return "hifv_importdata"
-        else: 
-            return "unknown"
+
+def determine_import_program(context: Context, ms: MeasurementSet) -> str:
+    """
+    Returns the name of the import program used to create the MS
+    """
+    if ms.antenna_array.name == 'ALMA':
+        if utils.contains_single_dish(context):
+            return "hsd_importdata"
+        else:
+            return "hifa_importdata"
+    elif ms.antenna_array.name == "VLA":
+        return "hifv_importdata"
+    else:
+        return "unknown"
 
 
 def to_nested_dict(stats_collection) -> Dict:
@@ -197,7 +199,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]
     stats_collection = []
     first_ms = ms_list[0]
 
-    import_program = PipelineStatistics.import_program(context, first_ms)
+    import_program = determine_import_program(context, first_ms)
 
     p1 = PipelineStatistics(
         name='project_id',
@@ -312,13 +314,13 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]
 
 
 def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
-                  ) -> List[PipelineStatistics]:
+                   ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given EB
     """
     level = PipelineStatisticsLevel.EB
     stats_collection = []
-    import_program = PipelineStatistics.import_program(context, ms_list[0])
+    import_program = determine_import_program(context, ms_list[0])
 
     for ms in ms_list:
         eb = ms.name
@@ -370,7 +372,7 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
     stats_collection = []
     ms = ms_list[0]
     spw_list = ms.get_all_spectral_windows()
-    import_program = PipelineStatistics.import_program(context, ms)
+    import_program = determine_import_program(context, ms)
 
     for spw in spw_list:
         p1 = PipelineStatistics(
@@ -457,7 +459,7 @@ def _get_source_values(context, mous: str, ms_list: List[MeasurementSet],
     level = PipelineStatisticsLevel.SOURCE
     stats_collection = []
     first_ms = ms_list[0]
-    import_program = PipelineStatistics.import_program(context, first_ms)
+    import_program = determine_import_program(context, first_ms)
 
     science_sources = sorted({source for source in first_ms.sources
                               if 'TARGET' in source.intents}, key=lambda source: source.name)
