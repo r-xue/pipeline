@@ -3,9 +3,7 @@ from __future__ import annotations
 
 import json
 import os
-import random
-import time
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 
@@ -23,43 +21,6 @@ __all__ = [
 
 LOG = infrastructure.logging.get_logger(__name__)
 ANTPOS_SERVICE_URL = ['https://asa.alma.cl/uncertainties-service/uncertainties/versions/last/measurements/casa/']
-
-
-def run_with_retry(
-    func: Callable[..., Any],
-    max_retries: int = 3,
-    base_delay: int = 3,
-    jitter: int = 2,
-    *args,
-    **kwargs
-) -> Any:
-    """
-    Executes a function with retry logic and exponential backoff plus random jitter.
-
-    Args:
-        func: The function to execute.
-        max_retries: Maximum number of retry attempts.
-        base_delay: Base delay in seconds before retrying.
-        jitter: Maximum additional random jitter in seconds added to delay.
-        *args: Positional arguments to pass to the function.
-        **kwargs: Keyword arguments to pass to the function.
-
-    Returns:
-        Any: The result of the function call if successful.
-
-    Raises:
-        Exception: The last encountered exception if all retries fail.
-    """
-    for attempt in range(max_retries):
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            LOG.warning(f"[Attempt {attempt}] Failed with error: {e}")
-            if attempt == max_retries - 1:
-                LOG.error("Max retries reached. Raising exception.")
-                raise e
-            delay = base_delay * (2 ** attempt) + random.uniform(0, jitter)
-            time.sleep(delay)
 
 
 class ALMAAntposInputs(antpos.AntposInputs):
@@ -84,7 +45,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
     threshold = vdp.VisDependentProperty(default=1.0)
     snr = vdp.VisDependentProperty(default="default")
-    search = vdp.VisDependentProperty(default='both_latest')
+    search = vdp.VisDependentProperty(default='auto')
 
     def __init__(
             self,
@@ -112,32 +73,32 @@ class ALMAAntposInputs(antpos.AntposInputs):
             vis: List of input MeasurementSets.
                 Defaults to those specified in the pipeline context.
 
-                Example: `["ngc5921.ms"]`
+                Example: ['ngc5921.ms']
 
             caltable: List of output calibration table names.
                 Defaults to the standard pipeline naming convention.
 
-                Example: `["ngc5921.gcal"]`
+                Example: ['ngc5921.gcal']
 
             hm_antpos: 
                 Heuristic method for retrieving antenna position corrections.
-                - `"online"` (query ALMA database through casa task `getantposalma`)
-                - `"manual"` (user-provided corrections)
-                - `"file"` (corrections from an external file)
+                - 'online' (query ALMA database through casa task `getantposalma`)
+                - 'manual' (user-provided corrections)
+                - 'file' (corrections from an external file)
 
-                Example: `"manual"`
+                Example: 'manual'
 
             antposfile: 
                 Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
-                 of the outfile created by `getantposalma` for `hm_antpos="online"` (defaults to 'antennapos.json').
+                 of the outfile created by `getantposalma` for `hm_antpos='online'`. Defaults to 'antennapos.json'.
 
-                Example: `"antennapos.csv"`
+                Example: 'antennapos.csv'
 
             antenna: 
-                A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos` is "manual" 
-                or "online"`).
+                A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos` is 'manual' 
+                or 'online').
 
-                Example: `"DV05,DV07"`
+                Example: 'DV05,DV07'
 
             offsets: 
                 A flat list of floating-point offsets (X, Y, Z) for all specified antennas.
@@ -147,21 +108,21 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
             threshold: 
                 Threshold value (in wavelengths) above which antenna position offsets are highlighted in the weblog.
-                Defaults to `1.0`.
+                Defaults to 1.0.
 
-                Example: `1.0`
+                Example: 1.0
 
             snr:
                 A float value describing the signal-to-noise threshold used by the getantposalma task. Antennas with 
-                snr below the threshold will not be retrieved. Only used with `hm_antpos="online"`. Defaults to `5.0`.
+                snr below the threshold will not be retrieved. Only used with `hm_antpos='online'`. Defaults to 'default'.
 
-                Example: `5.0`
+                Example: 5.0
 
             search:
-                Search algorithm used by the getantposalma task. Supports 'both_latest' and 'both_closest'.
-                Only used with `hm_antpos="online"`. Defaults to `both_latest`.
+                Search algorithm used by the getantposalma task. Supports 'both_latest', 'both_closest', and 'auto'.
+                Only used with `hm_antpos='online'`. Defaults to 'auto'.
 
-                Example: `both_closest`
+                Example: 'both_closest'
         """
         super().__init__(
             context,
@@ -255,7 +216,7 @@ class ALMAAntpos(antpos.Antpos):
             # PIPE-51: retrieve json file for MS to include in the call to gencal
             antpos_args = inputs.to_antpos_args()
             if not os.path.exists(antpos_args['outfile']):
-                antpos_job = run_with_retry(casa_tasks.getantposalma, **antpos_args)
+                antpos_job = casa_tasks.getantposalma(**antpos_args)
                 self._executor.execute(antpos_job)
             else:
                 LOG.warning('Antenna position file %s exists. Skipping getantposalma task.', antpos_args['outfile'])
