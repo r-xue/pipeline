@@ -18,7 +18,7 @@ class VlassFlagSummary(object):
 
     @matplotlibrc_formal
     def plot(self):
-        stage_dir = os.path.join(self.context.report_dir, 'stage%d' % self.result.stage_number)
+        stage_dir = os.path.join(self.context.report_dir, f'stage{self.result.stage_number}')
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
 
