@@ -376,13 +376,16 @@ class DetectMissedLines( object ):
             + [ self.frequency[-1] + increment/2.0 ]
 
         # draw the full spectrum in gray
-        ax.stairs( z_linefree, frequency_boundaries, color='gray', label='continuum range' )
+        ax.stairs( z_linefree, frequency_boundaries,
+                   color='gray', label='continuum range', baseline=None )
 
         # overdraw the line part in orange
-        ax.stairs( z_line, frequency_boundaries, color='orange', label='line range' )
+        ax.stairs( z_line, frequency_boundaries,
+                   color='orange', label='line range', baseline=None )
 
         # overdraw the other part in magenta (masked range)
-        ax.stairs( z_other, frequency_boundaries, color='magenta', label='masked range' )
+        ax.stairs( z_other, frequency_boundaries,
+                   color='magenta', label='masked range', baseline=None )
 
         # mark the excesses
         z_excess = np.where( z_linefree > dev_threshold, z_linefree, np.nan )
@@ -395,7 +398,9 @@ class DetectMissedLines( object ):
 
         # paint the line ranges
         for line in line_ranges:
-            ax.axvspan( self.frequency[line[0]], self.frequency[line[1]], color='cyan', alpha=0.3 )
+            ax.axvspan( self.frequency[line[0]] - increment/2.0,
+                        self.frequency[line[1]] + increment/2.0,
+                        color='cyan', alpha=0.3 )
 
         # figure parameters
         ax.set_ylim( 1.1 * np.nanmin( z_linefree ),
