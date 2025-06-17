@@ -146,36 +146,38 @@ def calc_transmission(airmass: float, dry_opacity: Union[float, np.ndarray],
     return np.exp(-airmass * (dry_opacity + wet_opacity))
 
 
-def get_dry_opacity(at: casatools.atmosphere) -> np.ndarray:
+def get_dry_opacity(at: casatools.atmosphere, atm_spw_id: int = 0) -> np.ndarray:
     """
     Obtain the integrated zenith opacity of dry species.
 
     Args:
         at: Atmosphere tool instance initialized by a spectral window and site
             parameter settings.
+        atm_spw_id: spectral window id for atmosphere tool
 
     Returns:
         An array of the zenith integrated opacity of dry species for each
         channel of the first spectral window.
     """
-    dry_opacity_result = at.getDryOpacitySpec(0)
+    dry_opacity_result = at.getDryOpacitySpec(atm_spw_id)
     dry_opacity = np.asarray(dry_opacity_result[1])
     return dry_opacity
 
 
-def get_wet_opacity(at: casatools.atmosphere) -> np.ndarray:
+def get_wet_opacity(at: casatools.atmosphere, atm_spw_id: int = 0) -> np.ndarray:
     """
     Obtain the integrated zenith opacity of wet species.
 
     Args:
         at: Atmosphere tool instance initialized by a spectral window and site
             parameter settings.
+        atm_spw_id: spectral window id for atmosphere tool
 
     Returns:
         An array of the zenith integrated opacity of wet species for each
         channel of the first spectral window.
     """
-    wet_opacity_result = at.getWetOpacitySpec(0)
+    wet_opacity_result = at.getWetOpacitySpec(atm_spw_id)
     wet_opacity = np.asarray(wet_opacity_result[1]['value'])
     return wet_opacity
 
@@ -437,7 +439,7 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
 
 
-def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:
+def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False, extra_spw: list[dict] = []) -> Tuple[np.ndarray, np.ndarray]:
     """
     Calculate atmospheric transmission covering a range of frequency.
 
@@ -456,7 +458,7 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         resolution: Frequency resolution (unit: GHz/ch).
         antenna_id: The antenna ID.
         doplot: If True, plot the atmospheric transmission and opacities.
-
+        extra_spw: extra atm sectral window setting
     Returns:
         A tuple of 2 arrays. The first one is an array of frequencies in the
         unit of GHz, and the other is the atmospheric transmission at each
@@ -484,19 +486,30 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     myqa = casa_tools.quanta
     init_at(myat, fcenter=center_freq, nchan=nchan, resolution=resolution,
             altitude=altitude)
+    for aspw in extra_spw:
+        fwidth = aspw['nchan'] * aspw['resolution']
+        myat.addSpectralWindow(
+            fCenter=myqa.quantity(aspw['center_freq'], 'GHz'),
+            fWidth=myqa.quantity(fwidth, 'GHz'),
+            fRes=myqa.quantity(aspw['resolution'], 'GHz')
+        )
+    num_spw = 1 + len(extra_spw)
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
-    dry_opacity = get_dry_opacity(myat)
-    wet_opacity = get_wet_opacity(myat)
+    dry_opacity = np.concatenate([get_dry_opacity(myat, i) for i in range(num_spw)])
+    wet_opacity = np.concatenate([get_wet_opacity(myat, i) for i in range(num_spw)])
     transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
-    frequency = myqa.convert(myat.getSpectralWindow(0), "GHz")['value']
+    frequency = np.concatenate([myqa.convert(myat.getSpectralWindow(i), "GHz")['value'] for i in range(num_spw)])
+    sort_index = np.argsort(frequency)
+    frequency_sorted = frequency[sort_index]
+    transmission_sorted = transmission[sort_index]
 
     if doplot:
-        plot(frequency, dry_opacity, wet_opacity, transmission)
+        plot(frequency_sorted, dry_opacity[sort_index], wet_opacity[sort_index], transmission_sorted)
 
     myat.done()
-    return frequency, transmission
+    return frequency_sorted, transmission_sorted
 
 
 def get_table_nrow(table_name: str) -> Optional[int]:

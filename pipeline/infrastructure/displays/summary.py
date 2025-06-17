@@ -1316,6 +1316,8 @@ class SpwIdVsFreqChart(object):
         rmin = np.inf
         atm_freq_list = []
         atm_transmission_list = []
+        extra_atm_spw_list = []
+        ATM_FREQ_RESOLUTION = 5e-4  # GHz
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
@@ -1326,6 +1328,7 @@ class SpwIdVsFreqChart(object):
                 fmin = float(spwdata.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
+                LOG.info(f"spw {spwdata.id}: bw {bw:.3g} GHz fmin {fmin:.3g} GHz")
 
                 # 2. annotate each bars
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
@@ -1337,15 +1340,21 @@ class SpwIdVsFreqChart(object):
                 center_freq = fmin + bw / 2
                 # To have 5 data points within the ozone feature of 2 MHz FWHM:
                 # 2 MHz/(5-1) = 500 kHz.
-                resolution = 5e-4
+                resolution = ATM_FREQ_RESOLUTION
                 nchan = bw / resolution + 1
+                if nchan > 1001:
+                    nchan = 1001
+                    resolution = bw / (nchan - 1)
                 LOG.info(
                     "'Spectral Window ID vs. Frequency' plot for spw %d the atmospheric transmission with %d data points at %.3f kHz intervals.",
                     spwid, nchan, resolution*1e6
                 )
-                atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
-                atm_freq_list.append(atm_freq)
-                atm_transmission_list.append(atm_transmission)
+                extra_atm_spw_list.append({
+                    'spw': spwid,
+                    'center_freq': center_freq,
+                    'resolution': resolution,
+                    'nchan': nchan
+                })
 
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
@@ -1353,18 +1362,18 @@ class SpwIdVsFreqChart(object):
         # to smaller than 500 kHz but is set to larger than that corresponding to 48001 data points.
         fspan = xmax - xmin
         # Use 10x coarse resolution for frequency range outside science spw
-        resolution = 5e-3
+        resolution = ATM_FREQ_RESOLUTION * 10
         nchan = round(fspan / resolution) + 1
+        if nchan > 1001:
+            nchan = 1001
+            resolution = fspan / (nchan - 1)
         LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
-        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
-        # consolidate all frequency values and sort them in an ascending order
-        atm_freq_list.append(atm_freq)
-        atm_transmission_list.append(atm_transmission)
-        atm_freq = np.concatenate(atm_freq_list)
-        atm_transmission = np.concatenate(atm_transmission_list)
-        sort_index = np.argsort(atm_freq)
+        atm_freq, atm_transmission = atmutil.get_transmission_for_range(
+            vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False,
+            extra_spw=extra_atm_spw_list
+        )
 
-        ax_atm.plot(atm_freq[sort_index], atm_transmission[sort_index], color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
 
         # set axes limits, title, label, grid, tick, and save the plot to file
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
