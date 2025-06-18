@@ -825,33 +825,26 @@ class Editimlist(basetask.StandardTaskTemplate):
         spwgroup_reject_list = []
 
         for idx, spw in enumerate(imlist_entry['spw']):
-
             imlist_entry_per_spwgroup = copy.deepcopy(imlist_entry)
             imlist_entry_per_spwgroup['spw'] = spw
-            imlist_entry_per_spwgroup['imagename'] = imlist_entry['imagename'] + \
-                '.spw' + spw.replace('~', '-').replace(',', '_')
+            imlist_entry_per_spwgroup['imagename'] = (
+                imlist_entry['imagename'] + '.spw' + spw.replace('~', '-').replace(',', '_')
+            )
             imlist_entry_per_spwgroup['reffreq'] = th.meanfreq_spwgroup(spw)
-            # flagpct within the 1de^2 box
+            # PIPE-1800: flagpct per spw group within the 1de^2 box
             imlist_entry_per_spwgroup['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
-            # flagpct over the entire mosaic
-            flagpct = th.flagpct_spwgroup(results_list=self.inputs.context.results, spw_selection=spw)
-            # PIPE-1800: flagpct_threshold here is the flag percent rejection threshold across the entire mosaic.
+            # PIPE-1800/PIPE-2641: flagpct_threshold here is the flag percent rejection threshold over the selected fields.
             # We hardcode the value to 1.0 which means we reject any spw that is completely flagged.
             # Note that this is different from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging threshold to
             # define "bad" fields.
             flagpct_threshold = 1.0
-
-            if flagpct is None:
+            if imlist_entry_per_spwgroup['flagpct'] >= flagpct_threshold:
                 LOG.warning(
-                    'Can not find previous flagging summary for spw=%r, but we will still add it as an imaging target.',
-                    spw)
-            else:
-                if flagpct >= flagpct_threshold:
-                    LOG.warning(
-                        'VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.', spw,
-                        flagpct * 100)
-                    continue
-
+                    'VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.',
+                    spw,
+                    imlist_entry_per_spwgroup['flagpct'] * 100,
+                )
+                continue
             if vlass_flag_stats['spwgroup_reject'][idx]:
                 spwgroup_reject_list.append(spw)
                 continue
@@ -863,10 +856,11 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         if spwgroup_reject_list:
             LOG.warning(
-                'VLASS Data for spw=%r meets the plane rejection criteria: nfield>=%i with flagpct>=%.2f%%.', ','.join(
-                    spwgroup_reject_list),
+                'VLASS Data for spw=%r meets the plane rejection criteria: nfield>=%i with flagpct>=%.2f%%.',
+                ','.join(spwgroup_reject_list),
                 self.inputs.vlass_plane_reject_ms['nfield_thresh'],
-                self.inputs.vlass_plane_reject_ms['flagpct_thresh'] * 100)
+                self.inputs.vlass_plane_reject_ms['flagpct_thresh'] * 100,
+            )
 
         return result
 
