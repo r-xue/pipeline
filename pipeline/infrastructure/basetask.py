@@ -953,7 +953,7 @@ def write_pipeline_casa_tasks(context):
     Write the equivalent pipeline CASA tasks for results in the context to a
     file
     """
-    h_init_params = f'''processing_intents={context.processing_intents}''' if context.processing_intents else ''
+    h_init_params = f'processing_intents={context.processing_intents}' if context.processing_intents else ''
 
     pipeline_tasks = []
     for proxy in context.results:
