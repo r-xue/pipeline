@@ -68,7 +68,6 @@ dependencies:
     - casaplotms
     - casaviewer
     - casampi
-    - almatasks
     - casashell
     - csscompressor == 0.9.5
     - logutils == 0.3.5    

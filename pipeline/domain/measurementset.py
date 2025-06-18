@@ -1584,3 +1584,56 @@ class MeasurementSet(object):
             spw_list = utils.range_to_list(spw_select)
 
         return spw_list
+
+    # PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here
+    def compute_az_el_to_field(self, field: Field | None = None, epoch: dict | None = None) -> list[float]:
+        """Computes azimuth and elevation of a field at a given epoch.
+
+        This method uses the CASA `measures` tool to convert the direction
+        of a field to azimuth and elevation (AZELGEO frame) at the time
+        specified by the epoch and location of the observatory.
+
+        Args:
+            field : Field domain object or None.
+            epoch :  A dictionary representing the time epoch.
+
+        Returns:
+            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+        """
+        me = casa_tools.measures
+        me.doframe(epoch)
+        me.doframe(me.observatory(self.antenna_array.name))
+        myazel = me.measure(field.mdirection, 'AZELGEO')
+        myaz = myazel['m0']['value']
+        myel = myazel['m1']['value']
+        myaz = (myaz * 180 / np.pi) % 360
+        myel *= 180 / np.pi
+
+        return [myaz, myel]
+
+    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+        """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
+
+        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
+        values computed at the start and end of each field in science scans.
+
+        Args:
+            func (callable): A function that takes a list of floats and returns a single float.
+                Common examples include `min`, `max`, or `np.mean`.
+
+        Returns:
+            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+        """
+        cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
+        scans = [s for s in self.scans if s not in cal_scans]
+
+        az = []
+        el = []
+        for scan in scans:
+            for field in scan.fields:
+                az0, el0 = self.compute_az_el_to_field(field, scan.start_time)
+                az1, el1 = self.compute_az_el_to_field(field, scan.end_time)
+                az.append(func([az0, az1]))
+                el.append(func([el0, el1]))
+
+        return func(az), func(el)
