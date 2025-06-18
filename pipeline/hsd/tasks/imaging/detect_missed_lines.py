@@ -4,8 +4,9 @@ Diagnoze possible missed lines
 Original code provided by Andres Guzman.
 See PIPE-2416 / PIPEREQ-182 for details.
 """
+from __future__ import annotations
 
-from typing import List, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING
 import math
 import os
 
@@ -38,13 +39,13 @@ SIGMA_CLIPPING_MAX_ITERATIONS = 3
 class DetectMissedLines( object ):
     """Class to find lines missed during line identification"""
     def __init__( self,
-                  context: 'Context',
-                  msobj_list: List['MeasurementSet'],
-                  spwid_list: List[int],
-                  fieldid_list: List[int],
-                  item: 'ImageItem',
+                  context: Context,
+                  msobj_list: list[MeasurementSet],
+                  spwid_list: list[int],
+                  fieldid_list: list[int],
+                  item: ImageItem,
                   frequency_channel_reversed: bool = False,
-                  edge: List[int] = [0, 0],
+                  edge: list[int] = [0, 0],
                   do_plot: bool = True ):
         """
         Construct DetectMissedLines instance
@@ -110,8 +111,8 @@ class DetectMissedLines( object ):
         self.beam_size = self.image.beam_size  # in degrees
 
     def analyze( self,
-                 valid_lines: List[List[float]],
-                 linefree_ranges: List[List[int]] ) -> Tuple[bool, str | None]:
+                 valid_lines: list[list[float]],
+                 linefree_ranges: list[list[int]] ) -> tuple[bool, str | None]:
         """
         Analyze the image cube to diagnoze missed lines
 
@@ -180,8 +181,8 @@ class DetectMissedLines( object ):
 
         return sigma
 
-    def _mask_spec( self, weighted_cube: 'sdtyping.NpArray3D',
-                    mask_limit: float = MASK_LIMIT ) -> Tuple['sdtyping.NpArray1D', float]:
+    def _mask_spec( self, weighted_cube: sdtyping.NpArray3D,
+                    mask_limit: float = MASK_LIMIT ) -> tuple[sdtyping.NpArray1D, float]:
         """
         Calculate the metric with moment_mask method
 
@@ -213,7 +214,7 @@ class DetectMissedLines( object ):
 
         return masked_spectrum, sigma_mm
 
-    def _beam_weight( self, center: Tuple[float, float] ) -> 'sdtyping.NpArray2D':
+    def _beam_weight( self, center: tuple[float, float] ) -> sdtyping.NpArray2D:
         """
         Calculate a 2D-gaussian beam for beam weighting
 
@@ -229,7 +230,7 @@ class DetectMissedLines( object ):
 
         return np.exp( -r2 / ( 2 * s2 ) )
 
-    def _extract_beam_spec( self, center: Tuple[float, float] ) -> 'sdtyping.NpArray1D':
+    def _extract_beam_spec( self, center: tuple[float, float] ) -> sdtyping.NpArray1D:
         """
         Project the beam weighted image cube to a 1-D spectrum
 
@@ -245,8 +246,8 @@ class DetectMissedLines( object ):
         return np.nanmean( product, axis=(1, 2) ) / np.nanmean( beam_weight )
 
     def _max_spec( self,
-                   weighted_cube: 'sdtyping.NpArray3D',
-                   center: Tuple[float, float] | None = None ) -> Tuple['sdtyping.NpArray1D', float]:
+                   weighted_cube: sdtyping.NpArray3D,
+                   center: tuple[float, float] | None = None ) -> tuple[sdtyping.NpArray1D, float]:
         """
         Calculate the metric with single_beam detection
 
@@ -269,8 +270,8 @@ class DetectMissedLines( object ):
         return sb, sigma_sb
 
     def _detect_over_deviation_threshold( self,
-                                          line_ranges: List[List[int]],
-                                          linefree_ranges: List[List[int]],
+                                          line_ranges: list[list[int]],
+                                          linefree_ranges: list[list[int]],
                                           mask_mode: str = 'single_beam',
                                           dev_threshold: float = DEVIATION_THRESHOLD_SINGLE_BEAM,
                                           width_threshold: int = 2 ) -> bool:
@@ -344,11 +345,11 @@ class DetectMissedLines( object ):
 
     def _plot( self,
                stage_dir: str,
-               line_ranges: List[List[int]],
-               z_all: 'sdtyping.NpArray1D',
-               z_line: 'sdtyping.NpArray1D',
-               z_linefree: 'sdtyping.NpArray1D',
-               z_other: 'sdtyping.NpArray1D',
+               line_ranges: list[list[int]],
+               z_all: sdtyping.NpArray1D,
+               z_line: sdtyping.NpArray1D,
+               z_linefree: sdtyping.NpArray1D,
+               z_other: sdtyping.NpArray1D,
                dev_threshold: float,
                mask_mode: str ):
         """
