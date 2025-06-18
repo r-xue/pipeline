@@ -4502,7 +4502,6 @@ def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
         fraction_outside = len(outliers) / len(values.data.flatten())
         band_score = (1 - fraction_outside)
 
-
         longmsg = f"Band {band} has {fraction_outside*100:.2f}% data outside the range 0.7-1.2"
 
         shortmsg = (f"{band}: {fraction_outside*100:.2f}% >[0.7-1.2]")
@@ -4532,7 +4531,7 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
     """
     bandlist = []
     for band in short_solint:
-        if short_solint[band] > long_solint[band]:
+        if short_solint[band] >= long_solint[band]:
             bandlist.append(band)
 
     if bandlist:
