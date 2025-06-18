@@ -155,7 +155,7 @@ from pipeline.infrastructure import utils
 				<caption>All Spectral Windows in ${ms.basename}</caption>
 			    <thead>
 			        <tr>
-			            <th scope="col" rowspan="2">ID</th>
+			            <th scope="col" rowspan="2">Real ID</th>
 						<th scope="col" rowspan="2">Name</th>
 			            <%
 						spwtypelabel='<th scope="col" rowspan="2">Type</th>'
