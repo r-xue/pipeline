@@ -149,14 +149,14 @@ class EditimlistInputs(vdp.StandardInputs):
     @vlass_plane_reject_ms.postprocess
     def vlass_plane_reject_ms(self, unprocessed):
         """Convert the allowed argument input datatype to the dictionary form used by the task."""
-        vlass_plane_reject_dict = {
-            'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.9, 'nfield_thresh': 12}
+        vlass_plane_reject_dict = {'apply': True, 'exclude_spw': '', 'flagpct_thresh': 0.9, 'nfield_thresh': 12}
         if isinstance(unprocessed, dict):
             vlass_plane_reject_dict.update(unprocessed)
         if isinstance(unprocessed, bool):
             vlass_plane_reject_dict['apply'] = unprocessed
-        LOG.debug("convert the task input of vlass_plane_reject_ms from %r to %r.",
-                  unprocessed, vlass_plane_reject_dict)
+        LOG.debug(
+            'convert the task input of vlass_plane_reject_ms from %r to %r.', unprocessed, vlass_plane_reject_dict
+        )
         return vlass_plane_reject_dict
 
     @vdp.VisDependentProperty
@@ -772,7 +772,7 @@ class Editimlist(basetask.StandardTaskTemplate):
         try:
             if imlist_entry['field']:
                 if result.img_mode == 'VLASS-SE-CUBE':
-                    result = th.add_vlasscube_targets(result, imlist_entry)
+                    result = th.add_vlasscube_targets(result, imlist_entry, self.inputs.vlass_plane_reject_ms)
                 else:
                     result.add_target(imlist_entry)
             else:

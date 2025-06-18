@@ -2,6 +2,10 @@
 rsc_path = "../"
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+
+def get_mutiple_line_string(targets, key):
+    """Convert a list of strings to a single string with each element separated by a line break."""
+    return '<br>'.join([str(target[key]) for target in targets])
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -37,7 +41,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>Image name (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_imagename)}</td>                
+                <td>${get_mutiple_line_string(targets, 'imagename')}</td>                
             %else:
                 <td><strong>Image name</strong></td>
                 <td>${os.path.basename(target['imagename'])}</td>
@@ -58,7 +62,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>spw (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_spw)}</td>
+                <td>${get_mutiple_line_string(targets, 'spw')}</td>  
             %else:
                 <td><strong>spw</strong></td>
                 <td>${target['spw']}</td>
@@ -67,12 +71,18 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>reffreq (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_reffreq)}</td>
+                <td>${get_mutiple_line_string(targets, 'reffreq')}</td> 
             %else:
                 <td><strong>reffreq</strong></td>
                 <td>${target['reffreq']}</td>
             %endif
         </tr>
+        <tr>
+            %if r.img_mode == 'VLASS-SE-CUBE':
+                <td><strong>flagpct (per plane)</strong></td>
+                <td>${get_mutiple_line_string(targets, 'flagpct')}</td>
+            %endif
+        </tr>        
         <%
         if isinstance(target['mask'], list):
             mask='<br>'.join(target['mask'])

@@ -1,4 +1,5 @@
 import copy
+import os
 from typing import Optional, Union
 
 import numpy as np
@@ -7,7 +8,8 @@ import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tasks
 
-from .imageparams_vlass_single_epoch_continuum import ImageParamsHeuristicsVlassSeContMosaic
+from .imageparams_vlass_single_epoch_continuum import \
+    ImageParamsHeuristicsVlassSeContMosaic
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -161,9 +163,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
                     k,
                 )
 
-        result.targets_reffreq = []
-        result.targets_spw = []
-        result.targets_imagename = []
+
 
         vlass_flag_stats = self._plane_rejection(imlist_entry, vlass_plane_reject_ms)
         result.vlass_flag_stats = vlass_flag_stats
@@ -195,9 +195,6 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
                 spwgroup_reject_list.append(spw)
                 continue
 
-            result.targets_reffreq.append(imlist_entry_per_spwgroup['reffreq'])
-            result.targets_spw.append(imlist_entry_per_spwgroup['spw'])
-            result.targets_imagename.append(os.path.basename(imlist_entry_per_spwgroup['imagename']))
             result.add_target(imlist_entry_per_spwgroup)
 
         if spwgroup_reject_list:
