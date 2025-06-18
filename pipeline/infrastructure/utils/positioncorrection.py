@@ -112,8 +112,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
             # https://nom-tam-fits.github.io/nom-tam-fits/apidocs/nom/tam/fits/header/extra/NOAOExt.html#ZD
             # zd for zenith distance and telmjd for time
             zd_deg = casa_tools.quanta.convert(zd, 'deg')['value']
-            header['zd'] = zd_deg
-            header['telmjd'] = date_time["m0"]["value"]
+            header['zd'] = (zd_deg, 'Zenith distance of telescope pointing at TELMJD.')
+            header['telmjd'] = (date_time["m0"]["value"], 'Time of zenith distance and hour angle.')
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),

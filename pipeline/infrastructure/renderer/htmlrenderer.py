@@ -24,6 +24,7 @@ import pipeline
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment, infrastructure
 from pipeline.domain import measures
+from pipeline.extern import findContinuum
 from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
     logging, mpihelpers, task_registry, utils
 from pipeline.infrastructure.displays import pointing, summary
@@ -913,9 +914,19 @@ class T2_1DetailsRenderer(object):
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
-        # Get min, max elevation
-        el_min = "%.2f" % ms.compute_az_el_for_ms(min)[1]
-        el_max = "%.2f" % ms.compute_az_el_for_ms(max)[1]
+        # Get min, max elevation, zenith angle (if relevant), and telmjd (if relevant)
+        observatory = context.project_summary.telescope
+        el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
+        el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+        data = compute_zd_telmjd_for_ms(ms)
+        zd = list(itertools.chain.from_iterable([data[f]['zd'] for f in data]))
+        telmjd = list(itertools.chain.from_iterable([data[f]['telmjd'] for f in data]))
+        zd_min, zd_max = round(min(zd), 2), round(max(zd), 2)
+        telmjd_min, telmjd_max = min(telmjd), max(telmjd)
+
+        # Create zenith angle vs time plot
+        task = summary.ZDTELMJDChart(context, ms, data)
+        zd_vs_telmjd_plot = task.plot()
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 
@@ -985,10 +996,15 @@ class T2_1DetailsRenderer(object):
             'pwv_plot'        : pwv_plot,
             'azel_plot'       : azel_plot,
             'el_vs_time_plot' : el_vs_time_plot,
+            'zd_telmjd_plot'  : zd_vs_telmjd_plot,
             'is_singledish'   : utils.contains_single_dish(context),
             'pointing_plot'   : pointing_plot,
             'el_min'          : el_min,
             'el_max'          : el_max,
+            'zd_min'          : zd_min,
+            'zd_max'          : zd_max,
+            'telmjd_min'      : findContinuum.mjdToUT(telmjd_min),
+            'telmjd_max'      : findContinuum.mjdToUT(telmjd_max),
             'vla_basebands'   : vla_basebands
         }
 
@@ -1180,6 +1196,10 @@ class T2_2_4Renderer(T2_2_XRendererBase):
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
+        data = compute_zd_telmjd_for_ms(ms)
+        task = summary.ZDTELMJDChart(context, ms, data)
+        zd_vs_telmjd_plot = task.plot()
+
         # Create U-V plot, if necessary.
         if utils.contains_single_dish(context):
             plot_uv = None
@@ -1195,6 +1215,7 @@ class T2_2_4Renderer(T2_2_XRendererBase):
                 'azel_plot': azel_plot,
                 'suntrack_plot': suntrack_plot,
                 'el_vs_time_plot': el_vs_time_plot,
+                'zd_telmjd_plot'  : zd_vs_telmjd_plot,
                 'plot_uv': plot_uv,
                 'dirname': dirname}
 
@@ -2189,6 +2210,39 @@ def compute_az_el_for_ms(ms, observatory, func):
             el.append(func([el0, el1]))
 
     return func(az), func(el)
+
+
+def compute_zd_telmjd_for_ms(
+        ms: MeasurementSet,
+        target_only: bool=True,
+        ) -> tuple[list, list]:
+    """
+    Retrieves zenith angle and telescope MJD for the MS.
+
+    Args:
+        ms: The MeasurementSet object.
+        target_only: Switch to determine whether to retrieve all scans or only TARGET scans. Default is True.
+
+    Returns:
+        A tuple containing lists with the zenith angles and telmjd of the scans.
+    """
+    data = {}
+
+    scans = ms.get_scans()
+    if target_only:
+        scans = ms.get_scans(scan_intent='TARGET')
+
+    for scan in scans:
+        for field in scan.fields:
+            if field.name not in data:
+                data[field.name] = {
+                    'zd': [],
+                    'telmjd': [],
+                }
+            data[field.name]['zd'].append(field.zd['value'])
+            data[field.name]['telmjd'].append(field.telmjd['value'])
+
+    return data
 
 
 def cmp(a, b):

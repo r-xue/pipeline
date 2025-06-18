@@ -1,10 +1,10 @@
 """Provide a class to store logical representation of field."""
+import datetime
 import pprint
 
 import numpy as np
 
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import utils
+from pipeline.infrastructure import casa_tools, utils
 
 _pprinter = pprint.PrettyPrinter(width=1e99)
 
@@ -57,6 +57,9 @@ class Field(object):
         # from multiple origins (Source.xml, user .CSV file). May also later be
         # updated by flux calibration pipeline tasks.
         self.flux_densities = set()
+
+        # PIPE-2472: calculate zenith distance and telescope MJD of observation (TELMJD)
+        self._zd, self._telmjd = self.set_zd_telmjd()
 
     def __repr__(self) -> str:
         name = self.name
@@ -143,6 +146,16 @@ class Field(object):
         """Return declination for the phasecenter of the field."""
         return self.dec
 
+    @property
+    def zd(self) -> dict:
+        """Return the zenith distance in a CASA `quantity` quanta dictionary."""
+        return self._zd
+
+    @property
+    def telmjd(self) -> dict:
+        """Return the Modified Julian Date in a CASA `epoch` measure dictionary"""
+        return self._telmjd
+
     def set_source_type(self, source_type: str) -> None:
         """
         Update the intent(s) associated with the field based on given source
@@ -168,6 +181,27 @@ class Field(object):
                        'DIFFGAINSRC', 'UNKNOWN', 'SYSTEM_CONFIGURATION']:
             if source_type.find(intent) != -1:
                 self.intents.add(intent)
+
+    def set_zd_telmjd(self) -> None:
+        """"Return the zenith distance at the observation mid-time in degrees."""
+        # Obtain observatory geographic coordinates
+        observatory = casa_tools.measures.observatory('VLA')
+        obs_long = observatory['m0']
+        obs_lat = observatory['m1']
+        mjd_epoch = datetime.datetime(1858, 11, 17)
+        # retrieve field location
+        ra_head = self.longitude
+        dec_head = self.latitude
+        # Mean observing time
+        start_time = mjd_epoch + datetime.timedelta(seconds=min(self.time))
+        end_time = mjd_epoch + datetime.timedelta(seconds=max(self.time))
+        mid_time = start_time + (end_time - start_time) / 2
+        mid_time = casa_tools.measures.epoch('utc', mid_time.isoformat())
+
+        # retrieve zenith angle to 2 sig figs for reporting to weblog
+        za_rad, _ = utils.positioncorrection.calc_zd_pa(
+            ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time)
+        return casa_tools.quanta.convert(za_rad, 'deg'), mid_time['m0']
 
     def __str__(self) -> str:
         return '<Field {id}: name=\'{name}\' intents=\'{intents}\'>'.format(

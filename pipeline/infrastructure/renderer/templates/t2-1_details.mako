@@ -190,6 +190,18 @@ import os
 					<th>Max Elevation</th>
 					<td>${el_max} degrees</td>
 				</tr>
+				<tr>
+					<th>Min Zenith Angle</th>
+					<td>${zd_min} degrees</td>
+				</tr>
+				<tr>
+					<th>Max Zenith Angle</th>
+					<td>${zd_max} degrees</td>
+				</tr>
+				<tr>
+					<th>TELMJD</th>
+					<td>${telmjd_min} - ${telmjd_max}</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

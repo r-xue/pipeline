@@ -7,6 +7,7 @@ import operator
 import os
 from typing import TYPE_CHECKING, Generator
 
+import astropy.time
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,7 +30,65 @@ DISABLE_PLOTMS = False
 ticker.TickHelper.MAXTICKS = 10000
 
 
-class AzElChart(object):
+class ZDTELMJDChart:
+    def __init__(self, context, ms, data):
+        self.context = context
+        self.ms = ms
+        self.data = data
+        self.figfile = self._get_figfile()
+
+    def plot(self):
+        if os.path.exists(self.figfile):
+            LOG.debug('Returning existing SunTrack plot')
+            return self._get_plot_object()
+
+        plt.figure()
+        plt.clf()
+
+        # Plot field zenith angle vs telescope MJD
+        plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
+                       'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
+                       '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
+        first_time = astropy.time.Time(
+            min(min(field['telmjd']) for field in self.data.values()), format='mjd'
+            ).to_datetime()
+
+        for i, field_data in enumerate(self.data.values()):
+            color = plot_colors[i % len(plot_colors)]
+            telmjd = field_data.get('telmjd', [])
+            mjd_times = astropy.time.Time(telmjd, format='mjd').to_datetime()
+            zd = field_data.get('zd', [])
+            plt.plot(mjd_times, zd, color=f'#{color}', marker='o', linestyle='-')
+
+        plt.xlabel(f'Time (UT on {first_time.strftime("%Y-%m-%d")})')
+        plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
+        plt.gcf().autofmt_xdate()
+        plt.ylabel('Zenith Angle')
+        plt.title(f'Zenith Angle vs. Time for\n{self.ms.name}')
+        plt.tight_layout()
+
+        plt.savefig(self.figfile)
+        plt.clf()
+        plt.close()
+
+        return self._get_plot_object()
+
+    def _get_figfile(self):
+        session_part = self.ms.session
+        ms_part = self.ms.basename
+
+        return os.path.join(self.context.report_dir,
+                            'session%s' % session_part,
+                            ms_part, 'zd_telmjd.png')
+
+    def _get_plot_object(self):
+        return logger.Plot(self.figfile,
+                           x_axis='Telescope MJD',
+                           y_axis='Zenith Angle',
+                           parameters={'vis': self.ms.basename})
+
+
+class AzElChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -88,7 +147,7 @@ class AzElChart(object):
                            command=str(task))
 
 
-class SunTrackChart(object):
+class SunTrackChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -129,7 +188,7 @@ class SunTrackChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class WeatherChart(object):
+class WeatherChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -170,7 +229,7 @@ class WeatherChart(object):
                            parameters={'vis': self.ms.basename})
 
 
-class ElVsTimeChart(object):
+class ElVsTimeChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -226,7 +285,7 @@ class ElVsTimeChart(object):
                            command=str(task))
 
 
-class ParameterVsTimeChart(object):
+class ParameterVsTimeChart:
     """
     Base class for FieldVsTimeChart and IntentVsTimeChart, sharing common logic such as the colour scheme for intents
     """
@@ -538,7 +597,7 @@ class IntentVsTimeChart(ParameterVsTimeChart):
                            parameters={'vis': self.inputs.ms.basename})
 
 
-class PWVChart(object):
+class PWVChart:
     def __init__(self, context, ms):
         self.context = context
         self.ms = ms
@@ -729,7 +788,7 @@ class MosaicTsysChart(MosaicChart):
         )
 
 
-class PlotAntsChart(object):
+class PlotAntsChart:
     def __init__(self, context, ms, polarlog=False):
         self.context = context
         self.ms = ms
@@ -976,7 +1035,7 @@ class PlotAntsChart(object):
         subpl.set_rmin(rmin)
 
 
-class UVChart(object):
+class UVChart:
     # CAS-11793: calsurveys do not have TARGET sources, so we must also
     # search for sources with other intents
     preferred_intent_order = ['TARGET', 'AMPLITUDE', 'BANDPASS', 'PHASE']
@@ -1225,7 +1284,7 @@ class SpwIdVsFreqChartInputs(vdp.StandardInputs):
         self.vis = vis
 
 
-class SpwIdVsFreqChart(object):
+class SpwIdVsFreqChart:
     """Generate a plot of SPW ID Versus Frequency coverage."""
 
     Inputs = SpwIdVsFreqChartInputs
