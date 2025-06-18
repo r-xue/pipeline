@@ -1194,12 +1194,18 @@ finally:
             product_keys = {}
             deleted_keys = []
             for image in reversed(original_cleanlist):
-                product_key = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], image['stokes'], image['datatype'], image['version'])
+                # SD saves the spwlist as list of ints while IF uses a comma separated string.
+                # Since lists are not hashable, we need to convert them.
+                if type(image['spwlist']) is not str:
+                    spwlist_key = ','.join(str(spwid) for spwid in image['spwlist'])
+                else:
+                    spwlist_key = image['spwlist']
+                product_key = (image['sourcename'], image['sourcetype'], spwlist_key, image['specmode'], image['stokes'], image['datatype'], image['version'])
 
                 # Store only Stokes IQUV if both I and IQUV exist
                 if image['sourcetype'] == 'TARGET' and image['stokes'] == 'IQUV':
                     # Make corresponding Stokes I key
-                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], image['spwlist'], image['specmode'], 'I', image['datatype'], image['version'])
+                    product_key_stokes_i = (image['sourcename'], image['sourcetype'], spwlist_key, image['specmode'], 'I', image['datatype'], image['version'])
 
                     # Keep key to catch arbitrary sequences of I and IQUV
                     # images of the same data selection.

@@ -441,7 +441,7 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
 
     def _do_imaging(self, infiles: List[str], antid_list: List[int], spwid_list: List[int],
                     fieldid_list: List[int], imagename: str, imagemode: str, edge: List[int],
-                    phasecenter: str, cellx: 'sdtyping.Angle', celly: 'sdtyping.Angle', nx: int, ny: int) -> bool:
+                    phasecenter: str, cellx: 'sdtyping.Angle', celly: 'sdtyping.Angle', nx: int, ny: int) -> Tuple[bool, str]:
         """Process imaging.
 
         Args:
@@ -460,7 +460,8 @@ class SDImagingWorker(basetask.StandardTaskTemplate):
             ny: the number of pixels y
 
         Returns:
-            Whether an image file with valid pixels has been generated.
+            Whether an image file with valid pixels has been generated (bool)
+            Stokes identifier (str)
         """
         context = self.inputs.context
         reference_data = context.observing_run.get_ms(infiles[0])

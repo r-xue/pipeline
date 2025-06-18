@@ -144,6 +144,10 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                 ia.maskhandler('set', default_mask)
                 ia.maskhandler('delete', nan_mask)
 
+                miscinfo = ia.miscinfo()
+                stokes = miscinfo.get('stokes', 'N/A')
+                datatype = miscinfo.get('datatype', 'N/A')
+
             # PIPE-313 re-evaluate image mask based on the combined weight image
             # according to tsdimaging code, image pixels will be masked if
             # weight is less than (minweight * median(weight image)) where
@@ -180,8 +184,8 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                                                 sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
                                                 specmode=specmode,
-                                                stokes='N/A',
-                                                datatype='N/A',
+                                                stokes=stokes,
+                                                datatype=datatype,
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             outcome = {'image': image_item}
