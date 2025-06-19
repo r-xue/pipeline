@@ -58,7 +58,7 @@ class ZDTELMJDChart:
             telmjd = field_data.get('telmjd', [])
             mjd_times = astropy.time.Time(telmjd, format='mjd').to_datetime()
             zd = field_data.get('zd', [])
-            plt.plot(mjd_times, zd, color=f'#{color}', marker='o', linestyle='-')
+            plt.scatter(mjd_times, zd, color=f'#{color}')
 
         plt.xlabel(f'Time (UT on {first_time.strftime("%Y-%m-%d")})')
         plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
