@@ -231,24 +231,28 @@ class MeasurementSetReader:
 
             # If both fail for ALMA, set the band number as follows:
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
-            LOG.debug("For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.".format(ms.name, spw.id, spw.band))
+            LOG.debug(
+                'For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.'.format(
+                    ms.name, spw.id, spw.band
+                )
+            )
 
             # For VLA/EVLA, we can use the spw2band mapping to get the band name.
-            if observatory in ("VLA", "EVLA"):
+            if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
                 EVLA_band = spw2band[spw.id]
                 EVLA_band_dict = {
-                    "4": "4m (4)",
-                    "P": "90cm (P)",
-                    "L": "20cm (L)",
-                    "S": "13cm (S)",
-                    "C": "6cm (C)",
-                    "X": "3cm (X)",
-                    "U": "2cm (Ku)",
-                    "K": "1.3cm (K)",
-                    "A": "1cm (Ka)",
-                    "Q": "0.7cm (Q)",
-                    "?": "unknown",
+                    '4': '4m (4)',
+                    'P': '90cm (P)',
+                    'L': '20cm (L)',
+                    'S': '13cm (S)',
+                    'C': '6cm (C)',
+                    'X': '3cm (X)',
+                    'U': '2cm (Ku)',
+                    'K': '1.3cm (K)',
+                    'A': '1cm (Ka)',
+                    'Q': '0.7cm (Q)',
+                    '?': 'unknown',
                 }
                 spw.band = EVLA_band_dict[EVLA_band]
 

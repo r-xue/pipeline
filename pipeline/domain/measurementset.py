@@ -1109,19 +1109,23 @@ class MeasurementSet(object):
 
         return critfrac
 
-    def get_vla_baseband_spws(self, science_windows_only: bool = True, return_select_list: bool = True,
-                              warning: bool = True) -> dict | tuple[dict, list]:
+    def get_vla_baseband_spws(
+        self, science_windows_only: bool = True, return_select_list: bool = True, warning: bool = True
+    ) -> dict | list[list[int]]:
         """Get the SPW information from individual VLA band/baseband.
 
         Args:
-            science_windows_only (bool, optional): Defaults to True.
-            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.
-            warning (bool, optional): Defaults to True.
+            science_windows_only: Whether to include only science spectral windows.
+            return_select_list: Whether to return SPW list of each baseband instead of full band/subband info.
+            warning: Whether to log warnings for parsing errors.
 
         Returns:
-            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]
-            baseband_spws_list: spw_list of individual basebands
-                e.g., [[0,1,2,3],[4,5,6,7]]
+            If return_select_list is False:
+                Dictionary with SPW info organized as baseband_spws[band][baseband], where each
+                entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.
+
+            If return_select_list is True:
+                List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].
         """
         baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
         spw2band = self.get_vla_spw2band()
@@ -1129,9 +1133,21 @@ class MeasurementSet(object):
         for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
             try:
                 band = spw2band.get(spw.id, 'unknown')
+                # PIPE-2634: historically, the codes calling `ms.get_vla_baseband_spws` was imeplemented to
+                # use two-letter convetions for KU and KA bands, e.g. 'KU' and 'KA' instead of 'U' and 'A'.
+                if band in ('U', 'A'):
+                    band = 'K' + band
                 if '#' in spw.name:
                     baseband = spw.name.split('#')[1]
                 else:
+                    # older VLA data might have this spw naming pattern:
+                    # spwid - name
+                    #   0   - Subband:7
+                    #   1   - Subband:5
+                    #     ..
+                    #   8   - Subband:7
+                    # Here as a fallback, we use the full spw name as baseband; likely band name is generated from
+                    # the frequency-base heuristics in ms.spw2band
                     baseband = spw.name
                 min_freq = spw.min_frequency
                 max_freq = spw.max_frequency
@@ -1149,7 +1165,7 @@ class MeasurementSet(object):
             for band in baseband_spws.values():
                 for baseband in band.values():
                     baseband_spws_list.append([[*spw_info][0] for spw_info in baseband])
-            return baseband_spws, baseband_spws_list
+            return baseband_spws_list
         else:
             return baseband_spws
 
