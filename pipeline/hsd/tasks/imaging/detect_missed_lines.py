@@ -51,14 +51,14 @@ class DetectMissedLines( object ):
         Construct DetectMissedLines instance
 
         Args:
-            context: Pipeline context
-            msobj_list: List of MeasurementSet objects
-            spwid_list: List of spectral window ids
-            fieldid_list: List of field ids
-            item: The image item object to be analyzed
-            frequency_channel_reversed: True if frequency channel is in reversed order (for LSB)
-            edge: Edge parameter
-            do_plot: Set True to make figure. Default is True
+            context                    : Pipeline context
+            msobj_list                 : List of MeasurementSet objects
+            spwid_list                 : List of spectral window ids
+            fieldid_list               : List of field ids
+            item                       : Image item object to be analyzed
+            frequency_channel_reversed : True if frequency channel is in reversed order (for LSB)
+            edge                       : Edge parameter
+            do_plot                    : Set True to make figure. Default is True
         Raises:
             ValueError if
               - dimensions of image and weight do not match
@@ -117,8 +117,8 @@ class DetectMissedLines( object ):
         Analyze the image cube to diagnoze missed lines
 
         Args:
-            valid_lines: List of valid lines (channels in float)
-            linefree_ranges: List of line-free ranges (channels in int)
+            valid_lines     : List of valid lines (channels in float)
+            linefree_ranges : List of line-free ranges (channels in int)
         Returns:
             True if possible missed-line is detected, False if not
             string indicating the detection process (None if no detection)
@@ -168,8 +168,8 @@ class DetectMissedLines( object ):
         Estimate the standard deviation of a sigma clipped 'data'
 
         Args:
-            data : Image or spectrum
-            sigma : Sigma clipping threshold
+            data     : Image or spectrum
+            sigma    : Sigma clipping threshold
             maxiters : Limit of iterations
         Returns:
             estimated sigma value
@@ -188,7 +188,7 @@ class DetectMissedLines( object ):
 
         Args:
             weighted_cube : Weighted cube
-            mask_limit : Threshold to mask the weighted cube data w.r.t. its standartd deviation
+            mask_limit    : Threshold to mask the weighted cube data w.r.t. its standartd deviation
         Returns:
             Projected 1-D spectrum
             Standard deviation of the spectrum
@@ -279,11 +279,11 @@ class DetectMissedLines( object ):
         Search for the missed lines and create the diagnostic plot
 
         Args:
-            line_ranges: List of deteced lines in spectral channels
-            linefree_ranges: Line-free ranges in spectral channels
-            mask_mode: Mask mode
-            dev_threshold: Deviation threshold
-            width_threshold: Threshold of chunk size in pixels
+            line_ranges     : List of deteced lines in spectral channels
+            linefree_ranges : Line-free ranges in spectral channels
+            mask_mode       : Mask mode
+            dev_threshold   : Deviation threshold
+            width_threshold : Threshold of chunk size in pixels
 
         Returns:
             True if wide enough missed lines are detected, False if not
@@ -356,14 +356,14 @@ class DetectMissedLines( object ):
         Create the plot to diagnose the missed-lines
 
         Args:
-            stage_dir: Stage directory of weblog
-            line_range: List of spectral channels of line ranges
-            z_all: deviation/sigma of all frequency channels
-            z_line: deviation/sigma of line ranges
-            z_linefree: deviation/sigma of line-free ranges
-            z_other: deviation/sigma of other ranges
-            dev_threshold: Deviation threshold for excess detection
-            mask_mode: Mask mode
+            stage_dir     : Stage directory of weblog
+            line_range    : List of spectral channels of line ranges
+            z_all         : deviation/sigma of all frequency channels
+            z_line        : deviation/sigma of line ranges
+            z_linefree    : deviation/sigma of line-free ranges
+            z_other       : deviation/sigma of other ranges
+            dev_threshold : Deviation threshold for excess detection
+            mask_mode     : Mask mode
         Raises:
             ValueError for unkown mask_mode
         """
