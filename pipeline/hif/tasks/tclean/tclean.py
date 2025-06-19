@@ -1624,10 +1624,15 @@ class Tclean(cleanbase.CleanBase):
             else:
                 flattened_mask_name = None
 
+            # The PIPE-704 edge exclusion of 5% fails for smaller than regular PL imsizes because
+            # the fraction of the PB becomes too small. Thus covering these cases with the actual
+            # ratio of pblimit_cleanmask/pblimit_image.
+            pblimit_factor = min(1.05, utils.math.round_down(1.0 + 0.5 * (result.pblimit_cleanmask / result.pblimit_image - 1.0), 2))
+
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
-                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor)
                 mom8_stats = image.statistics(mask=mom8_statsmask, robust=True, stretch=True)
                 mom8_image_median_all = mom8_stats.get('median')[0]
                 mom8_image_mad = mom8_stats.get('medabsdevmed')[0]
@@ -1636,7 +1641,7 @@ class Tclean(cleanbase.CleanBase):
                 mom8_n_pixels = int(mom8_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 mom8_stats2 = image.statistics(mask=mom8_statsmask2, robust=True, stretch=True)
 
                 mom8_image_median_annulus = mom8_stats2.get('median')[0]
@@ -1644,7 +1649,7 @@ class Tclean(cleanbase.CleanBase):
             # Calculate MOM10 FC statistics
             with casa_tools.ImageReader(mom10fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM10 FC image from the area excluding the cleaned area edges
-                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor)
                 mom10_stats = image.statistics(mask=mom10_statsmask, robust=True)
                 mom10_image_median_all = mom10_stats.get('median')[0]
                 mom10_image_mad = mom10_stats.get('medabsdevmed')[0]
@@ -1653,19 +1658,19 @@ class Tclean(cleanbase.CleanBase):
                 mom10_n_pixels = int(mom10_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 mom10_stats2 = image.statistics(mask=mom10_statsmask2, robust=True)
 
                 mom10_image_median_annulus = mom10_stats2.get('median')[0]
 
             # Get sigma and channel scaled MAD from the cube
             if flattened_mask_name is not None:
-                # Mask cleanmask and 1.05 * pblimit_image < pb < pblimit_cleanmask
-                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
+                # Mask cleanmask and pblimit_factor * pblimit_image < pb < pblimit_cleanmask
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
             else:
-                # Mask 1.05 * pblimit_image < pb < pblimit_cleanmask
-                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
+                # Mask pblimit_factor * pblimit_image < pb < pblimit_cleanmask
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                LOG.info(f'No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of {pblimit_factor} x pblimit_image < pb < pblimit_cleanmask.')
 
             with casa_tools.ImageReader(imagename) as image:
                 cube_stats_masked = image.statistics(mask=cube_statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
@@ -1690,7 +1695,7 @@ class Tclean(cleanbase.CleanBase):
                 mom8fc_image = image.getchunk()[:,:,0,0]
                 mom8fc_image_summary = image.summary()
 
-            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get number of pixels per beam
             major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
@@ -1722,7 +1727,7 @@ class Tclean(cleanbase.CleanBase):
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
 
-            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get histogram asymmetry
 
