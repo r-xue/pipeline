@@ -360,7 +360,7 @@ class Solint(basetask.StandardTaskTemplate):
         new_gain_solint1 = str(short_solint) + 's'
         gtype_solint = str(short_solint) + 's'
 
-        if self.inputs.limit_short_solint is not None:
+        if self.inputs.limit_short_solint != '':
             LOG.warning("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
             limit_short_solint = self.inputs.limit_short_solint
             if limit_short_solint not in ("int", "inf"):
@@ -388,6 +388,12 @@ class Solint(basetask.StandardTaskTemplate):
                 new_gain_solint1 = 'int ({:.6f}s)'.format(integration_time)
                 gtype_solint = 'int'
                 LOG.warning("limit_short_solint is shorter than a single integration time. Setting solint='int'.")
+            elif limit_short_solint > longsolint:
+                combtime = 'scan'
+                short_solint = longsolint
+                new_gain_solint1 = 'int ({:.6f}s)'.format(longsolint)
+                gtype_solint = longsolint
+                LOG.warning("limit_short_solint larger than long solint, setting short solint equal to long solint.")
             else:
                 short_solint = limit_short_solint
                 new_gain_solint1 = 'int ({:.6f}s)'.format(short_solint)
