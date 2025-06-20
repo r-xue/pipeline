@@ -246,6 +246,11 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         for r in results:
             vis = os.path.basename(r.inputs['vis'])
 
+            xy_deviation_qa = [
+                x for x in r.qa.pool
+                if x.origin.metric_name == 'XX-YY.deviation'
+            ]
+
             # get the xy-deviation plots
             xy_deviation_plots = [
                 generate_plot_object_from_name(ctx, plot_name)
@@ -259,15 +264,39 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             if xy_deviation_plots:
                 xy_deviation_plots_all.extend(xy_deviation_plots)
                 summaries = xy_deviation_summary_plots.setdefault(vis, [])
-                plots_per_field = collections.defaultdict(list)
-                for plot in xy_deviation_plots:
-                    field = plot.field
-                    _plots = plots_per_field.setdefault(field, [])
-                    spw_list = [p.parameters['spw'] for p in _plots]
-                    if plot.parameters['spw'] not in spw_list:
-                        _plots.append(plot)
-                for field, plots in plots_per_field.items():
-                    summaries.append([field, plots])
+                ms = ctx.observing_run.get_ms(vis)
+                target_fields = ms.get_fields(intent="TARGET")
+                science_spws = ms.get_spectral_windows(science_windows_only=True)
+                for field in target_fields:
+                    field_name = field.name.strip('"')
+                    plots_per_spw = []
+                    for spw in science_spws:
+                        # take the plot corresponding to worst QA score
+                        # as a summary plot
+                        spw_id = spw.id
+                        qa_for_field_spw = sorted(
+                            filter(
+                                lambda x: spw_id in x.applies_to.spw and field_name in x.applies_to.field,
+                                xy_deviation_qa
+                            ),
+                            key=lambda x: x.score
+                        )
+                        assert len(qa_for_field_spw) > 0
+                        worst_score = qa_for_field_spw[0]
+                        antenna = worst_score.applies_to.ant.pop()
+                        LOG.debug(
+                            "vis %s, field %s, spw %s, antenna %s, worst score %s",
+                            vis, field_name, spw, antenna, worst_score.score
+                        )
+                        plot_name = filenamer.sanitize(
+                            f"{vis}_{field_name}_{antenna}_Spw{spw_id}_XX-YY_excess.png"
+                        )
+                        plot = next(filter(
+                            lambda x: x.basename == plot_name,
+                            xy_deviation_plots
+                        ))
+                        plots_per_spw.append(plot)
+                    summaries.append([field_name, plots_per_spw])
 
         if xy_deviation_plots_all:
             detail_page_title = f'Amplitude difference vs frequency'
