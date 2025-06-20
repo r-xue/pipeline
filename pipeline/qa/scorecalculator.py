@@ -95,7 +95,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_mom8_fc_image',
            'score_iersstate',
            'score_tsysflagcontamination_contamination_flagged',
-           'score_tsysflagcontamination_external_heuristic']
+           'score_tsysflagcontamination_external_heuristic',
+           'score_syspowerdata',
+           'score_solint',
+           'score_longsolint']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -1009,18 +1012,18 @@ def score_total_data_flagged_vla(filename, summaries):
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
 
-    0%-5% flagged   -> 1
-    5%-60% flagged  -> 1 to 0
-    60-100% flagged -> 0
+    0%-5% flagged   -> 1.0
+    5%-75% flagged  -> 1.0 to 0.5
+    75%-100% flagged -> 0.5 to 0.0
     """
     # Calculate fraction of flagged data.
     frac_flagged = calc_frac_newly_flagged(summaries)
 
     # Convert fraction of flagged data into a score.
-    if frac_flagged > 0.6:
-        score = 0
+    if frac_flagged > 0.75:
+        score = linear_score(frac_flagged, 0.75, 1.0, 0.5, 0.0)
     else:
-        score = linear_score(frac_flagged, 0.05, 0.6, 1.0, 0.0)
+        score = linear_score(frac_flagged, 0.05, 0.75, 1.0, 0.5)
 
     # Set score messages and origin.
     percent = 100.0 * frac_flagged
@@ -4476,3 +4479,101 @@ def score_pointing_outlier(
         )
 
     return qa_scores
+
+@log_qa
+def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+    """Calculates QA score as the minimum of per-band scores based on data points outside 0.7-1.2 range.
+
+        For each band:
+        - Band QA = 1.0 - (fraction of values outside [0.7, 1.2])
+        Final QA = minimum of all band QA scores.
+
+        Args:
+            data (dict[str, list[float]]): Dictionary with band as key and list of float values.
+
+        Returns:
+            pqa.QAScore: QA score object
+        """
+
+    band_score = None
+    qascores = []
+    for band, values in data.items():
+        outliers = [v for v in values.data.flatten() if v < 0.7 or v > 1.2]
+        fraction_outside = len(outliers) / len(values.data.flatten())
+        band_score = (1 - fraction_outside)
+
+        longmsg = f"Band {band} has {fraction_outside*100:.2f}% data outside the range 0.7-1.2"
+
+        shortmsg = (f"{band}: {fraction_outside*100:.2f}% >[0.7-1.2]")
+
+
+        origin = pqa.QAOrigin(metric_name='score_syspowerdata',
+                            metric_score=band_score,
+                            metric_units='')
+
+        qascores.append(pqa.QAScore(band_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return qascores
+
+@log_qa
+def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
+    """Compute a QA score by comparing short and long solints for each band.
+
+    If any band has a short solint value greater than the corresponding long solint,
+    the function assigns a reduced score and includes the affected bands in the message.
+
+    Parameters:
+        short_solint: Dictionary containing bandname and corresponding short solint value.
+        long_solint: Dictionary containing bandname and corresponding long solint value.
+
+    Returns:
+        pqa.QAScore: QA score object
+    """
+    bandlist = []
+    for band in short_solint:
+        if short_solint[band] >= long_solint[band]:
+            bandlist.append(band)
+
+    if bandlist:
+        score = 0.3
+        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint"
+        shortmsg = "short solint >= long solint"
+    else:
+        score = 1
+        longmsg = "short solint < long solint"
+        shortmsg = "short solint < long solint"
+
+    origin = pqa.QAOrigin(metric_name='score_solint',
+                          metric_score=score,
+                          metric_units='')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_longsolint(context, result) -> List[pqa.QAScore]:
+    bandlist = []
+    calscantime = []
+    long_solint = result.longsolint
+    ms = context.observing_run.get_ms(result.inputs['vis'])
+
+    for scanid in context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(","):
+        calscantime = [calscan.time_on_source for calscan in ms.get_scans(int(scanid))]
+    median_calscantime = np.median(calscantime)
+
+    for band in long_solint:
+        if long_solint[band] > 1.5 * median_calscantime.total_seconds():
+            bandlist.append(band)
+
+    if bandlist:
+        score = 0.3
+        longmsg = f"band {', '.join(bandlist)} has long solint > 1.5 * median calibration scan time"
+        shortmsg = "long solint > 1.5 * median calibration scan time"
+    else:
+        score = 1
+        longmsg = "long solint < 1.5 * median calibration scan time"
+        shortmsg = "long solint < 1.5 * median calibration scan time"
+
+    origin = pqa.QAOrigin(metric_name='score_longsolint',
+                          metric_score=score,
+                          metric_units='')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
