@@ -29,7 +29,7 @@ class PipelineStatisticsLevel(enum.Enum):
 
 class PipelineStatistics(object):
     """A single unit of pipeline statistics information.
-g
+
     Attributes:
         name: The name of this pipeline statistic
         value: The value for this pipeline statistic

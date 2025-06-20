@@ -1506,7 +1506,7 @@ finally:
 
         return os.path.basename(out_aqua_file)
 
-    def _export_stats_file(self, context, oussid='', data_type="IF") -> str:
+    def _export_stats_file(self, context, oussid='') -> str:
         """Generate and output the stats file.
 
         Args:

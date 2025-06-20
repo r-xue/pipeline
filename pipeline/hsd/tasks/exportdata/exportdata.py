@@ -109,7 +109,7 @@ class SDExportData(exportdata.ExportData):
         pipeline_stats_file = None
         if not is_nro(self.inputs.context):
             try:
-                pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid, data_type="SD")
+                pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
             except Exception as e:
                 LOG.info("Unable to output pipeline statistics file: {}".format(e))
                 LOG.debug(traceback.format_exc())
