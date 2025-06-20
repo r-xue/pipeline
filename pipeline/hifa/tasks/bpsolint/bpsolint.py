@@ -227,10 +227,6 @@ class BpSolint(basetask.StandardTaskTemplate):
     # Get final results from the spw dictionary
     @staticmethod
     def _get_results(vis, spwidlist, solint_dict):
-
-        # Initialize result structure.
-        result = BpSolintResults(vis=vis, spwids=spwidlist)
-
         # Initialize the lists
         phsolints = []
         phintsolints = []
@@ -282,6 +278,9 @@ class BpSolint(basetask.StandardTaskTemplate):
                 bpchansnrs.append(solint_dict[spwid]['snr_per_channel'])
                 bandwidths.append('%fHz' % solint_dict[spwid]['bandwidth'])
 
+            # Initialize result structure.
+        result = BpSolintResults(vis=vis, spwids=spwidlist)
+
         # Populate the result.
         result.phsolints = phsolints
         result.phintsolints = phintsolints
@@ -296,6 +295,7 @@ class BpSolint(basetask.StandardTaskTemplate):
         result.bpchansensitivities = bpsensitivities
         result.bpchansnrs = bpchansnrs
         result.bandwidths = bandwidths
+        result.low_channel_solutions = solint_dict['low_channel_solutions']
 
         return result
 
@@ -307,10 +307,15 @@ class BpSolint(basetask.StandardTaskTemplate):
 
         Inputs: solution interval dictionary returned by snr.estimate_bpsolint
         """
-        max_solint = 0
-        for spw_solint in solint_dict.values():
-            max_solint = max(spw_solint['nchan_bpsolint'], max_solint)
-        return max_solint
+        # the original code assumed a dict of int spw IDs to data, but the
+        # introduction of low_channel_solutions in PIPE-1760 breaks that
+        # assumption so we identify that case and skip it.
+        return max(
+            (spw_solint['nchan_bpsolint']
+             for key, spw_solint in solint_dict.items()
+             if key != 'low_channel_solutions'),
+            default=0,
+        )
 
     def _get_tsys_caltable(self, vis):
         caltables = self.inputs.context.callibrary.active.get_caltable(
@@ -329,15 +334,45 @@ class BpSolint(basetask.StandardTaskTemplate):
 
 
 class BpSolintResults(basetask.Results):
-    def __init__(self, vis=None, spwids=[],
-                 phsolints=[], phintsolints=[], nphsolutions=[],
-                 phsensitivities=[], phintsnrs=[], exptimes = [],
-                 bpsolints=[], bpchansolints=[], nbpsolutions=[],
-                 bpsensitivities=[], bpchansnrs=[], bandwidths = []):
+    def __init__(self, vis=None, spwids=None,
+                 phsolints=None, phintsolints=None, nphsolutions=None,
+                 phsensitivities=None, phintsnrs=None, exptimes=None,
+                 bpsolints=None, bpchansolints=None, nbpsolutions=None,
+                 bpsensitivities=None, bpchansnrs=None, bandwidths=None,
+                 low_channel_solutions=None):
         """
         Initialise the results object.
         """
         super(BpSolintResults, self).__init__()
+
+        if spwids is None:
+            spwids = []
+        if phsolints is None:
+            phsolints = []
+        if phintsolints is None:
+            phintsolints = []
+        if nphsolutions is None:
+            nphsolutions = []
+        if phsensitivities is None:
+            phsensitivities = []
+        if phintsnrs is None:
+            phintsnrs = []
+        if exptimes is None:
+            exptimes = []
+        if bpsolints is None:
+            bpsolints = []
+        if bpchansolints is None:
+            bpchansolints = []
+        if nbpsolutions is None:
+            nbpsolutions = []
+        if bpsensitivities is None:
+            bpsensitivities = []
+        if bpchansnrs is None:
+            bpchansnrs = []
+        if bandwidths is None:
+            bandwidths = []
+        if low_channel_solutions is None:
+            low_channel_solutions = []
 
         self.vis = vis
 
@@ -359,6 +394,9 @@ class BpSolintResults(basetask.Results):
         self.bpchansensitivities = bpsensitivities
         self.bpchansnrs = bpchansnrs
         self.bandwidths = bandwidths
+
+        # PIPE-1760: processed as a QA score in hifa_bandpass
+        self.low_channel_solutions = low_channel_solutions
 
     def __repr__(self):
         if self.vis is None or not self.spwids:
