@@ -8,6 +8,7 @@ import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy
 from numpy.ma.core import MaskedArray
+import statistics
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -325,6 +326,69 @@ class BaselineSubtractionDataManager(object):
 
         return num_ra, num_dec, num_plane, rowlist
 
+    def _pick_representative_with_distance( self, index_list: List[int], valid_index_list: List[int] ) -> int:
+        """
+        Pick the representative row with distance measures
+
+        This method picks the representative row which is 'valid' within the panel
+        which is closest to the mean position of all rows in the panel regardless the 'validity'.
+        Here, 'valid'/'validity' means not completely flagged.
+
+        Args:
+            index_list : list of all the pointings within the panel
+            valid_index_list : list of 'valid' pointings within the panel
+        Returns:
+            index of the selected representative
+        """
+        me = casa_tools.measures
+        qa = casa_tools.quanta
+
+        # calculate averaged ra, dec
+        ids = [ index['datatable_id'] for index in valid_index_list ]
+        ra_all = self.datatable.getcol( 'OFS_RA' )
+        dec_all = self.datatable.getcol( 'OFS_DEC' )
+        ra_av = statistics.mean( ra_all[ids] )
+        dec_av = statistics.mean( dec_all[ids] )
+
+        # calculate metric
+        direction0 = me.direction( 'ICRS',
+                                   qa.quantity( ra_av, 'deg' ),
+                                   qa.quantity( dec_av, 'deg' ) )
+        # pack metric
+        raunit  = self.datatable.getcolkeyword( 'OFS_RA', 'UNIT' )
+        decunit = self.datatable.getcolkeyword( 'OFS_DEC', 'UNIT' )
+        for index in valid_index_list:
+            direction = me.direction( 'ICRS',
+                                      qa.quantity( self.datatable.getcell('OFS_RA',  index['datatable_id']), raunit ),
+                                      qa.quantity( self.datatable.getcell('OFS_DEC', index['datatable_id']), decunit ) )
+            separation = me.separation( direction, direction0 )
+            index['metric'] = qa.convert( separation, 'deg')['value']
+
+        # choose the closest one to the average position
+        representative = get_min_with_key( valid_index_list, 'metric' )
+
+        return representative
+
+    def _pick_representative_with_median( self, valid_index_list ):
+        """
+        Pick the representative row with median
+
+        This is the original way of selecting the representative row (pre PIPE-2202),
+        The 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids
+
+        Args:
+            valid_index_list : list of 'valid' pointings within the panel
+        Returns:
+            index of the selected representative
+        """
+        # get the row number (mapped_row) corresponding to the 'median index'
+        sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
+
+        # patch to get similar behaviors with those before PIPE-2064
+        choice = 0 if len(sorted_valid_index_list) < 3 else len(sorted_valid_index_list) // 2
+
+        return sorted_valid_index_list[ choice ]
+
     def get_data(
         self,
         infile: str,
@@ -422,7 +486,7 @@ class BaselineSubtractionDataManager(object):
 
             # loop for 'panels' of profile map
             for d in rowlist:
-                midxperpol = []
+                repidxperpol = []
                 ix = num_ra - 1 - d['RAID']
                 iy = d['DECID']
                 if len( d['IDS'] ) > 0:
@@ -431,12 +495,12 @@ class BaselineSubtractionDataManager(object):
                     for ids_idx, dt_id in enumerate( d['IDS'] ):
                         index_list.append(
                             {
-                                'ids_idx'     : ids_idx,                 # index within the 'IDS'
-                                'datatable_id': dt_id,                   # datatable id
-                                'orig_row'    : dtrows[dt_id],           # row of original MS
-                                'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
-                                'valid'       : [None] * num_pol         # valid flag for each pol
-                            }                                            #  --True if not fully flagged
+                                'ids_idx'     : ids_idx,                  # index within the 'IDS'
+                                'datatable_id': dt_id,                    # datatable id
+                                'orig_row'    : dtrows[dt_id],            # row of original MS
+                                'mapped_row'  : rowmap[ dtrows[dt_id] ],  # row of the MS for baseline subtraction
+                                'valid'       : [None] * num_pol          # valid flag for each pol
+                            }                                             #  --True if not fully flagged
                         )
 
                     # fill the 'valid' column of the index table, and counts for averaging/integrating.
@@ -462,20 +526,21 @@ class BaselineSubtractionDataManager(object):
                             num_to_average[ix, iy] += binary_mask
 
                     # pick one 'representative' row for each ipol, and prepare storage data
-                    # the 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids)
                     for ipol in range(num_pol):
                         # pick index of 'valid' (not fully flagged) rows for each pol
                         valid_index_list = [ r for r in index_list if r['valid'][ipol] ]
 
                         if len( valid_index_list ) > 0:
-                            # get the row number (mapped_row) corresponding to the 'median index'
-                            sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
-
-                            # patch to get similar behaviors with those before PIPE-2064
-                            choice = 0 if len(sorted_valid_index_list) < 3 else len(sorted_valid_index_list) // 2
-
-                            median_index = sorted_valid_index_list[ choice ]
-                            mapped_row = median_index['mapped_row']
+                            # choose the representative row
+                            # falls-back to the original method if the revised one fails
+                            try:
+                                rep_index = self._pick_representative_with_distance(
+                                    index_list, valid_index_list )
+                            except Exception:
+                                LOG.info( "Failed to pick the representative row with distance at ({}, {}).".format(ix, iy)
+                                          + " Falling back to using median." )
+                                rep_index = self._pick_representative_with_median( valid_index_list )
+                            mapped_row = rep_index['mapped_row']
 
                             # get data and mask for mapped_row, and prepare for storage data
                             this_data = tb.getcell(colname, mapped_row)
@@ -484,15 +549,16 @@ class BaselineSubtractionDataManager(object):
                             map_mask[ix, iy, ipol] = this_mask[ipol]
 
                             # save the 'median index' with its ids_idx : to be used in get_lines() later
-                            midxperpol.append( median_index['ids_idx'] )
+                            repidxperpol.append( rep_index['ids_idx'] )
                         else:
-                            midxperpol.append(None)
+                            repidxperpol.append(None)
                 else:
                     LOG.debug('no data is available for (%s,%s)', ix, iy)
-                    midxperpol = [None for ipol in range(num_pol)]
+                    repidxperpol = [None for ipol in range(num_pol)]
+
                 # push median_index into the specific component of rowlist
-                d['MEDIAN_INDEX'] = midxperpol
-                LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
+                d['REP_INDEX'] = repidxperpol
+                LOG.debug('REP__INDEX for %s, %s is %s', ix, iy, repidxperpol)
 
         # calculate integrated data
         integrated_data_masked = numpy.ma.masked_array(integrated_data, num_integrated == 0)
@@ -1324,6 +1390,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
 
         return baseline_quality_stat
 
+
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
     """Yield list of grid table indices that belong to the sparse map panel.
 
@@ -1446,11 +1513,11 @@ def get_lines(
         ix = num_ra - 1 - d['RAID']
         iy = d['DECID']
         ids = d['IDS']
-        midx = d['MEDIAN_INDEX']
-        for ipol in range(len(midx)):
-            if midx is not None:
-                if midx[ipol] is not None:
-                    masklist = datatable.getcell('MASKLIST', ids[midx[ipol]])
+        rep_idx = d['REP_INDEX']
+        for ipol in range(len(rep_idx)):
+            if rep_idx is not None:
+                if rep_idx[ipol] is not None:
+                    masklist = datatable.getcell('MASKLIST', ids[rep_idx[ipol]])
                     lines_map[ipol][ix][iy] = None if (len(masklist) == 0 or numpy.all(masklist == -1)) else masklist
                 else:
                     lines_map[ipol][ix][iy] = None
@@ -1569,7 +1636,7 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     return binned_x, binned_data
 
 
-def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool]=False ) -> List[Dict[str, Any]]:
+def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool] = False ) -> List[Dict[str, Any]]:
     """
     Sort the list of dictionaries with the value of the specified key in each list component
 
@@ -1581,3 +1648,17 @@ def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool]=
         sorted list
     """
     return sorted( arr, reverse=reverse, key=lambda x: x[key] )
+
+
+def get_min_with_key( arr: List[Dict[str, Any]], key: str ) -> Dict[str, Any]:
+    """
+    Return the dictionary in in the list whose key holds the minimum value
+
+    Args:
+        arr    : input list of dictionaries
+        key    : key to the value for minimum search
+    Returns:
+        the dictionary whose key holds the minimum value
+    """
+    values = numpy.array( [ x[key] for x in arr ] )
+    return arr[ numpy.argmin(values) ]
