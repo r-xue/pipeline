@@ -16,6 +16,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common import atmutil
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from pipeline.infrastructure.utils import coordinate_utils
 from ..common import utils
 from ..common import compress
 from ..common import display
@@ -330,44 +331,28 @@ class BaselineSubtractionDataManager(object):
         """
         Pick the representative row with distance measures
 
-        This method picks the representative row which is 'valid' within the panel
-        which is closest to the mean position of all rows in the panel regardless the 'validity'.
-        Here, 'valid'/'validity' means not completely flagged.
+        This method picks the representative row which is the closest 'valid' point
+        to the mean position of 'all' rows in the panel regardless the 'validity'.
 
         Args:
-            index_list : list of all the pointings within the panel
+            index_list : list of 'all' the pointings within the panel
             valid_index_list : list of 'valid' pointings within the panel
         Returns:
             index of the selected representative
         """
-        me = casa_tools.measures
-        qa = casa_tools.quanta
-
         # calculate averaged ra, dec
         ids = [ index['datatable_id'] for index in valid_index_list ]
         ra_all = self.datatable.getcol( 'OFS_RA' )
         dec_all = self.datatable.getcol( 'OFS_DEC' )
-        ra_av = statistics.mean( ra_all[ids] )
-        dec_av = statistics.mean( dec_all[ids] )
+        ra_list = ra_all[ids]
+        dec_list = dec_all[ids]
+        ra_av = statistics.mean( ra_list )
+        dec_av = statistics.mean( dec_list )
 
-        # calculate metric
-        direction0 = me.direction( 'ICRS',
-                                   qa.quantity( ra_av, 'deg' ),
-                                   qa.quantity( dec_av, 'deg' ) )
-        # pack metric
-        raunit  = self.datatable.getcolkeyword( 'OFS_RA', 'UNIT' )
-        decunit = self.datatable.getcolkeyword( 'OFS_DEC', 'UNIT' )
-        for index in valid_index_list:
-            direction = me.direction( 'ICRS',
-                                      qa.quantity( self.datatable.getcell('OFS_RA',  index['datatable_id']), raunit ),
-                                      qa.quantity( self.datatable.getcell('OFS_DEC', index['datatable_id']), decunit ) )
-            separation = me.separation( direction, direction0 )
-            index['metric'] = qa.convert( separation, 'deg')['value']
+        dist = coordinate_utils.angular_distances( "ICRS", ra_list, dec_list, ra_av, dec_av )
+        rep_id = numpy.argmin( dist )
 
-        # choose the closest one to the average position
-        representative = get_min_with_key( valid_index_list, 'metric' )
-
-        return representative
+        return valid_index_list[rep_id]
 
     def _pick_representative_with_median( self, valid_index_list ):
         """
@@ -536,9 +521,10 @@ class BaselineSubtractionDataManager(object):
                             try:
                                 rep_index = self._pick_representative_with_distance(
                                     index_list, valid_index_list )
-                            except Exception:
-                                LOG.info( "Failed to pick the representative row with distance at ({}, {}).".format(ix, iy)
-                                          + " Falling back to using median." )
+                            except Exception as e:
+                                LOG.info( "Failed to pick the representative row with distance "
+                                          + "at ({}, {}) for {}.".format(ix, iy, e)) )
+                                LOG.info( "Falling back to using median." )
                                 rep_index = self._pick_representative_with_median( valid_index_list )
                             mapped_row = rep_index['mapped_row']
 
@@ -1648,17 +1634,3 @@ def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool] 
         sorted list
     """
     return sorted( arr, reverse=reverse, key=lambda x: x[key] )
-
-
-def get_min_with_key( arr: List[Dict[str, Any]], key: str ) -> Dict[str, Any]:
-    """
-    Return the dictionary in in the list whose key holds the minimum value
-
-    Args:
-        arr    : input list of dictionaries
-        key    : key to the value for minimum search
-    Returns:
-        the dictionary whose key holds the minimum value
-    """
-    values = numpy.array( [ x[key] for x in arr ] )
-    return arr[ numpy.argmin(values) ]
