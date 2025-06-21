@@ -523,7 +523,7 @@ class BaselineSubtractionDataManager(object):
                                     index_list, valid_index_list )
                             except Exception as e:
                                 LOG.info( "Failed to pick the representative row with distance "
-                                          + "at ({}, {}) for {}.".format(ix, iy, e)) )
+                                          + "at ({}, {}) for {}.".format(ix, iy, e) )
                                 LOG.info( "Falling back to using median." )
                                 rep_index = self._pick_representative_with_median( valid_index_list )
                             mapped_row = rep_index['mapped_row']
