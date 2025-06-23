@@ -373,53 +373,54 @@ class DetectMissedLines( object ):
 
         # calculate the boundaries of the frequency bins (to prepare for axes.stairs())
         increment = self.frequency[1] - self.frequency[0]
-        frequency_boundaries = [ freq - increment/2.0 for freq in self.frequency ] \
-            + [ self.frequency[-1] + increment/2.0 ]
+        frequency_boundaries = [ freq - increment / 2.0 for freq in self.frequency ] \
+            + [ self.frequency[-1] + increment / 2.0 ]
 
         # draw the full spectrum in gray
         ax.stairs( z_linefree, frequency_boundaries,
-                   color='gray', label='continuum range', baseline=None )
+                   color='gray', label=None, baseline=None )
 
-        # overdraw the line part in orange
-        ax.stairs( z_line, frequency_boundaries,
-                   color='orange', label='line range', baseline=None )
-
-        # overdraw the other part in magenta (masked range)
+        # overdraw other parts in magenta (masked range)
         ax.stairs( z_other, frequency_boundaries,
-                   color='magenta', label='masked range', baseline=None )
+                   color='magenta', label='masked', baseline=None )
+
+        # paint the line ranges
+        for idx, line in enumerate( line_ranges ):
+            label = "line range" if idx == 0 else None
+            ax.axvspan( self.frequency[line[0]] - increment/2.0,
+                        self.frequency[line[1]] + increment/2.0,
+                        color='cyan', alpha=0.3, label=label )
 
         # mark the excesses
         z_excess = np.where( z_linefree > dev_threshold, z_linefree, np.nan )
         ax.scatter( self.frequency, z_excess, color='red', marker='.',
-                    label='above deviation threshold in\ncontinuum range' )
+                    label='exces' )
 
         # draw the threshold line
         ax.hlines( dev_threshold, np.min(self.frequency), np.max(self.frequency),
-                   linestyle='dotted', label='threshold')
-
-        # paint the line ranges
-        for line in line_ranges:
-            ax.axvspan( self.frequency[line[0]] - increment/2.0,
-                        self.frequency[line[1]] + increment/2.0,
-                        color='cyan', alpha=0.3 )
+                   linestyle='dotted', color='blue', label=None )
+        ax.text( self.frequency[0] + ( self.frequency[-1] - self.frequency[0] ) * 0.03,
+                 dev_threshold, "threshold", va='top', color='blue', fontstyle='italic' )
 
         # figure parameters
+        ax.set_xlim( self.frequency[0] - increment / 2.0,
+                     self.frequency[-1] + increment / 2.0 )
         ax.set_ylim( 1.1 * np.nanmin( z_linefree ),
                      1.1 * np.nanmax( z_linefree ) )
         ax.set_xlabel( 'frequency (GHz) {}'.format(self.frequency_frame) )
         ax.set_ylabel( 'deviation / sigma' )
         ax.tick_params( direction='in' )
-        ax.legend( fontsize='small' )
+        ax.legend( fontsize='small', ncols=3, loc='best', bbox_to_anchor=(0, 0, 1.0, 0.1) )
         ax.grid()
+        ax.get_xaxis().get_major_formatter().set_useOffset(False)
 
+        # figure title
         if mask_mode == 'single_beam':
             mode = "at peak"
         elif mask_mode == 'moment_mask':
             mode = "extended"
         else:
             raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
-
-        # figure title
         plot_title = "Field:{} spw:{} ({})".format( self.field_name, self.spwid_list[0], mode )
         ax.set_title( plot_title )
 
