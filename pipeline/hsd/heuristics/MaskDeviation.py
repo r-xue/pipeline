@@ -72,7 +72,7 @@ class MaskDeviation(object):
     def __init__(self, infile, spw=None):
         self.infile = infile.rstrip('/')
         self.spw = spw
-        LOG.debug('MaskDeviation.__init__: infile %s spw %s' % (os.path.basename(self.infile), self.spw))
+        LOG.debug('MaskDeviation.__init__: infile %s spw %s', os.path.basename(self.infile), self.spw)
         self.masklist = []
 
     def ReadData(self, vis='', field='', antenna='', colname=None):
@@ -87,8 +87,8 @@ class MaskDeviation(object):
         mssel = {'field': str(field),
                  'spw': str(spwsel),
                  'scanintent': 'OBSERVE_TARGET#ON_SOURCE*'}
-        LOG.debug('vis="%s"' % (vis))
-        LOG.debug('mssel=%s' % (mssel))
+        LOG.debug('vis="%s"', vis)
+        LOG.debug('mssel=%s', mssel)
 
         if colname is None:
             with casa_tools.TableReader(vis) as mytb:
@@ -112,7 +112,7 @@ class MaskDeviation(object):
             self.data = np.real(r[colname.lower()]).transpose((2, 0, 1)).reshape((nrow * npol, nchan))
             self.flag = r['flag'].transpose((2, 0, 1)).reshape((nrow * npol, nchan))
 
-        LOG.debug('MaskDeviation.ReadDataFromMS: %s %s' % (self.nrow, self.nchan))
+        LOG.debug('MaskDeviation.ReadDataFromMS: %s %s', self.nrow, self.nchan)
 
         return r
 
@@ -143,7 +143,7 @@ class MaskDeviation(object):
                 medianval = np.median(self.data[i][np.logical_and(mask == True, self.flag[i] == False)])
             else:
                 medianval = np.median(self.data[i][np.where(mask == True)])
-            LOG.trace('MaskDeviation.SubtractMedian: row %s %s %s %s %s %s' % (i, median, std, medianval, mask.sum(), self.nchan))
+            LOG.trace('MaskDeviation.SubtractMedian: row %s %s %s %s %s %s', i, median, std, medianval, mask.sum(), self.nchan)
             self.data[i] -= medianval
 
     def CalcStdSpectrum(self, consider_flag=False):
@@ -168,8 +168,8 @@ class MaskDeviation(object):
         self.ymax = self.maxSP.max()
         self.ymin = self.minSP.min()
 
-        LOG.trace('std %s\nmean %s\n max %s\n min %s\n ymax %s ymin %s' %
-                  (self.stdSP, self.meanSP, self.maxSP, self.minSP, self.ymax, self.ymin))
+        LOG.trace('std %s\nmean %s\n max %s\n min %s\n ymax %s ymin %s',
+                  self.stdSP, self.meanSP, self.maxSP, self.minSP, self.ymax, self.ymin)
 
     def CalcRange(self, threshold=3.0, detection=5.0, extension=2.0, iteration=10, consider_flag=False):
         """
@@ -208,19 +208,19 @@ class MaskDeviation(object):
             if with_flag:
                 mask = np.logical_and(mask, self.stdSP.mask == False)
             Nmask = mask.sum()
-            LOG.trace('MaskDeviation.CalcRange: %s %s %s %s' % (median, std, Nmask, self.nchan))
+            LOG.trace('MaskDeviation.CalcRange: %s %s %s %s', median, std, Nmask, self.nchan)
             if Nmask == Nmask0: break
             else: Nmask0 = Nmask
         # TODO
         mask = stdSP < (median + detection * std)
-        LOG.trace('MaskDeviation.CalcRange: before ExtendMask %s' % (mask))
+        LOG.trace('MaskDeviation.CalcRange: before ExtendMask %s', mask)
         mask = self.ExtendMask(mask, median + extension * std)
-        LOG.trace('MaskDeviation.CalcRange: after ExtendMask %s' % (mask))
+        LOG.trace('MaskDeviation.CalcRange: after ExtendMask %s', mask)
 
         self.mask = np.arange(self.nchan)[np.where(mask == False)]
-        LOG.trace('MaskDeviation.CalcRange: self.mask=%s' % (self.mask))
+        LOG.trace('MaskDeviation.CalcRange: self.mask=%s', self.mask)
         RL = (mask*1)[1:]-(mask*1)[:-1]
-        LOG.trace('MaskDeviation.CalcRange: RL=%s' % (RL))
+        LOG.trace('MaskDeviation.CalcRange: RL=%s', RL)
         L = np.arange(self.nchan)[np.where(RL == -1)] + 1
         R = np.arange(self.nchan)[np.where(RL == 1)]
         if len(self.mask) > 0 and self.mask[0] == 0: L = np.insert(L, 0, 0)
@@ -229,16 +229,16 @@ class MaskDeviation(object):
         for i in range(len(L)):
             self.masklist.append([L[i], R[i]])
         if len(self.mask) > 0:
-            LOG.trace('MaskDeviation.CalcRange: %s %s %s %s %s' % (self.masklist, L, R, self.mask[0], self.mask[-1]))
+            LOG.trace('MaskDeviation.CalcRange: %s %s %s %s %s', self.masklist, L, R, self.mask[0], self.mask[-1])
         else:
-            LOG.trace('MaskDeviation.CalcRange: %s %s %s' % (self.masklist, L, R))
+            LOG.trace('MaskDeviation.CalcRange: %s %s %s', self.masklist, L, R)
         del mask, RL
 
     def ExtendMask(self, mask, threshold):
         """
         Extend the mask region as long as Standard Deviation value is higher than the given threshold
         """
-        LOG.trace('MaskDeviation.ExtendMask: threshold = %s' % (threshold))
+        LOG.trace('MaskDeviation.ExtendMask: threshold = %s', threshold)
         for i in range(len(mask)-1):
             if (not mask[i]) and self.stdSP[i+1] > threshold: mask[i+1] = False
         for i in range(len(mask)-1, 1, -1):
