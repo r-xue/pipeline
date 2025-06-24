@@ -39,7 +39,7 @@ class HanningInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             maser_detection: Run maser detect algorithm on spectral line windows if spws_to_smooth is None. Defaults to True.
 

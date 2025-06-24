@@ -203,7 +203,7 @@ def union(lst: List, new: Union[pstats.PipelineStatistics, List[pstats.PipelineS
     return union
 
 
-def generate_stats(context) -> Dict:
+def generate_stats(context: Context) -> Dict:
     """
     Gathers statistics from the context and results and returns a representation
     of them as a dict.
