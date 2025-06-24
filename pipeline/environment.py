@@ -188,12 +188,18 @@ class LinuxEnvironment(CommonEnvironment):
     """
 
     def __init__(self):
-        super(LinuxEnvironment, self).__init__()
+        super().__init__()
 
         lscpu_json = json.loads(safe_run('lscpu -J', on_error='{"lscpu": {}}'))
         self.cpu_type = self._from_lscpu(lscpu_json, 'Model name:')
         self.logical_cpu_cores = self._from_lscpu(lscpu_json, 'CPU(s):')
-        self.physical_cpu_cores = self._from_lscpu(lscpu_json, "Core(s) per socket:")
+
+        core_per_socket_str = self._from_lscpu(lscpu_json, 'Core(s) per socket:')
+        num_of_sockets_str = self._from_lscpu(lscpu_json, 'Socket(s):')
+        try:
+            self.physical_cpu_cores = str(int(core_per_socket_str) * int(num_of_sockets_str))
+        except ValueError:
+            self.physical_cpu_cores = 'unknown'
 
         self.ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
         self.swap = safe_run('swapon --show=SIZE --bytes --noheadings')
@@ -637,9 +643,17 @@ def _get_dependency_details(package_list=None):
     See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
     """
     if package_list is None:
-        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'almatasks', 'casadata',
-                        'casampi', 'casaplotms']
+        package_list = [
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'astropy',
+            'bdsf',
+            'casatools',
+            'casatasks',
+            'casampi',
+            'casaplotms',
+        ]
 
     package_details = dict.fromkeys(package_list)
     for package in package_list:

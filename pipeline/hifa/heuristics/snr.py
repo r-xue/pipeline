@@ -1101,7 +1101,8 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         LOG.info("Forcing bandpass frequency solint to divide evenly into bandpass")
 
     # Initialize the output solution interval dictionary
-    solint_dict = collections.OrderedDict()
+    solint_dict = {}
+    low_channel_solutions: list[int] = []
 
     for spwid in spwlist:
 
@@ -1205,7 +1206,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqPhaseupSnr))
         solint_dict[spwid]['nphaseup_solutions'] = solInts
         if tooFewIntervals:
-            LOG.warning('%s Spw %d would have less than %d time intervals in its solution in MS %s' %
+            LOG.warning('%s Spw %d would have fewer than %d time intervals in its solution in MS %s' %
                         (asterisks, spwid, minBpNintervals, ms.basename))
 
         # Bandpass solution
@@ -1265,8 +1266,9 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
                   reqBpSnr))
         solint_dict[spwid]['nbandpass_solutions'] = solChannels
         if tooFewChannels:
-            LOG.warning('%s Spw %d would have less than %d channels in its solution in MS %s' %
-                        (asterisks, spwid, minBpNchan, ms.basename))
+            low_channel_solutions.append(spwid)
+
+    solint_dict['low_channel_solutions'] = low_channel_solutions
 
     return solint_dict
 

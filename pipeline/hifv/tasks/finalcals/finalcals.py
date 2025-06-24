@@ -39,7 +39,7 @@ class FinalcalsInputs(vdp.StandardInputs):
         Args:
             context (:obj:): Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             weakbp(Boolean): Activate weak bandpass heuristics.
                 weak bandpass heuristics on/off - currently not used - see PIPE-104.

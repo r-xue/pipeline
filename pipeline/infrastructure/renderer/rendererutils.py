@@ -1,19 +1,23 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import html
 import itertools
 import os
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation, scores_with_location
+from pipeline import infrastructure
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, filenamer, utils
+from pipeline.infrastructure.renderer import logger
 
-from typing import Any
+if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import Results
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.pipelineqa import QAScore
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 SCORE_THRESHOLD_ERROR = 0.33
 SCORE_THRESHOLD_WARNING = 0.66
@@ -165,7 +169,7 @@ def get_failures_badge(result):
 
 
 def get_attentions_badge(result):
-    attention_logrecords = utils.get_logrecords(result, logging.ATTENTION)
+    attention_logrecords = utils.get_logrecords(result, infrastructure.logging.ATTENTION)
     l = len(attention_logrecords)
     if l > 0:
         return '<span class="badge alert-attention pull-right">%s</span>' % l
@@ -174,7 +178,7 @@ def get_attentions_badge(result):
 
 
 def get_warnings_badge(result):
-    warning_logrecords = utils.get_logrecords(result, logging.WARNING)
+    warning_logrecords = utils.get_logrecords(result, infrastructure.logging.WARNING)
     warning_qascores = utils.get_qascores(result, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING)
     l = len(warning_logrecords) + len(warning_qascores)
     if l > 0:
@@ -184,7 +188,7 @@ def get_warnings_badge(result):
 
 
 def get_errors_badge(result):
-    error_logrecords = utils.get_logrecords(result, logging.ERROR)
+    error_logrecords = utils.get_logrecords(result, infrastructure.logging.ERROR)
     error_qascores = utils.get_qascores(result, -0.1, SCORE_THRESHOLD_ERROR)
     l = len(error_logrecords) + len(error_qascores)
     if l > 0:
@@ -290,7 +294,7 @@ def num_lines(path):
         return 'N/A'
 
 
-def scores_in_range(pool: List[QAScore], lo: float, hi: float) -> List[QAScore]:
+def scores_in_range(pool: list[QAScore], lo: float, hi: float) -> list[QAScore]:
     """
     Filter QA scores by range.
     """
@@ -303,7 +307,7 @@ def get_notification_trs(result, alerts_info, alerts_success):
     # suppress scores not intended for the banner, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    all_scores: List[QAScore] = result.qa.pool
+    all_scores: list[QAScore] = result.qa.pool
     # PIPE-1481 potentially asks for the removal of banner QA notification.
     # Thus disabling these for now.
     #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
@@ -324,17 +328,17 @@ def get_notification_trs(result, alerts_info, alerts_success):
             if most_severe_render_class is None:
                 most_severe_render_class = 'warning alert-warning'
 
-    for logrecord in utils.get_logrecords(result, logging.ERROR):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
             most_severe_render_class = 'danger alert-danger'
-    for logrecord in utils.get_logrecords(result, logging.WARNING):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
             most_severe_render_class = 'warning alert-warning'
-    for logrecord in utils.get_logrecords(result, logging.ATTENTION):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ATTENTION):
         n = format_notification('attention alert-attention', 'Attention!', logrecord.msg)
         notifications.append(n)
         if most_severe_render_class is None:
@@ -365,7 +369,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
 
 
 def get_relative_url(report_dir: str, stage_dir: str, subpage_dir: str,
-                     allow_nonexistent: bool = True) -> Union[str, None]:
+                     allow_nonexistent: bool = True) -> str | None:
     """
     Return url to weblog subpage relative to the weblog root path, based on
     provided report dir, stage dir, and subpage dir. Check for and remove
@@ -451,3 +455,95 @@ def summarise_fields(fields: str) -> str:
 
     field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
     return field_str
+
+
+def make_parang_plots(
+        context: Context,
+        result: Results,
+        intent_lookup: dict[str, str],
+        ) -> dict:
+    """
+    Create parallactic angle plots for each session.
+    """
+    plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
+                   'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
+                   '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
+
+    parang_plots = {}
+    stage_id = f'stage{result.stage_number}'
+    ous_id = context.project_structure.ousstatus_entity_id
+    sessions = result.parang_ranges['sessions']
+
+    for session_name, session_data in sessions.items():
+        num_ms = len(sessions[session_name]['vis'])
+        intents_to_plot = [intent_lookup[key] for key in intent_lookup
+                           if key in session_data and session_data[key]]
+
+        plot_title = f'MOUS {ous_id}, session {session_name}'
+        filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
+        plot_path = os.path.join(context.report_dir, stage_id, f'{filename_component}_parallactic_angle.png')
+
+        clearplots = True
+        for i, msname in enumerate(sessions[session_name]['vis']):
+            symbolcolor = plot_colors[i % len(plot_colors)]
+
+            science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
+            spwspec = ','.join(f'{s.id}:{s.num_channels // 2}' for s in science_spws)
+
+            plot_name = plot_path if i == num_ms - 1 else ''
+
+            task_args = {
+                'vis': msname,
+                'plotfile': plot_name,
+                'xaxis': 'time',
+                'yaxis': 'parang',
+                'customsymbol': True,
+                'symbolcolor': symbolcolor,
+                'title': plot_title,
+                'spw': spwspec,
+                'plotrange': [0, 0, 0, 360],
+                'plotindex': i,
+                'clearplots': clearplots,
+                'intent': ','.join(intents_to_plot),
+                'showgui': False,
+                'showlegend': True,
+                'coloraxis': 'field',
+                'legendposition': 'exteriorRight',
+            }
+
+            task = casa_tasks.plotms(**task_args)
+            basetask.Executor(context).execute(task)
+
+            clearplots = False
+
+        parang_plots[session_name] = {}
+        parang_plots[session_name]['name'] = plot_name
+
+        # create a plot object so we can access (thus generate) the thumbnail
+        plot_obj = logger.Plot(plot_name)
+
+        fullsize_relpath = get_relative_url(context.report_dir, stage_id, plot_name)
+        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, os.path.abspath(context.report_dir))
+        title = 'Parallactic angle coverage for session {}'.format(session_name)
+
+        html_args = {
+            'fullsize': fullsize_relpath,
+            'thumbnail': thumbnail_relpath,
+            'title': title,
+            'alt': title,
+            'rel': 'parallactic-angle-plots'
+        }
+
+        html = ('<a href="{fullsize}"'
+                '   title="{title}"'
+                '   data-fancybox="{rel}"'
+                '   data-caption="{title}">'
+                '    <img data-src="{thumbnail}"'
+                '         title="{title}"'
+                '         alt="{alt}"'
+                '         class="lazyload img-responsive">'
+                '</a>'.format(**html_args))
+
+        parang_plots[session_name]['html'] = html
+
+    return parang_plots
