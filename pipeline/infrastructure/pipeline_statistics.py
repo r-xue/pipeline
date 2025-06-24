@@ -7,7 +7,9 @@ import numpy as np
 from pipeline import environment
 from pipeline.domain import measures
 from pipeline.domain.datatype import DataType
+from pipeline.infrastructure.launcher import Context
 from pipeline.domain.measurementset import MeasurementSet
+import pipeline.infrastructure.utils as utils
 
 from . import logging
 
@@ -40,15 +42,13 @@ class PipelineStatistics(object):
         mous: The MOUS this value applies to
     """
     def __init__(self, name: str, value: Union[str, int, float, List, Dict, Set, np.int64, np.ndarray],
-                 longdesc: str, origin: str='', units: str='',
-                 level: PipelineStatisticsLevel=None, spw: str=None, mous: str=None, eb: str=None, 
-                 source: str=None):
+                 longdesc: str, origin: str = '', units: str = '',
+                 level: PipelineStatisticsLevel = None, spw: str = None, mous: str = None, eb: str = None,
+                 source: str = None):
 
         self.name = name
         self.value = value
         self.longdesc = longdesc
-        # The origin is the name of the pipeline stage associateted with this statistics value
-        self.origin = origin
         self.units = units
         # The level indicates whether a given quantity applies to the whole MOUS, EB, or SPW
         self.level = level
@@ -57,6 +57,7 @@ class PipelineStatistics(object):
         self.eb = eb
         self.spw = spw
         self.source = source
+        self.origin = origin
 
         # Convert initial value from the pipeline to a value that can be serialized by JSON
         # In the future, it may make sense to move this conversion to when the data is written out.
@@ -92,6 +93,21 @@ class PipelineStatistics(object):
         return stats_dict
 
 
+def determine_import_program(context: Context, ms: MeasurementSet) -> str:
+    """
+    Returns the name of the import program used to create the MS
+    """
+    if ms.antenna_array.name == 'ALMA':
+        if utils.contains_single_dish(context):
+            return "hsd_importdata"
+        else:
+            return "hifa_importdata"
+    elif ms.antenna_array.name == "VLA":
+        return "hifv_importdata"
+    else:
+        return "unknown"
+
+
 def to_nested_dict(stats_collection) -> Dict:
     """
     Generates a nested output dict with EBs, SPWs, TARGETs, MOUSs
@@ -103,7 +119,7 @@ def to_nested_dict(stats_collection) -> Dict:
     spw_section_key = "SPW"
     source_section_key = "TARGET"
 
-    # Step through the collect statistics values and construct
+    # Step through the collected statistics values and construct
     # a dictionary representation. The output format is as follows:
     # { mous_name: {
     #    mous_property: { ...
@@ -174,65 +190,75 @@ def _generate_header() -> Dict:
     return version_dict
 
 
-def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[PipelineStatistics]:
+def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]
+                    ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given MOUS
     """
     level = PipelineStatisticsLevel.MOUS
     stats_collection = []
+    first_ms = ms_list[0]
+
+    import_program = determine_import_program(context, first_ms)
 
     p1 = PipelineStatistics(
         name='project_id',
-        value=context.observing_run.project_ids.pop(),
+        value=next(iter(context.observing_run.project_ids)),
         longdesc='Proposal id number',
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p1)
 
     p2 = PipelineStatistics(
         name='pipeline_version',
         value=environment.pipeline_revision,
         longdesc="pipeline version string",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p2)
 
     p3 = PipelineStatistics(
         name='pipeline_recipe',
         value=context.project_structure.recipe_name,
         longdesc="recipe name",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p3)
 
     p4 = PipelineStatistics(
         name='casa_version',
         value=environment.casa_version_string,
         longdesc="casa version string",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p4)
 
     p5 = PipelineStatistics(
         name='mous_uid',
         value=context.get_oussid(),
         longdesc="Member Obs Unit Set ID",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p5)
 
     p6 = PipelineStatistics(
         name='n_EB',
         value=len(context.observing_run.execblock_ids),
         longdesc="number of execution blocks",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p6)
 
     all_bands = sorted({spw.band for spw in ms_list[0].get_all_spectral_windows()})
@@ -240,27 +266,28 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
         name='bands',
         value=all_bands,
         longdesc="Band(s) used in observations.",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p7)
 
-    first_ms = ms_list[0]
     science_source_names = sorted({source.name for source in first_ms.sources if 'TARGET' in source.intents})
     p8 = PipelineStatistics(
         name='n_target',
         value=len(science_source_names),
         longdesc="total number of science targets in the MOUS",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
-        level=level)
+        level=level,
+        )
     stats_collection.append(p8)
 
     p9 = PipelineStatistics(
         name='target_list',
         value=science_source_names,
         longdesc="list of science target names",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(p9)
@@ -269,7 +296,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
         name='rep_target',
         value=first_ms.representative_target[0],
         longdesc="representative target name",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(p10)
@@ -278,7 +305,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
         name='n_spw',
         value=len(first_ms.get_all_spectral_windows()),
         longdesc="number of spectral windows",
-        origin="hifa_importdata",
+        origin=import_program,
         mous=mous,
         level=PipelineStatisticsLevel.MOUS)
     stats_collection.append(p11)
@@ -286,12 +313,14 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[
     return stats_collection
 
 
-def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[PipelineStatistics]:
+def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet],
+                   ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given EB
     """
     level = PipelineStatisticsLevel.EB
     stats_collection = []
+    import_program = determine_import_program(context, ms_list[0])
 
     for ms in ms_list:
         eb = ms.name
@@ -300,20 +329,22 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[Pi
             name='n_ant',
             value=len(ms.antennas),
             longdesc="Number of antennas per execution block",
-            origin="hifa_importdata",
+            origin=import_program,
             eb=eb,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p1)
 
         p2 = PipelineStatistics(
             name='n_scan',
             value=len(ms.get_scans()),
             longdesc="number of scans per EB",
-            origin="hifa_importdata",
+            origin=import_program,
             eb=eb,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p2)
 
         l80 = np.percentile(ms.antenna_array.baselines_m, 80)
@@ -321,17 +352,19 @@ def _get_eb_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[Pi
             name='L80',
             value=l80,
             longdesc="80th percentile baseline",
-            origin="hifa_importdata",
+            origin=import_program,
             units="m",
             mous=mous,
             eb=eb,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p3)
 
     return stats_collection
 
 
-def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[PipelineStatistics]:
+def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet],
+                   ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given SPW
     """
@@ -339,48 +372,53 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
     stats_collection = []
     ms = ms_list[0]
     spw_list = ms.get_all_spectral_windows()
+    import_program = determine_import_program(context, ms)
 
     for spw in spw_list:
         p1 = PipelineStatistics(
             name='spw_width',
             value=float(spw.bandwidth.to_units(measures.FrequencyUnits.MEGAHERTZ)),
             longdesc="width of the spectral window",
-            origin="hifa_importdata",
+            origin=import_program,
             units="MHz",
             spw=spw.id,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p1)
 
         p2 = PipelineStatistics(
             name='spw_freq',
             value=float(spw.centre_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
             longdesc="central frequency of the spectral window in TOPO",
-            origin="hifa_importdata",
+            origin=import_program,
             units="GHz",
             spw=spw.id,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p2)
 
         p3 = PipelineStatistics(
             name='n_chan',
             value=spw.num_channels,
             longdesc="number of channels in the spectral window",
-            origin="hifa_importdata",
+            origin=import_program,
             mous=mous,
             spw=spw.id,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p3)
 
         p4 = PipelineStatistics(
             name='nbin_online',
             value=spw.sdm_num_bin,
             longdesc="online nbin factor",
-            origin="hifa_importdata",
+            origin=import_program,
             spw=spw.id,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p4)
 
         chan_width_MHz = [chan * 1e-6 for chan in spw.channels.chan_widths]
@@ -388,11 +426,12 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
             name='chan_width',
             value=chan_width_MHz[0],
             longdesc="frequency width of the channels in the spectral window",
-            origin="hifa_importdata",
+            origin=import_program,
             units="MHz",
             spw=spw.id,
             mous=mous,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p5)
 
         dd = ms.get_data_description(spw=int(spw.id))
@@ -402,22 +441,25 @@ def _get_spw_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[P
             name='n_pol',
             value=numpols,
             longdesc="number of polarizations in the spectral window",
-            origin="hifa_importdata",
+            origin=import_program,
             mous=mous,
             spw=spw.id,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p6)
 
     return stats_collection
 
 
-def _get_source_values(context, mous: str, ms_list: List[MeasurementSet]) -> List[PipelineStatistics]:
+def _get_source_values(context, mous: str, ms_list: List[MeasurementSet], 
+                      ) -> List[PipelineStatistics]:
     """
     Get the statistics values for a given source
     """
     level = PipelineStatisticsLevel.SOURCE
     stats_collection = []
     first_ms = ms_list[0]
+    import_program = determine_import_program(context, first_ms)
 
     science_sources = sorted({source for source in first_ms.sources
                               if 'TARGET' in source.intents}, key=lambda source: source.name)
@@ -429,10 +471,11 @@ def _get_source_values(context, mous: str, ms_list: List[MeasurementSet]) -> Lis
             name='n_pointings',
             value=pointings,
             longdesc="number of mosaic pointings for the science target",
-            origin="hifa_importdata",
+            origin=import_program,
             mous=mous,
             source=source.name,
-            level=level)
+            level=level,
+        )
         stats_collection.append(p1)
 
     return stats_collection
