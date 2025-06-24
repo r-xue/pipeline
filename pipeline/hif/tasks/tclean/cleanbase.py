@@ -117,7 +117,7 @@ class CleanBaseInputs(vdp.StandardInputs):
     @vdp.VisDependentProperty
     def spw(self):
         first_ms = self.context.observing_run.measurement_sets[0]
-        return ','.join([spw.id for spw in first_ms.get_spectral_windows()])
+        return ','.join([str(spw.id) for spw in first_ms.get_spectral_windows()])
 
     @vdp.VisDependentProperty
     def spwsel(self):
@@ -284,17 +284,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         context = self.inputs.context
         inputs = self.inputs
 
-        # Derive names of clean products for this iteration
-        old_model_name = result.model
-        model_name = '%s.%s.iter%s.model' % (inputs.imagename, inputs.stokes, iter)
-        if old_model_name is not None:
-            if os.path.exists(old_model_name):
-                if result.multiterm:
-                    rename_image(old_name=old_model_name, new_name=model_name,
-                                 extensions=['.tt%d' % nterm for nterm in range(result.multiterm)])
-                else:
-                    rename_image(old_name=old_model_name, new_name=model_name)
-
         if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             image_name = ''
         else:
@@ -314,6 +303,8 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
+        # For ephemeris objects, tclean/parallel was explicit set to False between 2018/07/10 and
+        # 2021-02/16 due to a tclean bug (see CAS-11631 and PIPE-981)
         parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
 
         # PIPE-1878: calculate iteration/specmode-dependent threshold scaling factor (only used for VLA-PI) to correct the
@@ -322,6 +313,14 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         # Need to translate the virtual spw IDs to real ones
         real_spwsel = context.observing_run.get_real_spwsel(inputs.spwsel, inputs.vis)
+
+        # Allowed user-specified "specmode" values for makeimlist/editimlist inputs are:
+        #   'mfs', 'cont', 'cube', and 'repBW'
+        # These are later mapped to the core modes: 'mfs', 'cont', or 'cube' for Tclean/CleanBase inputs.
+        # At this stage, we normalize the specmode to either 'mfs' or 'cube'.
+        # PIPE-2423: more specific modes (e.g., 'mvc', 'cubesource') may be assigned later in less common cases,
+        # based on additional context or heuristics.
+        tclean_specmode = inputs.specmode if inputs.specmode != 'cont' else 'mfs'
 
         # Common tclean parameters
         tclean_job_parameters = {
@@ -332,7 +331,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             'field':         inputs.field,
             'spw':           real_spwsel,
             'intent':        utils.to_CASA_intent(inputs.ms[0], inputs.intent),
-            'specmode':      inputs.specmode if inputs.specmode != 'cont' else 'mfs',
+            'specmode':      tclean_specmode,
             'gridder':       inputs.gridder,
             'pblimit':       inputs.pblimit,
             'niter':         inputs.niter,
@@ -365,18 +364,17 @@ class CleanBase(basetask.StandardTaskTemplate):
         if inputs.heuristics.is_eph_obj(inputs.field):
             tclean_job_parameters['phasecenter'] = 'TRACKFIELD'
             tclean_job_parameters['psfphasecenter'] = None
-            # 2018-08-13: Spectral tracking has been implemented via a new
-            # specmode option (CAS-11766).
+            # 2018-08-13: Spectral tracking has been implemented via specmode='cubesource' (see CAS-11766)
             if inputs.specmode == 'cube':
                 tclean_job_parameters['specmode'] = 'cubesource'
-            # 2018-04-19: 'REST' does not yet work (see CAS-8965, CAS-9997)
-            #tclean_job_parameters['outframe'] = 'REST'
+            # We use outframe = '' to indicate that the cube frequencies are reported in the source frame,
+            # even though the cube's frame is still labeled as "REST".
+            #
+            # For more details, see CAS-8965 and CAS-9997, and the 'cubesource' description under the
+            # 'specmode' parameter in the tclean task documentation:
+            #   https://casadocs.readthedocs.io/en/latest/api/tt/casatasks.imaging.tclean.html#specmode
             tclean_job_parameters['outframe'] = ''
-            # 2018-07-10: Parallel imaging of ephemeris objects does not
-            # yet work (see CAS-11631)
-            # 2021-02-16: PIPE-981 asks for allowing parallelized tclean
-            # runs for ephemeris sources.
-            #tclean_job_parameters['parallel'] = False
+
         else:
             tclean_job_parameters['phasecenter'] = inputs.phasecenter
             if inputs.gridder in ('mosaic', 'awproject') and inputs.psf_phasecenter != inputs.phasecenter:
@@ -385,6 +383,20 @@ class CleanBase(basetask.StandardTaskTemplate):
             else:
                 tclean_job_parameters['psfphasecenter'] = None
             tclean_job_parameters['outframe'] = inputs.outframe
+
+        # PIPE-2423: set specmode='mvc' for VLASS imaging when using 'awp2' or 'awproject' gridders.
+        # For mtmfs imaging, 'mvc' enables improved wideband primary beam correction.
+        # See casadocs for details:
+        #   https://casadocs.readthedocs.io/en/stable/examples/community/Example_Wideband_PrimaryBeamCorrection.html
+        if tclean_job_parameters['gridder'] in ('awp2', 'awphpg') and tclean_job_parameters['deconvolver'] == 'mtmfs':
+            tclean_job_parameters['specmode'] = 'mvc'
+
+        # PIPE-2423: fallback to 'awp2' gridder when savemodel='modelcolumn' is requested with 'awphpg'.
+        # The model prediction write capability required for 'modelcolumn' is not supported by 'awphpg'.
+        # See CAS-14146 / CAS-13581 and this JIRA comment for details:
+        # https://open-jira.nrao.edu/browse/CAS-13581?focusedId=214944&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-214944
+        if tclean_job_parameters['gridder'] == 'awphpg' and tclean_job_parameters['savemodel'] == 'modelcolumn':
+            tclean_job_parameters['gridder'] = 'awp2'
 
         if scanidlist not in [[], None]:
             tclean_job_parameters['scan'] = scanidlist
@@ -683,6 +695,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Using virtual spw setups for all interferometry pipelines
         virtspw = True
 
+        # Derive the names of clean products for this iteration.
+        # Note: result.model does not include the `.ttx` suffix from mtmfs cases.
+        model_name = f"{inputs.imagename}.{inputs.stokes}.iter{iter}.model"
+
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
             im_names['model'] = model_name
             im_names['image'] = image_name
@@ -792,16 +808,6 @@ class CleanBase(basetask.StandardTaskTemplate):
                                 LOG.info(
                                     'The restoring beam copying source and target images have different shapes or the target '
                                     'image already has a beam. We will skip copying the restoring beam')
-
-
-def rename_image(old_name, new_name, extensions=['']):
-    """
-    Rename an image
-    """
-    if old_name is not None:
-        for extension in extensions:
-            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
-                image.rename(name=new_name, overwrite=True)
 
 
 class CleanBaseError(object):

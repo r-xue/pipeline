@@ -89,10 +89,11 @@ def compute_mean_flux(ms: MeasurementSet,
 
     # Read in data from the MS, for specified intent, field, and spw.
     try:
-        data = read_channel_averaged_data_from_ms(ms, fieldid, spwid, intent, ['corrected_data', 'flag', 'antenna1', 'antenna2', 'weight'])
+        data = read_channel_averaged_data_from_ms(
+            ms, fieldid, spwid, intent, ['corrected_data', 'flag', 'antenna1', 'antenna2', 'weight'])
     except Exception as ex:
-        LOG.warn('Cannot retrieve data for MS {}, field {}, spw {}, intent {}: {}'.
-                 format(ms.basename, fieldid, spwid, intent, ex))
+        LOG.warning('Cannot retrieve data for MS {}, field {}, spw {}, intent {}: {}'.
+                    format(ms.basename, fieldid, spwid, intent, ex))
         data = {}
 
     # Return zero if no valid data were read.

@@ -1336,10 +1336,25 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False) -> None:
+    def set_data_type_dicts(self, data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
         """
-        Set data type and column.
+        Set the data type lookup dictionaries directly without writing new
+        MS HISTORY entries as they would already exist when calling this
+        method. Also do not auto-generate the per source and spw lookup
+        dictionary from the per column information since it might have a
+        sparse structure (e.g. selfcal use case).
+
+        Args:
+            data_type_per_column: Data type per column lookup dictionary
+            data_types_per_source_and_spw: Data type per source and spw
+                lookup dictionary.
+        """
+        self.data_column = data_type_per_column
+        self.data_types_per_source_and_spw = data_types_per_source_and_spw
+
+    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
+                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+        """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
         data types per (source,spw) tuple. If source or spw are unset, they
@@ -1355,6 +1370,8 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
+            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping
+                to the MS history subtable. Defaults to True.                
 
         Raises:
             ValueError: An error raised when the column does not exist
@@ -1400,6 +1417,20 @@ class MeasurementSet(object):
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
+
+        # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
+        # minimum fallback implementation and should be replaced by a properly
+        # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
+        if save_to_ms:
+            with casa_tools.MSReader(self.name) as ms:
+                ms.writehistory(
+                    f"data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}",
+                    origin="Datatype Handler",
+                )
+                ms.writehistory(
+                    f"data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}",
+                    origin="Datatype Handler",
+                )
 
     def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """
@@ -1528,3 +1559,56 @@ class MeasurementSet(object):
             spw_list = utils.range_to_list(spw_select)
 
         return spw_list
+
+    # PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here
+    def compute_az_el_to_field(self, field: Field | None = None, epoch: dict | None = None) -> list[float]:
+        """Computes azimuth and elevation of a field at a given epoch.
+
+        This method uses the CASA `measures` tool to convert the direction
+        of a field to azimuth and elevation (AZELGEO frame) at the time
+        specified by the epoch and location of the observatory.
+
+        Args:
+            field : Field domain object or None.
+            epoch :  A dictionary representing the time epoch.
+
+        Returns:
+            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+        """
+        me = casa_tools.measures
+        me.doframe(epoch)
+        me.doframe(me.observatory(self.antenna_array.name))
+        myazel = me.measure(field.mdirection, 'AZELGEO')
+        myaz = myazel['m0']['value']
+        myel = myazel['m1']['value']
+        myaz = (myaz * 180 / np.pi) % 360
+        myel *= 180 / np.pi
+
+        return [myaz, myel]
+
+    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+        """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
+
+        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
+        values computed at the start and end of each field in science scans.
+
+        Args:
+            func (callable): A function that takes a list of floats and returns a single float.
+                Common examples include `min`, `max`, or `np.mean`.
+
+        Returns:
+            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+        """
+        cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
+        scans = [s for s in self.scans if s not in cal_scans]
+
+        az = []
+        el = []
+        for scan in scans:
+            for field in scan.fields:
+                az0, el0 = self.compute_az_el_to_field(field, scan.start_time)
+                az1, el1 = self.compute_az_el_to_field(field, scan.end_time)
+                az.append(func([az0, az1]))
+                el.append(func([el0, el1]))
+
+        return func(az), func(el)

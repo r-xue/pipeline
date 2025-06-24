@@ -89,11 +89,15 @@ class BandpassQAPool(pqa.QAScorePool):
 
     def _get_qascore(self, ms, score_type):
         (min_score, spw_str, qa_id) = self._get_min(score_type)
-        identifier = self._get_identifier_from_qa_id(ms, spw_str, qa_id)
-        longmsg = 'Lowest score for %s is %0.2f (%s %s)' % (self.score_types[score_type],
-                                                            min_score,
-                                                            ms.basename,
-                                                            identifier)
+        if min_score < 1.0:
+            data_selection = self._get_identifier_from_qa_id(ms, spw_str, qa_id)
+            identifier = f'{ms.basename} {data_selection}'
+        else:
+            # if the score is 1.0, then there is no fine-grained data selection to display
+            identifier = f'{ms.basename}'
+        longmsg = 'Lowest score for %s is %0.2f (%s)' % (self.score_types[score_type],
+                                                         min_score,
+                                                         identifier)
         shortmsg = self.short_msg[score_type]
 
         origin = pqa.QAOrigin(metric_name='BandpassQAPool',

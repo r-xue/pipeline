@@ -1,13 +1,13 @@
-"""This module is an adaptation from the original auto_selfcal prototype.
+"""Helpers for self-calibration heuristics in the ALMA/VLA pipelines."""
 
-see: https://github.com/jjtobin/auto_selfcal
-"""
+from __future__ import annotations
 
 import glob
 import logging
 import os
 import shutil
 import time
+from typing import TYPE_CHECKING
 
 import casatools
 import numpy as np
@@ -24,7 +24,10 @@ from pipeline.infrastructure.casa_tools import table as tb
 from pipeline.infrastructure.contfilehandler import ContFileHandler
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain.observingrun import ObservingRun
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def copy_products(imagename_src, imagename_dst):
@@ -1133,47 +1136,66 @@ def get_spw_chanwidths(vis, spwarray):
     return widtharray, bwarray, nchanarray
 
 
-def get_spw_bandwidth(vis, spwsarray_dict, target, vislist):
-    spwbws = {}
-    for spw in spwsarray_dict[vis]:
-        tb.open(vis+'/SPECTRAL_WINDOW')
-        spwbws[spw] = np.abs(np.unique(tb.getcol('TOTAL_BANDWIDTH', startrow=spw, nrow=1)))[
-            0]/1.0e9  # put bandwidths into GHz
-        tb.close()
+def get_spw_bandwidth(vis: str, target: str, observing_run: ObservingRun) -> tuple[dict[int, float], dict[int, float]]:
+    """Return SPW total and effective bandwidths (in GHz) for a given MS.
+
+    Computes the total bandwidth for each spectral window and optionally
+    replaces them with effective continuum bandwidths from `cont.dat` if available.
+
+    Args:
+        vis: Path to the Measurement Set.
+        target: Target name used for filtering continuum ranges.
+        observing_run: Object with access methods to the MS and SPW mappings.
+
+    Returns:
+        A tuple of two dictionaries:
+        - Total SPW bandwidths in GHz.
+        - Effective SPW bandwidths in GHz, possibly derived from cont.dat.
+    """
+    spwbws: dict[int, float] = {}
+
+    ms = observing_run.get_ms(vis)
+    spws = ms.get_spectral_windows(science_windows_only=True)
+
+    for spw in spws:
+        # Convert bandwidth from Hz to GHz
+        spwbws[spw.id] = float(spw.bandwidth.value) / 1.0e9
+
     spweffbws = spwbws.copy()
-    if os.path.exists("cont.dat"):
-        spweffbws = get_spw_eff_bandwidth(vis, target, vislist, spwsarray_dict)
+
+    if os.path.exists('cont.dat'):
+        # Replace with effective bandwidths if cont.dat is available
+        spweffbws = get_spw_eff_bandwidth(vis, target, observing_run)
 
     return spwbws, spweffbws
 
 
-def get_spw_eff_bandwidth(vis, target, vislist, spwsarray_dict):
-    spweffbws = {}
-    contdotdat = parse_contdotdat('cont.dat', target)
+def get_spw_eff_bandwidth(vis: str, target: str, observing_run: ObservingRun) -> dict[int, float]:
+    """Return effective SPW bandwidths (in GHz) based on continuum selections in cont.dat.
 
-    spwvisref = vislist[0]
-    for key in contdotdat.keys():
-        msmd.open(spwvisref)
-        spwname = msmd.namesforspws(key)[0]
-        msmd.close()
-        msmd.open(vis)
-        spws = msmd.spwsfornames(spwname)
-        msmd.close()
-        trans_spw = -1
-        # must directly cast to int, otherwise the CASA tool call does not like numpy.uint64
-        # loop through returned spws to see which is in the spw array rather than assuming, because assumptions be damned
-        for check_spw in spws[spwname]:
-            matching_index = np.where(check_spw == spwsarray_dict[vis])
-            if len(matching_index[0]) == 0:
-                continue
-            else:
-                trans_spw = check_spw
-                break
-        # trans_spw=int(np.max(spws[spwname])) # assume higher number spw is the correct one, generally true with ALMA data structure
+    Parses the continuum definition file and sums the bandwidths of selected channels.
+
+    Args:
+        vis: Path to the Measurement Set.
+        target: Target name used for selecting continuum ranges.
+        observing_run: Object with SPW mapping capability.
+
+    Returns:
+        A dictionary mapping real SPW IDs to effective bandwidths in GHz.
+    """
+    spweffbws: dict[int, float] = {}
+    contdotdat = parse_contdotdat('cont.dat', target)
+    ms = observing_run.get_ms(vis)
+
+    for key in contdotdat:
         cumulat_bw = 0.0
-        for i in range(len(contdotdat[key])):
-            cumulat_bw += np.abs(contdotdat[key][i][1]-contdotdat[key][i][0])
-        spweffbws[trans_spw] = cumulat_bw+0.0
+        trans_spw = observing_run.virtual2real_spw_id(key, ms)
+        if trans_spw is None:
+            trans_spw = -1
+        for lo, hi in contdotdat[key]:
+            cumulat_bw += abs(hi - lo)
+        spweffbws[trans_spw] = float(cumulat_bw)
+
     return spweffbws
 
 
@@ -2196,9 +2218,7 @@ def unflag_failed_antennas(vis, caltable, gaincal_return, flagged_fraction=0.25,
 
     if plot:
         import matplotlib.pyplot as plt
-        # from matplotlib import rc
-        from matplotlib.offsetbox import (AnchoredOffsetbox, HPacker, TextArea,
-                                          VPacker)
+        from matplotlib.offsetbox import AnchoredOffsetbox, TextArea, VPacker
 
         fig, ax1 = plt.subplots()
         ax2 = ax1.twinx()

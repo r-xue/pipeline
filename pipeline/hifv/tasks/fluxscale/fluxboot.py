@@ -20,6 +20,7 @@ from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.measures import FrequencyUnits
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -149,6 +150,8 @@ class FluxbootResults(basetask.Results):
         context.evla['msinfo'][m.name].fluxscale_spws = self.spws
         context.evla['msinfo'][m.name].fluxscale_result = self.fluxscale_result
         context.evla['msinfo'][m.name].fbversion = self.fbversion
+        # PIPE-730: adding spindex_results for AQUA report
+        context.evla['msinfo'][m.name].spindex_results = self.spindex_results
 
 
 @task_registry.set_equivalent_casa_task('hifv_fluxboot')
@@ -194,10 +197,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
@@ -208,7 +210,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
             spw2band = m.get_vla_spw2band()
 
@@ -433,6 +434,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
+
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
             nfldobj = len(fieldobj[0].intents)
@@ -443,7 +445,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents and
+                    not any(intent in ['PHASE', 'BANDPASS'] for intent in fieldobj[0].intents)):
 
                 LOG.warning("Field {!s}: {!s}, "
                             "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
@@ -543,7 +546,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         elif len(unique_bands) == 2 and 'A' in unique_bands and 'Q' in unique_bands:
             fitorder = 1
         elif ((len(unique_bands) > 2) or
-              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
+              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands or unique_bands[0] in 'KAQ' or unique_bands[1] in 'KAQ'))):
             # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
             if fractional_bandwidth >= 1.5:
                 fitorder = 4

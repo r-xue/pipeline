@@ -24,6 +24,7 @@ import os
 import shutil
 import string
 import tarfile
+import traceback
 from typing import Dict, Generator, List, Optional
 
 import pipeline.h.tasks.exportdata.exportdata as exportdata
@@ -35,6 +36,7 @@ import pipeline.infrastructure.project as project
 from pipeline.infrastructure import task_registry
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults
+from pipeline.hsd.tasks.common.utils import is_nro
 from . import almasdaqua
 
 # the logger for this module
@@ -103,12 +105,23 @@ class SDExportData(exportdata.ExportData):
             auxcaltables = None
             auxcalapplys = None
 
+        # Create and export the pipeline stats file for ALMA single dish data
+        pipeline_stats_file = None
+        if not is_nro(self.inputs.context):
+            try:
+                pipeline_stats_file = self._export_stats_file(context=self.inputs.context, oussid=oussid)
+            except Exception as e:
+                LOG.info("Unable to output pipeline statistics file: {}".format(e))
+                LOG.debug(traceback.format_exc())
+                pass
+
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
         #    The calibrator source fluxes file
         #    The antenna positions file
         #    The continuum regions file
         #    The target flagging file
+        #    The pipeline statistics file (if it exists)
         recipe_name = self.get_recipename(self.inputs.context)
         if not recipe_name:
             prefix = oussid
@@ -117,7 +130,8 @@ class SDExportData(exportdata.ExportData):
         auxfproducts = \
             self._do_auxiliary_products(self.inputs.context, oussid,
                                         self.inputs.output_dir,
-                                        self.inputs.products_dir)
+                                        self.inputs.products_dir,
+                                        pipeline_stats_file)
 
         # Export the AQUA report
         pipe_aqua_reportfile = self._export_aqua_report(context=self.inputs.context,
@@ -392,7 +406,8 @@ class SDExportData(exportdata.ExportData):
                         yield reffile
 
     def _do_auxiliary_products(self, context: Context, oussid: str,
-                               output_dir: str, products_dir: str) -> str:
+                               output_dir: str, products_dir: str,
+                               pipeline_stats_file: str) -> str:
         """Save a K2JY reference file and flag files into tarball.
 
         Args:
@@ -400,6 +415,7 @@ class SDExportData(exportdata.ExportData):
             oussid : OUS Status UID
             output_dir : path of output directory
             products_dir : path of products directory
+            pipeline_stats_file: pipeline stats file
 
         Returns:
             tarball file name
@@ -459,6 +475,12 @@ class SDExportData(exportdata.ExportData):
                     LOG.info('Auxiliary data product '
                              '{} does not exist'.format(os.path.basename(flags_file)))
 
+            # PIPE-2380: Save the pipeline statistics file
+            if pipeline_stats_file and os.path.exists(pipeline_stats_file):
+                tar.add(pipeline_stats_file, arcname=pipeline_stats_file)
+                LOG.info('Saving pipeline statistics file %s in %s', pipeline_stats_file, tarfilename)
+            else:
+                LOG.info("Pipeline statistics file does not exist.")
             tar.close()
 
         return tarfilename

@@ -10,10 +10,14 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2025 (as of July 24, 2024)
+Code changes for Pipeline2025 (as of Apr 04, 2025)
 0) Fix crash in recalcMomDiffSNR (not used by pipeline)
 1) Prevent crash due to no pyfits module available in CASA 6.6.6.
 2) Change np.string_ to np.bytes_
+3) Fix for PIPE-2417 (erroneous AllCont = True when intersecting channel ranges 
+   in onlyExtraMask/autoLower/autoLower2)
+4) Fix for PIPE-2374
+5) Fix for PIPE-2544
 
 Code changes for Pipeline2024 (as of July 30, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
@@ -212,29 +216,37 @@ try:
     import casatools
     casaVersion = casatools.utils.utils().version_string()
 except:
-    import casadef
-    if casadef.casa_version >= '5.0.0':
-        import casa as mycasa
-        if 'cutool' in dir(mycasa):
-            cu = mycasa.cutool()
-            casaVersion = '.'.join([str(i) for i in cu.version()[:-1]]) + '-' + str(cu.version()[-1])
+    if 'casadef' in locals():
+        import casadef
+        if casadef.casa_version >= '5.0.0':
+            import casa as mycasa
+            if 'cutool' in dir(mycasa):
+                cu = mycasa.cutool()
+                casaVersion = '.'.join([str(i) for i in cu.version()[:-1]]) + '-' + str(cu.version()[-1])
+            else:
+                casaVersion = mycasa.casa['build']['version'].split()[0]
         else:
-            casaVersion = mycasa.casa['build']['version'].split()[0]
-    else:
-        casaVersion = casadef.casa_version
+            casaVersion = casadef.casa_version
 #print("casaVersion = ", casaVersion)
+    else:
+        import sys
+        print("You appear to be importing analysisUtils into python (not CASA). version = ", '.'.join([str(i) for i in sys.version_info[:3]]))
+        print("This is not supported.")
+        exit
 
 if (casaVersion >= '5.9.9'):
     try:
         import astropy.io.fits as pyfits
     except:
-        if casaVersion < '6.6.6':
+        if casaVersion < '6.6.4':
             with warnings.catch_warnings():
                 # ignore pyfits deprecation message, maybe casa will include astropy.io.fits soon
                 # Note: you cannot set category=DeprecationWarning in the call to filterwarnings() because the actual 
                 #       warning is PyFITSDeprecationWarning, which of course is not defined until you import pyfits!
                 warnings.filterwarnings("ignore") #, category=DeprecationWarning)  
-                import pyfits 
+                import pyfits
+        else:
+            print("Neither astropy.io nor pyfits are present.")
 else:
     try:
         import pyfits
@@ -308,7 +320,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle12.py,v 8.2 2024/09/26 19:51:04 we Exp $" 
+    myversion = "$Id: findContinuumCycle12.py,v 8.5 2025/04/04 20:30:24 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -1352,14 +1364,14 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
         amendMaskIterationName = amendMaskIterationNames[amendMaskIteration]
         if amendMask:
             if amendMaskIteration > 0:
-                casalogPost('At start of iteration %d: aggregateBandwidth = %.6f GHz' % (amendMaskIteration, aggregateBandwidth))
+                casalogPost('At start of amendMaskIteration %d: aggregateBandwidth = %.6f GHz' % (amendMaskIteration, aggregateBandwidth))
             casalogPost("=======================================================================")
             casalogPost("---------- amendMaskIteration %d (%s) -------------------- sFC=%s" % (amendMaskIteration, amendMaskIterationName,str(sigmaFindContinuum)))
             casalogPost("=======================================================================")
             previousPng = png
             previousSelection = selection
             previousAggregateBandwidth = aggregateBandwidth
-        iteration = 0
+        iteration = 0  # of runFindContinuum
         fullLegend = False
         if meanSpectrumMethod != 'mom0mom8jointMask':
             # There can be multiple iterations, so highlight the first one in the log.
@@ -2236,6 +2248,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     # create mom8fcIntersect from original and amendedMask regions
                     ###############################################################
                     selection = convertChannelListIntoSelection(channelList)
+                    casalogPost("(b) Due to use of intersected channels, setting selectionPreBluePruning to ", selection)
+                    selectionPreBluePruning = selection  # PIPE-2417
                     casalogPost("Building new mom8fc with chans='%s'" % (selection))
                     if mom08simultaneous:
                         momRoot['.intersect'] = momRoot[''] + '.intersectChannelRanges'
@@ -2574,6 +2588,8 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     casalogPost('Forcing single channel to include the adjacent channels because nchan>500')
                     selection = convertChannelListIntoSelection(channelList)
                                    
+                casalogPost("(a) Due to use of intersected channels, setting selectionPreBluePruning to ", selection)
+                selectionPreBluePruning = selection  # PIPE-2417
 #                else:  # process new channel selection (even if it is the same, because we want to produce the autoLowerIntersect momDiff)
                 casalogPost('intersected channel list: %s' % (selection))
                 ##########################################
@@ -4826,7 +4842,13 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     1) compute the mean spectrum of a dirty cube
     2) find the continuum channels 
     3) plot the results
-    Inputs: channelWidth: in Hz
+    Inputs: 
+    See description of parameters in findContinuum
+
+    Additional inputs:
+    channelWidth: in Hz
+    iteration: order number of this call, established in calling function (findContinuum)
+    
     Returns: 23 items
     *1 A channel selection string suitable for the spw parameter of clean.
     *2 The name of the png produced.
@@ -5459,6 +5481,11 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                 aboveBelow(avgSpectrumNansReplaced,medianTrue)
 
     selectionPreBluePruning = selection
+#    print("************* amendMaskIterationName=%s: Set selectionPreBluePruning = " % amendMaskIterationName, selectionPreBluePruning)
+#    g = open('scops-5777.txt','a')
+#    g.write("************* amendMaskIterationName=%s: Set selectionPreBluePruning = %s\n" % (amendMaskIterationName, selectionPreBluePruning))
+#    g.close()
+
     secondSelectionAdded = ''  # used to indicate on the spectrum plot if the heuristic for CAS-11720 was activated to ensure a second region
     if meanSpectrumMethod == 'mom0mom8jointMask':
         casalogPost('No slope fit attempted because we are using mom0mom8jointMask.')
@@ -6181,6 +6208,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
         # go back to original figure now
         pl.close(2)
         pl.figure(1)
+
     return(selection, png, slope, channelWidth, nchan, useLowBaseline, mom0snrs, mom8snrs, useMiddleChannels, 
            selectionPreBluePruning, sigmaFindContinuum, jointMask, avgspectrumAboveThreshold, medianTrue, 
            labelDescs, ax1, ax2, threshold, areaString, RangesDropped, effectiveSigma, baselineMAD, upperXlabel,
@@ -6908,10 +6936,10 @@ def findContinuumChannels(spectrum, nBaselineChannels=16, sigmaFindContinuum=3,
                                   trimChannels, maxTrim, maxTrimFraction, verbose)
                     selection = convertChannelListIntoSelection(channels)
                     if selection == '':  
-                        casalogPost('WARNING: selection is still blank, skipping trim')
-                        channels = splitListIntoContiguousLists(originalChannels)
+                        casalogPost('WARNING: selection is still blank, skipping trim, originalChannels=%s, length=%d' %(originalChannels,len(originalChannels) ))
+#                        channels = splitListIntoContiguousLists(originalChannels) # remove this line to fix PIPE-2374
+                        channels = originalChannels  # add this line to fix PIPE-2374
                         selection = convertChannelListIntoSelection(channels)
-                        casalogPost('Selection = ', selection)
                 groups = len(selection.split(separator))
                 if (groups > maxGroupsForMaxTrimAdjustment and trimChannels=='auto'
                     and maxTrim>maxTrimDefault):
@@ -8522,7 +8550,8 @@ def splitListIntoContiguousListsAndRejectZeroStd(channels, values, nanmin=None, 
         mystd = np.std(values[mylist])
         if (mystd > 1e-17):  # avoid blocks of identically-zero values
             if (nanmin is not None):
-                minvalues = len(np.where(values[i] == nanmin)[0])
+#                minvalues = len(np.where(values[i] == nanmin)[0])  # PIPE-2544
+                minvalues = np.sum(values[i] == nanmin)             # fix for PIPE-2544
                 if (float(minvalues)/len(mylist) > 0.1 and minvalues > 3):
                     print("Rejecting list %d with multiple min values (%d)" % (i,minvalues))
                     continue
@@ -8532,7 +8561,8 @@ def splitListIntoContiguousListsAndRejectZeroStd(channels, values, nanmin=None, 
 def convertChannelListIntoSelection(channels, trim=0, separator=';'):
     """
     This function is called by findContinuumChannels.
-    Converts a list of channels into casa selection string syntax.
+    Converts a list of channels into casa selection string syntax.  It first calls
+    splitListIntoContiguousLists().
     channels: a list of channels
     trim: the number of channels to trim off of each edge of a block of channels
     """
@@ -8541,6 +8571,7 @@ def convertChannelListIntoSelection(channels, trim=0, separator=';'):
     if (len(channels) > 0):
         mylists = splitListIntoContiguousLists(channels)
         for mylist in mylists:
+#            print("Processing: ", mylist)
             if (mylist[0]+trim <= mylist[-1]-trim):
                 if (not firstList):
                     selection += separator
