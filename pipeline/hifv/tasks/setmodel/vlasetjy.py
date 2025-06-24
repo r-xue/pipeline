@@ -264,7 +264,7 @@ class VLASetjyInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             field: List of field names or ids.
 

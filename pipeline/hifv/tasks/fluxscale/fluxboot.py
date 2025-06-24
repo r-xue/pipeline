@@ -44,7 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
