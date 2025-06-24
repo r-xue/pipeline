@@ -26,6 +26,7 @@ if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
     from .state import State
 
 from pipeline.infrastructure import logging
+from pipeline.infrastructure.tablereader import find_EVLA_band
 
 from . import measures, spectralwindow
 from .antennaarray import AntennaArray
@@ -486,7 +487,7 @@ class MeasurementSet(object):
             if self.antenna_array.name not in ('VLA', 'EVLA'):
                 LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
             return target_source_name, None
-        
+
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
             qa.getunit(self.representative_target[2])))
@@ -520,7 +521,7 @@ class MeasurementSet(object):
         if not target_frequency_topo:
             return target_source_name, None
 
-        # Find the science spw 
+        # Find the science spw
 
         # Get the science spw ids
         science_spw_ids = [spw.id for spw in self.get_spectral_windows()]
@@ -768,7 +769,7 @@ class MeasurementSet(object):
             for given CASA-style search criteria.
         """
         # we may have more spectral windows in our MeasurementSet than have
-        # data in the measurement set on disk. Ask for all 
+        # data in the measurement set on disk. Ask for all
         if task_arg in (None, ''):
             task_arg = '*'
 
@@ -928,26 +929,46 @@ class MeasurementSet(object):
 
         return corrstring
 
-    def get_vla_spw2band(self) -> dict:
-        """Find field spws for VLA
-
+    def get_vla_spw2band(self) -> dict[int, str]:
+        """Find spectral windows id-to-band mapping for VLA.
+        
+        Creat spw id-to-band mapping from spw names or derives it from reference frequency
+        when name parsing fails. Handles special cases for KU and KA band naming conventions.
+        
         Returns:
-            spw2band: dictionary with each string key spw index giving a single letter string value of the band
+            Dictionary mapping spectral window IDs to single-letter band codes (e.g., '4', 'P', 'L', 
+            'S', 'C', 'X', 'U', 'K', 'A', 'Q').
         """
-
-        spw2band = {}
+        spw2band: dict[int, str] = {}
 
         for spw in self.spectral_windows:
+            
+            try:
+                # Extract band from 6th character of SPW name
+                spw_name_chars = list(spw.name)
+                band_char = spw_name_chars[5]
 
-            strelems = list(spw.name)
-            bandname = strelems[5]
-            if bandname in '4PLSCXUKAQ':
-                spw2band[spw.id] = strelems[5]
-            # Check for U / KU
-            if strelems[5] == 'K' and strelems[6] == 'U':
-                spw2band[spw.id] = 'U'
-            if strelems[5] == 'K' and strelems[6] == 'A':
-                spw2band[spw.id] = 'A'
+                if band_char in '4PLSCXUKAQ':
+                    spw2band[spw.id] = band_char
+
+                # Handle special multi-character band names
+                if band_char == 'K' and len(spw_name_chars) > 6:
+                    if spw_name_chars[6] == 'U':  # KU band
+                        spw2band[spw.id] = 'U'
+                    elif spw_name_chars[6] == 'A':  # KA band
+                        spw2band[spw.id] = 'A'
+            except IndexError:
+                # SPW name too short or malformed
+                pass
+
+            # Fallback to frequency-based band determination
+            if spw.id not in spw2band:
+                evla_band = find_EVLA_band(float(spw.ref_frequency.value))
+                LOG.info(
+                    "Unable to extract band name from SPW ID %s (name: %s); "
+                    "derived band name %s from reference frequency",
+                    spw.id, spw.name, evla_band)
+                spw2band[spw.id] = evla_band
 
         return spw2band
 
@@ -1088,26 +1109,46 @@ class MeasurementSet(object):
 
         return critfrac
 
-    def get_vla_baseband_spws(self, science_windows_only: bool = True, return_select_list: bool = True,
-                              warning: bool = True) -> dict | tuple[dict, list]:
+    def get_vla_baseband_spws(
+        self, science_windows_only: bool = True, return_select_list: bool = True, warning: bool = True
+    ) -> dict | list[list[int]]:
         """Get the SPW information from individual VLA band/baseband.
 
         Args:
-            science_windows_only (bool, optional): Defaults to True.
-            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.
-            warning (bool, optional): Defaults to True.
+            science_windows_only: Whether to include only science spectral windows.
+            return_select_list: Whether to return SPW list of each baseband instead of full band/subband info.
+            warning: Whether to log warnings for parsing errors.
 
         Returns:
-            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]
-            baseband_spws_list: spw_list of individual basebands
-                e.g., [[0,1,2,3],[4,5,6,7]]
+            If return_select_list is False:
+                Dictionary with SPW info organized as baseband_spws[band][baseband], where each
+                entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.
+
+            If return_select_list is True:
+                List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].
         """
         baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
+        spw2band = self.get_vla_spw2band()
 
         for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
             try:
-                band = spw.name.split('#')[0].split('_')[1]
-                baseband = spw.name.split('#')[1]
+                band = spw2band.get(spw.id, 'unknown')
+                # PIPE-2634: historically, the codes calling `ms.get_vla_baseband_spws` was imeplemented to
+                # use two-letter convetions for KU and KA bands, e.g. 'KU' and 'KA' instead of 'U' and 'A'.
+                if band in ('U', 'A'):
+                    band = 'K' + band
+                if '#' in spw.name:
+                    baseband = spw.name.split('#')[1]
+                else:
+                    # older VLA data might have this spw naming pattern:
+                    # spwid - name
+                    #   0   - Subband:7
+                    #   1   - Subband:5
+                    #     ..
+                    #   8   - Subband:7
+                    # Here as a fallback, we use the full spw name as baseband; likely band name is generated from
+                    # the frequency-base heuristics in ms.spw2band
+                    baseband = spw.name
                 min_freq = spw.min_frequency
                 max_freq = spw.max_frequency
                 mean_freq = spw.mean_frequency
@@ -1115,7 +1156,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning('Exception: Baseband name cannot be parsed. %s', ex)
                 else:
                     pass
 
@@ -1124,7 +1165,7 @@ class MeasurementSet(object):
             for band in baseband_spws.values():
                 for baseband in band.values():
                     baseband_spws_list.append([[*spw_info][0] for spw_info in baseband])
-            return baseband_spws, baseband_spws_list
+            return baseband_spws_list
         else:
             return baseband_spws
 
@@ -1559,3 +1600,56 @@ class MeasurementSet(object):
             spw_list = utils.range_to_list(spw_select)
 
         return spw_list
+
+    # PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here
+    def compute_az_el_to_field(self, field: Field | None = None, epoch: dict | None = None) -> list[float]:
+        """Computes azimuth and elevation of a field at a given epoch.
+
+        This method uses the CASA `measures` tool to convert the direction
+        of a field to azimuth and elevation (AZELGEO frame) at the time
+        specified by the epoch and location of the observatory.
+
+        Args:
+            field : Field domain object or None.
+            epoch :  A dictionary representing the time epoch.
+
+        Returns:
+            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+        """
+        me = casa_tools.measures
+        me.doframe(epoch)
+        me.doframe(me.observatory(self.antenna_array.name))
+        myazel = me.measure(field.mdirection, 'AZELGEO')
+        myaz = myazel['m0']['value']
+        myel = myazel['m1']['value']
+        myaz = (myaz * 180 / np.pi) % 360
+        myel *= 180 / np.pi
+
+        return [myaz, myel]
+
+    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+        """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
+
+        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
+        values computed at the start and end of each field in science scans.
+
+        Args:
+            func (callable): A function that takes a list of floats and returns a single float.
+                Common examples include `min`, `max`, or `np.mean`.
+
+        Returns:
+            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+        """
+        cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
+        scans = [s for s in self.scans if s not in cal_scans]
+
+        az = []
+        el = []
+        for scan in scans:
+            for field in scan.fields:
+                az0, el0 = self.compute_az_el_to_field(field, scan.start_time)
+                az1, el1 = self.compute_az_el_to_field(field, scan.end_time)
+                az.append(func([az0, az1]))
+                el.append(func([el0, el1]))
+
+        return func(az), func(el)

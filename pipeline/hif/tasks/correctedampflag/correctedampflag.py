@@ -485,7 +485,7 @@ class CorrectedampflagInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -936,6 +936,11 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                 cmetric_all = np.concatenate((cmetric_copol, cmetric_crosspol), axis=0)
                 flag_all = np.concatenate((flag_copol, flag_crosspol), axis=0)
                 ncorrs = 2
+            # PIPE-2631: cast from MaskedArray back to regular Numpy array to
+            # avoid Numpy warnings in heuristics below (that use regular Numpy
+            # functions that ignore mask); heuristics below already select for
+            # non-flagged (i.e. unmasked) data.
+            cmetric_all = np.array(cmetric_all)
 
         # Evaluate flagging heuristics separately for each polarisation.
         for icorr in range(ncorrs):

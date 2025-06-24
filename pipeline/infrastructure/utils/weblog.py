@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
 __all__ = ['OrderedDefaultdict', 'merge_td_columns', 'merge_td_rows', 'get_vis_from_plots', 'total_time_on_source',
            'total_time_on_target_on_source', 'get_logrecords', 'get_intervals', 'table_to_html', 'plots_to_html',
-           'scale_uv_range', 'split_spw']
+           'scale_uv_range', 'split_spw', 'get_directory_size']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -459,3 +459,29 @@ def split_spw(spw_string: str) -> str:
             return "<br/>".join(parts[:i] + ["".join(parts[i:])])
 
     return spw_string
+
+
+def get_directory_size(directory):
+    """
+    Calculate the total size of a directory in megabytes (MB).
+
+    This includes all files in the directory and its subdirectories.
+    Symlinks are ignored to avoid counting linked files or causing errors.
+
+    Parameters:
+        directory (str): Path to the target directory.
+
+    Returns:
+        float: Total size of the directory in megabytes.
+    """
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            if not os.path.islink(filepath):
+                try:
+                    total_size += os.path.getsize(filepath)
+                except OSError as e:
+                    # make it log.warning
+                    print(f"Error accessing {filepath}: {e}")
+    return total_size / (1024 * 1024)
