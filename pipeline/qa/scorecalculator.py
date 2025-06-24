@@ -26,13 +26,18 @@ import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
 import pipeline.qa.checksource as checksource
+<<<<<<< HEAD
 from pipeline.domain import measures
+=======
+import pipeline.extern.SDcalatmcorr as sdatm
+>>>>>>> c211611fb0ac23b351bdefa0992b406e7933dd6f
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.infrastructure import basetask, casa_tools, logging
+
 
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
