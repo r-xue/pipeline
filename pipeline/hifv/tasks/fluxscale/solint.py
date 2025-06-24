@@ -512,23 +512,32 @@ class Solint(basetask.StandardTaskTemplate):
         if not durations.tolist():
             LOG.info("No statistical outliers in list of determined durations.")
             durations = orig_durations
-
         nsearch = 5
         integration_time = m.get_integration_time_stats(stat_type="max")
         integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
-        longest_scan = np.round(np.max(orig_durations))
-        zscore_solint = np.max(durations)
-        solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
-        if solint_integer_integrations:
+        if orig_durations:
+            longest_scan = np.round(np.max(orig_durations))
+        else:
+            longest_scan = None
+        if durations:
+            zscore_solint = np.max(durations)
+            solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
+        else:
+            zscore_solint = None
+            solint_integer_integrations = None
+        if solint_integer_integrations and longest_scan is not None:
             for i in range(nsearch):
                 # print('testing solint', solint_integer_integrations + i * integration_time)
                 search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
             longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
         else:
-            longsolint = (np.max(durations)) * 1.01
-            LOG.warning("Using alternate long solint calculation.")
-
+            if durations:
+                longsolint = (np.max(durations)) * 1.01
+                LOG.warning("Using alternate long solint calculation.")
+            else:
+                longsolint = integration_time
+                LOG.warning("No determined durations found; setting 'longsolint' to integration time.")
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
