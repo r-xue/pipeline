@@ -85,7 +85,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
                 if ranges_for_spw in non_detection:
                     rows.append(TR(field='<b>{:s}</b>'.format(field), spw=spw, min='None', max='',
-                                   frame='None', status=status, spectrum=plotfile, jointmask=jointmaskplot))
+                                   frame='None', status=status, momdiffsnr=-999.0, spectrum=plotfile, jointmask=jointmaskplot))
                 else:
                     raw_ranges_for_spw = [item['range'] for item in ranges_for_spw if isinstance(item, dict)]
                     refers = numpy.array([item['refer'] for item in ranges_for_spw if isinstance(item, dict)])
