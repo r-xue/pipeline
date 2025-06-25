@@ -137,8 +137,8 @@ class DetectMissedLines( object ):
                 ( line_center, line_width ) = ( line[0], line[1] )
                 line_center -= self.edge[0]
             line_ranges.append(
-                [ math.floor(line_center - line_width/2.0),
-                  math.ceil(line_center + line_width/2.0) ] )
+                [ math.floor(line_center - line_width / 2.0),
+                  math.ceil(line_center + line_width / 2.0) ] )
 
         # first try 'single_beam' method
         single_beam_detection = self._detect_over_deviation_threshold( line_ranges,
@@ -403,8 +403,7 @@ class DetectMissedLines( object ):
                  dev_threshold, "threshold", va='top', color='blue', fontstyle='italic' )
 
         # figure parameters
-        ax.set_xlim( self.frequency[0] - increment / 2.0,
-                     self.frequency[-1] + increment / 2.0 )
+        ax.set_xlim( frequency_boundaries[0], frequency_boundaries[-1] )
         ax.set_ylim( 1.1 * np.nanmin( z_linefree ),
                      1.1 * np.nanmax( z_linefree ) )
         ax.set_xlabel( 'frequency (GHz) {}'.format(self.frequency_frame) )
