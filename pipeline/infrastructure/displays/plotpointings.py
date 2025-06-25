@@ -171,6 +171,23 @@ def add_elements_to_plot(
 
     for values in plot_dict.values():
         beam_diameter = values['beam diameter']
+        if 'tsys scans' in values.keys():
+            for intent, scans_dict in values['tsys scans'].items():
+                color = COLORBLIND_PALETTE['off_tsys'] if intent == 'OFF' else COLORBLIND_PALETTE['on_tsys']
+                linestyle = 'dotted' if intent == 'OFF' else 'dashed'
+                for scan_id, scan_dict in scans_dict.items():
+                    x, y = scan_dict['radec']
+                    ax.add_patch(patches.Circle((x, y), radius=0.5 * beam_diameter,
+                                        facecolor='none', edgecolor=color, linestyle=linestyle, alpha=0.6))
+
+                    if scan_dict['azel offset']:
+                        ax.text(x, y, f'{scan_id}', ha='center', va='center', fontsize=fontsize, color=color)
+                    else:
+                        ax.plot(x, y, marker='+', linestyle='None', color=color, markersize=4)
+
+                if f'Tsys {intent} Scan(s)' not in legend_labels:
+                    legend_labels[f'Tsys {intent} Scan(s)'] = lines.Line2D([0], [0], color=color, linewidth=2, linestyle=linestyle)
+                    legend_colors[f'Tsys {intent} Scan(s)'] = color
         for key, specs in values['target fields'].items():
             linestyle = 'dotted'
             ax.add_patch(patches.Circle((specs['x'], specs['y']), radius=0.5 * beam_diameter,
@@ -187,23 +204,6 @@ def add_elements_to_plot(
                     [0], [0], color=specs['color'], linewidth=2, linestyle=linestyle
                     )
                 legend_colors[specs['label']] = specs['color']
-        if 'tsys scans' in values.keys():
-            for intent, scans_dict in values['tsys scans'].items():
-                color = COLORBLIND_PALETTE['off_tsys'] if intent == 'OFF' else COLORBLIND_PALETTE['on_tsys']
-                linestyle = 'dotted' if intent == 'OFF' else 'dashed'
-                for scan_id, scan_dict in scans_dict.items():
-                    x, y = scan_dict['radec']
-                    ax.add_patch(patches.Circle((x, y), radius=0.5 * beam_diameter,
-                                        facecolor='none', edgecolor=color, linestyle=linestyle, alpha=0.6))
-
-                    if scan_dict['azel offset']:
-                        ax.text(x, y, f'{scan_id}', ha='center', va='center', fontsize=fontsize, color=color)
-                    else:
-                        ax.plot(x, y, marker='+', linestyle='None', color=color, markersize=4)
-
-                if f'Tsys {intent} Scan' not in legend_labels:
-                    legend_labels[f'Tsys {intent} Scan'] = lines.Line2D([0], [0], color=color, linewidth=2, linestyle=linestyle)
-                    legend_colors[f'Tsys {intent} Scan'] = color
 
     return legend_labels, legend_colors
 
@@ -220,13 +220,15 @@ def compute_element_locs(
 
     Args:
         fields: A list of Field objects including the non Tsys-only fields.
-        delta_ra: a list of offset RA values from the median position in radians.
-        delta_dec: a list of offset Dec values from the median position in radians.
-        dish_diameters: a list of Distance objects indicating the size of the antennas used for observation.
-        beam_diameters: a list of primary beam sizes in arcsecs.
+        delta_ra: A list of offset RA values from the median position in radians.
+        delta_dec: A list of offset Dec values from the median position in radians.
+        dish_diameters: A list of Distance objects indicating the size of the antennas used for observation.
+        beam_diameters: A list of primary beam sizes in arcsecs.
+        tsys_scans_dict: A dictionary containing Tsys OFF_SOURCE (and possibly ON_SOURCE) scan information, including
+            offset values in arcsecs and whether a horizontal coordinate offset was applied.
 
     Returns:
-        plot_dict: plot information for the source fields, including location, color, label, and beam diameter.
+        plot_dict: Plot information for the source fields, including location, color, label, and beam diameter.
     """
     plot_dict = {}
     for dish_diameter, beam_diameter in zip(dish_diameters, beam_diameters):
@@ -238,7 +240,7 @@ def compute_element_locs(
                     'x': rel_ra * RADIANS_TO_ARCSEC,
                     'y': rel_dec * RADIANS_TO_ARCSEC,
                     'color': COLORBLIND_PALETTE['7m'] if dish_diameter == SEVEN_M else COLORBLIND_PALETTE['12m'],
-                    'label': str(dish_diameter),
+                    'label': f"{dish_diameter} Field(s)",
                     }
                 plot_dict[str(dish_diameter.value)]['target fields'][field.id] = field_dict
         if tsys_scans_dict:
@@ -565,19 +567,20 @@ def tsys_scans_radec(
         mean_direction: MDirection,
         tsys_field: Field,
         observatory: str = 'ALMA',
-        ) -> dict[int, dict[str, tuple[float, float] | bool]] | None:
+        ) -> dict[str, dict[int, dict[str, tuple[float, float] | bool]]]:
     """
     Computes the offset RA/Dec values based on pointing and ASDM_POINTING tables.
     Adapted from Todd Hunter's AU tool tsysOffSourceRADec
 
     Args:
         ms: MeasurementSet object.
-        source: Source object.
+        mean_direction: CASA 'direction' measure dictionary representing mean RA and Dec values.
         tsys_field: The field used for TARGET Tsys.
         observatory: Observatory name for Az/El to RA/Dec conversion. Default is 'ALMA'.
 
     Returns:
-        Computed scan offset values in radians or None if the POINTING table is empty.
+        A dictionary containing Tsys OFF_SOURCE (and possibly ON_SOURCE) scan information, including
+        offset values in arcsecs and whether a horizontal coordinate offset was applied.
     """
     vis = ms.basename
     # Read POINTING table and return if it's empty

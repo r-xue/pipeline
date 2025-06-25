@@ -5,7 +5,7 @@ import datetime
 import math
 import operator
 import os
-from typing import TYPE_CHECKING, Generator, Literal
+from typing import TYPE_CHECKING, Generator
 
 import matplotlib
 import matplotlib.pyplot as plt
