@@ -2834,7 +2834,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
         return [(grp[0], grp[-1]) for grp in groups]
 
-    def make_score(score_val, msg, metric_val, metric_units, ms_name, field, spws, ants):
+    def make_score(score_val, msg, metric_val, metric_units, ms_name, field = '', spws = set(), ants = set()):
         spw_str = ', '.join(map(str, sorted(spws)))
         ant_str = ', '.join(sorted(ants))
         longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
@@ -2906,13 +2906,6 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                                           {reduction_group_desc[m].spw_id for m in member_list},
                                           {reduction_group_desc[m].antenna_name for m in member_list}))
 
-        if len(line_detection_scores) == 0:
-            # add new entry with score of 0.8 if no spectral lines
-            # were detected in any spws/fields
-            line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
-                                        'N/A', 'Channel range(s) of detected lines',
-                                        next(iter(atm_masks)), '', set(), set()))
-
         # deviation-mask and ATM overlap
         for mid in member_list:
             rgm = reduction_group_desc[mid]
@@ -2975,6 +2968,14 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 metric = ','.join(f'{l}~{r}' for l, r in ranges)
                 atm_scores.append(make_score(dm_atm_score, dm_atm_msg, metric, dm_atm_unit,
                                              ms, field_name, {spw}, {rgm.antenna_name}))
+        
+        
+    if len(line_detection_scores) == 0:
+        # add new entry with score of 0.8 if no spectral lines
+        # were detected in any spws/fields
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
+                                    'N/A', 'Channel range(s) of detected lines',
+                                    next(iter(atm_masks))))
 
     return line_detection_scores + dm_scores + atm_scores
 
