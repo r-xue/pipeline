@@ -182,7 +182,7 @@ def unix_seconds_to_datetime(unix_secs: list[int | float]) -> datetime | list[da
     Returns:
         List of equivalent Python datetime objects.
     """
-    return [datetime.datetime.fromtimestamp(s, tz=datetime.timezone.utc) for s in unix_secs]
+    return [datetime.datetime.utcfromtimestamp(s) for s in unix_secs]
 
 
 def mjd_seconds_to_datetime(mjd_secs: list[int | float]) -> list[datetime]:
@@ -224,7 +224,7 @@ def get_epoch_as_datetime(epoch: dict) -> datetime:
     t = mt.getvalue(epoch_utc)['m0']
     t = qt.sub(t, base_time)
     t = qt.convert(t, 's')
-    t = datetime.datetime.fromtimestamp(qt.getvalue(t)[0], tz=datetime.timezone.utc)
+    t = datetime.utcfromtimestamp(qt.getvalue(t)[0])
 
     return t
 
