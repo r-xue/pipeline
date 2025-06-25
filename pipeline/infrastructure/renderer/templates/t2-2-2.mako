@@ -68,11 +68,8 @@ from pipeline.infrastructure import utils
 					% for spw in ms.get_spectral_windows(science_windows_only=True):
 					<tr>
 					  <td>${spw.id}</td>
-					  <%
-					  virtual_spw_id = pcontext.observing_run.real2virtual_spw_id(int(spw.id), ms)
-					  %>
-					  <td>${virtual_spw_id}</td>
-					  <td>${utils.split_spw(pcontext.observing_run.virtual_science_spw_ids.get(virtual_spw_id, 'N/A'))}</td>
+					  <td>${pcontext.observing_run.real2virtual_spw_id(int(spw.id), ms)}</td>
+					  <td>${utils.split_spw(spw.name)}</td>
 			            <%
 						spwtypeentry='<td>'+str(spw.type)+'</td>'
 						if 'VLA' in pcontext.project_summary.telescope:
