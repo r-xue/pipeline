@@ -574,7 +574,7 @@ class PWVChart(object):
 class MosaicChart(object):
     """Base class for generating mosaic charts.
 
-    This class provides a framework for creating and managing mosaic plots for a
+    This class provides a framework for creating and managing mosaic plots for a 
     given measurement set and source.
 
     Attributes:
@@ -1314,8 +1314,6 @@ class SpwIdVsFreqChart(object):
         totalnum_spws = len(scan_spws)
         idx = 0
         rmin = np.inf
-        atm_freq_list = []
-        atm_transmission_list = []
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
@@ -1332,39 +1330,23 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-
-                # 3. calculate atm transmission with finer resolution
-                center_freq = fmin + bw / 2
-                # To have 5 data points within the ozone feature of 2 MHz FWHM:
-                # 2 MHz/(5-1) = 500 kHz.
-                resolution = 5e-4
-                nchan = bw / resolution + 1
-                LOG.info(
-                    "'Spectral Window ID vs. Frequency' plot for spw %d the atmospheric transmission with %d data points at %.3f kHz intervals.",
-                    spwid, nchan, resolution*1e6
-                )
-                atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
-                atm_freq_list.append(atm_freq)
-                atm_transmission_list.append(atm_transmission)
-
+        
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set
         # to smaller than 500 kHz but is set to larger than that corresponding to 48001 data points.
+        default_resolution = 5e-4  # To have 5 data points within the ozone feature of 2 MHz FWHM:
+                                   # 2 MHz/(5-1) = 500 kHz.
+        max_nchan = 48001  # 24 GHz/500 kHz, where 24 GHz covers both sidebands of a 4-12 GHz IF
+                           # for a single LO tuning.
         fspan = xmax - xmin
-        # Use 10x coarse resolution for frequency range outside science spw
-        resolution = 5e-3
-        nchan = round(fspan / resolution) + 1
+        resolution = min(default_resolution, rmin)
+        nchan = min(max_nchan, round(fspan / resolution) + 1)
+        resolution = fspan / (nchan - 1)
         LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
         atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
-        # consolidate all frequency values and sort them in an ascending order
-        atm_freq_list.append(atm_freq)
-        atm_transmission_list.append(atm_transmission)
-        atm_freq = np.concatenate(atm_freq_list)
-        atm_transmission = np.concatenate(atm_transmission_list)
-        sort_index = np.argsort(atm_freq)
 
-        ax_atm.plot(atm_freq[sort_index], atm_transmission[sort_index], color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
 
         # set axes limits, title, label, grid, tick, and save the plot to file
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
