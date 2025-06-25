@@ -51,6 +51,8 @@ RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width he
 # Reference MS in combined list
 REF_MS_ID = 0
 # The minimum limit of integration time (seconds) to be valid scan duration (1 ms)
+# The current minimum, 1 ms, comes from the typical integration time of fast-scan observation by SQLD in ALMA.
+# Adjust the value when Pipeline supports observation modes/instruments with smaller integration time.
 MIN_INTEGRATION_SEC = 0.001
 
 class SDImagingInputs(vdp.StandardInputs):
@@ -1642,13 +1644,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         return tirp.cqa.quantity(_theoretical_rms, pp.brightnessunit)
 
     def _obtain_t_sub_on_off(self, tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
-        """Obtain TsubON and TsubOFF. A sub method of calculate_theoretical_image_rms().
+        """Obtain Tsub,on and Tsub,off. A sub method of calculate_theoretical_image_rms().
 
         Args:
             tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            False if it cannot get Tsub On/Off values by some error.
+            False if it cannot get Tsub,on/off values by some error.
 
         Raises:
             BaseException : raises when it cannot find a sky caltable applied.
