@@ -15,6 +15,7 @@ import numpy as np
 
 import pipeline.extern.adopted as adopted
 from pipeline.infrastructure import casa_tools, get_logger
+from . import atmdata
 
 LOG = get_logger(__name__)
 
@@ -435,6 +436,21 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
 
     return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
+
+
+def get_cached_transmission(vis: str, antenna_id: int, freq_min: float, freq_max: float) -> Tuple[np.ndarray, np.ndarray]:
+    # first try computing elevation value from phasecenter
+    # if it fails, inspect POINTING table
+    try:
+        elevation = get_representative_elevation(vis, antenna_id)
+    except Exception:
+        elevation = get_median_elevation(vis, antenna_id)
+
+    freq, transmission = atmdata.get_cached_transmission(freq_min, freq_max)
+    airmass = calc_airmass(elevation)
+    # transmission *= np.exp(-airmass)
+
+    return freq, transmission
 
 
 def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False) -> Tuple[np.ndarray, np.ndarray]:

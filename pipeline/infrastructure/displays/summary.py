@@ -574,7 +574,7 @@ class PWVChart(object):
 class MosaicChart(object):
     """Base class for generating mosaic charts.
 
-    This class provides a framework for creating and managing mosaic plots for a 
+    This class provides a framework for creating and managing mosaic plots for a
     given measurement set and source.
 
     Attributes:
@@ -1330,7 +1330,7 @@ class SpwIdVsFreqChart(object):
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-        
+
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set
@@ -1343,8 +1343,12 @@ class SpwIdVsFreqChart(object):
         resolution = min(default_resolution, rmin)
         nchan = min(max_nchan, round(fspan / resolution) + 1)
         resolution = fspan / (nchan - 1)
-        LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
-        atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
+        try:
+            atm_freq, atm_transmission = atmutil.get_cached_transmission(vis=ms.name, antenna_id=antid, freq_min=xmin, freq_max=xmax)
+        except Exception as e:
+            LOG.warning(f"Failed to get cached atmospheric transmission data: {e}")
+            LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
+            atm_freq, atm_transmission = atmutil.get_transmission_for_range(vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False)
 
         ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
 
