@@ -131,7 +131,7 @@ def create_figure(
         fontsize: the calculated fontsize used for the plot.
     """
     # some heuristics to determine the appropriate x- and y-range for plotting, adjusting the figure size as needed
-    ra_range_arcsec  = (delta_ra.max() - delta_ra.min())  * RADIANS_TO_ARCSEC
+    ra_range_arcsec = (delta_ra.max() - delta_ra.min()) * RADIANS_TO_ARCSEC
     dec_range_arcsec = (delta_dec.max() - delta_dec.min()) * RADIANS_TO_ARCSEC
 
     pixels_per_beam = 60.
@@ -277,7 +277,8 @@ def configure_labels(
     Returns:
         None: The function updates the Axes object with title and label information and format.
     """
-    title_string = f'{vis}, {source_name}, avg freq.={unitformat.frequency.format(median_ref_freq)}'
+    spacer = '\n' if len(vis) > 50 else ' '
+    title_string = f'{vis},{spacer}{source_name}, avg freq.={unitformat.frequency.format(median_ref_freq)}'
     ax.set_title(title_string, size=12)
 
     ra_string = r'{:02d}$^{{\rm h}}${:02d}$^{{\rm m}}${:02.3f}$^{{\rm s}}$'.format(
@@ -300,7 +301,13 @@ def configure_labels(
     ax.xaxis.grid(True, which='major')
     ax.yaxis.grid(True, which='major')
     ax.invert_xaxis()
-    enforce_axis_scale_bounds(ax, min_range_arcsec=2.0, max_range_arcsec=1000.0)
+
+    # Set plot scale based on Axes data limits
+    bbox = ax.dataLim
+    x_span = bbox.width
+    y_span = bbox.height
+    max_range_arcsec = 1.1 * max(x_span, y_span)
+    enforce_axis_scale_bounds(ax, min_range_arcsec=2.0, max_range_arcsec=max_range_arcsec)
 
 
 def plot_mosaic_source(ms: MeasurementSet, source: Source, figfile: str) -> None:
