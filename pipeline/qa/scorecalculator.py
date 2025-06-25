@@ -1181,6 +1181,15 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     spixl: list of a spectral index
     """
 
+    if len(fractional_residuals) == 0:
+        score = 0.0
+        longmsg = 'No fractional residuals available.'
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+                        metric_score=score,
+                        metric_units='')
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
     # PIPE-119, part a
     max_res = max(max(res) for res in fractional_residuals)
     if max_res < 0.01:

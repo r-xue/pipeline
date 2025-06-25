@@ -341,6 +341,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         callist = []
         for addcaltable, interp, gainfield in tablesToAdd:
+            if not os.path.exists(addcaltable):
+                continue
             LOG.info("Finalcals stage:  Adding " + addcaltable + " to callibrary.")
             calto = callibrary.CalTo(self.inputs.vis)
             calfrom = callibrary.CalFrom(gaintable=addcaltable, interp=interp, calwt=False,

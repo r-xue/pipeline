@@ -521,7 +521,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     fs_result = self._executor.execute(job)
                     fluxscale_result.append(fs_result)
                 except Exception as e:
-                    LOG.warning("Fluxscale failed for field {!s}", field)
+                    LOG.warning(f"Fluxscale failed for field {field}")
         return fluxscale_result
 
     def find_fitorder(self, spwlist: List[str] = []) -> int:

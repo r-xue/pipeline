@@ -64,6 +64,7 @@ __all__ = [
     'get_obj_size',
     'get_products_dir',
     'get_receiver_type_for_spws',
+    'get_row_count',
     'get_si_prefix',
     'get_spectralspec_to_spwid_map',
     'get_stokes',
