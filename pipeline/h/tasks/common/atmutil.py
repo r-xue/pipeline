@@ -436,8 +436,7 @@ def get_transmission(vis: str, antenna_id: int = 0, spw_id: int = 0,
     """
     center_freq, nchan, resolution = get_spw_spec(vis, spw_id)
 
-    freq, transmission, _, _ = get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
-    return freq, transmission
+    return get_transmission_for_range(vis, center_freq, nchan, resolution, antenna_id, doplot)
 
 
 def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolution: float, antenna_id: int = 0, doplot: bool = False, extra_spw: list[dict] = []) -> Tuple[np.ndarray, np.ndarray]:
@@ -461,13 +460,9 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
         doplot: If True, plot the atmospheric transmission and opacities.
         extra_spw: extra atm sectral window setting
     Returns:
-        Four tuple of numpy arrays corresponding to the frequencies and
-        transmission values. The first and the second arrays are frequencies
-        in the unit of GHz, and corresponding transmission values. They are
-        the results for the spectral window defined by center_freq, nchan, and
-        resolution. The second and the third values are the list of
-        frequencies and transmission values for the spectral windows given
-        by extra_spw. If extra_spw is not given, they will be empty list.
+        A tuple of 2 arrays. The first one is an array of frequencies in the
+        unit of GHz, and the other is the atmospheric transmission at each
+        frequency.
     """
     # first try computing elevation value from phasecenter
     # if it fails, inspect POINTING table
@@ -502,22 +497,19 @@ def get_transmission_for_range(vis: str, center_freq: float, nchan: int, resolut
     myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
 
     airmass = calc_airmass(elevation)
-    dry_opacity = [get_dry_opacity(myat, i) for i in range(num_spw)]
-    wet_opacity = [get_wet_opacity(myat, i) for i in range(num_spw)]
-    transmission = [calc_transmission(airmass, dry, wet) for dry, wet in zip(dry_opacity, wet_opacity)]
-    frequency = [myqa.convert(myat.getSpectralWindow(i), "GHz")['value'] for i in range(num_spw)]
+    dry_opacity = np.concatenate([get_dry_opacity(myat, i) for i in range(num_spw)])
+    wet_opacity = np.concatenate([get_wet_opacity(myat, i) for i in range(num_spw)])
+    transmission = calc_transmission(airmass, dry_opacity, wet_opacity)
+    frequency = np.concatenate([myqa.convert(myat.getSpectralWindow(i), "GHz")['value'] for i in range(num_spw)])
+    sort_index = np.argsort(frequency)
+    frequency_sorted = frequency[sort_index]
+    transmission_sorted = transmission[sort_index]
 
     if doplot:
-        frequency = np.concatenate([myqa.convert(myat.getSpectralWindow(i), "GHz")['value'] for i in range(num_spw)])
-        sort_index = np.argsort(frequency)
-        frequency_sorted = frequency[sort_index]
-        dry_opacity_sorted = np.concatenate(dry_opacity)[sort_index]
-        wet_opacity_sorted = np.concatenate(wet_opacity)[sort_index]
-        transmission_sorted = np.concatenate(transmission)[sort_index]
-        plot(frequency_sorted, dry_opacity_sorted, wet_opacity_sorted, transmission_sorted)
+        plot(frequency_sorted, dry_opacity[sort_index], wet_opacity[sort_index], transmission_sorted)
 
     myat.done()
-    return frequency[0], transmission[0], frequency[1:], transmission[1:]
+    return frequency_sorted, transmission_sorted
 
 
 def get_table_nrow(table_name: str) -> Optional[int]:

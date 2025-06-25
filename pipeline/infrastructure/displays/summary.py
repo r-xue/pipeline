@@ -1314,10 +1314,10 @@ class SpwIdVsFreqChart(object):
         totalnum_spws = len(scan_spws)
         idx = 0
         rmin = np.inf
-        spw_spec = {}
-        # To have 5 data points within the ozone feature of 2 MHz FWHM:
-        # 2 MHz/(5-1) = 500 kHz = 5e-4 GHz.
-        ATM_FREQ_RESOLUTION = 5e-4
+        atm_freq_list = []
+        atm_transmission_list = []
+        extra_atm_spw_list = []
+        ATM_FREQ_RESOLUTION = 5e-4  # GHz
         for spwid_list in spw_list_generator:
             color = next(colorcycle)['color']
             for spwid in spwid_list:
@@ -1328,7 +1328,7 @@ class SpwIdVsFreqChart(object):
                 fmin = float(spwdata.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                 xmin, xmax = min(xmin, fmin), max(xmax, fmin+bw)
                 ax_spw.barh(idx, bw, height=bar_height, left=fmin, color=color)
-                LOG.debug(f"spw {spwdata.id}: bw {bw:.3g} GHz fmin {fmin:.3g} GHz")
+                LOG.info(f"spw {spwdata.id}: bw {bw:.3g} GHz fmin {fmin:.3g} GHz")
 
                 # 2. annotate each bars
                 if totalnum_spws <= max_spws_to_annotate or spwid in [spwid_list[0], spwid_list[-1]]:
@@ -1338,61 +1338,23 @@ class SpwIdVsFreqChart(object):
 
                 # 3. calculate atm transmission with finer resolution
                 center_freq = fmin + bw / 2
-
-                spw_spec[spwid] = (fmin, bw)
-
-        contiguous_spw_list = []
-        for spwid, spec in spw_spec.items():
-            tolerance = ATM_FREQ_RESOLUTION
-            cidx = -1
-            new_fmin = spec[0]
-            new_fmax = spec[0] + spec[1]
-            for i, _spec in enumerate(contiguous_spw_list):
-                _fmin = _spec[1] - tolerance
-                _fmax = _spec[2] + tolerance
-                fmin = spec[0]
-                fmax = spec[0] + spec[1]
-                LOG.debug(f"_fmin {_fmin}, _fmax {_fmax}, fmin {fmin}, fmax {fmax}")
-                overlap_min = max(_fmin, fmin)
-                overlap_max = min(_fmax, fmax)
-                if overlap_min < overlap_max:
-                    cidx = i
-                    new_fmin = min(_fmin, fmin)
-                    new_fmax = max(_fmax, fmax)
-                    break
-            if cidx == -1:
-                LOG.debug(f"Creating new group from spw {spwid}")
-                contiguous_spw_list.append([[spwid], new_fmin, new_fmax])
-            else:
-                LOG.debug(f"Merging spw {spwid} into group {cidx}")
-                existing_spw = contiguous_spw_list[cidx][0]
-                contiguous_spw_list[cidx] = [existing_spw + [spwid], new_fmin, new_fmax]
-
-        extra_atm_spw_list = []
-        for spwid_list, fmin, fmax in contiguous_spw_list:
-            bw = fmax - fmin
-            center_freq = (fmax + fmin) / 2
-            resolution = ATM_FREQ_RESOLUTION
-            nchan = round(bw / resolution) + 1
-            nchan_limit = max(round(1000 * bw / 2.0) + 1, 1001)
-            LOG.debug(f"nchan_limit={nchan_limit}")
-            if nchan > nchan_limit:
-                nchan = nchan_limit
-                resolution = bw / (nchan - 1)
-            if nchan > 10001:
-                # too many channels, degrade the resolution
-                nchan = 1001
-                resolution = bw / (nchan - 1)
-            LOG.info(
-                "'Spectral Window ID vs. Frequency' plot for spw %s the atmospheric transmission with %d data points at %.3f kHz intervals.",
-                ','.join(map(str, spwid_list)), nchan, resolution*1e6
-            )
-            extra_atm_spw_list.append({
-                'spw': spwid_list,
-                'center_freq': center_freq,
-                'resolution': resolution,
-                'nchan': nchan
-            })
+                # To have 5 data points within the ozone feature of 2 MHz FWHM:
+                # 2 MHz/(5-1) = 500 kHz.
+                resolution = ATM_FREQ_RESOLUTION
+                nchan = bw / resolution + 1
+                if nchan > 1001:
+                    nchan = 1001
+                    resolution = bw / (nchan - 1)
+                LOG.info(
+                    "'Spectral Window ID vs. Frequency' plot for spw %d the atmospheric transmission with %d data points at %.3f kHz intervals.",
+                    spwid, nchan, resolution*1e6
+                )
+                extra_atm_spw_list.append({
+                    'spw': spwid,
+                    'center_freq': center_freq,
+                    'resolution': resolution,
+                    'nchan': nchan
+                })
 
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
@@ -1406,14 +1368,12 @@ class SpwIdVsFreqChart(object):
             nchan = 1001
             resolution = fspan / (nchan - 1)
         LOG.info("'Spectral Window ID vs. Frequency' plots the atmospheric transmission with %d data points at %.3f kHz intervals." % (nchan, resolution*1e6))
-        atm_freq, atm_transmission, extra_atm_freq, extra_atm_transmission = atmutil.get_transmission_for_range(
+        atm_freq, atm_transmission = atmutil.get_transmission_for_range(
             vis=ms.name, center_freq=center_freq, nchan=nchan, resolution=resolution, antenna_id=antid, doplot=False,
             extra_spw=extra_atm_spw_list
         )
 
-        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=1.0)
-        for _freq, _transmission in zip(extra_atm_freq, extra_atm_transmission):
-            ax_atm.plot(_freq, _transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
+        ax_atm.plot(atm_freq, atm_transmission, color=atm_color, alpha=0.6, linestyle='-', linewidth=2.0)
 
         # set axes limits, title, label, grid, tick, and save the plot to file
         ax_spw.set_xlim(xmin-(xmax-xmin)/15.0, xmax+(xmax-xmin)/15.0)
