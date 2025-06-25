@@ -260,6 +260,7 @@ setuptools.setup(
                        '*.js',
                        '*.mak',
                        '*.mako',
+                       '*.npz',
                        '*.otf',
                        '*.png',
                        '*.svg',
