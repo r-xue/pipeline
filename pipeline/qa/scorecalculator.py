@@ -3330,7 +3330,7 @@ def log_edge_channels(
         edge_count_lower: int,
         edge_count_upper: int
 ):
-    """Generate and report proper log message for detected edge channels.
+    """Print proper log message for detected edge channels.
 
     Args:
         imagename: Name of the input image
