@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import glob
 import os
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.ticker import NullFormatter
 import numpy as np
 import traceback
 
@@ -712,14 +713,12 @@ def plot_elevation_difference(
     figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
-    figure0 = 'PERANTENNA_PLOT'
-    figure1 = 'ALLANTENNA_PLOT'
     start_time = np.min([np.min(x.timeon) for z in eldiff.values() for y in z.values()
                             for x in y.values() if len(x.timeon) > 0])
     end_time = np.max([np.max(x.timeon) for z in eldiff.values() for y in z.values()
                           for x in y.values() if len(x.timeon) > 0])
 
-    def init_figure(figure_id: str) -> tuple[Axes, Axes]:
+    def init_figure(figure: Figure) -> tuple[Axes, Axes]:
         """Initialize the figure.
 
         Args:
@@ -727,23 +726,22 @@ def plot_elevation_difference(
         Return:
             Tuple (a0, a1); both a0 and a1 are Axes instance of plot.
         """
-        plt.figure(figure_id)
-        plt.clf()
-        a0 = plt.axes([0.125, 0.51, 0.775, 0.39])
+        figure.clear()
+        a0 = figure.add_axes((0.125, 0.51, 0.775, 0.39))
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
-        a0.xaxis.set_major_formatter(plt.NullFormatter())
+        a0.xaxis.set_major_formatter(NullFormatter())
         a0.tick_params(axis='both', labelsize=10)
-        plt.ylabel('Elevation [deg]', fontsize=10)
+        a0.set_ylabel('Elevation [deg]', fontsize=10)
 
-        a1 = plt.axes([0.125, 0.11, 0.775, 0.39])
+        a1 = figure.add_axes((0.125, 0.11, 0.775, 0.39))
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
         a1.tick_params(axis='both', labelsize=10)
-        plt.ylabel('Elevation Difference [deg]', fontsize=10)
-        plt.xlabel('UTC', fontsize=10)
+        a1.set_ylabel('Elevation Difference [deg]', fontsize=10)
+        a1.set_xlabel('UTC', fontsize=10)
         return a0, a1
 
-    def finalize_figure(figure_id: str | int, vis: str, field_name: str, antenna_name: str, xmin: float, xmax: float) -> None:
+    def finalize_figure(figure: Figure, vis: str, field_name: str, antenna_name: str, xmin: float, xmax: float) -> None:
         """Set axes, label, legend and title for the elevation difference figure.
 
         Args:
@@ -752,28 +750,25 @@ def plot_elevation_difference(
             field_name: Name of field.
             antenna_name: Name of antenna.
         """
-        figure = plt.figure(figure_id)
         axes = figure.axes
-        assert len(axes) == 2
+        assert len(axes) == 2, f"length of axes should be 2, but got {len(axes)}"
         a0 = axes[0]
         a1 = axes[1]
-        plt.gcf().sca(a1)
-        ymin, ymax = plt.ylim()
+        ymin, ymax = a1.get_ylim()
         dy = ymax - ymin
-        plt.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
+        a1.set_ylim(0, max(ymax + 0.1 * dy, threshold + 0.1))
 
-        plt.axhline(threshold, color='red')
+        a1.axhline(threshold, color='red')
         dx = xmax - xmin
         xmin_new = xmin - 0.05 * dx
         xmax_new = xmax + 0.05 * dx
         dx_new = xmax_new - xmin_new
-        plt.xlim([xmin_new, xmax_new])
+        a1.set_xlim(xmin_new, xmax_new)
         x = xmax_new - 0.01 * dx_new
         y = threshold - 0.05
-        plt.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
+        a1.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
 
-        plt.gcf().sca(a0)
-        plt.xlim([xmin_new, xmax_new])
+        a0.set_xlim(xmin_new, xmax_new)
         labelon = False
         labeloff = False
         for l in a0.lines:
@@ -785,13 +780,13 @@ def plot_elevation_difference(
                 labeloff = True
             if labelon and labeloff:
                 break
-        plt.legend(loc='best', numpoints=1, prop={'size': 'small'})
-        plt.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis,
-                                                                                           field_name,
-                                                                                           antenna_name),
-                  fontsize=12)
+        a0.legend(loc='best', numpoints=1, prop={'size': 'small'})
+        a0.set_title(
+            f'Elevation Difference between ON and OFF\n{vis} Field {field_name} Antenna {antenna_name}',
+            fontsize=12
+        )
 
-    def generate_plot(figure_id: str | int, vis: str, field_name: str, antenna_name: str) -> logger.Plot:
+    def generate_plot(figure: Figure, vis: str, field_name: str, antenna_name: str) -> logger.Plot:
         """Generate the file of elevation figure.
 
         Args:
@@ -802,11 +797,10 @@ def plot_elevation_difference(
         Return:
             logger.Plot
         """
-        plt.figure(figure_id)
         vis_prefix = '.'.join(vis.split('.')[:-1])
         figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
         figpath = os.path.join(figroot, figfile)
-        plt.savefig(figpath)
+        figure.savefig(figpath)
         plot = None
         if os.path.exists(figpath):
             parameters = {'intent': 'TARGET',
@@ -823,15 +817,9 @@ def plot_elevation_difference(
                                parameters=parameters)
         return plot
 
-    def close_figure(figure_id: str | int) -> None:
-        """Close the figure.
-
-        Args:
-            figure_id: ID of figure.
-        """
-        plt.close(figure_id)
-
     plots = []
+    figure0 = Figure()
+    figure1 = Figure()
     for field_id, eldiff_field in eldiff.items():
         # figure for summary plot
         a2, a3 = init_figure(figure1)
@@ -895,6 +883,8 @@ def plot_elevation_difference(
             if plot is not None:
                 plots_per_field.append(plot)
 
+            figure0.clear()
+
         # finalize figure for summary plot
         finalize_figure(figure1, ms.basename, field_name, 'ALL', global_xmin, global_xmax)
 
@@ -905,7 +895,6 @@ def plot_elevation_difference(
 
         plots.extend(plots_per_field)
 
-    close_figure(figure0)
-    close_figure(figure1)
+        figure1.clear()
 
     return plots
