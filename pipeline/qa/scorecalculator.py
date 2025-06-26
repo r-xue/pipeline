@@ -2806,7 +2806,6 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         - Deviation mask and atmospheric lines:
             - 0.88 if deviation masks overlap with atmospheric lines
             - 0.88 if deviation masks overlap with both atmospheric and spectral lines
-            - 0.65 if atmospheric line data is unavailable
 
     Returned QAScore objects include metric values (channel ranges) and
     informative messages that distinguish between spectral lines,
@@ -2914,10 +2913,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 continue
             ms, spw = rgm.ms.origin_ms, rgm.spw_id
             # build masks
-            lf_mask = np.zeros(nchan, bool)
             dm_mask = np.zeros(nchan, bool)
             for l, r in dmlist:
-                lf_mask[l:r+1] = np.any(lf_mask[l:r+1])  # placeholder, line_mask set earlier
                 dm_mask[l:r+1] = True
             line_mask = np.zeros(nchan, bool)
             for l, r in lines:
