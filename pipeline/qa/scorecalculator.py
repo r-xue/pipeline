@@ -3487,10 +3487,9 @@ def detect_edge_channels(mask: np.ndarray) -> tuple[int, int]:
     and/or hsd_tsysflag.
 
     This function detects such edge channels by calculating the median
-    number of valid spatial pixels in each channel and the median
-    absolute deviation (MAD) of the number of valid spatial pixels.
-    The edge channels are those with fewer valid spatial pixels than
-    the median minus 10 times the MAD.
+    number of valid spatial pixels in each channel. Consecutive
+    channels with less valid spatial pixels than the median are
+    regarded as edge channels.
 
     Args:
         mask: boolean numpy array of shape (nx, ny, npol, nchan)
