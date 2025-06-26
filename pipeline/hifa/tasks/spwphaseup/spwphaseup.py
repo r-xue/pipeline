@@ -242,8 +242,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Derive the optimal spectral window maps.
         spwmaps = self._derive_spwmaps(spwmap_intents, exclude_intents)
 
-        # Compute the spw-to-spw phase offsets ("phaseup") cal table and accept
-        # into local context.
+        # Compute the spw-to-spw phase offsets caltable and accept into local
+        # context.
         phaseupresult = self._do_phaseup()
 
         # Compute diagnostic phase caltables for both phase calibrator fields

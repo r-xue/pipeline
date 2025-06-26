@@ -48,7 +48,7 @@ class FindContInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -128,21 +128,23 @@ class FindCont(basetask.StandardTaskTemplate):
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
             if selected_datatype == DataType.RAW:
-                LOG.warn('Falling back to raw data for continuum finding.')
+                LOG.warning('Falling back to raw data for continuum finding.')
 
             columns = list(ms_objects_and_columns.values())
             if not all(column == columns[0] for column in columns):
-                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+                LOG.warning(
+                    f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in ms_objects_and_columns.items())}.')
 
             if datacolumn != '':
-                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                LOG.info(
+                    f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
             else:
                 if columns[0] == 'DATA':
                     datacolumn = 'data'
                 elif columns[0] == 'CORRECTED_DATA':
                     datacolumn = 'corrected'
                 else:
-                    LOG.warn(f'Unknown column name {columns[0]}')
+                    LOG.warning(f'Unknown column name {columns[0]}')
                     datacolumn = ''
 
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]

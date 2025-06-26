@@ -200,7 +200,7 @@ class MakeImListInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 "": use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -552,10 +552,11 @@ class MakeImList(basetask.StandardTaskTemplate):
             LOG.info(f'Using data type {selected_datatype.name} for imaging.')
 
             if selected_datatype == DataType.RAW:
-                LOG.warn('Falling back to raw data for imaging.')
+                LOG.warning('Falling back to raw data for imaging.')
 
             if not all(global_column == global_columns[0] for global_column in global_columns):
-                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+                details_string = ','.join(f'{k.basename}: {v}' for k, v in ms_objects_and_columns.items())
+                LOG.warning(f'Data type based column selection changes among MSes: {details_string}.')
 
         if inputs.datacolumn not in (None, ''):
             ms_datacolumn = inputs.datacolumn.upper()
@@ -576,14 +577,20 @@ class MakeImList(basetask.StandardTaskTemplate):
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = False
-            LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
+            automatic_datacolumn_guess = 'DATA' if global_columns[0] == 'DATA' else 'CORRECTED'
+            LOG.info(
+                f'Manual override of datacolumn to {global_datacolumn}. '
+                f'Automatic data type ({selected_datatype.name}) based datacolumn '
+                f'would have been "{automatic_datacolumn_guess}". '
+                f'Data type of {global_datacolumn} column is {global_datatype_str}.'
+            )
         else:
             if global_columns[0] == 'DATA':
                 global_datacolumn = 'data'
             elif global_columns[0] == 'CORRECTED_DATA':
                 global_datacolumn = 'corrected'
             else:
-                LOG.warn(f'Unknown column name {global_columns[0]}')
+                LOG.warning(f'Unknown column name {global_columns[0]}')
                 global_datacolumn = ''
 
         datacolumn = global_datacolumn
@@ -1004,7 +1011,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 max_freq = spwid_centre_freq
                                 max_freq_spwid = spwid
                         except Exception as e:
-                            LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
@@ -1253,7 +1260,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype is None:
                                     expected_num_targets -= 1
-                                    LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                    LOG.warning(
+                                        f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                     continue
 
                                 local_selected_datatype_str = local_selected_datatype.name
@@ -1262,17 +1270,20 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype_str != selected_datatype_str:
                                     if automatic_datatype_choice:
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
                                         local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str} due to source/spw selection'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
                                         expected_num_targets -= 1
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                         continue
 
                                 if local_columns != []:
                                     if not all(local_column == local_columns[0] for local_column in local_columns):
-                                        LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
+                                        LOG.warning(
+                                            f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in local_ms_objects_and_columns.items())}.')
 
                                 if local_columns != []:
                                     if local_columns[0] == 'DATA':
@@ -1280,10 +1291,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     elif local_columns[0] == 'CORRECTED_DATA':
                                         local_datacolumn = 'corrected'
                                     else:
-                                        LOG.warn(f'Unknown column name {local_columns[0]}')
+                                        LOG.warning(f'Unknown column name {local_columns[0]}')
                                         local_datacolumn = ''
                                 else:
-                                    LOG.warn(f'Empty list of columns')
+                                    LOG.warning(f'Empty list of columns')
                                     local_datacolumn = ''
 
                                 datacolumn = local_datacolumn
@@ -1291,12 +1302,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if not inputs.per_eb and original_vislist_field_intent_spw_combinations[field_intent]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                     vislist_field_intent_spw_combinations[field_intent]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
                                     if automatic_datatype_choice and local_selected_datatype_str != selected_datatype_str:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
                                     else:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
 
                                     if vislist_field_intent_spw_combinations[field_intent]['vislist'] == []:
-                                        LOG.warn(f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
                                         continue
                             else:
                                 datacolumn = global_datacolumn
@@ -1423,7 +1437,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 # Save the filtered vislist
                                 if target_heuristics.vislist != filtered_vislist:
-                                    LOG.warn(f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
+                                    LOG.warning(
+                                        f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
                                     target_heuristics.vislist = filtered_vislist
 
                                 # Get list of antenna IDs

@@ -24,11 +24,12 @@ def hifv_contimage(vislist, importonly=False, interactive=True):
         if importonly:
             raise Exception(IMPORT_ONLY)
 
+        # Split out the target data
+        hif_mstransform(omit_contline_ms=True)
+
         # Flag target data
         hifv_flagtargetsdata()
 
-        # Split out the target data
-        hif_mstransform()
 
         # Check product size limits and mitigate image size
         hif_checkproductsize(maximsize=16384)

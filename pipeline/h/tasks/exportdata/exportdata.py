@@ -29,6 +29,7 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 """
 import collections
 import copy
+import json
 import fnmatch
 import io
 import os
@@ -36,6 +37,7 @@ import shutil
 import sys
 import tarfile
 import uuid
+
 
 from typing import List, Tuple, Optional, Union
 
@@ -1503,3 +1505,27 @@ finally:
             shutil.move(temp_weblog_tarball, products_weblog_tarball)
 
         return os.path.basename(out_aqua_file)
+
+    def _export_stats_file(self, context, oussid='') -> str:
+        """Generate and output the stats file.
+
+        Args:
+          context: the pipieline context
+          oussid: the ous id
+
+        Returns:
+          The filename of the outputfile.
+        """
+        from pipeline.infrastructure import stats_extractor
+
+        statsfile_name = "pipeline_stats_{}.json".format(oussid)
+        stats_file = os.path.join(context.output_dir, statsfile_name)
+        LOG.info('Generating pipeline statistics file')
+
+        stats_dict = stats_extractor.generate_stats(context)
+
+        # Write the stats file to disk
+        with open(stats_file, 'w', encoding='utf-8') as f:
+            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
+
+        return stats_file
