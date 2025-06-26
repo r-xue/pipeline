@@ -39,7 +39,7 @@ class FinalcalsInputs(vdp.StandardInputs):
         Args:
             context (:obj:): Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             weakbp(Boolean): Activate weak bandpass heuristics.
                 weak bandpass heuristics on/off - currently not used - see PIPE-104.
@@ -225,15 +225,19 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
 
-        for band, spwlist in band2spw.items():
-            LOG.info("Executing G-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
-            self._do_gtype_delaycal(caltable=gtypecaltable, refAnt=refAnt, spwlist=spwlist)
-
-        for band, spwlist in band2spw.items():
-            LOG.info("Executing K-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
-            self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable, refAnt=refAnt,
-                                    spw=','.join(spwlist))
-
+        if os.path.exists(gtypecaltable):
+            for band, spwlist in band2spw.items():
+                LOG.info("Executing G-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+                self._do_gtype_delaycal(caltable=gtypecaltable, refAnt=refAnt, spwlist=spwlist)
+        else:
+            LOG.warning(f"{gtypecaltable} not found, skipping G-type delaycal")
+        if os.path.exists(gtypecaltable):
+            for band, spwlist in band2spw.items():
+                LOG.info("Executing K-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+                self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable, refAnt=refAnt,
+                                        spw=','.join(spwlist))
+        else:
+            LOG.warning(f"{ktypecaltable} not found, skipping K-type delaycal")
         LOG.info("Delay calibration complete")
 
         # Do initial gaincal on BP calibrator then semi-final BP calibration
@@ -337,6 +341,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         callist = []
         for addcaltable, interp, gainfield in tablesToAdd:
+            if not os.path.exists(addcaltable):
+                continue
             LOG.info("Finalcals stage:  Adding " + addcaltable + " to callibrary.")
             calto = callibrary.CalTo(self.inputs.vis)
             calfrom = callibrary.CalFrom(gaintable=addcaltable, interp=interp, calwt=False,
@@ -345,9 +351,12 @@ class Finalcals(basetask.StandardTaskTemplate):
             callist.append(calapp)
             self.pool.append(calapp)
             self.final.append(calapp)
-
-        flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
-        flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
+        flaggedSolnApplycaldelay = None
+        flaggedSolnApplycalbandpass = None
+        if os.path.exists(bpdgain_touse):
+            flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
+        if os.path.exists(ktypecaltable):
+            flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
 
         return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable,\
                finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
@@ -460,6 +469,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -530,6 +546,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         bpdgains_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -606,6 +629,14 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         AllCalTables.append(ktypecaltable)
         AllCalTables.append(bpcaltable)
+
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
 
         avgphasegaincal_task_args = {'vis': self.inputs.vis,
                                      'caltable': caltable,
@@ -704,6 +735,17 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables.append(bpcaltable)
         AllCalTables.append(avgphasegaincaltable)
 
+        AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
+        AllCalTables.append(ktypecaltable)
+        AllCalTables.append(bpcaltable)
+
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
         ntables = len(AllCalTables)
 
         applycal_task_args = {'vis': self.inputs.vis,

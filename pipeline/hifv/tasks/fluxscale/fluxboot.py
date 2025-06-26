@@ -44,7 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
@@ -150,6 +150,8 @@ class FluxbootResults(basetask.Results):
         context.evla['msinfo'][m.name].fluxscale_spws = self.spws
         context.evla['msinfo'][m.name].fluxscale_result = self.fluxscale_result
         context.evla['msinfo'][m.name].fbversion = self.fbversion
+        # PIPE-730: adding spindex_results for AQUA report
+        context.evla['msinfo'][m.name].spindex_results = self.spindex_results
 
 
 @task_registry.set_equivalent_casa_task('hifv_fluxboot')
@@ -519,7 +521,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     fs_result = self._executor.execute(job)
                     fluxscale_result.append(fs_result)
                 except Exception as e:
-                    LOG.warning("Fluxscale failed for field {!s}", field)
+                    LOG.warning(f"Fluxscale failed for field {field}")
         return fluxscale_result
 
     def find_fitorder(self, spwlist: List[str] = []) -> int:
