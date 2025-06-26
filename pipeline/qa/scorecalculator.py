@@ -3330,6 +3330,16 @@ def log_edge_channels(
         edge_count_lower: int,
         edge_count_upper: int
 ):
+    """Generate and report proper log message for detected edge channels.
+
+    Args:
+        imagename: Name of the input image
+        nchan: Number of channels in the image
+        edge_count_lower: Number of edge channels
+                          excluded from the lower frequency side
+        edge_count_upper: Number of edge channels
+                          excluded from the higher frequency side
+    """
     LOG.debug("nchan %s: edge lower %s, upper %s",
               nchan, edge_count_lower, edge_count_upper)
     edge_chan_list = []
