@@ -16,7 +16,7 @@ import os
 import re
 import shutil
 import traceback
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, List, Tuple
 
 import numpy as np
 from scipy import interpolate, special
@@ -2789,8 +2789,6 @@ def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, r
 @log_qa
 def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
     """Compute QA score based on detected lines and deviation/ATM mask overlaps.
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
-    """Compute QA score based on the line detection result.
 
     QA scores are evaluated based on the line detection result for
     each combination of spw and field individually. Scoring scheme of
