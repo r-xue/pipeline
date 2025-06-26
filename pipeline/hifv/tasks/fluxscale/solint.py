@@ -357,7 +357,11 @@ class Solint(basetask.StandardTaskTemplate):
 
         short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
-        new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
+        if short_solint == integration_time:
+            new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+        else:
+            new_gain_solint1 = '{:.1f}s'.format(short_solint)
         gtype_solint = str(short_solint) + 's'
 
         if self.inputs.limit_short_solint != '':
@@ -370,7 +374,6 @@ class Solint(basetask.StandardTaskTemplate):
                     LOG.warning("limit_short_solint must be 'int', 'inf', or a numeric value. Defaulting to 'int'.")
                     limit_short_solint = 'int'
 
-            integration_time = m.get_integration_time_stats(stat_type="max", band=band)
             if limit_short_solint == 'int':
                 combtime = 'scan'
                 short_solint = limit_short_solint
@@ -379,7 +382,7 @@ class Solint(basetask.StandardTaskTemplate):
             elif limit_short_solint == 'inf':
                 combtime = ''
                 short_solint = limit_short_solint
-                new_gain_solint1 = 'int ({:.1f}s)'.format(longsolint)
+                new_gain_solint1 = '{:.1f}s'.format(longsolint)
                 gtype_solint = longsolint
                 LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to longsolint in gaincal.")
             elif limit_short_solint < integration_time:
@@ -391,12 +394,15 @@ class Solint(basetask.StandardTaskTemplate):
             elif limit_short_solint > longsolint:
                 combtime = 'scan'
                 short_solint = longsolint
-                new_gain_solint1 = 'int ({:.1f}s)'.format(longsolint)
+                new_gain_solint1 = '{:.1f}'.format(longsolint)
                 gtype_solint = longsolint
                 LOG.warning("limit_short_solint larger than long solint, setting short solint equal to long solint.")
             else:
                 short_solint = limit_short_solint
-                new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+                if short_solint == integration_time:
+                    new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+                else:
+                    new_gain_solint1 = '{:.1f}s'.format(short_solint)
                 gtype_solint = short_solint
                 combtime = 'scan'
 
