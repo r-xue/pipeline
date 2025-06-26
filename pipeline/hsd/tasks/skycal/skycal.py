@@ -533,14 +533,14 @@ def compute_elevation_difference(context: Context, results: SDSkyCalResults) -> 
                     )
                     data_on = get_elevation(
                         datatable_name,
-                        spw_id, antenna_id, field_id_on, True
+                        spw_id, antenna_id, field_id_on, on_source=True
                     )
                     timeon = data_on['time']
                     elon = data_on['el']
                     flagon = data_on['online_flag']
                     data_off = get_elevation(
                         datatable_name,
-                        spw_id, antenna_id, field_id_off, False
+                        spw_id, antenna_id, field_id_off, on_source=False
                     )
                     timeoff = data_off['time']
                     eloff = data_off['el']
