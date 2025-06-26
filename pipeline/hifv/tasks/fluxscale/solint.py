@@ -394,7 +394,7 @@ class Solint(basetask.StandardTaskTemplate):
             elif limit_short_solint > longsolint:
                 combtime = 'scan'
                 short_solint = longsolint
-                new_gain_solint1 = '{:.1f}'.format(longsolint)
+                new_gain_solint1 = '{:.1f}s'.format(longsolint)
                 gtype_solint = longsolint
                 LOG.warning("limit_short_solint larger than long solint, setting short solint equal to long solint.")
             else:
