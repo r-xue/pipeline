@@ -2806,7 +2806,6 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
         - Deviation mask and atmospheric lines:
             - 0.88 if deviation masks overlap with atmospheric lines
-            - 0.88 if deviation masks overlap with both atmospheric and spectral lines
 
     Returned QAScore objects include metric values (channel ranges) and
     informative messages that distinguish between spectral lines,
@@ -2815,6 +2814,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     Relevant JIRA tickets:
         PIPE-2136
+        PIPE-2509
         PIPE-2530
         PIPEREQ-304
 
@@ -2858,7 +2858,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 skylines = {spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05) for spw in spws}
                 atm_masks[ms] = {spw: sdatm.skysel(skylines[spw], linestouse='all') for spw in spws}
 
-    line_detection_scores, dm_scores, atm_scores = [], [], []
+    line_detection_scores, dm_scores = [], []
 
     # edge parameter for image channel mapping
     _edge = result.outcome['edge']
@@ -2912,61 +2912,49 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             dmlist = select_deviation_masks(result.outcome['deviation_mask'], rgm)
             if not dmlist:
                 continue
+            ndm = len(dmlist)
             ms, spw = rgm.ms.origin_ms, rgm.spw_id
             # build masks
-            dm_mask = np.zeros(nchan, bool)
-            for l, r in dmlist:
-                dm_mask[l:r+1] = True
+            dm_masks = np.zeros((ndm, nchan), bool)
+            for i, (l, r) in enumerate(dmlist):
+                dm_masks[i, l:r+1] = True
             line_mask = np.zeros(nchan, bool)
             for l, r in lines:
                 line_mask[l:r+1] = True
             atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
             
             # DM scoring
-            dm_ranges = mask_to_ranges(dm_mask)
-            if np.any(line_mask & dm_mask):
-                dm_score = 0.88 
-                dm_msg = 'Deviation mask overlapped with spectral lines'
-                LOG.debug(
-                    'Deviation masks overlap with lines. '
-                    'Set deviation mask QA score to %s', dm_score
-                )
-            else:
-                dm_score = 0.65 
-                dm_msg = 'Deviation mask was triggered'
-                LOG.debug(
-                    'Found deviation mask with no overlap. '
-                    'Set deviation mask QA score to %s', dm_score
-                )
-            dm_metric = ','.join(f'{l}~{r}' for l, r in dm_ranges)
-            dm_scores.append(make_score(dm_score, dm_msg, dm_metric, 
-                                        'Channel range(s) of deviation mask',
-                                        ms, field_name, {spw}, {rgm.antenna_name}))                            
-
-            # ATM-DM overlap
-            dm_atm = dm_mask & atm_mask
-            dm_atm_line = dm_atm & line_mask
-            if np.any(dm_atm):
-                dm_atm_score = 0.88
-                if not np.any(dm_atm_line):
-                    dm_atm_msg  = 'Atmospheric lines overlap with deviation mask (outside of spectral lines)'
-                    dm_atm_unit = 'Channel range(s) of DM/ATM overlap'
+            for dm_mask in dm_masks:
+                ranges = mask_to_ranges(dm_mask)
+                unit = 'Channel range(s) of deviation mask'
+                dm_atm = dm_mask & atm_mask
+                if np.any(line_mask & dm_mask):
+                    score = 0.88 
+                    msg = 'Deviation mask overlapped with spectral lines'
                     LOG.debug(
-                        'Atmospheric lines overlap with deviation mask (outside of spectral lines)'
-                        'Set atm overlap QA score to %s', dm_atm_score
+                        'Deviation masks overlap with lines. '
+                        'Set deviation mask QA score to %s', score
+                    ) 
+                # ATM-DM overlap
+                elif np.any(dm_atm):
+                    score = 0.88
+                    msg = 'Atmospheric lines overlap with deviation mask'
+                    unit = 'Channel range(s) of DM/ATM/Spectral overlap'
+                    ranges = mask_to_ranges(dm_atm)
+                    LOG.debug(
+                        'Atmospheric lines overlap with deviation mask'
+                        'Set atm overlap QA score to %s', score
                     )
                 else:
-                    dm_atm_msg = 'Atmospheric lines overlap with both deviation mask and spectral lines'
-                    dm_atm_unit = 'Channel range(s) of DM/ATM/Spectral overlap'
+                    score = 0.65 
+                    msg = 'Deviation mask was triggered'
                     LOG.debug(
-                        'Atmospheric lines overlap with both deviation mask and spectral lines'
-                        'Set atm overlap QA score to %s', dm_atm_score
+                        'Found deviation mask with no overlap. '
+                        'Set deviation mask QA score to %s', score
                     )
-                ranges = mask_to_ranges(dm_atm_line if np.any(dm_atm_line) else dm_atm)
-                metric = ','.join(f'{l}~{r}' for l, r in ranges)
-                atm_scores.append(make_score(dm_atm_score, dm_atm_msg, metric, dm_atm_unit,
-                                             ms, field_name, {spw}, {rgm.antenna_name}))
-        
+                metric = ','.join(f'{l}~{r}' for l, r in ranges) 
+                dm_scores.append(make_score(score, msg, metric, unit,
+                                        ms, field_name, {spw}, {rgm.antenna_name}))                           
         
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
@@ -2975,7 +2963,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                                     'N/A', 'Channel range(s) of detected lines',
                                     next(iter(atm_masks))))
 
-    return line_detection_scores + dm_scores + atm_scores
+    return line_detection_scores + dm_scores
 
 
 
