@@ -90,7 +90,9 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
             antposfile: 
                 Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
-                 of the outfile created by `getantposalma` for `hm_antpos='online'`. Defaults to 'antennapos.json'.
+                 of the outfile created by `getantposalma` for `hm_antpos='online'`. In order to work with multi-EB
+                 pipeline runs, the EB UID will be appended to the file name when using `hm_antpos='online'` (i.e. 
+                 'uid___A002_X123_X4567_antennapos.json').
 
                 Example: 'antennapos.csv'
 
@@ -138,7 +140,6 @@ class ALMAAntposInputs(antpos.AntposInputs):
         self.snr = snr
         self.search = search
 
-
     def to_casa_args(self) -> dict[str, str | list[float]]:
         """
         Configure gencal task arguments and return them in dictionary format.
@@ -152,7 +153,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
         """
         infile = ''
         if self.hm_antpos == 'online':
-            infile = os.path.join(self.output_dir, self.antposfile)
+            infile = self.online_antpos_filename
         # Get the antenna and offset lists.
         if self.hm_antpos == 'file':
             filename = os.path.join(self.output_dir, self.antposfile)
@@ -184,12 +185,17 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 variable, a comma-delimited string ordered by priority.
         """
         hosts = utils.get_valid_url('ANTPOS_SERVICE_URL', ANTPOS_SERVICE_URL)
-        return {'outfile': self.antposfile,
+        return {'outfile': self.online_antpos_filename,
                 'overwrite': True,
                 'asdm': self.context.observing_run.get_ms(self.vis).execblock_id,
                 'snr': self.snr,
                 'search': self.search,
                 'hosts': hosts}
+
+    @property
+    def online_antpos_filename(self) -> str:
+        eb_antposfile = f"{self.vis.split('.ms')[0]}_{self.antposfile}"
+        return os.path.join(self.output_dir, eb_antposfile)
 
     def __str__(self):
         return (
@@ -197,7 +203,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
             f"\tvis: {self.vis}\n"
             f"\tcaltable: {self.caltable}\n"
             f"\thm_antpos: {self.hm_antpos}\n"
-            f"\tantposfile: {self.antposfile}\n"
+            f"\tantposfile: {self.online_antpos_filename}\n"
             f"\tantenna: {self.antenna}\n"
             f"\toffsets: {self.offsets}\n"
             f"\tthreshold: {self.threshold}\n"
@@ -254,7 +260,7 @@ class ALMAAntpos(antpos.Antpos):
         tb_antpos_dict = dict(zip(antennas, tb_positions.T))
 
         # Retrieve antenna corrections from antennapos.json
-        with open(self.inputs.antposfile, 'r') as f:
+        with open(self.inputs.online_antpos_filename, 'r') as f:
             query_dict = json.load(f)
             db_antpos_dict = query_dict['data']
 

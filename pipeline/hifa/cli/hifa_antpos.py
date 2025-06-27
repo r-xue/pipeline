@@ -30,8 +30,9 @@ def hifa_antpos(vis=None, caltable=None, hm_antpos=None, antenna=None, offsets=N
 
     The offset values in this file are in meters.
 
-    For `hm_antpos='online'`, `antposfile` defines the outfile produced by the CASA task
-    `getantposalma` in JSON format. If no value is set, it will default to `antennapos.json`.
+    For `hm_antpos='online'`, `antposfile` defines the base outfile name used by the CASA tasks
+    `getantposalma` and `gencal` with the EB UID appended to it. The file must be in JSON format.
+    If no value is set, it will default to `antennapos.json`.
 
     The corrections are used to generate a calibration table which is recorded
     in the pipeline context and applied to the raw visibility data, on the fly to

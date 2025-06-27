@@ -30,6 +30,7 @@ task = pipeline.tasks.exportdata.ExportData(inputs)
 import collections
 import copy
 import fnmatch
+import glob
 import io
 import os
 import shutil
@@ -619,12 +620,16 @@ class ExportData(basetask.StandardTaskTemplate):
             contfile_name = 'cont.dat'
         empty = True
 
+        # PIPE-51: Look for per-EB antennapos.json files
+        antpos_files = glob.glob(os.path.join(output_dir, f"*_{antposfile_name}"))
+
         # Get the flux, antenna position, and continuum subtraction
         # files and test to see if at least one of them exists
         flux_file = os.path.join(output_dir, fluxfile_name)
         antpos_file = os.path.join(output_dir, antposfile_name)
         cont_file = os.path.join(output_dir, contfile_name)
-        if os.path.exists(flux_file) or os.path.exists(antpos_file) or os.path.exists(cont_file):
+        if any([os.path.exists(flux_file), os.path.exists(antpos_file),
+                os.path.exists(cont_file), antpos_files]):
             empty = False
 
         # Export the general and target source template flagging files
@@ -684,7 +689,11 @@ class ExportData(basetask.StandardTaskTemplate):
                 LOG.info('Auxiliary data product flux.csv does not exist')
 
             # Save antenna positions file
-            if os.path.exists(antpos_file):
+            if antpos_files:
+                for f in antpos_files:
+                    tar.add(f, arcname=os.path.basename(f))
+                    LOG.info('Saving auxiliary data product %s in %s', os.path.basename(f), tarfilename)
+            elif os.path.exists(antpos_file):
                 tar.add(antpos_file, arcname=os.path.basename(antpos_file))
                 LOG.info('Saving auxiliary data product %s in %s', os.path.basename(antpos_file), tarfilename)
             else:
