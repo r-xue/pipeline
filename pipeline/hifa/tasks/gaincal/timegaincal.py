@@ -176,6 +176,10 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result = common.GaincalResults()
         result.phasecal_for_phase_plot = []
 
+        # PIPE-2268: update intents to exclude those that are not present, to
+        # avoid these appearing in CalApplications / weblog.
+        inputs.intent = utils.filter_intents_for_ms(inputs.ms, inputs.intent)
+
         # Compute the phase solutions for the science target, check source,
         # and phase calibrator. This caltable will be registered as applicable
         # to the target, check source, and phase calibrator when the result for
@@ -188,7 +192,7 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result.pool.extend(target_phasecal_calapps)
         result.final.extend(target_phasecal_calapps)
 
-        # Compute the phase solutions for all calibrators in inputs.intents.
+        # Compute the phase solutions for all calibrators in inputs.intent.
         # These phase cal results include solutions for the PHASE calibrator
         # field(s), and will be temporarily accepted into the local context to
         # have these available as pre-apply in subsequent gaincals (both for
@@ -484,13 +488,14 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
 
         # If the current PHASE field was mapped to TARGET/CHECK field(s), then
         # create a modified CalApplication to register this caltable against
-        # those TARGET/CHECK fields.
+        # those TARGET/CHECK fields, where present in the MS (PIPE-2268).
         if apply_to_field:
             # Adjust what SpWs to apply to, if provided.
             if apply_to_spw:
                 calapp_overrides['spw'] = apply_to_spw
+            intents_for_calapp = utils.filter_intents_for_ms(inputs.ms, 'CHECK,TARGET')
             new_calapps.append(callibrary.copy_calapplication(
-                result.final[0], intent='TARGET,CHECK', field=apply_to_field, gainfield=field, **calapp_overrides))
+                result.final[0], intent=intents_for_calapp, field=apply_to_field, gainfield=field, **calapp_overrides))
 
         return new_calapps
 
@@ -866,12 +871,12 @@ class TimeGaincal(gtypegaincal.GTypeGaincal):
         result_calapp = result.final[0]
 
         # Create CalApplication for the calibrators.
-        cal_calapp = callibrary.copy_calapplication(
-            result_calapp, intent='AMPLITUDE,BANDPASS,PHASE,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE',
-            gainfield='nearest', interp='nearest,linear')
+        cal_calapp = callibrary.copy_calapplication(result_calapp, intent=inputs.intent, gainfield='nearest',
+                                                    interp='nearest,linear')
 
-        # Create CalApplication for the TARGET/CHECK sources.
-        calapp_overrides = {'intent': 'TARGET,CHECK',
+        # Create CalApplication for the TARGET/CHECK sources, where present in
+        # the MS (PIPE-2268).
+        calapp_overrides = {'intent': utils.filter_intents_for_ms(inputs.ms, "CHECK,TARGET"),
                             'gainfield': ''}
 
         # PIPE-2087: for BandToBand, register the solutions to be applied to the

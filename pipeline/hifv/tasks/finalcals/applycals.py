@@ -30,7 +30,7 @@ class ApplycalsInputs(applycal.IFApplycalInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             field: A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
                 context.

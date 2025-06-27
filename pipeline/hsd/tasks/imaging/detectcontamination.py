@@ -48,7 +48,8 @@ DEFAULT_COLORMAP = "rainbow"
 # Define a named tuple of the frequency specification.
 #  unit: The unit of the frequency (e.g., pixel, Hz, MHz).
 #  data: The actual frequency data or values.
-FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data'])
+#  frame: frequency reference frame (e.g., LSRK, REST)
+FrequencySpec = namedtuple('FrequencySpec', ['unit', 'data', 'frame'])
 
 # Define a named tuple of the direction specification in astronomical images.
 #  ref: The reference frame (e.g., J2000, B1950).
@@ -356,8 +357,8 @@ def _plot_map(plot: 'Axes',
     """
     # Set the title and axis labels for the plot
     plot.set_title(title)
-    plot.set_xlabel(f"R.A. [{dir_unit}]")
-    plot.set_ylabel(f"Dec [{dir_unit}]")
+    plot.set_xlabel(f"R.A. ({dir_unit})")
+    plot.set_ylabel(f"Dec ({dir_unit})")
 
     # Display the map as an image with the specified colormap and keyword arguments
     plot.imshow(np.flipud(map), cmap=DEFAULT_COLORMAP, **kw)
@@ -420,7 +421,7 @@ def _plot_masked_averaged_spectrum(plot: 'Axes',
     if freq_spec is not None:
         abc = freq_spec.data
         assert len(abc) == len(spectrum_at_peak)
-        plot.set_xlabel(f'Frequency [{freq_spec.unit}]')
+        plot.set_xlabel(f'Frequency ({freq_spec.unit}) {freq_spec.frame}')
     else:
         abc = np.arange(len(spectrum_at_peak), dtype=int)
         plot.set_xlabel("Channel")
@@ -617,7 +618,10 @@ def _get_frequency_spec(naxis: NAxis,
     # Calculate the frequency values based on the spectral axis details
     frequency = np.array([refval + increment * (i - refpix) for i in range(naxis.sp)])
 
-    return FrequencySpec(unit='GHz', data=frequency)
+    # frequency reference frame
+    freq_frame = image_obj.frequency_frame
+
+    return FrequencySpec(unit='GHz', data=frequency, frame=freq_frame)
 
 
 def _calculate_rms_and_peak_sn_map(cube_regrid: 'sdtyping.NpArray3D',

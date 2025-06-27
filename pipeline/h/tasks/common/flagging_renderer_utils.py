@@ -108,6 +108,10 @@ def flags_by_science_spws(ms: MeasurementSet, summaries: List[dict]) -> Dict[str
 
         for spw in science_spws:
             spw_id = str(spw.id)
+            # workaround for KeyError exception when summary
+            # dictionary doesn't contain the spw
+            if spw_id not in summary['spw']:
+                continue
             flagcount += int(summary['spw'][spw_id]['flagged'])
             totalcount += int(summary['spw'][spw_id]['total'])
 

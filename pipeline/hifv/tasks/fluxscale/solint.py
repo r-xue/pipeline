@@ -15,6 +15,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -43,7 +44,7 @@ class SolintInputs(vdp.StandardInputs):
         Args:
             context (:obj:): Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             limit_short_solint(str): Keyword argument in units of seconds to limit the short solution interval. Can be a string or float numerical value in units of seconds of '0.45' or 0.45.
                 Can be set to a string value of 'int'.
@@ -214,11 +215,9 @@ class Solint(basetask.StandardTaskTemplate):
         # Solint section
 
         (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
-
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         try:
             stage_number = self.inputs.context.results[-1].read()[0].stage_number + 1
@@ -232,7 +231,7 @@ class Solint(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band),
                         '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+
         integration_time = m.get_integration_time_stats(stat_type="max")
         soltimes = [integration_time * x for x in soltimes]
 

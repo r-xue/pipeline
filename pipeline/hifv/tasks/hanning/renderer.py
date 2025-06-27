@@ -30,6 +30,9 @@ def make_hanning_table(context, results):
 
     # Loop over the results
     for single_result in results:
+        if not single_result.smoothed_spws:
+            # PIPE-2630: handles case where Hanning smoothing is already applied
+            continue
         vis = os.path.basename(single_result.inputs['vis'])
         ms = context.observing_run.get_ms(name=vis)
         for spw in ms.get_spectral_windows(science_windows_only=True):

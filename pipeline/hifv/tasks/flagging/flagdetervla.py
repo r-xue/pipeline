@@ -241,7 +241,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
@@ -276,7 +276,7 @@ class FlagDeterVLAInputs(flagdeterbase.FlagDeterBaseInputs):
 
             online: Apply the online flags.
 
-            fileonline: File containing the online flags. These are computed by the h_init or hif_importdata data tasks. If the online flags files
+            fileonline: File containing the online flags. These are computed by the h_init or hifv_importdata data tasks. If the online flags files
                 are undefined a name of the form 'msname.flagonline.txt' is assumed.
 
             template: Apply a flagging template.

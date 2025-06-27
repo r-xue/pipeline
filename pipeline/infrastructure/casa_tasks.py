@@ -17,13 +17,7 @@ import sys
 import casatasks
 import casaplotms
 
-# PIPE-2099: add the compatibility with the 'wvrgcal' task change from CAS-14218
-if hasattr(casatasks, 'wvrgcal'):
-    # wvrgcal was migrated into the casatasks package via CAS-14218
-    almatasks = casatasks
-else:
-    # before CAS-14218, the task wvrgcal was under the almatasks package
-    import almatasks
+
 
 
 from . import logging
@@ -247,12 +241,17 @@ def uvcontsub(*v, **k) -> JobRequest:
 
 @register_task
 def wvrgcal(*v, **k) -> JobRequest:
-    return JobRequest(almatasks.wvrgcal, *v, **k)
+    return JobRequest(casatasks.wvrgcal, *v, **k)
 
 
 @register_task
 def visstat(*v, **k) -> JobRequest:
     return JobRequest(casatasks.visstat, *v, **k)
+
+
+@register_task
+def rerefant(*v, **k) -> JobRequest:
+    return JobRequest(casatasks.rerefant, *v, **k)
 
 
 @register_task
@@ -273,11 +272,6 @@ def sdbaseline(*v, **k) -> JobRequest:
 @register_task
 def sdcal(*v, **k) -> JobRequest:
     return JobRequest(casatasks.sdcal, *v, **k)
-
-
-@register_task
-def sdimaging(*v, **k) -> JobRequest:
-    return JobRequest(casatasks.sdimaging, *v, **k)
 
 
 @register_task

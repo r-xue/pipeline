@@ -1,3 +1,4 @@
+import os
 import re
 import traceback
 from typing import Optional, Union
@@ -10,6 +11,7 @@ import pipeline.infrastructure.filenamer as filenamer
 from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.tablereader import find_EVLA_band
 
+from .auto_selfcal.selfcal_helpers import estimate_near_field_SNR, estimate_SNR
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -177,7 +179,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         return pblimit_image, pblimit_cleanmask
 
-    def get_autobox_params(self, iteration: int, intent: str, specmode: str, robust: float) -> tuple:
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """VLA auto-boxing parameters.
 
         See PIPE-677 for TARGET-specific heuristic
@@ -192,17 +201,39 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         minpercentchange = None
         fastnoise = None
 
-        if 'TARGET' in intent:
+        if "TARGET" in intent:
             # iter1, shallow clean, with pruning off, other automasking settings are the default
             if iteration in [1, 2]:
-                sidelobethreshold = 2.0
                 minbeamfrac = 0.0
-            # iter2, same settings, but pruning is turned back on
+                sidelobethreshold = 2.0
+                noisethreshold = 5.0
+                lownoisethreshold = 1.5
+                negativethreshold = 0.0
+            # PIPE-677: iter2, same settings, but pruning is turned back on
+            # PIPE-1878: explicitly set noisethreshold/lownoisethreshold values for the nfrms/rms-ratio-based scaling
             if iteration == 2:
                 minbeamfrac = 0.3
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-                dogrowprune, minpercentchange, fastnoise)
+        # PIPE-1878: adjust the threshold based on a rms scaling factor, e.g. the ratio of rms values from ROIs vs rms from entire image
+        if rms_multiplier is not None:
+            if noisethreshold is not None:
+                noisethreshold *= rms_multiplier
+            if lownoisethreshold is not None:
+                lownoisethreshold *= rms_multiplier
+            if negativethreshold is not None:
+                negativethreshold *= rms_multiplier
+
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
 
     def nterms(self, spwspec) -> Union[int, None]:
         """Tclean nterms parameter heuristics.
@@ -265,8 +296,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             gridder_select = 'mosaic'
 
         # PIPE-1641: switch to gridder='wproject' for L and S band sci-target imaging
-        # PIPE-2225: disable the L/S-band wproject heuristics for efficient imaging
-        use_wproject = False
+        # PIPE-2225/2230: disable the L/S-band wproject heuristics for efficient imaging by default,
+        # but expose it as an option (allow_wproject)
+        use_wproject = self.imaging_params.get('allow_wproject', False)
         if use_wproject:
             vla_band = self._get_vla_band(spwspec)
             if vla_band in ['L', 'S'] and 'TARGET' in intent:
@@ -342,12 +374,20 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         else:
             return niter
 
+    def nmajor(self, iteration: int) -> Union[None, int]:
+        """Tclean nmajor parameter heuristics."""
+        if iteration == 0:
+            return None
+        else:
+            # PIPE-2495: default value of nmajor=300 for all imaging stages of the VLA workflow
+            return 300
+
     def specmode(self) -> str:
         """Tclean specmode parameter heuristics.
         See PIPE-683 and CASR-543"""
         return 'cont'
 
-    def nsigma(self, iteration, hm_nsigma, hm_masking):
+    def nsigma(self, iteration, hm_nsigma, hm_masking, rms_multiplier=None):
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma
@@ -355,7 +395,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             # PIPE-678: VLA 'none' set to 5.0
             # PIPE-677: VLA automasking set to 4.0, reduce from 5.0
             if hm_masking == 'auto':
-                return 4.0
+                if rms_multiplier is not None:
+                    return 4.0 * rms_multiplier
+                else:
+                    return 4.0
             else:
                 return 5.0
 
@@ -495,8 +538,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return imagename
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        """
-        Correct the VLA theoretical sensitivity for the Hanning smoothed SPW.
+        """Correct the VLA theoretical sensitivity for the Hanning smoothed SPW.
 
         PIPE-2131: Hanning smoothing introduces noise correlation between adjacent visibility channels,
         which is not accounted for in the statwt() outcome. Here, we introduce a scaling factor of 1.633 
@@ -518,26 +560,27 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         Returns:
             tuple: Corrected sensitivity values.
         """
-
         ret = super().get_sensitivity(ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper)
         ret = list(ret)
 
-        real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
-        with casa_tools.TableReader(ms_do.name + '/SPECTRAL_WINDOW') as table:
-            if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
-                is_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')[real_spwid]
-                if is_smoothed:
-                    LOG.info(
-                        'EB %s spw %s has been Hanning-smoothed; multiplying apparent sensitivity return by a factor of 1.633.',
-                        ms_do.name, real_spwid)
-                    ret[0] *= 1.633
+        # PIPE-2311: scale continuum theoretical noise for hanning-smoothed spws.
+        if specmode in ('mfs', 'cont'):
+            real_spwid = self.observing_run.virtual2real_spw_id(spw, ms_do)
+            with casa_tools.TableReader(ms_do.name + '/SPECTRAL_WINDOW') as table:
+                if 'OFFLINE_HANNING_SMOOTH' in table.colnames():
+                    is_smoothed = table.getcol('OFFLINE_HANNING_SMOOTH')[real_spwid]
+                    if is_smoothed:
+                        LOG.info(
+                            'EB %s spw %s has been Hanning-smoothed; multiplying apparent sensitivity return by a factor of 1.633.',
+                            ms_do.name, real_spwid)
+                        ret[0] *= 1.633
+                    else:
+                        LOG.info('EB %s spw %s has not been Hanning-smoothed; assuming the visibility noise is channel-independent.',
+                                 ms_do.name, real_spwid)
                 else:
-                    LOG.info('EB %s spw %s has not been Hanning-smoothed; assuming the visibility noise is channel-independent.',
-                             ms_do.name, real_spwid)
-            else:
-                LOG.warning(
-                    'No offline Hanning smooth history is detected in EB %s spw %s; no correction for the VLA theoretical sensitivity.',
-                    ms_do.name, real_spwid)
+                    LOG.warning(
+                        'No offline Hanning smooth history is detected in EB %s spw %s; no correction for the VLA theoretical sensitivity.',
+                        ms_do.name, real_spwid)
 
         return tuple(ret)
 
@@ -577,3 +620,67 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 LOG.warning('Cannot derive the heuristics-based rest frequency for VLA cube imaging.')
 
         return rest_freq
+
+    def get_nfrms_multiplier(self, iteration: int, intent: str, specmode: str, imagename: str) -> Optional[float]:
+        """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
+
+        Args:
+            iteration (int): The iteration number.
+            intent (str): The intent.
+            specmode (str): The spectral mode.
+            imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
+
+        Returns:
+            float: The multiplier for the nfrms-based threshold.
+        """
+        nfrms_multiplier = None
+
+        # PIPE-1878: utilize the nfrms/rms ratio inherited from self-calibration final imaging
+        if iteration > 0 and specmode == "cont" and "TARGET" in intent:
+            nfrms_multiplier = self.imaging_params.get("nfrms_multiplier", None)
+            if nfrms_multiplier is not None:
+                LOG.info(
+                    "Use the selfcal-final nfrms multiplier for TARGET imaging (%s): %s",
+                    imagename,
+                    nfrms_multiplier,
+                )
+                return nfrms_multiplier
+
+        if iteration == 2 and specmode in ('cont', 'mfs') and 'TARGET' in intent:
+            image_name = imagename if os.path.exists(imagename) else imagename + \
+                '.tt0' if os.path.exists(imagename + '.tt0') else None
+
+            if image_name:
+                try:
+                    with casa_tools.ImageReader(image_name) as ia:
+                        qa = casa_tools.quanta
+                        restfreq_hz = qa.convert(ia.coordsys().restfrequency(), 'Hz')['value'][0]
+
+                    bl_pt5_m, _ = self.calc_percentile_baseline_length(5.)
+                    c_mps = 299792458.
+                    lambda_m = c_mps / restfreq_hz
+
+                    las_as = 0.6 * (lambda_m / bl_pt5_m) * 180 / np.pi * 3600
+                    _, rms = estimate_SNR(image_name)
+                    _, nfrms = estimate_near_field_SNR(image_name, las=las_as)
+
+                    LOG.info('The ratio of nf_rms and rms before TARGET imaging (%s): %s', imagename, nfrms / rms)
+                    mask_name = imagename.rsplit('.image', 1)[0] + '.mask'
+
+                    nfrms_multiplier = max(nfrms / rms, 1.0)
+                    LOG.info('The nfrms multiplier for TARGET imaging (%s): %s', imagename, nfrms_multiplier)
+
+                    LOG.info('Remove any clean mask inherited from TARGET .iter1 imaging.')
+                    casa_tasks.rmtree(mask_name, ignore_errors=True).execute()
+
+                except Exception as err:
+                    LOG.info('NF rms threshold scaling heuristics failed: %s', str(err))
+                    LOG.info(traceback.format_exc())
+
+            if nfrms_multiplier is None:
+                LOG.warning(
+                    'Failed to calculate the nf_rms/rms ratio before TARGET imaging (%s); '
+                    'will not assign a scaling factor for nsigma and auto-multithresh threshold values.', imagename
+                )
+
+        return nfrms_multiplier

@@ -7,6 +7,8 @@ import numpy as np
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import \
+    unflag_failed_antennas
 from pipeline.infrastructure import casa_tools, filenamer
 from pipeline.infrastructure.casa_tasks import CasaTasks
 from pipeline.infrastructure.displays.plotstyle import matplotlibrc_formal
@@ -56,9 +58,11 @@ class SelfcalSummary(object):
         """Generate all plots for each QA page per target/band/solint combination."""
         LOG.info("Making Selfcal QA plots for weblog")
 
-        image_plots = []          # pre/post selfcal images
-        antpos_plots = {}         # solution flagged fraction at antenna positions, keyed by MS
-        phasefreq_plots = {}      # phase vs frequency per antenna, keyed by MS
+        image_plots = []           # pre/post selfcal images
+        antpos_plots = {}          # solution flagged fraction at antenna positions, keyed by MS
+        antpos_predrop_plots = {}  # solution flagged fraction at antenna positions, keyed by MS (predrop versions)
+        phasefreq_plots = {}       # phase vs frequency per antenna, keyed by MS
+        fracflag_plots = {}        # flagging fraction vs. basedline, keyed by MS
 
         im_post = self._im_solname(solint)+'_post.image.tt0'
         im_pre = self._im_solname(solint)+'.image.tt0'
@@ -88,18 +92,40 @@ class SelfcalSummary(object):
 
         vislist = self.slib['vislist']
         for vis in vislist:
+
             # only evaluate last gaintable not the pre-apply table
             gaintable = self.slib[vis][solint]['gaintable'][-1]
+
             figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable+'.png')
             ms = self.context.observing_run.get_ms(vis)
             caltb_loc = os.path.join(self.scal_dir, gaintable)
             self.plot_ants_flagging_colored(figname, ms, caltb_loc)
+
             nflagged_sols, nsols = self.get_sols_flagged_solns(caltb_loc, ms)
-            antpos_plots[vis] = logger.Plot(figname, parameters={'nflagged_sols': nflagged_sols, 'nsols': nsols})
+            antpos_plots[vis] = logger.Plot(figname, parameters={
+                                            'nflagged_sols': nflagged_sols, 'nsols': nsols})
             antpos_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna'
             antpos_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint}'
             antpos_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
 
+            # PIPE-2446: Check the original gaincal table in mosaic cases before mosaic heuristics manipulation
+
+            gaintable_predrop = os.path.splitext(gaintable)[0]+'.pre-drop.g'
+            caltb_loc_predrop = os.path.join(self.scal_dir, gaintable_predrop)
+            if os.path.exists(caltb_loc_predrop):
+                figname = os.path.join(self.stage_dir, 'plot_ants_'+gaintable_predrop+'.png')
+                self.plot_ants_flagging_colored(figname, ms, caltb_loc_predrop)
+                nflagged_sols_predrop, nsols_predrop = self.get_sols_flagged_solns(caltb_loc_predrop, ms)
+                antpos_predrop_plots[vis] = logger.Plot(figname, parameters={
+                    'nflagged_sols': nflagged_sols_predrop, 'nsols': nsols_predrop})
+                antpos_predrop_plots[vis].parameters['title'] = 'Frac. Flagged Sol. Per Antenna (pre-drop)'
+                antpos_predrop_plots[vis].parameters[
+                    'caption'] = f'Frac. Flagged Sol. Per Antenna<br>Solint: {solint} (pre-drop)'
+                antpos_predrop_plots[vis].parameters['group'] = 'Frac. Flagged Sol. Per Antenna'
+            else:
+                antpos_predrop_plots[vis] = None
+
+            # phase-vs-freq-per-ant plots
             vis_desc = ('<a class="anchor" id="{0}_byant"></a>'
                         '<a href="#{0}_summary" class="btn btn-link btn-sm">'
                         '  <span class="glyphicon glyphicon-th-list"></span>'
@@ -107,15 +133,38 @@ class SelfcalSummary(object):
                         '{0}'.format(vis))
             phasefreq_plots[vis_desc] = self._plot_gain(ms, gaintable, solint)
 
-        return image_plots, antpos_plots, phasefreq_plots
+            # PIPE-2447: Check pre-pass gaincal table
+            caltb_loc_prepass = os.path.splitext(caltb_loc)[0]+'.pre-pass.g'
+            if self.slib[vis][solint].get('unflagged_lbs', False) and os.path.exists(caltb_loc_prepass):
+                figname = os.path.join(self.stage_dir, 'plot_fracflag_bl_'+gaintable+'.png')
+                LOG.debug('Creating the plot of flagged fraction vs. baseline %s', os.path.basename(figname))
+                unflag_failed_antennas(vis, caltb_loc_prepass, self.slib[vis][solint]['gaincal_return'],
+                                       flagged_fraction=0.25, spwmap=self.slib[vis][solint]['unflag_spwmap'],
+                                       plot=True, figname=figname)
+                plot_wrapper = logger.Plot(figname, parameters={})
+                if os.path.exists(figname):
+                    fracflag_plots[vis] = plot_wrapper
+                    fracflag_plots[vis].parameters['title'] = 'Frac. Flagged Sol. vs. Baseline'
+                    fracflag_plots[vis].parameters['caption'] = f'Frac. Flagged Sol. vs. Baseline<br>Solint: {solint}'
+                    fracflag_plots[vis].parameters['group'] = 'Frac. Flagged Sol. vs. Baseline'
+                else:
+                    fracflag_plots[vis] = None
+                    LOG.warning('Plot of flagged fraction vs. baseline %s not created', os.path.basename(figname))
+            else:
+                fracflag_plots[vis] = None
+
+        return image_plots, antpos_plots, antpos_predrop_plots, phasefreq_plots, fracflag_plots
 
     @staticmethod
     def get_sols_flagged_solns(gaintable, ms):
 
         with casa_tools.TableReader(gaintable) as tb:
-            pol_id = list(dict.fromkeys(ms.get_data_description(
-                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
-            corr_type = ms.polarizations[pol_id].corr_type_string
+            if tb.nrows():
+                pol_id = list(dict.fromkeys(ms.get_data_description(
+                    int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+                corr_type = ms.polarizations[pol_id].corr_type_string
+            else:
+                corr_type = []
             corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
                 pol.corr_type_string), reverse=True)[0].corr_type_string
             idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
@@ -197,9 +246,12 @@ class SelfcalSummary(object):
                     range(len(names))]
 
         with casa_tools.TableReader(gaintable) as tb:
-            pol_id = list(dict.fromkeys(ms.get_data_description(
-                int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
-            corr_type = ms.polarizations[pol_id].corr_type_string
+            if tb.nrows():
+                pol_id = list(dict.fromkeys(ms.get_data_description(
+                    int(spw)).pol_id for spw in tb.getcol('SPECTRAL_WINDOW_ID')))[0]
+                corr_type = ms.polarizations[pol_id].corr_type_string
+            else:
+                corr_type = []
             corr_type_all = sorted(ms.polarizations, key=lambda pol: len(
                 pol.corr_type_string), reverse=True)[0].corr_type_string
             idx_pol_select = [corr_type_all.index(corr) for corr in corr_type]
@@ -234,10 +286,11 @@ class SelfcalSummary(object):
 
         caltb_loc = os.path.join(self.scal_dir, gaintable)
 
-        antennas = ms.antenna_array.antennas
-        ant_names = []
-        for ant_name in antennas:
-            ant_names.append(ant_name.name)
+        with casa_tools.TableReader(caltb_loc) as table:
+            ant_ids = np.unique(table.getcol('ANTENNA1'))
+        with casa_tools.TableReader(caltb_loc + '/ANTENNA') as table:
+            ant_names = table.getcol('NAME')
+        ant_names = [str(ant_names[idx]) for idx in ant_ids]
 
         phasefreq_plots = []
 
