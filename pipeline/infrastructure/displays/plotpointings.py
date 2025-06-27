@@ -323,6 +323,7 @@ def plot_mosaic_source(ms: MeasurementSet, source: Source, figfile: str) -> None
     Returns:
         None: The function saves the plot to a file and does not return any value.
     """
+    LOG.info("Creating mosaic plot for source %s.", source.name)
     # Retrieve field positions and configurations
     fields = [f for f in source.fields if not is_tsys_only(f)]
     ra, dec, median_ref_freq, dish_diameters, beam_diameters = compute_obs_data(ms, fields)
@@ -361,6 +362,7 @@ def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
     Returns:
         None: The function saves the plot to a file and does not return any value.
     """
+    LOG.info("Creating Tsys plot for source %s.", source.name)
     # Retrieve correct Tsys field for source based on mapping
     tsys_fields = tsyscal.get_gainfield_map(ms, is_single_dish=False)['TARGET'].split(',')
     if not tsys_fields:
@@ -385,7 +387,7 @@ def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
     mean_direction = radec_to_direction(mean_ra, mean_dec)
 
     # Calculate Tsys scans offset to apply to plot
-    tsys_scans_dict = tsys_scans_radec(ms, mean_direction, tsys_field)
+    tsys_scans_dict = tsys_scans_radec(ms, mean_direction, tsys_field, observatory=ms.antenna_array.name.upper())
 
     # Create Tsys scans plot
     fig, ax, fontsize = create_figure(delta_ra, delta_dec, beam_diameters)
@@ -646,7 +648,8 @@ def tsys_scans_radec(
         on_intent = on_intent if on_intent in intents else 'CALIBRATE_ATMOSPHERE#TEST'
         on_intent_scans = mymsmd.scansforintent(on_intent)
         on_tsys_scans = np.intersect1d(tsys_field_scans, on_intent_scans)
-        scans_dict['ON'] = {scan: copy.deepcopy(base_dict) for scan in on_tsys_scans}
+        if on_tsys_scans.size > 0:
+            scans_dict['ON'] = {scan: copy.deepcopy(base_dict) for scan in on_tsys_scans}
 
     for key, scan_dict in scans_dict.items():
         intent = on_intent if key == 'ON' else off_intent
@@ -689,7 +692,7 @@ def tsys_scans_radec(
                     3600 * np.degrees(az_pointing_offset),
                     3600 * np.degrees(el_pointing_offset))
 
-            LOG.info("FIELD %s (%s) az, el = %s, %s", field_id, field_name,
+            LOG.info("Tsys Scan %s (%s) az, el = %s, %s", scan_id, field_name,
                     np.degrees(myazel['m0']['value']), np.degrees(myazel['m1']['value']))
 
             # Apply cross-elevation offsets
@@ -697,7 +700,11 @@ def tsys_scans_radec(
                 scan_dict[scan_id]['azel offset'] = True
                 myazel['m0']['value'] += az_pointing_offset
                 myazel['m1']['value'] += el_pointing_offset
-            myicrs = myme.measure(myazel, 'ICRS')
+                myicrs = myme.measure(myazel, 'ICRS')
+            else:
+                # Converting between frames can cause small variations which show up downstream
+                # Revert to using field direction if no offsets are found.
+                myicrs = field_direction
 
             # Compute RA/Dec offset values
             radec_offsets = 0, 0
@@ -716,11 +723,15 @@ def tsys_scans_radec(
             field_ra, field_dec = direction_to_radec(field_direction)
             offset_ra, offset_dec = apply_offset_to_radec(myicrs, offsets=radec_offsets)
             source_ra, source_dec = direction_to_radec(mean_direction)
+            diff_ra, diff_dec = diff_directions(mean_direction, radec_to_direction(offset_ra, offset_dec))
+            ang_sep = angular_separation(source_ra, source_dec, offset_ra, offset_dec, in_arcsecs=False)
             LOG.info("Calculating the total offset")
-            LOG.info("Tsys FIELD radec = %s", radec_to_sexagesimal(field_ra, field_dec))
-            LOG.info("OFFSET radec = %s", radec_to_sexagesimal(offset_ra, offset_dec))
-            LOG.info("SOURCE radec = %s", radec_to_sexagesimal(source_ra, source_dec))
-            scan_dict[scan_id]['radec'] = diff_directions(mean_direction, radec_to_direction(offset_ra, offset_dec))
+            LOG.info("Tsys Field radec = %s", radec_to_sexagesimal(field_ra, field_dec))
+            LOG.info("Scan Offset radec = %s", radec_to_sexagesimal(offset_ra, offset_dec))
+            LOG.info("Mean Source radec = %s", radec_to_sexagesimal(source_ra, source_dec))
+            LOG.info("Angular separation between source and offset Tsys = %s arcsecs",
+                     round(ang_sep * RADIANS_TO_ARCSEC, 3))
+            scan_dict[scan_id]['radec'] = diff_ra, diff_dec
 
     # cleanup measures tool
     myme.done()
@@ -861,7 +872,48 @@ def diff_directions(orig_direction: MDirection, offset_direction: MDirection) ->
     orig_ra, orig_dec = direction_to_radec(orig_direction)
     offset_ra, offset_dec = direction_to_radec(offset_direction)
 
-    ra_offset = (offset_ra - orig_ra) * RADIANS_TO_ARCSEC * np.cos(offset_dec)
-    dec_offset = (offset_dec - orig_dec) * RADIANS_TO_ARCSEC
+    # Normalize RA difference to [-π, π] to account for wraparound
+    delta_ra = (offset_ra - orig_ra + np.pi) % (2 * np.pi) - np.pi
+    delta_dec = offset_dec - orig_dec
+
+    ra_offset = delta_ra * RADIANS_TO_ARCSEC * np.cos(offset_dec)
+    dec_offset = delta_dec * RADIANS_TO_ARCSEC
 
     return ra_offset, dec_offset
+
+
+def angular_separation(
+        ra1: float, dec1: float, ra2: float, dec2: float, in_arcsecs: bool = True,
+        ) -> float:
+    """
+    Compute angular separation between two sky coordinates (RA, Dec). Coordinates can either
+        be in radians (in_arcsecs=False) or arcsecs (in_arcsecs=True), and the return values
+        will be in the same units.
+
+    Args:
+        ra1: RA measurement of the first target.
+        dec1: Dec measurement of the first target.
+        ra2: RA measurement of the second target.
+        dec2: Dec measurement of the second target.
+        in_arcsecs: Allows the user to switch between radians and arcsecs.
+            Default is arcsecs (in_arcsecs=True).
+
+    Returns:
+        Angular separation.
+    """
+    # Converts values into radians if in arcsecs.
+    if in_arcsecs:
+        ra1 = ra1 / RADIANS_TO_ARCSEC
+        dec1 = dec1 / RADIANS_TO_ARCSEC
+        ra2 = ra2 / RADIANS_TO_ARCSEC
+        dec2 = dec2 / RADIANS_TO_ARCSEC
+
+    # Compute angular separation
+    delta_ra = ra2 - ra1
+    sin_ddec = np.sin((dec2 - dec1) / 2)
+    sin_dra = np.sin(delta_ra / 2)
+    a = sin_ddec**2 + np.cos(dec1) * np.cos(dec2) * sin_dra**2
+    angle = 2 * np.arcsin(np.sqrt(a))
+
+    # Converts back to arcsecs if desired.
+    return angle * RADIANS_TO_ARCSEC if in_arcsecs else angle
