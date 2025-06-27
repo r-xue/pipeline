@@ -914,9 +914,8 @@ class T2_1DetailsRenderer(object):
         el_vs_time_plot = task.plot()
 
         # Get min, max elevation
-        observatory = context.project_summary.telescope
-        el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
-        el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+        el_min = "%.2f" % ms.compute_az_el_for_ms(min)[1]
+        el_max = "%.2f" % ms.compute_az_el_for_ms(max)[1]
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 
@@ -2100,7 +2099,7 @@ class LogCopier(object):
 #
 #        # Task executions are bookended by statements log entries like this:
 #        #
-#        # 2013-02-15 13:55:47 INFO    hif_importdata::::casa+ ##########################################
+#        # 2013-02-15 13:55:47 INFO    hifa_importdata::::casa+ ##########################################
 #        #
 #        # This regex matches this pattern, and therefore the start and end
 #        # sections of the CASA log for this task 

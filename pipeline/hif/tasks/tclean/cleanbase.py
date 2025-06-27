@@ -284,17 +284,6 @@ class CleanBase(basetask.StandardTaskTemplate):
         context = self.inputs.context
         inputs = self.inputs
 
-        # Derive names of clean products for this iteration
-        old_model_name = result.model
-        model_name = '%s.%s.iter%s.model' % (inputs.imagename, inputs.stokes, iter)
-        if old_model_name is not None:
-            if os.path.exists(old_model_name):
-                if result.multiterm:
-                    rename_image(old_name=old_model_name, new_name=model_name,
-                                 extensions=['.tt%d' % nterm for nterm in range(result.multiterm)])
-                else:
-                    rename_image(old_name=old_model_name, new_name=model_name)
-
         if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             image_name = ''
         else:
@@ -714,6 +703,10 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Using virtual spw setups for all interferometry pipelines
         virtspw = True
 
+        # Derive the names of clean products for this iteration.
+        # Note: result.model does not include the `.ttx` suffix from mtmfs cases.
+        model_name = f"{inputs.imagename}.{inputs.stokes}.iter{iter}.model"
+
         if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             im_names['model'] = model_name
             im_names['image'] = image_name
@@ -823,16 +816,6 @@ class CleanBase(basetask.StandardTaskTemplate):
                                 LOG.info(
                                     'The restoring beam copying source and target images have different shapes or the target '
                                     'image already has a beam. We will skip copying the restoring beam')
-
-
-def rename_image(old_name, new_name, extensions=['']):
-    """
-    Rename an image
-    """
-    if old_name is not None:
-        for extension in extensions:
-            with casa_tools.ImageReader('%s%s' % (old_name, extension)) as image:
-                image.rename(name=new_name, overwrite=True)
 
 
 class CleanBaseError(object):

@@ -1188,7 +1188,6 @@ class ImageParamsHeuristics(object):
             _, _, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casa_tools.quanta
-        csu = casa_tools.synthesisutils
 
         cellx = cell[0]
         if len(cell) > 1:
@@ -1228,6 +1227,7 @@ class ImageParamsHeuristics(object):
             nypix = min(nypix, max_pixels)
 
         # set nxpix, nypix to next highest 'composite number'
+        csu = casa_tools.synthesisutils
         nxpix = csu.getOptimumSize(nxpix)
         nypix = csu.getOptimumSize(nypix)
         csu.done()

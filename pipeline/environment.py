@@ -643,9 +643,17 @@ def _get_dependency_details(package_list=None):
     See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
     """
     if package_list is None:
-        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'almatasks', 'casadata',
-                        'casampi', 'casaplotms']
+        package_list = [
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'astropy',
+            'bdsf',
+            'casatools',
+            'casatasks',
+            'casampi',
+            'casaplotms',
+        ]
 
     package_details = dict.fromkeys(package_list)
     for package in package_list:
