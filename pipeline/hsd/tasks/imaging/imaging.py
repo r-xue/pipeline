@@ -50,10 +50,11 @@ RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width he
                                                   'scan_angle row_separation row_duration')
 # Reference MS in combined list
 REF_MS_ID = 0
-# The minimum limit of integration time (seconds) to be valid scan duration (1 ms)
-# The current minimum, 1 ms, comes from the typical integration time of fast-scan observation by SQLD in ALMA.
+# The minimum limit of integration time (seconds) to be a valid scan duration (0.99 ms)
+# The current minimum, 0.99 ms, comes from the typical integration time of fast-scan observation
+# by SQLD in ALMA (1 ms) with 1% margin to avoid rejecting the exact 1 ms case (w/ numerical error).
 # Adjust the value when Pipeline supports observation modes/instruments with smaller integration time.
-MIN_INTEGRATION_SEC = 0.001
+MIN_INTEGRATION_SEC = 9.9e-4
 
 class SDImagingInputs(vdp.StandardInputs):
     """Inputs for imaging task class."""
@@ -1623,7 +1624,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 continue
             # obtain calibration tables applied
             self._obtain_calibration_tables_applied(tirp)
-            # obtain T_sub,on, T_sub,off (average ON and OFF integration duration per raster row)
+            # obtain Tsub,on, Tsub,off (average ON and OFF integration duration per raster row)
             if not self._obtain_t_sub_on_off(tirp):
                 return tirp.failed_rms
             if tirp.t_sub_on < MIN_INTEGRATION_SEC or \
