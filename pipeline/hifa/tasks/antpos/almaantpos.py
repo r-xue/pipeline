@@ -234,7 +234,7 @@ class ALMAAntpos(antpos.Antpos):
 
         # add the offsets to the result for online query
         if self.inputs.hm_antpos == 'online':
-            offsets_dict = self._get_antenna_offsets(self.inputs.vis)
+            offsets_dict = self._get_antenna_offsets()
             antenna_names, offsets = self._get_antennas_with_significant_offset(offsets_dict)
             if antenna_names:
                 result.antenna = ",".join(antenna_names)
@@ -243,17 +243,14 @@ class ALMAAntpos(antpos.Antpos):
 
         return result
 
-    def _get_antenna_offsets(self, vis: str) -> dict[np.str_, np.ndarray[float]]:
+    def _get_antenna_offsets(self) -> dict[np.str_, np.ndarray[float]]:
         """
         Retrieves the antenna names and positions from the vis ANTENNA table and computes the offsets.
-
-        Args:
-            vis: The MeasurementSet name.
 
         Returns:
             Dictionary mapping antenna names to (x, y, z) offset tuples.
         """
-        with casa_tools.TableReader(vis + "/ANTENNA") as tb:
+        with casa_tools.TableReader(self.inputs.vis + "/ANTENNA") as tb:
             antennas = tb.getcol('NAME')
             tb_positions = tb.getcol('POSITION')
 
