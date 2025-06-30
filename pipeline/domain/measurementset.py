@@ -4,35 +4,24 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import datetime
 import inspect
 import itertools
 import operator
 import os
-import re
 from typing import TYPE_CHECKING, Sequence
 
 import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
+from pipeline import infrastructure
+from pipeline.domain import measures, spectralwindow
+from pipeline.infrastructure import casa_tools, utils
 
-if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:
+    from pipeline.domain import AntennaArray, Antenna, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
-    from .antenna import Antenna
-    from .datadescription import DataDescription
-    from .field import Field
-    from .scan import Scan
-    from .state import State
 
-from pipeline.infrastructure import logging
-
-from . import measures, spectralwindow
-from .antennaarray import AntennaArray
-from .datatype import DataType
-from .polarization import Polarization
-
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class MeasurementSet(object):
@@ -390,9 +379,9 @@ class MeasurementSet(object):
 
         # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
         if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
-            log_level = logging.WARNING
+            log_level = infrastructure.logging.WARNING
         else:
-            log_level = logging.INFO
+            log_level = infrastructure.logging.INFO
 
         if source_name:
             # Use the first target source that matches the user defined name
@@ -848,18 +837,32 @@ class MeasurementSet(object):
 
     def get_alma_cycle_number(self) -> int | None:
         """
-        Get the ALMA cycle number from the ALMA control software version that
-        this MeasurementSet was acquired with.
+        Get the ALMA cycle number from the observation start time.
 
         Returns:
-            int cycle_number or None if not found
+            Cycle number or None if not found
         """
-        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
-        if match:
-            cycle_number = int(match.group(1))
-            return cycle_number
-        else:
-            return None
+        cycle_numbers = {
+            '0': ['2011-09-30', '2013-01-20'],
+            '1': ['2013-01-21', '2014-06-02'],
+            '2': ['2014-06-03', '2015-09-30'],
+            '3': ['2015-10-01', '2016-09-30'],
+            '4': ['2016-10-01', '2017-09-30'],
+            '5': ['2017-10-01', '2018-09-30'],
+            '6': ['2018-10-01', '2019-09-30'],
+            '7': ['2019-10-01', '2021-09-30'],
+            '8': ['2021-10-01', '2022-09-30'],
+            '9': ['2022-10-01', '2023-09-30'],
+            '10': ['2023-10-01', '2024-09-30'],
+            '11': ['2024-10-01', '2025-09-30'],
+        }
+        start_time = utils.get_epoch_as_datetime(self.start_time)
+        for cycle, (start_str, end_str) in cycle_numbers.items():
+            start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
+            end = datetime.datetime.strptime(end_str, '%Y-%m-%d')
+            if start <= start_time <= end:
+                return cycle
+        return None  # No match
 
     @property
     def start_time(self) -> dict:

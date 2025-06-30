@@ -619,10 +619,15 @@ def tsys_scans_radec(
                 j += num_sample
     else:
         LOG.warning("ASDM_POINTING table not found.")
-        if ms.get_alma_cycle_number() < 11:
-            LOG.attention("This is likely fine for data before Cycle 11.")
-        else:
-            LOG.warning("Result may be inaccurate, especially if it's (0,0).")
+        if observatory == 'ALMA':
+            ALMA_cycle_number = ms.get_alma_cycle_number()
+            if ALMA_cycle_number:
+                if ms.get_alma_cycle_number() < '11':
+                    LOG.attention("This is likely fine for data before Cycle 11.")
+                else:
+                    LOG.warning("Result may be inaccurate, especially if it's (0,0).")
+            else:
+                LOG.attention("Cycle number could not be determined. Result may be inaccurate, especially if it's (0,0).")
 
     # create needed CASA tools
     myme = casa_tools.measures
