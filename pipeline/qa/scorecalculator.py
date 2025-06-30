@@ -2725,24 +2725,6 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     antenna_id = reduction_group_member.antenna_id
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
-
-def get_masked_channel_ranges(mask: np.ndarray) -> List[Tuple[int, int]]:
-    """
-    Convert a boolean mask into a list of (start, end) channel ranges where mask is True.
-    """
-    indices = np.where(mask)[0]
-    if len(indices) == 0:
-        return []
-    ranges = []
-    start = indices[0]
-    for i in range(1, len(indices)):
-        if indices[i] != indices[i - 1] + 1:
-            ranges.append((start, indices[i - 1]))
-            start = indices[i]
-    ranges.append((start, indices[-1]))
-    return ranges
-
-
 def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
