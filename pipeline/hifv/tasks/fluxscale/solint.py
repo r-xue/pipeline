@@ -516,11 +516,11 @@ class Solint(basetask.StandardTaskTemplate):
         integration_time = m.get_integration_time_stats(stat_type="max")
         integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
-        if orig_durations:
+        if len(orig_durations) != 0:
             longest_scan = np.round(np.max(orig_durations))
         else:
             longest_scan = None
-        if durations:
+        if len(durations) != 0:
             zscore_solint = np.max(durations)
             solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
         else:
