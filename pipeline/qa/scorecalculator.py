@@ -70,6 +70,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_observing_modes',                           # ALMA specific
            'score_diffgaincal_combine',                       # ALMA IF specific
+           'score_diffgaincal_residuals',                     # ALMA IF specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -524,6 +525,170 @@ def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_t
     origin = pqa.QAOrigin(metric_name='score_diffgaincal_combine',
                           metric_score=score,
                           metric_units='Score based on whether diffgain used combine')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+@log_qa
+def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QAScore:
+    """
+    Compute QA score for diffgain residual phase offsets for given score type
+    based on pre-computed statistics provided in residual_info dictionary.
+
+    The premise is:
+        - mean should be around 0.
+        - no outlier values above set limits.
+        - RMS at set limits.
+
+    Args:
+        residuals_info: Dictionary containing info on diffgain residual phase.
+        score_type: Type of statistic to compute QA score for. Valid options:
+
+            - 'offsets': use mean.
+            - 'rms': use RMS
+            - 'outliers': use maximum (per antenna)
+
+    Returns:
+        QA score.
+    """
+    def get_expanded_message(dict_use: dict) -> str:
+        """Generate expanded QA message for selection of residuals dictionary."""
+        poor_spw = np.array([str(k[0]) for k in dict_use])
+        poor_corr = np.array([str(k[1]) for k in dict_use])
+        poor_ant = np.array([str(k[2]) for k in dict_use])
+
+        # loop the spw and start to make a message list
+        full_msg = []
+        corr_mess = []
+        spw_mess = []
+        ant_mess = []
+
+        # basically we want ant lists and to check if these are the same, or not at each level
+        # which then governs what goes into a consolideated message
+        for spwu in np.unique(poor_spw):
+            spw_idx = np.where(poor_spw == spwu)[0]  # all corr and ant with this SpW (spw as str(num) or 'all')
+            ant_hold_spw = []
+            corr_hold = []
+
+            for corru in np.unique(poor_corr[spw_idx]):
+                ant_hold_corr = []
+                corr_idx = np.where(poor_corr[spw_idx] == corru)[0]  # so this is per corr in the spw, i.e. the ant list
+
+                for corr_idxu in corr_idx:
+                    # append to the antenna list for this corr
+                    ant_hold_corr.append(poor_ant[spw_idx][corr_idxu])
+
+                # so for the corr check if 'all' is in the list, meaning all antenna and set only to that
+                if 'all' in ant_hold_corr:
+                    ant_hold_corr = ['all']
+
+                # now we have an antenna list - join it
+                ant_hold_corr = ','.join(ant_hold_corr)
+
+                # need a statement to see if this is already in the message list for this SpW and Corr - use sets
+                if set([ant_hold_corr]) == set(ant_hold_spw):
+                    # we already have this antenna list for this spw and previous correlation
+                    # so we can append _and_ join the corr_hold for this SpW
+                    corr_hold.append(corru)
+                    corr_hold = [','.join(corr_hold)]
+                else:
+                    # setup the comparions list
+                    # if this is the first loop, then basically there is one list, which will match or not on next loop (i.e. spw and corr)
+                    ant_hold_spw.append(ant_hold_corr)
+                    corr_hold.append(corru)
+
+            # by here at spw level - need to add the messages unless ants are matched
+            # already - expectations, either all spw have all same ants and corr, or otherwise
+
+            # everything is different CHECK SET BEHAVIOUR - only works on first loop, if length is >0 it wont work
+            # and we can otherwise assume not to consolidate spw messages
+            if len(ant_mess) == 0:
+                corr_mess.append(corr_hold)
+                ant_mess.append(ant_hold_spw)
+                spw_mess.append(spwu)
+            # will occur in second round - select first index of ant_mess
+            elif set(ant_mess[0]) == set(
+                    ant_hold_spw):  # again now message is a list of lists, ant_hold_spw is the 'list'
+                # - maybe had to match first index or not matching at all by logic
+                # seems the existing message is the same as the one now coming for the next spw/corr pair
+                # don't need to change the ant_message but append and join the spw_mess
+                spw_mess.append(spwu)
+                spw_mess = [','.join(spw_mess)]
+            else:
+                corr_mess.append(corr_hold)
+                ant_mess.append(ant_hold_spw)
+                spw_mess.append(spwu)
+
+        for spwi in range(len(spw_mess)):
+            # check here actually if we only have 1 spw grouping listed, and if 'all' is in the group, means all triggered the warning
+            if len(spw_mess) == 1 and 'all' in spw_mess[spwi].split(','):  # spwi can only be 0 in the len 1 case
+                # the spw section of the message is rephrased
+                spw_mess_build = 'all SpWs'
+            else:
+                spw_mess_build = f'Spw {spw_mess[spwi]}'
+
+            for anti in range(len(ant_mess[spwi])):
+                # likewise, if len of ant_mess is 1, for the SpW group and is also 'all' - rephase
+                if len(ant_mess[spwi]) == 1 and ant_mess[spwi][anti] == 'all':
+                    ant_mess_build = 'all antennas'
+                else:
+                    ant_mess_build = f'antenna(s) {ant_mess[spwi][anti]}'
+
+                full_msg.append(f' {ant_mess_build}, in {spw_mess_build} corr {corr_mess[spwi][anti]}')
+
+        return ','.join(full_msg)
+
+    ms_name = residuals_info['ms_name']
+
+    # If the diffgain residual phase offsets caltable had overall low SNR, then
+    # return a suboptimal (blue) score without scoring variability or outliers.
+    if residuals_info['low_snr']:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"Low SNR in diffgaincal residual phase {score_type}"
+        longmsg = (f"Low SNR in diffgaincal residual phase {score_type} for {ms_name}: not scoring based on"
+                   f" variability or outliers.")
+    else:
+        # Get info from residuals statistics dict.
+        intent = residuals_info['intent']
+        field = residuals_info['field']
+        data = residuals_info['data']
+
+        # Convert score type to what statistic to score.
+        type_to_param = {'offsets': 'mean', 'rms': 'rms', 'outliers': 'max'}
+        param = type_to_param[score_type]
+
+        # Identify where the residual phase statistic is poor, elevated, or
+        # good, using pre-defined thresholds.
+        thresholds = {'good': 30., 'elevated': 50., 'poor': 70.}
+        good = {k: v for k, v in data.items() if param in k and thresholds['good'] < v <= thresholds['elevated']}
+        elevated = {k: v for k, v in data.items() if param in k and thresholds['elevated'] < v <= thresholds['poor']}
+        poor = {k: v for k, v in data.items() if param in k and v > thresholds['poor']}
+
+        # Poor phase statistics are scored as a red error.
+        if poor:
+            score = rendererutils.SCORE_THRESHOLD_ERROR
+            shortmsg = f'High Diffgaincal residual phase {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has high residual phase {score_type} >70 deg for'
+                       f' {get_expanded_message(poor)}.')
+        # Elevated phase statistics are scored as a yellow warning.
+        elif elevated:
+            score = rendererutils.SCORE_THRESHOLD_WARNING
+            shortmsg = f'Elevated Diffgaincal residual phase {score_type}'
+            longmsg = (f'For {ms_name}, field={field} intent={intent} has elevated residual phase {score_type} between'
+                       f' 50-70 deg for {get_expanded_message(elevated)}.')
+        # Good phase statistics are scored as a blue suboptimal score.
+        elif good:
+            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+            shortmsg = f'Good Diffgaincal residual phase {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has good residual phase {score_type} between 30-50 deg.'
+        # Phase statistics better than "good" are excellent with green score of 1.
+        else:
+            score = 1.0
+            shortmsg = f'Excellent Diffgaincal residual phase {score_type}'
+            longmsg = f'For {ms_name}, field={field} intent={intent} has excellent residual phase {score_type} <30 deg.'
+
+    origin = pqa.QAOrigin(metric_name='score_diffgaincal_residual',
+                          metric_score=score,
+                          metric_units='Score based on diffgain residual analysis')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
