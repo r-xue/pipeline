@@ -3,7 +3,6 @@ import os
 import shutil
 import tempfile
 
-from pipeline.extern import bandpass_pipereq234
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
@@ -30,62 +29,12 @@ class BandpassQAPool(pqa.QAScorePool):
         self.rawdata = rawdata
         self._num_pols = utils.get_num_caltable_polarizations(caltable)
 
-    def update_scores(self, ms, caltable):
+    def update_scores(self, ms):
         """
         MeasurementSet is needed to convert from integer identifier stored in
         QA dictionary to the antenna, spw and pol it represents.
         """
         self.pool[:] = [self._get_qascore(ms, t) for t in self.score_types]
-        
-        # Compute QA score based on phase-up solint.
-        # phaseup_solint_scores = self._get_phaseup_solint_scores()
-        # self.pool.extend(phaseup_solint_scores)
-
-        # Compute QA score based on phase-up combine.
-        # phaseup_combine_scores = self._get_phaseup_combine_scores()
-        # self.pool.extend(phaseup_combine_scores)
-
-        # Compute QA score based on bandpass_pipereq234.
-        bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms, caltable)
-        self.pool[:] = bandpass_pipereq234_scores
-
-    def _get_bandpass_pipereq234_scores(self, ms, caltable):
-        # Get set of spws and antennas impacted
-        print(f"Fetching platforming QA info for MS {ms.basename} and caltable {caltable}")
-        spw_dict = bandpass_pipereq234.bandpass_platforming(ms, caltable)
-        print(f"Spws affected {spw_dict}")
-
-        f_spw = len(spw_dict.keys())/len(ms.get_spectral_windows())
-
-        # Check if reference spw is impacted
-        ref_spw_impacted = False
-        if ms.get_representative_source_spw() in spw_dict.keys():
-            ref_spw_impacted = True
-
-        if f_spw <= 0.0:
-            score = 1.0
-            shortmsg = "No correlator subband issues detected"
-            longmsg = "No correlator subband issues detected"
-        else:
-            qa_max = 0.65
-            qa_min = 0.5
-            ref_spw_impacted = False
-            if ref_spw_impacted:
-                qa_ref = 0.15
-            else:
-                qa_ref = 0.0
-            score = qa_max - (qa_max-qa_min) * f_spw - qa_ref
-            shortmsg = "Correlator subband issues detected"
-
-            longmsg = f"For {ms.basename}: correlator subband issues may be affecting the following solutions: "
-            spw_message_parts = []
-            for spw in spw_dict.keys():
-                part = f"Spw {spw} ({spw_dict[spw]['failure']}): " + ", ".join(spw_dict[spw]['antennas'])
-                spw_message_parts.append(part)
-            longmsg += "; ".join(spw_message_parts)
-
-        print(f"Creating score {longmsg} {shortmsg} {score}")
-        return [pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename)]
 
     def _get_qascore(self, ms, score_type):
         (min_score, spw_str, qa_id) = self._get_min(score_type)
@@ -167,7 +116,7 @@ class BandpassQAHandler(pqa.QAPlugin):
                     try:
                         qa_results = bpcal.bpcal(calapp.gaintable, qa_dir)
                         result.qa = BandpassQAPool(qa_results, calapp.gaintable)
-                        result.qa.update_scores(ms, calapp.gaintable)
+                        result.qa.update_scores(ms)
 
                     except Exception as e:
                         result.qa = pqa.QAScorePool()
@@ -178,10 +127,7 @@ class BandpassQAHandler(pqa.QAPlugin):
             finally:
                 if os.path.exists(qa_dir):
                     shutil.rmtree(qa_dir)
-                # Compute QA score based on bandpass_pipereq234.
-#                bandpass_pipereq234_scores = self._get_bandpass_pipereq234_scores(ms)
-#                result.qa.pool[:] = bandpass_pipereq234_scores
-                
+
         else:
             result.qa = pqa.QAScorePool()
             result.qa.pool[:] = [pqa.QAScore(0.0, longmsg='No bandpass solution', shortmsg='No solution', vis=vis)]
@@ -199,5 +145,3 @@ class BandpassListQAHandler(pqa.QAPlugin):
         # own QAscore list
         collated = utils.flatten([r.qa.pool for r in result])
         result.qa.pool[:] = collated
-
-        # HERE: Could also do it for all MSes and caltables in here.
