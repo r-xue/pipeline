@@ -21,19 +21,21 @@ from typing import TYPE_CHECKING, Any, List, Tuple
 import numpy as np
 from scipy import interpolate, special
 
+
 import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
-import pipeline.infrastructure.renderer.rendererutils as rutils
-import pipeline.infrastructure.utils as utils
-import pipeline.qa.checksource as checksource
+
+from pipeline import infrastructure
 from pipeline.domain import measures
 from pipeline.domain.datatable import OnlineFlagIndex
 from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
-from pipeline.infrastructure import basetask, casa_tools, logging, utils
+from pipeline.infrastructure import basetask, casa_tools, utils
+from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
     from pipeline.domain.measurementset import MeasurementSet
@@ -107,7 +109,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_solint',
            'score_longsolint']
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 # - utility functions --------------------------------------------------------------------------------------------------
 
@@ -126,7 +128,7 @@ def log_qa(method):
                 _qascore = qascore[0]
             else:
                 _qascore = qascore
-            if _qascore.score >= rutils.SCORE_THRESHOLD_SUBOPTIMAL:
+            if _qascore.score >= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
                 LOG.info(_qascore.longmsg)
             else:
                 LOG.warning(_qascore.longmsg)
@@ -533,7 +535,7 @@ def score_bands(mses):
                           metric_units='MS score based on presence of high-frequency data')
 
     # Make score linear
-    return pqa.QAScore(max(rutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+    return pqa.QAScore(max(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score), longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -910,11 +912,11 @@ def score_lowtrans_flagcmds(ms, result):
         # Get representative SpW for MS.
         _, rspw = ms.get_representative_source_spw()
         if rspw in spws:
-            score = rutils.SCORE_THRESHOLD_ERROR
+            score = rendererutils.SCORE_THRESHOLD_ERROR
             longmsg = f"Representative SpW {rspw} flagged for low transmission"
             shortmsg = f"Representative SpW flagged for low transmission"
         else:
-            score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
             longmsg = f"Non-representative SpW(s) {', '.join(str(s) for s in spws)} flagged for low transmission"
             shortmsg = f"Non-representative SpW(s) flagged for low transmission"
     else:
@@ -1325,7 +1327,7 @@ def linear_score_fraction_unflagged_newly_flagged_for_intent(ms, summaries, inte
                               metric_units='Presence of unflagged data.')
 
     # Append extra warning to QA message if score falls at-or-below the "warning" threshold.
-    if score <= rutils.SCORE_THRESHOLD_WARNING:
+    if score <= rendererutils.SCORE_THRESHOLD_WARNING:
         longmsg += ' Please investigate!'
         shortmsg += ' Please investigate!'
 
@@ -1680,7 +1682,7 @@ def score_number_antenna_offsets(ms, offsets):
     else:
         # CAS-8877: if at least 1 antenna needed correction, then set the score
         # to the "suboptimal" threshold.
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = '%d nonzero antenna position offsets for %s ' % (nant_with_offsets, ms.basename)
         shortmsg = 'Nonzero antenna position offsets'
 
@@ -1788,7 +1790,7 @@ def score_refspw_mapping_fraction(ms, ref_spwmap):
             shortmsg = 'No mapped science spws'
         else:
             # Replace the previous score with a warning
-            score = rutils.SCORE_THRESHOLD_WARNING
+            score = rendererutils.SCORE_THRESHOLD_WARNING
             longmsg = 'There are %d mapped science spws for %s ' % (nexpected - nunmapped, ms.basename)
             shortmsg = 'There are mapped science spws'
 
@@ -1807,7 +1809,7 @@ def score_combine_spwmapping(ms, intent, field, spwmapping):
     threshold (for blue info message).
     """
     if spwmapping.combine:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         longmsg = f'Using combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Using combined spw mapping'
     else:
@@ -1837,7 +1839,7 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         shortmsg = 'No spw mapping'
     elif spwmapping.combine:
         nunmapped = 0
-        score = rutils.SCORE_THRESHOLD_WARNING
+        score = rendererutils.SCORE_THRESHOLD_WARNING
         longmsg = f'Combined spw mapping for {ms.basename}, intent={intent}, field={field}'
         shortmsg = 'Combined spw mapping'
     else:
@@ -1862,11 +1864,11 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
         else:
             # Replace the previous score with a warning
             if samesideband is True:
-                score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+                score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
                 longmsg = f'Spw mapping within sidebands for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping within sidebands'
             else:
-                score = rutils.SCORE_THRESHOLD_WARNING
+                score = rendererutils.SCORE_THRESHOLD_WARNING
                 longmsg = f'Spw mapping across sidebands required for {ms.basename}, intent={intent}, field={field}'
                 shortmsg = 'Spw mapping across sidebands'
 
@@ -1886,17 +1888,17 @@ def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_thres
     Introduced for hifa_spwphaseup (PIPE-665).
     """
     if median_snr <= 0.3 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_ERROR
+        score = rendererutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_WARNING
+        score = rendererutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
         longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
@@ -2827,7 +2829,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         and/or deviation masks, with atm lines, if available
     """
 
-    def mask_to_ranges(mask: np.ndarray) -> List[tuple]:
+    def mask_to_ranges(mask: np.ndarray) -> List[tuple[int,int]]:
         idx = np.where(mask)[0]
         if idx.size == 0:
             return []
@@ -3706,7 +3708,7 @@ def score_science_spw_names(mses, virtual_science_spw_names):
 def score_renorm(result):
     if result.renorm_applied:
         msg = 'Restore successful with renormalization applied'
-        score = rutils.SCORE_THRESHOLD_SUBOPTIMAL
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
     else:
         msg = 'Restore successful'
         score = 1.0
