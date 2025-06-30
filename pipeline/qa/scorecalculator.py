@@ -2830,6 +2830,17 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     """
 
     def mask_to_ranges(mask: np.ndarray) -> List[tuple[int,int]]:
+        """
+        Convert a boolean channel mask into a list of contiguous channel ranges.
+
+        Parameters:
+            mask (np.ndarray): 1D boolean array where True indicates
+                            channels to include.
+
+        Returns:
+            List[tuple[int, int]]: List of (start, end) tuples for each
+                                contiguous run of True values in the mask.
+        """
         idx = np.where(mask)[0]
         if idx.size == 0:
             return []
@@ -2837,6 +2848,23 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         return [(grp[0], grp[-1]) for grp in groups]
 
     def make_score(score_val, msg, metric_val, metric_units, ms_name, field = '', spws = set(), ants = set()):
+        """
+        Build a QAScore object for score_sd_line_detection.
+
+        Parameters:
+            score_val (float): The numeric QA score.
+            msg (str): Description of the QA result.
+            metric_val (str): The metric value of score.
+            metric_units (str): Units for the metric_value.
+            ms_name (str): Name of the Measurement Set (EB).
+            field (str): Field name (optional).
+            spws (set[int]): Set of spectral window IDs (optional).
+            ants (set[str]): Set of antenna names (optional).
+
+        Returns:
+            pqa.QAScore: A fully populated QAScore with long and short messages,
+                        origin (metric name/score/units), and target selection.
+        """
         spw_str = ', '.join(map(str, sorted(spws)))
         ant_str = ', '.join(sorted(ants))
         longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
