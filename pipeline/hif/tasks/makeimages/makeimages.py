@@ -96,7 +96,7 @@ class MakeImagesInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
@@ -433,6 +433,12 @@ class MakeImages(basetask.StandardTaskTemplate):
         # ALMA pipeline
         if heuristics.imaging_mode == 'ALMA':
             return clean_result.intent == 'TARGET'
+
+        # VLA pipeline
+        # note: Need to check are their any conditions to
+        # export image sensitivities for VLA
+        if heuristics.imaging_mode == 'VLA':
+            return True
 
         # Representative source and SpW
         _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()

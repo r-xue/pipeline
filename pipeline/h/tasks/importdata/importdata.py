@@ -1,23 +1,22 @@
+from __future__ import annotations
+
 import contextlib
 import os
 import shutil
 import tarfile
-from typing import List, Optional, Set
+from typing import TYPE_CHECKING
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.mpihelpers as mpihelpers
-import pipeline.infrastructure.tablereader as tablereader
-import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.tablereader import MeasurementSetReader
-import pipeline.domain as domain
+from pipeline import domain, environment, infrastructure
 from pipeline.domain.datatype import DataType
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from pipeline import environment
 from pipeline.h.heuristics import importdata as importdata_heuristics
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, mpihelpers, tablereader, \
+    task_registry, utils, vdp
 from . import fluxes
+
+if TYPE_CHECKING:
+    from pipeline.domain import ObservingRun, MeasurementSet
+    from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
+    from pipeline.infrastructure.launcher import Context
 
 __all__ = [
     'ImportData',
@@ -25,7 +24,7 @@ __all__ = [
     'ImportDataResults'
 ]
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class ImportDataInputs(vdp.StandardInputs):
@@ -42,10 +41,25 @@ class ImportDataInputs(vdp.StandardInputs):
     session = vdp.VisDependentProperty(default='session_1')
 
     # docstring and type hints: supplements h_importdata
-    def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
-                 overwrite=None, nocopy=None, save_flagonline=None, bdfflags=None, lazy=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None):
-        """Initialize Inputs.
+    def __init__(
+            self,
+            context: Context,
+            vis: str | list[str] | None = None,
+            output_dir: str | None = None,
+            asis: str | None = None,
+            process_caldevice: bool | None = None,
+            session: str | None = None,
+            overwrite: bool | None = None,
+            nocopy: bool | None = None,
+            save_flagonline: bool | None = None,
+            bdfflags: bool | None = None,
+            lazy: bool | None = None,
+            createmms: str | None = None,
+            ocorr_mode: str | None = None,
+            datacolumns: dict[str, str] | None = None,
+            ):
+        """
+        Initialize Inputs.
 
         Args:
             context: Pipeline context.
@@ -140,8 +154,12 @@ class ImportDataResults(basetask.Results):
     SetJy results generated from flux entries in Source.xml.
     """
 
-    def __init__(self, mses=None, setjy_results=None):
-        super(ImportDataResults, self).__init__()
+    def __init__(
+            self,
+            mses: list[MeasurementSet] | None = None,
+            setjy_results: list[FluxCalibrationResults] | None = None
+            ):
+        super().__init__()
         self.mses = [] if mses is None else mses
         self.setjy_results = setjy_results
         self.origin = {}
@@ -149,7 +167,7 @@ class ImportDataResults(basetask.Results):
         # Flux service query is None (dbservice=False), FIRSTURL, BACKUPURL, or FAIL
         self.fluxservice = None
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: Context) -> None:
         target = context.observing_run
         for ms in self.mses:
             LOG.info('Adding {0} to context'.format(ms.name))
@@ -159,7 +177,13 @@ class ImportDataResults(basetask.Results):
             for result in self.setjy_results:
                 result.merge_with_context(context)
 
-    def __repr__(self):
+        # PIPE-1736: Log case of mixed spw names
+        vscience_spw_names = context.observing_run.virtual_science_spw_names
+        vscience_spw_ids = utils.invert_dict(vscience_spw_names)
+        if any(len(x) > 1 for x in vscience_spw_ids.values()):
+            LOG.warning("This pipeline run contains EBs with mixed spw naming conventions. Spw names may not exactly match across EBs.")
+
+    def __repr__(self) -> str:
         return 'ImportDataResults:\n\t{0}'.format(
             '\n\t'.join([ms.name for ms in self.mses]))
 
@@ -171,7 +195,7 @@ class ImportData(basetask.StandardTaskTemplate):
     Results = ImportDataResults
 
     @staticmethod
-    def _ms_directories(names):
+    def _ms_directories(names: list[str]) -> set[str]:
         """
         Inspect a list of file entries, finding the root directory of any
         measurement sets present via a set of characteristic files and
@@ -185,7 +209,7 @@ class ImportData(basetask.StandardTaskTemplate):
         return {m for m in matching if matching.count(m) == len(identifiers)}
 
     @staticmethod
-    def _asdm_directories(members):
+    def _asdm_directories(members: list[str]) -> set[str]:
         """
         Inspect a list of file entries, finding the root directory of any
         ASDMs present via a set of characteristic files and directories.
@@ -197,7 +221,7 @@ class ImportData(basetask.StandardTaskTemplate):
 
         return {m for m in matching if matching.count(m) == len(identifiers)}
 
-    def prepare(self, **parameters):
+    def prepare(self, **parameters) -> Results:
         inputs = self.inputs
         abs_output_dir = os.path.abspath(inputs.output_dir)
 
@@ -309,7 +333,7 @@ class ImportData(basetask.StandardTaskTemplate):
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
             # Try getting any saved data type information from the MS HISTORY table
-            ms_history = MeasurementSetReader.get_history(ms)
+            ms_history = tablereader.MeasurementSetReader.get_history(ms)
             data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = importdata_heuristics.get_ms_data_types_from_history(ms_history)
 
             if inputs.datacolumns not in (None, {}):
@@ -398,10 +422,10 @@ class ImportData(basetask.StandardTaskTemplate):
 
         return results
 
-    def analyse(self, result):
+    def analyse(self, result: Results) -> Results:
         return result
 
-    def _get_fluxes(self, context, observing_run):
+    def _get_fluxes(self, context: Context, observing_run: ObservingRun) -> tuple[None, list[FluxCalibrationResults], None]:
 
         # get the flux measurements from Source.xml for each MS
         xml_results = fluxes.get_setjy_results(observing_run.measurement_sets)
@@ -424,7 +448,7 @@ class ImportData(basetask.StandardTaskTemplate):
         # QA flux service messaging, return None by default
         return None, combined_results, None
 
-    def _analyse_filenames(self, filenames, vis) -> (Set[str], Set[str]):
+    def _analyse_filenames(self, filenames: list[str], vis: str) -> tuple[set[str], set[str]]:
         to_import = set()
         to_convert = set()
 
@@ -444,11 +468,11 @@ class ImportData(basetask.StandardTaskTemplate):
 
         return to_import, to_convert
 
-    def _asdm_to_vis_filename(self, asdm):
+    def _asdm_to_vis_filename(self, asdm: str) -> str:
         return '{0}.ms'.format(os.path.join(self.inputs.output_dir,
                                             os.path.basename(asdm)))
 
-    def _do_importasdm(self, asdm):
+    def _do_importasdm(self, asdm: str) -> None:
         inputs = self.inputs
 
         if inputs.save_flagonline:
@@ -517,7 +541,7 @@ class ImportData(basetask.StandardTaskTemplate):
                 LOG.trace(f'Copying {xml_filename}: {asdm_source} to {vis_source}')
                 shutil.copyfile(asdm_source, vis_source)
 
-    def _make_template_flagfile(self, outfile, titlestr):
+    def _make_template_flagfile(self, outfile: str, titlestr: str) -> None:
         # Create a new file if overwrite is true and the file
         # does not already exist.
         inputs = self.inputs
@@ -527,7 +551,7 @@ class ImportData(basetask.StandardTaskTemplate):
                 f.writelines(template_text)
 
     @staticmethod
-    def _rename_J2000_to_ICRS(ms_path):
+    def _rename_J2000_to_ICRS(ms_path: str) -> None:
         # PIPE-2006: rename J2000 FIELD and SOURCE table directions to ICRS (only for ALMA cycles 0-2);
         # adapted from a script by D.Petry (ESO), 2016-03-04
         with casa_tools.MSMDReader(ms_path) as msmd:
@@ -570,7 +594,7 @@ class ImportData(basetask.StandardTaskTemplate):
             ms.set_data_column(data_types['CORRECTED'], correcteddatacolumn_name, save_to_ms=save_to_ms)
 
 
-def get_datacolumn_name(msname: str) -> Optional[str]:
+def get_datacolumn_name(msname: str) -> str | None:
     """
     Return a name of the data column in a MeasurementSet (MS).
 
@@ -584,7 +608,7 @@ def get_datacolumn_name(msname: str) -> Optional[str]:
     return search_columns(msname, ['DATA', 'FLOAT_DATA'])
 
 
-def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
+def get_correcteddatacolumn_name(msname: str) -> str | None:
     """
     Return name of the corrected data column in a MeasurementSet (MS).
 
@@ -598,7 +622,7 @@ def get_correcteddatacolumn_name(msname: str) -> Optional[str]:
     return search_columns(msname, ['CORRECTED_DATA'])
 
 
-def search_columns(msname: str, search_cols: List[str]) -> Optional[str]:
+def search_columns(msname: str, search_cols: list[str]) -> str | None:
     """
     Args:
         msname: MS directory name

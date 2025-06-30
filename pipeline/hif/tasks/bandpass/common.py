@@ -1,5 +1,6 @@
 import copy
 import os
+from dataclasses import dataclass
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -8,6 +9,7 @@ from pipeline.h.heuristics import caltable as bcaltable
 from pipeline.hif.tasks.common import commoncalinputs as commoncalinputs
 from pipeline.infrastructure.callibrary import CalApplication, CalFrom, CalToArgs
 from pipeline.infrastructure.launcher import Context
+from pipeline.infrastructure.pipelineqa import TargetDataSelection
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -69,6 +71,27 @@ class VdpCommonBandpassInputs(commoncalinputs.VdpCommonCalibrationInputs):
         return value
 
 
+@dataclass
+class SolintAdjustment:
+    """
+    Dataclass capturing adjustments made to solution interval adjustments and
+    the reasoning behind them.
+
+    This class was introduced in PIPE-1760 to decouple a solint adjustment
+    message from the output format, i.e., decoupled from presentation as a log
+    message or QA score. The merging of -1760 with PIPE-2442 changed its focus
+    slightly, with its focus now being a way to record the origin of a solint
+    adjustment.
+    """
+    original: str
+    adjusted: str
+    threshold: str
+    origin: str
+    reason: str
+    applies_to: TargetDataSelection
+    integration_time: float | str = None
+
+
 class BandpassResults(basetask.Results):
     """
     BandpassResults is the results class common to all pipeline bandpass
@@ -76,13 +99,14 @@ class BandpassResults(basetask.Results):
     """
 
     def __init__(
-            self,
-            final: list[CalApplication] = None,
-            pool: list[CalApplication] = None,
-            preceding: list = None,
-            applies_adopted: bool = False,
-            unregister_existing: bool = False,
-            phaseup_snr_expected: float = None,
+        self,
+        final: list[CalApplication] = None,
+        pool: list[CalApplication] = None,
+        preceding: list[basetask.Results] = None,
+        applies_adopted: bool = False,
+        unregister_existing: bool = False,
+        phaseup_snr_expected: float = None,
+        solint_adjustments: list[SolintAdjustment] = None,
     ):
         """
         Construct and return a new BandpassResults.
@@ -103,6 +127,7 @@ class BandpassResults(basetask.Results):
             should be unregistered before registering new calibration
         :param phaseup_snr_expected: Expected SNR for bandpass phase-up
             solutions, used in QA (optional)
+        :param solint_adjustments: list of solution interval adjustments
         """
         if final is None:
             final = []
@@ -110,17 +135,20 @@ class BandpassResults(basetask.Results):
             pool = []
         if preceding is None:
             preceding = []
+        if solint_adjustments is None:
+            solint_adjustments = []
 
         super(BandpassResults, self).__init__()
         self.pool: list[CalApplication] = []
         self.final: list[CalApplication] = []
-        self.preceding: list = []
+        self.preceding: list[basetask.Results] = []
         self.error = set()
         self.qa = {}
         self.applies_adopted: bool = applies_adopted
         self.unregister_existing: bool = unregister_existing
         # PIPE-2442: Expected bandpass phase-up SNR is stored for QA evaluation.
         self.phaseup_snr_expected: float = phaseup_snr_expected
+        self.solint_adjustments: list[SolintAdjustment] = solint_adjustments
 
         # defensive programming: deepcopy the CalApplications as they're
         # adopted just in case the caller updates them after this object is

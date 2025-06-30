@@ -2,6 +2,9 @@
 The utils module contains general-purpose uncategorised utility functions and
 classes.
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import ast
 import bisect
 import collections
@@ -26,7 +29,7 @@ from datetime import datetime
 from functools import wraps
 from numbers import Number
 from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
-                    Tuple, Union)
+                    Tuple, TYPE_CHECKING, Union)
 from urllib.parse import urlparse
 
 import casaplotms
@@ -34,17 +37,52 @@ import numpy as np
 import numpy.typing as npt
 
 from .. import casa_tools, logging, mpihelpers
-from .conversion import dequote, range_to_list
+from .conversion import commafy, dequote, range_to_list
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
-__all__ = ['find_ranges', 'dict_merge', 'are_equal', 'approx_equal', 'get_num_caltable_polarizations', 'fieldname_for_casa',
-           'flagged_intervals', 'get_field_identifiers', 'get_receiver_type_for_spws', 'get_spectralspec_to_spwid_map',
-           'imstat_items', 'get_stokes', 'get_taskhistory_fromimage', 'glob_ordered', 'deduplicate',
-           'get_casa_quantity', 'get_si_prefix', 'absolute_path', 'relative_path', 'get_task_result_count',
-           'place_repr_source_first', 'shutdown_plotms', 'get_casa_session_details', 'get_obj_size', 'get_products_dir',
-           'export_weblog_as_tar', 'ensure_products_dir_exists', 'ignore_pointing', 'request_omp_threading',
-           'open_with_lock', 'nested_dict', 'string_to_val', 'remove_trailing_string', 'list_to_str', 'validate_url']
+__all__ = [
+    'absolute_path',
+    'approx_equal',
+    'are_equal',
+    'deduplicate',
+    'dict_merge',
+    'ensure_products_dir_exists',
+    'export_weblog_as_tar',
+    'fieldname_clean',
+    'fieldname_for_casa',
+    'filter_intents_for_ms',
+    'find_ranges',
+    'flagged_intervals',
+    'get_casa_quantity',
+    'get_casa_session_details',
+    'get_field_identifiers',
+    'get_num_caltable_polarizations',
+    'get_obj_size',
+    'get_products_dir',
+    'get_receiver_type_for_spws',
+    'get_si_prefix',
+    'get_spectralspec_to_spwid_map',
+    'get_stokes',
+    'get_task_result_count',
+    'get_taskhistory_fromimage',
+    'glob_ordered',
+    'ignore_pointing',
+    'imstat_items',
+    'list_to_str',
+    'nested_dict',
+    'open_with_lock',
+    'place_repr_source_first',
+    'relative_path',
+    'remove_trailing_string',
+    'request_omp_threading',
+    'shutdown_plotms',
+    'string_to_val',
+    'validate_url'
+]
 
 
 def find_ranges(data: Union[str, List[int]]) -> str:
@@ -224,6 +262,20 @@ def fieldname_clean(field: str) -> str:
     """
     allowed = string.ascii_letters + string.digits + '+-'
     return ''.join([c if c in allowed else '_' for c in field])
+
+
+def filter_intents_for_ms(ms: MeasurementSet, intents: str) -> str:
+    """
+    Filter string of comma-separated intents to keep only those that are present
+    in the given MS.
+    """
+    intents = set(intents.split(','))
+    removed_intents = intents - ms.intents
+    if removed_intents:
+        LOG.debug(f"The following intents are not present in the MS {ms.basename} and will be skipped:"
+                  f" {commafy(removed_intents)}")
+    intents.intersection_update(ms.intents)
+    return ','.join(sorted(intents))
 
 
 def get_field_accessor(ms, field):
