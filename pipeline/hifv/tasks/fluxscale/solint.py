@@ -1,7 +1,5 @@
 import collections
 import os
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
-
 import numpy as np
 from scipy import stats
 
@@ -75,25 +73,32 @@ class SolintResults(basetask.Results):
     The class inherits from basetask.Results.
 
     """
-    def __init__(self, final=None, pool=None, preceding=None, longsolint=None, gain_solint2=None,
-                 shortsol2=None, short_solint=None, new_gain_solint1=None, vis=None,
-                 bpdgain_touse=None):
-        """
+
+    def __init__(self,
+                 final: list | None = None,
+                 pool: list | None = None,
+                 preceding: list | None = None,
+                 longsolint: dict | None = None,
+                 gain_solint2: dict | None = None,
+                 shortsol2: dict | None = None,
+                 short_solint: dict | None = None,
+                 new_gain_solint1: dict | None = None,
+                 vis: str | None = None,
+                 bpdgain_touse: dict | None = None):
+        """Initializes the object with various calibration and visibility parameters.
+
         Args:
-
-            vis(str, optional): String name of the measurement set
-            final(List, optional): Calibration list applied - not used
-            pool(List, optional): Calibration list assesed - not used
-            preceding(List, optional): DEPRECATED results from worker tasks executed by this task
-            longsolint(float): numerical value of the long solution interval
-            gain_solint2(str):  str representation of longsolint with 's' seconds units
-            shortsol2(float): values based on the vla max integration time
-            short_solint(float): short solution interval numerical value
-            new_gain_solint1(str): str representation of short_solint with 's' seconds units.
-            bpdgain_touse(Dict):  Dictionary of tables per band
-
+            final: Calibration list applied (not used).
+            pool: Calibration list assessed (not used).
+            preceding: DEPRECATED results from worker tasks executed by this task.
+            longsolint: Numerical value of the long solution interval.
+            gain_solint2: String representation of longsolint with 's' seconds units.
+            shortsol2: Values based on the VLA maximum integration time.
+            short_solint: Short solution interval numerical value.
+            new_gain_solint1: String representation of short_solint with 's' seconds units.
+            vis: String name of the measurement set.
+            bpdgain_touse: Dictionary of tables per band.
         """
-
         if final is None:
             final = []
         if pool is None:
@@ -218,7 +223,7 @@ class Solint(basetask.StandardTaskTemplate):
 
         # Solint section
 
-        (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist))
+        (longsolint, gain_solint2) = self._do_determine_solint(calMs, ','.join(spwlist), band)
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         # PIPE-2164: getting setjy result stored in context
         self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
@@ -235,8 +240,8 @@ class Solint(basetask.StandardTaskTemplate):
         table_suffix = ['_{!s}.tbl'.format(band), '3_{!s}.tbl'.format(band),
                         '10_{!s}.tbl'.format(band), 'scan_{!s}.tbl'.format(band), 'limit_{!s}.tbl'.format(band)]
         soltimes = [1.0, 3.0, 10.0]
-
-        integration_time = m.get_integration_time_stats(stat_type="max")
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
         soltimes = [integration_time * x for x in soltimes]
 
         solints = ['int', str(soltimes[1]) + 's', str(soltimes[2]) + 's']
@@ -358,45 +363,70 @@ class Solint(basetask.StandardTaskTemplate):
 
         short_solint = max(shortsol1, shortsol2)
         LOG.info("Short_solint determined from heuristics: " + str(short_solint))
-        new_gain_solint1 = str(short_solint) + 's'
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
+        if short_solint == integration_time:
+            new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+        else:
+            new_gain_solint1 = '{:.1f}s'.format(short_solint)
+        gtype_solint = str(short_solint) + 's'
 
-        if self.inputs.limit_short_solint:
+        if self.inputs.limit_short_solint != '':
             LOG.warning("Short Solint limited by user keyword input to " + str(self.inputs.limit_short_solint))
             limit_short_solint = self.inputs.limit_short_solint
-
-            short_solint_str = "{:.12f}".format(short_solint)
+            if limit_short_solint not in ("int", "inf"):
+                try:
+                    limit_short_solint = float(limit_short_solint)
+                except ValueError:
+                    LOG.warning("limit_short_solint must be 'int', 'inf', or a numeric value. Defaulting to 'int'.")
+                    limit_short_solint = 'int'
 
             if limit_short_solint == 'int':
-                limit_short_solint = '0'
                 combtime = 'scan'
-                short_solint = float(limit_short_solint)
-                new_gain_solint1 = str(short_solint) + 's'
+                short_solint = limit_short_solint
+                new_gain_solint1 = 'int ({:.1f}s)'.format(integration_time)
+                gtype_solint = limit_short_solint
             elif limit_short_solint == 'inf':
                 combtime = ''
                 short_solint = limit_short_solint
-                new_gain_solint1 = short_solint
-                LOG.warning("   Note that since 'inf' was specified then combine='' for gaincal.")
-            # This comparison needed to change for Python 3
-            elif str(limit_short_solint) <= short_solint_str:
-                short_solint = float(limit_short_solint)
-                new_gain_solint1 = str(short_solint) + 's'
+                new_gain_solint1 = '{:.1f}s'.format(longsolint)
+                gtype_solint = longsolint
+                LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to longsolint in gaincal.")
+            elif limit_short_solint < integration_time:
                 combtime = 'scan'
-        # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
-        # PIPE-696.  Need to compare short solint with int time and limit the precision.
-        if short_solint == float("{:.6f}".format(m.get_integration_time_stats(stat_type="max"))):
-            new_gain_solint1 = 'int'
-            LOG.info(
-                'The short solution interval used is: {!s} ({!s}).'.format(new_gain_solint1, str(short_solint) + 's'))
+                short_solint = 'int'
+                new_gain_solint1 = 'int ({:.1f}s)'.format(integration_time)
+                gtype_solint = 'int'
+                LOG.warning("limit_short_solint is shorter than a single integration time. Setting solint='int'.")
+            elif limit_short_solint > longsolint:
+                combtime = 'scan'
+                short_solint = longsolint
+                new_gain_solint1 = '{:.1f}s'.format(longsolint)
+                gtype_solint = longsolint
+                LOG.warning("limit_short_solint larger than long solint, setting short solint equal to long solint.")
+            else:
+                short_solint = limit_short_solint
+                if short_solint == integration_time:
+                    new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+                else:
+                    new_gain_solint1 = '{:.1f}s'.format(short_solint)
+                gtype_solint = short_solint
+                combtime = 'scan'
 
-            testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
+            # PIPE-460.  Use solint='int' when the minimum solution interval corresponds to one integration
+            # PIPE-696.  Need to compare short solint with int time and limit the precision.
+            if short_solint == float("{:.1f}".format(integration_time)):
+                new_gain_solint1 = 'int ({:.1f}s)'.format(short_solint)
+                gtype_solint = "int"
+                LOG.info(
+                    'The short solution interval used is: {!s}.'.format(new_gain_solint1))
+            testgains_result = self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=gtype_solint,
                                                         context=self.inputs.context, combtime=combtime,
                                                         refAnt=refAnt, spw=','.join(spwlist))
             bpdgain_touse = tablebase + table_suffix[4]
 
         LOG.info("Using short solint = " + str(new_gain_solint1))
-
-        if abs(longsolint - short_solint) <= soltime:
-            LOG.warning('Short solint = long solint +/- integration time of {}s'.format(soltime))
+        if short_solint not in ('int', 'inf') and abs(longsolint - short_solint) <= soltime:
+            LOG.warning('Short solint = long solint +/- integration time of {}s'.format(integration_time))
 
         return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
 
@@ -438,13 +468,13 @@ class Solint(basetask.StandardTaskTemplate):
 
         return self._executor.execute(job)
 
-    def _do_determine_solint(self, calMs: str, spw: str = ''):
+    def _do_determine_solint(self, calMs: str, spw: str = '',  band: str | None = None):
         """Code to determine solution interval
 
         Args:
             calMs(str):  split off calibrators MS
             spw(str):  spw selection  '2,3,4', etc.
-
+            band(str): string band, 'L'  'U'  'X' etc.
         Returns:
             longsolint
             gain_solint2
@@ -513,7 +543,7 @@ class Solint(basetask.StandardTaskTemplate):
             LOG.info("No statistical outliers in list of determined durations.")
             durations = orig_durations
         nsearch = 5
-        integration_time = m.get_integration_time_stats(stat_type="max")
+        integration_time = m.get_integration_time_stats(stat_type="max", band=band)
         integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
         if len(orig_durations) != 0:

@@ -1,7 +1,7 @@
+import collections
 import os
 import shutil
-import collections
-from typing import TYPE_CHECKING, List, Optional, Tuple, Union, Any, Dict
+from typing import Any
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.infrastructure as infrastructure
@@ -9,15 +9,12 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
-from pipeline.hifv.heuristics import getCalFlaggedSoln
-from pipeline.infrastructure.tablereader import find_EVLA_band
+from pipeline.hifv.heuristics import do_bandpass, getCalFlaggedSoln
 from pipeline.hifv.heuristics import standard as standard
-from pipeline.hifv.heuristics import weakbp, do_bandpass, uvrange
+from pipeline.hifv.heuristics import uvrange, weakbp
 from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -375,23 +372,34 @@ class Finalcals(basetask.StandardTaskTemplate):
         """
         return results
 
-    def _do_gtype_delaycal(self, caltable: str =None, refAnt: str = None, spwlist: List[str] = []) -> bool:
-        """Perform a G-Type delay calibration with CASA task gaincal
+    def _do_gtype_delaycal(
+        self, caltable: str | None = None, refAnt: str | None = None, spwlist: list[str] | None = None
+    ) -> bool:
+        """Perform G-Type delay calibration using CASA task gaincal.
+
+        This function executes a G-Type delay calibration, which is used to determine and correct
+        for instrumental delays in radio interferometry data. The calibration can either create
+        a new calibration table or append to an existing one.
 
         Args:
-            caltable(str): Name of the caltable to be created
-            refAnt(str): Antenna values to use as reference antennas - 'ea01,ea24,...'
-            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+            caltable: Name of the calibration table to create or append to. If None, a default
+                name will be generated.
+            refAnt: Reference antenna specification in format 'ea01,ea24,...'. If None, CASA
+                will automatically select reference antennas.
+            spwlist: Spectral window identifiers for the target band, e.g., ['0', '1', '2'].
+                If None, all available spectral windows will be used.
 
         Returns:
-            Boolean
-
+            True if calibration completed successfully, False otherwise.
         """
+        if spwlist is None:
+            spwlist = []
+
+        # Determine whether to append to existing table or create new one
         append = False
-        isdir = os.path.isdir(caltable)
-        if isdir:
+        if caltable and os.path.isdir(caltable):
             append = True
-            LOG.info("Appending to existing table: {!s}".format(caltable))
+            LOG.info('Appending to existing calibration table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         delay_field_select_string = self.inputs.context.evla['msinfo'][m.name].delay_field_select_string
@@ -516,27 +524,33 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_gtype_bpdgains(self, caltable: str, addcaltable: str = None, solint: str = 'int',
-                           refAnt: str = None, spwlist: List[str] = []) -> bool:
-        """Perform a G-Type cal with CASA task gaincal on the bp'd gaintable
+    def _do_gtype_bpdgains(
+        self,
+        caltable: str,
+        addcaltable: str | None = None,
+        solint: str = 'int',
+        refAnt: str | None = None,
+        spwlist: list[str] | None = None,
+    ) -> bool:
+        """Perform G-Type calibration with CASA task gaincal on the bandpass-corrected gain table.
 
         Args:
-            caltable(str): Name of the caltable to be created
-            addcaltable(str):  String name of table to temporarily be added to the gaincal gaintable parameter
-            solint(str):  String value for solint keyword of CASA task gaincal
-            refAnt(str): Antenna values to use as reference antennas - 'ea01,ea24,...'
-            spwlist(List): List of string values for spws pertaining to the particular band - ['0', '1', '2', ...]
+            caltable: Name of the calibration table to be created.
+            addcaltable: Name of table to temporarily add to the gaincal gaintable parameter.
+            solint: Solution interval value for CASA task gaincal.
+            refAnt: Reference antenna values in format 'ea01,ea24,...'.
+            spwlist: List of spectral window IDs for the specific band, e.g., ['0', '1', '2'].
 
         Returns:
-            Boolean
-
+            Success status of the calibration operation.
         """
-
+        if spwlist is None:
+            spwlist = []
         append = False
         isdir = os.path.isdir(caltable)
         if isdir:
             append = True
-            LOG.info("Appending to existing table: {!s}".format(caltable))
+            LOG.info('Appending to existing table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         tst_bpass_spw = m.get_vla_tst_bpass_spw(spwlist=spwlist)
@@ -840,12 +854,7 @@ class Finalcals(basetask.StandardTaskTemplate):
 
                     for spw in spws:
                         reference_frequency = center_frequencies[spw.id]
-                        try:
-                            EVLA_band = spw2band[spw.id]
-                        except:
-                            LOG.info('Unable to get band from spw id - using reference frequency instead')
-                            EVLA_band = find_EVLA_band(reference_frequency)
-
+                        EVLA_band = spw2band[spw.id]
                         LOG.info("Center freq for spw " + str(spw.id) + " = " + str(
                             reference_frequency) + ", observing band = " + EVLA_band)
 
@@ -913,19 +922,17 @@ class Finalcals(basetask.StandardTaskTemplate):
             LOG.info(str(e))
             return None
 
-    def _do_powerfitsetjy(self, calMs: str, fluxscale_result: Dict):
-        """Execute setjy with results from fluxscale
+    def _do_powerfitsetjy(self, calMs: str, fluxscale_result: dict[str, Any]) -> bool:
+        """Execute setjy with results from fluxscale.
 
         Args:
-            calMs(str): input name of calibrator MS
-            fluxscale_result(Dict): output result from CASA task fluxscale
+            calMs: Input name of calibrator MS
+            fluxscale_result: Output result from CASA task fluxscale
 
         Returns:
-            Boolean
-
+            Success status of the operation
         """
-
-        LOG.info("Setting power-law fit in the model column")
+        LOG.info('Setting power-law fit in the model column')
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
 
@@ -970,32 +977,40 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         return True
 
-    def _do_calibratorgaincal(self, calMs: str, caltable: str, solint: str, minsnr: float, calmode: str,
-                              gaintablelist: List[str], refAnt: str,
-                              refantmode: str = 'flex', spw: str = '') -> bool:
-        """Execute the CASA task gaincal with the calibrator MS using a provided list of gaintables
+    def _do_calibratorgaincal(
+        self,
+        calMs: str,
+        caltable: str,
+        solint: str,
+        minsnr: float,
+        calmode: str,
+        gaintablelist: list[str],
+        refAnt: str,
+        refantmode: str = 'flex',
+        spw: str = '',
+    ) -> bool:
+        """Execute the CASA task gaincal with the calibrator MS using a provided list of gaintables.
 
         Args:
-            calMs(str): input name of calibrator MS
-            caltable(str):  output caltable
-            solint(str):  gaincal solution interval
-            minsnr(float):  Min SNR
-            calmode(str):   Specified mode
-            gaintablelist(List):  String list of tables, if any
-            refAnt(str): csv string of reference antennas
-            refantmode(str):  Default of flex
-            spw(str):  spw string
+            calMs: Input name of calibrator MS
+            caltable: Output caltable
+            solint: Gaincal solution interval
+            minsnr: Minimum SNR threshold
+            calmode: Specified calibration mode
+            gaintablelist: List of gaintable names to apply
+            refAnt: CSV string of reference antennas
+            refantmode: Reference antenna mode, defaults to 'flex'
+            spw: Spectral window selection string
 
         Returns:
-            Boolean
+            True if calibration succeeds, False otherwise
 
         """
-
         append = False
         isdir = os.path.isdir(caltable)
         if isdir:
             append = True
-            LOG.info("Appending to existing table: {!s} ".format(caltable))
+            LOG.info('Appending to existing table: %s', caltable)
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
