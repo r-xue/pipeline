@@ -90,9 +90,9 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
             antposfile: 
                 Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
-                 of the outfile created by `getantposalma` for `hm_antpos='online'`. In order to work with multi-EB
-                 pipeline runs, the EB UID will be appended to the file name when using `hm_antpos='online'` (i.e. 
-                 'uid___A002_X123_X4567_antennapos.json').
+                 of the outfile created by `getantposalma` for `hm_antpos='online'`. In order to work with multi-MS
+                 pipeline runs, the MS basename will be appended to the file name when using `hm_antpos='online'` (i.e.
+                 'uid___A002_X123_X4567.antennapos.json').
 
                 Example: 'antennapos.csv'
 
@@ -194,7 +194,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
 
     @property
     def online_antpos_filename(self) -> str:
-        eb_antposfile = f"{self.vis.split('.ms')[0]}_{self.antposfile}"
+        eb_antposfile = f"{self.vis.split('.ms')[0]}.{self.antposfile}"
         return os.path.join(self.output_dir, eb_antposfile)
 
     def __str__(self):
