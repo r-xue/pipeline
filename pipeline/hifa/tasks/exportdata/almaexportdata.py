@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import collections
-import json
 import os
 import shutil
 import traceback
@@ -10,7 +9,6 @@ from typing import TYPE_CHECKING
 from pipeline import infrastructure
 from pipeline.h.tasks.exportdata import exportdata
 from pipeline.infrastructure import task_registry, vdp
-from pipeline.infrastructure.renderer import stats_extractor
 
 from . import almaifaqua
 
@@ -193,28 +191,6 @@ class ALMAExportData(exportdata.ExportData):
                 os.path.basename(apply_file_list[i])
 
         return visdict
-
-    def _export_stats_file(self, context, oussid='') -> str:
-        """Generate and output the stats file.
-
-        Args:
-          context: the pipieline context
-          oussid: the ous id
-
-        Returns:
-          The filename of the outputfile.
-        """
-        statsfile_name = "pipeline_stats_{}.json".format(oussid)
-        stats_file = os.path.join(context.output_dir, statsfile_name)
-        LOG.info('Generating pipeline statistics file')
-
-        stats_dict = stats_extractor.generate_stats(context)
-
-        # Write the stats file to disk
-        with open(stats_file, 'w', encoding='utf-8') as f:
-            json.dump(stats_dict, f, ensure_ascii=False, indent=4, sort_keys=True)
-
-        return stats_file
 
     def _export_casa_restore_script(self, context, script_name, products_dir, oussid, vislist, session_list):
         """

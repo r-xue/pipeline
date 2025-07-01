@@ -114,7 +114,7 @@ class VlassmaskingInputs(vdp.StandardInputs):
         Args:
             context (:obj:): Pipeline context
 
-            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str, optional): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             vlass_ql_database(str): vlass_ql_database - usage in Socorro: /home/vlass/packages/VLASS1Q.fits.
                 Path to a PyBDSF sky catalog in FITS format.
