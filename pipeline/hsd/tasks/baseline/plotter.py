@@ -534,7 +534,7 @@ class BaselineSubtractionDataManager(object):
                             map_data[ix, iy, ipol] = this_data[ipol].real
                             map_mask[ix, iy, ipol] = this_mask[ipol]
 
-                            # save the 'median index' with its ids_idx : to be used in get_lines() later
+                            # save the 'representative index' with its ids_idx : to be used in get_lines() later
                             repidxperpol.append( rep_index['ids_idx'] )
                         else:
                             repidxperpol.append(None)
@@ -542,9 +542,9 @@ class BaselineSubtractionDataManager(object):
                     LOG.debug('no data is available for (%s,%s)', ix, iy)
                     repidxperpol = [None for ipol in range(num_pol)]
 
-                # push median_index into the specific component of rowlist
+                # push representative index into the specific component of rowlist
                 d['REP_INDEX'] = repidxperpol
-                LOG.debug('REP__INDEX for %s, %s is %s', ix, iy, repidxperpol)
+                LOG.debug('REP_INDEX for %s, %s is %s', ix, iy, repidxperpol)
 
         # calculate integrated data
         integrated_data_masked = numpy.ma.masked_array(integrated_data, num_integrated == 0)
