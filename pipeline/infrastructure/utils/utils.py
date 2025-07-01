@@ -28,21 +28,23 @@ from collections.abc import Iterable
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import (Any, Callable, Collection, Dict, List, Optional, Sequence,
-                    Tuple, TYPE_CHECKING, Union)
+from typing import TYPE_CHECKING, Any, Callable, Collection, DefaultDict, OrderedDict, Sequence, TypedDict
 from urllib.parse import urlparse
 
 import casaplotms
 import numpy as np
 import numpy.typing as npt
 
-from .. import casa_tools, logging, mpihelpers
+from pipeline import infrastructure
+from pipeline.infrastructure import casa_tools, mpihelpers
 from .conversion import commafy, dequote, range_to_list
 
 if TYPE_CHECKING:
-    from pipeline.domain import MeasurementSet
+    from pipeline.domain import Field, MeasurementSet
+    from pipeline.infrastructure.filenamer import PipelineProductNameBuilder
+    from pipeline.infrastructure.launcher import Context
 
-LOG = logging.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 __all__ = [
     'absolute_path',
@@ -56,6 +58,7 @@ __all__ = [
     'fieldname_for_casa',
     'filter_intents_for_ms',
     'find_ranges',
+    'find_sky_center',
     'flagged_intervals',
     'get_casa_quantity',
     'get_casa_session_details',
@@ -74,6 +77,8 @@ __all__ = [
     'imstat_items',
     'list_to_str',
     'nested_dict',
+    'obs_long_lat',
+    'obs_midtime',
     'open_with_lock',
     'place_repr_source_first',
     'relative_path',
@@ -85,7 +90,25 @@ __all__ = [
 ]
 
 
-def find_ranges(data: Union[str, List[int]]) -> str:
+class QuantityDict(TypedDict):
+    unit: str
+    value: float
+
+
+class DirectionDict(TypedDict):
+    m0: QuantityDict
+    m1: QuantityDict
+    refer: str
+    type: str
+
+
+class EpochDict(TypedDict):
+    m0: QuantityDict
+    refer: str
+    type: str
+
+
+def find_ranges(data: str | list[int]) -> str:
     """Identify numeric ranges in string or list.
 
     This utility function takes a string or a list of integers (e.g. spectral
@@ -122,7 +145,7 @@ def find_ranges(data: Union[str, List[int]]) -> str:
     return ','.join(ranges)
 
 
-def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
+def dict_merge(a: dict, b: dict | Any) -> dict:
     """Recursively merge dictionaries.
 
     This utility function recursively merges dictionaries. If second argument
@@ -145,7 +168,7 @@ def dict_merge(a: Dict, b: Union[Dict, any]) -> Dict:
     return result
 
 
-def are_equal(a: Union[List, np.ndarray], b: Union[List, np.ndarray]) -> bool:
+def are_equal(a: list | np.ndarray, b: list | np.ndarray) -> bool:
     """Return True if the contents of the given arrays are equal.
 
     This utility function check the equivalence of array like objects. Two arrays
@@ -205,8 +228,8 @@ def get_num_caltable_polarizations(caltable: str) -> int:
     return int(col_pols.pop())
 
 
-def flagged_intervals(vec: Union[List, np.ndarray]) -> List:
-    """Idendity isnads of ones in input array or list.
+def flagged_intervals(vec: list | np.ndarray) -> list[tuple[int, int]]:
+    """Identify islands of ones in input array or list.
 
     This utility function finds islands of ones in array or list provided in argument.
     Used to find contiguous flagged channels in a given spw.  Returns a list of
@@ -278,7 +301,7 @@ def filter_intents_for_ms(ms: MeasurementSet, intents: str) -> str:
     return ','.join(sorted(intents))
 
 
-def get_field_accessor(ms, field):
+def get_field_accessor(ms: MeasurementSet, field: Field) -> operator.attrgetter:
     """Returns accessor to field name or field ID, if field name is ambiguous.
     """
     fields = ms.get_fields(name=field.name)
@@ -290,7 +313,7 @@ def get_field_accessor(ms, field):
     return accessor
 
 
-def get_field_identifiers(ms) -> Dict:
+def get_field_identifiers(ms: MeasurementSet) -> dict[int, str | int]:
     """Maps numeric field IDs to field names.
 
     Get a dict of numeric field ID to unambiguous field identifier, using the
@@ -301,7 +324,7 @@ def get_field_identifiers(ms) -> Dict:
     return {field.id: field_name_accessors[field.id](field) for field in ms.fields}
 
 
-def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
+def get_receiver_type_for_spws(ms: MeasurementSet, spwids: Sequence) -> dict[int, str]:
     """Return dictionary of receiver types for requested spectral window IDs.
 
     If spwid is not found in MeasurementSet instance, then detector type is
@@ -324,7 +347,7 @@ def get_receiver_type_for_spws(ms, spwids: Sequence) -> Dict:
     return rxmap
 
 
-def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
+def get_spectralspec_to_spwid_map(spws: Collection) -> DefaultDict[str | None, list[int]]:
     """
     Returns a dictionary of spectral specs mapped to corresponding spectral
     window IDs for requested list of spectral window objects.
@@ -339,7 +362,11 @@ def get_spectralspec_to_spwid_map(spws: Collection) -> Dict:
     return spwmap
 
 
-def imstat_items(image, items=['min', 'max'], mask=None):
+def imstat_items(
+        image: Any,
+        items: list[str] = ['min', 'max'],
+        mask: str | None = None,
+        ) -> OrderedDict[str, Any]:
     """Extract desired stats properties (per Stokes) using ia.statistics().
 
     Beside the standard output, some additional stats property keys are supported.
@@ -378,7 +405,7 @@ def imstat_items(image, items=['min', 'max'], mask=None):
     return stats
 
 
-def get_stokes(imagename):
+def get_stokes(imagename: str) -> list[str]:
     """Get the labels of all stokes planes present in a CASA image."""
 
     with casa_tools.ImageReader(imagename) as image:
@@ -390,7 +417,7 @@ def get_stokes(imagename):
     return stokes_present
 
 
-def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
+def get_casa_quantity(value: None | dict | str | float | int) -> QuantityDict:
     """Wrapper around quanta.quantity() that handles None input.
 
     Starting with CASA 6, quanta.quantity() no longer accepts None as input. This
@@ -412,7 +439,7 @@ def get_casa_quantity(value: Union[None, Dict, str, float, int]) -> Dict:
         return casa_tools.quanta.quantity(0.0)
 
 
-def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple:
+def get_si_prefix(value: float, select: str = 'mu', lztol: int = 0) -> tuple[str, float]:
     """Obtain the best SI unit prefix option for a numeric value.
 
     A "best" SI prefix from a specified prefix collection is defined by minimizing :
@@ -468,7 +495,7 @@ def absolute_path(name: str) -> str:
     return os.path.abspath(os.path.expanduser(os.path.expandvars(name)))
 
 
-def relative_path(name: str, start: Optional[str]=None) -> str:
+def relative_path(name: str, start: str | None = None) -> str:
     """
     Retun a relative path of a given file with respect a given origin.
 
@@ -488,7 +515,7 @@ def relative_path(name: str, start: Optional[str]=None) -> str:
     return os.path.relpath(absolute_path(name), start)
 
 
-def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
+def get_task_result_count(context: Context, taskname: str = 'hif_makeimages') -> int:
     """Count occurrences of a task result in the context.results list.
 
     Loop over the content of the context.results list and compare taskname to the pipeline_casa_task
@@ -513,7 +540,7 @@ def get_task_result_count(context, taskname: str = 'hif_makeimages') -> int:
     return count
 
 
-def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source: str) -> Union[List[str], List[Tuple]]:
+def place_repr_source_first(itemlist: list[str] | list[tuple], repr_source: str) -> list[str] | list[tuple]:
     """
     Place representative source first in a list of source names
     or tuples with source name as first tuple element.
@@ -534,7 +561,7 @@ def place_repr_source_first(itemlist: Union[List[str], List[Tuple]], repr_source
     return itemlist
 
 
-def shutdown_plotms():
+def shutdown_plotms() -> None:
     """Shutdown the existing plotms process in the current CASA session.
 
     This utility function shuts down the persist plotms process in the current CASA session, so the next plotms call
@@ -558,7 +585,7 @@ def shutdown_plotms():
         plotmstool.__uri = None
 
 
-def get_casa_session_details():
+def get_casa_session_details() -> dict[str, Any]:
     """Get the current CASA session details.
 
     return a dictionary including the following keys:
@@ -582,7 +609,7 @@ def get_casa_session_details():
     return casa_session_details
 
 
-def get_taskhistory_fromimage(imagename: str):
+def get_taskhistory_fromimage(imagename: str) -> list:
     """Retrieve past CASA/tclean() call parameters from the image history.
 
     Note: the tclean history is only added to images/logtable in CASA ver>=6.2 (see CAS-13247)
@@ -617,7 +644,7 @@ def get_taskhistory_fromimage(imagename: str):
     return taskhistory_list
 
 
-def get_obj_size(obj, serialize=True):
+def get_obj_size(obj: object, serialize: bool = True) -> int:
     """Estimate the size of a Python object.
 
     If serialize=True, the size of a serialized object is returned. Note that this is NOT the
@@ -646,7 +673,7 @@ def get_obj_size(obj, serialize=True):
         return asizeof(obj)
 
 
-def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> List[str]:
+def glob_ordered(pattern: str, *args, order: str | None = None, **kwargs) -> list[str]:
     """Return a sorted list of paths matching a pathname pattern."""
 
     path_list = glob.glob(pattern, *args, **kwargs)
@@ -664,7 +691,7 @@ def glob_ordered(pattern: str, *args, order: Optional[str] = None, **kwargs) -> 
     return path_list
 
 
-def deduplicate(items):
+def deduplicate(items: list) -> list:
     """Remove duplicate entries from a list, but preserve the order.
 
     Note that the use of list(set(x)) can cause random order in the output.
@@ -679,7 +706,7 @@ def deduplicate(items):
 
 
 @contextlib.contextmanager
-def ignore_pointing(vis):
+def ignore_pointing(vis: str | list[str] | set[str]):
     """A context manager to ignore pointing tables of MSes during I/O operations.
 
     The original pointing table will be temperarily renamed to POINTING_ORIGIN, and a new empty pointing table
@@ -740,7 +767,7 @@ def ignore_pointing(vis):
 
 
 @contextlib.contextmanager
-def request_omp_threading(num_threads=None):
+def request_omp_threading(num_threads: int | None = None):
     """A context manager to override the session-wise OMP threading setting on CASA MPI client.
 
     This function is intended to improve certain CASAtask/tool call performance on the MPI client by
@@ -813,7 +840,7 @@ def request_omp_threading(num_threads=None):
 
 
 @contextlib.contextmanager
-def open_with_lock(filename, mode='r'):
+def open_with_lock(filename: str, mode: str = 'r'):
     """Open file with a lock.
 
     The file open context manager function will try to lock the file upon opening 
@@ -867,7 +894,8 @@ def open_with_lock(filename, mode='r'):
                         'which might cause racing conditions if multiple processes access %s simultaneously.',
                         filename)
 
-def ensure_products_dir_exists(products_dir):
+
+def ensure_products_dir_exists(products_dir: str) -> None:
     try:
         LOG.trace(f"Creating products directory: {products_dir}")
         os.makedirs(products_dir)
@@ -876,7 +904,7 @@ def ensure_products_dir_exists(products_dir):
             raise
 
 
-def export_weblog_as_tar(context, products_dir, name_builder):
+def export_weblog_as_tar(context: Context, products_dir: str, name_builder: PipelineProductNameBuilder) -> str:
     # Construct filename prefix from oussid and recipe name if available.
     prefix = context.get_oussid()
     recipe_name = context.get_recipe_name()
@@ -895,7 +923,7 @@ def export_weblog_as_tar(context, products_dir, name_builder):
     return tarfilename
 
 
-def get_products_dir(context):
+def get_products_dir(context: Context) -> str:
     if context.products_dir is None:
         return os.path.abspath('./')
     else:
@@ -903,18 +931,18 @@ def get_products_dir(context):
 
 
 class pl_defaultdict(collections.defaultdict):
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(dict(self))
 
-    def as_plain_dict(self):
+    def as_plain_dict(self) -> dict:
         return to_plain_dict(self)
 
 
-def nested_dict():
+def nested_dict() -> dict:
     return pl_defaultdict(nested_dict)
 
 
-def to_plain_dict(default_dict):
+def to_plain_dict(default_dict: dict) -> dict:
     plain_dict = dict()
     for k, v in default_dict.items():
         if isinstance(v, collections.defaultdict):
@@ -925,7 +953,7 @@ def to_plain_dict(default_dict):
     return plain_dict
 
 
-def string_to_val(s):
+def string_to_val(s: str) -> Any:
     """
     Convert a string to a Python data type.
     """
@@ -941,7 +969,7 @@ def string_to_val(s):
         return s
 
 
-def remove_trailing_string(s, t):
+def remove_trailing_string(s: str, t: str) -> str:
     """
     Remove a trailing string if it exists.
     """
@@ -950,10 +978,12 @@ def remove_trailing_string(s, t):
     else:
         return s
 
-ConditionType = Union[Callable, Dict[str, Dict[str, Dict[str, Any]]]]
+
+ConditionType = Callable | dict[str, dict[str, dict[str, Any]]]
+
 
 def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth: int=5,
-                       condition: Optional[ConditionType]=None, timestamp: bool=True):
+                       condition: ConditionType | None = None, timestamp: bool=True):
     """
     Dump arguments and return-objects of a function implement the decolator into pickle files and/or JSON(-like) file.
     
@@ -1060,7 +1090,7 @@ def function_io_dumper(to_pickle: bool=True, to_json: bool=False, json_max_depth
     return decorator
 
 
-def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}):
+def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: bool=False, json_dict={}) -> None:
     file_path = os.path.join(path, f'{name}')
     
     if dump_pickle:
@@ -1071,7 +1101,7 @@ def _dump(obj: object, path: str, name: str, dump_pickle: bool=True, dump_json: 
             f.write(json.dumps(json_dict[name], default=str))
 
 
-def _get_full_method_path(func):
+def _get_full_method_path(func: Callable) -> str:
     module_name = func.__module__
     if hasattr(func, '__qualname__'):
         qualname = func.__qualname__
@@ -1080,7 +1110,7 @@ def _get_full_method_path(func):
     return f'{module_name}.{qualname}'
 
 
-def _eval_condition(condition, args):
+def _eval_condition(condition: dict | None, args: dict) -> bool:
     # {'self', {'spw':10}}, need unittest
     if condition is None:
         return True
@@ -1098,7 +1128,7 @@ def _eval_condition(condition, args):
     return False
 
 
-def object_to_dict(obj, max_depth=5, current_depth=0):
+def object_to_dict(obj: object, max_depth: int = 5, current_depth: int = 0) -> object | dict | None:
 
     if current_depth > max_depth:
         return None
@@ -1134,7 +1164,7 @@ def object_to_dict(obj, max_depth=5, current_depth=0):
         return obj
 
 
-def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwargs: Any):
+def decorate_io_dumper(cls: object, functions: list[str | None] = [], *args: Any, **kwargs: Any) -> None:
     """Apply function_io_dumper dynamically.
 
     Usage:
@@ -1148,7 +1178,7 @@ def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwarg
 
     Args:
         cls (object): the class has functions to be decorated.
-        functions (List[str], optional): Function names to decodate. If not specified or
+        functions (list[str], optional): Function names to decodate. If not specified or
             set empty list, then all functions of the class are decorated. Defaults to [].
     """
     if len(functions) == 0:
@@ -1165,7 +1195,7 @@ def decorate_io_dumper(cls: object, functions: List[str]=[], *args: Any, **kwarg
         setattr(cls, _name, decorated_func)
 
 
-def _str_to_func(cls: object, _name: str):
+def _str_to_func(cls: object, _name: str) -> Callable | bool:
     if hasattr(cls, _name):
         _c = getattr(cls, _name)
         if callable(_c):
@@ -1173,7 +1203,7 @@ def _str_to_func(cls: object, _name: str):
     return False
 
 
-def list_to_str(value: Union[List[Union[Number, str]], npt.NDArray]) -> str:
+def list_to_str(value: list[Number | str] | npt.NDArray) -> str:
     """Convert list or numpy.ndarray into string.
 
     The list/ndarray should be 1-dimensional. In that case, the function
@@ -1225,3 +1255,51 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def obs_long_lat(observatory: str) -> tuple[QuantityDict, QuantityDict]:
+    """Return longitude and latitude values of the given observatory."""
+    observatory = casa_tools.measures.observatory(observatory)
+    return observatory['m0'], observatory['m1']
+
+
+def obs_midtime(start_time: datetime, end_time: datetime) -> EpochDict:
+    """Returns the mid time in a CASA measures dictionary."""
+    mid_time = start_time + (end_time - start_time) / 2
+    return casa_tools.measures.epoch('utc', mid_time.isoformat())
+
+
+def find_sky_center(fields: list[Field]) -> tuple[float, float]:
+    """
+    Compute the center point on the celestial sphere from a list of RA/Dec positions.
+
+    Args:
+        fields: A list of Field objects.
+
+    Returns:
+        A tuple (ra_center_deg, dec_center_deg) representing the central RA/Dec in degrees.
+    """
+    ra_list = np.array([casa_tools.quanta.convert(f.mdirection['m0']['value'], 'rad')['value'] for f in fields])
+    dec_list = np.array([casa_tools.quanta.convert(f.mdirection['m0']['value'], 'rad')['value'] for f in fields])
+
+    # Convert spherical to Cartesian coordinates
+    x = np.cos(dec_list) * np.cos(ra_list)
+    y = np.cos(dec_list) * np.sin(ra_list)
+    z = np.sin(dec_list)
+
+    # Average Cartesian components
+    x_mean = np.mean(x)
+    y_mean = np.mean(y)
+    z_mean = np.mean(z)
+
+    # Normalize the resulting vector
+    norm = np.sqrt(x_mean**2 + y_mean**2 + z_mean**2)
+    x_mean /= norm
+    y_mean /= norm
+    z_mean /= norm
+
+    # Convert back to spherical coordinates
+    ra_center = np.arctan2(y_mean, x_mean)
+    dec_center = np.arcsin(z_mean)
+
+    return ra_center, dec_center

@@ -6,20 +6,15 @@ import operator
 import pprint
 from typing import TYPE_CHECKING
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
+from pipeline import infrastructure
+from pipeline.infrastructure import casa_tools, utils
 
-if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
-    from .antenna import Antenna
-    from .datadescription import DataDescription
-    from .field import Field
-    from .spectralwindow import SpectralWindow
-    from .state import State
+if TYPE_CHECKING:
+    from pipeline.domain import Antenna, DataDescription, Field, SpectralWindow, State
 
 _pprinter = pprint.PrettyPrinter()
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class Scan(object):
@@ -36,9 +31,16 @@ class Scan(object):
         data_descriptions: Set of DataDescription objects for data description
             entries associated with this scan.
     """
-    def __init__(self, id: int | None = None, antennas: list[Antenna] | None = None, intents: list[str] | None = None,
-                 fields: list[Field] | None = None, states: list[State] | None = None,
-                 data_descriptions: list[DataDescription] | None = None, scan_times: dict | None = None) -> None:
+    def __init__(
+            self,
+            id: int | None = None,
+            antennas: list[Antenna] | None = None,
+            intents: list[str] | None = None,
+            fields: list[Field] | None = None,
+            states: list[State] | None = None,
+            data_descriptions: list[DataDescription] | None = None,
+            scan_times: dict | None = None,
+            ) -> None:
         """
         Initialize a Scan object.
 
@@ -129,6 +131,8 @@ class Scan(object):
             if self.__end_time is None or qt.gt(max_val, self.__end_time['m0']):
                 self.__end_time = range_end_epoch
 
+        self.center_ra, self.center_dec = utils.find_sky_center(self.fields)
+
     def __repr__(self) -> str:
         mt = casa_tools.measures
         qt = casa_tools.quanta
@@ -140,9 +144,6 @@ class Scan(object):
         for spw_id, interval in self.__mean_intervals.items():
             interval_quanta = qt.unit('{0}s'.format(interval.total_seconds()))
             half_interval = qt.div(interval_quanta, 2)
-
-            exposure = qt.unit('{0}s'.format(self.__exposure_time[spw_id].total_seconds()))
-            half_exposure = qt.div(exposure, 2)
 
             start_midpoint = qt.add(mt.getvalue(start_epoch)['m0'],
                                     half_interval)
@@ -231,3 +232,16 @@ class Scan(object):
         """Return set of SpectralWindow objects for spectral windows associated
         with this Scan."""
         return {dd.spw for dd in self.data_descriptions}
+
+    @property
+    def ra(self) -> float:
+        """Return the center RA value of all scan fields."""
+        return self.center_ra
+
+    @property
+    def dec(self) -> float:
+        """Return the center Dec value of all scan fields."""
+        return self.center_dec
+
+    def set_sky_center(self):
+        self.center_ra, self.center_dec = utils.find_sky_center(self.fields)

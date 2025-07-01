@@ -7,7 +7,6 @@ import operator
 import os
 from typing import TYPE_CHECKING, Generator
 
-import astropy.time
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -31,13 +30,18 @@ ticker.TickHelper.MAXTICKS = 10000
 
 
 class ZDTELMJDChart:
-    def __init__(self, context, ms, data):
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            data: dict[int, dict[str, list[float | datetime.datetime]]],
+            ):
         self.context = context
         self.ms = ms
         self.data = data
         self.figfile = self._get_figfile()
 
-    def plot(self):
+    def plot(self) -> logger.Plot:
         if os.path.exists(self.figfile):
             LOG.debug('Returning existing SunTrack plot')
             return self._get_plot_object()
@@ -49,16 +53,14 @@ class ZDTELMJDChart:
         plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
                        'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
                        '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
-        first_time = astropy.time.Time(
-            min(min(field['telmjd']) for field in self.data.values()), format='mjd'
-            ).to_datetime()
+        first_time = min(min(field['telmjd']) for field in self.data.values())
 
         for i, field_data in enumerate(self.data.values()):
             color = plot_colors[i % len(plot_colors)]
             telmjd = field_data.get('telmjd', [])
-            mjd_times = astropy.time.Time(telmjd, format='mjd').to_datetime()
             zd = field_data.get('zd', [])
-            plt.scatter(mjd_times, zd, color=f'#{color}')
+            if telmjd:
+                plt.scatter(telmjd, zd, color=f'#{color}')
 
         plt.xlabel(f'Time (UT on {first_time.strftime("%Y-%m-%d")})')
         plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
@@ -73,7 +75,7 @@ class ZDTELMJDChart:
 
         return self._get_plot_object()
 
-    def _get_figfile(self):
+    def _get_figfile(self) -> str:
         session_part = self.ms.session
         ms_part = self.ms.basename
 
@@ -81,7 +83,7 @@ class ZDTELMJDChart:
                             'session%s' % session_part,
                             ms_part, 'zd_telmjd.png')
 
-    def _get_plot_object(self):
+    def _get_plot_object(self) -> logger.Plot:
         return logger.Plot(self.figfile,
                            x_axis='Telescope MJD',
                            y_axis='Zenith Angle',

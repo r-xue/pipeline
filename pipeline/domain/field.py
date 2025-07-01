@@ -59,7 +59,10 @@ class Field(object):
         self.flux_densities = set()
 
         # PIPE-2472: calculate zenith distance and telescope MJD of observation (TELMJD)
-        self._zd, self._telmjd = self.set_zd_telmjd()
+        # These are set to None until the import of the measurement set (see 
+        # MeasurementSetReader.link_obs_to_fields)
+        self._zd = None
+        self._telmjd = None
 
     def __repr__(self) -> str:
         name = self.name
@@ -182,26 +185,28 @@ class Field(object):
             if source_type.find(intent) != -1:
                 self.intents.add(intent)
 
-    def set_zd_telmjd(self) -> None:
-        """"Return the zenith distance at the observation mid-time in degrees."""
+    def set_zd_telmjd(self, observatory: str) -> None:
+        """Return the zenith distance at the observation mid-time in degrees."""
         # Obtain observatory geographic coordinates
-        observatory = casa_tools.measures.observatory('VLA')
-        obs_long = observatory['m0']
-        obs_lat = observatory['m1']
-        mjd_epoch = datetime.datetime(1858, 11, 17)
+        obs_long, obs_lat = utils.obs_long_lat(observatory)
+
         # retrieve field location
         ra_head = self.longitude
         dec_head = self.latitude
+
         # Mean observing time
+        mjd_epoch = datetime.datetime(1858, 11, 17)
         start_time = mjd_epoch + datetime.timedelta(seconds=min(self.time))
         end_time = mjd_epoch + datetime.timedelta(seconds=max(self.time))
-        mid_time = start_time + (end_time - start_time) / 2
-        mid_time = casa_tools.measures.epoch('utc', mid_time.isoformat())
+        mid_time = utils.obs_midtime(start_time, end_time)
 
         # retrieve zenith angle to 2 sig figs for reporting to weblog
         za_rad, _ = utils.positioncorrection.calc_zd_pa(
-            ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time)
-        return casa_tools.quanta.convert(za_rad, 'deg'), mid_time['m0']
+            ra=ra_head, dec=dec_head, obs_long=obs_long, obs_lat=obs_lat, date_time=mid_time
+            )
+
+        self._zd = casa_tools.quanta.convert(za_rad, 'deg')
+        self._telmjd = mid_time['m0']
 
     def __str__(self) -> str:
         return '<Field {id}: name=\'{name}\' intents=\'{intents}\'>'.format(

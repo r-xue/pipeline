@@ -191,15 +191,15 @@ import os
 					<td>${el_max} degrees</td>
 				</tr>
 				<tr>
-					<th>Min Zenith Angle</th>
+					<th>Min Zenith Angle (TARGET)</th>
 					<td>${zd_min} degrees</td>
 				</tr>
 				<tr>
-					<th>Max Zenith Angle</th>
+					<th>Max Zenith Angle (TARGET)</th>
 					<td>${zd_max} degrees</td>
 				</tr>
 				<tr>
-					<th>TELMJD</th>
+					<th>Telescope MJD (TARGET)</th>
 					<td>${telmjd_min} - ${telmjd_max}</td>
 				</tr>
 			</tbody>

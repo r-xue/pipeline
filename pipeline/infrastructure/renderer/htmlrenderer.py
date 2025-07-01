@@ -16,6 +16,7 @@ import shutil
 import sys
 from typing import TYPE_CHECKING, Any
 
+import astropy
 import mako
 import numpy as np
 import pkg_resources
@@ -24,7 +25,6 @@ import pipeline
 import pipeline.infrastructure.pipelineqa as pqa
 from pipeline import environment, infrastructure
 from pipeline.domain import measures
-from pipeline.extern import findContinuum
 from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
     logging, mpihelpers, task_registry, utils
 from pipeline.infrastructure.displays import pointing, summary
@@ -914,13 +914,13 @@ class T2_1DetailsRenderer(object):
         task = summary.ElVsTimeChart(context, ms)
         el_vs_time_plot = task.plot()
 
-        # Get min, max elevation, zenith angle (if relevant), and telmjd (if relevant)
+        # Get min, max elevation, zenith angle, and telmjd
         observatory = context.project_summary.telescope
         el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
         el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
         data = compute_zd_telmjd_for_ms(ms)
-        zd = list(itertools.chain.from_iterable([data[f]['zd'] for f in data]))
-        telmjd = list(itertools.chain.from_iterable([data[f]['telmjd'] for f in data]))
+        zd = list(itertools.chain.from_iterable([data[s]['zd'] for s in data]))
+        telmjd = list(itertools.chain.from_iterable([data[s]['telmjd'] for s in data]))
         zd_min, zd_max = round(min(zd), 2), round(max(zd), 2)
         telmjd_min, telmjd_max = min(telmjd), max(telmjd)
 
@@ -1003,8 +1003,8 @@ class T2_1DetailsRenderer(object):
             'el_max'          : el_max,
             'zd_min'          : zd_min,
             'zd_max'          : zd_max,
-            'telmjd_min'      : findContinuum.mjdToUT(telmjd_min),
-            'telmjd_max'      : findContinuum.mjdToUT(telmjd_max),
+            'telmjd_min'      : utils.format_datetime(telmjd_min),
+            'telmjd_max'      : utils.format_datetime(telmjd_max),
             'vla_basebands'   : vla_basebands
         }
 
@@ -2214,33 +2214,28 @@ def compute_az_el_for_ms(ms, observatory, func):
 
 def compute_zd_telmjd_for_ms(
         ms: MeasurementSet,
-        target_only: bool=True,
-        ) -> tuple[list, list]:
+        ) -> dict[int, dict[str, list[float | datetime.datetime]]]:
     """
-    Retrieves zenith angle and telescope MJD for the MS.
+    Retrieves zenith angle and telescope MJD of the TARGET fields.
 
     Args:
         ms: The MeasurementSet object.
-        target_only: Switch to determine whether to retrieve all scans or only TARGET scans. Default is True.
 
     Returns:
-        A tuple containing lists with the zenith angles and telmjd of the scans.
+        A dictionary containing the field names with lists of the zenith angles and telmjd.
     """
     data = {}
+    fields = ms.get_fields(intent='TARGET')
 
-    scans = ms.get_scans()
-    if target_only:
-        scans = ms.get_scans(scan_intent='TARGET')
-
-    for scan in scans:
-        for field in scan.fields:
-            if field.name not in data:
-                data[field.name] = {
-                    'zd': [],
-                    'telmjd': [],
-                }
-            data[field.name]['zd'].append(field.zd['value'])
-            data[field.name]['telmjd'].append(field.telmjd['value'])
+    for field in fields:
+        if field.id not in data:
+            data[field.id] = {
+                'zd': [],
+                'telmjd': [],
+            }
+        data[field.id]['zd'].append(field.zd['value'])
+        telmjd_dt = astropy.time.Time(field.telmjd['value'], format='mjd').to_datetime()
+        data[field.id]['telmjd'].append(telmjd_dt)
 
     return data
 
