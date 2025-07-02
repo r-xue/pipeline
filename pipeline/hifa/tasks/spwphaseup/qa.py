@@ -31,7 +31,8 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
         # for SpWs that have been re-mapped.
         for (intent, field, spw), median_snr in result.snr_info.items():
             # Skip if encountering unhandled intent.
-            if intent not in ['CHECK', 'PHASE']:
+            intent_list = {'AMPLITUDE', 'BANDPASS', 'CHECK', 'DIFFGAINREF', 'DIFFGAINSRC', 'PHASE'}
+            if intent not in intent_list:
                 LOG.warning(f"{ms.basename}: unexpected intent '{intent}' encountered in SNR info result, cannot"
                             f" assign a QA score.")
                 continue
@@ -49,11 +50,14 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
 
             # Check which QA score heuristic to use, based on intent.
             if intent == 'CHECK':
-                score = qacalc.score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr,
-                                                                      result.inputs['phasesnr'])
+                score = qacalc.score_phaseup_spw_median_snr_for_check(
+                    ms, field, spw, median_snr, result.inputs['phasesnr'])
             elif intent == 'PHASE':
-                score = qacalc.score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr,
-                                                                      result.inputs['phasesnr'])
+                score = qacalc.score_phaseup_spw_median_snr_for_cal(
+                    ms, field, spw, intent, median_snr, result.inputs['phasesnr'])
+            else:
+                score = qacalc.score_phaseup_spw_median_snr_for_cal(
+                    ms, field, spw, intent, median_snr, result.inputs['intphasesnr'])
 
             # If SpW mapping info exists for the current intent and field, and
             # there is a non-empty SpW map in which other SpWs are mapped to

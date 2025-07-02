@@ -641,10 +641,15 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                if task_args['mask'] not in (None, ''):
+                if task_args['stokes'] == 'IQUV':
+                    if task_args['mask'] not in (None, ''):
+                        # "re-use" is a hidden mode just for the special use case
+                        # of re-using a previously computed Stokes I mask.
+                        task_args['hm_masking'] = 're-use'
+                    else:
+                        task_args['hm_masking'] = 'none'
+                elif task_args['mask'] not in (None, ''):
                     task_args['hm_masking'] = 'manual'
-                elif task_args['stokes'] == 'IQUV':
-                    task_args['hm_masking'] = 'none'
                 else:
                     task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
@@ -652,7 +657,10 @@ class CleanTaskFactory(object):
             else:
                 task_args['hm_masking'] = 'auto'
         else:
-            task_args['hm_masking'] = inputs.hm_masking
+            if inputs.hm_masking.lower() in ('auto', 'centralregion', 'manual', 'none'):
+                task_args['hm_masking'] = inputs.hm_masking.lower()
+            else:
+                raise Exception(f'Masking mode {inputs.hm_masking} unknown.')
 
         if inputs.hm_masking == 'auto':
             task_args['hm_sidelobethreshold'] = inputs.hm_sidelobethreshold

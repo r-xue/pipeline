@@ -23,6 +23,7 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
@@ -704,6 +705,11 @@ class Tclean(cleanbase.CleanBase):
             sequence_manager = ManualMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                            gridder=inputs.gridder, threshold=threshold,
                                                            sensitivity=sensitivity, niter=inputs.niter)
+        # Re-used Stokes I mask
+        elif inputs.hm_masking == 're-use':
+            sequence_manager = ReuseMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+                                                           gridder=inputs.gridder, threshold=threshold,
+                                                           sensitivity=sensitivity, niter=inputs.niter)
         # No mask
         elif inputs.hm_masking == 'none':
             sequence_manager = NoMaskThresholdSequence(multiterm=multiterm,
@@ -1240,7 +1246,12 @@ class Tclean(cleanbase.CleanBase):
 
             if inputs.hm_masking == 'auto':
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
-            elif inputs.hm_masking == 'auto':
+            elif inputs.hm_masking == 'manual':
+                # Note that this will only work if the name of the manual
+                # mask does not happen to be '%s.iter%s.mask' % (rootname, iteration)
+                # which will usually be the case.
+                new_cleanmask = inputs.mask
+            elif inputs.hm_masking == 're-use':
                 # Note the same issue reported in the VLA image iteration above about
                 # tclean not accepting a user mask of the same name as it would create
                 # itself. Hence ".cleanmask" instead of ".mask".
