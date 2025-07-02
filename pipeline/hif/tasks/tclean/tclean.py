@@ -23,7 +23,7 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
-from .reusedmaskthresholdsequence import ReusedMaskThresholdSequence
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
@@ -707,7 +707,7 @@ class Tclean(cleanbase.CleanBase):
                                                            sensitivity=sensitivity, niter=inputs.niter)
         # Re-used Stokes I mask
         elif inputs.hm_masking == 're-use':
-            sequence_manager = ReusedMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+            sequence_manager = ReuseMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                            gridder=inputs.gridder, threshold=threshold,
                                                            sensitivity=sensitivity, niter=inputs.niter)
         # No mask
