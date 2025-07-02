@@ -44,7 +44,7 @@ class SelfcalResults(basetask.Results):
         """See :method:`~pipeline.infrastructure.api.Results.merge_with_context`."""
 
         # save selfcal results into the Pipeline context
-        if hasattr(context, 'selfcal_targets') and context.selfcal_targets:
+        if context.selfcal_targets:
             LOG.warning('context.selfcal_targets is being over-written.')
 
         scal_targets_ctx = copy.deepcopy(self.targets)
@@ -437,7 +437,7 @@ class Selfcal(basetask.StandardTaskTemplate):
         """Check if we can do selfcal restore from scal_targets saved in the context."""
 
         scal_targets = None
-        if hasattr(self.inputs.context, 'selfcal_targets') and self.inputs.context.selfcal_targets:
+        if self.inputs.context.selfcal_targets:
             scal_targets_last = self.inputs.context.selfcal_targets
             LOG.info('Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.')
             caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets)

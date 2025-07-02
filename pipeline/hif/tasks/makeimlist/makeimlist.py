@@ -1558,10 +1558,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         if (
-            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
-            and hasattr(context, "selfcal_targets")
-            and datatype_str.startswith("SELFCAL_")
-            and self.inputs.specmode == "cont"
+            context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA')
+            and datatype_str.startswith('SELFCAL_')
+            and self.inputs.specmode == 'cont'
         ):
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target["spw"].split(","))
@@ -1603,7 +1602,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
@@ -1631,7 +1630,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect, maxthreshold
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
 
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
