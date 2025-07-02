@@ -141,8 +141,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
         self.search = search
 
     def to_casa_args(self) -> dict[str, str | list[float]]:
-        """
-        Configure gencal task arguments and return them in dictionary format.
+        """Configure gencal task arguments and return them in dictionary format.
 
         Returns:
             vis: Name of the input visibility file (MS).
@@ -154,20 +153,16 @@ class ALMAAntposInputs(antpos.AntposInputs):
         infile = ''
         if self.hm_antpos == 'online':
             infile = self.online_antpos_filename
+
         # Get the antenna and offset lists.
         if self.hm_antpos == 'file':
             filename = os.path.join(self.output_dir, self.antposfile)
-            antenna, offsets = self._read_antpos_csvfile(
-                filename, os.path.basename(self.vis))
+            antenna, offsets = self._read_antpos_csvfile(filename, os.path.basename(self.vis))
         else:
             antenna = self.antenna
             offsets = self.offsets
 
-        return {'vis': self.vis,
-                'caltable': self.caltable,
-                'infile': infile,
-                'antenna': antenna,
-                'parameter': offsets}
+        return {'vis': self.vis, 'caltable': self.caltable, 'infile': infile, 'antenna': antenna, 'parameter': offsets}
 
     def to_antpos_args(self) -> dict[str, str | bool | list[str] | Literal['both_latest', 'both_closest'] | None]:
         """
@@ -226,8 +221,53 @@ class ALMAAntpos(antpos.Antpos):
                 self._executor.execute(antpos_job)
             else:
                 LOG.warning('Antenna position file %s exists. Skipping getantposalma task.', antpos_args['outfile'])
+            # remove antennas from JSON file that are missing from the MS
+            self._remove_missing_antennas_from_json(antpos_args['outfile'])
 
         return super().prepare()
+
+    def _remove_missing_antennas_from_json(self, antposfile: str) -> None:
+        """Removes antennas from JSON file that are missing from the measurement set.
+
+        Handles inconsistencies between antennas in the MS and JSON file, which can occur
+        due to online database issues or truncated datasets.
+
+        Args:
+            antposfile: Path to the antenna position JSON file to modify.
+        """
+        # get sorted antenna names from measurement set
+        ant_names_from_ms = sorted([antenna.name for antenna in self.inputs.ms.antennas])
+
+        try:
+            with open(antposfile, 'r', encoding='utf-8') as f:
+                query_dict = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            LOG.error('Failed to read JSON file %s: %s', antposfile, e)
+            return
+
+        if 'data' not in query_dict:
+            LOG.error("The antpos JSON file %s missing required 'data' key.", antposfile)
+            return
+
+        # find antennas to remove (in JSON but not in MS)
+        ants_from_json = set(query_dict['data'].keys())
+        ants_from_ms = set(ant_names_from_ms)
+        remove_ants = sorted(ants_from_json - ants_from_ms)
+
+        # Remove missing antennas and update file
+        for ant in remove_ants:
+            query_dict['data'].pop(ant)
+
+        if remove_ants:
+            LOG.warning(
+                'Removed antennas %s (missing in %s) from the antpost JSON file %s',
+                remove_ants,
+                self.inputs.vis,
+                antposfile,
+            )
+            os.rename(antposfile, antposfile + '.original')
+            with open(antposfile, 'w', encoding='utf-8') as f:
+                json.dump(query_dict, f, separators=(', ', ': '))
 
     def analyse(self, result):
         result = super().analyse(result)
@@ -250,8 +290,10 @@ class ALMAAntpos(antpos.Antpos):
         Returns:
             Dictionary mapping antenna names to (x, y, z) offset tuples.
         """
-        with casa_tools.TableReader(self.inputs.vis + "/ANTENNA") as tb:
+        with casa_tools.TableReader(self.inputs.vis + '/ANTENNA') as tb:
             antennas = tb.getcol('NAME')
+            # Retrieve antenna positions from the ANTENNA table
+            # For ALMA, this is in meters / ITRF.
             tb_positions = tb.getcol('POSITION')
 
         tb_antpos_dict = dict(zip(antennas, tb_positions.T))
