@@ -16,7 +16,7 @@ import os
 import re
 import shutil
 import traceback
-from typing import TYPE_CHECKING, Any, List, Tuple
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import interpolate, special
@@ -2725,7 +2725,7 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     antenna_id = reduction_group_member.antenna_id
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
-def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
     Frequency coordinates are different between MS and image product.
@@ -2771,7 +2771,7 @@ def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, r
 
 
 @log_qa
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
     """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
     QA scores are evaluated based on the line detection result for
@@ -2811,7 +2811,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         and/or deviation masks, with atm lines, if available
     """
 
-    def mask_to_ranges(mask: np.ndarray) -> List[tuple[int,int]]:
+    def mask_to_ranges(mask: np.ndarray) -> list[tuple[int,int]]:
         """
         Convert a boolean channel mask into a list of contiguous channel ranges.
 
@@ -2820,7 +2820,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                             channels to include.
 
         Returns:
-            List[tuple[int, int]]: List of (start, end) tuples for each
+            list[tuple[int, int]]: List of (start, end) tuples for each
                                 contiguous run of True values in the mask.
         """
         idx = np.where(mask)[0]
@@ -2950,18 +2950,17 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 # ATM-DM overlap
                 elif np.any(dm_atm):
                     score = 0.88
-                    msg = 'Atmospheric lines overlap with deviation mask'
+                    msg = 'Deviation mask overlapped with atmospheric lines'
                     unit = 'Channel range(s) of DM/ATM/Spectral overlap'
-                    ranges = mask_to_ranges(dm_atm)
                     LOG.debug(
-                        'Atmospheric lines overlap with deviation mask'
+                        'Deviation mask overlapped with atmospheric lines'
                         'Set atm overlap QA score to %s', score
                     )
                 else:
                     score = 0.65 
                     msg = 'Deviation mask was triggered'
                     LOG.debug(
-                        'Found deviation mask with no overlap. '
+                        'Found deviation mask with no overlap'
                         'Set deviation mask QA score to %s', score
                     )
                 metric = ','.join(f'{l}~{r}' for l, r in ranges) 
@@ -4516,7 +4515,7 @@ def score_pointing_outlier(
     return qa_scores
 
 @log_qa
-def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+def score_syspowerdata(data: dict) -> list[pqa.QAScore]:
     """Calculates QA score as the minimum of per-band scores based on data points outside 0.7-1.2 range.
 
         For each band:
@@ -4551,7 +4550,7 @@ def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
     return qascores
 
 @log_qa
-def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
+def score_solint(short_solint:dict, long_solint:dict) -> list[pqa.QAScore]:
     """Compute a QA score by comparing short and long solints for each band.
 
     If any band has a short solint value greater than the corresponding long solint,
@@ -4585,7 +4584,7 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_longsolint(context, result) -> List[pqa.QAScore]:
+def score_longsolint(context, result) -> list[pqa.QAScore]:
     bandlist = []
     calscantime = []
     long_solint = result.longsolint
