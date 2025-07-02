@@ -604,7 +604,6 @@ class ExportData(basetask.StandardTaskTemplate):
             vislist: list[str],
             imaging_products_only: bool,
             pipeline_stats_file: str = None,
-            antposfile_name: str = 'antennapos.csv',
             ) -> str | None:
         """
         Generate the auxiliary products
@@ -620,7 +619,7 @@ class ExportData(basetask.StandardTaskTemplate):
         empty = True
 
         # PIPE-51: Look for per-MS antennapos.json files
-        antpos_files = glob.glob(os.path.join(output_dir, "*antennapos.json"))
+        antpos_files = glob.glob(os.path.join(output_dir, "*.antennapos.json"))
 
         # Get the flux, antenna position, and continuum subtraction
         # files and test to see if at least one of them exists
