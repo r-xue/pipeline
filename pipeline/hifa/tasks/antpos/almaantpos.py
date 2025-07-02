@@ -260,10 +260,10 @@ class ALMAAntpos(antpos.Antpos):
 
         if remove_ants:
             LOG.warning(
-                'Removed antennas %s (missing in %s) from the antpost JSON file %s',
-                remove_ants,
+                'Removed antenna(s) that are missing in %s from the corresponding antpos JSON file %s : %s',
                 self.inputs.vis,
                 antposfile,
+                utils.commafy(remove_ants, quotes=False),
             )
             os.rename(antposfile, antposfile + '.original')
             with open(antposfile, 'w', encoding='utf-8') as f:
