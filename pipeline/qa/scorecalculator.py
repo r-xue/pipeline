@@ -16,7 +16,7 @@ import os
 import re
 import shutil
 import traceback
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import interpolate, special
@@ -27,6 +27,7 @@ from pipeline.domain import datatable, measures
 from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.qa import checksource
+from pipeline.infrastructure.utils import ous_parallactic_range
 
 if TYPE_CHECKING:
     from casatools import coordsys
@@ -49,7 +50,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
+           'score_phaseup_spw_median_snr_for_cal',            # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_decoherence_assessment',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
@@ -96,7 +97,10 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_mom8_fc_image',
            'score_iersstate',
            'score_tsysflagcontamination_contamination_flagged',
-           'score_tsysflagcontamination_external_heuristic']
+           'score_tsysflagcontamination_external_heuristic',
+           'score_syspowerdata',
+           'score_solint',
+           'score_longsolint']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -412,7 +416,7 @@ def score_ms_history_entries_present(all_mses, mses_with_history):
 
 
 @log_qa
-def score_observing_modes(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     This QA heuristic evaluates a list of measurement sets, creating a QA score
     for each MS, and returning the aggregate list of QA scores for all MSes.
@@ -530,7 +534,7 @@ def score_bands(mses):
 @log_qa
 def score_parallactic_range(
         pol_intents_present: bool, session_name: str, field_name: str, coverage: float, threshold: float
-        ) -> List[pqa.QAScore]:
+        ) -> list[pqa.QAScore]:
     """
     Score a session based on parallactic angle coverage.
 
@@ -538,7 +542,7 @@ def score_parallactic_range(
     for full spec.
     """
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     # are polarisation intents expected? true if pol recipe, false if not
     # Polcal detected in session (this function was called!) but this is not a
@@ -591,7 +595,7 @@ def score_parallactic_range(
 
 
 @log_qa
-def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_polintents(recipe_name: str, mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     Score a MeasurementSet object based on the presence of
     polarization intents.
@@ -607,7 +611,7 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.Q
     pol_intents_expected = recipe_name in pol_recipes
 
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     # Spec from PIPE-606:
     #
@@ -697,7 +701,7 @@ def score_polintents(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.Q
 
 
 @log_qa
-def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_samecalobjects(recipe_name: str, mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
         Check if BP/Phcal/Ampcal are all the same object and score appropriately
     """
@@ -710,7 +714,7 @@ def score_samecalobjects(recipe_name: str, mses: List[MeasurementSet]) -> List[p
     alma_recipes_expected = recipe_name in alma_recipes
 
     # holds the final list of QA scores
-    scores: List[pqa.QAScore] = []
+    scores: list[pqa.QAScore] = []
 
     if alma_recipes_expected:
         for ms in mses:
@@ -1010,18 +1014,18 @@ def score_total_data_flagged_vla(filename, summaries):
     Calculate a score for the flagging task based on the total fraction of
     data flagged.
 
-    0%-5% flagged   -> 1
-    5%-60% flagged  -> 1 to 0
-    60-100% flagged -> 0
+    0%-5% flagged   -> 1.0
+    5%-75% flagged  -> 1.0 to 0.5
+    75%-100% flagged -> 0.5 to 0.0
     """
     # Calculate fraction of flagged data.
     frac_flagged = calc_frac_newly_flagged(summaries)
 
     # Convert fraction of flagged data into a score.
-    if frac_flagged > 0.6:
-        score = 0
+    if frac_flagged > 0.75:
+        score = linear_score(frac_flagged, 0.75, 1.0, 0.5, 0.0)
     else:
-        score = linear_score(frac_flagged, 0.05, 0.6, 1.0, 0.0)
+        score = linear_score(frac_flagged, 0.05, 0.75, 1.0, 0.5)
 
     # Set score messages and origin.
     percent = 100.0 * frac_flagged
@@ -1871,37 +1875,74 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
 
 
 @log_qa
-def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
+def score_phaseup_spw_median_snr_for_cal(ms, field, spw, intent, median_snr, snr_threshold):
     """
-    Score the median achieved SNR for a given phase calibrator field and SpW.
-    Introduced for hifa_spwphaseup (PIPE-665).
+    Score the median achieved SNR for a given calibrator field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665, PIPE-2499).
     """
     if median_snr <= 0.3 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
-    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr_for_cal',
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw}, intent={intent})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given check source field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    intent = "CHECK"
+    if median_snr <= 0.3 * snr_threshold:
+        score = 0.7
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = 0.8
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = 0.9
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr_for_check',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw}, intent={intent})
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
@@ -2005,42 +2046,6 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
 
     return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
                        weblog_location=pqa.WebLogLocation.ACCORDION)
-
-
-@log_qa
-def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
-    """
-    Score the median achieved SNR for a given check source field and SpW.
-    Introduced for hifa_spwphaseup (PIPE-665).
-    """
-    if median_snr <= 0.3 * snr_threshold:
-        score = 0.7
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
-    elif median_snr <= 0.5 * snr_threshold:
-        score = 0.8
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
-    elif median_snr <= 0.75 * snr_threshold:
-        score = 0.9
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
-    else:
-        score = 1.0
-        shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
-
-    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
-                          metric_score=median_snr,
-                          metric_units='Median SNR')
-
-    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -2614,7 +2619,7 @@ def score_images_exist(filesdir, imaging_products_only, calimages, targetimages)
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
-def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, int]]:
+def get_line_ranges(lines: list[list[float | bool]]) -> list[tuple[int, int]]:
     """Get valid line ranges from list of line properties.
 
     Args:
@@ -2637,7 +2642,7 @@ def get_line_ranges(lines: List[List[Union[float, bool]]]) -> List[Tuple[int, in
 
 
 @log_qa
-def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+def examine_sd_edge_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: tuple[int, int] = (0, 0)) -> float:
     """Examine the existence of lines at edge channels.
 
     This function checks if there are lines that spans edge channels.
@@ -2662,7 +2667,7 @@ def examine_sd_edge_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: 
 
 
 @log_qa
-def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: Tuple[int, int] = (0, 0)) -> float:
+def examine_sd_wide_lines(line_ranges: list[tuple[int, int]], nchan: int, edge: tuple[int, int] = (0, 0)) -> float:
     """Examine the existence of wide lines.
 
     This function returns True if there is a line with the width
@@ -2698,7 +2703,7 @@ def examine_sd_wide_lines(line_ranges: List[Tuple[int, int]], nchan: int, edge: 
     return line_coverage > effective_nchan * fraction
 
 
-def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> List[Tuple[int, int]]:
+def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSReductionGroupMember') -> list[tuple[int, int]]:
     """Select deviation masks that belongs to given reduction group member.
 
     Args:
@@ -2715,7 +2720,7 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
 
-def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, ranges: List[Tuple[int, int]]) -> List[Tuple[int, int]]:
+def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
     Frequency coordinates are different between MS and image product.
@@ -2761,7 +2766,7 @@ def channel_ranges_for_image(edge: Tuple[int, int], nchan: int, sideband: int, r
 
 
 @log_qa
-def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> List[pqa.QAScore]:
+def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
     """Compute QA score based on the line detection result.
 
     QA scores are evaluated based on the line detection result for
@@ -3001,7 +3006,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
 @log_qa
 def score_sd_baseline_quality(vis: str, source: str, ant: str, vspw: str,
-                              pol: str, stat: List[tuple]) -> pqa.QAScore:
+                              pol: str, stat: list[tuple]) -> pqa.QAScore:
     """
     Return Pipeline QA score of baseline quality.
 
@@ -3802,7 +3807,7 @@ def score_renorm(result):
 
 @log_qa
 def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: GaincalResults,
-                            threshold: float = 0.1) -> List[pqa.QAScore]:
+                            threshold: float = 0.1) -> list[pqa.QAScore]:
     """
     This QA heuristic inspects the gain ratios in an X/Y gain ratio caltable
     and creates a score based on how large the deviation from one is.
@@ -3858,7 +3863,7 @@ def score_polcal_gain_ratio(session_name: str, ant_names: dict, xyratio_result: 
 
 
 @log_qa
-def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, List], threshold: float = 0.02) \
+def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: tuple[list, list], threshold: float = 0.02) \
         -> pqa.QAScore:
     """
     This QA heuristic receives gain ratio RMS corresponding to scan IDs, and
@@ -3899,7 +3904,7 @@ def score_polcal_gain_ratio_rms(session_name: str, gain_ratio_rms: Tuple[List, L
 
 @log_qa
 def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: PolcalWorkerResults, th_poor: float = 0.10,
-                         th_bad: float = 0.15) -> List[pqa.QAScore]:
+                         th_bad: float = 0.15) -> list[pqa.QAScore]:
     """
     This heuristic inspects the polarization calibrator leakage (D-terms)
     solutions caltable and create a score based on how large the deviation from
@@ -3992,7 +3997,7 @@ def score_polcal_leakage(session_name: str, ant_names: dict, leakage_result: Pol
 
 
 @log_qa
-def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> List[pqa.QAScore]:
+def score_polcal_residual_pol(session_name: str, pfg_result: dict, threshold: float = 0.001) -> list[pqa.QAScore]:
     """
     This heuristic inspects the dictionary returned by CASA's polfromgain and
     scores the residual polarization in Q and U, compared to a threshold.
@@ -4263,71 +4268,71 @@ def score_mom8_fc_image(mom8_fc_name, mom8_fc_peak_snr, mom8_10_fc_histogram_asy
 
 
 @log_qa
-def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_direction_domain_rasterscan_fail(result: SDImportDataResults) -> list[pqa.QAScore]:
     """Calculate QAScore of direction-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Direction-domain raster scan analysis failed, fallback to time-domain analysis'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_direction, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_time_domain_rasterscan_fail(result: SDImportDataResults) -> list[pqa.QAScore]:
     """Calculate QAScore of time-domain raster scan heuristics analysis failure in importdata.
 
     Args:
         result (SDImportDataResults): instance of SDImportDataResults
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Time-domain raster scan analysis issue detected. Failed to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_time, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_gap(result: SDImagingResultItem) -> list[pqa.QAScore]:
     """Calculate QAScore of gap existence in raster pattern of imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Unable to identify gap between raster map iteration'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_rgap, msg)
 
 
 @log_qa
-def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> List[pqa.QAScore]:
+def score_rasterscan_correctness_imaging_raster_analysis_incomplete(result: SDImagingResultItem) -> list[pqa.QAScore]:
     """Calculate QAScore when raster scan analysis was incomplete in imaging.
 
     Args:
         result (SDImagingResultItem): instance of SDImagingResultItem
 
     Returns:
-        List[pqa.QAScore]: list of QAScores
+        list[pqa.QAScore]: list of QAScores
     """
     msg = 'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS'
     return _score_rasterscan_correctness(result.rasterscan_heuristics_results_incomp, msg)
 
 
-def _score_rasterscan_correctness(rasterscan_heuristics_results: Dict[str, RasterScanHeuristicsResult], msg: str) -> List[pqa.QAScore]:
+def _score_rasterscan_correctness(rasterscan_heuristics_results: dict[str, RasterScanHeuristicsResult], msg: str) -> list[pqa.QAScore]:
     """Generate score of raster scan correctness of importdata or imaging.
 
     Args:
-        rasterscan_heuristics_results (Dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
+        rasterscan_heuristics_results (dict[str, RasterScanHeuristicsResult]): Dictionary of raster heuristics result objects
             treats QAScore of raster scan analysis.
         msg (str): short message for QA
 
     Returns:
-        List[pqa.QAScore]: lists contains QAScore objects.
+        list[pqa.QAScore]: lists contains QAScore objects.
     """
 
     qa_scores = []  # [pqa.QAScore]
@@ -4395,7 +4400,7 @@ def score_tsysflagcontamination_contamination_flagged(vis, summaries) -> pqa.QAS
 
 
 @log_qa
-def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QAScore]) -> List[pqa.QAScore]:
+def score_tsysflagcontamination_external_heuristic(foreign_qascores: list[pqa.QAScore]) -> list[pqa.QAScore]:
     """
     Adopt QA scores that originate from the Tsysflag line contamination
     heuristic.
@@ -4423,7 +4428,7 @@ def score_tsysflagcontamination_external_heuristic(foreign_qascores: List[pqa.QA
 
 
 @log_qa
-def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
+def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
     """
     Check state of IERS tables relative to observation date
     """
@@ -4465,6 +4470,63 @@ def score_iersstate(mses: List[MeasurementSet]) -> List[pqa.QAScore]:
 
 
 @log_qa
+def score_parallactic_angle_range(
+        mses: list[MeasurementSet],
+        intents: set[str],
+        threshold: float
+        ) -> tuple[list[pqa.QAScore], dict[str, Any]]:
+    """
+    Check that the parallactic angle coverage of the intent(s) meets the required threshold.
+
+    Args:
+        mses: a list of MeasurementSet objects
+        intents: a set containing all data intent(s) to check for
+        threshold: the minimum acceptable value of parallactic angle coverage
+
+    Returns:
+        a tuple containing a list of QA scores and a dictionary with information related to the
+         parallactic angle of the intent(s)
+    """
+    # holds list of all QA scores for this metric
+    all_scores: list[pqa.QAScore] = []
+    # holds all parallactic angle ranges for all
+    # session names, intents and calibrator names
+    all_metrics = {'sessions': {}, 'intents_found': False}
+
+    intents_present = any([intents.intersection(ms.intents) for ms in mses])
+
+    # group MSes per sessions, adding to default 'Shared' session if not
+    # defined
+    session_to_mses = collections.defaultdict(list)
+    for ms in mses:
+        session_to_mses[getattr(ms, 'session', 'Shared')].append(ms)
+
+    # Check parallactic angle for each calibrator in each session
+    for session_name, session_mses in session_to_mses.items():
+        all_metrics['sessions'][session_name] = {'min_parang_range': 360.0,
+                                                 'vis': [ms_do.name for ms_do in session_mses]}
+        for intent in intents:
+            all_metrics['sessions'][session_name][intent] = {}
+            cal_names = {cal.name
+                         for ms in session_mses
+                         for cal in ms.get_fields(intent=intent)}
+            if len(cal_names) > 0:
+                all_metrics['intents_found'] = True
+            for cal_name in cal_names:
+                parallactic_range = ous_parallactic_range(session_mses, cal_name, intent)
+                all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
+                all_metrics['sessions'][session_name]['min_parang_range'] = min(
+                    all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
+                LOG.info(f'Parallactic angle range for {cal_name} ({intent}) in session {session_name}: '
+                         f'{parallactic_range}')
+                session_scores = score_parallactic_range(
+                    intents_present, session_name, cal_name, parallactic_range, threshold
+                )
+                all_scores.extend(session_scores)
+
+    return all_scores, all_metrics
+
+
 def score_pointing_outlier(
     ms: MeasurementSet,
     pointing: bool,
@@ -4528,3 +4590,101 @@ def score_pointing_outlier(
         )
 
     return qa_scores
+
+@log_qa
+def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+    """Calculates QA score as the minimum of per-band scores based on data points outside 0.7-1.2 range.
+
+        For each band:
+        - Band QA = 1.0 - (fraction of values outside [0.7, 1.2])
+        Final QA = minimum of all band QA scores.
+
+        Args:
+            data (dict[str, list[float]]): Dictionary with band as key and list of float values.
+
+        Returns:
+            pqa.QAScore: QA score object
+        """
+
+    band_score = None
+    qascores = []
+    for band, values in data.items():
+        outliers = [v for v in values.data.flatten() if v < 0.7 or v > 1.2]
+        fraction_outside = len(outliers) / len(values.data.flatten())
+        band_score = (1 - fraction_outside)
+
+        longmsg = f"Band {band} has {fraction_outside*100:.2f}% data outside the range 0.7-1.2"
+
+        shortmsg = (f"{band}: {fraction_outside*100:.2f}% >[0.7-1.2]")
+
+
+        origin = pqa.QAOrigin(metric_name='score_syspowerdata',
+                            metric_score=band_score,
+                            metric_units='')
+
+        qascores.append(pqa.QAScore(band_score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
+
+    return qascores
+
+@log_qa
+def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
+    """Compute a QA score by comparing short and long solints for each band.
+
+    If any band has a short solint value greater than the corresponding long solint,
+    the function assigns a reduced score and includes the affected bands in the message.
+
+    Parameters:
+        short_solint: Dictionary containing bandname and corresponding short solint value.
+        long_solint: Dictionary containing bandname and corresponding long solint value.
+
+    Returns:
+        pqa.QAScore: QA score object
+    """
+    bandlist = []
+    for band in short_solint:
+        if short_solint[band] >= long_solint[band]:
+            bandlist.append(band)
+
+    if bandlist:
+        score = 0.3
+        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint"
+        shortmsg = "short solint >= long solint"
+    else:
+        score = 1
+        longmsg = "short solint < long solint"
+        shortmsg = "short solint < long solint"
+
+    origin = pqa.QAOrigin(metric_name='score_solint',
+                          metric_score=score,
+                          metric_units='')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+
+@log_qa
+def score_longsolint(context, result) -> List[pqa.QAScore]:
+    bandlist = []
+    calscantime = []
+    long_solint = result.longsolint
+    ms = context.observing_run.get_ms(result.inputs['vis'])
+
+    for scanid in context.evla['msinfo'][ms.name].calibrator_scan_select_string.split(","):
+        calscantime = [calscan.time_on_source for calscan in ms.get_scans(int(scanid))]
+    median_calscantime = np.median(calscantime)
+
+    for band in long_solint:
+        if long_solint[band] > 1.5 * median_calscantime.total_seconds():
+            bandlist.append(band)
+
+    if bandlist:
+        score = 0.3
+        longmsg = f"band {', '.join(bandlist)} has long solint > 1.5 * median calibration scan time"
+        shortmsg = "long solint > 1.5 * median calibration scan time"
+    else:
+        score = 1
+        longmsg = "long solint < 1.5 * median calibration scan time"
+        shortmsg = "long solint < 1.5 * median calibration scan time"
+
+    origin = pqa.QAOrigin(metric_name='score_longsolint',
+                          metric_score=score,
+                          metric_units='')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)

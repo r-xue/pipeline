@@ -10,8 +10,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common import commonfluxresults
-from pipeline.infrastructure.tablereader import find_EVLA_band
-from pipeline.hifv.heuristics import standard as standard
+from pipeline.hifv.heuristics import standard
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -264,7 +263,7 @@ class VLASetjyInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             field: List of field names or ids.
 
@@ -399,12 +398,7 @@ class VLASetjy(basetask.StandardTaskTemplate):
                     for spw in spws:
                         inputs.spw = spw.id
                         reference_frequency = center_frequencies[spw.id]
-                        try:
-                            EVLA_band = spw2band[spw.id]
-                        except:
-                            LOG.info('Unable to get band from spw id - using reference frequency instead')
-                            EVLA_band = find_EVLA_band(reference_frequency)
-
+                        EVLA_band = spw2band[spw.id]
                         LOG.info("Center freq for spw " + str(spw.id) + " = "
                                  + str(reference_frequency) + ", observing band = " + EVLA_band)
 
@@ -455,7 +449,10 @@ class VLASetjy(basetask.StandardTaskTemplate):
 
         spw_seen = set()
         for setjy_dict in setjy_dicts:
-            setjy_dict.pop('format')
+            try:
+                setjy_dict.pop('format')
+            except:
+                LOG.warning("'format' key not found")
             for field_id in setjy_dict:
                 setjy_dict[field_id].pop('fieldName')
                 field = self.inputs.ms.get_fields(field_id)[0]
