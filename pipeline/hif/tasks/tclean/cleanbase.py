@@ -305,7 +305,7 @@ class CleanBase(basetask.StandardTaskTemplate):
 
         if inputs.intent == 'TARGET' and inputs.specmode in ('mfs', 'cont') and inputs.stokes == 'IQUV':
             # There seems to be a tclean parallelization bug with usemask='user'
-            # and an explict mask for specmode='cont' mode (PIPE-2464)
+            # and an explict mask for specmode='cont' mode (PIPE-2464, CAS-14618)
             parallel = False
             if mpihelpers.is_mpi_ready():
                 LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV target continuum imaging (PIPE-2464).')
