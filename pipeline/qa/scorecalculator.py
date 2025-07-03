@@ -3509,7 +3509,7 @@ def detect_edge_channels(mask: np.ndarray) -> tuple[int, int]:
     # no tolerance using stddev nor MAD
     median_num_valid_pixels = np.median(num_valid_pixels)
     LOG.debug(
-        "typical number of valid pxiels %s",
+        "typical number of valid pixels %s",
         median_num_valid_pixels
     )
     threshold = median_num_valid_pixels
