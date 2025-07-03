@@ -69,7 +69,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         rows = []
         for field in sorted(set(ranges_dict.keys())):
             for spw in map(str, sorted(map(int, set(ranges_dict[field].keys())))):
-                momdiffsnr = self._get_momdiffsnr(context, result, field, spw)
+                momdiffsnr = self._get_momdiffsnr(result, field, spw)
                 plotfile = self._get_plotfile(context, result, field, spw)
                 jointmaskplot = self._get_jointmaskplot(context, result, field, spw)  # PIPE-201
 
@@ -110,9 +110,9 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         return utils.merge_td_columns(rows), rows
 
-    def _get_momdiffsnr(self, context, result, field, spw):
+    def _get_momdiffsnr(self, result, field, spw):
         momDiffSNR = result.momDiffSNRs.get((field, spw), -999.0)
-        momDiffSNR_str = utils_math.round_half_up(momDiffSNR, 2)
+        momDiffSNR_str = f'utils_math.round_half_up(momDiffSNR, 2):.2f'
         return momDiffSNR_str
 
     def _get_plotfile(self, context, result, field, spw):

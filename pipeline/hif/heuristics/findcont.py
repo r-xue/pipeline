@@ -14,8 +14,40 @@ class FindContHeuristics(object):
     def __init__(self, context):
         self.context = context
 
-    def find_continuum(self, dirty_cube, pb_cube=None, psf_cube=None, single_continuum=False, is_eph_obj=False,
-                       ref_ms_name='', nbin=1, dynrange_bw=None):
+    def find_continuum(self, dirty_cube: str, pb_cube: str | None = None, psf_cube: str | None = None,
+                       single_continuum: bool = False, is_eph_obj: bool = False,
+                       ref_ms_name: str = '', nbin: int = 1, dynrange_bw: str | None = None):
+
+        """
+        Continuum finding heuristics wrapper class. Its main input parameter is
+        the name of a dirty cube. Optional arguments are names of PB and PSF
+        cubes and a reference MS as well as some control parameters to steer the
+        findContinuum algorithm in certain ways.
+
+        Args:
+            dirty_cube (str): Name of the dirty cube to use to find continuum
+                frequency ranges
+            pb_cube (str): Name of the PB cube
+            psf_cube (str): Name of the PSF cube
+            single_continuum (bool): Flag from the observing project setup to
+                tell if an spw was meant to be a single continuum setup
+            is_eph_obj (bool): Flag to tell if the source is an ephemeris object
+            ref_ms_name (str): Name of the reference MS
+            nbin (int): Binning factor
+            dynrange_bw (str): Spectral dynamic range bandwidth
+
+        Returns:
+            cont_ranges_and_flags (dict): Dictionary of continuum ranges and
+                flags
+            png_name (str): Name of the findContinuum summary plot
+            single_range_channel_fraction (float): Ratio of number of channels
+                in single continuum range to total number of spw channels or
+                999.0 if there is more than one range
+            warning_strings (list): List of warning texts
+            joint_mask_name (str): Name of the joint mask file
+            momDiffSNR (float): momDiffSNR value
+        """
+
         with casa_tools.ImageReader(dirty_cube) as image:
             stats = image.statistics()
 
