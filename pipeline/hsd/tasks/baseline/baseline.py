@@ -22,7 +22,7 @@ from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
-from .typing import LineWindow
+from .typing import FitFunc, FitOrder, LineWindow
 
 if TYPE_CHECKING:
     from pipeline.infrastructure.api import Heuristic
@@ -98,8 +98,8 @@ class SDBaselineInputs(vdp.StandardInputs):
                  linewindowmode: Optional[str] = None,
                  edge: Optional[Tuple[int, int]] = None,
                  broadline: Optional[bool] = None,
-                 fitorder: Optional[int] = None,
-                 fitfunc: Optional[str] = None,
+                 fitfunc: Optional[FitFunc] = None,
+                 fitorder: Optional[FitOrder] = None,
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
                  deviationmask: Optional[bool] = None,
@@ -236,12 +236,24 @@ class SDBaselineInputs(vdp.StandardInputs):
                 Default: None (equivalent to True)
 
             fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline
-                ('spline' or 'cspline') or polynomial ('poly' or 'polynomial').
+                ('spline' or 'cspline'), polynomial ('poly' or 'polynomial').
+
+                Accepts:
+                - A string: Applies the same function to all spectral windows (SPWs).
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.
+
+                If an SPW ID is not present in the dictionary, 'cspline' will be used as the default.
 
                 Default: None (equivalent to 'cspline')
 
             fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how
-                much the spectrum is segmented into. If -1 is given, the task determines the order automatically.
+                much the spectrum is segmented into.
+
+                Accepts:
+                - An integer: Applies the same order to all SPWs. Valid values: -1 (automatic), 0, or any positive integer.
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.
+
+                If an SPW ID is not present in the dictionary, -1 will be used as the default, triggering automatic order selection.
 
                 Default: None (equivalent to -1)
 
@@ -452,7 +464,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         LOG.info('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         edge = inputs.edge
         broadline = inputs.broadline
-        fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
+        fitorder = 'automatic' if inputs.fitorder is None else inputs.fitorder
         fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
@@ -695,6 +707,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             result.out_mses.append(new_ms)
 
         return result
+
 
 class HeuristicsTask(object):
     """Executor for heuristics class. It is an adaptor to mpihelper framework."""
