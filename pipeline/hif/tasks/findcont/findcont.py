@@ -93,13 +93,13 @@ class FindCont(basetask.StandardTaskTemplate):
 
         # Check if this stage has been disabled for VLA (never set for ALMA)
         if inputs.context.vla_skip_mfs_and_cube_imaging:
-            result = FindContResult({}, {}, '', 0, 0, [])
+            result = FindContResult({}, {}, '', 0, 0, [], {})
             return result
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, {}, '', 0, 0, [])
+            result = FindContResult({}, {}, '', 0, 0, [], {})
             result.mitigation_error = True
             return result
 
@@ -123,7 +123,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if ms_objects_and_columns == collections.OrderedDict():
                 LOG.error('No data found for continuum finding.')
-                result = FindContResult({}, {}, '', 0, 0, [])
+                result = FindContResult({}, {}, '', 0, 0, [], {})
                 return result
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
