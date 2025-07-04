@@ -8,6 +8,7 @@ import numpy as np
 
 import pipeline.infrastructure as infrastructure
 from pipeline.h.tasks.importdata.fluxes import ORIGIN_XML, ORIGIN_ANALYSIS_UTILS
+from pipeline.h.tasks.tsyscal import tsyscal
 from pipeline.hifa.tasks.importdata.dbfluxes import ORIGIN_DB
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -325,6 +326,18 @@ def get_tsysinfo(ms, fieldnamelist, intent, spwidlist):
 
     # Get atmospheric scans associated with the field name list
     atmscans = get_scans_for_field_intent(ms, fieldnamelist, 'ATMOSPHERE')
+
+    # PIPE-2658: if no atmospheric scans were found for field of current
+    # intent, then use the Tsyscal heuristic for generating a mapping of
+    # "intent-to-Tsys-gainfield", and try to use this identify appropriate Tsys
+    # field and corresponding atmospheric scans.
+    if not atmscans:
+        intent_to_tsysfield_map = tsyscal.get_gainfield_map(ms, is_single_dish=False)
+        tsysfield = intent_to_tsysfield_map.get(intent, '')
+        # If no match was found, or the Tsys field was set to "nearest", then
+        # this approach cannot work.
+        if tsysfield and tsysfield != 'nearest':
+            atmscans = get_scans_for_field_intent(ms, [tsysfield], 'ATMOSPHERE')
 
     # If no atmospheric scans were found, and the intent specifies a phase
     # calibrator or check source, then try to find atmospheric scans associated
