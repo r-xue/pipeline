@@ -22,7 +22,7 @@ from pipeline.infrastructure.basetask import ResultsList
 
 if TYPE_CHECKING:
     from pipeline.domain.source import Source
-    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
     from pipeline.infrastructure.renderer.logger import Plot
 
@@ -32,9 +32,9 @@ LOG = logging.get_logger(__name__)
 class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer):
     """SDApplyCal Renderer class for t2_4m."""
 
-    def __init__(self, uri: str='hsd_applycal.mako',
-                 description: str='Apply calibrations from context',
-                 always_rerender: bool=False):
+    def __init__(self, uri: str = 'hsd_applycal.mako',
+                 description: str = 'Apply calibrations from context',
+                 always_rerender: bool = False):
         """Initialise the class.
 
         Args:
@@ -111,11 +111,17 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
+        for r in result:
+            vis = r.inputs['vis']
+            ms = context.observing_run.get_ms(vis)
+            amp_vs_time_summary_plots = r.amp_vs_time_summary_plots
+            amp_vs_time_subpages = r.amp_vs_time_subpages
+
         # members for parent template applycal.mako
         ctx.update({
             'amp_vs_freq_plots': [],
             'phase_vs_freq_plots': [],
-            'amp_vs_time_plots': [],
+            'sd_amp_vs_time_plots': amp_vs_time_summary_plots,
             'amp_vs_uv_plots': [],
             'phase_vs_time_plots': [],
             'corrected_to_antenna1_plots': [],
@@ -124,7 +130,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_plots': [],
             'amp_vs_freq_subpages': [],
             'phase_vs_freq_subpages': [],
-            'amp_vs_time_subpages': [],
+            'amp_vs_time_subpages': amp_vs_time_subpages,
             'amp_vs_uv_subpages': [],
             'phase_vs_time_subpages': [],
             'outliers_path_link': ''
@@ -169,9 +175,6 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
-                # scans = ms.get_scans(scan_intent='TARGET')
-                # for scan in scans:
-                #     fields.update([field.id for field in scan.fields])
                 with casa_tools.MSMDReader(result.inputs['vis']) as msmd:
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
 
@@ -219,4 +222,5 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                                               preserve_coloraxis=True)
         for plot in plots:
             plot.parameters['source'] = source
+
         return plots

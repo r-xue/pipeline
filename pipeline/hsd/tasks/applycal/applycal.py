@@ -1,21 +1,29 @@
+import collections
 import os
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 import numpy
 
+import pipeline.domain.measures as measures
+import pipeline.h.tasks.applycal.renderer as super_renderer
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain import DataType
 from pipeline.h.tasks.applycal.applycal import SerialApplycal, ApplycalInputs, ApplycalResults
+from pipeline.h.tasks.common.displays import common as common
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import task_registry
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
-    from pipeline.infrastructure import Context
     from pipeline.infrastructure import CalApplication
+    from pipeline.infrastructure.jobrequest import JobRequest
+    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -197,6 +205,7 @@ class SerialSDApplycal(SerialApplycal):
 
         # Update Tsys in datatable
         context = self.inputs.context
+
         # this task uses _handle_multiple_vis framework
         msobj = self.inputs.ms
         origin_basename = os.path.basename(msobj.origin_ms)
@@ -225,8 +234,95 @@ class SerialSDApplycal(SerialApplycal):
 
         # set unit according to applied calibration
         set_unit(msobj, results.applied)
-
         return sdresults
+
+    def analyse(self, result: SDApplycalResults) -> SDApplycalResults:
+        """Analyse results produced by prepare method.
+
+        Args:
+            result: results instance
+
+        Returns:
+            input results instance
+        """
+        context = self.inputs.context
+        result.stage_number = context.task_counter
+        amp_vs_time_summary_plots = []
+        amp_vs_time_detail_plots = []
+        amp_vs_time_subpages = []
+        (amp_vs_time_summary_plots, amp_vs_time_detail_plots, amp_vs_time_subpages) = self.create_amp_vs_time_plots(context, result)
+        result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
+        result.amp_vs_time_detail_plots = amp_vs_time_detail_plots
+        result.amp_vs_time_subpages = amp_vs_time_subpages
+        return result
+
+    def create_amp_vs_time_plots(self, context: Context, result: SDApplycalResults) -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
+        """
+        Create plots for the science targets.
+
+        MODIFIED for single dish
+
+        Args:
+            context: pipeline context
+            result: Applycal Results instance
+
+        Returns:
+            Three dictionaries of plot objects, subpage paths, and
+            max UV distances for each vis.
+        """
+        amp_vs_time_summary_plots = collections.defaultdict(dict)
+        amp_vs_time_detail_plots = {}
+        amp_vs_time_summary_plots['__hsd_applycal__'] = []
+        amp_vs_time_subpages = {}
+        vis = os.path.basename(self.inputs.vis)
+        ms = context.observing_run.get_ms(vis)
+
+        amp_vs_time_summary_plots[vis] = []
+        amp_vs_time_detail_plots[vis] = []
+        fields = [x.name for x in ms.get_fields(intent='TARGET')]
+        if len(fields) > 0:
+            # For summary plots
+            plots, href = self.sd_plots_for_result(
+                context,
+                result,
+                SingleDishPlotmsSpwComposite,
+                ['TARGET'],
+                renderer_cls=super_renderer.ApplycalAmpVsTimePlotRenderer
+            )
+
+            amp_vs_time_summary_plots[vis].append(["", plots])
+
+            # For detail plots
+            plots, href = self.sd_plots_for_result(
+                context,
+                result,
+                SingleDishPlotmsAntSpwComposite,
+                ['TARGET'],
+                renderer_cls=super_renderer.ApplycalAmpVsTimePlotRenderer
+            )
+            amp_vs_time_detail_plots[vis].append(["", plots])
+
+            # create detail pages
+            amp_vs_time_subpages[vis] = href
+
+        return amp_vs_time_summary_plots, amp_vs_time_detail_plots, amp_vs_time_subpages
+
+    def sd_plots_for_result(self, context, result, plotter_cls, intent, renderer_cls=None, **kwargs):
+
+        vis = os.path.basename(self.inputs.vis)
+        xaxis = 'time'
+        yaxis = 'amp'
+        ms = context.observing_run.get_ms(vis)
+        plotter = plotter_cls(context, result, ms, xaxis, yaxis, **kwargs)
+        plots = plotter.plot()
+
+        path = None
+        if renderer_cls is not None:
+            renderer = renderer_cls(context, result, plots)
+            with renderer.get_file() as fileobj:
+                fileobj.write(renderer.render())
+                path = renderer.path
+        return plots, path
 
 
 def set_unit(ms: 'MeasurementSet', calapp: List['CalApplication']):
@@ -277,6 +373,171 @@ def set_unit(ms: 'MeasurementSet', calapp: List['CalApplication']):
             target_columns = set(colnames) & set(['DATA', 'FLOAT_DATA', 'CORRECTED_DATA'])
             for col in target_columns:
                 tb.putcolkeyword(col, 'UNIT', data_unit)
+
+
+class SingleDishPlotmsLeaf(object):
+    """Class to execute plotms and return a plot wrapper.
+
+    Task arguments for plotms are customized for single dish usecase.
+    """
+
+    def __init__(
+        self,
+        context: 'Context',
+        result: 'SDApplycalResults',
+        ms: 'MeasurementSet',
+        xaxis: str,
+        yaxis: str,
+        spw: str = '',
+        ant: str = '',
+        **kwargs: Any
+    ) -> None:
+        """Construct SingleDishPlotmsLeaf instance.
+
+        The constructor has an API that accepts additional parameters
+        to customize plotms but currently those parameters are ignored.
+
+        Args:
+            context: Pipeline context.
+            result: SDApplycalResults instance.
+            ms: CalApplication instance.
+            xaxis: The content of X-axis of the plot.
+            yaxis: The content of Y-axis of the plot.
+            spw: Spectral window selection. Defaults to '' (all spw).
+            ant: Antenna selection. Defaults to '' (all antenna).
+        Raises:
+            RuntimeError: Invalid field selection in calapp
+        """
+        self.xaxis = xaxis
+        self.yaxis = yaxis
+        self.vis = ms.basename
+        self.spw = str(spw)
+        self.antenna = str(ant)
+        self.field = [i.name for i in ms.get_fields(intent='TARGET')]
+
+        ms = context.observing_run.get_ms(self.vis)
+        if len(self.field) == 0:
+            # failed to find field domain object with field
+            raise RuntimeError(f'No match found for field "{self.field}".')
+
+        self.antmap = dict((a.id, a.name) for a in ms.antennas)
+        if len(self.antenna) == 0:
+            self.antenna_selection = 'all'
+        else:
+            self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
+        LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
+
+        result.stage_number = context.task_counter
+        self._figroot = os.path.join(context.report_dir,
+                                     'stage%s' % result.stage_number)
+
+    def plot(self) -> List[logger.Plot]:
+        """Generate a sky calibration plot.
+
+        Return:
+            List of plot object.
+        """
+        prefix = '{ms}-{y}_vs_{x}-{ant}-spw{spw}'.format(
+            ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
+            ant=self.antenna_selection, spw=self.spw)
+        title = 'Science target: calibrated amplitude vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
+            ant=self.antenna_selection, spw=self.spw, coloraxis='field')
+        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
+
+        task = self._create_task(title, figfile)
+
+        if os.path.exists(figfile):
+            LOG.debug('Returning existing plot')
+        else:
+            try:
+                task.execute()
+                return [self._get_plot_object(figfile, task)]
+            except Exception as e:
+                LOG.error(str(e))
+                return []
+
+    def _create_task(self, title: str, figfile: str) -> 'JobRequest':
+        """Create task of CASA plotms.
+
+        Args:
+            title: Title of figure
+            figfile: Name of figure file
+        Return:
+            Instance of JobRequest.
+        """
+        field = ",".join(self.field)
+        if len(self.antenna) == 0:
+            antenna = self.antenna
+        else:
+            antenna = self.antenna + '&&&'
+
+        task_args = {'vis': self.vis,
+                     'xaxis': self.xaxis,
+                     'yaxis': self.yaxis,
+                     'ydatacolumn': 'corrected',
+                     'coloraxis': 'field',
+                     'showgui': False,
+                     'spw': self.spw,
+                     'antenna': antenna,
+                     'field': field,
+                     'title': title,
+                     'showlegend': True,
+                     'legendposition': 'exteriorRight',
+                     'plotfile': figfile
+                     }
+
+        return casa_tasks.plotms(**task_args)
+
+    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
+        """Generate parameters and return logger.Plot.
+
+        Args:
+            figfile: Name of figure file.
+            task: JobRequest object.
+
+        Return:
+            logger.Plot
+        """
+        parameters = {'vis': os.path.basename(self.vis),
+                      'ant': self.antenna_selection,
+                      'spw': self.spw}
+        return logger.Plot(figfile,
+                           x_axis='Time',
+                           y_axis='Amplitude',
+                           parameters=parameters,
+                           command=str(task))
+
+
+class SingleDishPlotmsSpwComposite(common.LeafComposite):
+    """
+    Create a PlotLeaf for each spw in the caltable or caltables.
+    """
+    # reference to the PlotLeaf class to call
+    leaf_class = SingleDishPlotmsLeaf
+
+    def __init__(self, context, result, ms: 'MeasurementSet',
+                 xaxis, yaxis, ant='', pol='', **kwargs):
+
+        spwids = [spws.id for spws in ms.get_spectral_windows()]
+        children = []
+        for spw in spwids:
+            item = self.leaf_class(context, result, ms, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, **kwargs)
+            children.append(item)
+        super().__init__(children)
+
+
+class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
+    """Class to create a PlotLeaf for each antenna and spw."""
+
+    leaf_class = SingleDishPlotmsSpwComposite
+
+    def __init__(self, context, result, ms: 'MeasurementSet', xaxis, yaxis, pol='', **kwargs):
+
+        ants = [int(i.id) for i in ms.get_antenna()]
+        children = [self.leaf_class(context, result, ms, xaxis, yaxis,
+                    ant=ant, pol=pol, **kwargs)
+                    for ant in ants]
+        super(SingleDishPlotmsAntSpwComposite, self).__init__(children)
 
 
 # Tier-0 parallelization
