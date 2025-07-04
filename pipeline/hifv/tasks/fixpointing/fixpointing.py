@@ -458,7 +458,7 @@ class FixpointingInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
         """
         self.context = context
