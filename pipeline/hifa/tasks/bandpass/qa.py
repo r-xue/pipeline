@@ -381,75 +381,96 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     vis = result.inputs["vis"]
     scores = []
     ms = context.observing_run.get_ms(vis)
-    if result.final:
-        for calapp in result.final:
-            LOG.debug(f"Processing {calapp.gaintable}")
-            try:
-                caltable = calapp.gaintable
-                LOG.debug(f"Fetching platforming QA info for MS {vis} and caltable {caltable}")
-                spw_dict = subband_qa.bandpass_platforming(ms, caltable)
-                LOG.debug(f"Spws affected by platforming {spw_dict}")
 
-                f_spw = len(spw_dict.keys())/len(ms.get_spectral_windows())
+    # Heuristics are evaluated only if the data is from BLC FDM mode
+    if "ALMA_BASELINE" in ms.correlator_name:
+        blc_fdm = True 
+    else:
+        blc_fdm = False
 
-                # Check if reference spw is impacted
-                ref_spw_impacted = False
-                if ms.get_representative_source_spw() in spw_dict.keys():
-                    ref_spw_impacted = True
+    if blc_fdm:
+        if result.final:
+            for calapp in result.final:
+                LOG.debug(f"Processing {calapp.gaintable}")
+                try:
+                    caltable = calapp.gaintable
+                    LOG.debug(f"Fetching platforming QA info for MS {vis} and caltable {caltable}")
+                    spw_dict = subband_qa.bandpass_platforming(ms, caltable)
+                    LOG.debug(f"Spws affected by platforming {spw_dict}")
 
-                if f_spw <= 0.0:
-                    score = 1.0
-                    shortmsg = "No correlator subband issues detected"
-                    longmsg = "No correlator subband issues detected"
-                else:
-                    qa_max = 0.65
-                    qa_min = 0.5
+                    f_spw = len(spw_dict.keys())/len(ms.get_spectral_windows())
+
+                    # Check if reference spw is impacted
                     ref_spw_impacted = False
-                    if ref_spw_impacted:
-                        qa_ref = 0.15
+                    if ms.get_representative_source_spw() in spw_dict.keys():
+                        ref_spw_impacted = True
+
+                    if f_spw <= 0.0:
+                        score = 1.0
+                        shortmsg = "No correlator subband issues detected"
+                        longmsg = "No correlator subband issues detected"
                     else:
-                        qa_ref = 0.0
-                    score = qa_max - (qa_max-qa_min) * f_spw - qa_ref
-                    shortmsg = "Correlator subband issues detected"
+                        qa_max = 0.65
+                        qa_min = 0.5
+                        ref_spw_impacted = False
+                        if ref_spw_impacted:
+                            qa_ref = 0.15
+                        else:
+                            qa_ref = 0.0
+                        score = qa_max - (qa_max-qa_min) * f_spw - qa_ref
+                        shortmsg = "Correlator subband issues detected"
 
-                    longmsg = f"For {ms.basename}: correlator subband issues may be affecting the following solutions: "
-                    spw_message_parts = []
-                    for spw in spw_dict.keys():
-                        part = f"Spw {spw} ({spw_dict[spw]['failure']}): " + ", ".join(spw_dict[spw]['antennas'])
-                        spw_message_parts.append(part)
-                    longmsg += "; ".join(spw_message_parts)
+                        longmsg = f"For {ms.basename}: correlator subband issues may be affecting the following solutions: "
+                        spw_message_parts = []
+                        for spw in spw_dict.keys():
+                            part = f"Spw {spw} ({spw_dict[spw]['failure']}): " + ", ".join(spw_dict[spw]['antennas'])
+                            spw_message_parts.append(part)
+                        longmsg += "; ".join(spw_message_parts)
 
-                LOG.debug(f"Creating score {longmsg} {shortmsg} {score}")
+                    LOG.debug(f"Creating score {longmsg} {shortmsg} {score}")
 
-                qascore = pqa.QAScore(
-                    score, 
-                    longmsg=longmsg, 
-                    shortmsg=shortmsg, 
-                    vis=vis,
-                    weblog_location=pqa.WebLogLocation.ACCORDION,
-                    origin=pqa.QAOrigin(
+                    qascore = pqa.QAScore(
+                        score, 
+                        longmsg=longmsg, 
+                        shortmsg=shortmsg, 
+                        vis=vis,
+                        weblog_location=pqa.WebLogLocation.ACCORDION,
+                        origin=pqa.QAOrigin(
+                            metric_name='bandpass.subband',
+                            metric_score=score,
+                        ),
+                        applies_to=pqa.TargetDataSelection(vis={vis}),
+                        )
+                    scores.append(qascore)
+                except Exception:
+                    traceback.print_exc()
+                    
+                    failing_qascore = pqa.QAScore(
+                        0.66,
+                        longmsg="Bandpass subband QA calculation failed.",
+                        shortmsg="Bandpass subband QA calculation failed.",
+                        vis=vis,
+                        origin=pqa.QAOrigin(
                         metric_name='bandpass.subband',
                         metric_score=score,
-                    ),
-                    applies_to=pqa.TargetDataSelection(vis={vis}),
+                        ),
+                        applies_to=pqa.TargetDataSelection(vis={vis}),
                     )
-                scores.append(qascore)
-            except Exception:
-                traceback.print_exc()
-                
-                failing_qascore = pqa.QAScore(
-                    0.66,
-                    longmsg="Bandpass subband QA calculation failed.",
-                    shortmsg="Bandpass subband QA calculation failed.",
-                    vis=vis,
-                    origin=pqa.QAOrigin(
-                    metric_name='bandpass.subband',
-                    metric_score=score,
-                    ),
-                    applies_to=pqa.TargetDataSelection(vis={vis}),
-                )
-                scores.append(failing_qascore)
+                    scores.append(failing_qascore)
+        else:
+            LOG.info(f"No bandpass solution found for {vis}. No subband QA score generated.")
     else:
-        LOG.info(f"No bandpass solution found for {vis}. No subband QA score generated.")
+        not_blc_qa_score = pqa.QAScore(
+            1.0,
+            longmsg="The data is not BLC FDM mode: Bandpass subband QA is not evaluated.",
+            shortmsg="Bandpass subband QA not evaluated.",
+            vis=vis,
+            origin=pqa.QAOrigin(
+            metric_name='bandpass.subband',
+            metric_score=1.0,
+            ),
+            applies_to=pqa.TargetDataSelection(vis={vis}),
+        )
+        scores.append(not_blc_qa_score)
 
     return scores
