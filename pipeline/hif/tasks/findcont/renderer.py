@@ -112,7 +112,7 @@ class T2_4MDetailsFindContRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
     def _get_momdiffsnr(self, result, field, spw):
         momDiffSNR = result.momDiffSNRs.get((field, spw), -999.0)
-        momDiffSNR_str = f'utils_math.round_half_up(momDiffSNR, 2):.2f'
+        momDiffSNR_str = f'{utils_math.round_half_up(momDiffSNR, 2):.2f}'
         return momDiffSNR_str
 
     def _get_plotfile(self, context, result, field, spw):
