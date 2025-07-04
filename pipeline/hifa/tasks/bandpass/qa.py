@@ -3,6 +3,7 @@ QA handlers for hifa_bandpass task.
 """
 
 import os
+import traceback
 
 from pipeline.extern import subband_qa
 from pipeline.infrastructure.launcher import Context
@@ -380,7 +381,6 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     vis = result.inputs["vis"]
     scores = []
     ms = context.observing_run.get_ms(vis)
-
     if result.final:
         for calapp in result.final:
             LOG.debug(f"Processing {calapp.gaintable}")
@@ -434,11 +434,22 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
                     applies_to=pqa.TargetDataSelection(vis={vis}),
                     )
                 scores.append(qascore)
-            except Exception as e:
-                # TODO: Ask about what they want to happen in this case on the ticket. 
-                LOG.warning(f"Could not calculate bandpass subband QA score for {ms.basename}: {e}")
-    #            scores.append(pqa.QAScore(0.0, longmsg="Bandpass subband QA error - no QA", shortmsg="Subband QA Error", vis=ms.basename))
+            except Exception:
+                traceback.print_exc()
+                
+                failing_qascore = pqa.QAScore(
+                    0.66,
+                    longmsg="Bandpass subband QA calculation failed.",
+                    shortmsg="Bandpass subband QA calculation failed.",
+                    vis=vis,
+                    origin=pqa.QAOrigin(
+                    metric_name='bandpass.subband',
+                    metric_score=score,
+                    ),
+                    applies_to=pqa.TargetDataSelection(vis={vis}),
+                )
+                scores.append(failing_qascore)
     else:
-        LOG.warning(f"No bandpass solution found for {ms.basename}. No subband QA score generated.")
+        LOG.info(f"No bandpass solution found for {vis}. No subband QA score generated.")
 
     return scores

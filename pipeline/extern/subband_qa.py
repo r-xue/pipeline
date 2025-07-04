@@ -1,9 +1,5 @@
-import getopt
-import sys
 import os
-import pickle
 import pathlib
-import glob
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as st
@@ -76,7 +72,7 @@ def chan_freq_from_caltable(caltable, spw) -> np.array:
     Returns the frequency (in GHz) of the specified spw channel in a caltable.
     Return array of all channel frequencies
     """
-    if not os.path.exists(caltable): 
+    if not os.path.exists(caltable):
         raise FileNotFoundError(f"Caltable {caltable} does not exist")
 
     with casa_tools.TableReader(caltable) as mytb:
@@ -93,15 +89,15 @@ def chan_freq_from_caltable(caltable, spw) -> np.array:
     return chanFreqGHz[spw]
 
 
-# Additional helper functions added by kberry, largely adapted from AU functions previously used. 
+# Additional helper functions added by kberry, largely adapted from AU functions previously used.
 def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     """
-    Returns a dict of the bandwidths of the science spectral windows, 
+    Returns a dict of the bandwidths of the science spectral windows,
     indexed by the spw id.
     """
     spws = vis.get_spectral_windows(science_windows_only=True)
     bandwidths = {}
-    for spw in spws: 
+    for spw in spws:
         bandwidths[spw.id] = float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ))
     return bandwidths
 
@@ -114,7 +110,7 @@ def antenna_names_from_caltable(caltable) -> list[str]:
         raise FileNotFoundError(f"Caltable {caltable} does not exist")
 
     mytable = os.path.join(caltable, 'ANTENNA')
-    with casa_tools.TableReader(mytable) as mytb: 
+    with casa_tools.TableReader(mytable) as mytb:
         names = mytb.getcol('NAME')  # an array
 
     return list(names)
@@ -124,7 +120,7 @@ def get_ant_ids_from_caltable(caltable) -> list[int]:
     """
     Returns a list of all unique antenna ids in the caltable
     """
-    if not os.path.exists(caltable): 
+    if not os.path.exists(caltable):
         raise FileNotFoundError(f"Caltable {caltable} does not exist")
 
     with casa_tools.TableReader(caltable) as tb:
@@ -154,7 +150,7 @@ def field_ids_from_caltable(caltable) -> list[int]:
     if not os.path.exists(caltable):
         raise FileNotFoundError(f"Caltable {caltable} does not exist")
 
-    with casa_tools.TableReader(caltable) as mytb: 
+    with casa_tools.TableReader(caltable) as mytb:
         fields = list(set(mytb.getcol('FIELD_ID')))
     return fields
 
@@ -163,7 +159,7 @@ def field_names_from_caltable(caltable) -> list[str]:
     """
     Returns a list of all unique field names in the calibration table
     """
-    if not os.path.exists(caltable): 
+    if not os.path.exists(caltable):
         raise FileNotFoundError(f"Caltable {caltable} does not exist")
 
     fields = field_ids_from_caltable(caltable)
@@ -305,6 +301,7 @@ def getInfoFromTable(vis, caltable) -> tuple[list[int], list[str], list[int], li
 
 
 def extractValues(data, vis, caltable):
+
     tabname = caltable.split('/')[-1]
     fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(vis, caltable)
 
@@ -360,11 +357,11 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
     # Added by kberry to track failing spws
     spws_affected = {}  # Format spw: SpwFailure({ant1...n}, FailureType)
 
-    pldir = pathlib.Path(output_dir).parent
+    pldir = str(pathlib.Path(output_dir).parent)
 
     # Iterate through tables
     for i, itab in enumerate(list(data.keys())):
-        LOG.debug(f"{caltable} in Platforming evaluation")
+        LOG.info(f"{caltable} in Platforming evaluation")
 
         # Get the meta data from caltable
         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(vis, caltable)
@@ -486,8 +483,8 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                     ################################
                     # Heuristics are evaluated only if the data is from BLC mode
                     # Following aoscheck, we check this by spw_bandwidth < 1.9GHz
-                    # But we need to refer to PL meta data information or other information 
-                    # to idenfity the BLC 
+                    # But we need to refer to PL meta data information or other information
+                    # to idenfity the BLC
                     ################################
                     if abs(spw_bandwidth) < 1.9e9:
                         #########################
@@ -500,11 +497,11 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                         subb_phs_sobel_rms = []
                         subb_amp_sobel_rms = []
                         if subb_num > 1:
-                            note_platform_start = vis +' '+str(ispw)+' '+iant+' '+str(ipol)+' '
+                            note_platform_start = vis + ' ' + str(ispw) + ' ' + iant + ' ' + str(ipol)+' '
                             #####################
                             # Sobel filter applied to the amp and phase 
                             #####################
-                            kernel = np.array([-1,0,1])
+                            kernel = np.array([-1, 0, 1])
                             check_phs = np.copy(bp_phs)
                             check_amp = np.copy(bp_amp)
                             sobel_phs = ndimage.convolve(check_phs[:,0], kernel, mode='constant')
@@ -1422,9 +1419,11 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
 
     return spw_affected_return
 
+
 def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
     """
-    Evaluate bandpass platforming for each ms and caltable
+    Evaluate bandpass platforming for each ms and caltable. 
+    Interface with pipeline.qa.bandpass_platforming.
 
     Args:
         ms: Measurement Set
@@ -1463,38 +1462,38 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
 
     # Structure of bandpass_library dict:
 
-    #bandpass_library[mytab][myfield][myspw][myant][mypol]['amp']=amp2
-    #bandpass_library[key1][key2][key3][key4][key5][key6]
-    #key1: table names
-    #key2: reference antenna name and field names
-    #key3: spw ID
-    #key4: bandwidth, num of channels, frequency, antennas
-    #key5: polarization, 0 and 1
-    #key6: 'amp'(original data with the PL flag applied, WVR LO checked additionally)
-    #      'phase'(original data with the PL flag applied, WVR LO checked additionally)
-    #      'amp2' (copy of the original with the PL flag only): not used for the analysis but used for plotting only
-    #      'phase2'(copy of the original with the PL flag only): not used for the analyis but used for plotting only 
-    #      'flag'
-    #Overall structure of the dictionary, for example
-    #bandpass_library.keys(['table1','table2','table3'])
-    #bandpass_library['table1'].keys(['refAnt','J0821+1234','J1234-0234'])
-    #bandpass_library['refAnt'] = 'DA41'
-    #bandpass_library['J0821+1234'].keys(['17,19,21,23'])
-    #bandpass_library['table1']['J0821+1234']['19'].keys(['bw','nchan','freq','DA41','DA42',...,])
-    #bandpass_library['table1']['J0821+1234']['19']['bw']=1.9
-    #bandpass_library['table1']['J0821+1234']['19']['nchan']=512
-    #bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
-    #bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
-    #bandpass_library['table1']['J0821+1234']['19']['DA41'].keys([0,1])
-    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0].keys(['amp','phase','amp2','phase2','flag'])
-    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['amp']=[1.01,0.92,1.03,0.97,...,0.98]
-    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['phase']=[0.15,0.12,0.10,0.23,...,0.23]
-    #bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['flag']=[0,1,1,....,0]
+    # bandpass_library[mytab][myfield][myspw][myant][mypol]['amp']=amp2
+    # bandpass_library[key1][key2][key3][key4][key5][key6]
+    # key1: table names
+    # key2: reference antenna name and field names
+    # key3: spw ID
+    # key4: bandwidth, num of channels, frequency, antennas
+    # key5: polarization, 0 and 1
+    # key6: 'amp'(original data with the PL flag applied, WVR LO checked additionally)
+    #       'phase'(original data with the PL flag applied, WVR LO checked additionally)
+    #       'amp2' (copy of the original with the PL flag only): not used for the analysis but used for plotting only
+    #       'phase2'(copy of the original with the PL flag only): not used for the analyis but used for plotting only 
+    #       'flag'
+    # Overall structure of the dictionary, for example
+    # bandpass_library.keys(['table1','table2','table3'])
+    # bandpass_library['table1'].keys(['refAnt','J0821+1234','J1234-0234'])
+    # bandpass_library['refAnt'] = 'DA41'
+    # bandpass_library['J0821+1234'].keys(['17,19,21,23'])
+    # bandpass_library['table1']['J0821+1234']['19'].keys(['bw','nchan','freq','DA41','DA42',...,])
+    # bandpass_library['table1']['J0821+1234']['19']['bw']=1.9
+    # bandpass_library['table1']['J0821+1234']['19']['nchan']=512
+    # bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
+    # bandpass_library['table1']['J0821+1234']['19']['freq']=[123.122,123.123,123.124,.....,]
+    # bandpass_library['table1']['J0821+1234']['19']['DA41'].keys([0,1])
+    # bandpass_library['table1']['J0821+1234']['19']['DA41'][0].keys(['amp','phase','amp2','phase2','flag'])
+    # bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['amp']=[1.01,0.92,1.03,0.97,...,0.98]
+    # bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['phase']=[0.15,0.12,0.10,0.23,...,0.23]
+    # bandpass_library['table1']['J0821+1234']['19']['DA41'][0]['flag']=[0,1,1,....,0]
 
     bandpass_library = {}
 
     for i, mytab in enumerate(tabkey):
-        caltable=tablelist[i]
+        caltable = tablelist[i]
         tb = table()
         tb.open(caltable)
         LOG.info(f"Bandpass subband QA processing table: {mytab}")
@@ -1551,22 +1550,22 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
                             if (myid in idx):
                                 amp2[myid] = np.nan
                                 deg2[myid] = np.nan
-                      
-                    amp3 = np.copy(amp2)
-                    deg3 = np.copy(deg2)
 
-                    for ifreq, lofreq in enumerate(WVR_LO):
-                        freq1 = lofreq - 62.5/1000.0/2.0
-                        freq2 = lofreq + 62.5/1000.0/2.0
-                        if (np.min(spw_freq) < lofreq and np.max(spw_freq) > lofreq):
-                            wvrlo_id = np.where((spw_freq > freq1) & (spw_freq < freq2))[0]
-                            amp2[wvrlo_id] = np.nan
-                            deg2[wvrlo_id] = np.nan
-                    bandpass_library[mytab][myfield][myspw][myant][mypol]['amp'] = amp2
-                    bandpass_library[mytab][myfield][myspw][myant][mypol]['phase'] = deg2
-                    bandpass_library[mytab][myfield][myspw][myant][mypol]['amp2'] = amp3
-                    bandpass_library[mytab][myfield][myspw][myant][mypol]['phase2'] = deg3
-                    bandpass_library[mytab][myfield][myspw][myant][mypol]['flag'] = myflag
+                        amp3 = np.copy(amp2)
+                        deg3 = np.copy(deg2)
+
+                        for ifreq, lofreq in enumerate(WVR_LO):
+                            freq1 = lofreq - 62.5/1000.0/2.0
+                            freq2 = lofreq + 62.5/1000.0/2.0
+                            if (np.min(spw_freq) < lofreq and np.max(spw_freq) > lofreq):
+                                wvrlo_id = np.where((spw_freq > freq1) & (spw_freq < freq2))[0]
+                                amp2[wvrlo_id] = np.nan
+                                deg2[wvrlo_id] = np.nan
+                        bandpass_library[mytab][myfield][myspw][myant][mypol]['amp'] = amp2
+                        bandpass_library[mytab][myfield][myspw][myant][mypol]['phase'] = deg2
+                        bandpass_library[mytab][myfield][myspw][myant][mypol]['amp2'] = amp3
+                        bandpass_library[mytab][myfield][myspw][myant][mypol]['phase2'] = deg3
+                        bandpass_library[mytab][myfield][myspw][myant][mypol]['flag'] = myflag
 
         tb.close()
 
