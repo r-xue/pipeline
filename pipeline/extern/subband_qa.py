@@ -1,19 +1,20 @@
+from enum import Enum
+from dataclasses import dataclass
+import matplotlib.pyplot as plt
+import numpy as np
 import os
 import pathlib
-import numpy as np
-import matplotlib.pyplot as plt
-import scipy.stats as st
 from scipy import ndimage
-from dataclasses import dataclass
-from enum import Enum
+import scipy.stats as st
 
 from casatools import table
 
 import pipeline.extern.adopted as adopted
-from pipeline.infrastructure import casa_tools
-import pipeline.infrastructure.logging as logging
 from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
+from pipeline.infrastructure import casa_tools
+import pipeline.infrastructure.logging as logging
+
 
 WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.3125, 641.6375]
 
@@ -89,7 +90,6 @@ def chan_freq_from_caltable(caltable, spw) -> np.array:
     return chanFreqGHz[spw]
 
 
-# Additional helper functions added by kberry, largely adapted from AU functions previously used.
 def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     """
     Returns a dict of the bandwidths of the science spectral windows,
@@ -140,7 +140,7 @@ def get_spws_from_table(caltable) -> list[int]:
     with casa_tools.TableReader(caltable) as tb:
         table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
     caltable_spws = sorted([int(spw) for spw in table_spws])
-    return caltable_spws 
+    return caltable_spws
 
 
 def field_ids_from_caltable(caltable) -> list[int]:
@@ -365,32 +365,46 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
 
         # Get the meta data from caltable
         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(vis, caltable)
+
         # Construct the multidimensional array containing the bandpass solution (amp and phase) from bandpass dict and caltable
         # Bandpass_{amp/phase}[spwid][antid][polz]
         bandpass_phase, bandpass_amp, bandpass_phase2, bandpass_amp2, bandpass_flag = extractValues(data, vis, caltable)
 
-        # Create the output files
-        outfile_name = os.path.join(output_dir, f"{itab}_platform.txt")
-        outfile_val_name = os.path.join(output_dir, f"{vis}_platform_value.txt")
-        outfile_flag_name = os.path.join(output_dir, f"{vis}_flagging.txt")
-
-        outfile = open(outfile_name, "w")
-        outfile_val = open(outfile_val_name, "w")
-        outfile_flag = open(outfile_flag_name, "w")
-
         # Bandpass calibrator field name
         fieldname = list(data[itab].keys())[1]
+
+        # Pre-compute the atmospheric model per spw to avoid repeating the calculation per-antenna
+        atm_cache = {}
+
+        for spwid in spwIds:
+            spw_bandwidth = data[itab][fieldname][spwid]['bw']
+            if abs(spw_bandwidth) < 1.9e9:
+                spw_freq = data[itab][fieldname][spwid]['freq']
+                chans = range(len(spw_freq))
+                LOG.info(f"Caching atm for {spwid}")
+                frequency, channel, transmission, Tebbsky, tau = adopted.CalcAtmosphere(chans, spw_freq, pwv)
+                atm_cache[spwid] = {
+                    "frequency": frequency,
+                    "channel": channel,
+                    "transmission": transmission,
+                    "Tebbsky": Tebbsky,
+                    "tau": tau,
+                }
 
         # Taking statistical summary values for heuristics
         # per spw, ant, and pol
         spwIds = get_spws_from_table(caltable)
         antennaNames = antenna_names_from_caltable(caltable)
 
-        # Appended string containing the heuristics values 
-        note_platform_start = ''
-        # Appended string containing the flagging commands
-        flagnote = ''
+        # Store information which needs to be written to files:
 
+        # Appended string containing the heuristics values
+        note_platform_start_formatted_strings = []
+
+        # Appended string containing the flagging commands
+        flagnote_formatted_strings = []
+
+        note_platform_formatted_strings = []
         ##############################
         # Heurstics evaluation is done per ant, per spw, per pol
         # Therefore we loop through antennas, spwids, polz
@@ -398,13 +412,9 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
 
         # Loop 1: antenna
         for j, iant in enumerate(antennaNames):
-            note_platform_start = ''
-            flagnote = ''
 
             # Loop 2: spw
             for k, ispw in enumerate(spwIds):
-                note_platform_start += ' '
-                flagnote = ' '
                 #################################
                 # naming plot files
                 # bandpass amp   pol0 pol1
@@ -426,15 +436,24 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                 subb_nchan = int(spw_nchan / subb_num)  # Number of channels per subband
 
                 ################################
-                # now generating atmospheric transmission model using median pwv value
+                # Generating or using the pre-computed atmospheric transmission model using median pwv value
                 # this has two purposes
                 # 1. the heuristics skips if the subband center frequency is within the frequency range (+/-2FWMH) affected by atmpospheric absorption line
                 # 2. the heuristics skips if the transmisison value is less than 0.3 at the subband center frequency even if the subband center frequency is 
                 #   outside the atmopspheric absorptione line
                 ###############################
                 if abs(spw_bandwidth) < 1.9e9:
-                    chans = range(len(spw_freq))
-                    frequency, channel, transmission, Tebbsky, tau = adopted.CalcAtmosphere(chans, spw_freq, pwv)
+                    # Use the cached atmsophere transmission model if it exists. 
+                    if ispw in atm_cache:
+                        print(f"Using cached atm for {ispw}")
+                        atm = atm_cache[ispw]
+                        frequency, channel, transmission, Tebbsky, tau = (
+                            atm[elt] for elt in ['frequency', 'channel', 'transmission', 'Tebbsky', 'tau']
+                        )
+                    else:
+                        print(f"Recalculating atm for {ispw}")
+                        chans = range(len(spw_freq))
+                        frequency, channel, transmission, Tebbsky, tau = adopted.CalcAtmosphere(chans, spw_freq, pwv)
                     centers, scales = fitAtmLines(transmission, spw_freq)  # FWHM=2xscale
                     bounds = []
                     for b in range(len(centers)):
@@ -449,7 +468,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                 for ipol in range(2):
                     note_platform_start = ''
                     flagnote = ''
-                
+
                     # This is a container to keep the value: value[i+4]-value[i]
                     bp_amp_diff = []
                     bp_phs_diff = []
@@ -463,14 +482,13 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                     bp_amp2 = (bandpass_amp2[k][j][ipol])
 
                     for ichan in range(spw_nchan-4):
-                      if bp_amp[ichan+4] > 0.0:
-                        bp_amp_diff.append(bp_amp[ichan+4]-bp_amp[ichan])
-                        bp_phs_diff.append(bp_phs[ichan+4]-bp_phs[ichan])
+                        if bp_amp[ichan+4] > 0.0:
+                            bp_amp_diff.append(bp_amp[ichan+4]-bp_amp[ichan])
+                            bp_phs_diff.append(bp_phs[ichan+4]-bp_phs[ichan])
                     bp_amp_rms = min(np.nanstd(bp_amp_diff), np.nanstd(bp_amp))
                     bp_phs_rms = min(np.nanstd(bp_phs_diff), np.nanstd(bp_phs))  # Median of all values !=0
                     
                     note_platform = ''
-                    this_note_platform = ''
                     note_platform_phsrms = ''
                     note_platform_amprms = ''
                     note_platform_phsjump = ''
@@ -483,8 +501,8 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                     ################################
                     # Heuristics are evaluated only if the data is from BLC mode
                     # Following aoscheck, we check this by spw_bandwidth < 1.9GHz
-                    # But we need to refer to PL meta data information or other information
-                    # to idenfity the BLC
+                    # This heuristic is only run from the hifa_bandpass qa when
+                    # the data is from BLC FDM mode.
                     ################################
                     if abs(spw_bandwidth) < 1.9e9:
                         #########################
@@ -497,9 +515,9 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                         subb_phs_sobel_rms = []
                         subb_amp_sobel_rms = []
                         if subb_num > 1:
-                            note_platform_start = vis + ' ' + str(ispw) + ' ' + iant + ' ' + str(ipol)+' '
+                            note_platform_start = vis + ' ' + str(ispw) + ' ' + iant + ' ' + str(ipol) + ' '
                             #####################
-                            # Sobel filter applied to the amp and phase 
+                            # Sobel filter applied to the amp and phase
                             #####################
                             kernel = np.array([-1, 0, 1])
                             check_phs = np.copy(bp_phs)
@@ -617,40 +635,40 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                                 # check, the subband is either the first or the last subband
                                 #############################
                                 elif (isubb == 0 or isubb == subb_num - 1):
-                                        ############################
-                                        # check if the standard deviation of the Sobel filtered value is 10 x larger than
-                                        # the median value of the subbands with the Sobel filtered phase value
-                                        ############################
-                                        if (np.nanstd(sobel_phs[(isubb * subb_nchan):((isubb + 1) * subb_nchan)]) > 10.0 * subb_phs_sobel_rms_med):
-                                            yesorno = 'YES'
-                                            ###########################
-                                            # this verbose message, which can be skipped for PL
-                                            ###########################
-                                            this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
-                                            note_platform += (this_note_platform+'\n')
-                                            add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
-                                            #########################
+                                    ############################
+                                    # check if the standard deviation of the Sobel filtered value is 10 x larger than
+                                    # the median value of the subbands with the Sobel filtered phase value
+                                    ############################
+                                    if (np.nanstd(sobel_phs[(isubb * subb_nchan):((isubb + 1) * subb_nchan)]) > 10.0 * subb_phs_sobel_rms_med):
+                                        yesorno = 'YES'
+                                        ###########################
+                                        # this verbose message, which can be skipped for PL
+                                        ###########################
+                                        this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
+                                        note_platform += (this_note_platform+'\n')
+                                        add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
+                                        #########################
 
-                                            #########################
-                                            # this list contains the frequency range of the affected subband
-                                            # it is necessary for plotting
-                                            #########################
-                                            this_flagchan_range = [spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
-                                            flagchan_range_phs.append(this_flagchan_range)
-                                            ###########################
+                                        #########################
+                                        # this list contains the frequency range of the affected subband
+                                        # it is necessary for plotting
+                                        #########################
+                                        this_flagchan_range = [spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
+                                        flagchan_range_phs.append(this_flagchan_range)
+                                        ###########################
 
                             #######################
                             # this string is important and appends the heuristics values for each heuristics
                             #######################
                             note_platform_phsrms = 'Platform(HighPhaseRMS)'+' '+yesorno+' max phs RMS: '+"%.6f"%(maxvalue)+' degrees'+' subb median RMS: '+"%.6f"%(subb_phs_rms_med)+' degrees'+' ' 
-                            note_platform_start += note_platform_phsrms 
+                            note_platform_start += note_platform_phsrms
                             #######################
 
                             ######################
                             # Heuristics 2: find the subband with anomalously large amplitude RMS   
                             ######################
 
-                            #estimate the median value of the subband RMS by excluding the largest value
+                            # estimate the median value of the subband RMS by excluding the largest value
                             subb_amp_rms_sort = np.sort(subb_amp_rms)
                             subb_amp_rms_med = np.nanmedian(subb_amp_rms_sort[:-1])
                             subb_amp_sobel_rms_sort = np.sort(subb_amp_sobel_rms)
@@ -759,7 +777,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                             # This string is important and appends the heuristics values for each heuristics
                             #######################
                             note_platform_amprms = 'Platform(HighAmplitudeRMS)'+' '+yesorno+' max amp RMS: '+"%.6f"%(maxvalue)+' amp'+' subb median RMS: '+"%.6f"%(subb_amp_rms_med)+ ' amp'+' ' 
-                            note_platform_start += note_platform_amprms 
+                            note_platform_start += note_platform_amprms
                             #######################
 
                             ######################
@@ -1011,7 +1029,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                             # this string is important and appends the heuristics values for each heuristics
                             #######################
                             note_platform_phsjump = 'Platform(PhaseJump)'+' '+yesorno+' max phs Jump: '+"%.6f"%(maxvalue)+' degree'+' max phs Step: '+"%.6f"%(maxvalue_ch)+' degree'+'  subb diff RMS: '+"%.6f"%(bp_phs_rms)+ ' degree'+' ' 
-                            note_platform_start += note_platform_phsjump 
+                            note_platform_start += note_platform_phsjump
                             #######################
 
                             ######################
@@ -1181,7 +1199,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                                     this_note_platform = ' QA0_Platforming  amplitude subband: ' + str(subb_num-1) +' Spw '+str(ispw)+' Ant '+iant+'  '+"%9.6f"%freq_max + ' GHz   P: '+str(ipol)+' BB:'+' TBD'+ \
                                                         ' sigmas: ' +"%.1f"%(subb_jump/bp_amp_rms)+ ' '+"%.1f"%(ch_step/bp_amp_rms)
                                     note_platform += (this_note_platform+'\n')
-                                    add_spw_failures(spws_affected, ispw, iant, FailureType.AMP)
+                                    add_spw_failure(spws_affected, ispw, iant, FailureType.AMP)
 
                                     #########################
                                     # this list contains the frequency range of the affected subband
@@ -1335,6 +1353,9 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                             note_platform_start += note_platform_subbspk
                             note_platform_start += '\n'
 
+                            note_platform_start_formatted_strings.append(note_platform_start)
+                            note_platform_formatted_strings.append(note_platform)
+
                             #############################
                             # aggregate the outlier note
                             #############################
@@ -1346,7 +1367,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                             ############################
                             if 'YES' in flag_note_oneline:
                                 flagnote += "# mode='manual' antenna='"+iant+"' spw='"+str(ispw)+"' pol='"+str(ipol)+"' reason='BP platforming'"+"\n"
-                        
+                                flagnote_formatted_strings.append(flagnote)
                         
                         ####################### 
                         # plotting
@@ -1377,39 +1398,47 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                                     ax3.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
                         else:
-                           amp_range=np.max(bp_amp2)-np.min(bp_amp2)
-                           amargin=amp_range*0.1
-                           transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
-                           pcolor='green'
-                           ax2.plot(spw_freq,bp_amp2,color=pcolor)
-                           ax2.plot(spw_freq,transmission2,color='black',alpha=0.5)
-                           ax2.set_ylabel('amplitude')
-                           ax2.set_xlabel('frequency [GHz]')
-                           ax2.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                           if (len(flagchan_range_amp)>0):
-                             for p in range(len(flagchan_range_amp)):
-                                ax2.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
-                                ax2.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
-                           ax4.plot(spw_freq,bp_phs2,color=pcolor)
-                           ax4.set_ylabel('degree')
-                           ax4.set_xlabel('frequency [GHz]')
-                           ax4.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                           if (len(flagchan_range_phs)>0):
-                             for p in range(len(flagchan_range_phs)):
-                                ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
-                                ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
-
-                    outfile.write(note_platform)
-                    outfile_val.write(note_platform_start)
-                    outfile_flag.write(flagnote)
+                            amp_range=np.max(bp_amp2)-np.min(bp_amp2)
+                            amargin=amp_range*0.1
+                            transmission2=(transmission-1.0)*0.1+np.max(bp_amp2)+amargin
+                            pcolor='green'
+                            ax2.plot(spw_freq,bp_amp2,color=pcolor)
+                            ax2.plot(spw_freq,transmission2,color='black',alpha=0.5)
+                            ax2.set_ylabel('amplitude')
+                            ax2.set_xlabel('frequency [GHz]')
+                            ax2.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                            if (len(flagchan_range_amp)>0):
+                                for p in range(len(flagchan_range_amp)):
+                                    ax2.hlines(y=np.max(bp_amp2)*1.05,xmin=flagchan_range_amp[p][0], xmax=flagchan_range_amp[p][1],color='black', linewidth=4)
+                                    ax2.axvspan(flagchan_range_amp[p][0], flagchan_range_amp[p][1],color='black', alpha=0.4)
+                            ax4.plot(spw_freq,bp_phs2,color=pcolor)
+                            ax4.set_ylabel('degree')
+                            ax4.set_xlabel('frequency [GHz]')
+                            ax4.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
+                            if (len(flagchan_range_psf)>0):
+                                for p in range(len(flagchan_range_phs)):
+                                    ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
+                                    ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
 
                 plt.savefig(figure_path)
                 plt.close()
-               
-        outfile.close()
-        outfile_val.close()
-        outfile_flag.close()
 
+    # Create the output files
+    outfile_name = os.path.join(output_dir, f"{itab}_platform.txt")
+    outfile_val_name = os.path.join(output_dir, f"{vis}_platform_value.txt")
+    outfile_flag_name = os.path.join(output_dir, f"{vis}_flagging.txt")
+   
+    # Write information logged to files
+    with open(outfile_name, "w") as outfile:
+        outfile.write("\n".join(note_platform_formatted_strings))
+
+    with open(outfile_val_name, "w") as outfile_val:
+        outfile_val.write("\n".join(note_platform_start_formatted_strings))
+
+    with open(outfile_flag_name, "w") as outfile_flag:
+        outfile_flag.write("\n".join(flagnote_formatted_strings))
+
+    # Reformat and return spws_affected as a dict
     spw_affected_return = {}
     for spw_id, failure in spws_affected.items():
         spw_affected_return[spw_id] = {
@@ -1420,23 +1449,17 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
     return spw_affected_return
 
 
-def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
+def setup_bandpass_dict(ms: MeasurementSet, caltable: str) -> dict:
     """
-    Evaluate bandpass platforming for each ms and caltable. 
-    Interface with pipeline.qa.bandpass_platforming.
+    Setup the bandpass dict structure used for analysis.
 
     Args:
         ms: Measurement Set
         caltable: bandpass table
 
     Returns:
-        dict: bandpass platforming results for each ms and caltable
+        dict: bandpass dict for  ms and caltable
     """
-    output_dir = "bandpass_subband_qa"
-    if not os.path.exists(output_dir):
-        os.mkdir(output_dir)
-
-    # Pull out table name and associated ms name
     vislist = []
     tabkey = []
     tablelist = []
@@ -1456,9 +1479,9 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
             tablelist.append(os.path.abspath('./' + mytab))             # bandpass table paths 
         tb.close()
 
-    LOG.info(f"tabkey: {tabkey}")
-    LOG.info(f"vislist: {vislist}")
-    LOG.info(f"tablelist: {tablelist}")
+    LOG.debug(f"tabkey: {tabkey}")
+    LOG.debug(f"vislist: {vislist}")
+    LOG.debug(f"tablelist: {tablelist}")
 
     # Structure of bandpass_library dict:
 
@@ -1496,15 +1519,15 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
         caltable = tablelist[i]
         tb = table()
         tb.open(caltable)
-        LOG.info(f"Bandpass subband QA processing table: {mytab}")
+        LOG.info(f"Bandpass subband QA, processing table: {mytab}")
         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(ms.name, caltable)
         bandpass_library[mytab] = {}
 
         tmp = tb.getcol('ANTENNA2')
         _ = st.mode(tmp)
         refAnt = antennaNames[np.bincount(tb.getcol('ANTENNA2')).argmax()]
-        LOG.info(f"FieldNames {fieldNames}")
-        LOG.info(f"RefAnt: {refAnt}")
+        LOG.debug(f"FieldNames {fieldNames}")
+        LOG.debug(f"RefAnt: {refAnt}")
         bandpass_library[mytab]['RefAnt'] = refAnt
 
         # Check bandwidth and nchan
@@ -1512,12 +1535,12 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
         LOG.debug(f"Spw bandwidths: {spw_bandwidth}")
 
         for j, myfield in enumerate(fieldNames):
-            LOG.info(f"Processing field: {myfield}")
+            LOG.debug(f"Processing field: {myfield}")
             myfieldid = fieldIds[j]
             bandpass_library[mytab][myfield] = {}
 
             for m, myspw in enumerate(spwIds):
-                LOG.info(f"Processing spw: {myspw}")
+                LOG.debug(f"Processing spw: {myspw}")
 
                 bandpass_library[mytab][myfield][myspw] = {}
                 spw_nchan = nchan_from_caltable(caltable, myspw)
@@ -1531,10 +1554,7 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
                     myantid = antIds[k]
                     mytb = tb.query('FIELD_ID == ' + str(myfieldid) + ' AND SPECTRAL_WINDOW_ID == ' + str(myspw) + ' AND ANTENNA1 == '+str(myantid))
                     gain = mytb.getcol('CPARAM')
-                    err = mytb.getcol('PARAMERR')
-                    time = mytb.getcol('TIME')
                     flag = mytb.getcol('FLAG')
-                    snr = mytb.getcol('SNR')
                
                     for mypol in range(len(gain)):
                         bandpass_library[mytab][myfield][myspw][myant][mypol] = {}
@@ -1568,7 +1588,31 @@ def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
                         bandpass_library[mytab][myfield][myspw][myant][mypol]['flag'] = myflag
 
         tb.close()
+        return bandpass_library
 
+
+def bandpass_platforming(ms: MeasurementSet, caltable) -> dict:
+    """
+    Evaluate bandpass platforming for each ms and caltable. 
+    Interface with pipeline.qa.bandpass_platforming.
+
+    Args:
+        ms: Measurement Set
+        caltable: bandpass table
+
+    Returns:
+        dict: bandpass platforming results for each ms and caltable
+    """
+    # Create the dictionary structure used by the main analysis loop
+    bandpass_library = setup_bandpass_dict(ms, caltable)
+
+    # Create output directory for heuristics-related plots and logfiles
+    output_dir = "bandpass_subband_qa"
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    # Evaluate the bandpass platforming qa heuristics 
     spws_affected = evalPerAntBP_Platform(bandpass_library, ms.name, output_dir, caltable)
+
     return spws_affected
 
