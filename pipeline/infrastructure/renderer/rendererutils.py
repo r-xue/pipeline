@@ -1,7 +1,7 @@
 import html
 import itertools
 import os
-from typing import List, Optional, Union
+from typing import Any, Iterable, List, Union
 
 import numpy as np
 
@@ -9,9 +9,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation, scores_with_location
-
-from typing import Any
+from pipeline.infrastructure.pipelineqa import QAScore
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -451,3 +449,27 @@ def summarise_fields(fields: str) -> str:
 
     field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
     return field_str
+
+
+def get_multiple_line_string(values: Iterable[Any], str_format: str = '{}', separator: str = '<br>') -> str:
+    """Formats a sequence of values into a single delimited string.
+
+    Args:
+        values: An iterable of values to be formatted and joined.
+        str_format: A format string to apply to each value. Defaults to '{}'.
+        separator: The string used to join the formatted values.
+            Defaults to '<br>'.
+
+    Returns:
+        A single string containing the formatted and joined values, or an
+        empty string if the input iterable is empty.
+
+    Example:
+        >>> items = ['apple', 'banana', 'cherry']
+        >>> get_multiple_line_string(items, str_format='- {}')
+        '- apple<br>- banana<br>- cherry'
+    """
+    if not values:
+        return ''
+
+    return separator.join(str_format.format(value) for value in values)

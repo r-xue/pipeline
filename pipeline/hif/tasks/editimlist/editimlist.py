@@ -310,7 +310,7 @@ class EditimlistInputs(vdp.StandardInputs):
 
         """
 
-        super(EditimlistInputs, self).__init__()
+        super().__init__()
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
@@ -370,7 +370,7 @@ class Editimlist(basetask.StandardTaskTemplate):
     #   See h/cli/utils.py and infrastructure/argmagger.py
     Inputs = EditimlistInputs
 
-    # TODO:  check to see if I should set this to False
+    # hif_editimlist is a multi-vis task which operates over multiple MSs.
     is_multi_vis_task = True
 
     def prepare(self):
@@ -771,10 +771,7 @@ class Editimlist(basetask.StandardTaskTemplate):
 
         try:
             if imlist_entry['field']:
-                if result.img_mode == 'VLASS-SE-CUBE':
-                    result = th.add_vlasscube_targets(result, imlist_entry, self.inputs.vlass_plane_reject_ms)
-                else:
-                    result.add_target(imlist_entry)
+                result.add_target(imlist_entry, self.inputs)
             else:
                 raise TypeError
         except TypeError:

@@ -3,43 +3,8 @@
 rsc_path = "../"
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer.rendererutils import get_multiple_line_string
 
-from typing import Sequence, Any
-
-def get_multiple_line_string(
-    targets: Sequence[dict[str, Any]], 
-    key: str, 
-    str_format: str = '{}',
-    separator: str = '<br>'
-) -> str:
-    """Convert a list of dictionaries to a formatted multi-line string.
-    
-    Extracts values from each dictionary using the specified key and formats them
-    into a single string with customizable separators and formatting.
-    
-    Args:
-        targets: Sequence of dictionaries to extract values from
-        key: Dictionary key to extract values from each target
-        str_format: Format string for each value (e.g., '{:.2%}' for percentages)
-        separator: String to join formatted values (default: '<br>' for HTML)
-        
-    Returns:
-        Formatted string with each value on a separate line
-        
-    Examples:
-        >>> data = [{'name': 'Alice', 'score': 0.95}, {'name': 'Bob', 'score': 0.87}]
-        >>> get_multiple_line_string(data, 'name')
-        'Alice<br>Bob'
-        >>> get_multiple_line_string(data, 'score', '{:.1%}')
-        '95.0%<br>87.0%'
-        >>> get_multiple_line_string(data, 'name', separator='\\n')
-        'Alice\\nBob'
-    """
-    if not targets:
-        return ''
-
-    formatted_values = [str_format.format(target[key]) for target in targets]
-    return separator.join(formatted_values)
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -63,7 +28,8 @@ targets=result[0].targets
     <p>There are no clean targets.</p>
 %else:
     <%
-    # targets only contain 1 element execept vlass-se-cube
+    # targets only contain 1 element for all existing workflows,  execept vlass-se-cube, 
+    # where it can contain multiple elements, one for each plane.
     target = targets[0]
     %>
     <div class="table-responsive">
@@ -75,7 +41,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>Image name (per plane)</strong></td>
-                <td>${get_multiple_line_string(targets, 'imagename')}</td>                
+                <td>${get_multiple_line_string([target['imagename'] for target in targets])}</td>                
             %else:
                 <td><strong>Image name</strong></td>
                 <td>${os.path.basename(target['imagename'])}</td>
@@ -96,7 +62,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>spw (per plane)</strong></td>
-                <td>${get_multiple_line_string(targets, 'spw')}</td>  
+                <td>${get_multiple_line_string([target['spw'] for target in targets])}</td>  
             %else:
                 <td><strong>spw</strong></td>
                 <td>${target['spw']}</td>
@@ -105,7 +71,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>reffreq (per plane)</strong></td>
-                <td>${get_multiple_line_string(targets, 'reffreq')}</td> 
+                <td>${get_multiple_line_string([target['reffreq'] for target in targets])}</td> 
             %else:
                 <td><strong>reffreq</strong></td>
                 <td>${target['reffreq']}</td>
@@ -114,7 +80,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>flagpct (per plane)</strong></td>
-                <td>${get_multiple_line_string(targets, 'flagpct', str_format='{:.2%}')}</td>
+                <td>${get_multiple_line_string([target['misc']['flagpct'] for target in targets], str_format='{:.2%}')}</td>
             %endif
         </tr>        
         <%
@@ -136,7 +102,7 @@ targets=result[0].targets
             <td>${len(target['field'].split(','))}</td>
         </tr>           
         %for key in target.keys():
-            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask', 'flagpct'):
+            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask', 'misc'):
                 <tr>
                     <td><strong>${key}</strong></td>
                     <td>${target[key]}</td>

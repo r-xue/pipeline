@@ -335,12 +335,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         # as the ImageItem instance 'metadata' attribute.
         for idx, tclean_result in enumerate(result.results):
             target = result.targets[idx]
-            imaging_metadata = {'keep': False,
-                                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
-                                'flagpct': target['flagpct'],
-                                'spw': target['spw'],
-                                'freq': float(target['reffreq'].replace('GHz', '')),
-                                'beam': [None, None, None]}
+            imaging_metadata = {
+                'keep': False,
+                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
+                'flagpct': target['misc']['flagpct'],
+                'spw': target['spw'],
+                'freq': float(target['reffreq'].replace('GHz', '')),
+                'beam': [None, None, None],
+            }
 
             if isinstance(tclean_result.image, str):
                 ext = '.tt0' if tclean_result.multiterm else ''

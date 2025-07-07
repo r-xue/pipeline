@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import copy
 import fnmatch
@@ -8,14 +10,13 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import List, Optional, Union
+from typing import List, Optional, Union, TYPE_CHECKING
 
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
-from casatasks.private.imagerhelpers.imager_parallel_continuum import \
-    PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -26,8 +27,12 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
 from pipeline.infrastructure import casa_tools, logging
-from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
-                                                      refcode_to_skyframe)
+from pipeline.infrastructure.utils.conversion import phasecenter_to_skycoord, refcode_to_skyframe
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.vdp import StandardInputs
+    from pipeline.hif.tasks.makeimlist import CleanTarget
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -2534,5 +2539,20 @@ class ImageParamsHeuristics(object):
         Returns:
             float: The multiplier for the nfrms-based threshold.
 
+        """
+        return None
+
+    def get_subtargets(self, cleantarget: CleanTarget, inputs: StandardInputs) -> list[CleanTarget] | None:
+        """Derive sub-targets from the original clean target.
+
+        Processes the original CleanTarget specification to generate sub-targets, e.g. for individual fine-grained selected
+        frequency ranges or pointings from the original CleanTarget planning.
+
+        Args:
+            cleantarget: The original clean target object to process.
+            inputs: Pipeline Task Input object.
+
+        Returns:
+            List containing sub-targets or None values if none found.
         """
         return None
