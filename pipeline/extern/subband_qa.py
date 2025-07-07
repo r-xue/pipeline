@@ -1415,7 +1415,7 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
                             ax4.set_ylabel('degree')
                             ax4.set_xlabel('frequency [GHz]')
                             ax4.set_xlim(np.min(spw_freq)-margin,np.max(spw_freq)+margin)
-                            if (len(flagchan_range_psf)>0):
+                            if (len(flagchan_range_phs)>0):
                                 for p in range(len(flagchan_range_phs)):
                                     ax4.hlines(y=np.max(bp_phs2)*1.05,xmin=flagchan_range_phs[p][0], xmax=flagchan_range_phs[p][1],color='black', linewidth=4)
                                     ax4.axvspan(flagchan_range_phs[p][0], flagchan_range_phs[p][1],color='black', alpha=0.4)
