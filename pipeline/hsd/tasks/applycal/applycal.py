@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, List, Optional, Union
 import numpy
 
 import pipeline.extern.sd_applycal_qa.sd_applycal_qa as sd_applycal_qa
+import pipeline.extern.sd_applycal_qa.sd_qa_reports as sd_qa_reports
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
@@ -255,14 +256,29 @@ class SerialSDApplycal(SerialApplycal):
             os.makedirs(stage_dir)
 
         if self.inputs.ms.antenna_array.name == 'ALMA':
+            applycal_qa_dir = './sd_applycal_output'
+            if not os.path.exists(applycal_qa_dir):
+                os.makedirs(applycal_qa_dir)
             qa_result = sd_applycal_qa.get_ms_applycal_qascores(
                 msNames=[ms_name],
+                plot_output_path=applycal_qa_dir,
                 weblog_output_path=stage_dir,
             )
             qascore_list, plots_fnames, qascore_per_scan_list = qa_result
             qascore_list_all_scans = [
                 x for x in qascore_list if "all" in x.applies_to.scan
             ]
+            sd_qa_reports.makeSummaryTable(
+                qascore_list_all_scans,
+                '',
+                plfolder=applycal_qa_dir,
+                output_file=os.path.join(applycal_qa_dir, 'qascore_summary.csv')
+            )
+            sd_qa_reports.makeQAmsgTable(
+                qascore_list_all_scans,
+                plfolder=applycal_qa_dir,
+                output_file=os.path.join(applycal_qa_dir, 'qascores_details.csv')
+            )
             valid_plots_fnames = [x for x in plots_fnames if x != "N/A"]
             results.xy_deviation_score.extend(qascore_list_all_scans)
             results.xy_deviation_plots.extend(valid_plots_fnames)
