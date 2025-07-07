@@ -222,19 +222,15 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         LOG.info("The pipeline will use antenna(s) " + refAnt + " as the reference")
 
-        if os.path.exists(gtypecaltable):
-            for band, spwlist in band2spw.items():
-                LOG.info("Executing G-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
-                self._do_gtype_delaycal(caltable=gtypecaltable, refAnt=refAnt, spwlist=spwlist)
-        else:
-            LOG.warning(f"{gtypecaltable} not found, skipping G-type delaycal")
-        if os.path.exists(gtypecaltable):
-            for band, spwlist in band2spw.items():
-                LOG.info("Executing K-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
-                self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable, refAnt=refAnt,
-                                        spw=','.join(spwlist))
-        else:
-            LOG.warning(f"{ktypecaltable} not found, skipping K-type delaycal")
+        for band, spwlist in band2spw.items():
+            LOG.info("Executing G-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+            self._do_gtype_delaycal(caltable=gtypecaltable, refAnt=refAnt, spwlist=spwlist)
+
+        for band, spwlist in band2spw.items():
+            LOG.info("Executing K-type delaycal for band {!s}  spws: {!s}".format(band, ','.join(spwlist)))
+            self._do_ktype_delaycal(caltable=ktypecaltable, addcaltable=gtypecaltable, refAnt=refAnt,
+                                    spw=','.join(spwlist))
+
         LOG.info("Delay calibration complete")
 
         # Do initial gaincal on BP calibrator then semi-final BP calibration
