@@ -1792,9 +1792,10 @@ class SDImaging(basetask.StandardTaskTemplate):
         (num_pol, num_data) = flag_summary.shape
         # PIPE-2508: fraction of data where any of polarization is flagged. (FLAG_SUMMARY is 0 for flagged data)
         # TODO: This logic should be improved in future when full polarization is supported.
-        num_flagged = len(numpy.where(flag_summary.sum(axis=0) < num_pol)[0])
+        num_flagged = numpy.count_nonzero(flag_summary.sum(axis=0) < num_pol)
         frac_flagged = num_flagged / num_data
-        LOG.debug(f'Per polarization flag summary (# of integrations): total={num_data}, flagged per pol={num_data-flag_summary.sum(axis=1)}, any pol flagged={num_flagged}')
+        LOG.debug('Per polarization flag summary (# of integrations): total=%d, flagged per pol=%s, any pol flagged=%d',
+                  num_data, num_data - flag_summary.sum(axis=1), num_flagged)
         # the actual time on source
         tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
         LOG.info('The actual on source time = {} {}'.format(tirp.t_on_act, tirp.time_unit))
