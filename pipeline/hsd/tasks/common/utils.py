@@ -1292,7 +1292,7 @@ class RGAccumulator(object):
         Args:
             field_id: A field ID.
             antenna_id: An antenna ID.
-            spw_id: A spectral windpw ID.
+            spw_id: A spectral window ID.
             pol_ids: Polarizations.
             grid_table: A grid table.
             channelmap_range: Channel map ranges.
