@@ -385,8 +385,13 @@ def _calc_subband_qa_score(spw_dict: dict, ms) -> pqa.QAScore:
     """
     Calculate the QA score for subband issues.
 
-    :param spw_dict: dictionary of spws affected by platforming
-    :return: QA score
+    Args:
+        spw_dict: dictionary of spws affected by platforming
+                 Expected structure: {spw_id: {'failure': str, 'antennas': list[str]}}
+        ms: Measurement set object
+
+    Returns:
+        QA score
     """
     # Fraction of impacted spws
     f_spw = len(spw_dict)/len(ms.get_spectral_windows())
@@ -471,7 +476,7 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     # Can't evaluate this QA score if there is no final result
     if not result.final:
         LOG.info(f"No bandpass solution found for {vis}. No subband QA score generated.")
-        return scores
+        return []
 
     # Calculate the QA score
     for calapp in result.final:
