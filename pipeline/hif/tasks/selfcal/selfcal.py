@@ -139,8 +139,8 @@ class SelfcalInputs(vdp.StandardInputs):
 
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
-    imsize = vdp.VisDependentProperty(default=None)
-    cell = vdp.VisDependentProperty(default=None)
+    hm_imsize = vdp.VisDependentProperty(default=None)
+    hm_cell = vdp.VisDependentProperty(default=None)
     apply = vdp.VisDependentProperty(default=True)
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
@@ -174,7 +174,7 @@ class SelfcalInputs(vdp.StandardInputs):
     restore_resources = vdp.VisDependentProperty(default=None)
 
     # docstring and type hints: supplements hif_selfcal
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, imsize=None, cell=None, n_solints=None,
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, hm_imsize=None, hm_cell=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
@@ -202,9 +202,9 @@ class SelfcalInputs(vdp.StandardInputs):
 
                 default="cont.dat"
 
-            imsize: Image X and Y size in pixels or PB level for single fields.
+            hm_imsize: Image X and Y size in pixels or PB level for single fields.
             
-            cell: Image X and Y cell sizes     
+            hm_cell: Image X and Y cell sizes     
 
             n_solints: number of solution intervals to attempt for self-calibration. default: 4
 
@@ -290,8 +290,8 @@ class SelfcalInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.contfile = contfile
-        self.imsize = imsize
-        self.cell = cell
+        self.hm_imsize = hm_imsize
+        self.hm_cell = hm_cell
         self.apply = apply
         self.parallel = parallel
         self.recal = recal
@@ -848,8 +848,8 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
                                               spw=self.inputs.spw,
-                                              hm_imsize=self.inputs.imsize,
-                                              hm_cell=self.inputs.cell,
+                                              hm_imsize=self.inputs.hm_imsize,
+                                              hm_cell=self.inputs.hm_cell,
                                               allow_wproject=self.inputs.allow_wproject,
                                               datatype='regcal',
                                               parallel=self.inputs.parallel)
