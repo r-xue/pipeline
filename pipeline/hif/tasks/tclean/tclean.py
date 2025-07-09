@@ -505,7 +505,7 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                 # Skip 1 km/s
                 extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
             else:
@@ -995,10 +995,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1162,10 +1162,10 @@ class Tclean(cleanbase.CleanBase):
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1298,10 +1298,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1694,10 +1694,10 @@ class Tclean(cleanbase.CleanBase):
             mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get number of pixels per beam
-            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
-            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
-            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
-            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
+            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad'))[0] / 2
+            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad'))[0] / 2
+            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad'))[0])
+            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad'))[0])
             num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
             # Get threshold for maximum segment calculation
             cut1 = mom8_image_median_annulus + 3.0 * cube_scaledMAD_fc_chans
