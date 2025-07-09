@@ -1022,15 +1022,51 @@ class SelfcalHeuristics(object):
                         field=self.field, datacolumn='corrected', spw=selfcal_library[target][band]['spws_per_vis'],
                         uvrange=selfcal_library[target][band]['uvrange'],
                         obstype=selfcal_library[target][band]['obstype'],
-                        nfrms_multiplier=nfsnr_modifier)
+                        nfrms_multiplier=nfsnr_modifier,
+                        image_mosaic_fields_separately=is_mosaic,
+                        mosaic_field_phasecenters=selfcal_library[target][band]['sub-fields-phasecenters'],
+                        mosaic_field_fid_map=selfcal_library[target][band]['sub-fields-fid_map'],
+                        cyclefactor=selfcal_library[target][band]['cyclefactor'],
+                        mask=sourcemask, usermodel='')
                 else:
                     copy_products(sani_target + '_' + band + '_initial', sani_target + '_' + band + '_final')
-                final_SNR, final_RMS = estimate_SNR(sani_target+'_'+band+'_final.image.tt0')
-                if self.telescope != 'ACA':
+                    if is_mosaic:
+                        for field_id in selfcal_library[target][band]['sub-fields-phasecenters']:
+                            imagename_field_initial = sani_target + '_' + band + '_initial'
+                            imagename_field_initial = imagename_field_initial.replace(
+                                f'_{band}_', f'_field_{field_id}_{band}_'
+                            )
+                            imagename_field_final = sani_target + '_' + band + '_final'
+                            imagename_field_final = imagename_field_final.replace(
+                                f'_{band}_', f'_field_{field_id}_{band}_'
+                            )
+                            copy_products(imagename_field_initial, imagename_field_final)
+
+                final_SNR, final_RMS = estimate_SNR(sani_target + '_' + band + '_final.image.tt0')
+                if self.telescope != 'ACA' or self.aca_se_nfmask:
                     final_NF_SNR, final_NF_RMS = estimate_near_field_SNR(
                         sani_target+'_'+band+'_final.image.tt0', las=selfcal_library[target][band]['LAS'])
                 else:
                     final_NF_SNR, final_NF_RMS = final_SNR, final_RMS
+
+                mosaic_final_SNR, mosaic_final_RMS, mosaic_final_NF_SNR, mosaic_final_NF_RMS = {}, {}, {}, {}
+                for fid in selfcal_library[target][band]['sub-fields']:
+                    if is_mosaic:
+                        imagename = sani_target + '_field_' + str(fid) + '_' + band + '_final.image.tt0'
+                    else:
+                        imagename = sani_target + '_' + band + '_final.image.tt0'
+
+                    mosaic_final_SNR[fid], mosaic_final_RMS[fid] = estimate_SNR(imagename, mosaic_sub_field=is_mosaic)
+                    if self.telescope != 'ACA' or self.aca_use_nfmask:
+                        mosaic_final_NF_SNR[fid], mosaic_final_NF_RMS[fid] = estimate_near_field_SNR(
+                            imagename, las=selfcal_library[target][band]['LAS'], mosaic_sub_field=is_mosaic
+                        )
+                    else:
+                        mosaic_final_NF_SNR[fid], mosaic_final_NF_RMS[fid] = (
+                            mosaic_final_SNR[fid],
+                            mosaic_final_RMS[fid],
+                        )
+
                 selfcal_library[target][band]['SNR_final'] = final_SNR
                 selfcal_library[target][band]['RMS_final'] = final_RMS
                 selfcal_library[target][band]['SNR_NF_final'] = final_NF_SNR
@@ -1041,18 +1077,18 @@ class SelfcalHeuristics(object):
                 selfcal_library[target][band]['Beam_minor_final'] = bm['minor']['value']
                 selfcal_library[target][band]['Beam_PA_final'] = bm['positionangle']['value']
                 # recalc inital stats using final mask
-                final_SNR, final_RMS = estimate_SNR(sani_target+'_'+band+'_initial.image.tt0',
-                                                    maskname=sani_target+'_'+band+'_final.mask')
-                if self.telescope != 'ACA':
-                    final_NF_SNR, final_NF_RMS = estimate_near_field_SNR(
+                orig_final_SNR, orig_final_RMS = estimate_SNR(sani_target+'_'+band+'_initial.image.tt0',
+                                                              maskname=sani_target+'_'+band+'_final.mask')
+                if self.telescope != 'ACA' or self.aca_use_nfmask:
+                    orig_final_NF_SNR, orig_final_NF_RMS = estimate_near_field_SNR(
                         sani_target + '_' + band + '_initial.image.tt0', maskname=sani_target + '_' + band + '_final.mask',
                         las=selfcal_library[target][band]['LAS'])
                 else:
-                    final_NF_SNR, final_NF_RMS = final_SNR, final_RMS
-                selfcal_library[target][band]['SNR_orig'] = final_SNR
-                selfcal_library[target][band]['RMS_orig'] = final_RMS
-                selfcal_library[target][band]['SNR_NF_orig'] = final_NF_SNR
-                selfcal_library[target][band]['RMS_NF_orig'] = final_NF_RMS
+                    orig_final_NF_SNR, orig_final_NF_RMS = orig_final_SNR, orig_final_RMS
+                selfcal_library[target][band]['SNR_orig'] = orig_final_SNR
+                selfcal_library[target][band]['RMS_orig'] = orig_final_RMS
+                selfcal_library[target][band]['SNR_NF_orig'] = orig_final_NF_SNR
+                selfcal_library[target][band]['RMS_NF_orig'] = orig_final_NF_RMS
                 goodMask = checkmask(imagename=sani_target+'_'+band+'_final.image.tt0')
                 if goodMask:
                     selfcal_library[target][band]['intflux_final'], selfcal_library[target][band]['e_intflux_final'] = get_intflux(
@@ -1061,6 +1097,73 @@ class SelfcalHeuristics(object):
                         sani_target+'_'+band+'_initial.image.tt0', selfcal_library[target][band]['RMS_orig'], maskname=sani_target+'_'+band+'_final.mask')
                 else:
                     selfcal_library[target][band]['intflux_final'], selfcal_library[target][band]['e_intflux_final'] = -99.0, -99.0
+
+                for fid in selfcal_library[target][band]['sub-fields']:
+                    if selfcal_library[target][band]['obstype'] == 'mosaic':
+                        imagename = sani_target + '_field_' + str(fid) + '_' + band
+                    else:
+                        imagename = sani_target + '_' + band
+
+                    with casa_tools.ImageReader(imagename+'_final.image.tt0') as image:
+                        bm = image.restoringbeam(polarization=0)
+
+                    selfcal_library[target][band][fid]['SNR_final'] = mosaic_final_SNR[fid]
+                    selfcal_library[target][band][fid]['RMS_final'] = mosaic_final_RMS[fid]
+                    selfcal_library[target][band][fid]['SNR_NF_final'] = mosaic_final_NF_SNR[fid]
+                    selfcal_library[target][band][fid]['RMS_NF_final'] = mosaic_final_NF_RMS[fid]
+                    selfcal_library[target][band][fid]['Beam_major_final'] = bm['major']['value']
+                    selfcal_library[target][band][fid]['Beam_minor_final'] = bm['minor']['value']
+                    selfcal_library[target][band][fid]['Beam_PA_final'] = bm['positionangle']['value']
+                    # recalc inital stats using final mask
+                    mosaic_initial_final_SNR, mosaic_initial_final_RMS = estimate_SNR(
+                        imagename + '_initial.image.tt0',
+                        maskname=imagename + '_final.mask',
+                        mosaic_sub_field=selfcal_library[target][band]['obstype'] == 'mosaic',
+                    )
+                    if self.telescope != 'ACA' or self.aca_use_nfmask:
+                        mosaic_initial_final_NF_SNR, mosaic_initial_final_NF_RMS = estimate_near_field_SNR(
+                            imagename + '_initial.image.tt0',
+                            maskname=imagename + '_final.mask',
+                            las=selfcal_library[target][band]['LAS'],
+                            mosaic_sub_field=selfcal_library[target][band]['obstype'] == 'mosaic',
+                        )
+                    else:
+                        mosaic_initial_final_NF_SNR, mosaic_initial_final_NF_RMS = (
+                            mosaic_initial_final_SNR,
+                            mosaic_initial_final_RMS,
+                        )
+                    selfcal_library[target][band][fid]['SNR_orig'] = mosaic_initial_final_SNR
+                    selfcal_library[target][band][fid]['RMS_orig'] = mosaic_initial_final_RMS
+                    selfcal_library[target][band][fid]['SNR_NF_orig'] = mosaic_initial_final_NF_SNR
+                    selfcal_library[target][band][fid]['RMS_NF_orig'] = mosaic_initial_final_NF_RMS
+
+                    if is_mosaic:
+                        imagename = sani_target + '_field_' + str(fid) + '_' + band
+                    else:
+                        imagename = sani_target + '_' + band
+
+                    goodMask = checkmask(imagename=imagename + '_final.image.tt0')
+                    if goodMask:
+                        (
+                            selfcal_library[target][band][fid]['intflux_final'],
+                            selfcal_library[target][band][fid]['e_intflux_final'],
+                        ) = get_intflux(
+                            imagename + '_final.image.tt0', mosaic_final_RMS[fid], mosaic_sub_field=is_mosaic
+                        )
+                        (
+                            selfcal_library[target][band][fid]['intflux_orig'],
+                            selfcal_library[target][band][fid]['e_intflux_orig'],
+                        ) = get_intflux(
+                            imagename + '_initial.image.tt0',
+                            selfcal_library[target][band][fid]['RMS_orig'],
+                            maskname=imagename + '_final.mask',
+                            mosaic_sub_field=is_mosaic,
+                        )
+                    else:
+                        (
+                            selfcal_library[target][band][fid]['intflux_final'],
+                            selfcal_library[target][band][fid]['e_intflux_final'],
+                        ) = -99.0, -99.0
 
         ##
         # Make a final image per spw images to assess overall improvement
