@@ -5,12 +5,7 @@ import pipeline.infrastructure.renderer.htmlrenderer as hr
 import pipeline.infrastructure.filenamer as filenamer
 import string
 %>
-<%inherit file="t2-4m_details-base.mako"/>
-
-<%block name="title">
-Self-Calibration<br>
-<small>Self-calibration using the science target visibilities</small>
-</%block>
+<%namespace name="base" file="t2-4m_details-base.mako"/>
 
 <script type="text/javascript">
 
@@ -22,6 +17,9 @@ Self-Calibration<br>
 
 </script>
 
+<script>
+    lazyload();
+</script>
 
 <style type="text/css">
 
@@ -111,7 +109,7 @@ def fm_reason(slib):
 <!-- Brief Summary -->
 
 <a class="anchor" id="targetlist"></a>
-<h3>List of Self-cal Targets</h3>
+<h3>List of Mosaic Target Fields</h3>
 
 % if not cleantargets:
     <p>No valid self-calibration result was returned.</p>
@@ -123,16 +121,12 @@ def fm_reason(slib):
 <table class="table table-bordered">
   <thead>
         <tr>
-            <th>Source</th>
+            <th>Field</th>
             <th>Band</th>
             <th>SpW</th>
             <th>Phasecenter</th>
-            <th>Cell</th>
-            <th>Imsize</th>
             <th>Solints to attempt</th>
             <th>Success</th>
-            <th>Cont.<br>applied</th>
-            <th>Line<br>applied</th>
         <tr>
   </thead>
   <caption>
@@ -158,7 +152,7 @@ def fm_reason(slib):
     <% return STOP_RENDERING %>
 % endif
 
-<h3>Self-cal Target Details</h3>
+<h3>Mosaic Target Fields Details</h3>
 
 % for target in cleantargets:
 
