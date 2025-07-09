@@ -66,10 +66,11 @@ class ScalTarget(CleanTarget):
         self['sc_solints'] = None           # list
         self['sc_lib'] = None               # dictionary
         self['sc_workdir'] = None           # string
+        self['sc_exception'] = None         # boolean
         self['sc_vislist'] = None           # input vis list
         self['sc_telescope'] = None         # string
         self['sc_parallel'] = None          # string
-        self['sc_field']= None              # string, dequoted, alias of field_name
+        self['sc_field'] = None             # string, dequoted, alias of field_name
         self['field_name'] = None           # string, dequoted
         self['field_id'] = None             # int
         self['spw_real'] = None             # spw_real lookup table

@@ -1,11 +1,13 @@
 import copy
-import datetime
 import json
 import os
 import shutil
 import tarfile
 import traceback
+from datetime import datetime
 from fnmatch import fnmatch
+from pathlib import Path
+from typing import Any
 
 import numpy as np
 from astropy.utils.misc import JsonCustomEncoder
@@ -21,8 +23,7 @@ from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import SerialIFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import (callibrary, casa_tasks, casa_tools,
-                                     task_registry, utils)
+from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, logging, task_registry, utils
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
 
@@ -323,29 +324,99 @@ class Selfcal(basetask.StandardTaskTemplate):
         super().__init__(inputs)
 
     @staticmethod
-    def _scal_targets_to_json(scal_targets, filename='selfcal.json'):
-        """Serilize scal_targets to a json file."""
-
+    def _scal_targets_to_json(scal_targets: list[dict[str, Any]], filename: str | Path = 'selfcal.json') -> None:
+        """Serialize scal_targets to a JSON file.
+        
+        Creates a JSON file containing the scal_targets data along with metadata including
+        version, timestamp, and pipeline version. The 'heuristics' key is removed from
+        each target before serialization.
+        
+        Args:
+            scal_targets: List of target dictionaries containing calibration data
+            filename: Output JSON filename or path
+        """
         current_version = 1.0
-        current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         scal_targets_copy = copy.deepcopy(scal_targets)
+
+        # Remove heuristics from each target
         for target in scal_targets_copy:
             target.pop('heuristics', None)
-        scal_targets_json = {}
-        scal_targets_json['scal_targets'] = scal_targets_copy
-        scal_targets_json['version'] = current_version
-        scal_targets_json['datetime'] = current_datetime
-        scal_targets_json['pipeline_version'] = environment.pipeline_revision
-        with open(filename, 'w') as fp:
-            # We can’t sort the keys here because they may include a mix of strings and integers (e.g., field IDs).
-            json.dump(scal_targets_json, fp, sort_keys=False, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
+
+        scal_targets_json = {
+            'scal_targets': scal_targets_copy,
+            'version': current_version,
+            'datetime': current_datetime,
+            'pipeline_version': environment.pipeline_revision
+        }
+
+        with open(filename, 'w', encoding='utf-8') as fp:
+            # Keys may include mixed strings and integers (e.g., field IDs), so sorting is disabled
+            json.dump(scal_targets_json, fp, sort_keys=False, indent=2, cls=JsonCustomEncoder,
+                      separators=(',', ': '))
+
+    @staticmethod
+    def _scal_targets_to_json_lite(scal_targets: list[dict[str, Any]], filename: str | Path = 'selfcal.json') -> None:
+        """Serialize scal_targets to a lightweight JSON file.
+        
+        Creates a JSON file with only essential calibration data fields. This reduces
+        file size by including only critical information like field, spw_real, exceptions,
+        and selected calibration library data.
+        
+        Args:
+            scal_targets: List of target dictionaries containing calibration data
+            filename: Output JSON filename or path
+        """
+        current_version = 1.0
+        current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        scal_targets_copy = []
+
+        for target in scal_targets:
+            target_lite = {
+                'field': target['field'],
+                'spw_real': target['spw_real'],
+                'sc_exception': target['sc_exception'],
+                'sc_workdir': target['sc_workdir']
+            }
+
+            # Extract essential calibration library data if present
+            if isinstance(target['sc_lib'], dict):
+                target_lite['sc_lib'] = {}
+
+                # Copy success status and visibility list
+                if 'SC_success' in target['sc_lib']:
+                    target_lite['sc_lib']['SC_success'] = target['sc_lib']['SC_success']
+                if 'vislist' in target['sc_lib']:
+                    target_lite['sc_lib']['vislist'] = target['sc_lib']['vislist']
+
+                    # Copy essential calibration parameters for each visibility
+                    for vis in target_lite['sc_lib']['vislist']:
+                        target_lite['sc_lib'][vis] = {}
+                        essential_keys = ['gaintable_final', 'applycal_interpolate_final', 'spwmap_final']
+                        for key in essential_keys:
+                            if key in target['sc_lib'][vis]:
+                                target_lite['sc_lib'][vis][key] = target['sc_lib'][vis][key]
+
+            scal_targets_copy.append(target_lite)
+
+        scal_targets_json = {
+            'scal_targets': scal_targets_copy,
+            'version': current_version,
+            'datetime': current_datetime,
+            'pipeline_version': environment.pipeline_revision
+        }
+
+        with open(filename, 'w', encoding='utf-8') as fp:
+            # Keys may include mixed strings and integers (e.g., field IDs), so sorting is disabled
+            json.dump(scal_targets_json, fp, sort_keys=False, indent=2, cls=JsonCustomEncoder,
+                      separators=(',', ': '))
 
     @staticmethod
     def _scal_targets_from_json(filename='selfcal.json'):
         """Deserilize scal_targets from a json file."""
 
         LOG.info('Reading the selfcal targets list from %s', filename)
-        with open(filename, 'r') as fp:
+        with open(filename, 'r', encoding='utf-8') as fp:
             scal_targets_json = json.load(fp)
         return scal_targets_json['scal_targets']
 
@@ -356,7 +427,6 @@ class Selfcal(basetask.StandardTaskTemplate):
             caltable_list:  a list of calibration tables requested based on the calapply information inside scal_targets
             caltable_ready: a list of the requested cal tables that are ready to be applied.
         """
-
         if mses is None:
             obs_run = self.inputs.context.observing_run
             mses_regcal_contline = obs_run.get_measurement_sets_of_type(
@@ -396,7 +466,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _check_restore_from_resources(self):
         """Check if we can do selfcal restore from the restore resources."""
-
         scal_targets = None
         pat_list = ['*.auxproducts.tgz', '*.selfcal.json',
                     '../products/*.auxproducts.tgz', '*.selfcal.json',
@@ -435,7 +504,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _check_restore_from_context(self):
         """Check if we can do selfcal restore from scal_targets saved in the context."""
-
         scal_targets = None
         if self.inputs.context.selfcal_targets:
             scal_targets_last = self.inputs.context.selfcal_targets
@@ -454,9 +522,11 @@ class Selfcal(basetask.StandardTaskTemplate):
         if inputs.vis in (None, [], ''):
             # If no suitable datatype, by-pass the hif_selfcal stage.
             required_data_type_desc = ', '.join(dt.name for dt in SelfcalInputs.processing_data_type)
-            LOG.warning(
-                f'No data matching any of the required datatypes: {required_data_type_desc}; '
-                f'please review the registered MS datatype information.')
+
+            LOG.warning('No data matching any of the required datatypes: %s; '
+                        'please review the registered MS datatype information.',
+                        required_data_type_desc)
+                
             return SelfcalResults([], None, None, None, False)
 
         if not isinstance(inputs.vis, list):
@@ -509,8 +579,14 @@ class Selfcal(basetask.StandardTaskTemplate):
             LOG.info('Execute the selfcal solver.')
             scal_targets = self._solve_selfcal()
             is_restore = False
+
             selfcal_json = self.inputs.context.name+'.selfcal.json'
-            self._scal_targets_to_json(scal_targets, filename=selfcal_json)
+            self._scal_targets_to_json_lite(scal_targets, filename=selfcal_json)
+
+            if LOG.isEnabledFor(logging.DEBUG):
+                selfcal_json_debug = self.inputs.context.name+'.selfcal.debug.json'
+                self._scal_targets_to_json(scal_targets, filename=selfcal_json_debug)
+
             scal_caltable, _ = self._apply_scal_check_caltable(scal_targets, mses_regcal_contline+mses_regcal_line)
             selfcal_resources = [selfcal_json] + scal_caltable
             LOG.debug('selfcal resources list: %r', selfcal_resources)
@@ -607,7 +683,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                         #       utils.fieldname_for_casa() and
                         #       utils.dequote()
                         LOG.warning(
-                            'The field name of the selfcal library (%s) is different from the clean target dequoted field name: %s != %s',
+                            'The field name of the selfcal library is different from the clean target dequoted field name: %s != %s',
                             sc_field, target['sc_field'])
                     target['sc_band'] = sc_band
 
@@ -617,6 +693,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['sc_success'] = target['sc_lib']['SC_success']
                 except Exception as err:
                     traceback_msg = traceback.format_exc()
+                    LOG.debug('Exception: %s', err)
                     LOG.info(traceback_msg)
                     sc_exception = True
             if sc_exception:
@@ -635,15 +712,14 @@ class Selfcal(basetask.StandardTaskTemplate):
         
         Note that this function is executed in a TaskQueue so potentially on an MPI server process.
         """
-
         workdir = os.path.abspath('./')
         selfcal_library = trackback_msg = None
 
         try:
             os.chdir(scal_target['sc_workdir'])
             LOG.info('')
-            LOG.info('Running auto_selfcal heuristics on target {0} spw {1} from {2}'.format(
-                scal_target['field'], scal_target['spw'], scal_target['sc_workdir']))
+            LOG.info('Running auto_selfcal heuristics on target %s spw %s from %s',
+                     scal_target['field'], scal_target['spw'], scal_target['sc_workdir'])
             LOG.info('')
             selfcal_heuristics = auto_selfcal.SelfcalHeuristics(scal_target, **kwargs)
             # import pickle
@@ -653,6 +729,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             selfcal_library = selfcal_heuristics()
         except Exception as err:
             traceback_msg = traceback.format_exc()
+            LOG.debug('Exception: %s', err)
             LOG.info(traceback_msg)
         finally:
             os.chdir(workdir)
@@ -729,7 +806,6 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         PIPE-1447/PIPE-1915: we do not execute selfcal heuristics for mosaic or ephemeris sources.
         """
-
         final_scal_target = []
         for scal_target in scal_targets:
             disable_mosaic = False
@@ -755,7 +831,6 @@ class Selfcal(basetask.StandardTaskTemplate):
         This essenially runs MakeImList and go through all nesscary steps to get the target list.
         However, it will pick up the selfcal heuristics from imageparams_factory,ImageParamsHeuristicsFactory
         """
-
         telescope = self.inputs.context.project_summary.telescope
         if telescope == 'ALMA':
             repr_ms = self.inputs.ms[0]
