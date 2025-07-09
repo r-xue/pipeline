@@ -12,6 +12,7 @@ import os
 
 from astropy.stats import sigma_clip
 from matplotlib import figure
+from matplotlib.transforms import Bbox
 import numpy as np
 from scipy.ndimage import convolve, label
 from scipy.stats import median_abs_deviation
@@ -20,6 +21,7 @@ import pipeline.infrastructure as infrastructure
 from pipeline.hsd.tasks.common import display as sd_display
 
 if TYPE_CHECKING:
+    from matplotlib import axes
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure import Context
     from pipeline.infrastructure.imagelibrary import ImageItem
@@ -112,7 +114,7 @@ class DetectMissedLines( object ):
 
     def analyze( self,
                  valid_lines: list[list[float]],
-                 linefree_ranges: list[list[int]] ) -> tuple[bool, str | None]:
+                 linefree_ranges: list[list[int]] ) -> dict[str, bool]:
         """
         Analyze the image cube to diagnoze missed lines
 
@@ -120,8 +122,8 @@ class DetectMissedLines( object ):
             valid_lines     : List of valid lines (channels in float)
             linefree_ranges : List of line-free ranges (channels in int)
         Returns:
+            Dictionary with missed-line detetion results for two methods
             True if possible missed-line is detected, False if not
-            string indicating the detection process (None if no detection)
         """
         # convert valid_lines to line_ranges (int) and revert channels if LSB
         line_ranges = []
@@ -140,28 +142,18 @@ class DetectMissedLines( object ):
                 [ math.floor(line_center - line_width / 2.0),
                   math.ceil(line_center + line_width / 2.0) ] )
 
-        # first try 'single_beam' method
-        single_beam_detection = self._detect_over_deviation_threshold( line_ranges,
-                                                                       linefree_ranges,
-                                                                       mask_mode='single_beam',
-                                                                       dev_threshold=DEVIATION_THRESHOLD_SINGLE_BEAM )
-        if single_beam_detection:
+        detections = self._detect_over_deviation_threshold( line_ranges, linefree_ranges )
+
+        if detections['single_beam']:
             LOG.info( "Field {} spw {}: Significant off-line-range emission detected at peak.".format( self.field_name, self.spwid_list[0] ))
-            return True, "single_beam"
+        else:
+            LOG.info( "Field {} spw {}: No significant off-line-range emission detected at peak.".format( self.field_name, self.spwid_list[0] ))
 
-        # next try 'moment_mask' method
-        LOG.info( "Field {} spw {}: No significant off-line-range emission detected at peak. Search for extended emission with 'moment_mask'.".format( self.field_name, self.spwid_list[0] ))
-        moment_mask_detection = self._detect_over_deviation_threshold( line_ranges,
-                                                                       linefree_ranges,
-                                                                       mask_mode='moment_mask',
-                                                                       dev_threshold=DEVIATION_THRESHOLD_MOMENT_MASK )
-        if moment_mask_detection:
+        if detections['moment_mask']:
             LOG.info( "Field {} spw {}: Significant off-line-range extended emission detected.".format( self.field_name, self.spwid_list[0] ))
-            return True, "moment_mask"
-
-        # Return False if no missed-lines are detected
-        LOG.info( "Field {} spw {}: No significant off-line-range extended emission detected.".format( self.field_name, self.spwid_list[0] ))
-        return False, None
+        else:
+            LOG.info( "Field {} spw {}: No significant off-line-range extended emission detected.".format( self.field_name, self.spwid_list[0] ))
+        return detections
 
     def _sigma_estimation( self, data: np.ndarray, sigma: float, maxiters: int ) -> float:
         """
@@ -269,27 +261,44 @@ class DetectMissedLines( object ):
 
         return sb, sigma_sb
 
+    def _detect_excess( self, z_linefree, dev_threshold: float, width_threshold: float ) -> bool:
+        """
+        detect excesses: find channels which exceed deviation_threshold
+
+        Args:
+            z_linefree      : deviation/sigma of line-free ranges
+            dev_threshold   : Deviation threshold for excess detection
+            width_threshold : Threshold of chunk size in pixels. default is 2.
+        Returns:
+            True if excess is detected, False if not
+        """
+        if np.nanmax( z_linefree ) > dev_threshold:
+            labeling_half_maximum, n_labels = label(z_linefree > dev_threshold / 2)
+
+            # search for wide 'chunks', which are wider than width_threshold
+            for idx in range( 1, n_labels ):
+                if np.sum( labeling_half_maximum == idx ) > width_threshold:
+                    return True
+        return False
+
     def _detect_over_deviation_threshold( self,
                                           line_ranges: list[list[int]],
                                           linefree_ranges: list[list[int]],
-                                          mask_mode: str = 'single_beam',
-                                          dev_threshold: float = DEVIATION_THRESHOLD_SINGLE_BEAM,
                                           width_threshold: int = 2 ) -> bool:
         """
         Search for the missed lines and create the diagnostic plot
 
         Args:
-            line_ranges     : List of deteced lines in spectral channels
-            linefree_ranges : Line-free ranges in spectral channels
-            mask_mode       : Mask mode
-            dev_threshold   : Deviation threshold
-            width_threshold : Threshold of chunk size in pixels
+            line_ranges     : List of deteced lines in spectral channels.
+            linefree_ranges : Line-free ranges in spectral channels.
+            width_threshold : Threshold of chunk size in pixels. default is 2.
 
         Returns:
-            True if wide enough missed lines are detected, False if not
+            Dictionay of detection results for each method.
+            True if wide enough missed lines are detected, False if not.
 
         Raises:
-            ValueError for unkown mask_mode
+            ValueError for unkown mask_mode (should not happen)
         """
         # width_threshold is 2 or more
         width_threshold = max( width_threshold, 2 )
@@ -299,55 +308,87 @@ class DetectMissedLines( object ):
         weight = self.weight.data[:, :, 0, :].transpose(2, 1, 0)
         weighted_cube = cube * weight
 
-        if mask_mode == 'single_beam':
-            f2, sigma = self._max_spec( weighted_cube )
-        elif mask_mode == 'moment_mask':
-            f2, sigma = self._mask_spec( weighted_cube )
-        else:
-            raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
+        if self.do_plot:
+            fig = figure.Figure( figsize=(16, 5) )
+            ax = { 'single_beam': fig.add_axes( (0.05, 0.1, 0.43, 0.85) ),
+                   'moment_mask': fig.add_axes( (0.55, 0.1, 0.43, 0.85) ) }
 
-        # deviation/sigma (Z-scores)
-        z_all = f2 / sigma
+        detections = { 'single_beam': False, 'moment_mask': False }
+        for mask_mode in [ 'single_beam', 'moment_mask' ]:
+            match mask_mode:
+                case 'single_beam':
+                    f2, sigma = self._max_spec( weighted_cube )
+                    dev_threshold = DEVIATION_THRESHOLD_SINGLE_BEAM
+                case 'moment_mask':
+                    f2, sigma = self._mask_spec( weighted_cube )
+                    dev_threshold = DEVIATION_THRESHOLD_MOMENT_MASK
+                case _:
+                    raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
 
-        # deviation/sigma of line-free ranges
-        z_linefree = np.full( z_all.shape[0], np.nan )
-        for linefree in linefree_ranges:
-            z_linefree[ linefree[0]:linefree[1]+1 ] = z_all[ linefree[0]:linefree[1]+1 ]
+            # deviation/sigma (Z-scores)
+            z_all = f2 / sigma
 
-        # deviation/sigma of line ranges
-        z_line = np.full( z_all.shape[0], np.nan )
-        for line in line_ranges:
-            z_line[ line[0]:line[1]+1 ] = z_all[ line[0]:line[1]+1 ]
+            # deviation/sigma of line-free ranges
+            z_linefree = np.full( z_all.shape[0], np.nan )
+            for linefree in linefree_ranges:
+                z_linefree[ linefree[0]:linefree[1]+1 ] = z_all[ linefree[0]:linefree[1]+1 ]
 
-        # deviation/sigma of other ranges
-        z_other = np.where( np.isnan( z_line ) & np.isnan( z_linefree ), z_all, np.nan )
+            # deviation/sigma of line ranges
+            z_line = np.full( z_all.shape[0], np.nan )
+            for line in line_ranges:
+                z_line[ line[0]:line[1]+1 ] = z_all[ line[0]:line[1]+1 ]
+
+            # deviation/sigma of other ranges
+            z_other = np.where( np.isnan( z_line ) & np.isnan( z_linefree ), z_all, np.nan )
+
+            # find channels which exceed deviation_threshold
+            detections[mask_mode] = self._detect_excess( z_linefree, dev_threshold, width_threshold )
+            if self.do_plot and detections[mask_mode]:
+                self._plot( ax[mask_mode],
+                            line_ranges, z_linefree, z_other,
+                            dev_threshold, mask_mode )
+        if self.do_plot:
+            self._finalize_plot( fig, detections )
+
+        return detections
+
+    def _finalize_plot( self, fig: figure.Figure, detections: list[bool] ):
+        """
+        trim-off unused space in the figure and save to png file
+
+        Args:
+            fig: matplotlib figure
+            detections: missed line detection results for each methods
+        """
+        # return if no detetions
+        if not any( detections.values() ):
+            return
 
         # create the stage_dir if needed but does not yet exist
-        if self.do_plot:
-            stage_dir = os.path.join(self.context.report_dir,
-                                     f'stage{self.context.task_counter}')
-            os.makedirs( stage_dir, exist_ok=True )
+        stage_dir = os.path.join(self.context.report_dir,
+                                 f'stage{self.context.task_counter}')
+        os.makedirs( stage_dir, exist_ok=True )
 
-        # find channels which exceed deviation_threshold
-        if np.nanmax( z_linefree ) > dev_threshold:
-            labeling_half_maximum, n_labels = label(z_linefree > dev_threshold / 2)
+        # filename
+        plot_outfile = os.path.join( stage_dir, "{}.missedlines.png".format( self.item.imagename ))
 
-            # search for wide 'chunks', which are wider than width_threshold
-            for idx in range( 1, n_labels ):
-                if np.sum( labeling_half_maximum == idx ) > width_threshold:
-                    if self.do_plot:
-                        self._plot( stage_dir,
-                                    line_ranges,
-                                    z_all, z_line, z_linefree, z_other,
-                                    dev_threshold, mask_mode )
-                    return True
-        return False
+        # trim figure depending on detections
+        size = fig.get_size_inches()
+        if all(detections.values()):
+            bbox = Bbox( [[0, 0], [size[0], size[1]]] )
+            fig.savefig( plot_outfile )
+        elif detections['single_beam']:
+            bbox = Bbox( [[0, 0], [size[0] / 2, size[1]]] )
+        else:
+            bbox = Bbox( [[size[0] / 2, 0], [size[0], size[1]]] )
+
+        # save figure to file
+        LOG.info( "Saving diagnistic plot for missed-lines to {}".format(plot_outfile) )
+        fig.savefig( plot_outfile, bbox_inches=bbox )
 
     def _plot( self,
-               stage_dir: str,
+               ax: axes.Axes,
                line_ranges: list[list[int]],
-               z_all: sdtyping.NpArray1D,
-               z_line: sdtyping.NpArray1D,
                z_linefree: sdtyping.NpArray1D,
                z_other: sdtyping.NpArray1D,
                dev_threshold: float,
@@ -358,8 +399,6 @@ class DetectMissedLines( object ):
         Args:
             stage_dir     : Stage directory of weblog
             line_range    : List of spectral channels of line ranges
-            z_all         : deviation/sigma of all frequency channels
-            z_line        : deviation/sigma of line ranges
             z_linefree    : deviation/sigma of line-free ranges
             z_other       : deviation/sigma of other ranges
             dev_threshold : Deviation threshold for excess detection
@@ -367,10 +406,6 @@ class DetectMissedLines( object ):
         Raises:
             ValueError for unkown mask_mode
         """
-        # prepare the figure
-        fig = figure.Figure()
-        ax = fig.add_axes( (0.1, 0.1, 0.85, 0.83) )
-
         # calculate the boundaries of the frequency bins (to prepare for axes.stairs())
         increment = self.frequency[1] - self.frequency[0]
         frequency_boundaries = [ freq - increment / 2.0 for freq in self.frequency ] \
@@ -381,8 +416,9 @@ class DetectMissedLines( object ):
                    color='gray', label=None, baseline=None )
 
         # overdraw other parts in magenta (masked range)
-        ax.stairs( z_other, frequency_boundaries,
-                   color='magenta', label='masked', baseline=None )
+        if not np.all( np.isnan(z_other) ):
+            ax.stairs( z_other, frequency_boundaries,
+                       color='magenta', label='masked', baseline=None )
 
         # paint the line ranges
         for idx, line in enumerate( line_ranges ):
@@ -414,16 +450,12 @@ class DetectMissedLines( object ):
         ax.get_xaxis().get_major_formatter().set_useOffset(False)
 
         # figure title
-        if mask_mode == 'single_beam':
-            mode = "at peak"
-        elif mask_mode == 'moment_mask':
-            mode = "extended"
-        else:
-            raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
+        match mask_mode:
+            case 'single_beam':
+                mode = "at peak"
+            case 'moment_mask':
+                mode = "extended"
+            case _:
+                raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
         plot_title = "Field:{} spw:{} ({})".format( self.field_name, self.spwid_list[0], mode )
         ax.set_title( plot_title )
-
-        # save figure to file
-        plot_outfile = os.path.join( stage_dir, "{}.missedlines.png".format( self.item.imagename ))
-        LOG.info( "Saving diagnistic plot for missed-lines to {}".format(plot_outfile) )
-        fig.savefig( plot_outfile )
