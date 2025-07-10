@@ -29,7 +29,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         slib = cleantarget['sc_lib']
         target, band = cleantarget['field_name'], cleantarget['sc_band']
 
-        stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
+        stage_dir = os.path.join(context.report_dir, f'stage{results.stage_number}')
         r = results[0]
         outfile = f'{target}_{band}_{solint}.html'
 
@@ -37,16 +37,22 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         self.rel_path = os.path.relpath(self.path, context.report_dir)
 
         image_plots, antpos_plots, antpos_predrop_plots, phasefreq_plots, fracflag_plots = display.SelfcalSummary(
-            context, r, cleantarget).plot_qa(solint)
+            context, r, cleantarget
+        ).plot_qa(solint)
 
         summary_tab, nsol_tab = self.make_summary_table(
             context, r, cleantarget, solint, image_plots, antpos_plots, antpos_predrop_plots, fracflag_plots
         )
-
+        qa_desc = cleantarget['sc_field']
+        subfield = cleantarget.get('sc_subfield', None)
+        if subfield is not None:
+            qa_desc += f': sub-field-{subfield}'
+        qa_desc += f': {solint}'
         self.extra_data = {
             'summary_tab': summary_tab,
             'nsol_tab': nsol_tab,
             'target': target,
+            'qa_desc': qa_desc,
             'band': band,
             'solint': solint,
             'antpos_plots': antpos_plots,
@@ -755,6 +761,7 @@ class SelfcalMosaicRenderer(T2_4MDetailsSelfcalRenderer):
             cleantarget_subfield['field_name'] = cleantarget_subfield['field_name'] + f'_field_{subfield}'
             cleantarget_subfield['sc_lib'] = cleantarget['sc_lib'][subfield]
             cleantarget_subfield['sc_lib_mosaic'] = cleantarget['sc_lib']
+            cleantarget_subfield['sc_subfield'] = subfield
             phasecenter = subfields_phasecenters[subfield]
             ref = cleantarget['phasecenter'].split(None, 1)
             cleantarget_subfield['phasecenter'] = radec_to_string(ref, phasecenter[0], phasecenter[1])
@@ -905,7 +912,8 @@ class SelfcalMosaicRenderer(T2_4MDetailsSelfcalRenderer):
         for target in targets:
             row = []
             id_name = filenamer.sanitize(target['field_name'] + '_' + target['sc_band'], _VALID_CHARS)
-            row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
+            field_name = target['sc_subfield']
+            row.append(f' <a href="#{id_name}">{field_name}</a> ')
             row.append(format_band(target['sc_band']))
             row.append(utils.find_ranges(target['spw']))
             row.append(target['phasecenter'])
