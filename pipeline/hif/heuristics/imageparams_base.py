@@ -10,7 +10,7 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import astropy.units as u
 import numpy as np
@@ -30,8 +30,8 @@ from pipeline.infrastructure import casa_tools, logging
 from pipeline.infrastructure.utils.conversion import phasecenter_to_skycoord, refcode_to_skyframe
 
 if TYPE_CHECKING:
-    from pipeline.infrastructure.vdp import StandardInputs
     from pipeline.hif.tasks.makeimlist import CleanTarget
+    from pipeline.infrastructure.vdp import StandardInputs
 
 
 LOG = infrastructure.get_logger(__name__)

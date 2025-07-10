@@ -52,7 +52,7 @@ class CleanTarget(dict):
         self['usepointing'] = None          # boolean
         self['mosweight'] = None            # boolean
         self['drcorrect'] = None            # float
-        self['misc'] = None                 # dictionary
+        self['misc_vlass'] = None           # dictionary
 
         dict.__init__(self, *args, **kwargs)
 

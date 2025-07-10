@@ -190,7 +190,7 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
                 )
 
         vlass_flag_stats = self._plane_rejection(cleantarget, vlass_plane_reject_ms)
-        cleantarget['misc'] = vlass_flag_stats
+        cleantarget['misc_vlass'] = vlass_flag_stats
 
         spwgroup_reject_list = []
         imlist_entries = []
@@ -204,18 +204,18 @@ class ImageParamsHeuristicsVlassSeCube(ImageParamsHeuristicsVlassSeContMosaic):
             imlist_entry_per_spwgroup['reffreq'] = self.meanfreq_spwgroup(spw)
 
             # PIPE-1800: flagpct per spw group within the 1deg^2 box
-            imlist_entry_per_spwgroup['misc']['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
+            imlist_entry_per_spwgroup['misc_vlass']['flagpct'] = vlass_flag_stats['flagpct_spwgroup'][idx]
 
             # PIPE-1800/PIPE-2641: flagpct_threshold is the flag percent rejection threshold over selected fields.
             # We hardcode the value to 1.0 which means we reject any spw that is completely flagged.
             # Note that this differs from vlass_plane_reject_ms['flagpct_thresh'] which is a per-field flagging
             # threshold to define "bad" fields.
             flagpct_threshold = 1.0
-            if imlist_entry_per_spwgroup['misc']['flagpct'] >= flagpct_threshold:
+            if imlist_entry_per_spwgroup['misc_vlass']['flagpct'] >= flagpct_threshold:
                 LOG.warning(
                     'VLASS Data for spw=%r is %.2f%% flagged, and we will skip it as an imaging target.',
                     spw,
-                    imlist_entry_per_spwgroup['misc']['flagpct'] * 100,
+                    imlist_entry_per_spwgroup['misc_vlass']['flagpct'] * 100,
                 )
                 continue
 

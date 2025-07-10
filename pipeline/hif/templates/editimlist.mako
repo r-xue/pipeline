@@ -80,7 +80,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>flagpct (per plane)</strong></td>
-                <td>${get_multiple_line_string([target['misc']['flagpct'] for target in targets], str_format='{:.2%}')}</td>
+                <td>${get_multiple_line_string([target['misc_vlass']['flagpct'] for target in targets], str_format='{:.2%}')}</td>
             %endif
         </tr>        
         <%
@@ -102,7 +102,7 @@ targets=result[0].targets
             <td>${len(target['field'].split(','))}</td>
         </tr>           
         %for key in target.keys():
-            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask', 'misc'):
+            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask', 'misc_vlass'):
                 <tr>
                     <td><strong>${key}</strong></td>
                     <td>${target[key]}</td>

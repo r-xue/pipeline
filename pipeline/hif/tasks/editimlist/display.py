@@ -25,7 +25,7 @@ class VlassFlagSummary(object):
         plot_wrappers = []
 
         # all vlass-se-cube cleantargets have the identical misc info
-        vlass_flag_stats=self.result.targets[0]['misc']
+        vlass_flag_stats=self.result.targets[0]['misc_vlass']
 
         spwgroup_list = vlass_flag_stats['spwgroup_list']
         flagpct_thresh = vlass_flag_stats['flagpct_thresh']

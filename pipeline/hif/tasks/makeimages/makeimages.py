@@ -338,7 +338,7 @@ class MakeImages(basetask.StandardTaskTemplate):
             imaging_metadata = {
                 'keep': False,
                 # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
-                'flagpct': target['misc']['flagpct'],
+                'flagpct': target['misc_vlass']['flagpct'],
                 'spw': target['spw'],
                 'freq': float(target['reffreq'].replace('GHz', '')),
                 'beam': [None, None, None],

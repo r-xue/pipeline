@@ -15,8 +15,8 @@ class T2_4MDetailsEditimlistRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         if (
             result.img_mode.startswith('VLASS-SE-CUBE')
             and result.targets
-            and isinstance(result.targets[0]['misc'], dict)
-            and 'spwgroup_list' in result.targets[0]['misc']
+            and isinstance(result.targets[0]['misc_vlass'], dict)
+            and 'spwgroup_list' in result.targets[0]['misc_vlass']
         ):
             vlass_flagsummary_plots = display.VlassFlagSummary(context, result).plot()
             if vlass_flagsummary_plots:
