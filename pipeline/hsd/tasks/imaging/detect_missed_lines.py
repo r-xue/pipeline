@@ -430,7 +430,7 @@ class DetectMissedLines( object ):
         # mark the excesses
         z_excess = np.where( z_linefree > dev_threshold, z_linefree, np.nan )
         ax.scatter( self.frequency, z_excess, color='red', marker='.',
-                    label='exces' )
+                    label='excess' )
 
         # draw the threshold line
         ax.hlines( dev_threshold, np.min(self.frequency), np.max(self.frequency),
