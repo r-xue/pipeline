@@ -25,6 +25,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
@@ -814,12 +815,10 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, plots_dict, prefix, field, spw, pol, datatype, urls, cube_all_cont):
         super().__init__('tcleanplots.mako', context, makeimages_results)
 
-
         outfile = '%s-field%s-spw%s-pol%s-datatype%s-cleanplots.html' % (prefix, field, spw, pol, datatype)
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
@@ -862,8 +861,7 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
         outfile = '%s-field%s-spw%s-pol%s-cleantables.html' % (prefix, field, spw, pol)
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         self.extra_data = {
             'table_dict': table_dict,

@@ -162,7 +162,7 @@ def fm_reason(slib):
     show_spw_summary= slib['SC_success'] and spw_tabs[key] is not None
     show_sol_summary= solint_tabs[key] is not None
     show_per_field_summary= target.get('sc_mosaic_url_path', None)
-    valid_chars = "%s%s" % (string.ascii_letters, string.digits)
+    valid_chars = f'_.-{string.ascii_letters}{string.digits}'
     id_name=filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
     %>
 

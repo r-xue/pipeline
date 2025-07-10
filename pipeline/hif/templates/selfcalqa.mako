@@ -123,7 +123,8 @@ vislist=slib['vislist']
 
 
 <%base:plot_group plot_dict="${phasefreq_plots}"
-                                  url_fn="${lambda ms: 'noop'}">
+                  thumbnail_check="${False}"
+                  url_fn="${lambda ms: 'noop'}">
 
         <%def name="title()">
         </%def>

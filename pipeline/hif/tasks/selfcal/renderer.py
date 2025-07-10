@@ -12,10 +12,14 @@ import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.renderer import weblog
+from pipeline.infrastructure.mpihelpers import TaskQueue
 
 from . import display
 
 LOG = logging.get_logger(__name__)
+
+
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 
 class SelfCalQARenderer(basetemplates.CommonRenderer):
@@ -28,13 +32,13 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
         r = results[0]
         outfile = f'{target}_{band}_{solint}.html'
-        valid_chars = '_.-%s%s' % (string.ascii_letters, string.digits)
-        self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, valid_chars))
+
+        self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, _VALID_CHARS))
         self.rel_path = os.path.relpath(self.path, context.report_dir)
 
         image_plots, antpos_plots, antpos_predrop_plots, phasefreq_plots, fracflag_plots = display.SelfcalSummary(
-            context, r, cleantarget
-        ).plot_qa(solint)
+            context, r, cleantarget).plot_qa(solint)
+
         summary_tab, nsol_tab = self.make_summary_table(
             context, r, cleantarget, solint, image_plots, antpos_plots, antpos_predrop_plots, fracflag_plots
         )
@@ -288,8 +292,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         for target in targets:
             row = []
-            valid_chars = '%s%s' % (string.ascii_letters, string.digits)
-            id_name = filenamer.sanitize(target['field_name'] + '_' + target['sc_band'], valid_chars)
+            id_name = filenamer.sanitize(target['field_name'] + '_' + target['sc_band'], _VALID_CHARS)
             row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
             row.append(format_band(target['sc_band']))
             row.append(utils.find_ranges(target['spw']))
@@ -305,7 +308,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         return utils.merge_td_columns(rows, vertical_align=True)
 
     def update_mako_context(self, ctx, context, results):
-        stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
+
         r = results[0]
         cleantargets = [cleantarget for cleantarget in r.targets if not cleantarget['sc_exception']]
         is_restore = r.is_restore
@@ -315,25 +318,23 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         else:
             targets_summary_table = None
 
-        summary_tabs = collections.OrderedDict()
-        solint_tabs = collections.OrderedDict()
-        spw_tabs = collections.OrderedDict()
-        spw_tabs_msg = collections.OrderedDict()
+        summary_tabs, solint_tabs, spw_tabs, spw_tabs_msg = {}, {}, {}, {}
 
-        for target in cleantargets:
-            if not is_restore:
-                # only do this when not restoring from a previous run (selfcal_resourcs avaibility is not warranted)
-                key = (target['field_name'], target['sc_band'])
-                slib = target['sc_lib']
-                summary_tabs[key] = self.make_summary_table(context, r, target)
-                solint_tabs[key] = self.make_solint_summary_table(target, context, results)
-                spw_tabs[key], spw_tabs_msg[key] = self.make_spw_summary_table(slib)
+        with TaskQueue(unique=True) as display.tq:
+            for target in cleantargets:
+                if not is_restore:
+                    # only do this when not restoring from a previous run (selfcal_resourcs avaibility is not warranted)
+                    key = (target['field_name'], target['sc_band'])
+                    slib = target['sc_lib']
+                    summary_tabs[key] = self.make_summary_table(context, r, target)
+                    solint_tabs[key] = self.make_solint_summary_table(target, context, results)
+                    spw_tabs[key], spw_tabs_msg[key] = self.make_spw_summary_table(slib)
 
-                if slib.get('sub-fields', []):
-                    mosaic_renderer = SelfcalMosaicRenderer(context, results, target)
-                    mosaic_renderer.render()
-                    print('-->', mosaic_renderer.rel_path)
-                    target['sc_mosaic_url_path'] = mosaic_renderer.rel_path
+                    # Check if target is a mosaic with multiple sub-fields
+                    if target.get('is_mosaic') and len(slib.get('sub-fields', [])) > 1:
+                        mosaic_renderer = SelfcalMosaicRenderer(context, results, target)
+                        mosaic_renderer.render()
+                        target['sc_mosaic_url_path'] = mosaic_renderer.rel_path
 
         ctx.update({
             'targets_summary_table': targets_summary_table,
@@ -345,13 +346,12 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         })
 
     def make_solint_summary_table(self, cleantarget, context, results):
-        solints, target, band = cleantarget['sc_solints'], cleantarget['field_name'], cleantarget['sc_band']
+        solints = cleantarget['sc_solints']
         slib = cleantarget['sc_lib']
         check_solint = False
 
         rows = []
         vislist = slib['vislist']
-        vis_keys = list(slib[vislist[-1]].keys())
         row_names = [
             'Pass',
             'intflux_final',
@@ -741,10 +741,9 @@ class SelfcalMosaicRenderer(T2_4MDetailsSelfcalRenderer):
         target, band = cleantarget['field_name'], cleantarget['sc_band']
 
         stage_dir = os.path.join(context.report_dir, 'stage%s' % results.stage_number)
-        r = results[0]
         outfile = f'mosaic_{target}_{band}.html'
-        valid_chars = '_.-%s%s' % (string.ascii_letters, string.digits)
-        self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, valid_chars))
+
+        self.path = os.path.join(stage_dir, filenamer.sanitize(outfile, _VALID_CHARS))
         self.rel_path = os.path.relpath(self.path, context.report_dir)
         self.cleantarget = cleantarget
 
@@ -806,10 +805,7 @@ class SelfcalMosaicRenderer(T2_4MDetailsSelfcalRenderer):
         else:
             targets_summary_table = None
 
-        summary_tabs = collections.OrderedDict()
-        solint_tabs = collections.OrderedDict()
-        spw_tabs = collections.OrderedDict()
-        spw_tabs_msg = collections.OrderedDict()
+        summary_tabs, solint_tabs, spw_tabs, spw_tabs_msg = {}, {}, {}, {}
 
         for target in cleantargets:
             if not is_restore:
@@ -908,8 +904,7 @@ class SelfcalMosaicRenderer(T2_4MDetailsSelfcalRenderer):
 
         for target in targets:
             row = []
-            valid_chars = '%s%s' % (string.ascii_letters, string.digits)
-            id_name = filenamer.sanitize(target['field_name'] + '_' + target['sc_band'], valid_chars)
+            id_name = filenamer.sanitize(target['field_name'] + '_' + target['sc_band'], _VALID_CHARS)
             row.append(f' <a href="#{id_name}">{fm_target(target)}</a> ')
             row.append(format_band(target['sc_band']))
             row.append(utils.find_ranges(target['spw']))

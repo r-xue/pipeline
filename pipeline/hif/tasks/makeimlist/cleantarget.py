@@ -73,4 +73,5 @@ class ScalTarget(CleanTarget):
         self['sc_field'] = None             # string, dequoted, alias of field_name
         self['field_name'] = None           # string, dequoted
         self['field_id'] = None             # int
+        self['is_mosaic'] = None            # boolean
         self['spw_real'] = None             # spw_real lookup table
