@@ -225,6 +225,7 @@ class Applycals(applycal.SerialIFApplycal):
 
                 args.pop('gainmap', None)
                 jobs.append(casa_tasks.applycal(**args))
+
         if inputs.gainmap:
             for calto, calfroms in merged.items():
                 # if there's nothing to apply for this data selection, continue
@@ -246,14 +247,39 @@ class Applycals(applycal.SerialIFApplycal):
 
                 # set the on-the-fly calibration state for the data selection.
                 calapp = callibrary.CalApplication(calto, calfroms)
+                # PIPE-1729: including only the gain tables that are present.
+                taql = ''
+                gaintables = []
+                gainfields = []
+                spwmaps = []
+                interps = []
+                calwts = []
+                for gaintable, gfield, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
+                    if gfield:
+                        ms = inputs.context.observing_run.get_measurement_sets()[0]
+                        gainfield_obj = ms.get_fields(gfield)
+                        if gainfield_obj:
+                            taql = (f"FIELD_ID == {gainfield_obj[0].id}")
+                        else:
+                            taql = ''
+                            LOG.warning(f"Unable to get ID for gainfield {gfield}")
+                    else:
+                        taql = ''
+                    if os.path.exists(gaintable) and utils.get_row_count(gaintable, taql) != 0:
+                        gaintables.append(gaintable)
+                        gainfields.append(gfield)
+                        spwmaps.append(spwmap)
+                        interps.append(interp)
+                        calwts.append(calwt)
+
                 # Note this is a temporary workaround ###
                 args['antenna'] = self.antenna_to_apply
                 # Note this is a temporary workaround ###
-                args['gaintable'] = calapp.gaintable
-                args['gainfield'] = calapp.gainfield
-                args['spwmap'] = calapp.spwmap
-                args['interp'] = calapp.interp
-                args['calwt'] = calapp.calwt
+                args['gaintable'] = gaintables
+                args['gainfield'] = gainfields
+                args['spwmap'] = spwmaps
+                args['interp'] = interps
+                args['calwt'] = calwts
                 args['applymode'] = inputs.applymode
 
                 args.pop('gainmap', None)
