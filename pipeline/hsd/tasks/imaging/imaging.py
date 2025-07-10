@@ -1277,18 +1277,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         )
 
         # analyze
-        emission_off_range, mask_mode = missed_lines.analyze( valid_lines, linefree_ranges )
+        detections = missed_lines.analyze( valid_lines, linefree_ranges )
 
         # register the results
-        rgp.imager_result.outcome['line_emission_off_range_at_peak'] = False
-        rgp.imager_result.outcome['line_emission_off_range_extended'] = False
-        if emission_off_range:
-            if mask_mode == "single_beam":
-                rgp.imager_result.outcome['line_emission_off_range_at_peak'] = True
-            elif mask_mode == "moment_mask":
-                rgp.imager_result.outcome['line_emission_off_range_extended'] = True
-            else:
-                raise ValueError( "unknown mask_mode {}".format( mask_mode ) )
+        rgp.imager_result.outcome['line_emission_off_range_at_peak'] = detections['single_beam']
+        rgp.imager_result.outcome['line_emission_off_range_extended'] = detections['moment_mask']
 
     def _detect_contamination(self, rgp: imaging_params.ReductionGroupParameters):
         """Detect contamination of image.
