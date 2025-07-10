@@ -1,12 +1,10 @@
-import collections
 import os
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import numpy
 
-import pipeline.domain.measures as measures
-import pipeline.h.tasks.applycal.renderer as super_renderer
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
@@ -23,7 +21,6 @@ if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure import CalApplication
     from pipeline.infrastructure.jobrequest import JobRequest
-    from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -247,67 +244,36 @@ class SerialSDApplycal(SerialApplycal):
         """
         context = self.inputs.context
         result.stage_number = context.task_counter
-        amp_vs_time_summary_plots = []
-        amp_vs_time_detail_plots = []
-        amp_vs_time_subpages = []
-        (amp_vs_time_summary_plots, amp_vs_time_detail_plots, amp_vs_time_subpages) = self.create_amp_vs_time_plots(context, result)
-        result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
-        result.amp_vs_time_detail_plots = amp_vs_time_detail_plots
-        result.amp_vs_time_subpages = amp_vs_time_subpages
-        return result
-
-    def create_amp_vs_time_plots(self, context: Context, result: SDApplycalResults) -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
-        """
-        Create plots for the science targets.
-
-        MODIFIED for single dish
-
-        Args:
-            context: pipeline context
-            result: Applycal Results instance
-
-        Returns:
-            Three dictionaries of plot objects, subpage paths, and
-            max UV distances for each vis.
-        """
-        amp_vs_time_summary_plots = collections.defaultdict(dict)
-        amp_vs_time_detail_plots = {}
-        amp_vs_time_summary_plots['__hsd_applycal__'] = []
-        amp_vs_time_subpages = {}
         vis = os.path.basename(self.inputs.vis)
         ms = context.observing_run.get_ms(vis)
 
-        amp_vs_time_summary_plots[vis] = []
-        amp_vs_time_detail_plots[vis] = []
-        fields = [x.name for x in ms.get_fields(intent='TARGET')]
-        if len(fields) > 0:
-            # For summary plots
-            plots, href = self.sd_plots_for_result(
-                context,
-                result,
-                SingleDishPlotmsSpwComposite,
-                ['TARGET'],
-                renderer_cls=super_renderer.ApplycalAmpVsTimePlotRenderer
-            )
+        if not basetask.DISABLE_WEBLOG:
+            fields = [x.name for x in ms.get_fields(intent='TARGET')]
+            if len(fields) > 0:
+                # For summary plots
+                amp_vs_time_summary_plots = self.sd_plots_for_result(
+                    context,
+                    result,
+                    SingleDishPlotmsSpwComposite,
+                    ['TARGET']
+                )
 
-            amp_vs_time_summary_plots[vis].append(["", plots])
+                # For detail plots
+                amp_vs_time_detail_plots = self.sd_plots_for_result(
+                    context,
+                    result,
+                    SingleDishPlotmsAntSpwComposite,
+                    ['TARGET']
+                )
 
-            # For detail plots
-            plots, href = self.sd_plots_for_result(
-                context,
-                result,
-                SingleDishPlotmsAntSpwComposite,
-                ['TARGET'],
-                renderer_cls=super_renderer.ApplycalAmpVsTimePlotRenderer
-            )
-            amp_vs_time_detail_plots[vis].append(["", plots])
+            result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
+            result.amp_vs_time_detail_plots = amp_vs_time_detail_plots
+        else:
+            pass
 
-            # create detail pages
-            amp_vs_time_subpages[vis] = href
+        return result
 
-        return amp_vs_time_summary_plots, amp_vs_time_detail_plots, amp_vs_time_subpages
-
-    def sd_plots_for_result(self, context, result, plotter_cls, intent, renderer_cls=None, **kwargs):
+    def sd_plots_for_result(self, context, result, plotter_cls, intent, **kwargs):
 
         vis = os.path.basename(self.inputs.vis)
         xaxis = 'time'
@@ -316,13 +282,7 @@ class SerialSDApplycal(SerialApplycal):
         plotter = plotter_cls(context, result, ms, xaxis, yaxis, **kwargs)
         plots = plotter.plot()
 
-        path = None
-        if renderer_cls is not None:
-            renderer = renderer_cls(context, result, plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                path = renderer.path
-        return plots, path
+        return plots
 
 
 def set_unit(ms: 'MeasurementSet', calapp: List['CalApplication']):
@@ -427,9 +387,7 @@ class SingleDishPlotmsLeaf(object):
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 
-        result.stage_number = context.task_counter
-        self._figroot = os.path.join(context.report_dir,
-                                     'stage%s' % result.stage_number)
+        self._figroot = os.path.dirname(context.report_dir)
 
     def plot(self) -> List[logger.Plot]:
         """Generate a sky calibration plot.
@@ -437,13 +395,13 @@ class SingleDishPlotmsLeaf(object):
         Return:
             List of plot object.
         """
+
         prefix = '{ms}-{y}_vs_{x}-{ant}-spw{spw}'.format(
             ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
             ant=self.antenna_selection, spw=self.spw)
         title = 'Science target: calibrated amplitude vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis='field')
-        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
-
+        figfile = prefix + '.png'
         task = self._create_task(title, figfile)
 
         if os.path.exists(figfile):
@@ -501,6 +459,7 @@ class SingleDishPlotmsLeaf(object):
         parameters = {'vis': os.path.basename(self.vis),
                       'ant': self.antenna_selection,
                       'spw': self.spw}
+
         return logger.Plot(figfile,
                            x_axis='Time',
                            y_axis='Amplitude',

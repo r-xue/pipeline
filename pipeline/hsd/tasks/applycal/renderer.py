@@ -111,11 +111,45 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
+        amp_vs_time_summary_plots = collections.defaultdict(dict)
+        amp_vs_time_summary_plots['__hsd_applycal__'] = []
+        amp_vs_time_detail_plots = {}
+        amp_vs_time_subpages = {}
         for r in result:
             vis = r.inputs['vis']
-            ms = context.observing_run.get_ms(vis)
-            amp_vs_time_summary_plots = r.amp_vs_time_summary_plots
-            amp_vs_time_subpages = r.amp_vs_time_subpages
+            amp_vs_time_summary_plots[vis] = []
+            amp_vs_time_detail_plots[vis] = []
+
+            if len(r.amp_vs_time_summary_plots) > 0:
+                summary_plots = r.amp_vs_time_summary_plots
+                plots = []
+                for plot in summary_plots:
+                    path = plot.abspath
+                    dirname = os.path.dirname(path)
+                    newdir = os.path.join(dirname, weblog_dir)
+                    basename = os.path.basename(plot.basename)
+                    newpath = os.path.join(newdir, basename)
+                    os.rename(path, newpath)
+                    plot.abspath = newpath
+                    plots.append(plot)
+                amp_vs_time_summary_plots[vis].append(["", plots])
+
+            if len(r.amp_vs_time_detail_plots) > 0:
+                detail_plots = r.amp_vs_time_detail_plots
+                plots = []
+                for plot in detail_plots:
+                    path = plot.abspath
+                    dirname = os.path.dirname(path)
+                    newdir = os.path.join(dirname, weblog_dir)
+                    basename = os.path.basename(plot.basename)
+                    newpath = os.path.join(newdir, basename)
+                    os.rename(path, newpath)
+                    plot.abspath = newpath
+                    plots.append(plot)
+
+                amp_vs_time_detail_plots[vis].append(["", plots])
+                amp_vs_time_href = self.create_amp_vs_time_href(context, r, plots, super_renderer.ApplycalAmpVsTimePlotRenderer)
+                amp_vs_time_subpages[vis] = amp_vs_time_href
 
         # members for parent template applycal.mako
         ctx.update({
@@ -224,3 +258,14 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             plot.parameters['source'] = source
 
         return plots
+
+    def create_amp_vs_time_href(self, context, result, plots, renderer_cls=None):
+
+        path = None
+        if renderer_cls is not None:
+            renderer = renderer_cls(context, result, plots)
+            with renderer.get_file() as fileobj:
+                fileobj.write(renderer.render())
+                path = renderer.path
+
+        return path
