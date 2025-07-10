@@ -1,15 +1,16 @@
 """Helpers for self-calibration heuristics in the ALMA/VLA pipelines."""
-
 from __future__ import annotations
 
+import ast
+import contextlib
 import glob
 import logging
 import os
 import shutil
 import time
-from typing import TYPE_CHECKING
+import traceback
+from typing import TYPE_CHECKING, Any
 
-import casatools
 import numpy as np
 import scipy
 from casatasks import casalog
@@ -29,6 +30,8 @@ if TYPE_CHECKING:
 
 LOG = infrastructure.logging.get_logger(__name__)
 
+__PHASECAL_SCAN_INFO_ORIGIN = 'hif_selfcal:phasecal_scan_info'
+__PHASECAL_SCAN_INFO_APP = 'hif_selfcal'
 
 def copy_products(imagename_src, imagename_dst):
     """Link the tclean products.
@@ -752,7 +755,7 @@ def get_intflux(imagename, rms, maskname=None, mosaic_sub_field=False):
 
 def get_n_ants(vislist):
     # Examines number of antennas in each ms file and returns the minimum number of antennas
-    msmd = casatools.msmetadata()
+    msmd = casa_tools.msmd
 
     n_ants = 50.0
     for vis in vislist:
@@ -767,7 +770,7 @@ def get_n_ants(vislist):
 
 def get_ant_list(vis):
     # Examines number of antennas in each ms file and returns the minimum number of antennas
-    msmd = casatools.msmetadata()
+    msmd = casa_tools.msmd
     msmd.open(vis)
     names = msmd.antennanames()
     msmd.close()
@@ -1575,7 +1578,7 @@ def get_dr_correction(telescope, dirty_peak, theoretical_sens, vislist):
 def get_baseline_dist(vis):
     # Get the antenna names and offsets.
 
-    msmd = casatools.msmetadata()
+    msmd = casa_tools.msmd
 
     msmd.open(vis)
     names = msmd.antennanames()
@@ -1750,26 +1753,88 @@ def importdata(vislist, all_targets, telescope):
             parent_vis = './'+parent_vis_check
 
         viskey = vis
+
         gaincalibrator_dict[viskey] = {}
         if parent_vis is not None:
-            LOG.info('Loading gain calibrator information from %s', parent_vis)
-            msmd.open(parent_vis)
-            for field in msmd.fieldsforintent("*CALIBRATE_PHASE*"):
-                scans_for_field = msmd.scansforfield(field)
-                scans_for_gaincal = msmd.scansforintent("*CALIBRATE_PHASE*")
-                field_name = msmd.fieldnames()[field]
-                gaincalibrator_dict[viskey][field_name] = {}
-                gaincalibrator_dict[viskey][field_name]["scans"] = np.intersect1d(scans_for_field, scans_for_gaincal)
-                gaincalibrator_dict[viskey][field_name]["phasecenter"] = msmd.phasecenter(field)
-                gaincalibrator_dict[viskey][field_name]["intent"] = "phase"
-                gaincalibrator_dict[viskey][field_name]["times"] = np.array(
-                    [np.mean(msmd.timesforscan(scan)) for scan in gaincalibrator_dict[viskey][field_name]["scans"]])
-            msmd.close()
+            gaincalibrator_dict[viskey] = get_calinfo_from_ms(parent_vis)
         else:
-            LOG.warning('Unable to load the gain calibrator information because the parent ms of %s cannot be found.', vis)
+            gaincalibrator_dict_vis = get_calinfo_from_ms_history(vis)
+            if gaincalibrator_dict_vis:
+                gaincalibrator_dict[viskey] = gaincalibrator_dict_vis
+        if not gaincalibrator_dict[viskey]:
+            LOG.warning('Unable to retrieve phase calibrator scan information from history table of %s or its parent MS', vis)
 
     return bands, band_properties, scantimesdict, scanfieldsdict, scannfieldsdict, scanstartsdict, scanendsdict, integrationtimesdict, \
         spwslist_dict, spwstring_dict, spwsarray_dict, mosaic_field_dict, gaincalibrator_dict, spectral_scan, spws_set_dict
+
+
+def get_calinfo_from_ms_history(ms_name: str) -> dict[str, Any]:
+    """Retrieve the original datatype lookup dictionaries from MS HISTORY table entries.
+
+    Args:
+        ms_name: Path to the measurement set directory containing HISTORY table
+
+    Returns:
+        Dictionary containing phase calibrator information parsed from HISTORY table entries,
+        or empty dict if no valid entries found
+    """
+    calinfo: dict[str, Any] = {}
+    taql = f"(ORIGIN IN '{__PHASECAL_SCAN_INFO_ORIGIN}' AND APPLICATION IN '{__PHASECAL_SCAN_INFO_APP}')"
+
+    LOG.info('Read the phase calibrator scan information from history of %s', ms_name)
+    with casa_tools.TableReader(os.path.join(ms_name, 'HISTORY')) as table:
+        with contextlib.closing(table.query(taql)) as subtable:
+            try:
+                msg = subtable.getcol('MESSAGE')
+                if msg.size:
+                    calinfo = ast.literal_eval(str(msg[-1]))
+                else:
+                    LOG.info('No history entries from %s : taql = %s', ms_name, taql)
+            except Exception as ex:
+                LOG.warning('Failed to parse the phase calibrator scan information from %s : msg = %s',
+                            ms_name, str(msg[-1]))
+                traceback_msg = traceback.format_exc()
+                LOG.debug('Exception: %s', ex)
+                LOG.debug(traceback_msg)
+
+    return calinfo
+
+
+def get_calinfo_from_ms(ms_name: str, save_to_ms: str | None = None) -> dict[str, Any]:
+    """Extract phase calibrator scan information directly from measurement set.
+
+    Args:
+        ms_name: Path to the measurement set directory
+        save_to_ms: Optional path to save calibrator info to HISTORY table
+
+    Returns:
+        Dictionary containing phase calibrator information with structure:
+        {field_name: {'scans': list, 'phasecenter': dict, 'intent': str, 'times': list}}
+    """
+    calinfo: dict[str, Any] = {}
+    LOG.info('Read the phase calibrator scan information from %s', ms_name)
+
+    with casa_tools.MSMDReader(ms_name) as msmd:
+        for field in msmd.fieldsforintent('*CALIBRATE_PHASE*'):
+            scans_for_field = msmd.scansforfield(field)
+            scans_for_gaincal = msmd.scansforintent('*CALIBRATE_PHASE*')
+            field_name = msmd.fieldnames()[field]
+            calinfo[field_name] = {}
+            calinfo[field_name]['scans'] = np.intersect1d(scans_for_field, scans_for_gaincal).tolist()
+            calinfo[field_name]['phasecenter'] = msmd.phasecenter(field)
+            calinfo[field_name]['intent'] = 'phase'
+            # Calculate mean time for each scan
+            calinfo[field_name]['times'] = [
+                float(np.mean(msmd.timesforscan(scan))) for scan in calinfo[field_name]['scans']
+            ]
+
+    if save_to_ms and os.path.exists(save_to_ms) and calinfo:
+        LOG.debug('Write the phase calibrator scan information to %s: %s', save_to_ms, calinfo)
+        casa_tools.ms.writehistory(str(calinfo).strip(),
+                                   origin=__PHASECAL_SCAN_INFO_ORIGIN, msname=save_to_ms,
+                                   app=__PHASECAL_SCAN_INFO_APP)
+
+    return calinfo
 
 
 def get_flagged_solns_per_spw(spwlist, gaintable, extendpol=False):

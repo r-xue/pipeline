@@ -557,20 +557,22 @@ class MeasurementSetReader:
         return (acs_software_version, acs_software_build_version)
 
     @staticmethod
-    def get_history(ms: domain.MeasurementSet) -> numpy.ndarray:
-        """
-        Retrieve the MS history.
+    def get_history(ms_name: str) -> np.ndarray | None:
+        """Retrieve the MS history from the HISTORY table.
+
+        Args:
+            ms_name: Path to the measurement set directory.
 
         Returns:
-            A numpy array with the history messages.
+            Numpy array containing history messages, or None if table cannot be read.
         """
         try:
-            history_table = os.path.join(ms.name, 'HISTORY')
+            history_table = os.path.join(ms_name, 'HISTORY')
             with casa_tools.TableReader(history_table) as ht:
                 msgs = ht.getcol('MESSAGE')
             return msgs
-        except:
-            LOG.info(f"Unable to read HISTORY table for MS {_get_ms_basename(ms)}")
+        except Exception:  # More specific than bare except
+            LOG.info("Unable to read HISTORY table for MS %s", os.path.basename(ms_name))
             return None
 
 

@@ -8,8 +8,8 @@ import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
+from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import get_calinfo_from_ms
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -208,6 +208,9 @@ class Mstransform(basetask.StandardTaskTemplate):
         # Copy across requisite XML files.
         self._copy_xml_files(inputs.vis, inputs.outputvis)
 
+        # Update output MS history.
+        self._update_history(inputs.vis, inputs.outputvis)
+
         return result
 
     def analyse(self, result):
@@ -242,6 +245,10 @@ class Mstransform(basetask.StandardTaskTemplate):
                 LOG.info('Copying %s from original MS to science targets cont+line MS', xml_filename)
                 LOG.trace('Copying %s: %s to %s', xml_filename, vis_source, outputvis_targets_contline)
                 shutil.copyfile(vis_source, outputvis_targets_contline)
+
+    @staticmethod
+    def _update_history(vis, outputvis):
+        get_calinfo_from_ms(vis, save_to_ms=outputvis)
 
 
 class MstransformResults(basetask.Results):

@@ -333,8 +333,10 @@ class ImportData(basetask.StandardTaskTemplate):
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
             # Try getting any saved data type information from the MS HISTORY table
-            ms_history = tablereader.MeasurementSetReader.get_history(ms)
-            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            ms_history = tablereader.MeasurementSetReader.get_history(ms.name)
+            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = (
+                importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            )
 
             if inputs.datacolumns not in (None, {}):
                 # Parse user defined datatype information via task parameter

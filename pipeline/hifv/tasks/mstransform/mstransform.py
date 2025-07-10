@@ -116,6 +116,9 @@ class VlaMstransform(mst.Mstransform):
 
         # Copy across requisite XML files.
         mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis)
+        
+        # Update ms history.
+        mst.Mstransform._update_history(inputs.vis, inputs.outputvis)
 
         if not self.inputs.omit_contline_ms:
             # Create output MS for line data (_target.ms)
@@ -214,6 +217,9 @@ class VlaMstransform(mst.Mstransform):
 
             # Copy across requisite XML files.
             mst.Mstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
+
+            # Update ms history
+            mst.Mstransform._update_history(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')
