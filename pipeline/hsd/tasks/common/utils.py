@@ -518,7 +518,8 @@ def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
     """
     Yield row IDs in datatable that matches given selection criteria.
 
-    Note this method skips rows in which online flag is set to all polarizations.
+    Note: this method skips DataTable row IDs in which online flag is active
+    in all polarizations
 
     Args:
         datatable: A datatable instance.

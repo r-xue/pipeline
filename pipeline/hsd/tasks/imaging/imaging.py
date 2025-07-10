@@ -1784,7 +1784,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             tirp : Parameter object of calculate_theoretical_image_rms()
         """
         unit = tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
-        # Total time on source of data at least one of polarization is NOT online flagged.
+        # Total time on source of data not online flagged for all polarizations.
         t_on_tot = tirp.cqa.getvalue(tirp.cqa.convert(tirp.cqa.quantity(
             tirp.dt.getcol('EXPOSURE').take(tirp.index_list, axis=-1).sum(), unit), tirp.time_unit))[0]
         # Additional flag fraction
@@ -1799,7 +1799,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # the actual time on source
         tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
         LOG.info('The actual on source time = {} {}'.format(tirp.t_on_act, tirp.time_unit))
-        LOG.info('- total time on source (excl. online flag integrations) = {} {}'.format(t_on_tot, tirp.time_unit))
+        LOG.info('- total time on source (excl. online flagged integrations) = {} {}'.format(t_on_tot, tirp.time_unit))
         LOG.info('- addtional flag fraction = {} %'.format(100 * frac_flagged))
 
     def _obtain_calibration_tables_applied(self, tirp: imaging_params.TheoreticalImageRmsParameters):
@@ -1883,7 +1883,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{tirp.msobj.execblock_id}:{tirp.msobj.antennas[tirp.antid].name}')
             return SKIP
         tirp.dt = cp.dt_dict[tirp.msobj.basename]
-        # Note: index_list is a list of row IDs in DataTable for selected data EXCLUDING rows where all pols are flagged online.
+        # Note: index_list is a list of DataTable row IDs for selected data EXCLUDING rows where all pols are flagged online.
         tirp.index_list = common.get_index_list_for_ms(tirp.dt, [tirp.msobj.origin_ms],
                                                         [tirp.antid], [tirp.fieldid], [tirp.spwid])
         if len(tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
