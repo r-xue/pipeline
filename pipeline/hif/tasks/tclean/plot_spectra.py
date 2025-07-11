@@ -822,7 +822,14 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
         results = RescaleTrans(imageTransmission, plt.ylim())
         rescaledImage = results[0]
         # You need to keep the signal sideband frequency range so that the overlay works!
-        plt.plot(freq, rescaledImage, 'm--')
+        # PIPE-2649: For some re-binning cases like specmode='repBW' it can
+        # happen that the opposite sideband result has a different vector length
+        # which would lead to plotting exceptions.
+        if len(freq) != len(rescaledImage):
+            rescaledImageNew = np.interp(list(range(len(freq))), list(range(len(rescaledImage))), rescaledImage)
+            plt.plot(freq, rescaledImageNew, 'm--')
+        else:
+            plt.plot(freq, rescaledImage, 'm--')
 
     plt.draw()
     fig = plt.gcf()
