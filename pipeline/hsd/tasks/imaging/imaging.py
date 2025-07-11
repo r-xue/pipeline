@@ -2151,7 +2151,7 @@ def convert_range_list_to_string(range_list: List[int]) -> str:
 
 def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
     """
-    Convert a list of index ranges to List of signle ranges
+    Convert a list of index ranges to list of signle ranges
 
     Args:
         range_list : A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
