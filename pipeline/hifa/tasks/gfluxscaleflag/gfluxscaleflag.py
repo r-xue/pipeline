@@ -495,44 +495,18 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
         inputs = self.inputs
 
-        # PIPE-1154: the phase solves for flux calibrator should always use
-        # combine='', gaintype='G', and no spwmap or interp.
-        if 'AMPLITUDE' in inputs.intent:
-            LOG.info('Compute phase gaincal table for flux calibrator.')
-            self._do_gaincal(intent='AMPLITUDE', gaintype='G', calmode='p', combine='', solint=inputs.phaseupsolint,
-                             minsnr=inputs.minsnr, refant=inputs.refant)
-
-        # PIPE-2082: the phase solves for the diffgain calibrator should always
-        # use combine='', gaintype='G', and no spwmap or interp.
-        if ('DIFFGAINSRC' in inputs.intent or 'DIFFGAINREF' in inputs.intent) \
-                and inputs.ms.get_fields(intent='DIFFGAINREF,DIFFGAINSRC'):
-            LOG.info('Compute phase gaincal table for diffgain calibrator.')
-            self._do_gaincal(intent='DIFFGAINREF,DIFFGAINSRC', gaintype='G', calmode='p', combine='',
-                             solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant)
-
-        # PIPE-1154: for PHASE calibrator and CHECK source fields, create
-        # separate phase solutions for each combination of intent, field, and
-        # use optimal gaincal parameters based on spwmapping registered in the
-        # measurement set.
-        for intent in ['CHECK', 'PHASE']:
-            if intent in inputs.intent:
-                self._do_phasecal_per_field_for_intent(intent)
-
-    def _do_phasecal_per_field_for_intent(self, intent: str):
-        inputs = self.inputs
-
-        # Create separate phase solutions for each field covered by requested
-        # intent.
-        for field in inputs.ms.get_fields(intent=intent):
-            # Get optimal phase solution parameters for current intent and
-            # field, based on spw mapping info in MS.
-            combine, interp, spwmap = self._get_phasecal_params(self.inputs.ms, intent, field.name)
-
-            # Create phase caltable and merge it into the local context.
-            LOG.info(f'Compute phase gaincal table for intent={intent}, field={field.name}.')
-            self._do_gaincal(field=field.name, intent=intent, gaintype='G', calmode='p', combine=combine,
-                             solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant, spwmap=spwmap,
-                             interp=interp)
+        # PIPE-2499: create separate phase solutions for each combination of
+        # input intent and its corresponding fields, while using optimal gaincal
+        # parameters based on spwmapping registered in the measurement set.
+        # The phase caltables created are merged into the local context so they
+        # are pre-applied in the subsequent local amplitude calibration.
+        for intent in inputs.intent.split(','):
+            for field in inputs.ms.get_fields(intent=intent):
+                LOG.info(f'Compute phase gaincal table for intent={intent}, field={field.name}.')
+                combine, interp, spwmap = self._get_phasecal_params(inputs.ms, intent, field.name)
+                self._do_gaincal(field=field.name, intent=intent, gaintype='G', calmode='p', combine=combine,
+                                 solint=inputs.phaseupsolint, minsnr=inputs.minsnr, refant=inputs.refant, spwmap=spwmap,
+                                 interp=interp)
 
     @staticmethod
     def _get_phasecal_params(ms: MeasurementSet, intent: str, field: str) -> Tuple[str, Optional[str], list]:

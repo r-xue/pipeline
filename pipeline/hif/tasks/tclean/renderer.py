@@ -743,10 +743,10 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         # Save POLI/POLA paths which is known only after plot() has been called
                         values['poli_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
-                            'Ptotal', final_iter, 'image', 'mean').abspath
+                            'Plinear', final_iter, 'image', 'mean').abspath
                         values['poli_thumbnail'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
-                            'Ptotal', final_iter, 'image', 'mean').thumbnail
+                            'Plinear', final_iter, 'image', 'mean').thumbnail
                         values['pola_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
                             'Pangle', final_iter, 'image', 'mean').abspath
@@ -1664,7 +1664,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                         values['tab_url'] = tab_renderer.path
 
                     # Save POLI/POLA paths which is known only after plot() has been called
-                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Ptotal', final_iter, 'image', 'mean')
+                    pol_plot = get_plot(plots_dict, prefix, row.datatype, row.field, str(row.spw), 'Plinear', final_iter, 'image', 'mean')
                     if pol_plot is not None:
                         values['poli_abspath'] = pol_plot.abspath
                         values['poli_thumbnail'] = pol_plot.thumbnail
