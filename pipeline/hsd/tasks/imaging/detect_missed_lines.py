@@ -296,9 +296,6 @@ class DetectMissedLines():
         Returns:
             Dictionay of detection results for each method.
             True if wide enough missed lines are detected, False if not.
-
-        Raises:
-            ValueError for unkown mask_mode (should not happen)
         """
         # width_threshold is 2 or more
         width_threshold = max( width_threshold, 2 )
@@ -314,16 +311,13 @@ class DetectMissedLines():
                    'moment_mask': fig.add_axes( (0.55, 0.1, 0.43, 0.85) ) }
 
         detections = { 'single_beam': False, 'moment_mask': False }
-        for mask_mode in [ 'single_beam', 'moment_mask' ]:
-            match mask_mode:
-                case 'single_beam':
-                    f2, sigma = self._max_spec( weighted_cube )
-                    dev_threshold = DEVIATION_THRESHOLD_SINGLE_BEAM
-                case 'moment_mask':
-                    f2, sigma = self._mask_spec( weighted_cube )
-                    dev_threshold = DEVIATION_THRESHOLD_MOMENT_MASK
-                case _:
-                    raise ValueError( "Unknown mask_mode {}".format(mask_mode) )
+
+        mask_modes = {
+            'single_beam': (self._max_spec, DEVIATION_THRESHOLD_SINGLE_BEAM),
+            'moment_mask': (self._mask_spec, DEVIATION_THRESHOLD_MOMENT_MASK)
+        }
+        for mask_mode, (spec_func, dev_threshold) in mask_modes.items():
+            f2, sigma = spec_func( weighted_cube )
 
             # deviation/sigma (Z-scores)
             z_all = f2 / sigma
