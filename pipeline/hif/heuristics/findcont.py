@@ -45,7 +45,7 @@ class FindContHeuristics(object):
                 999.0 if there is more than one range
             warning_strings (list): List of warning texts
             joint_mask_name (str): Name of the joint mask file
-            momDiffSNR (float): momDiffSNR value
+            momDiffSNR (float): Moment difference SNR
         """
 
         with casa_tools.ImageReader(dirty_cube) as image:
