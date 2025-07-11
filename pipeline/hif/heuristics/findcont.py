@@ -53,7 +53,7 @@ class FindContHeuristics(object):
 
         if stats['min'][0] == stats['max'][0]:
             LOG.error('Cube %s is constant at level %s.' % (dirty_cube, stats['max'][0]))
-            return ['NONE'], 'none'
+            return {'ranges': ['NONE'], 'flags': []}, 'none', 999.0, ['Cube %s is constant at level %s.' % (dirty_cube, stats['max'][0])], 'none', -999.0
 
         # Run continuum finder on cube
         channel_selection, png_name, aggregate_bw, all_continuum, warning_strings, joint_mask_name, momDiffSNR = \
@@ -73,7 +73,7 @@ class FindContHeuristics(object):
         if 1 == len(channel_counts):
             single_range_channel_fraction = channel_counts[0]/float(numberOfChannelsInCube(dirty_cube))
         else:
-            single_range_channel_fraction = 999.
+            single_range_channel_fraction = 999.0
 
         flags = []
         if channel_selection == '':
