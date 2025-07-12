@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import pipeline.infrastructure.logging as logging
-from pipeline.h.tasks.common.displays import sky as sky
+from pipeline.h.tasks.common.displays import sky
 from pipeline.hif.heuristics.auto_selfcal.selfcal_helpers import unflag_failed_antennas
 from pipeline.infrastructure import casa_tools, filenamer
 from pipeline.infrastructure.casa_tasks import CasaTasks
@@ -371,32 +371,46 @@ class SelfcalSummary(object):
                 plot_wrappers[-1].parameters['group'] = 'Initial/Final Comparisons'
             summary_plots = plot_wrappers
 
-            n_initial, intensity_initial, rms_inital = SelfcalSummary.create_noise_histogram(ims['initial'])
-            n_final, intensity_final, rms_final = SelfcalSummary.create_noise_histogram(ims['final'])
-            if 'theoretical_sensitivity' in self.slib:
-                rms_theory = self.slib['theoretical_sensitivity']
-                if rms_theory != -99.0:
-                    rms_theory = self.slib['theoretical_sensitivity']
-                else:
-                    rms_theory = 0.0
-            else:
-                rms_theory = 0.0
-
             noise_histogram_plots_path = os.path.join(
-                self.stage_dir, 'sc.'+filenamer.sanitize(tb[0])+'_'+tb[1]+'_noise_plot.png')
+                self.stage_dir, 'sc.' + filenamer.sanitize(tb[0]) + '_' + tb[1] + '_noise_plot.png'
+            )
 
             LOG.debug('generating the noise histogram: %s', noise_histogram_plots_path)
-            LOG.debug('rms_initial %s', rms_inital)
-            LOG.debug('rms_final %s', rms_final)
-            LOG.debug('rms_theory %s', rms_theory)
 
-            SelfcalSummary.create_noise_histogram_plots(
-                n_initial, n_final, intensity_initial, intensity_final, rms_inital, rms_final,
-                noise_histogram_plots_path, rms_theory)
             noisehist_plot = logger.Plot(noise_histogram_plots_path)
             noisehist_plot.parameters['title'] = 'Noise Histogram'
             noisehist_plot.parameters['caption'] = 'Noise Histogram'
             noisehist_plot.parameters['group'] = 'Initial/Final Comparisons'
+
+            if not os.path.exists(noise_histogram_plots_path):
+                n_initial, intensity_initial, rms_inital = SelfcalSummary.create_noise_histogram(ims['initial'])
+                n_final, intensity_final, rms_final = SelfcalSummary.create_noise_histogram(ims['final'])
+
+                if 'theoretical_sensitivity' in self.slib:
+                    rms_theory = self.slib['theoretical_sensitivity']
+                    if rms_theory != -99.0:
+                        rms_theory = self.slib['theoretical_sensitivity']
+                    else:
+                        rms_theory = 0.0
+                else:
+                    rms_theory = 0.0
+
+                LOG.debug('rms_initial %s', rms_inital)
+                LOG.debug('rms_final %s', rms_final)
+                LOG.debug('rms_theory %s', rms_theory)
+
+                SelfcalSummary.create_noise_histogram_plots(
+                    n_initial,
+                    n_final,
+                    intensity_initial,
+                    intensity_final,
+                    rms_inital,
+                    rms_final,
+                    noise_histogram_plots_path,
+                    rms_theory,
+                )
+            else:
+                LOG.info('the noise histogram already exists: %s', noise_histogram_plots_path)
 
         return summary_plots, noisehist_plot
 
