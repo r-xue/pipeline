@@ -416,9 +416,9 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row.append('Clean Threshold')
 
             for solint in solints:
-                if 'Pass' in slib[vislist[-1]].get(solint, {}):
+                slib_solint = slib[vislist[-1]].get(solint, {})
+                if 'Pass' in slib_solint and isinstance(slib_solint['Pass'], bool):
                     check_solint = True
-                    slib_solint = slib[vislist[-1]][solint]
                     vis_solint_keys = slib_solint.keys()
                     if row_name == 'Pass':
                         result_desc = '-'
@@ -432,6 +432,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                         with qa_renderer.get_file() as fileobj:
                             fileobj.write(qa_renderer.render())
                         result_desc = f'{result_desc}<br><a class="replace" href="{qa_renderer.rel_path}">QA Plots</a>'
+
                         row.append(result_desc)
                     if row_name == 'intflux_final':
                         row.append(
@@ -526,7 +527,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             for row_name in row_names:
                 row = [row_name]
                 for solint in solints:
-                    if 'Pass' in slib[vislist[-1]].get(solint, {}):
+                    slib_solint = slib[vislist[-1]].get(solint, {})
+                    if 'Pass' in slib_solint and isinstance(slib_solint['Pass'], bool):
                         nsol_stats = qa_extra_data[solint]['antpos_plots'][vis].parameters
                         if slib['obstype'] == 'mosaic':
                             nsol_stats_predrop = qa_extra_data[solint]['antpos_predrop_plots'][vis].parameters
