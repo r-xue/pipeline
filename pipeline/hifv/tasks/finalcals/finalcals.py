@@ -745,10 +745,6 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables.append(bpcaltable)
         AllCalTables.append(avgphasegaincaltable)
 
-        AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
-        AllCalTables.append(ktypecaltable)
-        AllCalTables.append(bpcaltable)
-
         GainTables_present = []
         for gt in AllCalTables:
             if os.path.exists(gt):
