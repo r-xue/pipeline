@@ -22,13 +22,15 @@ from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.pipelineqa import TargetDataSelection
 from pipeline.infrastructure.utils.math import round_up
+import pipeline.infrastructure.sessionutils as sessionutils
 
 LOG = infrastructure.get_logger(__name__)
 
 
 __all__ = [
     'ALMAPhcorBandpassInputs',
-    'ALMAPhcorBandpass',
+    'SerialALMAPhcorBandpass',
+    'ALMAPhcorBandpass',    
     'SessionALMAPhcorBandpass',
     'SessionALMAPhcorBandpassInputs'
 ]
@@ -124,10 +126,12 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
     # PIPE-628: new parameter to unregister existing bcals before appending to callibrary
     unregister_existing = vdp.VisDependentProperty(default=False)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     def __init__(self, context, output_dir=None, vis=None, mode='channel', hm_phaseup=None, phaseupbw=None,
                  phaseupmaxsolint=None, phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_phaseup_combine=None,
                  hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None,
-                 bpnsols=None, unregister_existing=None, hm_auto_fillgaps=None, **parameters):
+                 bpnsols=None, unregister_existing=None, hm_auto_fillgaps=None, parallel=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -310,8 +314,11 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
                 bandpass solves.
 
                 Example: minsnr=3.0
+
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
-        super(ALMAPhcorBandpassInputs, self).__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
+        super().__init__(context, output_dir=output_dir, vis=vis, mode=mode, **parameters)
         self.bpnsols = bpnsols
         self.bpsnr = bpsnr
         self.minbpsnr = minbpsnr
@@ -328,14 +335,11 @@ class ALMAPhcorBandpassInputs(bandpassmode.BandpassModeInputs):
         self.phaseupsolint = phaseupsolint
         self.solint = solint
         self.unregister_existing = unregister_existing
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_bandpass')
-@task_registry.set_casa_commands_comment(
-    'The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove '
-    'decorrelation of the bandpass calibrator before the bandpass is calculated.'
-)
-class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
+
+class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
     Inputs = ALMAPhcorBandpassInputs
 
     def prepare(self, **parameters):
@@ -1205,6 +1209,16 @@ class ALMAPhcorBandpass(bandpassworker.BandpassWorker):
         return ','.join(outspw)
 
 
+@task_registry.set_equivalent_casa_task('hifa_bandpass')
+@task_registry.set_casa_commands_comment(
+    'The spectral response of each antenna is calibrated. A short-solint phase gain is calculated to remove '
+    'decorrelation of the bandpass calibrator before the bandpass is calculated.'
+)
+class ALMAPhcorBandpass(sessionutils.ParallelTemplate):
+    Inputs = ALMAPhcorBandpassInputs
+    Task = SerialALMAPhcorBandpass
+
+
 class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
     # We want to apply bandpass calibrations from BANDPASS scans, not
     # fall back to calibration against PHASE or AMPLITUDE scans
@@ -1216,7 +1230,7 @@ class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
     def __init__(self, context, mode=None, hm_phaseup=None, phaseupbw=None, phaseupsolint=None, phaseupsnr=None,
                  phaseupnsols=None, hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None,
                  minbpsnr=None, bpnsols=None, parallel=None, **parameters):
-        super(SessionALMAPhcorBandpassInputs, self).__init__(context, mode=mode, hm_phaseup=hm_phaseup,
+        super().__init__(context, mode=mode, hm_phaseup=hm_phaseup,
                                                              phaseupbw=phaseupbw, phaseupsolint=phaseupsolint,
                                                              phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols,
                                                              hm_bandpass=hm_bandpass, solint=solint,
@@ -1224,6 +1238,9 @@ class SessionALMAPhcorBandpassInputs(ALMAPhcorBandpassInputs):
                                                              bpsnr=bpsnr, minbpsnr=minbpsnr,
                                                              bpnsols=bpnsols, **parameters)
         self.parallel = parallel
+
+
+
 
 
 BANDPASS_MISSING = '___BANDPASS_MISSING___'
@@ -1241,7 +1258,7 @@ class SessionALMAPhcorBandpass(basetask.StandardTaskTemplate):
         vis_list = sessionutils.as_list(inputs.vis)
 
         assessed = []
-        with sessionutils.VDPTaskFactory(inputs, self._executor, ALMAPhcorBandpass) as factory:
+        with sessionutils.VDPTaskFactory(inputs, self._executor, SerialALMAPhcorBandpass) as factory:
             task_queue = [(vis, factory.get_task(vis)) for vis in vis_list]
 
             for (vis, (task_args, task)) in task_queue:

@@ -1,20 +1,21 @@
 import collections
-from operator import itemgetter, attrgetter
+from operator import attrgetter, itemgetter
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+
 from . import resultobjects
 
 __all__ = [
+    'SerialTsyscal',
     'Tsyscal',
     'TsyscalInputs',
 ]
@@ -40,8 +41,10 @@ class TsyscalInputs(vdp.StandardInputs):
         casa_args = self._get_task_args(ignore=('caltable',))
         return namer.calculate(output_dir=self.output_dir, stage=self.context.stage, **casa_args)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements h_tsyscal
-    def __init__(self, context, output_dir=None, vis=None, caltable=None, chantol=None):
+    def __init__(self, context, output_dir=None, vis=None, caltable=None, chantol=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -62,8 +65,10 @@ class TsyscalInputs(vdp.StandardInputs):
 
                 Example: chantol=5
 
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
-        super(TsyscalInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -76,6 +81,7 @@ class TsyscalInputs(vdp.StandardInputs):
 
         # solution parameters
         self.chantol = chantol
+        self.parallel = parallel
 
     # Convert to CASA gencal task arguments.
     def to_casa_args(self):
@@ -85,9 +91,7 @@ class TsyscalInputs(vdp.StandardInputs):
         }
 
 
-@task_registry.set_equivalent_casa_task('h_tsyscal')
-@task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
-class Tsyscal(basetask.StandardTaskTemplate):
+class SerialTsyscal(basetask.StandardTaskTemplate):
     Inputs = TsyscalInputs
 
     def prepare(self) -> resultobjects.TsyscalResults:
@@ -125,6 +129,13 @@ class Tsyscal(basetask.StandardTaskTemplate):
         result.error.update(missing)
 
         return result
+
+
+@task_registry.set_equivalent_casa_task('h_tsyscal')
+@task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
+class Tsyscal(sessionutils.ParallelTemplate):
+    Inputs = TsyscalInputs
+    Task = SerialTsyscal
 
 
 # Holds an observing intent and the preferred/fallback gainfield args to be used for that intent

@@ -12,6 +12,7 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import RawflagchansResults, RawflagchansDataResults, RawflagchansViewResults
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = [
     'Rawflagchans',
@@ -75,10 +76,12 @@ class RawflagchansInputs(vdp.StandardInputs):
         science_spws = self.ms.get_spectral_windows(with_channels=True)
         return ','.join([str(spw.id) for spw in science_spws])
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hif_rawflagchans
     def __init__(self, context, output_dir=None, vis=None, spw=None, intent=None, flag_hilo=None,
                  fhl_limit=None, fhl_minsample=None, flag_bad_quadrant=None, fbq_hilo_limit=None,
-                 fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None, niter=None):
+                 fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None, niter=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -124,8 +127,10 @@ class RawflagchansInputs(vdp.StandardInputs):
 
             niter:
 
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
-        super(RawflagchansInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -146,10 +151,10 @@ class RawflagchansInputs(vdp.StandardInputs):
         self.fbq_antenna_frac_limit = fbq_antenna_frac_limit
         self.fbq_baseline_frac_limit = fbq_baseline_frac_limit
         self.niter = niter
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hif_rawflagchans')
-class Rawflagchans(basetask.StandardTaskTemplate):
+class SerialRawflagchans(basetask.StandardTaskTemplate):
     Inputs = RawflagchansInputs
 
     def prepare(self):
@@ -217,6 +222,12 @@ class Rawflagchans(basetask.StandardTaskTemplate):
         return result
 
 
+@task_registry.set_equivalent_casa_task('hif_rawflagchans')
+class Rawflagchans(sessionutils.ParallelTemplate):
+    Inputs = RawflagchansInputs
+    Task = SerialRawflagchans
+
+
 class RawflagchansDataInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, spw=None, intent=None):
@@ -227,7 +238,7 @@ class RawflagchansDataInputs(vdp.StandardInputs):
         spw    -- views are created for these spws.
         intent -- views are created for this intent.
         """
-        super(RawflagchansDataInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context

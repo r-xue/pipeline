@@ -16,6 +16,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.basetask import StandardTaskTemplate
 from pipeline.infrastructure.exceptions import PipelineException
 from pipeline.infrastructure.pipelineqa import QAScore, TargetDataSelection
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = ["TsysFlagContamination", "TsysFlagContaminationInputs"]
 
@@ -83,6 +84,8 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
     diagnostic_plots = vdp.VisDependentProperty(default=True)
     continue_on_failure = vdp.VisDependentProperty(default=True)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_tsysflagcontamination
     def __init__(
         self,
@@ -96,6 +99,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         relative_detection_factor=None,
         diagnostic_plots=None,
         continue_on_failure=None,
+        parallel=None,
     ):
         """Initialize Inputs.
 
@@ -134,8 +138,10 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
 
                 Default: True
 
+            parallel: Execute using CASA HPC functionality, if available.
+
         """
-        super(TsysFlagContaminationInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -154,6 +160,7 @@ class TsysFlagContaminationInputs(vdp.StandardInputs):
         # heuristic parameter arguments
         self.remove_n_extreme = remove_n_extreme
         self.relative_detection_factor = relative_detection_factor
+        self.parallel = parallel
 
 
 @dataclasses.dataclass
@@ -200,11 +207,9 @@ class ExternFunctionArguments:
         )
 
 
-@task_registry.set_equivalent_casa_task("hifa_tsysflagcontamination")
-@task_registry.set_casa_commands_comment(
-    "Line contamination in the Tsys tables is detected and flagged."
-)
-class TsysFlagContamination(StandardTaskTemplate):
+
+
+class SerialTsysFlagContamination(StandardTaskTemplate):
     """
     Flag line contamination in the Tsys tables.
 
@@ -562,3 +567,13 @@ class TsysFlagContamination(StandardTaskTemplate):
             spw.receiver for spw in ms.get_spectral_windows(science_windows_only=True)
         ]
         return "DSB" in receivers
+
+
+@task_registry.set_equivalent_casa_task("hifa_tsysflagcontamination")
+@task_registry.set_casa_commands_comment(
+    "Line contamination in the Tsys tables is detected and flagged."
+)
+class TsysFlagContamination(sessionutils.ParallelTemplate):
+
+    Inputs = TsysFlagContaminationInputs
+    Task = SerialTsysFlagContamination

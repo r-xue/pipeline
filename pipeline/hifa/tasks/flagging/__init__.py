@@ -6,7 +6,7 @@ from . import flagtargetsalma
 from . import qa
 from . import renderer
 from .flagdeteralma import SerialFlagDeterALMA, FlagDeterALMA
-from .flagtargetsalma import FlagTargetsALMA
+from .flagtargetsalma import SerialFlagTargetsALMA, FlagTargetsALMA
 
 qaadapter.registry.register_to_flagging_topic(flagdeteralma.FlagDeterALMAResults)
 qaadapter.registry.register_to_flagging_topic(flagtargetsalma.FlagTargetsALMAResults)
@@ -25,6 +25,11 @@ weblog.add_renderer(
 )
 
 # Use locally defined renderer for ALMA interferometry target flagging.
+weblog.add_renderer(
+    SerialFlagTargetsALMA,
+    renderer.T2_4MDetailsFlagTargetsALMARenderer(description="ALMA Target flagging"),
+    group_by=weblog.UNGROUPED,
+)
 weblog.add_renderer(
     FlagTargetsALMA,
     renderer.T2_4MDetailsFlagTargetsALMARenderer(description="ALMA Target flagging"),
