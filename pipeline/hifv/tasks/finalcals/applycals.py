@@ -185,6 +185,7 @@ class Applycals(applycal.SerialIFApplycal):
                 spwmaps = []
                 interps = []
                 calwts = []
+
                 for gaintable, gfield, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
                     if gfield:
                         ms = inputs.context.observing_run.get_measurement_sets()[0]
@@ -215,11 +216,12 @@ class Applycals(applycal.SerialIFApplycal):
                     # Determine what tables gainfield should used with if mode='gainmap'
                     for i, table in enumerate(args['gaintable']):
                         if 'finalampgaincal' in table or 'finalphasegaincal' in table:
-                            args['interp'][i] = 'linear'
-                            args['gainfield'][i] = gainfield
-
-                    # args['interp'] = ['', '', '', '', 'linear,linearflag', '', 'linear', 'linear']
-                    # args['gainfield'] = ['','','','','','', gainfield, gainfield]
+                            taql = (f"FIELD_ID == {gainfield}")
+                            if utils.get_row_count(table, taql):
+                                args['interp'][i] = 'linear'
+                                args['gainfield'][i] = gainfield
+                            else:
+                                LOG.warning(f"No data found for {gfield} in {table}, using gainfield = ''")
                     args['scan'] = ','.join(scanlist)
                     LOG.info("Using gainfield {!s} and scan={!s}".format(gainfield, ','.join(scanlist)))
 
@@ -254,6 +256,7 @@ class Applycals(applycal.SerialIFApplycal):
                 spwmaps = []
                 interps = []
                 calwts = []
+
                 for gaintable, gfield, spwmap, interp, calwt in zip(calapp.gaintable, calapp.gainfield, calapp.spwmap, calapp.interp, calapp.calwt):
                     if gfield:
                         ms = inputs.context.observing_run.get_measurement_sets()[0]
