@@ -2157,7 +2157,7 @@ def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
         range_list : A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
 
     Returns:
-        A List of single ranges, e.g. '[ [imin0, imax0], [imin1, imax1], ...]
+        A list of single ranges, e.g. '[ [imin0, imax0], [imin1, imax1], ...]
 
     Example:
         >>> convert_range_list_to_string( [5, 10, 15, 20] )

@@ -38,7 +38,7 @@ SIGMA_CLIPPING_THRESHOLD = 6.0
 SIGMA_CLIPPING_MAX_ITERATIONS = 3
 
 
-class DetectMissedLines():
+class DetectMissedLines:
     """Class to find lines missed during line identification"""
     def __init__( self,
                   context: Context,
