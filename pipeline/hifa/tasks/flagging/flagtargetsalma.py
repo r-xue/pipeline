@@ -70,13 +70,6 @@ class FlagTargetsALMAInputs(vdp.StandardInputs):
         vis_root = sanitize_for_ms(self.vis)
         return vis_root + '.flagtargetstemplate.txt'
 
-    @filetemplate.convert
-    def filetemplate(self, value):
-        if isinstance(value, str):
-            return list(value.replace('[', '').replace(']', '').replace("'", "").split(','))
-        else:
-            return value
-
     @vdp.VisDependentProperty
     def inpfile(self):
         vis_root = sanitize_for_ms(self.vis)

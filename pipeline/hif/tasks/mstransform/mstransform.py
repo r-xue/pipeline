@@ -10,6 +10,7 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+import pipeline.infrastructure.sessionutils as sessionutils
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -26,13 +27,6 @@ class MstransformInputs(vdp.StandardInputs):
     def outputvis(self):
         vis_root = os.path.splitext(self.vis)[0]
         return vis_root + '_targets.ms'
-
-    @outputvis.convert
-    def outputvis(self, value):
-        if isinstance(value, str):
-            return list(value.replace('[', '').replace(']', '').replace("'", "").split(','))
-        else:
-            return value
 
     # By default find all the fields with TARGET intent
     @vdp.VisDependentProperty
@@ -111,9 +105,11 @@ class MstransformInputs(vdp.StandardInputs):
     chanbin = vdp.VisDependentProperty(default=1)
     timebin = vdp.VisDependentProperty(default='0s')
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hif_mstransform
     def __init__(self, context, output_dir=None, vis=None, outputvis=None, field=None, intent=None, spw=None,
-                 chanbin=None, timebin=None):
+                 chanbin=None, timebin=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -127,11 +123,15 @@ class MstransformInputs(vdp.StandardInputs):
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
-            outputvis: The list of output transformed MeasurementSets to be used for imaging. The output list must be the same length as the input
-                list. The default output name defaults to
-                <msrootname>_targets.ms
+            outputvis: A list of output MeasurementSets for line detection and imaging,. This list must have
+                the same length as the input list.
+                
+                Default Naming: By default, an input MS named `<msrootname>.ms`
+                will produce an output named `<msrootname>_targets.ms`.
 
-                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+                Examples:
+                    - outputvis='ngc5921_targets.ms'
+                    - outputvis=['ngc5921a_targets.ms', 'ngc5921b_targets.ms', 'ngc5921c_targets.ms']
 
             field: Select fields name(s) or id(s) to transform. Only fields with data matching the intent will be selected.
 
@@ -149,9 +149,10 @@ class MstransformInputs(vdp.StandardInputs):
 
             timebin: Bin width for time averaging. If timebin > 0s then timeaverage is automatically switched to True.
 
-        """
+            parallel: Execute using CASA HPC functionality, if available.
 
-        super(MstransformInputs, self).__init__()
+        """
+        super().__init__()
 
         # set the properties to the values given as input arguments
         self.context = context
@@ -163,6 +164,7 @@ class MstransformInputs(vdp.StandardInputs):
         self.spw = spw
         self.chanbin = chanbin
         self.timebin = timebin
+        self.parallel = parallel
 
     def to_casa_args(self):
 
@@ -187,8 +189,7 @@ class MstransformInputs(vdp.StandardInputs):
         return d
 
 
-@task_registry.set_equivalent_casa_task('hif_mstransform')
-class Mstransform(basetask.StandardTaskTemplate):
+class SerialMstransform(basetask.StandardTaskTemplate):
     Inputs = MstransformInputs
 
     def prepare(self):
@@ -246,7 +247,7 @@ class Mstransform(basetask.StandardTaskTemplate):
 
 class MstransformResults(basetask.Results):
     def __init__(self, vis, outputvis):
-        super(MstransformResults, self).__init__()
+        super().__init__()
         self.vis = vis
         self.outputvis = outputvis
         self.mses = []
@@ -295,6 +296,12 @@ class MstransformResults(basetask.Results):
 
     def __repr__(self):
         return 'MstranformResults({}, {})'.format(os.path.basename(self.vis), os.path.basename(self.outputvis))
+
+
+@task_registry.set_equivalent_casa_task('hif_mstransform')
+class Mstransform(sessionutils.ParallelTemplate):
+    Inputs = MstransformInputs
+    Task = SerialMstransform
 
 
 FLAGGING_TEMPLATE_HEADER = '''#
