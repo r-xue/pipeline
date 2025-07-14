@@ -222,7 +222,7 @@ class DetectMissedLines:
 
         return np.exp( -r2 / ( 2 * s2 ) )
 
-    def _extract_beam_spec( self, center: tuple[float, float] ) -> sdtyping.NpArray1D:
+    def _extract_beam_spec( self, weighted_cube: sdtyping.NpArray3D, center: tuple[float, float] ) -> sdtyping.NpArray1D:
         """
         Project the beam weighted image cube to a 1-D spectrum
 
@@ -232,8 +232,7 @@ class DetectMissedLines:
             projected 1-D spectrum
         """
         beam_weight = self._beam_weight( center )
-        cube = self.image.data[:, :, 0, :].transpose(2, 1, 0)
-        product = beam_weight[np.newaxis, :, :] * cube
+        product = beam_weight[np.newaxis, :, :] * weighted_cube
 
         return np.nanmean( product, axis=(1, 2) ) / np.nanmean( beam_weight )
 
@@ -256,7 +255,7 @@ class DetectMissedLines:
         """
         if center is None:
             chmax, x0, y0 = np.unravel_index(np.nanargmax(weighted_cube), np.shape(weighted_cube))
-        sb = self._extract_beam_spec( ( x0, y0 ) )
+        sb = self._extract_beam_spec( weighted_cube, ( x0, y0 ) )
         sigma_sb = median_abs_deviation(sb, nan_policy='omit', scale='normal')
 
         return sb, sigma_sb
