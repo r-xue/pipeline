@@ -7,6 +7,7 @@ See PIPE-2416 / PIPEREQ-182 for details.
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+import copy
 import math
 import os
 
@@ -78,26 +79,29 @@ class DetectMissedLines:
         # set field name
         self.field_name = self.msobj_list[0].get_fields( field_id=self.fieldid_list[0] )[0].name
 
-        # read image and weight files (assume weight=1.0 if associated weight file is not found)
+        # read image 
         self.image = sd_display.SpectralImage( self.item.imagename )
+        self.imagedata = copy.deepcopy( self.image.data )     # copying to increase performance
+
+        # read weight (assume weight=1.0 if associated weight file is not found)
         weightname = self.item.imagename + ".weight"
         if os.path.exists( weightname ):
-            self.weight = sd_display.SpectralImage( weightname )
+            self.weightdata = copy.deepcopy( sd_display.SpectralImage( weightname ).data )
             # check array shapes of image and weight
-            if self.image.data.shape != self.weight.data.shape:
+            if self.imagedata.shape != self.weightdata.shape:
                 raise ValueError(
                     "Demensions of image ({}) and weight ({}) do not match".format(self.item.imagename, weightname )
                 )
         else:
             LOG.warning( "Weight file {} not found. Assuming weight=1.0 for all pixels.".format( weightname ) )
-            self.weight = copy.deepcopy( self.image )
-            self.weight.data = np.ones( np.shape( self.image.data ) )
+            self.weightdata = copy.deepcopy( self.imagedata )
+            self.weightdata = np.ones( np.shape( self.imagedata ) )
 
         # number of spectral channels
         self.nchan = self.msobj_list[0].spectral_windows[self.spwid_list[0]].num_channels
 
         # 4th axis of image cube is the spectrum, 'edge' channels excluded.
-        if self.image.data.shape[3] != self.nchan - sum(self.edge):
+        if self.imagedata.shape[3] != self.nchan - sum(self.edge):
             # this vaiolates the assumption of the procdure
             raise ValueError(
                 "Number of spectral channels of spectral window object and image cube does not match"
@@ -300,8 +304,8 @@ class DetectMissedLines:
         width_threshold = max( width_threshold, 2 )
 
         # calculate the weighted cube
-        cube = self.image.data[:, :, 0, :].transpose(2, 1, 0)
-        weight = self.weight.data[:, :, 0, :].transpose(2, 1, 0)
+        cube = self.imagedata[:, :, 0, :].transpose(2, 1, 0)
+        weight = self.weightdata[:, :, 0, :].transpose(2, 1, 0)
         weighted_cube = cube * weight
 
         if self.do_plot:
