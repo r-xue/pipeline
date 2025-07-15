@@ -94,7 +94,6 @@ class DetectMissedLines:
                 )
         else:
             LOG.warning( "Weight file {} not found. Assuming weight=1.0 for all pixels.".format( weightname ) )
-            self.weightdata = copy.deepcopy( self.imagedata )
             self.weightdata = np.ones( np.shape( self.imagedata ) )
 
         # number of spectral channels
