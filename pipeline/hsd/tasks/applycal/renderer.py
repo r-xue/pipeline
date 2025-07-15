@@ -358,23 +358,29 @@ def generate_plot_object_from_name(ctx: Context, plot_name: str) -> Plot:
         Plot object with extracted metadata. If the plot name does not match
         the expected format, a Plot object with just the name is returned.
     """
-    pattern = re.compile(r"(.*\.ms)_(.*)_XX-YY_excess.png")
+    # pattern should match the name with the following format,
+    #
+    # <vis>_<field name>_<antenna name>_Spw<spw id>_XX-YY_excess.png
+    #
+    #   - vis should end with ".ms"
+    #   - field can contain any characters
+    #   - antenna should not contain "_"
+    #   - spw should be a number with 1 to 3 digits
+    #
+    pattern = re.compile(
+        r'(?P<vis>.+\.ms)_(?P<field>.+)_(?P<ant>[^_]+)_Spw(?P<spw>\d{1,3})'
+        r'_XX-YY_excess.png'
+    )
     m = pattern.match(os.path.basename(plot_name))
     if m:
-        groups = m.groups(default=())
-        assert len(groups) == 2
-        vis = groups[0]
-        # attributes should be like "FIELD_NAME_PM01_Spw17"
-        # where FIELD_NAME can contain arbitrary numbers of "_"
-        attributes = groups[1]
-        elements = attributes.split("_")
-        assert len(elements) >= 3
-        spw = int(elements[-1][3:])
+        vis = m.group('vis')
+        field = m.group('field')
+        antenna = m.group('ant')
+        spw = m.group('spw')
+        spw_id = int(spw)
         ms = ctx.observing_run.get_ms(vis)
-        spw_object = ms.get_spectral_window(spw)
+        spw_object = ms.get_spectral_window(spw_id)
         receiver = spw_object.band
-        antenna = elements[-2]
-        field = "_".join(elements[:-2])
         field_objects = (f for f in ms.fields if f.name.strip('"') == field or f.clean_name == field)
         field_object = next(field_objects, None)
         assert field_object is not None
