@@ -238,7 +238,31 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             plot.parameters['source'] = source
         return plots
 
-    def create_xy_deviation_plots(self, ctx: Context, results: ResultsList):
+    def create_xy_deviation_plots(
+            self,
+            ctx: Context,
+            results: ResultsList
+    ) -> tuple[dict[str, list[tuple[str, list[Plot]]]], dict[str, str]]:
+        """Process the XY-deviation plots for hsd_applycal summary page.
+
+        This function generates Plot objects for XY-deviation plots registered
+        to the results objects. Generated Plot objects are classified with the
+        metadata, and put to the detail page craeted by this function.
+        Summary plots are selected for each field and spectral window
+        combination based on the associated QA score.
+
+        Args:
+            ctx: Pipeline context.
+            results: List of ApplycalResults objects.
+
+        Returns:
+            Two tuple containing:
+            - A dictionary with keys as MS names and values as lists of tuples
+              containing lists of Plot objects for XY-deviation plots
+              per field. Each list contains summary plots for all science spws.
+            - A dictionary with MS names as keys and paths to the XY-deviation
+              detail subpages as values.
+        """
         xy_deviation_summary_plots = {}
         xy_deviation_subpages = {}
         xy_deviation_plots_all = []
@@ -319,6 +343,21 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
 
 def generate_plot_object_from_name(ctx: Context, plot_name: str) -> Plot:
+    """Generate a Plot object from the name of the plot.
+
+    This function assumes that the plot name holds some metadata about the
+    plot. Expected format of plot_name is::
+
+        <vis>_<field name>_<antenna name>_Spw<spw id>_XX-YY_excess.png
+
+    Args:
+        ctx: Pipeline context.
+        plot_name: Name of the plot file.
+
+    Returns:
+        Plot object with extracted metadata. If the plot name does not match
+        the expected format, a Plot object with just the name is returned.
+    """
     pattern = re.compile(r"(.*\.ms)_(.*)_XX-YY_excess.png")
     m = pattern.match(os.path.basename(plot_name))
     if m:
