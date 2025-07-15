@@ -637,7 +637,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         rgp.imagename_nro = None
         if cp.is_nro:
             rgp.imagename_nro = self.get_imagename(rgp.source_name, _v_spwids_unique, rgp.ant_name, rgp.asdm,
-                                                    stokes=rgp.correlations, specmode=rgp.specmode)
+                                                   stokes=rgp.correlations, specmode=rgp.specmode)
             LOG.info("Output image name for NRO: {}".format(rgp.imagename_nro))
 
     def _set_image_group_item_into_reduction_group_patameters(self, cp: imaging_params.CommonParameters,
@@ -688,7 +688,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # virtual spw ids
         rgp.v_spwids = [self.inputs.context.observing_run.real2virtual_spw_id(s, m)
-                         for s, m in zip(rgp.spwids, rgp.msobjs)]
+                        for s, m in zip(rgp.spwids, rgp.msobjs)]
 
         # image name
         self._set_image_name_based_on_virtual_spwid(cp, rgp)
@@ -1133,7 +1133,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # image name
         # image name should be based on virtual spw id
         pp.imagename = self.get_imagename(rgp.source_name, rgp.combined.v_spws_unique,
-                                           stokes=rgp.correlations, specmode=rgp.specmode)
+                                          stokes=rgp.correlations, specmode=rgp.specmode)
 
         # Imaging of all antennas
         LOG.info('Combine images of Source {} Spw {:d}'.format(rgp.source_name, rgp.combined.v_spws[REF_MS_ID]))
@@ -1250,9 +1250,9 @@ class SDImaging(basetask.StandardTaskTemplate):
         Detect lines that are possibly missed to be identified
 
         Args:
+            cp  : Common parameter object of prepare()
             rgp : Reduction group parameter object of prepare()
             pp  : Imaging post process parameters of prepare()
-            edge : edge parameter
         Raises:
             ValueError if unknown mask mode is returned DetectMissedLines.analyze()
         """
@@ -1770,7 +1770,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 return False
             with casa_tools.TableReader(_k2jytab) as tb:
                 _t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(tirp.spwid, tirp.antid),
-                               columns='CPARAM')
+                              columns='CPARAM')
                 if _t.nrows == 0:
                     LOG.warning('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(tirp.spwid,
                                 tirp.antid, os.path.basename(_k2jytab), tirp.error_msg))
@@ -1911,14 +1911,14 @@ class SDImaging(basetask.StandardTaskTemplate):
         if tirp.raster_info is None:
             _rsres = RasterScanHeuristicsResult(tirp.msobj)
             rgp.imager_result.rasterscan_heuristics_results_incomp \
-                              .setdefault(tirp.msobj.origin_ms, []) \
-                              .append(_rsres)
+                             .setdefault(tirp.msobj.origin_ms, []) \
+                             .append(_rsres)
             _rsres.set_result_fail(tirp.antid, tirp.spwid, tirp.fieldid)
             LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{tirp.msobj.execblock_id}:{tirp.msobj.antennas[tirp.antid].name}')
             return SKIP
         tirp.dt = cp.dt_dict[tirp.msobj.basename]
         tirp.index_list = common.get_index_list_for_ms(tirp.dt, [tirp.msobj.origin_ms],
-                                                        [tirp.antid], [tirp.fieldid], [tirp.spwid])
+                                                       [tirp.antid], [tirp.fieldid], [tirp.spwid])
         if len(tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
             LOG.info('No unflagged row in DataTable. Skipping further calculation.')
             return SKIP
