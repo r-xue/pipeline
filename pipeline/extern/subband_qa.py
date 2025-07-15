@@ -12,8 +12,8 @@ from casatools import table
 import pipeline.extern.adopted as adopted
 from pipeline.domain.measurementset import MeasurementSet
 import pipeline.domain.measures as measures
-from pipeline.infrastructure import casa_tools
 import pipeline.infrastructure.logging as logging
+from pipeline.infrastructure.utils import caltable_tools
 
 
 WVR_LO = [38.1927, 45.83125, 91.6625, 183.325, 259.7104, 274.9875, 366.650, 458.3125, 641.6375]
@@ -49,47 +49,6 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
 
 
 # Utility functions added by kberry or adopted from AU
-
-# Adapted from analysisUtils.getNChanFromCaltable()
-def nchan_from_caltable(caltable, spw) -> int:
-    """
-    Returns the number of channels of the specified spw in a caltable.
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    with casa_tools.TableReader(caltable) as mytb:
-        spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-
-    with casa_tools.TableReader(spectralWindowTable) as mytb:
-        nchan = mytb.getcell('NUM_CHAN', spw)
-
-    return nchan
-
-
-# Adapted from analysisUtils.getChanFreqFromCaltable()
-def chan_freq_from_caltable(caltable, spw) -> np.array:
-    """
-    Returns the frequency (in GHz) of the specified spw channel in a caltable.
-    Return array of all channel frequencies
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    with casa_tools.TableReader(caltable) as mytb:
-        spectralWindowTable = mytb.getkeyword('SPECTRAL_WINDOW').split()[1]
-
-    with casa_tools.TableReader(spectralWindowTable) as mytb:
-        spws = range(len(mytb.getcol('MEAS_FREQ_REF')))
-        chanFreqGHz = {}
-        for i in spws:
-            # The array shapes can vary, so read one at a time.
-            spectrum = mytb.getcell('CHAN_FREQ', i)
-            chanFreqGHz[i] = 1e-9 * spectrum
-
-    return chanFreqGHz[spw]
-
-
 def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     """
     Returns a dict of the bandwidths of the science spectral windows,
@@ -100,75 +59,6 @@ def science_spw_bandwidths(vis: MeasurementSet) -> dict[int, float]:
     for spw in spws:
         bandwidths[spw.id] = float(spw.bandwidth.to_units(measures.FrequencyUnits.HERTZ))
     return bandwidths
-
-
-def antenna_names_from_caltable(caltable) -> list[str]:
-    """
-    Returns the antenna names from the specified caltable's ANTENNA table.
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    mytable = os.path.join(caltable, 'ANTENNA')
-    with casa_tools.TableReader(mytable) as mytb:
-        names = mytb.getcol('NAME')  # an array
-
-    return list(names)
-
-
-def get_ant_ids_from_caltable(caltable) -> list[int]:
-    """
-    Returns a list of all unique antenna ids in the caltable
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    with casa_tools.TableReader(caltable) as tb:
-        table_ants = set(tb.getcol('ANTENNA1'))
-
-    caltable_antennas = [int(ant) for ant in table_ants]
-    return caltable_antennas
-
-
-def get_spws_from_table(caltable) -> list[int]:
-    """
-    Returns a list of all unique spws in the calibration table
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    with casa_tools.TableReader(caltable) as tb:
-        table_spws = set(tb.getcol('SPECTRAL_WINDOW_ID'))
-    caltable_spws = sorted([int(spw) for spw in table_spws])
-    return caltable_spws
-
-
-def field_ids_from_caltable(caltable) -> list[int]:
-    """
-    Returns a list of all unique field ids in the calibration table
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    with casa_tools.TableReader(caltable) as mytb:
-        fields = list(set(mytb.getcol('FIELD_ID')))
-    return fields
-
-
-def field_names_from_caltable(caltable) -> list[str]:
-    """
-    Returns a list of all unique field names in the calibration table
-    """
-    if not os.path.exists(caltable):
-        raise FileNotFoundError(f"Caltable {caltable} does not exist")
-
-    fields = field_ids_from_caltable(caltable)
-
-    with casa_tools.TableReader(caltable + '/FIELD') as mytb:
-        names = mytb.getcol('NAME')
-        fields = list(names[fields])
-
-    return fields
 
 
 # Unmodified by kberry, excepting formatting
@@ -291,11 +181,11 @@ def getInfoFromTable(vis, caltable) -> tuple[list[int], list[str], list[int], li
     Returns a tuple of field ids, field names, spw ids, antenna names, 
     and antenna ids from the specified caltable.
     """
-    fieldIds = field_ids_from_caltable(caltable)
-    fieldNames = field_names_from_caltable(caltable)
-    spwIds = get_spws_from_table(caltable)
-    antennaNames = antenna_names_from_caltable(caltable)
-    antIds = get_ant_ids_from_caltable(caltable)
+    fieldIds = caltable_tools.field_ids_from_caltable(caltable)
+    fieldNames = caltable_tools.field_names_from_caltable(caltable)
+    spwIds = caltable_tools.get_spws_from_table(caltable)
+    antennaNames = caltable_tools.antenna_names_from_caltable(caltable)
+    antIds = caltable_tools.get_ant_ids_from_caltable(caltable)
     pwv, pwv_sigma = adopted.getMedianPWV(vis)
     return fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv
 
@@ -393,8 +283,8 @@ def evalPerAntBP_Platform(data, output_dir, vis, caltable) -> dict:
 
         # Taking statistical summary values for heuristics
         # per spw, ant, and pol
-        spwIds = get_spws_from_table(caltable)
-        antennaNames = antenna_names_from_caltable(caltable)
+        spwIds = caltable_tools.get_spws_from_table(caltable)
+        antennaNames = caltable_tools.antenna_names_from_caltable(caltable)
 
         # Store information which needs to be written to files:
 
@@ -1543,8 +1433,8 @@ def setup_bandpass_dict(ms: MeasurementSet, caltable: str) -> dict:
                 LOG.debug(f"Processing spw: {myspw}")
 
                 bandpass_library[mytab][myfield][myspw] = {}
-                spw_nchan = nchan_from_caltable(caltable, myspw)
-                spw_freq = chan_freq_from_caltable(caltable, myspw) # GHz
+                spw_nchan = caltable_tools.nchan_from_caltable(caltable, myspw)
+                spw_freq = caltable_tools.chan_freq_from_caltable(caltable, myspw) # GHz
                 bandpass_library[mytab][myfield][myspw]['bw'] = spw_bandwidth[myspw]
                 bandpass_library[mytab][myfield][myspw]['nchan'] = spw_nchan
                 bandpass_library[mytab][myfield][myspw]['freq'] = spw_freq

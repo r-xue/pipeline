@@ -381,7 +381,32 @@ def _score_bandpass_phaseup_solint(
     return score, origin
 
 
-def _calc_subband_qa_score(spw_dict: dict, ms) -> pqa.QAScore:
+def _fraction_of_impacted_spws(spw_dict: dict, caltable) -> float:
+    """
+    Get the fraction of impacted spws out of the total spws 
+    with valid bandpass solutions. Spws without bandpass 
+    solutions are not included. 
+
+    Args:
+        spw_dict: dictionary of spws affected by platforming
+                 Expected structure: {spw_id: {'failure': str, 'antennas': list[str]}}
+        caltable: path to the calibration table
+
+    Returns:
+        Fraction of impacted spws out of the total spws 
+        with valid bandpass solutions in the caltable
+    """
+    total_spws_in_caltable = utils.caltable_tools.get_spws_from_table(caltable)
+
+    if total_spws_in_caltable == 0:
+        return 0.0 
+
+    spws_impacted = len(spw_dict)
+
+    return spws_impacted/total_spws_in_caltable
+
+
+def _calc_subband_qa_score(spw_dict: dict, ms, caltable) -> pqa.QAScore:
     """
     Calculate the QA score for subband issues.
 
@@ -394,7 +419,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms) -> pqa.QAScore:
         QA score
     """
     # Fraction of impacted spws
-    f_spw = len(spw_dict)/len(ms.get_spectral_windows())
+    f_spw = _fraction_of_impacted_spws(spw_dict, caltable)
 
     if f_spw <= 0.0:
         score = 1.0
@@ -458,10 +483,11 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     ms = context.observing_run.get_ms(vis)
 
     # Heuristics are evaluated only if the data is from BLC FDM mode
-    if "ALMA_BASELINE" not in ms.correlator_name:
+    # And there is nothing to evaluate if there is no bandpass result
+    if "ALMA_BASELINE" not in ms.correlator_name or not result.final:
         not_blc_qa_score = pqa.QAScore(
             1.0,
-            longmsg="The data is not BLC FDM mode: Bandpass subband QA is not evaluated.",
+            longmsg="No BLC FDM bandpass tables. Bandpass subband QA is not evaluated",
             shortmsg="Bandpass subband QA not evaluated.",
             vis=vis,
             origin=pqa.QAOrigin(
@@ -472,11 +498,6 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
         )
         scores.append(not_blc_qa_score)
         return scores
-
-    # Can't evaluate this QA score if there is no final result
-    if not result.final:
-        LOG.info(f"No bandpass solution found for {vis}. No subband QA score generated.")
-        return []
 
     # Calculate the QA score
     for calapp in result.final:
@@ -505,7 +526,7 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
             scores.append(failing_qascore)
             continue
 
-        qascore = _calc_subband_qa_score(spw_dict, ms)
+        qascore = _calc_subband_qa_score(spw_dict, ms, caltable)
         scores.append(qascore)
 
     return scores
