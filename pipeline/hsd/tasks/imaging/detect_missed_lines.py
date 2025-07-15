@@ -79,9 +79,10 @@ class DetectMissedLines:
         # set field name
         self.field_name = self.msobj_list[0].get_fields( field_id=self.fieldid_list[0] )[0].name
 
-        # read image 
+        # read image
         self.image = sd_display.SpectralImage( self.item.imagename )
         self.imagedata = copy.deepcopy( self.image.data )     # copying to increase performance
+        self.imagemask = copy.deepcopy( self.image.mask )
 
         # read weight (assume weight=1.0 if associated weight file is not found)
         weightname = self.item.imagename + ".weight"
@@ -304,8 +305,9 @@ class DetectMissedLines:
 
         # calculate the weighted cube
         cube = self.imagedata[:, :, 0, :].transpose(2, 1, 0)
+        mask = self.imagemask[:, :, 0, :].transpose(2, 1, 0)
         weight = self.weightdata[:, :, 0, :].transpose(2, 1, 0)
-        weighted_cube = cube * weight
+        weighted_cube = np.where( mask, np.nan, cube * weight )
 
         if self.do_plot:
             fig = figure.Figure( figsize=(16, 5) )
