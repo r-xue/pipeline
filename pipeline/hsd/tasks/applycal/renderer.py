@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from pipeline.domain.source import Source
     from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
+#    from pipeline.h.tasks.applycal.renderer import ApplycalAmpVsTimePlotRenderer
     from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
@@ -122,34 +123,14 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
             if len(r.amp_vs_time_summary_plots) > 0:
                 summary_plots = r.amp_vs_time_summary_plots
-                plots = []
-                for plot in summary_plots:
-                    path = plot.abspath
-                    dirname = os.path.dirname(path)
-                    newdir = os.path.join(dirname, weblog_dir)
-                    basename = os.path.basename(plot.basename)
-                    newpath = os.path.join(newdir, basename)
-                    os.rename(path, newpath)
-                    plot.abspath = newpath
-                    plots.append(plot)
-                amp_vs_time_summary_plots[vis].append(["", plots])
+                amp_vs_time_summary_plots[vis].append(["", summary_plots])
 
             if len(r.amp_vs_time_detail_plots) > 0:
                 detail_plots = r.amp_vs_time_detail_plots
-                plots = []
-                for plot in detail_plots:
-                    path = plot.abspath
-                    dirname = os.path.dirname(path)
-                    newdir = os.path.join(dirname, weblog_dir)
-                    basename = os.path.basename(plot.basename)
-                    newpath = os.path.join(newdir, basename)
-                    os.rename(path, newpath)
-                    plot.abspath = newpath
-                    plots.append(plot)
+                amp_vs_time_detail_plots[vis].extend(detail_plots)
 
-                amp_vs_time_detail_plots[vis].append(["", plots])
-                amp_vs_time_href = self.create_amp_vs_time_href(context, r, plots, super_renderer.ApplycalAmpVsTimePlotRenderer)
-                amp_vs_time_subpages[vis] = amp_vs_time_href
+        if len(amp_vs_time_detail_plots) > 0:
+            amp_vs_time_subpages = self.create_amp_vs_time_href(context, result, amp_vs_time_detail_plots)
 
         # members for parent template applycal.mako
         ctx.update({
@@ -259,13 +240,26 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return plots
 
-    def create_amp_vs_time_href(self, context, result, plots, renderer_cls=None):
+    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: Dict[str, List[List[List['Plot']]]]) -> str:
+        """Create detail page.
 
-        path = None
-        if renderer_cls is not None:
-            renderer = renderer_cls(context, result, plots)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                path = renderer.path
+        Args:
+            context : pipeline context
+            result : List of applycal result object
+            plots : Dictionary contains 'vis' and List of Plot object
+            renderer_cls : ApplycalAmpVsTimePlotRenderer
 
-        return path
+        Returns:
+            path: filepath of detail page
+        """
+        amp_vs_time_subpage = None
+        for d, plotter_cls in ((plots, super_renderer.ApplycalAmpVsTimePlotRenderer),):
+            if d:
+                all_plots = list(utils.flatten([v for v in d.values()]))
+                renderer = plotter_cls(context, result, all_plots)
+                with renderer.get_file() as fileobj:
+                    fileobj.write(renderer.render())
+                amp_vs_time_subpage = renderer.path
+        amp_vs_time_subpages = dict((vis, amp_vs_time_subpage) for vis in plots.keys())
+
+        return amp_vs_time_subpages

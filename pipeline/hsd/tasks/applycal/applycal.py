@@ -243,27 +243,30 @@ class SerialSDApplycal(SerialApplycal):
             input results instance
         """
         context = self.inputs.context
-        result.stage_number = context.task_counter
         vis = os.path.basename(self.inputs.vis)
         ms = context.observing_run.get_ms(vis)
 
         if not basetask.DISABLE_WEBLOG:
+            # mkdir stage_dir if it doesn't exist
+            result.stage_number = context.task_counter
+            stage_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
+            if not os.path.exists(stage_dir):
+                os.makedirs(stage_dir)
+
             fields = [x.name for x in ms.get_fields(intent='TARGET')]
             if len(fields) > 0:
                 # For summary plots
                 amp_vs_time_summary_plots = self.sd_plots_for_result(
                     context,
                     result,
-                    SingleDishPlotmsSpwComposite,
-                    ['TARGET']
+                    SingleDishPlotmsSpwComposite
                 )
 
                 # For detail plots
                 amp_vs_time_detail_plots = self.sd_plots_for_result(
                     context,
                     result,
-                    SingleDishPlotmsAntSpwComposite,
-                    ['TARGET']
+                    SingleDishPlotmsAntSpwComposite
                 )
 
             result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
@@ -273,11 +276,11 @@ class SerialSDApplycal(SerialApplycal):
 
         return result
 
-    def sd_plots_for_result(self, context, result, plotter_cls, intent, **kwargs):
+    def sd_plots_for_result(self, context, result, plotter_cls, **kwargs):
 
         vis = os.path.basename(self.inputs.vis)
         xaxis = 'time'
-        yaxis = 'amp'
+        yaxis = 'real'
         ms = context.observing_run.get_ms(vis)
         plotter = plotter_cls(context, result, ms, xaxis, yaxis, **kwargs)
         plots = plotter.plot()
@@ -387,7 +390,8 @@ class SingleDishPlotmsLeaf(object):
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 
-        self._figroot = os.path.dirname(context.report_dir)
+        self._figroot = os.path.join(context.report_dir,
+                                     'stage%s' % result.stage_number)
 
     def plot(self) -> List[logger.Plot]:
         """Generate a sky calibration plot.
@@ -401,7 +405,7 @@ class SingleDishPlotmsLeaf(object):
             ant=self.antenna_selection, spw=self.spw)
         title = 'Science target: calibrated amplitude vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis='field')
-        figfile = prefix + '.png'
+        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
         task = self._create_task(title, figfile)
 
         if os.path.exists(figfile):
@@ -434,6 +438,7 @@ class SingleDishPlotmsLeaf(object):
                      'yaxis': self.yaxis,
                      'ydatacolumn': 'corrected',
                      'coloraxis': 'field',
+                     'intent': 'OBSERVE_TARGET#ON_SOURCE',
                      'showgui': False,
                      'spw': self.spw,
                      'antenna': antenna,
@@ -480,7 +485,8 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         spwids = [spws.id for spws in ms.get_spectral_windows()]
         children = []
         for spw in spwids:
-            item = self.leaf_class(context, result, ms, xaxis, yaxis, spw=int(spw), ant=ant, pol=pol, **kwargs)
+            item = self.leaf_class(context, result, ms, xaxis, yaxis,
+                                   spw=int(spw), ant=ant, pol=pol, **kwargs)
             children.append(item)
         super().__init__(children)
 
@@ -490,7 +496,8 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
 
     leaf_class = SingleDishPlotmsSpwComposite
 
-    def __init__(self, context, result, ms: 'MeasurementSet', xaxis, yaxis, pol='', **kwargs):
+    def __init__(self, context, result, ms: 'MeasurementSet',
+                 xaxis, yaxis, pol='', **kwargs):
 
         ants = [int(i.id) for i in ms.get_antenna()]
         children = [self.leaf_class(context, result, ms, xaxis, yaxis,

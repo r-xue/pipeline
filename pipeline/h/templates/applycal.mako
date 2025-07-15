@@ -479,8 +479,7 @@ def format_spwmap(spwmap, scispws):
 				  data_vis="${True}"
 				  data_spw="${True}"
 				  title_id="sdcalampvstime"
-                  break_rows_by="intent"
-                  sort_row_by="baseband,spw">
+                  sort_row_by="spw">
 
 	<%def name="title()">
 		Science target: calibrated amplitude vs time
