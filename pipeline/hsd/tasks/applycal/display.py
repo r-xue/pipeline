@@ -40,7 +40,7 @@ class SingleDishPlotmsLeaf(object):
         Args:
             context: Pipeline context.
             result: SDApplycalResults instance.
-            ms: CalApplication instance.
+            ms: Measurement Set.
             xaxis: The content of X-axis of the plot.
             yaxis: The content of Y-axis of the plot.
             spw: Spectral window selection. Defaults to '' (all spw).
@@ -71,7 +71,7 @@ class SingleDishPlotmsLeaf(object):
                                      'stage%s' % result.stage_number)
 
     def plot(self) -> List[logger.Plot]:
-        """Generate a sky calibration plot.
+        """Generate an calibrated amplitude vs. time plot.
 
         Return:
             List of plot object.
@@ -153,7 +153,7 @@ class SingleDishPlotmsLeaf(object):
 
 class SingleDishPlotmsSpwComposite(common.LeafComposite):
     """
-    Create a PlotLeaf for each spw in the caltable or caltables.
+    Create a PlotLeaf for each spw in the Measurement Set.
     """
     # reference to the PlotLeaf class to call
     leaf_class = SingleDishPlotmsLeaf
