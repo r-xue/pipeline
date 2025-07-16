@@ -109,6 +109,8 @@ class VlaMstransform(mst.SerialMstransform):
         mstransform_args.pop('outputvis_for_line', None)
         mstransform_args.pop('spw_line', None)
         mstransform_args.pop('omit_contline_ms', None)
+        mstransform_args.pop('parallel', None)
+        
         mstransform_job = casa_tasks.mstransform(**mstransform_args)
 
         try:

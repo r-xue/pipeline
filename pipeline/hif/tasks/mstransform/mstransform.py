@@ -169,7 +169,7 @@ class MstransformInputs(vdp.StandardInputs):
     def to_casa_args(self):
 
         # Get parameter dictionary.
-        d = super(MstransformInputs, self).to_casa_args()
+        d = super().to_casa_args()
 
         # Force the data column to be 'corrected' and the
         # new (with casa 4.6) reindex parameter to be False
@@ -185,6 +185,9 @@ class MstransformInputs(vdp.StandardInputs):
             d['timeaverage'] = True
         else:
             d['timeaverage'] = False
+
+        # Remove parallel if it exists, as mstransform does not support it.
+        d.pop('parallel', None)
 
         return d
 
