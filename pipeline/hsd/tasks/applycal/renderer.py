@@ -24,7 +24,6 @@ if TYPE_CHECKING:
     from pipeline.domain.source import Source
     from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
-#    from pipeline.h.tasks.applycal.renderer import ApplycalAmpVsTimePlotRenderer
     from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
@@ -240,17 +239,16 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return plots
 
-    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: Dict[str, List[List[List['Plot']]]]) -> str:
+    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: Dict[str, List['Plot']]) -> Dict[str]:
         """Create detail page.
 
         Args:
             context : pipeline context
             result : List of applycal result object
             plots : Dictionary contains 'vis' and List of Plot object
-            renderer_cls : ApplycalAmpVsTimePlotRenderer
 
         Returns:
-            path: filepath of detail page
+            amp_vs_time_subpages: Dictionary contains 'vis' and filepath of detail page
         """
         amp_vs_time_subpage = None
         for d, plotter_cls in ((plots, super_renderer.ApplycalAmpVsTimePlotRenderer),):
