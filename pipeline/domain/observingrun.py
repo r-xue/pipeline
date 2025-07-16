@@ -344,7 +344,12 @@ class ObservingRun(object):
             MS. Returns None if either the given virtual spw ID does not exist
             or the given virtual spw ID does not appear in given MS.
         """
-        return self.get_real_spw_id_by_name(self.virtual_science_spw_ids.get(int(spw_id), None), target_ms)
+        spw_name = self.virtual_science_spw_ids.get(int(spw_id), None)
+        if spw_name:
+            return self.get_real_spw_id_by_name(spw_name, target_ms)
+        else:
+            LOG.warning('Virtual SPW ID %s not found in the virtual SPW mapping table.', spw_id)
+            return None
 
     def real2virtual_spw_id(self, spw_id: int | str, target_ms: MeasurementSet) -> int | None:
         """Translate a real (science) spw ID of a given MS to the virtual one for this pipeline run.
