@@ -320,7 +320,7 @@ class Syspower(basetask.StandardTaskTemplate):
                 with open(flag_file_name, 'r') as flag_file:
                     for line in flag_file:
                         try:
-                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)' reason", line)
+                            r = re.search(r"antenna='ea(\d*)&&\*' timerange='(.*)\' (?:spw='(.*)\')? (?:correlation='(.*)\')? reason", line)
                         except Exception as e:
                             r = False
                         if r:
