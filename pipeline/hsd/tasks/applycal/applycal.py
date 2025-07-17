@@ -238,9 +238,9 @@ class SerialSDApplycal(SerialApplycal):
     def analyse(self, results: SDApplycalResults) -> SDApplycalResults:
         """Analyse the results of the task.
 
-        This method assesses the quality of the calibrated applied in this stage.
-        The analysis focuses on the deviation of calibrated data between
-        XX and YY polarizations.
+        This method assesses the quality of the calibration applied in
+        this stage. The analysis focuses on the deviation of calibrated
+        data between XX and YY polarizations.
 
         Returns:
             SDApplycalResults: The results of the task.
