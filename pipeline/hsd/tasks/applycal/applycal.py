@@ -251,8 +251,7 @@ class SerialSDApplycal(SerialApplycal):
         ms_name = self.inputs.ms.name
         if self.inputs.ms.antenna_array.name == 'ALMA':
             applycal_qa_dir = './sd_applycal_output'
-            if not os.path.exists(applycal_qa_dir):
-                os.makedirs(applycal_qa_dir)
+            os.makedirs(applycal_qa_dir, exist_ok=True)
 
             stage_dir = os.path.join(
                 self.inputs.context.report_dir,
@@ -263,8 +262,7 @@ class SerialSDApplycal(SerialApplycal):
                 # in applycal_qa_dir
                 weblog_output_dir = applycal_qa_dir
             else:
-                if not os.path.exists(stage_dir):
-                    os.makedirs(stage_dir)
+                os.makedirs(stage_dir, exist_ok=True)
                 weblog_output_dir = stage_dir
 
             qa_result = sd_applycal_qa.get_ms_applycal_qascores(
