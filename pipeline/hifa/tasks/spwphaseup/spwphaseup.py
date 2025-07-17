@@ -1,4 +1,3 @@
-import collections
 import copy
 import os
 from typing import Dict, List, Optional, Set, Tuple
@@ -17,6 +16,7 @@ from pipeline.h.tasks.common import commonhelpermethods
 from pipeline.hif.tasks.gaincal import gtypegaincal
 from pipeline.hif.tasks.gaincal.common import GaincalResults
 from pipeline.hifa.heuristics.phasemetrics import PhaseStabilityHeuristics
+from pipeline.hifa.heuristics.phasespwmap import IntentField, SpwMapping
 from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
@@ -33,9 +33,6 @@ __all__ = [
     'SpwPhaseup',
     'SpwPhaseupResults'
 ]
-
-IntentField = collections.namedtuple('IntentField', 'intent field')
-SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype')
 
 
 class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
@@ -1428,8 +1425,7 @@ class SpwPhaseupResults(basetask.Results):
 
         ms = context.observing_run.get_ms(name=self.vis)
         if ms:
-            # Merge the spectral window mappings and the list of spws whose
-            # combined SNR does not meet the threshold.
+            # Merge the spectral window mappings.
             ms.spwmaps = self.spwmaps
 
             # Merge the phase calibrator mapping.
