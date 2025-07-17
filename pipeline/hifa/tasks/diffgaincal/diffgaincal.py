@@ -111,22 +111,22 @@ class DiffGaincalInputs(vdp.StandardInputs):
                     low-frequency reference intent solutions, the diffgain
                     high-frequency source intent solutions (actual band-to-band
                     offsets), and for the diagnostic residual phase offsets on
-                    diffgain high-frequency source intent.
+                    the diffgain high-frequency source intent.
                 - 'auto': Assess need for SpW combination based on SpwMapping
                     from hifa_spwphaseup, and where necessary check the
                     gaintable for missing SpWs / too many flagged data / too few
                     scan solutions.
                 - 'both': SpW combination is forced for the diffgain
                     low-frequency reference intent solutions and for the
-                    diagnostic residual phase offsets on diffgain high-frequency
-                    source intent.
+                    diagnostic residual phase offsets on the diffgain
+                    high-frequency source intent.
                 - 'offset': SpW combination is forced for the diffgain
                     high-frequency source intent solutions (actual band-to-band
                     offsets).
                 - 'reference': SpW combination is forced for the diffgain
                     low-frequency reference intent solutions.
                 - 'residual': SpW combination is forced for the diagnostic
-                    residual phase offsets on diffgain high-frequency source
+                    residual phase offsets on the diffgain high-frequency source
                     intent.
 
                 Example: hm_spwmapmode='auto'
