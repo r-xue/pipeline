@@ -34,7 +34,7 @@ class T2_4MDetailsDiffgaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             pipeline_context, results, gaincal_displays.GaincalPhaseVsTimeSummaryChart,
             gaincal_displays.GaincalPhaseVsTimeDetailChart, gaincal_renderer.GaincalPhaseVsTimePlotRenderer)
 
-        offset_results = [result.phaseoffsetresult for result in results]
+        offset_results = [result.residual_phase_result for result in results]
         offset_vs_time_summaries, offset_vs_time_subpages = get_plots(
             pipeline_context, offset_results, gaincal_displays.GaincalPhaseVsTimeSummaryChart,
             gaincal_displays.GaincalPhaseVsTimeDetailChart,
