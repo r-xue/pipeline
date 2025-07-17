@@ -10,7 +10,7 @@ from __future__ import annotations
 import collections
 import os
 import re
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING
 
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as super_renderer
@@ -22,14 +22,14 @@ import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.basetask import ResultsList
 from pipeline.infrastructure.renderer.logger import Plot
 
 if TYPE_CHECKING:
     from pipeline.domain.source import Source
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
+    from pipeline.infrastructure.basetask import ResultsList
+    from pipeline.infrastructure.launcher import Context
 
 LOG = logging.get_logger(__name__)
 
@@ -37,9 +37,9 @@ LOG = logging.get_logger(__name__)
 class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer):
     """SDApplyCal Renderer class for t2_4m."""
 
-    def __init__(self, uri: str='hsd_applycal.mako',
-                 description: str='Apply calibrations from context',
-                 always_rerender: bool=False):
+    def __init__(self, uri: str = 'hsd_applycal.mako',
+                 description: str = 'Apply calibrations from context',
+                 always_rerender: bool = False):
         """Initialise the class.
 
         Args:
@@ -50,7 +50,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         super(T2_4MDetailsSDApplycalRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
 
-    def update_mako_context(self, ctx: Dict, context: Context, result: ResultsList):
+    def update_mako_context(self, ctx: dict, context: Context, result: ResultsList):
         """Update mako context dict to render.
 
         Args:
@@ -148,7 +148,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         })
 
     def create_single_dish_science_plots(self, context: Context, results: ResultsList) \
-            -> Tuple[Dict[str, List[List[Union[str, List['Plot']]]]], Dict[str, str], Dict[str, measures.Distance]]:
+            -> tuple[dict[str, list[list[str | list[Plot]]]], dict[str, str], dict[str, measures.Distance]]:
         """
         Create plots for the science targets.
 
@@ -215,8 +215,8 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return amp_vs_freq_summary_plots, amp_vs_freq_subpages, max_uvs
 
-    def _plot_source(self, context: Context, result: 'ApplycalResults', ms: 'MeasurementSet', source: 'Source') \
-            -> List['Plot']:
+    def _plot_source(self, context: Context, result: ApplycalResults, ms: MeasurementSet, source: Source) \
+            -> list[Plot]:
         """Plot science plots for result.
 
         Args:
