@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from scipy import interpolate, special
+import xml.etree.ElementTree as ElementTree
 
 import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
@@ -993,16 +994,80 @@ def score_vla_agents(ms, summaries):
 
     0 < score < 1 === 60% < frac_flagged < 5%
     """
-    score = score_vla_science_data_flagged_by_agents(ms, summaries, 0.05, 0.6,
-                                                     ['online', 'template', 'autocorr', 'edgespw',
-                                                      'clip', 'quack', 'baseband'])
+    qascore_list = []
+    # PIPE-2576: Part-1: if flag template is used score < 0.5
+    for flag_stat in summaries:
+        if flag_stat["name"] == "template":
+            score_val = 0.3
+            msg = "Flag template is used for flagging"
+            origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                  metric_score=score_val,
+                                  metric_units='')
+            qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
 
-    new_origin = pqa.QAOrigin(metric_name='score_vla_agents',
-                              metric_score=score.origin.metric_score,
-                              metric_units='Fraction of data newly flagged by online, shadow, and template agents')
-    score.origin = new_origin
+    # PIPE-2576: Part-2: if clipping > 1% with spectral line window
+    # indentified, score < 0.5
+    is_continuum_only = True
+    for flag_stat in summaries:
+        if flag_stat["name"] == "clip":
+            for spw_id in flag_stat["spw"].keys():
+                spw = ms.get_spectral_window(spw_id)
+                flag_fraction = flag_stat["spw"][spw_id]["flagged"]/flag_stat["spw"][spw_id]["total"]
+                if spw.specline_window and is_continuum_only:
+                    is_continuum_only = False
+                if spw.specline_window and flag_fraction > 0.01:
+                    score_val = 0.3
+                    msg = "Clipping > 1% in spectral line windows identified"
+                    origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                          metric_score=score_val,
+                                          metric_units='Fraction of data that is flagged in clipping')
+                    qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+                    break
 
-    return score
+    # PIPE-2576: Part-3:  if clipping > 5% with continuum line window
+    for flag_stat in summaries:
+        if flag_stat["name"] == "clip" and is_continuum_only and (flag_stat["flagged"]/flag_stat["total"]) > 0.05:
+            score_val = 0.3
+            msg = "Clipping > 5% in continuum-only spectral windows."
+            origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                  metric_score=score_val,
+                                  metric_units='Fraction of data that is flagged in clipping')
+            qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2576: Part-4: if total flagging >30%, score < 0.5
+    if summaries:
+        flag_fraction = summaries[0]["flagged"]/summaries[0]["total"]
+        if flag_fraction > 0.30:
+            score_val = max([(1 - flag_fraction/.60), 0.0])
+            msg = "Total flag fraction > 30%"
+            origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                  metric_score=score_val,
+                                  metric_units='Total Fraction of data that is flagged')
+            qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+    else:
+        score_val = 0.0
+        msg = "No flag summaries found"
+        origin = pqa.QAOrigin(metric_name='score_flagdata',
+                              metric_score=score_val,
+                              metric_units='Total Fraction of data that is flagged')
+        qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+
+    # PIPE-2576: Part-5: endtime = 0 in flag.xml then score <0.5
+    flux_table = os.path.join(ms.name, 'flag.xml')
+    if os.path.exists(flux_table):
+        source_element = ElementTree.parse(flux_table)
+        if source_element:
+            for flagset in source_element.findall('row"'):
+                endtime = flagset.findtext("endTime")
+                if int(endtime):
+                    score_val = 0.3
+                    msg = "In flag.xml for online flags, end time is 0"
+                    origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                          metric_score=score_val,
+                                          metric_units='Total Fraction of data that is flagged')
+                    qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+                    break
+    return qascore_list
 
 
 @log_qa
