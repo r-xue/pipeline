@@ -18,7 +18,7 @@ from pipeline.infrastructure import task_registry
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure import CalApplication
-    from display import SingleDishPlotmsSpwComposite, SingleDishPlotmsAntSpwComposite
+    from pipeline.hsd.tasks.applycal.display import ApplyCalSingleDishPlotmsSpwComposite, ApplyCalSingleDishPlotmsAntSpwComposite
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -257,14 +257,14 @@ class SerialSDApplycal(SerialApplycal):
                 amp_vs_time_summary_plots = self.sd_plots_for_result(
                     context,
                     result,
-                    display.SingleDishPlotmsSpwComposite
+                    display.ApplyCalSingleDishPlotmsSpwComposite
                 )
 
                 # For detail plots
                 amp_vs_time_detail_plots = self.sd_plots_for_result(
                     context,
                     result,
-                    display.SingleDishPlotmsAntSpwComposite
+                    display.ApplyCalSingleDishPlotmsAntSpwComposite
                 )
 
             result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
@@ -274,16 +274,16 @@ class SerialSDApplycal(SerialApplycal):
 
         return result
 
-    def sd_plots_for_result(self, context: Context, result: SDApplycalResults, plotter_cls: Union[SingleDishPlotmsSpwComposite, SingleDishPlotmsAntSpwComposite], **kwargs):
+    def sd_plots_for_result(self, context: Context, result: SDApplycalResults, plotter_cls: Union['ApplyCalSingleDishPlotmsSpwComposite', 'ApplyCalSingleDishPlotmsAntSpwComposite'], **kwargs):
         """Generate amplitude vs. time plots from results instance.
 
         Args:
             context: Pipeline context.
             result: Results instance.
-            plotter_cls: Plotter class to generate plots of amplitude vs. time.
+            plotter_cls: Plotter class to generate plot objects of amplitude vs. time.
 
         Returns:
-            plots: List of plots of amplitude vs. time.
+            plots: List of plot objects of amplitude vs. time.
         """
         vis = os.path.basename(self.inputs.vis)
         xaxis = 'time'

@@ -239,7 +239,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return plots
 
-    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: Dict[str, List['Plot']]) -> Dict[str]:
+    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: dict[str, List['Plot']]) -> dict[str, str]:
         """Create detail page.
 
         Args:

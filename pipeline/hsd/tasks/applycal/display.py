@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 LOG = infrastructure.get_logger(__name__)
 
 
-class SingleDishPlotmsLeaf(object):
+class ApplyCalSingleDishPlotmsLeaf(object):
     """Class to execute plotms and return a plot wrapper.
 
     Task arguments for plotms are customized for single dish usecase.
@@ -151,12 +151,12 @@ class SingleDishPlotmsLeaf(object):
                            command=str(task))
 
 
-class SingleDishPlotmsSpwComposite(common.LeafComposite):
+class ApplyCalSingleDishPlotmsSpwComposite(common.LeafComposite):
     """
     Create a PlotLeaf for each spw in the Measurement Set.
     """
     # reference to the PlotLeaf class to call
-    leaf_class = SingleDishPlotmsLeaf
+    leaf_class = ApplyCalSingleDishPlotmsLeaf
 
     def __init__(self, context, result, ms: 'MeasurementSet',
                  xaxis, yaxis, ant='', pol='', **kwargs):
@@ -170,10 +170,10 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
         super().__init__(children)
 
 
-class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
+class ApplyCalSingleDishPlotmsAntSpwComposite(common.LeafComposite):
     """Class to create a PlotLeaf for each antenna and spw."""
 
-    leaf_class = SingleDishPlotmsSpwComposite
+    leaf_class = ApplyCalSingleDishPlotmsSpwComposite
 
     def __init__(self, context, result, ms: 'MeasurementSet',
                  xaxis, yaxis, pol='', **kwargs):
@@ -182,4 +182,4 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
         children = [self.leaf_class(context, result, ms, xaxis, yaxis,
                     ant=ant, pol=pol, **kwargs)
                     for ant in ants]
-        super(SingleDishPlotmsAntSpwComposite, self).__init__(children)
+        super().__init__(children)
