@@ -51,7 +51,7 @@ class FlagDeterALMASingleDishListQAHandler(pqa.QAPlugin):
     def handle(self, context: Context, result: ResultsList):
         """Attach QA scores to ResultsList object.
 
-        Collect QA scores from child results and attach
+        Collate QA scores from child results and attach
         them to ResultsList object.
 
         Args:
