@@ -69,7 +69,10 @@ class SelfcalQAHandler(pqa.QAPlugin):
 
         if not targets:
             score = None
-            longmsg = 'No self-calibration attempted: unsupported modes (e.g., ephemeris targets), or no suitable datatype found.'
+            longmsg = (
+                'No self-calibration attempted: unsupported observation modes '
+                '(e.g., ephemeris), or no suitable Datatype found.'
+            )
             shortmsg = 'No self-calibration attempted'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 

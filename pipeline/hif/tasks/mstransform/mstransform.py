@@ -151,7 +151,7 @@ class MstransformInputs(vdp.StandardInputs):
 
         """
 
-        super(MstransformInputs, self).__init__()
+        super().__init__()
 
         # set the properties to the values given as input arguments
         self.context = context
