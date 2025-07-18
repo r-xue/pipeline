@@ -3,7 +3,7 @@ import collections
 import os
 
 import numpy
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -12,7 +12,6 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain import DataType
-from pipeline.domain.singledish import MSReductionGroupDesc
 from pipeline.hsd.heuristics import MaskDeviationHeuristic
 from pipeline.infrastructure import task_registry
 from . import maskline
@@ -51,6 +50,7 @@ class SDBaselineInputs(vdp.StandardInputs):
     switchpoly = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
     deviationmask = vdp.VisDependentProperty(default=True)
+    deviationmask_sigma_threshold = vdp.VisDependentProperty(default=5.0)
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
@@ -103,6 +103,7 @@ class SDBaselineInputs(vdp.StandardInputs):
                  switchpoly: Optional[bool] = None,
                  clusteringalgorithm: Optional[str] = None,
                  deviationmask: Optional[bool] = None,
+                 deviationmask_sigma_threshold: Optional[bool] = None,
                  parallel: Optional[str] = None) -> None:
         """Construct SDBaselineInputs instance.
 
@@ -280,6 +281,11 @@ class SDBaselineInputs(vdp.StandardInputs):
 
                 Default: None (equivalent to True)
 
+            deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.
+                Actual threshold will be median + F * standard-deviation of the spectrum.
+
+                Default: None (equivallent to 5.0)
+
             parallel: Execute using CASA HPC functionality, if available.
 
                 Options: 'automatic', 'true', 'false', True, False.
@@ -304,6 +310,7 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.switchpoly = switchpoly
         self.clusteringalgorithm = clusteringalgorithm
         self.deviationmask = deviationmask
+        self.deviationmask_sigma_threshold = deviationmask_sigma_threshold
         self.parallel = parallel
 
     def to_casa_args(self) -> dict:
@@ -469,6 +476,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
+        deviationmask_sigma_threshold = inputs.deviationmask_sigma_threshold
 
         # mkdir stage_dir if it doesn't exist
         stage_number = context.task_counter
@@ -566,8 +574,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
                         deviation_mask[ms.basename][(fieldid, antennaid, spwid)] = ms.deviation_mask[(fieldid, antennaid, spwid)]
                 for (vis, params) in dvparams.items():
                     field_list, antenna_list, spw_list = params
-                    dvtasks.append(deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list,
-                                                            spw_list=spw_list, consider_flag=True, parallel=self.inputs.parallel))
+                    dvtasks.append(deviation_mask_heuristic(vis=vis,
+                                                            field_list=field_list,
+                                                            antenna_list=antenna_list,
+                                                            spw_list=spw_list,
+                                                            deviationmask_sigma_threshold=deviationmask_sigma_threshold,
+                                                            consider_flag=True,
+                                                            parallel=self.inputs.parallel))
                 for vis, dvtask in dvtasks:
                     dvmasks = dvtask.get_result()
                     field_list, antenna_list, spw_list = dvparams[vis]
@@ -751,6 +764,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
                  field_list: List[int],
                  antenna_list: List[int],
                  spw_list: List[int],
+                 deviationmask_sigma_threshold: float,
                  consider_flag: bool = False) -> None:
         """Construct DeviationMaskHeuristicsTask instance.
 
@@ -765,6 +779,8 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
             field_list: List of field ids to process
             antenna_list: List of antenna ids to process
             spw_list: List of spectral window ids to process
+            deviationmask_sigma_threshold: Threshold factor to detect the deviation.
+                                     (see SDBaselineInputs for details)
             consider_flag: Consider flag when perofrming heuristics. Defaults to False.
         """
         super(DeviationMaskHeuristicsTask, self).__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
@@ -772,6 +788,7 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
         self.field_list = field_list
         self.antenna_list = antenna_list
         self.spw_list = spw_list
+        self.deviationmask_sigma_threshold = deviationmask_sigma_threshold
 
     def execute(self) -> dict:
         """Execute heuristics.
@@ -781,8 +798,12 @@ class DeviationMaskHeuristicsTask(HeuristicsTask):
         """
 
         result = []
+
         for field_id, antenna_id, spw_id in zip(self.field_list, self.antenna_list, self.spw_list):
-            self.kwargs.update({'field_id': field_id, 'antenna_id': antenna_id, 'spw_id': spw_id})
+            self.kwargs.update({'field_id': field_id,
+                                'antenna_id': antenna_id,
+                                'spw_id': spw_id,
+                                'detection': self.deviationmask_sigma_threshold})
             mask_list = super(DeviationMaskHeuristicsTask, self).execute()
             result.append(mask_list)
         return result
@@ -793,6 +814,7 @@ def deviation_mask_heuristic(
         field_list: List[int],
         antenna_list: List[int],
         spw_list: List[int],
+        deviationmask_sigma_threshold: float,
         consider_flag: bool = False,
         parallel: Optional[bool] = None) -> Tuple[str, Union[mpihelpers.SyncTask, mpihelpers.AsyncTask]]:
     """Prepare task instance that can be executed in mpihelpers framework.
@@ -803,6 +825,8 @@ def deviation_mask_heuristic(
         antenna_list: List of antenna ids to process
         spw_list: List of spectral window ids to process
         consider_flag: Consider flag when performing heuristics. Defaults to False.
+        deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.
+                                 (see SDBaselineInputs for detail)
         parallel: Parallel execution or not. Currently disabled.
                   Task is always executed in serial mode. Defaults to None.
 
@@ -810,8 +834,13 @@ def deviation_mask_heuristic(
         Name of the MS and the task instance for mpihelpers framework.
     """
     # parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
-    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list,
-                                         antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
+    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic,
+                                         vis=vis,
+                                         field_list=field_list,
+                                         antenna_list=antenna_list,
+                                         spw_list=spw_list,
+                                         deviationmask_sigma_threshold=deviationmask_sigma_threshold,
+                                         consider_flag=consider_flag)
     # if parallel_wanted:
     if False:
         task = mpihelpers.AsyncTask(mytask)
