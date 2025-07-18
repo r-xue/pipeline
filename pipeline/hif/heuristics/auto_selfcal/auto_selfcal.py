@@ -1043,7 +1043,7 @@ class SelfcalHeuristics(object):
                             copy_products(imagename_field_initial, imagename_field_final)
 
                 final_SNR, final_RMS = estimate_SNR(sani_target + '_' + band + '_final.image.tt0')
-                if self.telescope != 'ACA' or self.aca_se_nfmask:
+                if self.telescope != 'ACA' or self.aca_use_nfmask:
                     final_NF_SNR, final_NF_RMS = estimate_near_field_SNR(
                         sani_target+'_'+band+'_final.image.tt0', las=selfcal_library[target][band]['LAS'])
                 else:

@@ -109,7 +109,7 @@ def fm_reason(slib):
 <!-- Brief Summary -->
 
 <a class="anchor" id="targetlist"></a>
-<h3>List of Mosaic Target Fields</h3>
+<h3>Mosaic Target: ${cleantargets[0]['sc_field']}</h3>
 
 % if not cleantargets:
     <p>No valid self-calibration result was returned.</p>
@@ -121,7 +121,7 @@ def fm_reason(slib):
 <table class="table table-bordered">
   <thead>
         <tr>
-            <th>Field</th>
+            <th>Sub-field</th>
             <th>Band</th>
             <th>SpW</th>
             <th>Phasecenter</th>
@@ -152,7 +152,7 @@ def fm_reason(slib):
     <% return STOP_RENDERING %>
 % endif
 
-<h3>Mosaic Target Fields Details</h3>
+<h3>Per-Subfield Details</h3>
 
 % for target in cleantargets:
 
@@ -162,13 +162,13 @@ def fm_reason(slib):
     show_spw_summary= slib['SC_success'] and spw_tabs[key] is not None
     show_sol_summary= solint_tabs[key] is not None
     show_per_field_summary= target.get('sc_mosaic_url_path', None)
-    valid_chars = "%s%s" % (string.ascii_letters, string.digits)
+    valid_chars = f'_.-{string.ascii_letters}{string.digits}'
     id_name=filenamer.sanitize(target['field_name']+'_'+target['sc_band'],valid_chars)
     %>
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      ${target['field_name']}&nbsp;${fm_band(target['sc_band'])}&nbsp;
+      ${target['sc_field']}: sub-field-${target['sc_subfield']} &nbsp;${fm_band(target['sc_band'])}&nbsp;
       <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 

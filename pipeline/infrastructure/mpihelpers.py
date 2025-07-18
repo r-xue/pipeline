@@ -22,8 +22,7 @@ except ImportError:
 
 from pipeline.infrastructure import exceptions
 from pipeline.infrastructure import logging
-from pipeline.infrastructure.utils import get_obj_size
-from .jobrequest import JobRequest
+from pipeline.infrastructure.utils import get_obj_size, gen_hash
 
 # global variable for toggling MPI usage
 USE_MPI = True
@@ -479,15 +478,17 @@ class TaskQueue:
         results = q.get_results()
     """
 
-    def __init__(self, parallel=True, executor=None):
+    def __init__(self, parallel=True, executor=None, unique=False):
 
         self.__queue = []
+        self.__hash = []
         self.__results = []
         self.__running = True
         self.__executor = executor
         self.__mpi_server_list = mpi_server_list
         self.__is_mpi_ready = is_mpi_ready()
         self.__async = parallel and self.__is_mpi_ready
+        self.__unique = unique
 
         LOG.info('TaskQueue initialized; MPI server list: %s', self.__mpi_server_list)
 
@@ -536,6 +537,12 @@ class TaskQueue:
         for args in iterable:
             self.add_functioncall(fn, *args)
 
+    def _add_task(self, task, task_hash):
+        if self.__unique and task_hash in self.__hash:
+            return
+        self.__queue.append(task)
+        self.__hash.append(task_hash)
+
     def add_jobrequest(self, fn, job_args, executor=None):
         """Add a jobequest into the queue.
 
@@ -544,6 +551,11 @@ class TaskQueue:
             fn = casa_tasks.imdev
             job_args = {'imagename': 'myimage.fits'}
         """
+        task_hash = gen_hash((fn, job_args))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug("Skipping duplicated JobRequest - fn: %s, job_args: %s", fn, job_args)
+            return
+
         if executor is None:
             executor = self.__executor
         if self.__async:
@@ -551,18 +563,30 @@ class TaskQueue:
             task = AsyncTask(executable)
         else:
             task = SyncTask(fn(**job_args), executor)
-        self.__queue.append(task)
+
+        self._add_task(task, task_hash)
 
     def add_functioncall(self, fn, *args, use_pickle=False, **kwargs):
+        task_hash = gen_hash((fn, args, kwargs))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug("Skipping duplicated JobRequest - fn: %s, args: %s, kwargs: %s", fn.__name__, args, kwargs)
+            return
 
         if self.__async:
             executable = Tier0FunctionCall(fn, *args, use_pickle=use_pickle, **kwargs)
+
             task = AsyncTask(executable)
         else:
             task = SyncTask(lambda: fn(*args, **kwargs))
-        self.__queue.append(task)
+
+        self._add_task(task, task_hash)
 
     def add_pipelinetask(self, task_cls, task_args, context, executor=None):
+        task_hash = gen_hash((task_cls, task_args, context))
+        if self.__unique and task_hash in self.__hash:
+            LOG.debug("Skipping duplicated PipelineTask - task_cls: %s, task_args: %s, content: %s",
+                      task_cls, task_args, context)
+            return
 
         if executor is None:
             executor = self.__executor
@@ -580,4 +604,5 @@ class TaskQueue:
             inputs = task_cls.Inputs(context, **task_args)
             task = task_cls(inputs)
             task = SyncTask(task, executor)
-        self.__queue.append(task)
+
+        self._add_task(task, task_hash)
