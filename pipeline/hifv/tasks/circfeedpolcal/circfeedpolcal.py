@@ -189,7 +189,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         tablesToAdd[0][2] = []  # Default for KCROSS table
         if self.inputs.mbdkcross:
-            _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
             baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
             addcallib = False
@@ -580,7 +580,7 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: spwmap for use with gaintable in callibrary (polcal and applycal)
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
+        baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
         baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
         spwmap = []

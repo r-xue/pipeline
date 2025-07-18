@@ -388,6 +388,9 @@ class PerAntennaChart(Chart):
                 continue
             with casa_tools.TableReader(tabitem) as tb:
                 times.extend(tb.getcol('TIME'))
+
+        if len(times) == 0:
+            return []
         mintime = np.min(times)
         maxtime = np.max(times)
         for spw in spws:
