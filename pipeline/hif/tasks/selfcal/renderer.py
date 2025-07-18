@@ -46,7 +46,7 @@ class SelfCalQARenderer(basetemplates.CommonRenderer):
         qa_desc = cleantarget['sc_field']
         subfield = cleantarget.get('sc_subfield', None)
         if subfield is not None:
-            qa_desc += f': sub-field-{subfield}'
+            qa_desc += f': Subfield-{subfield}'
         qa_desc += f': {solint}'
         self.extra_data = {
             'summary_tab': summary_tab,
@@ -423,7 +423,8 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     if row_name == 'Pass':
                         result_desc = '-'
                         if not slib_solint['Pass']:
-                            result_desc = '<font color="red">{}</font> {}'.format('Fail', slib_solint['Fail_Reason'])
+                            result_desc = '<font color="red">{}</font> {}'.format(
+                                'Fail', slib_solint.get('Fail_Reason', None))
                         else:
                             result_desc = '<font color="blue">{}</font>'.format('Pass')
 

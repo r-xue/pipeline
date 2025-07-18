@@ -168,7 +168,7 @@ def fm_reason(slib):
 
     <a class="anchor" id="${id_name}"></a>
     <h4>
-      ${target['sc_field']}: sub-field-${target['sc_subfield']} &nbsp;${fm_band(target['sc_band'])}&nbsp;
+      ${target['sc_field']}: Subfield-${target['sc_subfield']} &nbsp;${fm_band(target['sc_band'])}&nbsp;
       <a href="#targetlist"><sup>back to top</sup></a>&nbsp;&nbsp;
       <a class="btn btn-sm btn-light" data-toggle="collapse" 
           href="#${id_name}_summary" 
