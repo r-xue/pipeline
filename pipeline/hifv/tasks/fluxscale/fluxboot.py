@@ -1,7 +1,7 @@
 import math
 import os
 import collections
-from typing import Union, List, Dict, Sequence, Optional
+from typing import List
 
 import numpy as np
 
@@ -44,7 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
@@ -150,6 +150,8 @@ class FluxbootResults(basetask.Results):
         context.evla['msinfo'][m.name].fluxscale_spws = self.spws
         context.evla['msinfo'][m.name].fluxscale_result = self.fluxscale_result
         context.evla['msinfo'][m.name].fbversion = self.fbversion
+        # PIPE-730: adding spindex_results for AQUA report
+        context.evla['msinfo'][m.name].spindex_results = self.spindex_results
 
 
 @task_registry.set_equivalent_casa_task('hifv_fluxboot')
@@ -229,12 +231,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                         for spw in spws:
                             reference_frequency = center_frequencies[spw.id]
-                            try:
-                                EVLA_band = spw2band[spw.id]
-                            except Exception as e:
-                                LOG.info('Unable to get band from spw id - using reference frequency instead')
-                                EVLA_band = find_EVLA_band(reference_frequency)
-
+                            EVLA_band = spw2band[spw.id]
+ 
                             LOG.info("Center freq for spw " + str(spw.id) + " = " + str(reference_frequency)
                                      + ", observing band = " + EVLA_band)
 

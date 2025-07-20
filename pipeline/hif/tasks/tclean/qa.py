@@ -236,7 +236,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 imagename = result.image.replace('.pbcor', '')
                 poli_imagename = imagename.replace('IQUV', 'POLI')
-                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'poli', 'sigma': '0.0Jy/beam'}
+                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'lpoli', 'sigma': '0.0Jy/beam'}
                 job = casa_tasks.immath(**immath_arg)
                 res = job.execute()
                 pola_imagename = imagename.replace('IQUV', 'POLA')

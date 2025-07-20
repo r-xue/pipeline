@@ -740,8 +740,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     # x axes
     nchan = len(image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum'])
     channels = np.arange(1, nchan + 1)
-    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
-    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
+    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0]
+    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]
     freqs = np.linspace(freq_ch1, freq_chN, nchan)
 
     # Flux density spectrum
@@ -802,8 +802,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     fpattern = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
     cont_freq_ranges = fpattern.findall(image_robust_rms_and_spectra['cont_freq_ranges'].replace(';', ''))
     for cont_freq_range in cont_freq_ranges:
-        fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))
-        fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))
+        fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))[0]
+        fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))[0]
         fcLevel = plt.ylim()[0] + yrange * 0.025
         plt.plot([fLowGHz, fHighGHz], [fcLevel] * 2, 'c-', lw=2)
 
@@ -813,7 +813,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     plt.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
-        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz')))
+        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz'))[0])
         # Calculate image frequencies using TOPO frequencies from signal sideband.
         imageFreq0 = (2.0 * LO1 - freq[0]) * 1e9
         imageFreq1 = (2.0 * LO1 - freq[-1]) * 1e9

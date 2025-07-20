@@ -26,17 +26,41 @@ if TYPE_CHECKING:
 LOG = infrastructure.logging.get_logger(__name__)
 
 
-def find_EVLA_band(
-        frequency,
-        bandlimits: list[float] | None = None,
-        BBAND: str | None = '?4PLSCXUKAQ?'
-        ) -> str:
-    """identify VLA band"""
+def find_EVLA_band(frequency: float, bandlimits: list[float] | None = None, BBAND: str | None = '?4PLSCXUKAQ?') -> str:
+    """Identify VLA frequency band based on input frequency.
+
+    Determines the appropriate VLA band designation for a given frequency
+    by comparing against predefined frequency limits. Returns 'unknown' if the frequency
+    falls outside defined bands.
+
+    Args:
+        frequency: Input frequency in Hz to classify
+        bandlimits: Custom frequency boundaries in Hz. If None, uses default VLA band limits
+        BBAND: Band designation string where each character represents a band. '?' indicates
+            undefined bands
+
+    Returns:
+        Single character string representing the VLA band designation, or 'unknown' if the
+        frequency cannot be classified
+
+    Example:
+        >>> find_EVLA_band(1.4e9)  # 1.4 GHz L-band
+        'L'
+        >>> find_EVLA_band(100e6)  # 100 MHz, undefined band
+        'unknown'
+    """
     if bandlimits is None:
+        # Default VLA frequency band limits in Hz
         bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9]
+
     i = bisect.bisect_left(bandlimits, frequency)
 
-    return BBAND[i]
+    if BBAND[i] == '?':
+        # Band is undefined - log warning and return unknown
+        LOG.warning('Unable to determine VLA band for frequency %.2f MHz', frequency / 1e6)
+        return 'unknown'
+    else:
+        return BBAND[i]
 
 
 def _get_ms_name(ms: MeasurementSet | str) -> str:
@@ -124,7 +148,7 @@ class MeasurementSetReader:
 
                 scan_mask = (scan_number_col == scan_id)
 
-                # get the antennas used for this scan 
+                # get the antennas used for this scan
                 LOG.trace('Calculating antennas used for scan %s', scan_id)
                 antenna_ids = set()
                 scan_antenna1 = antenna1_col[scan_mask]
@@ -162,11 +186,9 @@ class MeasurementSetReader:
 
     @staticmethod
     def add_band_to_spws(ms: domain.MeasurementSet) -> None:
-        """
-        Sets spw.band, which is a string describing a band. 
-        """
+        """Sets spw.band, which is a string describing a band."""
         observatory = ms.antenna_array.name.upper()
-        
+
         # This dict is only populated if the spw's band number cannot be determined from its name for ALMA.
         alma_receiver_band = {}
 
@@ -176,12 +198,12 @@ class MeasurementSetReader:
                 LOG.debug("For MS {}, SpW {}, setting band to WVR.".format(ms.name, spw.id))
                 continue
 
-            # Determining the band number for ALMA data 
+            # Determining the band number for ALMA data
             #
             # First, try to determine the band number from the spw name
             # The expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
             # If this doesn't work and this is ALMA data, try to get the band number from the ASDM_RECEIVER table
-            # If this also fails, then set the band number using a look-up-table. 
+            # If this also fails, then set the band number using a look-up-table.
             #
             # See: PIPE-140 or PIPE-1078
             #
@@ -207,33 +229,31 @@ class MeasurementSetReader:
                 else:
                     LOG.debug("For MS {}, SpW {}, could not find band number information in ALMA_RECEIVER table.".format(ms.name, spw.id))
 
-            # If both fail for ALMA, set the band number as follows: 
+            # If both fail for ALMA, set the band number as follows:
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
-            LOG.debug("For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.".format(ms.name, spw.id, spw.band))
+            LOG.debug(
+                'For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.'.format(
+                    ms.name, spw.id, spw.band
+                )
+            )
 
-            # Used EVLA band name from spw instead of frequency range
-
+            # For VLA/EVLA, we can use the spw2band mapping to get the band name.
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
-
-                try:
-                    EVLA_band = spw2band[spw.id]
-                except:
-                    LOG.info('Unable to get band from spw id - using reference frequency instead')
-                    freqHz = float(spw.ref_frequency.value)
-                    EVLA_band = find_EVLA_band(freqHz)
-
-                EVLA_band_dict = {'4': '4m (4)',
-                                  'P': '90cm (P)',
-                                  'L': '20cm (L)',
-                                  'S': '13cm (S)',
-                                  'C': '6cm (C)',
-                                  'X': '3cm (X)',
-                                  'U': '2cm (Ku)',
-                                  'K': '1.3cm (K)',
-                                  'A': '1cm (Ka)',
-                                  'Q': '0.7cm (Q)'}
-
+                EVLA_band = spw2band[spw.id]
+                EVLA_band_dict = {
+                    '4': '4m (4)',
+                    'P': '90cm (P)',
+                    'L': '20cm (L)',
+                    'S': '13cm (S)',
+                    'C': '6cm (C)',
+                    'X': '3cm (X)',
+                    'U': '2cm (Ku)',
+                    'K': '1.3cm (K)',
+                    'A': '1cm (Ka)',
+                    'Q': '0.7cm (Q)',
+                    '?': 'unknown',
+                }
                 spw.band = EVLA_band_dict[EVLA_band]
 
     @staticmethod
@@ -413,12 +433,12 @@ class MeasurementSetReader:
                 ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
 
                 ms.science_goals['sbName'] = sbinfo.sbName
-            
+
                 # Populate the online ALMA Control Software names
                 LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
                 ms.acs_software_version, ms.acs_software_build_version = \
                     MeasurementSetReader.get_acs_software_version(ms, msmd)
-                    
+
             LOG.info('Populating ms.array_name...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
@@ -504,7 +524,7 @@ class MeasurementSetReader:
             correlator_name = None
             msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
             LOG.warning(msg)
-            
+
         return correlator_name
 
     @staticmethod

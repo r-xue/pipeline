@@ -2,14 +2,15 @@
 import numpy
 import os
 
-from typing import TYPE_CHECKING, Any, List, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.sessionutils as sessionutils
+from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.utils import relative_path
 import pipeline.infrastructure.vdp as vdp
-from pipeline.domain import DataTable, DataType
+from pipeline.domain import DataTable, DataType, MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
 from pipeline.hsd.heuristics import BaselineFitParamConfig
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -19,10 +20,10 @@ from . import plotter
 from .. import common
 from ..common import utils
 
+from .typing import FitFunc, FitOrder
+
 if TYPE_CHECKING:
     import numpy as np
-
-    from pipeline.infrastructure.launcher import Context
     from pipeline.hsd.tasks.common.utils import RGAccumulator
 
 LOG = infrastructure.get_logger(__name__)
@@ -173,8 +174,8 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
         context: 'Context',
         vis: Optional[Union[str, List[str]]] = None,
         plan: Optional[Union['RGAccumulator', List['RGAccumulator']]] = None,
-        fit_func: Optional[str] = None,
-        fit_order: Optional[int] = None,
+        fit_func: Optional[FitFunc] = None,
+        fit_order: Optional[FitOrder] = None,
         switchpoly: Optional[bool] = None,
         edge: Optional[List[int]] = None,
         deviationmask: Optional[Union[dict, List[dict]]] = None,
@@ -192,12 +193,20 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
             plan: Set of metadata for baseline subtraction, or List of
                   the them. Defaults to None. The task may fail if None
                   is given.
-            fit_func: Fitting function for baseline subtraction. You can choose
-                      either cubic spline ('spline' or 'cspline') or polynomial
-                      ('poly' or 'polynomial'). Default is 'cspline'.
-            fit_order: Fitting order for polynomial. For cubic spline, it is used to determine
-                       how much the spectrum is segmented into. None is equivalent to 'automatic'.
-                       Default ('automatic') is to determine the order automatically.
+            fit_func: Fitting function for baseline subtraction. Accepts either 
+                      a single string or a dictionary mapping SPW IDs (int or str) 
+                      to a fitting function. Valid function options: cubic spline 
+                      ('spline' or 'cspline') or polynomial ('poly' or 'polynomial'). 
+                      Default is 'cspline'. If a string is given, it applies to all 
+                      spectral windows (SPWs). If a dictionary is given, each SPW 
+                      can have a different fitting function, with 'cspline' as the 
+                      default for missing SPWs.
+            fit_order: Fitting order for polynomial. Accepts either a single integer or a dictionary 
+                       mapping SPW IDs (int or str) to an integer. For cubic spline, it is used 
+                       to determine how much the spectrum is segmented into. Default (None, 'automatic' 
+                       or `-1`) triggers automatic order selection (heuristics); `0` or any positive 
+                       integer uses the specified order. If a dictionary is provided, each SPW can have 
+                       a different order, with `-1` as the default for missing SPWs.
             switchpoly: Whether to fall back the fits from cubic spline to 1st or
                         2nd order polynomial when large masks exist at the edges
                         of the spw. Condition for switching is as follows:
@@ -277,7 +286,7 @@ class BaselineSubtractionWorkerInputs(vdp.StandardInputs):
 
         return args
 
-
+ 
 class BaselineSubtractionResults(common.SingleDishResults):
     """Results class to hold the result of baseline subtraction."""
 
@@ -348,6 +357,7 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         origin_ms = self.inputs.context.observing_run.get_ms(ms.origin_ms)
         rowmap = sdutils.make_row_map_between_ms(origin_ms, vis)
         fit_order = self.inputs.fit_order
+        fit_func = self.inputs.fit_func
         edge = self.inputs.edge
         args = self.inputs.to_casa_args()
         blparam = args['blparam']
@@ -367,9 +377,14 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
                   field_id_list,
                   antenna_id_list,
                   spw_id_list)
-
-        # blparam heuristics
-        blparam_heuristic = BaselineFitParamConfig(fitfunc=self.inputs.fit_func, switchpoly=self.inputs.switchpoly)
+        
+        unique_spws = set(spw_id_list)
+        
+        # Convert the fitting parameters into dictionaries mapping each SPW.
+        fit_order_dict = SerialBaselineSubtractionWorker.get_fit_order_dict(
+            fit_order, unique_spws, ms, self.inputs.context)
+        spw_funcs_dict = SerialBaselineSubtractionWorker.get_fit_func_dict(
+            fit_func, unique_spws, ms, self.inputs.context, self.inputs.switchpoly)
 
         # initialization of blparam file
         # blparam file needs to be removed before starting iteration through
@@ -378,18 +393,20 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
             LOG.debug('Cleaning up blparam file for %s', vis)
             os.remove(blparam)
 
-        # datatable = DataTable(context.observing_run.ms_datatable_name)
-
         for (field_id, antenna_id, spw_id) in process_list.iterate_id():
             if (field_id, antenna_id, spw_id) in deviationmask_list:
                 deviationmask = deviationmask_list[(field_id, antenna_id, spw_id)]
             else:
                 deviationmask = None
             formatted_edge = list(common.parseEdge(edge))
-            out_blparam = blparam_heuristic(self.datatable, ms, rowmap,
-                                            antenna_id, field_id, spw_id,
-                                            fit_order, formatted_edge,
-                                            deviationmask, blparam)
+            heuristic = spw_funcs_dict[spw_id]
+            current_fit_order = fit_order_dict.get(spw_id, 'automatic')
+            out_blparam = heuristic(
+                self.datatable, ms, rowmap,
+                antenna_id, field_id, spw_id,
+                current_fit_order, formatted_edge,
+                deviationmask, blparam
+            )
             assert out_blparam == blparam
 
         # execute sdbaseline
@@ -497,8 +514,115 @@ class SerialBaselineSubtractionWorker(basetask.StandardTaskTemplate):
         results.outcome['plot_list'] = plot_list
         results.outcome['baseline_quality_stat'] = stats
         return results
+    
+
+    def get_fit_order_dict(fit_order: Optional[Union[int, Dict[Union[int, str], int]]],
+                    spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None) -> Dict[int, Union[int, str]]:
+        """
+        Convert the fit_order parameter into a dictionary mapping each SPW ID to its fit order.
+        
+        If fit_order is None or falsy, every SPW is assigned 'automatic' (triggering heuristics).
+        If a single integer (or string) is provided, it is applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; missing SPWs default to 'automatic'.
+        
+        Args:
+            fit_order: The fit order parameter (int, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
+        
+        Raises:
+            ValueError: fit_order of string type has unsupported value.
+            TypeError: Value of fit_order has unsupported data type.
+            
+        Returns:
+            A dictionary mapping each SPW ID (int) to its fit order (int or 'automatic').
+        """
+        if not fit_order:
+            return {spw_id: 'automatic' for spw_id in spw_id_list}
+
+        elif isinstance(fit_order, (int, str)):
+            if isinstance(fit_order, str):
+                if fit_order != 'automatic':
+                    raise ValueError(f"Unsupported fit_order string: {fit_order}")
+                value = fit_order
+            elif isinstance(fit_order, int) and fit_order < 0:
+                value = 'automatic'
+            else:
+                value = fit_order
+            return {spw_id: value for spw_id in spw_id_list}
+
+        elif isinstance(fit_order, dict):
+            fit_order_dict = {}
+            for k, v in fit_order.items():
+                key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context and ms else str(k) # for unit tests
+                if isinstance(v, int) and v < 0:
+                    fit_order_dict[key] = 'automatic'
+                else:
+                    fit_order_dict[key] = v
+            return {spw_id: fit_order_dict.get(str(spw_id), 'automatic')
+                    for spw_id in spw_id_list}
+
+        else:
+            raise TypeError(f"Value of fit_order has wrong data type: {type(fit_order)}")
 
 
+    def get_fit_func_dict(fit_func: Optional[Union[str, Dict[Union[int, str], str]]],
+                        spw_id_list: List[int], ms: MeasurementSet = None, context: Context = None,  switchpoly=True) -> Dict[int, BaselineFitParamConfig]:
+        """
+        Convert the fit_func parameter into a dictionary mapping each SPW ID to its BaselineFitParamConfig.
+
+        If fit_func is None or falsy, the default 'cspline' is used.
+        If a single string is provided, one BaselineFitParamConfig instance is created and applied to all SPWs.
+        If a dictionary is provided, keys are normalized to integers; SPWs not specified default to 'cspline'.
+
+        Args:
+            fit_func: The fit function parameter (str, dict, or None).
+            spw_id_list: List of spectral window IDs to process.
+
+        Raises:
+            ValueError: fit_func has unsupported value.
+
+        Returns:
+            A dictionary mapping each SPW ID (int) to a BaselineFitParamConfig instance.
+            
+        """
+        if not fit_func:
+            fit_func_value = 'cspline'
+        else:
+            fit_func_value = fit_func
+
+        valid_funcs = {'spline', 'cspline', 'poly', 'polynomial'}
+        if not isinstance(fit_func_value, dict):
+            # Validate string
+            if isinstance(fit_func_value, str) and fit_func_value not in valid_funcs:
+                raise ValueError(f"Unsupported fit_func value: {fit_func_value}")
+            # Single string: Create one instance for all SPWs.
+            blparam_heuristic = BaselineFitParamConfig(
+                fitfunc=fit_func_value,
+                switchpoly=switchpoly
+            )
+            return {spw_id: blparam_heuristic for spw_id in spw_id_list}
+        else:
+            processed_fit_func = {}
+            for k, v in fit_func_value.items():
+                if v not in valid_funcs:
+                    raise ValueError(f"Unsupported fit_func value for SPW {k}: {v}")
+                key = str(context.observing_run.virtual2real_spw_id(k, ms)) if context else str(k) # for unit tests
+                processed_fit_func[key] = v
+
+            # For each spw, use its provided value or default to 'cspline'
+            unique_fit_funcs = {processed_fit_func.get(str(spw_id), 'cspline') for spw_id in spw_id_list}
+
+            # Create one BaselineFitParamConfig instance per unique function string.
+            heuristics_map = {
+                func_str: BaselineFitParamConfig(
+                    fitfunc=func_str,
+                    switchpoly=switchpoly
+                )
+                for func_str in unique_fit_funcs
+            }
+            return {spw_id: heuristics_map[processed_fit_func.get(str(spw_id), 'cspline')]
+                    for spw_id in spw_id_list}
+        
 class BaselineSubtractionWorker(sessionutils.ParallelTemplate):
     """Template class for parallel baseline subtraction task.
 
