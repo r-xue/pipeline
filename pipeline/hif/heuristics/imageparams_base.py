@@ -543,7 +543,7 @@ class ImageParamsHeuristics(object):
                                                      dopbcorr=False,
                                                      parallel=do_parallel
                                                      )
-                        LOG.debug('Imaging parameters for synthesized beam evluation:')
+                        LOG.debug('Imaging parameters for synthesized beam evaluation:')
                         LOG.debug('    field:     %s', field)
                         LOG.debug('    intent:    %s', intent)
                         LOG.debug('    spw        %s', valid_real_spwid_list)

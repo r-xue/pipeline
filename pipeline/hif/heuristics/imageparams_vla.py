@@ -684,3 +684,96 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 )
 
         return nfrms_multiplier
+
+    def representative_target(self) -> tuple[tuple[str | None, any, any], str, int, any, str, bool, str, str, str, str]:
+        """Determine representative target source and observing performance parameters.
+
+        Selects a representative source from TARGET intents, falling back to calibration
+        intents if necessary. Computes the least flagged spectral window and derives
+        frequency/bandwidth parameters for image heuristics.
+
+        Returns:
+            Tuple containing representative target info, source name, virtual SPW ID,
+            frequency, bandwidth mode, real target flag, and angular resolution parameters.
+
+        Raises:
+            Exception: If no suitable representative target can be found from any intent.
+        """
+        cqa = casa_tools.quanta
+
+        repr_ms = self.observing_run.get_ms(self.vislist[0])
+
+        # PIPE-2625: VLA lacks real representative source/frequency/bandwidth info
+        # ALMA provides repr_ms.representative_target tuple, but VLA returns (None, None, None)
+        repr_target = (None, None, None)
+        reprBW_mode = 'nbin'
+        real_repr_target = False
+
+        # Select representative source from TARGET intents
+        target_sources = [s.name for s in repr_ms.sources if 'TARGET' in s.intents]
+
+        if not target_sources:
+            if repr_target[0] == 'none':
+                LOG.warning('No TARGET intent found. Selecting from calibration intents.')
+                # Try calibration intents in priority order
+                for repr_intent in ['PHASE', 'CHECK', 'AMPLITUDE', 'FLUX', 'BANDPASS']:
+                    target_sources = [s.name for s in repr_ms.sources if repr_intent in s.intents]
+                    if target_sources:
+                        break
+
+                if not target_sources:
+                    raise Exception('Cannot select representative target from any calibration intent.')
+            else:
+                raise Exception('Cannot select representative target from TARGET intent.')
+
+        repr_source = target_sources[0]
+
+        # Determine least flagged spectral window
+        job = casa_tasks.flagdata(vis=repr_ms.name, mode='summary')
+        flag_stats = job.execute()
+        flag_stats_spw = flag_stats['spw']
+
+        spw_flagfrac = {
+            spw: flag_stats_spw[str(spw.id)]['flagged'] / flag_stats_spw[str(spw.id)]['total']
+            for spw in repr_ms.get_spectral_windows()
+        }
+
+        # Select SPW with minimum flagging fraction
+        repr_spw_obj = min(spw_flagfrac, key=spw_flagfrac.get)
+        repr_spw = repr_spw_obj.id
+
+        # Get central channel for frequency/bandwidth calculation
+        repr_chan_obj = repr_spw_obj.channels[repr_spw_obj.num_channels // 2]
+        repr_freq = cqa.quantity(
+            float(repr_chan_obj.getCentreFrequency().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz'
+        )
+        repr_bw = cqa.quantity(float(repr_chan_obj.getWidth().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz')
+        repr_target = (repr_source, repr_freq, repr_bw)
+
+        # Default imaging parameters for VLA
+        minAcceptableAngResolution = '0.0arcsec'
+        maxAcceptableAngResolution = '0.0arcsec'
+        maxAllowedBeamAxialRatio = '0.0'
+        sensitivityGoal = '0.0mJy'
+
+        LOG.info(
+            'No representative target for VLA. Choosing %s as representative source '
+            'and SPW=%s as representative spwid, based on the imaging heuristics.',
+            repr_source,
+            repr_spw,
+        )
+
+        virtual_repr_spw = self.observing_run.real2virtual_spw_id(repr_spw, repr_ms)
+
+        return (
+            repr_target,
+            repr_source,
+            virtual_repr_spw,
+            repr_freq,
+            reprBW_mode,
+            real_repr_target,
+            minAcceptableAngResolution,
+            maxAcceptableAngResolution,
+            maxAllowedBeamAxialRatio,
+            sensitivityGoal,
+        )
