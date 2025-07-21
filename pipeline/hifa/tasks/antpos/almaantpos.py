@@ -252,9 +252,19 @@ class ALMAAntpos(antpos.Antpos):
         # find antennas to remove (in JSON but not in MS)
         ants_from_json = set(query_dict['data'].keys())
         ants_from_ms = set(ant_names_from_ms)
-        remove_ants = sorted(ants_from_json - ants_from_ms)
+
+        # PIPE-2652: issue warnings if some antennas from MS are missing in JSON.
+        ants_not_in_json = sorted(ants_from_ms - ants_from_json)
+        if ants_not_in_json:
+            LOG.warning(
+                'Antenna(s) from %s are not found in the corresponding antpos JSON file %s : %s',
+                self.inputs.vis,
+                antposfile,
+                utils.commafy(ants_not_in_json, quotes=False),
+            )
 
         # Remove missing antennas and update file
+        remove_ants = sorted(ants_from_json - ants_from_ms)
         for ant in remove_ants:
             query_dict['data'].pop(ant)
 
