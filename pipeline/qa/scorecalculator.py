@@ -1022,7 +1022,6 @@ def score_vla_agents(ms, summaries):
                                           metric_score=score_val,
                                           metric_units='Fraction of data that is flagged in clipping')
                     qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
-                    break
 
     # PIPE-2576: Part-3:  if clipping > 5% with continuum line window
     for flag_stat in summaries:
@@ -1053,11 +1052,11 @@ def score_vla_agents(ms, summaries):
         qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
 
     # PIPE-2576: Part-5: endtime = 0 in flag.xml then score <0.5
-    flux_table = os.path.join(ms.name, 'flag.xml')
-    if os.path.exists(flux_table):
-        source_element = ElementTree.parse(flux_table)
+    flag_table = os.path.join(ms.name, 'Flag.xml')
+    if os.path.exists(flag_table):
+        source_element = ElementTree.parse(flag_table)
         if source_element:
-            for flagset in source_element.findall('row"'):
+            for flagset in source_element.findall('row'):
                 endtime = flagset.findtext("endTime")
                 if int(endtime):
                     score_val = 0.3
