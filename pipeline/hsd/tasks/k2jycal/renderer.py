@@ -89,7 +89,7 @@ class T2_4MDetailsSingleDishK2JyCalRenderer(basetemplates.T2_4MDetailsDefaultRen
                             spw_data[vspwid]["ms_dict"][ms_label].append((factor, corr, ant_name))
                             spw_data[vspwid]["all_factors"].append(factor)
                         # Always record the transformation, using a default if factor is None.
-                        jyperk = factor if factor is not None else 'N/A (1.0)'
+                        jyperk = '{:.3f}'.format(round(factor, 3)) if factor is not None else 'N/A (1.0)'
                         spw_tr[vspwid].append(trfunc(vspwid, ms_label, spwid, ant_name, corr, jyperk))
             reffile_list.append(r.reffile)
         reffile_list = list(dict.fromkeys(reffile_list))

@@ -1,7 +1,10 @@
+
 <%!
 rsc_path = "../"
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+from pipeline.infrastructure.renderer.rendererutils import get_multiple_line_string
+
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -25,7 +28,8 @@ targets=result[0].targets
     <p>There are no clean targets.</p>
 %else:
     <%
-    # targets only contain 1 element execept vlass-se-cube
+    # targets only contain 1 element for all existing workflows,  execept vlass-se-cube, 
+    # where it can contain multiple elements, one for each plane.
     target = targets[0]
     %>
     <div class="table-responsive">
@@ -37,7 +41,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>Image name (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_imagename)}</td>                
+                <td>${get_multiple_line_string([target['imagename'] for target in targets])}</td>                
             %else:
                 <td><strong>Image name</strong></td>
                 <td>${os.path.basename(target['imagename'])}</td>
@@ -58,7 +62,7 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>spw (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_spw)}</td>
+                <td>${get_multiple_line_string([target['spw'] for target in targets])}</td>  
             %else:
                 <td><strong>spw</strong></td>
                 <td>${target['spw']}</td>
@@ -67,12 +71,18 @@ targets=result[0].targets
         <tr>
             %if r.img_mode == 'VLASS-SE-CUBE':
                 <td><strong>reffreq (per plane)</strong></td>
-                <td>${'<br>'.join(r.targets_reffreq)}</td>
+                <td>${get_multiple_line_string([target['reffreq'] for target in targets])}</td> 
             %else:
                 <td><strong>reffreq</strong></td>
                 <td>${target['reffreq']}</td>
             %endif
         </tr>
+        <tr>
+            %if r.img_mode == 'VLASS-SE-CUBE':
+                <td><strong>flagpct (per plane)</strong></td>
+                <td>${get_multiple_line_string([target['misc_vlass']['flagpct'] for target in targets], str_format='{:.2%}')}</td>
+            %endif
+        </tr>        
         <%
         if isinstance(target['mask'], list):
             mask='<br>'.join(target['mask'])
@@ -92,7 +102,7 @@ targets=result[0].targets
             <td>${len(target['field'].split(','))}</td>
         </tr>           
         %for key in target.keys():
-            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask'):
+            %if key in target.keys() and key not in ('imagename', 'spw', 'phasecenter', 'cell', 'imsize', 'field', 'heuristics', 'vis', 'is_per_eb', 'antenna', 'reffreq', 'mask', 'misc_vlass'):
                 <tr>
                     <td><strong>${key}</strong></td>
                     <td>${target[key]}</td>
