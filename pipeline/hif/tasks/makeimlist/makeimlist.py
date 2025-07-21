@@ -690,8 +690,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         )
 
         # Get representative target information
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
-
+        # PIPE-2625: The following logic is executed only when inputs.specmode is 'repBW'
+        # or 'TARGET' is present in inputs.intent. This is a performance optimization
+        # (per PIPE-2625) to prevent costly I/O operations from representative_target()
+        # when not strictly required.
+        if inputs.specmode == 'repBW' or 'TARGET' in inputs.intent:
+            repr_target, repr_source, repr_spw, _, reprBW_mode, real_repr_target, _, _, _, _ = (
+                self.heuristics.representative_target()
+            )
+        
         # representative target case
         if inputs.specmode == 'repBW':
             repr_target_mode = True
