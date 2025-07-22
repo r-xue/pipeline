@@ -9,7 +9,7 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class FindContResult(basetask.Results):
-    def __init__(self, result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions):
+    def __init__(self, result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions, momDiffSNRs):
         super(FindContResult, self).__init__()
         self.result_cont_ranges = result_cont_ranges
         self.cont_ranges = cont_ranges
@@ -19,6 +19,7 @@ class FindContResult(basetask.Results):
         self.mitigation_error = False
         self.plot_path = None
         self.single_range_channel_fractions = single_range_channel_fractions
+        self.momDiffSNRs = momDiffSNRs
 
     def merge_with_context(self, context):
 

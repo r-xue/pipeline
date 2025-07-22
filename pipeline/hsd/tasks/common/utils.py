@@ -518,6 +518,9 @@ def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
     """
     Yield row IDs in datatable that matches given selection criteria.
 
+    Note: this method skips DataTable row IDs in which online flag is active
+    in all polarizations
+
     Args:
         datatable: A datatable instance.
         origin_vis_list: A list of origin MeasurementSet (MS) name.
@@ -1292,7 +1295,7 @@ class RGAccumulator(object):
         Args:
             field_id: A field ID.
             antenna_id: An antenna ID.
-            spw_id: A spectral windpw ID.
+            spw_id: A spectral window ID.
             pol_ids: Polarizations.
             grid_table: A grid table.
             channelmap_range: Channel map ranges.
