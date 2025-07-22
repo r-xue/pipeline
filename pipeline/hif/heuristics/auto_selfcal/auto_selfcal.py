@@ -1888,7 +1888,7 @@ class SelfcalHeuristics(object):
                                     for t in gaincalibrator_dict[vis].keys():
                                         scans += [gaincalibrator_dict[vis][t]["scans"]]
                                         intents += [np.repeat(gaincalibrator_dict[vis][t]["intent"],
-                                                              gaincalibrator_dict[vis][t]["scans"].size)]
+                                                              len(gaincalibrator_dict[vis][t]["scans"]))]
                                         times += [gaincalibrator_dict[vis][t]["times"]]
 
                                     times = np.concatenate(times)
