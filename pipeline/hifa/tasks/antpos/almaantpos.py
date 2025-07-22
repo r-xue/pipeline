@@ -81,18 +81,17 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 Example: ['ngc5921.gcal']
 
             hm_antpos: 
-                Heuristic method for retrieving antenna position corrections.
-                - 'online' (query ALMA database through casa task `getantposalma`)
-                - 'manual' (user-provided corrections)
-                - 'file' (corrections from an external file)
-
+                - `'online'` : Query ALMA database through CASA task `getantposalma` or reuse 
+                pre-existing queried/downloaded JSON files. Files follow the naming pattern 
+                `{eb_name}.antennapos.json`. For multi-MS pipeline runs, the MS basename 
+                is appended to the filename (e.g., `uid___A002_X123_X4567.antennapos.json`).
+                - `'manual'` : Use user-provided corrections.
+                - `'file'` : Load corrections from a single old-style CSV antenna position file.
+                
                 Example: 'manual'
 
             antposfile: 
-                Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
-                 of the outfile created by `getantposalma` for `hm_antpos='online'`. In order to work with multi-MS
-                 pipeline runs, the MS basename will be appended to the file name when using `hm_antpos='online'` (i.e.
-                 'uid___A002_X123_X4567.antennapos.json').
+                Path to a old-style .csv file containing antenna position offsets for `hm_antpos='file'`.
 
                 Example: 'antennapos.csv'
 
@@ -221,7 +220,7 @@ class ALMAAntpos(antpos.Antpos):
                 self._executor.execute(antpos_job)
             else:
                 LOG.warning('Antenna position file %s exists. Skipping getantposalma task.', antpos_args['outfile'])
-            # remove antennas from JSON file that are missing from the MS
+            # PIPE-2653 remove antennas from JSON file that are missing from the MS
             self._remove_missing_antennas_from_json(antpos_args['outfile'])
 
         return super().prepare()
@@ -294,8 +293,7 @@ class ALMAAntpos(antpos.Antpos):
         return result
 
     def _get_antenna_offsets(self) -> dict[np.str_, np.ndarray[float]]:
-        """
-        Retrieves the antenna names and positions from the vis ANTENNA table and computes the offsets.
+        """Retrieves the antenna names and positions from the vis ANTENNA table and computes the offsets.
 
         Returns:
             Dictionary mapping antenna names to (x, y, z) offset tuples.
@@ -316,7 +314,8 @@ class ALMAAntpos(antpos.Antpos):
         # calculate offsets
         offsets_dict = {}
         for antenna in antennas:
-            offsets_dict[antenna] = db_antpos_dict[antenna] - tb_antpos_dict[antenna]
+            if str(antenna) in db_antpos_dict:
+                offsets_dict[antenna] = db_antpos_dict[antenna] - tb_antpos_dict[antenna]
 
         return offsets_dict
 
