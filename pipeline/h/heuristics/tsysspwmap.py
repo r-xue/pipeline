@@ -20,18 +20,36 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 
-def trimSpwmap(spwMap):
-    compare = list(range(len(spwMap)))
-    for i in compare:
-        if compare[i:] == spwMap[i:]:
-            break
-    return spwMap[:i]
+def trim_spw_map(spw_map: list[int]) -> list[int]:
+    """
+    Trim a spw map (list of SpW IDs) to remove tail end where SpWs are mapped to
+    themselves.
+
+    E.g.
+        [0, 1, 2, 2, 4, 4, 6, 7, 8, 9]
+    gets trimmed to:
+        [0, 1, 2, 2, 4, 4]
+
+    This assumes that CASA will by default map SpWs to themselves if they do not
+    appear in the spw map.
+
+    Args:
+        spw_map: SpW map to trim.
+
+    Returns:
+        Trimmed SpW map.
+    """
+    for i in reversed(range(len(spw_map))):
+        if spw_map[i] != i:
+            return spw_map[:i + 1]
+    return []
 
 
 def tsysspwmap(ms: MeasurementSet, tsystable: str | None = None, channel_tolerance: int = 1, trim: bool = True)\
         -> tuple[list[int], list[int]]:
     """
-    Generate default spwmap for ALMA Tsys, including TDM->FDM associations.
+    Generate default spectral window map for ALMA Tsys, including TDM->FDM
+    associations.
 
     This function generates an "applycal-ready" SpW-to-Tsys-SpW mapping that
     provides the appropriate information regarding the transfer of the Tsys
@@ -116,9 +134,9 @@ def tsysspwmap(ms: MeasurementSet, tsystable: str | None = None, channel_toleran
     if unmatched_scispws:
         LOG.info(f"No Tsys match found for science SpW(s) {utils.commafy(unmatched_scispws, False)}.")
 
-    # Trim off excess SpWs from map if asked.
+    # Trim off "excess SpWs" (SpWs mapped to themselves) from map if asked.
     if trim:
-        spw_mapping = trimSpwmap(spw_mapping)
+        spw_mapping = trim_spw_map(spw_mapping)
 
     LOG.info(f"Computed tsysspwmap is: {spw_mapping}")
 
