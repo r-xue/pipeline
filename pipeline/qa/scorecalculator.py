@@ -2785,7 +2785,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             - 0.8 if no lines were detected in any SPW/field (default)
 
         - Deviation masks:
-            - 0.65 if deviation masks are present but do not overlap lines
+            - 0.65 if deviation masks are present but do not overlap with lines
             - 0.88 if deviation masks overlap with detected spectral lines
 
         - Deviation mask and atmospheric lines:
@@ -2829,7 +2829,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
         return [(grp[0], grp[-1]) for grp in groups]
 
-    def make_score(score_val, msg, metric_val, metric_units, ms_name, field = '', spws = set(), ants = set()):
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str, ms_name: str, field: str = '', spws: set[int] = set(), ants: set[str] = set()):
         """
         Build a QAScore object for score_sd_line_detection.
 
