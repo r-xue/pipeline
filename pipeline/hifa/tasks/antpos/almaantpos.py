@@ -83,7 +83,7 @@ class ALMAAntposInputs(antpos.AntposInputs):
             hm_antpos: 
                 - `'online'` : Query ALMA database through CASA task `getantposalma` or reuse 
                 pre-existing queried/downloaded JSON files. Files follow the naming pattern 
-                `{eb_name}.antennapos.json`. For multi-MS pipeline runs, the MS basename 
+                `{eb_name}.{antposfile}`. For multi-MS pipeline runs, the MS basename 
                 is appended to the filename (e.g., `uid___A002_X123_X4567.antennapos.json`).
                 - `'manual'` : Use user-provided corrections.
                 - `'file'` : Load corrections from a single old-style CSV antenna position file.
@@ -91,9 +91,12 @@ class ALMAAntposInputs(antpos.AntposInputs):
                 Example: 'manual'
 
             antposfile: 
-                Path to a old-style .csv file containing antenna position offsets for `hm_antpos='file'`.
+                Path to a csv file containing antenna position offsets for `hm_antpos='file'` (required) or the name
+                 of the outfile created by `getantposalma` for `hm_antpos='online'`. In order to work with multi-MS
+                 pipeline runs, the MS basename will be appended to the file name when using `hm_antpos='online'` (i.e.
+                 'uid___A002_X123_X4567.antennapos.json').
 
-                Example: 'antennapos.csv'
+                Default: 'antennapos.json'                
 
             antenna: 
                 A comma-separated string of antennas whose positions are to be corrected (if `hm_antpos` is 'manual' 
