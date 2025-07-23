@@ -7,7 +7,6 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Set, Tuple
 
 import numpy
-from numpy.ma.core import MaskedConstant
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -26,7 +25,7 @@ from pipeline.hifa.heuristics.phasespwmap import combine_spwmap
 from pipeline.hifa.heuristics.phasespwmap import simple_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import snr_n2wspwmap
 from pipeline.hifa.heuristics.phasespwmap import update_spwmap_for_band_to_band
-from pipeline.hifa.tasks.fluxscale.qa import CaltableWrapperFactory, CaltableWrapper
+from pipeline.hifa.tasks.fluxscale.qa import CaltableWrapperFactory
 from pipeline.hifa.tasks.gaincalsnr import gaincalsnr
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
@@ -41,6 +40,12 @@ __all__ = [
 ]
 
 WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
+
+# Estimated SNR threshold for spw above which a gaintable will be generated. Equates
+# to X in PIPE-2505 spec. Extracted as a module variable so that testers could, if
+# desired, force caltable generation for all spws.
+LOW_SNR_THRESHOLD = 6
+
 
 IntentField = collections.namedtuple('IntentField', 'intent field')
 SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype')
@@ -1527,7 +1532,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             snr_result: SNRTestResult,
             field: str,
             intent: str,
-            low_snr_threshold: float = 6,
+            low_snr_threshold: float = None,
             estimated_snr_multiplier: float = 0.75
     ):
         """
@@ -1560,6 +1565,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         """
         if snr_result.has_no_snrs:
             return
+        # can't be an arg default as it would be impossible to change post-import
+        if low_snr_threshold is None:
+            low_snr_threshold = LOW_SNR_THRESHOLD
 
         # dict to map spw IDs to corrected SNR values
         snr_corrections = {spw_id: snr for spw_id, snr in zip(snr_result.spw_ids, snr_result.snr_values)
@@ -1575,8 +1583,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # For the remaining high SNR windows, generate a G caltable and set the
         # estimated SNR to Y * median SNR, as measured from the caltable
         if high_snr_spws:
-            caltable = self._generate_gain_caltable(field, intent, high_snr_spws)
-            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable, estimated_snr_multiplier)
+            caltable_filename = self._generate_gain_caltable(field, intent, high_snr_spws)
+            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable_filename, estimated_snr_multiplier)
 
         snr_limit = self._snr_limit_for_intent(intent)
         self._update_snr_result(snr_result, snr_corrections, snr_limit)
@@ -1654,7 +1662,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                      f"{threshold}. Skipping gaincal; estimated SNR set to "
                      f"{snr_corrections[spw_id]:.3f}")
 
-    def _generate_gain_caltable(self, field: str, intent: str, high_snr_spws: set[int]) -> CaltableWrapper:
+    def _generate_gain_caltable(self, field: str, intent: str, high_snr_spws: set[int]) -> str:
         """
         Generates a gain caltable for high SNR spectral windows.
 
@@ -1665,7 +1673,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 signal-to-noise ratios
 
         Returns:
-            CaltableWrapper: A wrapper object for the generated calibration table.
+            filename (str): The name of the generated gain caltable.
         """
         solint = 'inf' if intent in WEAK_CALIBRATOR_INTENTS else 'int'
 
@@ -1683,13 +1691,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         )
         task = GTypeGaincal(inputs)
         _ = self._executor.execute(task)
-        return CaltableWrapperFactory.from_caltable(inputs.caltable)
+        return inputs.caltable
 
     def _update_snr_for_high_snr_spws(
             self,
             snr_corrections: dict[int, float],
             high_snr_spws: set[int],
-            caltable: CaltableWrapper,
+            caltable_filename: str,
             multiplier: float
     ) -> None:
         """
@@ -1703,14 +1711,22 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 and the values are the corresponding corrections.
             high_snr_spws (set[int]): A set containing IDs of the spectral windows
                 determined to have high SNR values.
-            caltable (CaltableWrapper): A wrapper object representing the calibration
-                table used to filter and retrieve calibration data.
+            caltable_filename (str): filename of the caltable to analyse
             multiplier (float): A multiplier factor applied to the median SNR values
                 for applying a scaling adjustment to the estimated SNR.
 
         Returns:
             None
         """
+        try:
+            caltable = CaltableWrapperFactory.from_caltable(caltable_filename)
+        except OSError:
+            LOG.info(f'Caltable for {self.inputs.vis} is missing, most likely due to zero'
+                     f'solutions. Estimated SNR set to zero for all spws.')
+            for spw_id in high_snr_spws:
+                snr_corrections[spw_id] = 0
+            return
+
         for spw in high_snr_spws:
             try:
                 snr_data = caltable.filter(spw=spw).data['SNR']
