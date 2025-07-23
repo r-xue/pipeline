@@ -5,6 +5,7 @@ QA handlers for hifa_bandpass task.
 import os
 
 from pipeline.extern import subband_qa
+from pipeline.domain import MeasurementSet
 from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
@@ -33,19 +34,22 @@ class AlmaBandpassQAHandler(pqa.QAPlugin):
         base_handler = BandpassQAHandler()
         base_handler.handle(context, result)
 
-        # Run local QA handlers.
+        # Run local QA handlers which only require the results
         for handler in [
             _phaseup_combine_handler,
             _phaseup_missing_handler,
             _phaseup_snr_handler,
             _low_channel_solutions_handler,
             _adjusted_phaseup_solint_handler,
-            _subband_handler,
         ]:
-            result.qa.pool.extend(handler(context, result))
+            result.qa.pool.extend(handler(result))
+
+        # Run subband QA handler, which requires the context
+        subband_qa_score = _subband_handler(context, result)
+        result.qa.pool.extend(subband_qa_score)
 
 
-def _phaseup_combine_handler(context: Context, result: BandpassResults) -> list[pqa.QAScore]:
+def _phaseup_combine_handler(result: BandpassResults) -> list[pqa.QAScore]:
     """
     Generate QA score for whether bandpass phase-up used spw combination.
 
@@ -97,7 +101,7 @@ def _phaseup_combine_handler(context: Context, result: BandpassResults) -> list[
     return scores
 
 
-def _phaseup_missing_handler(context: Context, result: BandpassResults) -> list[pqa.QAScore]:
+def _phaseup_missing_handler(result: BandpassResults) -> list[pqa.QAScore]:
     """
     Generate QA score for whether bandpass phase-up is missing.
 
@@ -144,7 +148,7 @@ def _phaseup_missing_handler(context: Context, result: BandpassResults) -> list[
     return [qascore]
 
 
-def _phaseup_snr_handler(context: Context, result: BandpassResults) -> list[pqa.QAScore]:
+def _phaseup_snr_handler(result: BandpassResults) -> list[pqa.QAScore]:
     """
     Generate QA score for the expected phase-up SNR for the bandpass calibrator.
 
@@ -201,7 +205,7 @@ def _phaseup_snr_handler(context: Context, result: BandpassResults) -> list[pqa.
     return [qascore]
 
 
-def _low_channel_solutions_handler(context: Context, result) -> list[pqa.QAScore]:
+def _low_channel_solutions_handler(result) -> list[pqa.QAScore]:
     """
     Generate QA scores for solutions with fewer than 8 channels.
 
@@ -232,7 +236,7 @@ def _low_channel_solutions_handler(context: Context, result) -> list[pqa.QAScore
     return [score]
 
 
-def _adjusted_phaseup_solint_handler(context: Context, result: BandpassResults) -> list[pqa.QAScore]:
+def _adjusted_phaseup_solint_handler(result: BandpassResults) -> list[pqa.QAScore]:
     """
     Generate QA scores for adjusted phase-up solution intervals that could
     indicate a suboptimal calibration.
@@ -406,7 +410,7 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable) -> float:
     return spws_impacted/total_spws_in_caltable
 
 
-def _calc_subband_qa_score(spw_dict: dict, ms, caltable) -> pqa.QAScore:
+def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.QAScore:
     """
     Calculate the QA score for subband issues.
 
