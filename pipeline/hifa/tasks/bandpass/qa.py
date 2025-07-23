@@ -385,11 +385,11 @@ def _score_bandpass_phaseup_solint(
     return score, origin
 
 
-def _fraction_of_impacted_spws(spw_dict: dict, caltable) -> float:
+def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet) -> float:
     """
-    Get the fraction of impacted spws out of the total spws 
-    with valid bandpass solutions. Spws without bandpass 
-    solutions are not included. 
+    Get the fraction of impacted spws out of the total FDM spws
+    with valid bandpass solutions. Spws without bandpass
+    solutions or non-FDM spws are not included.
 
     Args:
         spw_dict: dictionary of spws affected by platforming
@@ -397,17 +397,22 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable) -> float:
         caltable: path to the calibration table
 
     Returns:
-        Fraction of impacted spws out of the total spws 
+        Fraction of impacted spws out of the total spws
         with valid bandpass solutions in the caltable
     """
-    total_spws_in_caltable = utils.caltable_tools.get_spws_from_table(caltable)
+    spws_in_caltable = utils.caltable_tools.get_spws_from_table(caltable)
 
-    if total_spws_in_caltable == 0:
-        return 0.0 
+    # Only include FDM spws in the calculation as the heuristic is not evaluated for other modes
+    fdm_spws = [spw for spw in spws_in_caltable if 'FDM' in ms.get_spectral_window(spw).type]
+
+    total_fdm_spws = len(fdm_spws)
+
+    if total_fdm_spws == 0:
+        return 0.0
 
     spws_impacted = len(spw_dict)
 
-    return spws_impacted/total_spws_in_caltable
+    return spws_impacted/total_fdm_spws
 
 
 def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.QAScore:
@@ -423,7 +428,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.
         QA score
     """
     # Fraction of impacted spws
-    f_spw = _fraction_of_impacted_spws(spw_dict, caltable)
+    f_spw = _fraction_of_impacted_spws(spw_dict, caltable, ms)
 
     if f_spw <= 0.0:
         score = 1.0
@@ -455,9 +460,9 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.
         longmsg += "; ".join(spw_messages)
 
     qascore = pqa.QAScore(
-        score, 
-        longmsg=longmsg, 
-        shortmsg=shortmsg, 
+        score,
+        longmsg=longmsg,
+        shortmsg=shortmsg,
         vis=ms.name,
         weblog_location=pqa.WebLogLocation.ACCORDION,
         origin=pqa.QAOrigin(
@@ -513,6 +518,9 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
             LOG.debug(f"Fetching platforming QA info for MS {vis} and caltable {caltable}")
             spw_dict = subband_qa.bandpass_platforming(ms, caltable)
             LOG.debug(f"Spws affected by platforming {spw_dict}")
+            qascore = _calc_subband_qa_score(spw_dict, ms, caltable)
+            scores.append(qascore)
+
         except Exception as e:
             LOG.warning(f"Failed to process bandpass QA for {vis}, caltable {caltable}: {e}", exc_info=True)
 
@@ -529,8 +537,5 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
             )
             scores.append(failing_qascore)
             continue
-
-        qascore = _calc_subband_qa_score(spw_dict, ms, caltable)
-        scores.append(qascore)
 
     return scores
