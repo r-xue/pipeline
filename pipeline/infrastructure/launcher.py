@@ -78,6 +78,12 @@ class Context(object):
             parameters as well as sensitivity information; typically populated
             by hifa_imageprecheck, and potentially updated by hif_makeimages or
             hif_tclean.
+        processing_intents: Dictionary of processing intents for the current
+            pipeline run. Currently, the following options are known:
+            - {'INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+            - {'VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+            - {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': True}
+            - {'SINGLEDISH_STANDARD_OBSERVING_MODE': 'Undefined'}
         rmsimlist: The ImageLibrary object holding RMS uncertainty images of the
             science targets.
         sciimlist: The ImageLibrary object holding final images of science targets.

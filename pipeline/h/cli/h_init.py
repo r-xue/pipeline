@@ -40,9 +40,6 @@ def h_init(loglevel='info', plotlevel='default', weblog=True, processing_intents
 
     """
 
-    # TBD: DECIDE WHETHER DRY RUN REALLY MAKES SENSE FOR THIS TASK AND IF
-    # SO HOW TO IMPLEMENT IT.
-
     # TBD: CASA PARAMETER CHECKS BEFORE CREATING A CONTEXT ?
 
     # Create the pipeline and store the Pipeline object in the stack
