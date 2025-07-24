@@ -429,6 +429,10 @@ class T1_1Renderer(RendererBase):
         else:
             pipeline_doclink = None
 
+        pipeline_recipe = context.get_recipe_name()
+        if pipeline_recipe == '':
+            pipeline_recipe = 'N/A'
+
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
@@ -516,6 +520,7 @@ class T1_1Renderer(RendererBase):
             'casa_version': environment.casa_version_string,
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
+            'pipeline_recipe': pipeline_recipe,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
             'iers_eop_2000_version': iers_eop_2000_version,
