@@ -559,8 +559,8 @@ class ImageParamsHeuristics(object):
                                 restoringbeam = image.restoringbeam()
                                 # CAS-11193: Round to 3 digits to avoid confusion when comparing
                                 # heuristics against the beam weblog display (also using 3 digits)
-                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))))
-                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))))
+                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))[0]))
+                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))[0]))
                                 restoringbeam_rounded = {'major': {'value': restoringbeam_major_rounded, 'unit': 'arcsec'},
                                                          'minor': {'value': restoringbeam_minor_rounded, 'unit': 'arcsec'},
                                                          'positionangle': restoringbeam['positionangle']}
@@ -583,8 +583,8 @@ class ImageParamsHeuristics(object):
             # beam that's good for all field/intents
             smallest_beam = {'minor': '1e9arcsec', 'major': '1e9arcsec', 'positionangle': '0.0deg'}
             for beam in makepsf_beams:
-                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))
-                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec')):
+                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))[0]
+                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec'))[0]:
                     smallest_beam = beam
         else:
             smallest_beam = 'invalid'
@@ -597,7 +597,7 @@ class ImageParamsHeuristics(object):
 
         cqa = casa_tools.quanta
         try:
-            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec')) / pixperbeam
+            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0] / pixperbeam
             return ['%.2garcsec' % (cell_size)]
         except:
             return ['invalid']
@@ -1102,9 +1102,9 @@ class ImageParamsHeuristics(object):
             # Check if there is a non-zero min/max angular resolution
             minAcceptableAngResolution = cqa.convert(self.proj_params.min_angular_resolution, 'arcsec')
             maxAcceptableAngResolution = cqa.convert(self.proj_params.max_angular_resolution, 'arcsec')
-            if cqa.getvalue(minAcceptableAngResolution) == 0.0 or cqa.getvalue(maxAcceptableAngResolution) == 0.0:
+            if cqa.getvalue(minAcceptableAngResolution)[0] == 0.0 or cqa.getvalue(maxAcceptableAngResolution)[0] == 0.0:
                 desired_angular_resolution = cqa.convert(self.proj_params.desired_angular_resolution, 'arcsec')
-                if cqa.getvalue(desired_angular_resolution) != 0.0:
+                if cqa.getvalue(desired_angular_resolution)[0] != 0.0:
                     minAcceptableAngResolution = cqa.mul(desired_angular_resolution, 0.8)
                     maxAcceptableAngResolution = cqa.mul(desired_angular_resolution, 1.2)
                 else:
@@ -1115,7 +1115,7 @@ class ImageParamsHeuristics(object):
 
             # Check if there is a non-zero sensitivity goal
             sensitivityGoal = cqa.convert(self.proj_params.desired_sensitivity, 'mJy')
-            if cqa.getvalue(sensitivityGoal) == 0.0:
+            if cqa.getvalue(sensitivityGoal)[0] == 0.0:
                 sensitivityGoal = cqa.convert(science_goals['sensitivity'], 'mJy')
 
         else:
@@ -1204,8 +1204,8 @@ class ImageParamsHeuristics(object):
             return [0, 0]
 
         # get cell and beam sizes in arcsec
-        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))
-        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))
+        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))[0]
+        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))[0]
         beam_radius_v = primary_beam
 
         # set size of image to spread of field centres plus a
@@ -1708,8 +1708,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
@@ -1725,8 +1725,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_full_freq_ranges.append((f0_full, f1_full))
 

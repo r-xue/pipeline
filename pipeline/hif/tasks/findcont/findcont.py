@@ -295,7 +295,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         channel_width_freq_TOPO = float(real_spwid_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                         # Skip 1 km/s
                         extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
                     else:
@@ -401,7 +401,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     if reprBW_mode in ['nbin', 'repr_spw']:
                         # Approximate reprBW with nbin
                         physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
-                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))[0]/physicalBW_of_1chan + 0.5)
                     else:
                         reprBW_nbin = 1
 
