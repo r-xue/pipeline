@@ -826,10 +826,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
         # happen that the opposite sideband result has a different vector length
         # which would lead to plotting exceptions.
         if len(freq) != len(rescaledImage):
-            rescaledImageNew = np.interp(list(range(len(freq))), list(range(len(rescaledImage))), rescaledImage)
-            plt.plot(freq, rescaledImageNew, 'm--')
-        else:
-            plt.plot(freq, rescaledImage, 'm--')
+            rescaledImage = np.interp(list(range(len(freq))), list(range(len(rescaledImage))), rescaledImage)
+        plt.plot(freq, rescaledImage, 'm--')
 
     plt.draw()
     fig = plt.gcf()
