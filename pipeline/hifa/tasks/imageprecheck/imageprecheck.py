@@ -255,7 +255,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         # Approximate reprBW with nbin
         if reprBW_mode in ['nbin', 'repr_spw']:
             physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
-            nbin = int(cqa.getvalue(cqa.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+            nbin = int(cqa.getvalue(cqa.convert(repr_target[2], 'Hz'))[0]/physicalBW_of_1chan + 0.5)
             cont_sens_bw_modes = ['aggBW']
             scale_aggBW_to_repBW = False
         elif reprBW_mode == 'multi_spw':

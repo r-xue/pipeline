@@ -449,7 +449,10 @@ class VLASetjy(basetask.StandardTaskTemplate):
 
         spw_seen = set()
         for setjy_dict in setjy_dicts:
-            setjy_dict.pop('format')
+            try:
+                setjy_dict.pop('format')
+            except:
+                LOG.warning("'format' key not found")
             for field_id in setjy_dict:
                 setjy_dict[field_id].pop('fieldName')
                 field = self.inputs.ms.get_fields(field_id)[0]
