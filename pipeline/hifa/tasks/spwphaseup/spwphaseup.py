@@ -105,7 +105,7 @@ class SNRTestResult:
         """
         return len(self.snr_values) > 0 and any(snr is not None for snr in self.snr_values)
 
-    def has_snrs_greater_than(self, snr_limit: float) -> bool:
+    def has_all_snrs_greater_than(self, snr_limit: float) -> bool:
         """
         Determines if all SNR (Signal-to-Noise Ratio) values are greater than a specified limit.
 
@@ -600,10 +600,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # PIPE-2499: all SpWs have good SNR estimates: in this case, check
             # whether the optimal solint is 'int' and if so use that + the
             # standard (empty) SpW mapping (i.e. each SpW mapped to itself).
-            elif snr_test_result.has_snrs_greater_than(snrlimit):
+            elif snr_test_result.has_all_snrs_greater_than(snrlimit):
                 # Compute the optimal solint and gaintype based on estimated
                 # SNR, while assuming no SpW-remapping mode.
-                # Compute the optimal solint and gaintype based on estimated SNR.
                 solint, gaintype, snr_thr_used = self._compute_solint(
                     spwids=snr_test_result.spw_ids,
                     snrs=snr_test_result.snr_values,
@@ -1497,7 +1496,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         phase SNR info for all SpWs specified in inputs.spw.
 
         Parameters:
-            spwids: SnrTestResult
+            snr_test_result: SnrTestResult
                 SnrTestResult used as reference source for SNRs per spectral
                 window
             combined_snrs: dict
@@ -1717,6 +1716,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         Returns:
             None
+                This function updates the snr_corrections dict in place.
         """
         try:
             caltable = CaltableWrapperFactory.from_caltable(caltable_filename)
