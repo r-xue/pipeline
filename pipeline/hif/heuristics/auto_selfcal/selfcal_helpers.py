@@ -1164,11 +1164,12 @@ def get_spw_bandwidth(vis: str, target: str, observing_run: ObservingRun) -> tup
         # Convert bandwidth from Hz to GHz
         spwbws[spw.id] = float(spw.bandwidth.value) / 1.0e9
 
-    spweffbws = spwbws.copy()
-
     if os.path.exists('cont.dat'):
         # Replace with effective bandwidths if cont.dat is available
-        spweffbws = get_spw_eff_bandwidth(vis, target, observing_run)
+        spweffbws_from_contdat = get_spw_eff_bandwidth(vis, target, observing_run)
+        spweffbws = {k: spweffbws_from_contdat.get(k, v) for k, v in spwbws.items()}
+    else:
+        spweffbws = spwbws.copy()
 
     return spwbws, spweffbws
 
@@ -1190,12 +1191,14 @@ def get_spw_eff_bandwidth(vis: str, target: str, observing_run: ObservingRun) ->
     contdotdat = parse_contdotdat('cont.dat', target)
     ms = observing_run.get_ms(vis)
 
-    for key in contdotdat:
+    for virtual_spwid in contdotdat:
         cumulat_bw = 0.0
-        trans_spw = observing_run.virtual2real_spw_id(key, ms)
+        if int(virtual_spwid) not in observing_run.virtual_science_spw_ids:
+            continue
+        trans_spw = observing_run.virtual2real_spw_id(virtual_spwid, ms)
         if trans_spw is None:
-            trans_spw = -1
-        for lo, hi in contdotdat[key]:
+            continue
+        for lo, hi in contdotdat[virtual_spwid]:
             cumulat_bw += abs(hi - lo)
         spweffbws[trans_spw] = float(cumulat_bw)
 
