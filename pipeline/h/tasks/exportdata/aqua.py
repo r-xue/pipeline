@@ -630,7 +630,7 @@ def _get_pipeline_stage_and_scores(result, include_hidden_scores=False):
         subscores = [score for score in result.qa.pool if score.weblog_location != pqa.WebLogLocation.HIDDEN]
     representative_score = result.qa.representative
     return stage_name, representative_score, subscores
-
+    
 
 def sensitivity_xml_for_stages(context, results, name=''):
     """
@@ -805,10 +805,11 @@ def xml_for_sensitivity(d):
         imagename = 'N/A'
         
     try:
-        if d['theoretical_rms'] is None or float(d['theoretical_rms']) < 0:
+        if d['theoretical_rms'] is None or float(d['theoretical_rms']['value']) < 0:
             theoretical_rms_jy_per_beam = 'N/A'
         else:
-            theoretical_rms_jy_per_beam = d['theoretical_rms']
+            theoretical_rms = qa.quantity(d['theoretical_rms'])
+            theoretical_rms_jy_per_beam = value(qa.convert(theoretical_rms, 'Jy/beam'))
     except:
         theoretical_rms_jy_per_beam = 'N/A'
 
