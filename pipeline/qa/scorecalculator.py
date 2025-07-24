@@ -481,14 +481,23 @@ def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 
 @log_qa
-def score_diffgaincal_combine(vis, combine, qa_message, phaseup_type) -> pqa.QAScore:
+def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_type: str) -> pqa.QAScore:
     """
     Compute QA score based on whether the phase solution gaintable, computed as
     part of the hifa_diffgaincal stage, used spectral window combination, and
     whether any SpWs were missing (in case of no SpW combination).
 
+    Args:
+        vis: Name of measurement set to score.
+        combine: combine parameter used in diffgain gaincal.
+        qa_message: String representing QA message derived during task, included
+            when no SpW combination is used (presumably forced by user) even
+            though there were indicators that would have triggered SpW
+            combination in automatic mode.
+        phaseup_type: String representing the type of diffgain phase-up.
+
     Returns:
-        QA score
+        QA score.
     """
     # If SpW combination was used, turn this into a blue QA score.
     if 'spw' in combine:

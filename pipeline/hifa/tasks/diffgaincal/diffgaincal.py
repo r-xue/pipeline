@@ -172,7 +172,7 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         dg_src_phase_results = self._do_phasecal_for_diffgain_onsource()
         # Adopt resulting CalApplication(s) and QA message into final result.
         if dg_src_phase_results is not None:
-            result.pool = dg_src_phase_results.pool
+            result.pool.extend(dg_src_phase_results.pool)
             result.qa_message = dg_src_phase_results.qa_message
 
         # Compute residual phase offsets for the diffgain on-source intent, for
@@ -203,8 +203,8 @@ class DiffGaincal(basetask.StandardTaskTemplate):
 
         return result
 
-    def _assess_if_spw_combination_is_necessary(self, intent: str, spw: list[int], force_for_spwmapmodes: list,
-                                                scan_groups: list | None = None) -> bool:
+    def _assess_if_spw_combination_is_necessary(self, intent: str, spw: list[int], force_for_spwmapmodes: list[str],
+                                                scan_groups: list[str] | None = None) -> bool:
         """
         Assess whether spectral window combination is necessary based on
         `hm_spwmapmode`, the SpwMapping for given intent, and/or whether SpWs
@@ -222,14 +222,17 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         """
         inputs = self.inputs
 
-        # Force SpW combination if hm_spwmode matches any of the specified modes.
-        combine_spw = False
+        # Force SpW combination if hm_spwmapmode matches any of the specified
+        # "forced" modes, which can include any of the allowed values for the
+        # input parameter hm_spwmapmode *except* for hm_spwmapmode='auto'
+        # ('auto' is separately evaluated below).
         if inputs.hm_spwmapmode in force_for_spwmapmodes:
-            combine_spw = True
+            return True
 
         # For automatic hm_spwmapmode, check whether SpW combination is
         # required based on SpwMapping or in case the resulting caltable would
         # contain any missing/fully flagged SpWs.
+        combine_spw = False
         if inputs.hm_spwmapmode == 'auto':
             # Assess the SpwMapping for diffgain calibrator for whether SpW
             # combination is required.
@@ -262,7 +265,7 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         return combine_spw
 
     def _assess_spw_combine_based_on_spwmapping_and_snr(self, intent: str, field: str, spwids: list[int],
-                                                        scan_groups: list | None = None) -> bool:
+                                                        scan_groups: list[str] | None = None) -> bool:
         """
         Assess whether spectral window combination is necessary based on
         spectral window mapping and scaling estimated SNR (for solint) to full
@@ -279,72 +282,78 @@ class DiffGaincal(basetask.StandardTaskTemplate):
             Boolean declaring whether to use spectral window combination.
         """
         # Try to retrieve SpW mapping info from MS for requested intent and
-        # field, and proceed with assessment if one is available.
+        # field.
         spwmapping: SpwMapping | None = self.inputs.ms.spwmaps.get((intent, field), None)
-        if spwmapping:
-            # Track whether SpWs were re-mapped or combined.
-            spws_mapped_or_combined = False
-            # If SpWs are combined, then use input spectral windows for SNR
-            # assessment.
-            if spwmapping.combine:
+
+        # If no SpW mapping info is available, then the default is to use no SpW
+        # combination.
+        if spwmapping is None:
+            return False
+
+        # Otherwise, proceed to assess the info in the SpW mapping info to
+        # determine whether to use SpW combination:
+
+        # Track whether SpWs were re-mapped or combined.
+        spws_mapped_or_combined = False
+        # If SpWs are combined, then use input spectral windows for SNR
+        # assessment.
+        if spwmapping.combine:
+            spws_mapped_or_combined = True
+            spwids_mapped = spwids
+            LOG.info(f"{self.inputs.ms.basename}: SpwMapping for intent {intent} is using spectral window combination,"
+                     f" re-assessing estimated SNR based on full exposure times of corresponding scans.")
+        # Otherwise, check if any SpWs are re-mapped, and select those SpWs
+        # for SNR assessment.
+        else:
+            spwids_mapped = [idx for idx, spwid in enumerate(spwmapping.spwmap) if idx != spwid]
+            if spwids_mapped:
                 spws_mapped_or_combined = True
-                spwids_mapped = spwids
-                LOG.info(f"{self.inputs.ms.basename}: SpwMapping for intent {intent} is using spectral window"
-                         f" combination, re-assessing estimated SNR based on full exposure times of corresponding"
-                         f" scans.")
-            # Otherwise, check if any SpWs are re-mapped, and select those SpWs
-            # for SNR assessment.
+                LOG.info(f"{self.inputs.ms.basename}: SpwMapping for intent {intent} is using spectral window mapping,"
+                         f" re-assessing estimated SNR based on full exposure times of corresponding scans.")
+
+        # If SpWs are to be re-mapped or combined, proceed to assess if SpW
+        # combination would still be needed after scaling estimated SNR from
+        # solint to full exposure time (scan time * nr. scans).
+        if spws_mapped_or_combined:
+            # Retrieve scan and integration time.
+            scantime, inttime = self._get_scan_and_integration_time(self.inputs.ms, intent, field, spwids)
+
+            # Retrieve solution interval time in seconds from SpW mapping.
+            if spwmapping.solint == 'int':
+                solint = inttime
             else:
-                spwids_mapped = [idx for idx, spwid in enumerate(spwmapping.spwmap) if idx != spwid]
-                if spwids_mapped:
-                    spws_mapped_or_combined = True
-                    LOG.info(f"{self.inputs.ms.basename}: SpwMapping for intent {intent} is using spectral window"
-                             f" mapping, re-assessing estimated SNR based on full exposure times of corresponding"
-                             f" scans.")
+                # Assume solint was recorded as string in units of seconds,
+                # convert to float with CASA quanta.
+                solint = casa_tools.quanta.quantity(spwmapping.solint)['value']
 
-            # If SpWs are to be re-mapped or combined, proceed to assess if SpW
-            # combination would still be needed after scaling estimated SNR from
-            # solint to full exposure time (scan time * nr. scans).
-            if spws_mapped_or_combined:
-                # Retrieve scan and integration time.
-                scantime, inttime = self._get_scan_and_integration_time(self.inputs.ms, intent, field, spwids)
+            # Get the number of scans from groups of scans if provided, but
+            # otherwise assume this to be a single scan.
+            # It is assumed that the band-to-band observation uses the same
+            # number of scans in each scan group, so the first scan group is
+            # taken as representative of how long a scan group should be.
+            nr_scans = len(scan_groups[0]) if scan_groups else 1
 
-                # Retrieve solution interval time in seconds from SpW mapping.
-                if spwmapping.solint == 'int':
-                    solint = inttime
-                else:
-                    # Assume solint was recorded as string in units of seconds,
-                    # convert to float with CASA quanta.
-                    solint = casa_tools.quanta.quantity(spwmapping.solint)['value']
+            # Compute SNR scale factor, to scale estimated SNR for current
+            # solint to expected SNR for exposure time.
+            snr_scale_factor = np.sqrt(scantime * nr_scans / solint)
 
-                # Get the number of scans from groups of scans if provided, but
-                # otherwise assume this to be a single scan.
-                # It is assumed that the band-to-band observation uses the same
-                # number of scans in each scan group, so the first scan group is
-                # taken as representative of how long a scan group should be.
-                nr_scans = len(scan_groups[0]) if scan_groups else 1
-
-                # Compute SNR scale factor, to scale estimated SNR for current
-                # solint to expected SNR for exposure time.
-                snr_scale_factor = np.sqrt(scantime * nr_scans / solint)
-
-                # Loop over SpWs in SNR info and check each re-mapped/combined
-                # SpW whether the scaled estimated SNR would (still) be below
-                # the minimum required SNR threshold.
-                spwids_mapped = [str(s) for s in spwids_mapped]
-                for spwid, snr in spwmapping.snr_info:
-                    if spwid in spwids_mapped and snr * snr_scale_factor < spwmapping.snr_threshold_used:
-                        LOG.info(f"{self.inputs.ms.basename}, intent {intent}: estimated SNR is below threshold for"
-                                 f" good solutions ({spwmapping.snr_threshold_used}) for at least one of the re-mapped"
-                                 f" / combined SpWs, will use SpW combination.")
-                        return True
+            # Loop over SpWs in SNR info and check each re-mapped/combined
+            # SpW whether the scaled estimated SNR would (still) be below
+            # the minimum required SNR threshold.
+            spwids_mapped = [str(s) for s in spwids_mapped]
+            for spwid, snr in spwmapping.snr_info:
+                if spwid in spwids_mapped and snr * snr_scale_factor < spwmapping.snr_threshold_used:
+                    LOG.info(f"{self.inputs.ms.basename}, intent {intent}: estimated SNR is below threshold for good"
+                             f" solutions ({spwmapping.snr_threshold_used}) for at least one of the re-mapped"
+                             f" / combined SpWs, will use SpW combination.")
+                    return True
 
         # If this is reached, then it is expected that no SpW combination is
         # necessary based on info in SpwMapping.
         return False
 
     def _assess_spws_in_gaintable(self, gaincal_results: common.GaincalResults, combine_spw: bool, spw: list[int],
-                                  scan_groups: list | None = None) -> str:
+                                  scan_groups: list[str] | None = None) -> str:
         """
         If no SpW combination was expected to be used, then this method assesses
         the resulting temporary phase caltable for missing SpWs, fully flagged
@@ -629,7 +638,8 @@ class DiffGaincal(basetask.StandardTaskTemplate):
         source.
 
         Returns:
-            GaincalResults for the diffgain on-source phase solutions caltable.
+            GaincalResults for the diffgain on-source phase solutions caltable,
+            or None if no diffgain scan groups are identified.
         """
         intent = 'DIFFGAINSRC'
 
