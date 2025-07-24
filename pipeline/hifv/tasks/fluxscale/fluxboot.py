@@ -177,14 +177,15 @@ class Fluxboot(basetask.StandardTaskTemplate):
         fluxscale_result = []
         vis = self.inputs.vis
         try:
-            sources, flux_densities, spws, weblog_results, spindex_results, caltable, fluxscale_result = self._do_fluxboot(band2spw)
+            sources, flux_densities, spws, weblog_results, spindex_results, caltable, fluxscale_result = self._do_fluxboot(
+                band2spw)
         except Exception as ex:
             LOG.warning(ex)
 
         return FluxbootResults(sources=sources, flux_densities=flux_densities, spws=spws,
-                    weblog_results=weblog_results,
-                    spindex_results=spindex_results, vis=vis, caltable=caltable,
-                    fluxscale_result=fluxscale_result)
+                               weblog_results=weblog_results,
+                               spindex_results=spindex_results, vis=vis, caltable=caltable,
+                               fluxscale_result=fluxscale_result)
 
     def analyse(self, results):
         return results
@@ -306,8 +307,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                         LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
 
                         self._do_gaincal(calMs, fluxphase, 'p', [''],
-                                        solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
-                                        spw=','.join(spwlist), append=append)
+                                         solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
+                                         spw=','.join(spwlist), append=append)
                 except KeyError as ex:
                     LOG.warning("No data found for {!s} band".format(ex))
                 except Exception as ex:
@@ -328,11 +329,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                         calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
                         scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
-                        scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
+                        scanids_perband = ','.join([str(scan.id)
+                                                   for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
 
                         calscanslist = list(map(int, scanids_perband.split(',')))
                         scanobjlist = m.get_scans(scan_id=calscanslist,
-                                                scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
+                                                  scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
                         fieldidlist = []
                         for scanobj in scanobjlist:
                             fieldobj, = scanobj.fields
@@ -350,9 +352,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                                 LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
 
                                 self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
-                                                solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                                solnorm=True, append=append, fluxflag=True,
-                                                vlassmode=vlassmode, spw=','.join(spwlist))
+                                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                                 solnorm=True, append=append, fluxflag=True,
+                                                 vlassmode=vlassmode, spw=','.join(spwlist))
                     except KeyError as ex:
                         LOG.warning("No data found for {!s} band".format(ex))
                     except Exception as ex:
@@ -360,15 +362,15 @@ class Fluxboot(basetask.StandardTaskTemplate):
             if os.path.isdir(fluxflagtable):
                 # use flagdata to clip fluxflag.g outside the range 0.9-1.1
                 flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
-                                            datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
-                                            action='apply', flagbackup=False, savepars=False)
+                                              datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
+                                              action='apply', flagbackup=False, savepars=False)
                 self._executor.execute(flagjob)
 
                 # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
                 applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
-                                                selectdata=False, docallib=False, gaintable=[fluxflagtable],
-                                                gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
-                                                applymode='flagonlystrict', flagbackup=True)
+                                                  selectdata=False, docallib=False, gaintable=[fluxflagtable],
+                                                  gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
+                                                  applymode='flagonlystrict', flagbackup=True)
 
                 self._executor.execute(applycaljob)
             else:
@@ -385,7 +387,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
                     try:
                         self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
-                                    solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
+                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
                     except Exception as ex:
                         LOG.warning(str(ex))
                 else:

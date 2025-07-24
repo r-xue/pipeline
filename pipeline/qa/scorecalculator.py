@@ -1187,8 +1187,8 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
         longmsg = 'No fractional residuals available.'
         shortmsg = longmsg
         origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
-                        metric_score=score,
-                        metric_units='')
+                              metric_score=score,
+                              metric_units='')
         return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
     # PIPE-119, part a
@@ -1200,7 +1200,7 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
 
     # PIPE-119 part b
     for res in fractional_residuals:
-        if max(np.abs(res))> 0.3:
+        if max(np.abs(res)) > 0.3:
             LOG.warning("Fractional residuals are > 0.3")
             break
 

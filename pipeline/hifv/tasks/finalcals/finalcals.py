@@ -351,8 +351,8 @@ class Finalcals(basetask.StandardTaskTemplate):
         if os.path.exists(ktypecaltable):
             flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
 
-        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable,\
-               finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
+        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable, \
+            finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -892,7 +892,8 @@ class Finalcals(basetask.StandardTaskTemplate):
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         fluxcalfieldlist = str.split(self.inputs.context.evla['msinfo'][m.name].flux_field_select_string)
         # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
-        fluxdensity, setjy_standard = [-1, standard.Standard()(field)] if os.path.isdir('fluxgaincalFcal_{!s}.g'.format(field)) or field in fluxcalfieldlist else [1, 'manual']
+        fluxdensity, setjy_standard = [-1, standard.Standard()(field)] if os.path.isdir(
+            'fluxgaincalFcal_{!s}.g'.format(field)) or field in fluxcalfieldlist else [1, 'manual']
         if fluxdensity == 1:
             LOG.warning(f'Running setjy for field {field} with 1.0 Jy fluxdensity.')
         try:
@@ -1062,4 +1063,3 @@ class Finalcals(basetask.StandardTaskTemplate):
                 self._executor.execute(job)
 
         return True
-
