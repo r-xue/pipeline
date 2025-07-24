@@ -814,20 +814,21 @@ def request_omp_threading(num_threads=None):
 
 
 @contextlib.contextmanager
-def open_with_lock(filename: str, *args: Any, **kwargs: Any) -> Iterator[TextIO]:
+def open_with_lock(filename: str, mode: str = 'r', *args: Any, **kwargs: Any) -> Iterator[TextIO]:
     """Open a file with an exclusive lock.
 
     This context manager attempts to acquire an exclusive lock on the file upon opening.
-    Other processes using `open_with_lock` will wait until the lock is released.
-    The lock is automatically released when exiting the context.
-
+    Other processes using `open_with_lock` will wait until the lock is automatically released
+    when exiting the context.
+    
     Args:
         filename: Path to the file to open and lock.
-        *args: Positional arguments passed to the built-in `open()` function.
-        **kwargs: Keyword arguments passed to the built-in `open()` function.
+        mode: File open mode (e.g., 'rt', 'wt', 'a', 'rb').
+        *args: Additional positional arguments to the built-in `open()` function.
+        **kwargs: Additional keyword arguments to the built-in `open()` function.
 
     Yields:
-        The opened file object with an exclusive lock acquired (if supported by the filesystem).        
+        The opened file object with an exclusive lock acquired (if supported by the filesystem).
 
     Notes:
         All file open calls with `open_with_lock` will block other `open_with_lock` usages
@@ -854,9 +855,19 @@ def open_with_lock(filename: str, *args: Any, **kwargs: Any) -> Iterator[TextIO]
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # Should block/fail on second process
         ```
     """
-    with open(filename, *args, **kwargs) as fd:
-        LOG.debug('Attempting to acquire lock on %s', filename)
-        lock_acquired = False
+    needs_truncate = 'w' in mode
+    is_binary = 'b' in mode
+    base_mode = 'r+b' if is_binary else 'r+'
+
+    try:
+        fd = open(filename, base_mode, *args, **kwargs)
+    except FileNotFoundError:
+        base_mode = 'w+b' if is_binary else 'w+'
+        fd = open(filename, base_mode, *args, **kwargs)
+
+    LOG.debug('Attempting to acquire lock on %s', filename)
+    lock_acquired = False
+    try:
         try:
             # Acquire an exclusive lock on the file
             fcntl.flock(fd, fcntl.LOCK_EX)
@@ -867,17 +878,23 @@ def open_with_lock(filename: str, *args: Any, **kwargs: Any) -> Iterator[TextIO]
                         'which might cause racing conditions if multiple processes access '
                         'the file simultaneously: %s', filename, ex)
 
-        try:
-            yield fd
-        finally:
-            if lock_acquired:
-                try:
-                    fcntl.flock(fd, fcntl.LOCK_UN)
-                    LOG.debug('Successfully released lock on %s', filename)
-                except OSError as ex:
-                    LOG.warning('Failed to release file lock for %s due to filesystem limitation, '
-                                'which might cause racing conditions if multiple processes access '
-                                'the file simultaneously: %s', filename, ex)
+        if lock_acquired and needs_truncate:
+            fd.truncate(0)
+            fd.seek(0)
+            LOG.debug('Truncated file after acquiring lock: %s', filename)
+
+        yield fd
+
+    finally:
+        if lock_acquired:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+                LOG.debug('Successfully released lock on %s', filename)
+            except OSError as ex:
+                LOG.warning('Failed to release file lock for %s due to filesystem limitation, '
+                            'which might cause racing conditions if multiple processes access '
+                            'the file simultaneously: %s', filename, ex)
+        fd.close()
 
 
 def ensure_products_dir_exists(products_dir):
