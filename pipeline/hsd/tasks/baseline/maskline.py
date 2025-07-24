@@ -208,7 +208,7 @@ class MaskLine(basetask.StandardTaskTemplate):
         observing_pattern = reference_data.observing_pattern[reference_antenna][reference_spw][reference_field]
 
         # parse window
-        parser = detection.LineWindowParser(reference_data, window)
+        parser = detection.LineWindowParser(reference_data, window, context)
         parser.parse(reference_field)
         parsed_window = parser.get_result(reference_spw)
 
