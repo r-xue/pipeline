@@ -1,9 +1,11 @@
 """Display module for skycal task."""
-import collections
+from __future__ import annotations
+
 import glob
 import os
-import matplotlib.pyplot as plt
-import numpy
+from matplotlib.figure import Figure
+from matplotlib.ticker import NullFormatter
+import numpy as np
 import traceback
 
 import pipeline.infrastructure.logging as logging
@@ -14,9 +16,10 @@ from ..common import display as sd_display
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
-from typing import TYPE_CHECKING, Any, Dict, List, NoReturn, Optional, Union, Tuple
+from typing import TYPE_CHECKING, Any, NoReturn
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
     from matplotlib.axes import Axes
     from pipeline.domain import Field, MeasurementSet, Scan
     from pipeline.hsd.tasks.skycal.skycal import SDSkyCalResults
@@ -28,7 +31,7 @@ if TYPE_CHECKING:
 LOG = logging.get_logger(__name__)
 
 
-def get_field_from_ms(ms: 'MeasurementSet', field: str) -> List['Field']:
+def get_field_from_ms(ms: MeasurementSet, field: str) -> list[Field]:
     """Return list of fields that matches field selection.
 
     Matching with field id takes priority over
@@ -56,7 +59,7 @@ def get_field_from_ms(ms: 'MeasurementSet', field: str) -> List['Field']:
 class SingleDishSkyCalDisplayBase(object):
     """Base display class for skycal stage."""
 
-    def init_with_field(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
+    def init_with_field(self, context: Context, result: SDSkyCalResults, field: str) -> None:
         """Initialize attributes using field information.
 
         Args:
@@ -89,7 +92,7 @@ class SingleDishSkyCalDisplayBase(object):
         if 'field' not in self._kwargs:
             self._kwargs['field'] = self.field_id
 
-    def add_field_identifier(self, plots: List[logger.Plot]) -> None:
+    def add_field_identifier(self, plots: list[logger.Plot]) -> None:
         """Add field identifier.
 
         Args:
@@ -115,7 +118,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
+    def __init__(self, context: Context, result: SDSkyCalResults, field: str) -> None:
         """Initialize the class.
 
         Args:
@@ -136,7 +139,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         self._figfile = dict((spw_id, list(self._figfile[spw_id].values())[0]) for spw_id in self.spw_ids)
         self.init_with_field(context, result, field)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Plot the Amplitude vs. Frequency summary chart.
 
         Return:
@@ -219,7 +222,7 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
             self._figfile[spw_id] = '.'.join(pieces)
 
     def create_task_for_tp_spectral_scan(self, spw_arg: int, antenna_arg: str,
-                                         showimage: bool = False) -> 'JobRequest':
+                                         showimage: bool = False) -> JobRequest:
         """
         Return plotbandpass task job with a tweaked parameter value.
 
@@ -237,8 +240,8 @@ class SingleDishSkyCalAmpVsFreqSummaryChart(common.PlotbandpassDetailBase, Singl
         kwargs_org = self._kwargs.copy()
         try:
             ms = self.context.observing_run.get_ms(self._vis)
-            def __get_sorted_reference_scans(msobj: 'MeasurementSet',
-                                             spw: Optional[Union[int, str, collections.abc.Sequence]] = None) -> List['Scan']:
+            def __get_sorted_reference_scans(msobj: MeasurementSet,
+                                             spw: int | str | Sequence | None = None) -> list[Scan]:
                 """
                 Return a list of REFERENCE Scan objects sorted by scan IDs.
                 Args:
@@ -298,7 +301,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
     """
 
     @staticmethod
-    def get_caltable_from_result(result: 'SDSkyCalResults') -> str:
+    def get_caltable_from_result(result: SDSkyCalResults) -> str:
         """Extract caltable name from the results object.
 
         This method assumes result.final contains only one CalApplication
@@ -317,7 +320,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         return caltable
 
     @staticmethod
-    def get_solution_interval(caltable: str) -> Optional[float]:
+    def get_solution_interval(caltable: str) -> float | None:
         """Compute appropriate solution interval for caltable.
 
         The value should be given to solutionTimeThresholdSeconds
@@ -339,14 +342,14 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
         """
         with casa_tools.TableReader(caltable) as tb:
             unique_timestamps_per_antenna = []
-            antennas = numpy.unique(tb.getcol('ANTENNA1'))
+            antennas = np.unique(tb.getcol('ANTENNA1'))
             valid_rows = tb.query('not all(FLAG)')
             intervalcol = valid_rows.getcol('INTERVAL')
             timecol = valid_rows.getcol('TIME')
             antenna1col = valid_rows.getcol('ANTENNA1')
             for a in antennas:
                 unique_timestamps_per_antenna.append(
-                    numpy.unique(timecol[antenna1col == a])
+                    np.unique(timecol[antenna1col == a])
                 )
             valid_rows.close()
 
@@ -354,10 +357,10 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             # return None if no valid caltable rows exist
             return None
 
-        max_interval = int(numpy.ceil(intervalcol.max()))
+        max_interval = int(np.ceil(intervalcol.max()))
 
         # check if number of unique timestamps is less than 2
-        if numpy.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
+        if np.any([len(x) < 2 for x in unique_timestamps_per_antenna]):
             # if True, skip evaluating min_time_diff since
             # time difference cannot be calculated
             min_time_diff = None
@@ -365,10 +368,10 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
             # if False, evaluate min_time_diff as a minimum
             # time difference between adjacent timestamps
             min_time_diff_per_antenna = map(
-                lambda x: numpy.diff(x).min(),
+                lambda x: np.diff(x).min(),
                 unique_timestamps_per_antenna
             )
-            min_time_diff = int(numpy.floor(min(min_time_diff_per_antenna)))
+            min_time_diff = int(np.floor(min(min_time_diff_per_antenna)))
 
         LOG.info(f'max_interval is {max_interval}, min_time_diff is {min_time_diff}')
 
@@ -387,7 +390,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
         return solution_interval
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', field: str) -> None:
+    def __init__(self, context: Context, result: SDSkyCalResults, field: str) -> None:
         """Initialize the class.
 
         Args:
@@ -408,7 +411,7 @@ class SingleDishSkyCalAmpVsFreqDetailChart(bandpass.BandpassDetailChart, SingleD
 
         self.init_with_field(context, result, field)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Create Amplitude vs. Frequency detail plot.
 
         Return:
@@ -441,9 +444,9 @@ class SingleDishPlotmsLeaf(object):
 
     def __init__(
         self,
-        context: 'Context',
-        result: 'SDSkyCalResults',
-        calapp: 'CalApplication',
+        context: Context,
+        result: SDSkyCalResults,
+        calapp: CalApplication,
         xaxis: str,
         yaxis: str,
         spw: str = '',
@@ -501,7 +504,7 @@ class SingleDishPlotmsLeaf(object):
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Generate a sky calibration plot.
 
         Return:
@@ -535,7 +538,7 @@ class SingleDishPlotmsLeaf(object):
         else:
             return []
 
-    def _create_task(self, title: str, figfile: str) -> 'JobRequest':
+    def _create_task(self, title: str, figfile: str) -> JobRequest:
         """Create task of CASA plotms.
 
         Args:
@@ -566,7 +569,7 @@ class SingleDishPlotmsLeaf(object):
 
         return casa_tasks.plotms(**task_args)
 
-    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
+    def _get_plot_object(self, figfile: str, task: JobRequest) -> logger.Plot:
         """Generate parameters and return logger.Plot.
 
         Args:
@@ -594,7 +597,7 @@ class SingleDishPlotmsSpwComposite(common.LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = SingleDishPlotmsLeaf
 
-    def __init__(self, context, result, calapp: List['CalApplication'],
+    def __init__(self, context, result, calapp: list[CalApplication],
                  xaxis, yaxis, ant='', pol='', **kwargs):
 
         # Create a dictionary to keep track of which caltable has which spws.
@@ -617,7 +620,7 @@ class SingleDishPlotmsAntSpwComposite(common.LeafComposite):
 
     leaf_class = SingleDishPlotmsSpwComposite
 
-    def __init__(self, context, result, calapp: List['CalApplication'], xaxis, yaxis, pol='', **kwargs):
+    def __init__(self, context, result, calapp: list[CalApplication], xaxis, yaxis, pol='', **kwargs):
 
         dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
         table_ants = sorted(dict_calapp_ants.keys())
@@ -641,7 +644,7 @@ class SingleDishSkyCalAmpVsTimeSummaryChart(SingleDishPlotmsSpwComposite):
     The chart is plotted for each Measurement Set, Field and Spectral Window.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication']) -> None:
+    def __init__(self, context: Context, result: SDSkyCalResults, calapp: list[CalApplication]) -> None:
         """Initialize the class.
 
         Args:
@@ -662,7 +665,7 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
     The chart is plotted for each Measurement Set, Antenna, Field and Spectral Window.
     """
 
-    def __init__(self, context: 'Context', result: 'SDSkyCalResults', calapp: List['CalApplication']) -> None:
+    def __init__(self, context: Context, result: SDSkyCalResults, calapp: list[CalApplication]) -> None:
         """Initialize the class.
 
         Args:
@@ -677,11 +680,11 @@ class SingleDishSkyCalAmpVsTimeDetailChart(SingleDishPlotmsAntSpwComposite):
 
 @casa5style_plot
 def plot_elevation_difference(
-        context: 'Context',
-        result: 'SDSkyCalResults',
-        eldiff: Dict,
+        context: Context,
+        result: SDSkyCalResults,
+        eldiff: dict[str, np.ndarray],
         threshold: float = 3.0
-        ) -> List[logger.Plot]:
+        ) -> list[logger.Plot]:
     """Generate plot of elevation difference.
 
     Args:
@@ -690,6 +693,7 @@ def plot_elevation_difference(
         eldiff: -- dictionary whose value is ElevationDifference named tuple instance that holds
                       'timeon': timestamp for ON-SOURCE pointings
                       'elon': ON-SOURCE elevation
+                      'flagon': flag for ON-SOURCE pointings (True if flagged, False otherwise)
                       'timecal': timestamp for OFF-SOURCE pointings
                       'elcal': OFF-SOURCE elevation
                       'time0': timestamp for preceding OFF-SOURCE pointings
@@ -709,14 +713,12 @@ def plot_elevation_difference(
     figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
-    figure0 = 'PERANTENNA_PLOT'
-    figure1 = 'ALLANTENNA_PLOT'
-    start_time = numpy.min([numpy.min(x.timeon) for z in eldiff.values() for y in z.values()
+    start_time = np.min([np.min(x.timeon) for z in eldiff.values() for y in z.values()
                             for x in y.values() if len(x.timeon) > 0])
-    end_time = numpy.max([numpy.max(x.timeon) for z in eldiff.values() for y in z.values()
+    end_time = np.max([np.max(x.timeon) for z in eldiff.values() for y in z.values()
                           for x in y.values() if len(x.timeon) > 0])
 
-    def init_figure(figure_id: str) -> Tuple['Axes', 'Axes']:
+    def init_figure(figure: Figure) -> tuple[Axes, Axes]:
         """Initialize the figure.
 
         Args:
@@ -724,23 +726,22 @@ def plot_elevation_difference(
         Return:
             Tuple (a0, a1); both a0 and a1 are Axes instance of plot.
         """
-        plt.figure(figure_id)
-        plt.clf()
-        a0 = plt.axes([0.125, 0.51, 0.775, 0.39])
+        figure.clear()
+        a0 = figure.add_axes((0.125, 0.51, 0.775, 0.39))
         a0.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
-        a0.xaxis.set_major_formatter(plt.NullFormatter())
+        a0.xaxis.set_major_formatter(NullFormatter())
         a0.tick_params(axis='both', labelsize=10)
-        plt.ylabel('Elevation [deg]', fontsize=10)
+        a0.set_ylabel('Elevation [deg]', fontsize=10)
 
-        a1 = plt.axes([0.125, 0.11, 0.775, 0.39])
+        a1 = figure.add_axes((0.125, 0.11, 0.775, 0.39))
         a1.xaxis.set_major_locator(sd_display.utc_locator(start_time=start_time, end_time=end_time))
         a1.xaxis.set_major_formatter(sd_display.utc_formatter())
         a1.tick_params(axis='both', labelsize=10)
-        plt.ylabel('Elevation Difference [deg]', fontsize=10)
-        plt.xlabel('UTC', fontsize=10)
+        a1.set_ylabel('Elevation Difference [deg]', fontsize=10)
+        a1.set_xlabel('UTC', fontsize=10)
         return a0, a1
 
-    def finalize_figure(figure_id: Union[str, int], vis: str, field_name: str, antenna_name: str) -> None:
+    def finalize_figure(figure: Figure, vis: str, field_name: str, antenna_name: str, xmin: float, xmax: float) -> None:
         """Set axes, label, legend and title for the elevation difference figure.
 
         Args:
@@ -749,24 +750,25 @@ def plot_elevation_difference(
             field_name: Name of field.
             antenna_name: Name of antenna.
         """
-        figure = plt.figure(figure_id)
         axes = figure.axes
-        assert len(axes) == 2
+        assert len(axes) == 2, f"length of axes should be 2, but got {len(axes)}"
         a0 = axes[0]
         a1 = axes[1]
-        plt.gcf().sca(a1)
-        ymin, ymax = plt.ylim()
+        ymin, ymax = a1.get_ylim()
         dy = ymax - ymin
-        plt.ylim([0, max(ymax + 0.1 * dy, threshold + 0.1)])
+        a1.set_ylim(0, max(ymax + 0.1 * dy, threshold + 0.1))
 
-        plt.axhline(threshold, color='red')
-        xmin, xmax = plt.xlim()
+        a1.axhline(threshold, color='red')
         dx = xmax - xmin
-        x = xmax - 0.01 * dx
+        xmin_new = xmin - 0.05 * dx
+        xmax_new = xmax + 0.05 * dx
+        dx_new = xmax_new - xmin_new
+        a1.set_xlim(xmin_new, xmax_new)
+        x = xmax_new - 0.01 * dx_new
         y = threshold - 0.05
-        plt.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
+        a1.text(x, y, 'QA threshold', ha='right', va='top', color='red', size='small')
 
-        plt.gcf().sca(a0)
+        a0.set_xlim(xmin_new, xmax_new)
         labelon = False
         labeloff = False
         for l in a0.lines:
@@ -778,13 +780,13 @@ def plot_elevation_difference(
                 labeloff = True
             if labelon and labeloff:
                 break
-        plt.legend(loc='best', numpoints=1, prop={'size': 'small'})
-        plt.title('Elevation Difference between ON and OFF\n{} Field {} Antenna {}'.format(vis,
-                                                                                           field_name,
-                                                                                           antenna_name),
-                  fontsize=12)
+        a0.legend(loc='best', numpoints=1, prop={'size': 'small'})
+        a0.set_title(
+            f'Elevation Difference between ON and OFF\n{vis} Field {field_name} Antenna {antenna_name}',
+            fontsize=12
+        )
 
-    def generate_plot(figure_id: Union[str, int], vis: str, field_name: str, antenna_name: str) -> logger.Plot:
+    def generate_plot(figure: Figure, vis: str, field_name: str, antenna_name: str) -> logger.Plot:
         """Generate the file of elevation figure.
 
         Args:
@@ -795,11 +797,10 @@ def plot_elevation_difference(
         Return:
             logger.Plot
         """
-        plt.figure(figure_id)
         vis_prefix = '.'.join(vis.split('.')[:-1])
         figfile = 'elevation_difference_{}_{}_{}.png'.format(vis_prefix, field_name, antenna_name)
         figpath = os.path.join(figroot, figfile)
-        plt.savefig(figpath)
+        figure.savefig(figpath)
         plot = None
         if os.path.exists(figpath):
             parameters = {'intent': 'TARGET',
@@ -816,15 +817,9 @@ def plot_elevation_difference(
                                parameters=parameters)
         return plot
 
-    def close_figure(figure_id: Union[str, int]) -> None:
-        """Close the figure.
-
-        Args:
-            figure_id: ID of figure.
-        """
-        plt.close(figure_id)
-
     plots = []
+    figure0 = Figure()
+    figure1 = Figure()
     for field_id, eldiff_field in eldiff.items():
         # figure for summary plot
         a2, a3 = init_figure(figure1)
@@ -834,6 +829,8 @@ def plot_elevation_difference(
 
         plots_per_field = []
 
+        global_xmin = None
+        global_xmax = None
         for antenna_id, eldant in eldiff_field.items():
             # figure for per-antenna plots
             a0, a1 = init_figure(figure0)
@@ -845,10 +842,17 @@ def plot_elevation_difference(
                     continue
 
                 # Elevation vs. Time
+                # PIPE-1752 plot valid data points only
+                # mask: True for valid, False otherwise
+                mask = np.logical_not(eld.flagon)
                 xon = sd_display.mjd_to_plotval(eld.timeon)
+                xmin = xon.min()
+                global_xmin = xmin if global_xmin is None else min(global_xmin, xmin)
+                xmax = xon.max()
+                global_xmax = xmax if global_xmax is None else max(global_xmax, xmax)
                 xoff = sd_display.mjd_to_plotval(eld.timecal)
                 for a in [a0, a2]:
-                    a.plot(xon, eld.elon, '.', color='black', mew=0)
+                    a.plot(xon[mask], eld.elon[mask], '.', color='black', mew=0)
                     a.plot(xoff, eld.elcal, '.', color='blue', mew=0)
 
                 # Elevation Difference vs. Time
@@ -856,10 +860,10 @@ def plot_elevation_difference(
                 eldiff0 = eld.eldiff0
                 time1 = eld.time1
                 eldiff1 = eld.eldiff1
-                io0 = numpy.where(numpy.abs(eldiff0) < threshold)[0]
-                ix0 = numpy.where(numpy.abs(eldiff0) >= threshold)[0]
-                io1 = numpy.where(numpy.abs(eldiff1) < threshold)[0]
-                ix1 = numpy.where(numpy.abs(eldiff1) >= threshold)[0]
+                io0 = np.where(np.abs(eldiff0) < threshold)[0]
+                ix0 = np.where(np.abs(eldiff0) >= threshold)[0]
+                io1 = np.where(np.abs(eldiff1) < threshold)[0]
+                ix1 = np.where(np.abs(eldiff1) >= threshold)[0]
                 index_list = [io0, io1, ix0, ix1]
                 time_list = [time0, time1, time0, time1]
                 eldiff_list = [eldiff0, eldiff1, eldiff0, eldiff1]
@@ -867,20 +871,22 @@ def plot_elevation_difference(
                 for idx, t, ed, ls in zip(index_list, time_list, eldiff_list, style_list):
                     if len(idx) > 0:
                         x = sd_display.mjd_to_plotval(t[idx])
-                        y = numpy.abs(ed[idx])
+                        y = np.abs(ed[idx])
                         for a in [a1, a3]:
                             a.plot(x, y, ls, mew=0)
 
             # finalize figure for per-antenna plot
-            finalize_figure(figure0, ms.basename, field_name, antenna_name)
+            finalize_figure(figure0, ms.basename, field_name, antenna_name, xmin, xmax)
 
             # generate plot object
             plot = generate_plot(figure0, ms.basename, field_name, antenna_name)
             if plot is not None:
                 plots_per_field.append(plot)
 
+            figure0.clear()
+
         # finalize figure for summary plot
-        finalize_figure(figure1, ms.basename, field_name, 'ALL')
+        finalize_figure(figure1, ms.basename, field_name, 'ALL', global_xmin, global_xmax)
 
         # generate plot object
         plot = generate_plot(figure1, ms.basename, field_name, '')
@@ -889,7 +895,6 @@ def plot_elevation_difference(
 
         plots.extend(plots_per_field)
 
-    close_figure(figure0)
-    close_figure(figure1)
+        figure1.clear()
 
     return plots

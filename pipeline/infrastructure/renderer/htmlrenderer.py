@@ -429,6 +429,10 @@ class T1_1Renderer(RendererBase):
         else:
             pipeline_doclink = None
 
+        pipeline_recipe = context.get_recipe_name()
+        if pipeline_recipe == '':
+            pipeline_recipe = 'N/A'
+
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
@@ -516,6 +520,7 @@ class T1_1Renderer(RendererBase):
             'casa_version': environment.casa_version_string,
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
+            'pipeline_recipe': pipeline_recipe,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
             'iers_eop_2000_version': iers_eop_2000_version,
@@ -1064,22 +1069,25 @@ class T2_2_1Renderer(T2_2_XRendererBase):
     def get_display_context(
         context: Context, ms: MeasurementSet
     ) -> dict[str, Context | MeasurementSet | list[tuple[Source, list[logger.Plot | None]]]]:
-        mosaics = []
+        pointings = []
         for source in ms.sources:
-            pointings = [f for f in ms.fields if f.source_id == source.id]
-            if len(pointings) <= 1:
+            plots = []
+            num_pointings = len([f for f in ms.fields if f.source_id == source.id])
+            if num_pointings < 1 or 'TARGET' not in source.intents:
                 continue
+            else:
+                if num_pointings > 1:
+                    mosaic_plot = summary.MosaicPointingsChart(context, ms, source).plot()
+                    if mosaic_plot:
+                        plots.append(mosaic_plot)
+                if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
+                    tsys_plot = summary.TsysScansChart(context, ms, source).plot()
+                    if tsys_plot:
+                        plots.append(tsys_plot)
+            if plots:
+                pointings.append((source, plots))
 
-            plots = [summary.MosaicPointingsChart(context, ms, source).plot()]
-
-            if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
-                tsys_plot = summary.MosaicTsysChart(context, ms, source).plot()
-                if tsys_plot:
-                    plots.append(tsys_plot)
-
-            mosaics.append((source, plots))
-
-        return {'pcontext': context, 'ms': ms, 'mosaics': mosaics}
+        return {'pcontext': context, 'ms': ms, 'pointings': pointings}
 
 
 class T2_2_2Renderer(T2_2_XRendererBase):
