@@ -1,7 +1,36 @@
 import os
+import re
+
 import numpy as np
 
 from pipeline.infrastructure import casa_tools
+
+
+def get_num_caltable_polarizations(caltable: str) -> int:
+    """Obtain number of polarisations from calibration table.
+
+    Seemingly the number of QA ID does not map directly to the number of
+    polarisations for the spw in the MS, but the number of polarisations for
+    the spw as held in the caltable.
+    """
+    with casa_tools.TableReader(caltable) as tb:
+        col_shapes = set(tb.getcolshapestring('CPARAM'))
+
+    # get the number of pols stored in the caltable, checking that this
+    # is consistent across all rows
+    fmt = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
+    col_pols = set()
+    for shape in col_shapes:
+        m = fmt.match(shape)
+        if m:
+            col_pols.add(int(m.group('num_pols')))
+        else:
+            raise ValueError('Could not find shape of polarisation from %s' % shape)
+
+    if len(col_pols) != 1:
+        raise ValueError('Got %s polarisations from %s' % (len(col_pols), col_shapes))
+
+    return int(col_pols.pop())
 
 
 # Adapted from analysisUtils.getNChanFromCaltable()

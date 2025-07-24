@@ -10,9 +10,9 @@ import os
 
 from pipeline import domain
 from pipeline.infrastructure import casa_tools, casa_tasks
-
+from pipeline.infrastructure import caltable_tools
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
-    get_casa_quantity, get_num_caltable_polarizations, fieldname_for_casa, fieldname_clean, \
+    get_casa_quantity, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
     get_taskhistory_fromimage, list_to_str
 
@@ -94,11 +94,12 @@ params_test_get_num_calltable_pol = [('uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_
                                       'timegaincal.s17_2.spw0.solintinf.gpcal.tbl', 2)]
 
 
+# FIXME: this should probably get migrated to a caltable_tools_test.py, which should exist anyway.
 @pytest.mark.parametrize('caltable, expected', params_test_get_num_calltable_pol)
 def test_get_num_caltable_polarizations(caltable: str, expected: int):
     """Test get_num_caltable_polarizations()
     """
-    assert get_num_caltable_polarizations(caltable=casa_tools.utils.resolve('pl-unittest/'+caltable)) == expected
+    assert caltable_tools.get_num_caltable_polarizations(caltable=casa_tools.utils.resolve('pl-unittest/'+caltable)) == expected
 
 
 params_flagged_intervals = [([], []), ([1, 2], [(0, 0)]),
