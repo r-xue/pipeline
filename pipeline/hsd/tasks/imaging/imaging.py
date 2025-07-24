@@ -1784,23 +1784,23 @@ class SDImaging(basetask.StandardTaskTemplate):
             tirp : Parameter object of calculate_theoretical_image_rms()
         """
         unit = tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
+        # Total time on source of data not online flagged for all polarizations.
         t_on_tot = tirp.cqa.getvalue(tirp.cqa.convert(tirp.cqa.quantity(
             tirp.dt.getcol('EXPOSURE').take(tirp.index_list, axis=-1).sum(), unit), tirp.time_unit))[0]
-        # flagged fraction
-        full_intent = utils.to_CASA_intent(tirp.msobj, 'TARGET')
-        flagdata_summary_job = casa_tasks.flagdata(vis=tirp.infile, mode='summary',
-                                                   antenna='{}&&&'.format(tirp.antid),
-                                                   field=str(tirp.fieldid),
-                                                   spw=str(tirp.spwid), intent=full_intent,
-                                                   spwcorr=False, fieldcnt=False,
-                                                   name='summary')
-        flag_stats = self._executor.execute(flagdata_summary_job)
-        frac_flagged = flag_stats['spw'][str(tirp.spwid)]['flagged'] / flag_stats['spw'][str(tirp.spwid)]['total']
+        # Additional flag fraction
+        flag_summary = tirp.dt.getcol('FLAG_SUMMARY').take(tirp.index_list, axis=-1)
+        (num_pol, num_data) = flag_summary.shape
+        # PIPE-2508: fraction of data where any of polarization is flagged. (FLAG_SUMMARY is 0 for flagged data)
+        # TODO: This logic should be improved in future when full polarization is supported.
+        num_flagged = numpy.count_nonzero(flag_summary.sum(axis=0) < num_pol)
+        frac_flagged = num_flagged / num_data
+        LOG.debug('Per polarization flag summary (# of integrations): total=%d, flagged per pol=%s, any pol flagged=%d',
+                  num_data, num_data - flag_summary.sum(axis=1), num_flagged)
         # the actual time on source
         tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
         LOG.info('The actual on source time = {} {}'.format(tirp.t_on_act, tirp.time_unit))
-        LOG.info('- total time on source = {} {}'.format(t_on_tot, tirp.time_unit))
-        LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
+        LOG.info('- total time on source (excl. online flagged integrations) = {} {}'.format(t_on_tot, tirp.time_unit))
+        LOG.info('- addtional flag fraction = {} %'.format(100 * frac_flagged))
 
     def _obtain_calibration_tables_applied(self, tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
@@ -1883,6 +1883,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{tirp.msobj.execblock_id}:{tirp.msobj.antennas[tirp.antid].name}')
             return SKIP
         tirp.dt = cp.dt_dict[tirp.msobj.basename]
+        # Note: index_list is a list of DataTable row IDs for selected data EXCLUDING rows where all pols are flagged online.
         tirp.index_list = common.get_index_list_for_ms(tirp.dt, [tirp.msobj.origin_ms],
                                                         [tirp.antid], [tirp.fieldid], [tirp.spwid])
         if len(tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
