@@ -34,12 +34,14 @@ from pipeline.domain.measurementset import MeasurementSet
 from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
 from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
+from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 
 if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
     from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
     from pipeline.infrastructure.launcher import Context
@@ -4356,5 +4358,80 @@ def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
                               metric_units='state of IERS tables relative to observation date')
 
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin))
+
+    return scores
+
+
+@log_qa
+def score_sdapplycal_flagged(context: 'Context', result: 'SDApplycalResults') -> List[pqa.QAScore]:
+    """
+    Calculate score about amp vs. Time plot of Single Dish Applycal.
+
+    Args:
+        context: Pipeline context.
+        result: SDApplycalResults instance.
+
+    Returns:
+        List[pqa.QAScore]: lists contains QAScore objects.
+    """
+
+    vis = os.path.basename(result.inputs['vis'])
+    ms = context.observing_run.get_ms(vis)
+    spwids = [str(spws.id) for spws in ms.get_spectral_windows()]
+    ants = ['all']
+    antmap = dict((a.id, a.name) for a in ms.get_antenna())
+    antname = list(antmap.values())
+    ants.extend(antname)
+    figroot = os.path.join(context.report_dir,
+                           'stage%s' % result.stage_number)
+
+    flagdata = {}
+    flagkwargs = ["spw='{!s}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='Spw{:0>3}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
+    flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
+    flagdata = flagdata_task.execute()
+
+    scores = []
+    for i, spw in enumerate(spwids):
+        reportn = "report" + str(i)
+        flagdatan = flagdata[reportn]
+        flagdatan_ant = flagdatan['antenna']
+        for ant in ants:
+            data = []
+            flagged = []
+            total = []
+            all_flagged = []
+            all_total = []
+            score = 1.0
+            prefix = '{vis}-{y}_vs_{x}-{ant}-spw{spw}'.format(
+                vis=vis, y='real', x='time', ant=ant, spw=spw)
+            figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+            is_figfile_exists = os.path.exists(figfile)
+            if is_figfile_exists:
+                if ant != "all":
+                    for antname, data in flagdatan_ant.items():
+                        if antname == ant:
+                            flagged = data['flagged']
+                            total = data['total']
+                else:
+                    for antname, data in flagdatan_ant.items():
+                        flagged = data['flagged']
+                        total = data['total']
+                        all_flagged.append(flagged)
+                        all_total.append(total)
+                    if flagged < total or sum(all_flagged) < sum(all_total):
+                        LOG.info("Not all flagged_data are True for Spw{0} and Antenna={1} of {2}.".format(spw, ant, vis))
+                        shortmsg = 'Generating amp vs time plot was successful.'
+                        longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
+                    else:
+                        LOG.info("All flagged_data are True for Spw{0} and Antenna={1} of {2}.".format(spw, ant, vis))
+                        shortmsg = 'Generating amp vs time plot was successful but empty.'
+                        longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
+                        score = 0.8
+            else:
+                shortmsg = 'Generating amp vs time plot was failed.'
+                longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
+                score = 0.65
+
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
     return scores
