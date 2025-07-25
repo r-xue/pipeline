@@ -1,4 +1,3 @@
-import collections
 import copy
 import dataclasses
 import os
@@ -45,10 +44,6 @@ WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
 # to X in PIPE-2505 spec. Extracted as a module variable so that testers could, if
 # desired, force caltable generation for all spws.
 LOW_SNR_THRESHOLD = 6
-
-
-IntentField = collections.namedtuple('IntentField', 'intent field')
-SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype')
 
 
 @dataclass
