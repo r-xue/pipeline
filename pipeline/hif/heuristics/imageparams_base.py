@@ -54,7 +54,8 @@ class ImageParamsHeuristics(object):
             copy.deepcopy(self.proj_params),
             self.contfile,
             self.linesfile,
-            copy.deepcopy(self.imaging_params)
+            copy.deepcopy(self.imaging_params),
+            copy.deepcopy(self.processing_intents)
         )
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
