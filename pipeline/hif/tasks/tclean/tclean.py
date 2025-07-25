@@ -77,6 +77,7 @@ class TcleanInputs(cleanbase.CleanBaseInputs):
             contfile=self.context.contfile,
             linesfile=self.context.linesfile,
             imaging_params=self.context.imaging_parameters,
+            processing_intents=self.context.processing_intents,
             # TODO: imaging_mode should not be fixed
             imaging_mode='ALMA'
         )

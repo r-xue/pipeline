@@ -684,6 +684,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             contfile=inputs.contfile,
             linesfile=inputs.linesfile,
             imaging_params=inputs.context.imaging_parameters,
+            processing_intents=inputs.context.processing_intents,
             imaging_mode=imaging_mode
         )
 
@@ -844,6 +845,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         contfile=inputs.contfile,
                         linesfile=inputs.linesfile,
                         imaging_params=inputs.context.imaging_parameters,
+                        processing_intents=inputs.context.processing_intents,
                         imaging_mode=imaging_mode
                     )
                     if inputs.specmode == 'cont':
@@ -1455,7 +1457,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
                                 nfrms_multiplier = self._get_nfrms_multiplier(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
-                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,

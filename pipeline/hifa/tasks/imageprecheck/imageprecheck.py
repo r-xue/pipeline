@@ -193,6 +193,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
             contfile=context.contfile,
             linesfile=context.linesfile,
             imaging_params=context.imaging_parameters,
+            processing_intents=context.processing_intents,
             imaging_mode=imaging_mode
         )
 

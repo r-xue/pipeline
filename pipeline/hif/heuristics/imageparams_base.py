@@ -58,7 +58,7 @@ class ImageParamsHeuristics(object):
         )
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         """
         :param vislist: the list of MS names
         :type vislist: list of strings
@@ -81,6 +81,7 @@ class ImageParamsHeuristics(object):
         self.linesfile = linesfile
 
         self.imaging_params = imaging_params
+        self.processing_intents = processing_intents
 
         # split spw into list of spw parameters for 'clean'
         spwlist = spw.replace('[', '').replace(']', '').strip()
@@ -2313,8 +2314,9 @@ class ImageParamsHeuristics(object):
         else:
             local_vislist = vislist
 
-        if intent != 'TARGET':
-            # For calibrators use all antennas
+        print(f'DMU: {self.processing_intents}')
+        if intent != 'TARGET' or 'INTERFEROMETRY_HETEROGENEOUS_IMAGING' in self.processing_intents:
+            # For calibrators or when explicitly requested use all antennas
             antenna_ids = {}
             for vis in local_vislist:
                 antenna_ids[os.path.basename(vis)] = [antenna.id for antenna in self.observing_run.get_ms(vis).antennas]

@@ -83,6 +83,7 @@ class Context(object):
             - {'INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
             - {'VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
             - {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': True}
+            - {'INTERFEROMETRY_HETEROGENEOUS_IMAGING': True}
             - {'SINGLEDISH_STANDARD_OBSERVING_MODE': 'Undefined'}
         rmsimlist: The ImageLibrary object holding RMS uncertainty images of the
             science targets.
