@@ -4386,34 +4386,53 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     flagdata = flagdata_task.execute()
 
     scores = []
-    spws = [flagdata[report]['name'] for report in list(flagdata)]
     for onedata in flagdata.values():
-        for spw in spws:
+        spw = onedata['name']
+        prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
+            vis=vis, y='real', x='time', ant='all', spw=spw)
+        figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+        is_figfile_exists = os.path.exists(figfile)
+        score = 1.0
+        if not is_figfile_exists:
+            shortmsg = 'Generating amp vs time plot was failed.'
+            longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was failed.'.format(spw, vis)
+            score = 0.65
+        else:
             sumflagged = 0
             sumtotal = 0
-            if spw in onedata.values():
-                for ant, value in onedata['antenna'].items():
-                    flagged = value['flagged']
-                    total = value['total']
-                    sumflagged += flagged
-                    sumtotal += total
-                    score = 1.0
-                    prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
-                        vis=vis, y='real', x='time', ant=ant, spw=spw)
-                    figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-                    is_figfile_exists = os.path.exists(figfile)
-                    if not is_figfile_exists:
-                        shortmsg = 'Generating amp vs time plot was failed.'
-                        longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
-                        score = 0.65
-                    else:
-                        if flagged == total or sumflagged == sumtotal:
-                            shortmsg = 'Generating amp vs time plot was successful but empty.'
-                            longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
-                            score = 0.8
-                        else:
-                            shortmsg = 'Generating amp vs time plot was successful.'
-                            longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
+            for ant, value in onedata['antenna'].items():
+                sumflagged += value['flagged']
+                sumtotal += value['total']
+            if sumflagged == sumtotal:
+                shortmsg = 'Generating amp vs time plot was successful but empty.'
+                longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was successful but empty.'.format(spw, vis)
+                score = 0.8
+            else:
+                shortmsg = 'Generating amp vs time plot was successful.'
+                longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was successful.'.format(spw, vis)
+
+        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
+
+        for ant, value in onedata['antenna'].items():
+            score = 1.0
+            prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
+                vis=vis, y='real', x='time', ant=ant, spw=spw)
+            figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+            is_figfile_exists = os.path.exists(figfile)
+            if not is_figfile_exists:
+                shortmsg = 'Generating amp vs time plot was failed.'
+                longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
+                score = 0.65
+            else:
+                flagged = value['flagged']
+                total = value['total']
+                if flagged == total:
+                    shortmsg = 'Generating amp vs time plot was successful but empty.'
+                    longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
+                    score = 0.8
+                else:
+                    shortmsg = 'Generating amp vs time plot was successful.'
+                    longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
