@@ -28,6 +28,7 @@ from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.qa import checksource
 from pipeline.infrastructure.utils import ous_parallactic_range
+from pipeline.hsd.tasks.common import utils as sdutils
 
 if TYPE_CHECKING:
     from casatools import coordsys
@@ -65,6 +66,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_observing_modes',                           # ALMA specific
+           'score_diffgaincal_combine',                       # ALMA IF specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -477,6 +479,50 @@ def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_type: str) -> pqa.QAScore:
+    """
+    Compute QA score based on whether the phase solution gaintable, computed as
+    part of the hifa_diffgaincal stage, used spectral window combination, and
+    whether any SpWs were missing (in case of no SpW combination).
+
+    Args:
+        vis: Name of measurement set to score.
+        combine: combine parameter used in diffgain gaincal.
+        qa_message: String representing QA message derived during task, included
+            when no SpW combination is used (presumably forced by user) even
+            though there were indicators that would have triggered SpW
+            combination in automatic mode.
+        phaseup_type: String representing the type of diffgain phase-up.
+
+    Returns:
+        QA score.
+    """
+    # If SpW combination was used, turn this into a blue QA score.
+    if 'spw' in combine:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"SpW combination used."
+        longmsg = f"{vis}: Spectral window combination used for B2B {phaseup_type} to improve phase-up solution SNR."
+    # If no SpW combination was used and a SpW is missing, then turn this into a
+    # warning QA score.
+    elif qa_message:
+        score = rendererutils.SCORE_THRESHOLD_WARNING
+        shortmsg = f"SpWs missing or heavily flagged."
+        longmsg = (f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution but"
+                   f" {qa_message}.")
+    # Otherwise, no missing SpWs or SpW combination, so return good score of 1.
+    else:
+        score = 1.0
+        shortmsg = f"No SpW combination used."
+        longmsg = f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution."
+
+    origin = pqa.QAOrigin(metric_name='score_diffgaincal_combine',
+                          metric_score=score,
+                          metric_units='Score based on whether diffgain used combine')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -1182,6 +1228,15 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     spixl: list of a spectral index
     """
 
+    if len(fractional_residuals) == 0:
+        score = 0.0
+        longmsg = 'No fractional residuals available.'
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+                              metric_score=score,
+                              metric_units='')
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
     # PIPE-119, part a
     max_res = max(max(res) for res in fractional_residuals)
     if max_res < 0.01:
@@ -1191,7 +1246,7 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
 
     # PIPE-119 part b
     for res in fractional_residuals:
-        if max(np.abs(res))> 0.3:
+        if max(np.abs(res)) > 0.3:
             LOG.warning("Fractional residuals are > 0.3")
             break
 
@@ -3404,31 +3459,55 @@ def generate_metric_mask(
     vspw_list = np.asarray(outcome['assoc_spws'])
 
     mses = context.observing_run.measurement_sets
-    ms_list = [mses[i] for i in file_index]
-    spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
+    # avoid processing the same MS multiple times
+    unique_file_index = np.unique(file_index)
 
     refval = cs.referencevalue()
     units = cs.units()
     metric_mask = np.zeros(imshape, dtype=bool)
 
-    for i in range(len(ms_list)):
-        origin_basename = os.path.basename(ms_list[i].origin_ms)
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
+    for ms_id in unique_file_index:
+        target_ms = mses[ms_id]
+        origin_basename = os.path.basename(target_ms.origin_ms)
+        datatable_name = os.path.join(
+            context.observing_run.ms_datatable_name,
+            origin_basename
+        )
         rotable_name = os.path.join(datatable_name, 'RO')
-        rwtable_name = os.path.join(datatable_name, 'RW')
-        _index = np.where(file_index == file_index[i])
+        _index = np.where(file_index == ms_id)
         if len(_index[0]) == 0:
             continue
 
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
-        _spwlist = spw_list[_index]
+        _vspwlist = vspw_list[_index]
+
+        # Here, we are trying to process data with the same field
+        # and spw in one MS but from different antennas. Therefore,
+        # field and spw should be unique in the list.
+        field_id = _fieldlist[0]  # should be unique
+        if not np.all(_fieldlist == field_id):
+            LOG.warning(
+                f"Multiple fields found in MS {target_ms.basename}:"
+                f" {_fieldlist}. Skip evaluating."
+            )
+            continue
+        vspw_id = _vspwlist[0]  # should be unique
+        if not np.all(_vspwlist == vspw_id):
+            LOG.warning(
+                f"Multiple SPWs found in MS {target_ms.basename}:"
+                f" {_vspwlist}. Skip evaluating."
+            )
+            continue
+        spw_id = context.observing_run.virtual2real_spw_id(vspw_id, target_ms)
 
         with casa_tools.TableReader(rotable_name) as tb:
-            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(utils.list_to_str(_antlist), utils.list_to_str(_fieldlist), utils.list_to_str(_spwlist)))
+            taql = f'SRCTYPE==0 && ANTENNA IN {utils.list_to_str(_antlist)} && FIELD_ID == {field_id} && IF == {spw_id}'
+            LOG.debug("MS: %s, TaQL string: %s", target_ms.basename, taql)
+            tsel = tb.query(taql)
             ofs_ra = tsel.getcol('OFS_RA')
             ofs_dec = tsel.getcol('OFS_DEC')
-            rows = tsel.rownumbers()
+            origin_ms_rows = tsel.getcol('ROW')
             tsel.close()
 
         if org_direction is None:
@@ -3442,14 +3521,46 @@ def generate_metric_mask(
                 ra_deg[i] = shift_ra
                 dec_deg[i] = shift_dec
 
-        with casa_tools.TableReader(rwtable_name) as tb:
-            permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag = permanent_flag[0, datatable.OnlineFlagIndex]
+        rowmap = sdutils.make_row_map_between_ms(
+            context.observing_run.get_ms(target_ms.origin_ms),
+            target_ms.name
+        )
+
+        with casa_tools.TableReader(target_ms.name) as tb:
+            flag = map(
+                lambda irow: tb.getcell('FLAG', rowmap[irow]),
+                origin_ms_rows
+            )
+            # invert flag: True for valid data
+            ms_mask = map(
+                lambda f: np.logical_not(f),
+                flag
+            )
+            # data will contribute to the image if all polarizations are valid
+            ms_mask_collapsed_pol = map(
+                lambda f: np.all(f, axis=0),
+                ms_mask
+            )
+            # data will contribute to the image if there are any valid channels
+            ms_mask_per_row = map(
+                lambda f: np.any(f),
+                ms_mask_collapsed_pol
+            )
+            # validity mask for each row: True for valid data
+            validity_mask = np.fromiter(ms_mask_per_row, dtype=bool)
 
         # world-pixel conversion using cs.topixelmany
-        validity_mask = online_flag == 1
         ra_deg = ra_deg[validity_mask]
         dec_deg = dec_deg[validity_mask]
+
+        # skip if no valid data exists
+        if len(ra_deg) == 0:
+            LOG.info(
+                f'No valid data in MS {target_ms.basename},'
+                f' field {field_id}, spw {spw_id}, antenna {_antlist}.'
+                f' Excluding the MS from mask evaluation.'
+            )
+            continue
 
         # unit should be either 'rad' or 'deg'
         deg2rad = np.pi / 180.0
@@ -3463,7 +3574,6 @@ def generate_metric_mask(
         py = pixel_array[1]
 
         for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
-            #print(x, y)
             if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
                 metric_mask[x, y, :, :] = True
 

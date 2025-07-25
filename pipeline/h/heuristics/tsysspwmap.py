@@ -12,183 +12,132 @@
 # tsysspwmap  - generate an "applycal-ready" spwmap for TDM to FDM
 #                 transfer of Tsys
 #
-# For more information about each function type
-#
-# help tsysspwmap
-import numpy
-
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
+from pipeline.domain.measurementset import MeasurementSet
 from pipeline.infrastructure import casa_tools
 
 LOG = infrastructure.get_logger(__name__)
 
 
-class SpwMap(object):
+def trim_spw_map(spw_map: list[int]) -> list[int]:
     """
-    This object is basically set up to hold the information needed 
+    Trim a spw map (list of SpW IDs) to remove tail end where SpWs are mapped to
+    themselves.
+
+    E.g.
+        [0, 1, 2, 2, 4, 4, 6, 7, 8, 9]
+    gets trimmed to:
+        [0, 1, 2, 2, 4, 4]
+
+    This assumes that CASA will by default map SpWs to themselves if they do not
+    appear in the spw map.
+
+    Args:
+        spw_map: SpW map to trim.
+
+    Returns:
+        Trimmed SpW map.
     """
-    def __init__(self, calSpwId):
-        self.calSpwId = calSpwId
-        self.validFreqRange = []
-        self.mapsToSpw = []
-        self.bbNo = None
+    for i in reversed(range(len(spw_map))):
+        if spw_map[i] != i:
+            return spw_map[:i + 1]
+    return []
 
 
-class SpwInfo(object):
-    def __init__(self, mstable, spwId):
-        self.setTableAndSpwId(mstable, spwId)
-
-    def setTableAndSpwId(self, mstable, spwId):
-        self.setTable(mstable)
-        self.setSpwId(mstable, spwId)
-
-    def setTable(self, mstable):
-        self.parameters = mstable.colnames()
-
-    def setSpwId(self, mstable, spwId):
-        self.values = {}
-        for i in self.parameters:
-            self.values[i] = mstable.getcell(i, spwId)
-
-
-def areIdentical(spwInfo1, spwInfo2):
-    if len(spwInfo1.parameters) <= len(spwInfo2.parameters):
-        minState = spwInfo1; maxState = spwInfo2
-    else:
-        minState = spwInfo2; maxState = spwInfo1
-    valueCompare = []
-    for i in minState.parameters:
-        compare = (minState.values[i] == maxState.values[i])
-        if numpy.ndarray not in [type(compare)]:
-            compare = numpy.array(compare)
-        if compare.all():
-            valueCompare.append(True)
-        else:
-            valueCompare.append(False)
-    if False in valueCompare:
-        return False
-    else:
-        return True
-
-
-def trimSpwmap(spwMap):
-    compare = list(range(len(spwMap)))
-    for i in compare:
-        if compare[i:] == spwMap[i:]:
-            break
-    return spwMap[:i]
-
-
-def tsysspwmap(ms, tsystable, trim=True, relax=False, tsysChanTol=1):
+def tsysspwmap(ms: MeasurementSet, tsystable: str | None = None, channel_tolerance: int = 1, trim: bool = True)\
+        -> tuple[list[int], list[int]]:
     """
-    Generate default spwmap for ALMA Tsys, including TDM->FDM associations
-    Input:
-     ms        the target MeasurementSet object 
-     tsystable  the input Tsys caltable (w/ TDM Tsys measurements)
-     trim       if True (the default), return minimum-length spwmap;
-                    otherwise the spwmap will be exhaustive and include
-                    the high-numbered (and usually irrelevant) wvr
-                    spws
-     relax      (not yet implemented)
-    Output:
-     spw list to use in applycal spwmap parameter for the Tsys caltable
+    Generate default spectral window map for ALMA Tsys, including TDM->FDM
+    associations.
 
-     This function takes the Tsys Caltable you wish to apply to a
-     MeasurementSet and generates a "applycal-ready" spwmap that
-     provides the appropriate information regarding the transfer
-     Tsys calibration from TDM spectral windows to FDM spectral
-     windows.  To execute the function:
+    This function generates an "applycal-ready" SpW-to-Tsys-SpW mapping that
+    provides the appropriate information regarding the transfer of the Tsys
+    calibration from TDM spectral windows to FDM spectral windows.
 
-     tsysmap=tsysspwmap(vis='my.ms',tsystable='mytsys.cal')
+    If provided a Tsys Caltable that you wish to apply to a MeasurementSet, then
+    it filters to only use Tsys SpW(s) that appear in the caltable; otherwise,
+    it will use all Tsys SpWs present in MS and assume these are present in the
+    caltable.
 
-     tsysmap can then be supplied to the applycal spwmap parameter
-     to ensure proper Tsys calibration application.
+    The resulting tsys spwmap can then be supplied to the applycal spwmap
+    parameter to ensure proper Tsys calibration application.
 
+    Args:
+        ms: The measurement set (object) to process.
+        tsystable: Optional, the input Tsys caltable (w/ TDM Tsys measurements),
+            used to identify which Tsys SpW(s) are available.
+        channel_tolerance: Frequency tolerance in number of channels to use in
+            matching Tsys SpW freq. range to SpW freq. range.
+        trim: If True (the default), return minimum-length spwmap; otherwise the
+            spwmap will be exhaustive and include the high-numbered (and usually
+            irrelevant) WVR SpWs.
+
+    Returns:
+        2-tuple containing:
+        - list of unmatched SpW IDs.
+        - list representing the SpW-to-Tsys-SpW mapping.
     """
-
-    spwMaps = []
-
     # Case of Nobeyama(=NRO) data
     if ms.antenna_array.name == "NRO":
         LOG.debug('Mapping process between Tsys windows and Science windows is not specially needed.')
-        unmatched_science_spws = []
-        spwMaps = [spw.id for spw in ms.get_spectral_windows()]
-        return unmatched_science_spws, spwMaps
+        spw_mapping = [spw.id for spw in ms.get_spectral_windows()]
+        return [], spw_mapping
 
-    # Get the spectral windows with entries in the solution table
-    with casa_tools.TableReader(tsystable) as table:
-        measuredTsysSpw = numpy.unique(table.getcol("SPECTRAL_WINDOW_ID"))
+    # Retrieve all spectral windows.
+    spectral_windows = ms.get_spectral_windows(science_windows_only=False)
 
-    # Get the frequency ranges for the allowed 
-    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % tsystable) as table:
-        for i in measuredTsysSpw:
-            spwMap = SpwMap(i)
-            chanFreqs = table.getcell("CHAN_FREQ", i)
-            if len(chanFreqs) > 1:
-                chanWidth = abs(chanFreqs[1]-chanFreqs[0])
-            else:
-                chanWidth = table.getcell('EFFECTIVE_BW', i)
-            spwMap.chanWidth = chanWidth
-            spwMap.validFreqRange = [chanFreqs.min()-0.5*chanWidth,
-                                     chanFreqs.max()+0.5*chanWidth]
-            spwMaps.append(spwMap)
-
-    # Now loop through the main table's spectral window table
-    # to map the spectral windows as desired.
-    vis = ms.name
-    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
-        it = table.nrows()
-
-    for j in spwMaps:
-        with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
-            j.bbNo = table.getcell("BBC_NO", j.calSpwId)
-        for i in range(it):
-            with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
-                chanFreqs = table.getcell("CHAN_FREQ", i)
-                if len(chanFreqs) > 1:
-                    chanWidth = table.getcell("CHAN_WIDTH", i)[0]
-                    freqMin = chanFreqs.min()-0.5*chanWidth
-                    freqMax = chanFreqs.max()+0.5*chanWidth
-                else:
-                    chanWidth = table.getcell("CHAN_WIDTH", i)
-                    freqMin = chanFreqs-0.5*chanWidth
-                    freqMax = chanFreqs+0.5*chanWidth
-                msSpw = SpwInfo(table, i)
-                if j.bbNo == msSpw.values['BBC_NO']:
-                    if freqMin >= j.validFreqRange[0]-tsysChanTol*j.chanWidth and \
-                       freqMax <= j.validFreqRange[1]+tsysChanTol*j.chanWidth:
-                        j.mapsToSpw.append(i)
-
-    applyCalSpwMap = []
-    spwWithoutMatch = []
-    with casa_tools.TableReader("%s/SPECTRAL_WINDOW" % vis) as table:
-        for i in range(it):
-            useSpw = None
-            for j in spwMaps:
-                if i in j.mapsToSpw:
-                    if useSpw is not None:
-                        if table.getcell("BBC_NO") == j.bbNo:
-                            useSpw = j.calSpwId
-                    else:
-                        useSpw = j.calSpwId
-            if useSpw is None:
-                useSpw = i
-                spwWithoutMatch.append(i)
-            applyCalSpwMap.append(int(useSpw))        
-
-    science_window_ids = list({spw.id for spw in ms.get_spectral_windows(science_windows_only=True)})
-    unmatched_science_spws = list(set(spwWithoutMatch).intersection(science_window_ids))
-
-    if len(unmatched_science_spws) != 0:
-        no_match = utils.commafy(unmatched_science_spws, False)
-        LOG.info('No Tsys match found for spws %s.' % no_match) 
-
-    if trim:
-        LOG.info('Computed tsysspwmap is: '+str(trimSpwmap(applyCalSpwMap)))
-        # return spwWithoutMatch, trimSpwmap(applyCalSpwMap)
-        return unmatched_science_spws, trimSpwmap(applyCalSpwMap)
+    # Identify the Tsys spectral windows.
+    #
+    # If a Tsys caltable is provided, then select spectral windows with entries
+    # in the Tsys solutions table.
+    if tsystable is not None:
+        with casa_tools.TableReader(tsystable) as table:
+            spwids_in_tsyscaltable = set(table.getcol("SPECTRAL_WINDOW_ID"))
+        tsys_spectral_windows = [spw for spw in spectral_windows if spw.id in spwids_in_tsyscaltable]
+    # Otherwise, select spectral windows in MS that cover ATMOSPHERE intent and
+    # are of type "TDM".
     else:
-        LOG.info('Computed tsysspwmap is: '+str(applyCalSpwMap))
-        # return spwWithoutMatch, applyCalSpwMap
-        return unmatched_science_spws, applyCalSpwMap
+        tsys_spectral_windows = [spw for spw in spectral_windows if 'ATMOSPHERE' in spw.intents and spw.type == 'TDM']
+
+    # Precompute frequency tolerance bounds for each Tsys SpW.
+    tsys_bounds = {
+        spw.id: (
+            spw.min_frequency - channel_tolerance * spw.channels[0].getWidth(),
+            spw.max_frequency + channel_tolerance * spw.channels[-1].getWidth()
+        )
+        for spw in tsys_spectral_windows
+    }
+
+    # Initialize SpW-to-Tsys-Spw-mapping with one-to-one mapping as default.
+    spw_mapping = list(range(len(spectral_windows)))
+    unmatched_spws = []
+
+    # Match each SpW to a suitable Tsys SpW with matching frequency range, same
+    # baseband, and same spectral spec.
+    for spw in spectral_windows:
+        for tsys_spw in tsys_spectral_windows:
+            min_bound, max_bound = tsys_bounds[tsys_spw.id]
+            if (
+                    spw.baseband == tsys_spw.baseband
+                    and spw.spectralspec == tsys_spw.spectralspec
+                    and spw.min_frequency >= min_bound
+                    and spw.max_frequency <= max_bound
+            ):
+                spw_mapping[spw.id] = tsys_spw.id
+                break
+        else:
+            unmatched_spws.append(spw.id)
+
+    # Log in case any science SpWs had no matching Tsys SpW.
+    unmatched_scispws = [spw.id for spw in ms.get_spectral_windows() if spw.id in unmatched_spws]
+    if unmatched_scispws:
+        LOG.info(f"No Tsys match found for science SpW(s) {utils.commafy(unmatched_scispws, False)}.")
+
+    # Trim off "excess SpWs" (SpWs mapped to themselves) from map if asked.
+    if trim:
+        spw_mapping = trim_spw_map(spw_mapping)
+
+    LOG.info(f"Computed tsysspwmap is: {spw_mapping}")
+
+    return unmatched_scispws, spw_mapping
