@@ -600,7 +600,7 @@ class MeasurementSetReader:
         return (acs_software_version, acs_software_build_version)
 
     @staticmethod
-    def get_history(ms: domain.MeasurementSet) -> numpy.ndarray:
+    def get_history(ms: domain.MeasurementSet) -> np.ndarray:
         """
         Retrieve the MS history.
 
