@@ -2324,7 +2324,6 @@ class ImageParamsHeuristics(object):
         else:
             local_vislist = vislist
 
-        print(f'DMU: {self.processing_intents}')
         if intent != 'TARGET' or 'INTERFEROMETRY_HETEROGENEOUS_IMAGING' in self.processing_intents:
             # For calibrators or when explicitly requested use all antennas
             antenna_ids = {}
