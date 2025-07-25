@@ -704,6 +704,7 @@ class MakeImList(basetask.StandardTaskTemplate):
             contfile=inputs.contfile,
             linesfile=inputs.linesfile,
             imaging_params=inputs.context.imaging_parameters,
+            processing_intents=inputs.context.processing_intents,
             imaging_mode=imaging_mode
         )
 
@@ -875,6 +876,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                         contfile=inputs.contfile,
                         linesfile=inputs.linesfile,
                         imaging_params=inputs.context.imaging_parameters,
+                        processing_intents=inputs.context.processing_intents,
                         imaging_mode=imaging_mode
                     )
                     if inputs.specmode == 'cont':
