@@ -1,5 +1,6 @@
+from __future__ import annotations
 import os
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
@@ -70,7 +71,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
         self._figroot = os.path.join(context.report_dir,
                                      'stage%s' % result.stage_number)
 
-    def plot(self) -> List[logger.Plot]:
+    def plot(self) -> list[logger.Plot]:
         """Generate an calibrated amplitude vs. time plot.
 
         Return:
@@ -95,7 +96,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
                 LOG.error(str(e))
                 return []
 
-    def _create_task(self, title: str, figfile: str) -> 'JobRequest':
+    def _create_task(self, title: str, figfile: str) -> JobRequest:
         """Create task of CASA plotms.
 
         Args:
@@ -130,7 +131,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
 
         return casa_tasks.plotms(**task_args)
 
-    def _get_plot_object(self, figfile: str, task: 'JobRequest') -> logger.Plot:
+    def _get_plot_object(self, figfile: str, task: JobRequest) -> logger.Plot:
         """Generate parameters and return logger.Plot.
 
         Args:
@@ -158,15 +159,13 @@ class ApplyCalSingleDishPlotmsSpwComposite(common.LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = ApplyCalSingleDishPlotmsLeaf
 
-    def __init__(self, context, result, ms: 'MeasurementSet',
+    def __init__(self, context, result, ms: MeasurementSet,
                  xaxis, yaxis, ant='', pol='', **kwargs):
 
         spwids = [spws.id for spws in ms.get_spectral_windows()]
-        children = []
-        for spw in spwids:
-            item = self.leaf_class(context, result, ms, xaxis, yaxis,
-                                   spw=int(spw), ant=ant, pol=pol, **kwargs)
-            children.append(item)
+        children = [self.leaf_class(context, result, ms, xaxis, yaxis,
+                    spw=int(spw), ant=ant, pol=pol, **kwargs)
+                    for spw in spwids]
         super().__init__(children)
 
 

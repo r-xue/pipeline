@@ -4363,74 +4363,57 @@ def score_iersstate(mses: List[domain.MeasurementSet]) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_sdapplycal_flagged(context: 'Context', result: 'SDApplycalResults') -> List[pqa.QAScore]:
+def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
     """
-    Calculate score about amp vs. Time plot of Single Dish Applycal.
+    Calculate score about amp vs. time plot of Single Dish Applycal.
 
     Args:
         context: Pipeline context.
         result: SDApplycalResults instance.
 
     Returns:
-        List[pqa.QAScore]: lists contains QAScore objects.
+        list[pqa.QAScore]: lists contains QAScore objects.
     """
 
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
-    spwids = [str(spws.id) for spws in ms.get_spectral_windows()]
-    ants = ['all']
-    antmap = dict((a.id, a.name) for a in ms.get_antenna())
-    antname = list(antmap.values())
-    ants.extend(antname)
     figroot = os.path.join(context.report_dir,
                            'stage%s' % result.stage_number)
 
     flagdata = {}
-    flagkwargs = ["spw='{!s}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='Spw{:0>3}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
+    flagkwargs = ["spw='{!s}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
     flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
     flagdata = flagdata_task.execute()
 
     scores = []
-    for i, spw in enumerate(spwids):
-        reportn = "report" + str(i)
-        flagdatan = flagdata[reportn]
-        flagdatan_ant = flagdatan['antenna']
-        for ant in ants:
-            data = []
-            flagged = []
-            total = []
-            all_flagged = []
-            all_total = []
-            score = 1.0
-            prefix = '{vis}-{y}_vs_{x}-{ant}-spw{spw}'.format(
-                vis=vis, y='real', x='time', ant=ant, spw=spw)
-            figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-            is_figfile_exists = os.path.exists(figfile)
-            if is_figfile_exists:
-                if ant != "all":
-                    for antname, data in flagdatan_ant.items():
-                        if antname == ant:
-                            flagged = data['flagged']
-                            total = data['total']
-                else:
-                    for antname, data in flagdatan_ant.items():
-                        flagged = data['flagged']
-                        total = data['total']
-                        all_flagged.append(flagged)
-                        all_total.append(total)
-                    if flagged < total or sum(all_flagged) < sum(all_total):
-                        LOG.info("Not all flagged_data are True for Spw{0} and Antenna={1} of {2}.".format(spw, ant, vis))
-                        shortmsg = 'Generating amp vs time plot was successful.'
-                        longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
+    spws = [flagdata[report]['name'] for report in list(flagdata)]
+    for onedata in flagdata.values():
+        for spw in spws:
+            sumflagged = 0
+            sumtotal = 0
+            if spw in onedata.values():
+                for ant, value in onedata['antenna'].items():
+                    flagged = value['flagged']
+                    total = value['total']
+                    sumflagged += flagged
+                    sumtotal += total
+                    score = 1.0
+                    prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
+                        vis=vis, y='real', x='time', ant=ant, spw=spw)
+                    figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+                    is_figfile_exists = os.path.exists(figfile)
+                    if not is_figfile_exists:
+                        shortmsg = 'Generating amp vs time plot was failed.'
+                        longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
+                        score = 0.65
                     else:
-                        LOG.info("All flagged_data are True for Spw{0} and Antenna={1} of {2}.".format(spw, ant, vis))
-                        shortmsg = 'Generating amp vs time plot was successful but empty.'
-                        longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
-                        score = 0.8
-            else:
-                shortmsg = 'Generating amp vs time plot was failed.'
-                longmsg = 'Generating amp vs time plot for Spw{0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
-                score = 0.65
+                        if flagged == total or sumflagged == sumtotal:
+                            shortmsg = 'Generating amp vs time plot was successful but empty.'
+                            longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
+                            score = 0.8
+                        else:
+                            shortmsg = 'Generating amp vs time plot was successful.'
+                            longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
