@@ -66,6 +66,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_observing_modes',                           # ALMA specific
+           'score_diffgaincal_combine',                       # ALMA IF specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -478,6 +479,50 @@ def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_type: str) -> pqa.QAScore:
+    """
+    Compute QA score based on whether the phase solution gaintable, computed as
+    part of the hifa_diffgaincal stage, used spectral window combination, and
+    whether any SpWs were missing (in case of no SpW combination).
+
+    Args:
+        vis: Name of measurement set to score.
+        combine: combine parameter used in diffgain gaincal.
+        qa_message: String representing QA message derived during task, included
+            when no SpW combination is used (presumably forced by user) even
+            though there were indicators that would have triggered SpW
+            combination in automatic mode.
+        phaseup_type: String representing the type of diffgain phase-up.
+
+    Returns:
+        QA score.
+    """
+    # If SpW combination was used, turn this into a blue QA score.
+    if 'spw' in combine:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"SpW combination used."
+        longmsg = f"{vis}: Spectral window combination used for B2B {phaseup_type} to improve phase-up solution SNR."
+    # If no SpW combination was used and a SpW is missing, then turn this into a
+    # warning QA score.
+    elif qa_message:
+        score = rendererutils.SCORE_THRESHOLD_WARNING
+        shortmsg = f"SpWs missing or heavily flagged."
+        longmsg = (f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution but"
+                   f" {qa_message}.")
+    # Otherwise, no missing SpWs or SpW combination, so return good score of 1.
+    else:
+        score = 1.0
+        shortmsg = f"No SpW combination used."
+        longmsg = f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution."
+
+    origin = pqa.QAOrigin(metric_name='score_diffgaincal_combine',
+                          metric_score=score,
+                          metric_units='Score based on whether diffgain used combine')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa

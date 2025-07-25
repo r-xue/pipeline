@@ -5,7 +5,7 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from hifa.tasks.diffgaincal.diffgaincal.DiffGaincalInputs.__init__
 @utils.cli_wrapper
-def hifa_diffgaincal(vis=None):
+def hifa_diffgaincal(vis=None, flagging_frac_limit=None, hm_spwmapmode=None, missing_scans_frac_limit=None):
     """Derive SpW phase offsets from differential gain calibrator.
 
     This task creates the spectral window phase gain offset table used to allow
