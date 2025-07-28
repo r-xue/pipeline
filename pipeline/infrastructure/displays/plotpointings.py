@@ -12,7 +12,7 @@ from scipy import interpolate
 
 from pipeline import infrastructure
 from pipeline.domain import measures, unitformat
-from pipeline.h.tasks.tsyscal import tsyscal
+from pipeline.h.heuristics.tsysfieldmap import get_intent_to_tsysfield_map
 from pipeline.infrastructure import casa_tools, utils
 
 if TYPE_CHECKING:
@@ -364,7 +364,7 @@ def plot_tsys_scans(ms: MeasurementSet, source: Source, figfile: str) -> None:
     """
     LOG.info("Creating Tsys plot for source %s.", source.name)
     # Retrieve correct Tsys field for source based on mapping
-    tsys_fields = tsyscal.get_gainfield_map(ms, is_single_dish=False)['TARGET'].split(',')
+    tsys_fields = get_intent_to_tsysfield_map(ms, is_single_dish=False)['TARGET'].split(',')
     if not tsys_fields:
         raise Exception('No Tsys fields associated with TARGET.')
 
