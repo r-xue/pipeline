@@ -21,7 +21,6 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 from scipy import interpolate, special
 
-
 import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
 
