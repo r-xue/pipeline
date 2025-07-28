@@ -953,6 +953,11 @@ class DataTableImpl(object):
                 self.putcellslice('FLAG_PERMANENT', int(dt_row), online_flag,
                                   blc=[0, OnlineFlagIndex], trc=[npol - 1, OnlineFlagIndex],
                                   incr=[1, 1])
+                # Update FLAG_SUMMARY
+                flag_summary = self.getcell('FLAG_SUMMARY', int(dt_row))
+                # flag summary shall be valid (1) only if both flag summary and online flag are valid (1)
+                flag_summary *= online_flag[:npol, 0]
+                self.putcell('FLAG_SUMMARY', int(dt_row), flag_summary)
 
 
 class RODataTableColumn(object):
