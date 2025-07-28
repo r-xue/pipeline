@@ -36,6 +36,7 @@ from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
     from casatools import coordsys
