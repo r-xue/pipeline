@@ -24,7 +24,6 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
     gainmap = vdp.VisDependentProperty(default=False)
     exportcalprods = vdp.VisDependentProperty(default=False)
     imaging_products_only = vdp.VisDependentProperty(default=False)
-    tarms = vdp.VisDependentProperty(default=True)
 
     @exportcalprods.postprocess
     def exportcalprods(self, value):
@@ -32,9 +31,12 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
         # (1) not imaging_product_only and not exportmses
         # OR
         # (2) not imaging_product_only and both exportmses and exportcalprods are True
-        if self.imaging_products_only: return False
-        elif not self.exportmses: return True
-        else: return value
+        if self.imaging_products_only:
+            return False
+        elif not self.exportmses:
+            return True
+        else:
+            return value
 
     # docstring and type hints: supplements hifv_exportdata
     def __init__(self, context, output_dir=None, session=None, vis=None, exportmses=None,
@@ -82,13 +84,12 @@ class VLAExportDataInputs(exportdata.ExportDataInputs):
             imaging_products_only: Export science target imaging products only
 
         """
-        super(VLAExportDataInputs, self).__init__(context, output_dir=output_dir, session=session, vis=vis,
-                                                  exportmses=exportmses, pprfile=pprfile, calintents=calintents,
-                                                  calimages=calimages, targetimages=targetimages,
-                                                  products_dir=products_dir, imaging_products_only=imaging_products_only)
+        super().__init__(context, output_dir=output_dir, session=session, vis=vis,
+                         exportmses=exportmses, tarms=tarms, pprfile=pprfile, calintents=calintents,
+                         calimages=calimages, targetimages=targetimages,
+                         products_dir=products_dir, imaging_products_only=imaging_products_only)
         self.gainmap = gainmap
         self.exportcalprods = exportcalprods
-        self.tarms = tarms
 
 
 @task_registry.set_equivalent_casa_task('hifv_exportdata')
@@ -144,8 +145,8 @@ class VLAExportData(exportdata.ExportData):
 
         # Make the imaging vislist and the sessions lists.
         #     Force this regardless of the value of imaging_only_products
-        session_list, session_names, session_vislists, vislist = super()._make_lists(
-            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=False)
+        _, _, _, vislist = super()._make_lists(
+            self.inputs.context, self.inputs.session, self.inputs.vis, imaging_only_mses=None)
 
         # Export the auxiliary file products into a single tar file
         #    These are optional for reprocessing but informative to the user
@@ -239,11 +240,26 @@ class VLAExportData(exportdata.ExportData):
             except:
                 continue
 
+        # Is hif_selfcal/hif_uvcontsub executed?
+        selfcal = False
+        uvcontsub = False
+        for result in context.results:
+            result_meta = result.read()
+            if hasattr(result_meta, 'pipeline_casa_task'):
+                if result_meta.pipeline_casa_task.startswith('hif_selfcal'):
+                    selfcal = True
+                if result_meta.pipeline_casa_task.startswith('hif_uvcontsub'):
+                    uvcontsub = True
+
         if vlassmode:
             task_string += "\n    hifv_fixpointing()"
 
         task_string += "\n    hifv_statwt()"
         task_string += "\n    hifv_mstransform()"
+        if uvcontsub:
+            task_string += "\n    hif_uvcontsub()"
+        if selfcal:
+            task_string += "\n    hif_selfcal(restore_only=True)"
 
         template = '''h_init()
 try:
@@ -259,32 +275,6 @@ finally:
         shutil.copy(script_file, out_script_file)
 
         return os.path.basename(out_script_file)
-
-    def _export_final_ms(self, context, vis, products_dir):
-        """
-        If kwarg exportmses is True then...
-            If tarms is True (default):  Save the ms to a compressed tarfile in products directory
-            Else copy the ms directly to the products directory.
-        """
-        # Define the name of the output tarfile
-        visname = os.path.basename(vis)
-
-        if self.inputs.tarms:
-
-            tarfilename = visname + '.tgz'
-            LOG.info('Storing final ms %s in %s', visname, tarfilename)
-
-            # Create the tar file
-            tar = tarfile.open(os.path.join(products_dir, tarfilename), "w:gz")
-            tar.add(visname)
-            tar.close()
-
-            return tarfilename
-        else:
-            LOG.info('Copying final ms %s to %s', visname, os.path.join(products_dir, visname))
-            shutil.copytree(visname, os.path.join(products_dir, visname))
-
-            return visname
 
     def _export_final_flagversion(self, context, vis, flag_version_name, products_dir):
         """

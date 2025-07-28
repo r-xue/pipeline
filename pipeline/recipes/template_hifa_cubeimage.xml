@@ -99,12 +99,6 @@
     <!-- end of the continuum subtraction section -->
     {{/cube_image}}
 
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
     {{#cont_image}}
     <!-- create aggregate continuum image if cont_image=true -->
 
@@ -167,9 +161,13 @@
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
             <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>              
+            <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>
-            </Parameter>
+            </Parameter>          
         </ParameterSet>
     </ProcessingCommand>
 
@@ -197,6 +195,10 @@
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">recal</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -269,6 +271,10 @@
                 <Keyword xmlns="">width</Keyword>
                 <Value xmlns="">{{width}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">nbin</Keyword>
+                <Value xmlns="">-1</Value>
+            </Parameter>              
             <Parameter>
                 <Keyword xmlns="">nchan</Keyword>
                 <Value xmlns="">{{nchan}}</Value>

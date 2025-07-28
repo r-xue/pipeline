@@ -1,5 +1,5 @@
 import re
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import numpy as np
 
@@ -218,7 +218,14 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return None
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
         # Start with generic defaults
@@ -491,9 +498,9 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
                     LOG.debug('ALMA reffreq heuristics: spwsel - key:value - %s:%s', spwsel_k, spwsel_v)
                     for freq_interval in freq_intervals:
                         f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
-                        f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz')))
+                        f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz'))[0])
                         f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
-                        f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz')))
+                        f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz'))[0])
                         LOG.debug('ALMA reffreq heuristics: aggregating interval: f_low_v / f_high_v: %s / %s GHz', f_low_v, f_high_v)
                         n_sum += f_high_v**2-f_low_v**2
                         d_sum += f_high_v-f_low_v

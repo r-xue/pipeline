@@ -8,6 +8,7 @@ import matplotlib.figure as figure
 import matplotlib.pyplot as plt
 import numpy
 from numpy.ma.core import MaskedArray
+import statistics
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -15,6 +16,7 @@ import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common import atmutil
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.displays.plotstyle import casa5style_plot
+from pipeline.infrastructure.utils import coordinate_utils
 from ..common import utils
 from ..common import compress
 from ..common import display
@@ -53,7 +55,8 @@ class PlotterPool(object):
                        ralist: List[float],
                        declist: List[float],
                        direction_reference: Optional[str] = None,
-                       brightnessunit: str = 'Jy/beam') -> display.SDSparseMapPlotter:
+                       brightnessunit: str = 'Jy/beam',
+                       freq_frame: str = '') -> display.SDSparseMapPlotter:
         """Create plotter instance.
 
         Args:
@@ -63,13 +66,15 @@ class PlotterPool(object):
             declist: List of Dec values for labeling
             direction_reference: Directon reference string. Defaults to None.
             brightnessunit: Brightness unit string. Defaults to 'Jy/beam'.
-
+            freq_frame: Frequency reference frame. Defaults to ''
+                (no frame information).
         Returns:
             Plotter instance
         """
         fig = figure.Figure()
-        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec,
-                                             step=1, brightnessunit=brightnessunit)
+        plotter = display.SDSparseMapPlotter(fig, nh=num_ra, nv=num_dec, step=1,
+                                             brightnessunit=brightnessunit,
+                                             freq_frame=freq_frame)
         plotter.direction_reference = direction_reference
         plotter.setup_labels_absolute(ralist, declist)
         return plotter
@@ -322,6 +327,53 @@ class BaselineSubtractionDataManager(object):
 
         return num_ra, num_dec, num_plane, rowlist
 
+    def _pick_representative_with_distance( self, index_list: List[int], valid_index_list: List[int] ) -> int:
+        """
+        Pick the representative row with distance measures
+
+        This method picks the representative row which is the closest 'valid' point
+        to the mean position of 'all' rows in the panel regardless the 'validity'.
+
+        Args:
+            index_list : list of 'all' the pointings within the panel
+            valid_index_list : list of 'valid' pointings within the panel
+        Returns:
+            index of the selected representative
+        """
+        # calculate averaged ra, dec
+        ids = [ index['datatable_id'] for index in valid_index_list ]
+        ra_all = self.datatable.getcol( 'OFS_RA' )
+        dec_all = self.datatable.getcol( 'OFS_DEC' )
+        ra_list = ra_all[ids]
+        dec_list = dec_all[ids]
+        ra_av = statistics.mean( ra_list )
+        dec_av = statistics.mean( dec_list )
+
+        dist = coordinate_utils.angular_distances( "ICRS", ra_list, dec_list, ra_av, dec_av )
+        rep_id = numpy.argmin( dist )
+
+        return valid_index_list[rep_id]
+
+    def _pick_representative_with_median( self, valid_index_list ):
+        """
+        Pick the representative row with median
+
+        This is the original way of selecting the representative row (pre PIPE-2202),
+        The 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids
+
+        Args:
+            valid_index_list : list of 'valid' pointings within the panel
+        Returns:
+            index of the selected representative
+        """
+        # get the row number (mapped_row) corresponding to the 'median index'
+        sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
+
+        # patch to get similar behaviors with those before PIPE-2064
+        choice = 0 if len(sorted_valid_index_list) < 3 else len(sorted_valid_index_list) // 2
+
+        return sorted_valid_index_list[ choice ]
+
     def get_data(
         self,
         infile: str,
@@ -419,7 +471,7 @@ class BaselineSubtractionDataManager(object):
 
             # loop for 'panels' of profile map
             for d in rowlist:
-                midxperpol = []
+                repidxperpol = []
                 ix = num_ra - 1 - d['RAID']
                 iy = d['DECID']
                 if len( d['IDS'] ) > 0:
@@ -428,12 +480,12 @@ class BaselineSubtractionDataManager(object):
                     for ids_idx, dt_id in enumerate( d['IDS'] ):
                         index_list.append(
                             {
-                                'ids_idx'     : ids_idx,                 # index within the 'IDS'
-                                'datatable_id': dt_id,                   # datatable id
-                                'orig_row'    : dtrows[dt_id],           # row of original MS
-                                'mapped_row'  : rowmap[ dtrows[dt_id] ], # row of the MS for baseline subtraction
-                                'valid'       : [None] * num_pol         # valid flag for each pol
-                            }                                            #  --True if not fully flagged
+                                'ids_idx'     : ids_idx,                  # index within the 'IDS'
+                                'datatable_id': dt_id,                    # datatable id
+                                'orig_row'    : dtrows[dt_id],            # row of original MS
+                                'mapped_row'  : rowmap[ dtrows[dt_id] ],  # row of the MS for baseline subtraction
+                                'valid'       : [None] * num_pol          # valid flag for each pol
+                            }                                             #  --True if not fully flagged
                         )
 
                     # fill the 'valid' column of the index table, and counts for averaging/integrating.
@@ -459,20 +511,22 @@ class BaselineSubtractionDataManager(object):
                             num_to_average[ix, iy] += binary_mask
 
                     # pick one 'representative' row for each ipol, and prepare storage data
-                    # the 'representative' row is given by the 'median index' (i.e. ids_idx to the median of selected ids)
                     for ipol in range(num_pol):
                         # pick index of 'valid' (not fully flagged) rows for each pol
                         valid_index_list = [ r for r in index_list if r['valid'][ipol] ]
 
                         if len( valid_index_list ) > 0:
-                            # get the row number (mapped_row) corresponding to the 'median index'
-                            sorted_valid_index_list = sort_with_key( valid_index_list, 'datatable_id' )
-
-                            # patch to get similar behaviors with those before PIPE-2064
-                            choice = 0 if len(sorted_valid_index_list) < 3 else len(sorted_valid_index_list) // 2
-
-                            median_index = sorted_valid_index_list[ choice ]
-                            mapped_row = median_index['mapped_row']
+                            # choose the representative row
+                            # falls-back to the original method if the revised one fails
+                            try:
+                                rep_index = self._pick_representative_with_distance(
+                                    index_list, valid_index_list )
+                            except Exception as e:
+                                LOG.info( "Failed to pick the representative row with distance "
+                                          + "at ({}, {}) for {}.".format(ix, iy, e) )
+                                LOG.info( "Falling back to using median." )
+                                rep_index = self._pick_representative_with_median( valid_index_list )
+                            mapped_row = rep_index['mapped_row']
 
                             # get data and mask for mapped_row, and prepare for storage data
                             this_data = tb.getcell(colname, mapped_row)
@@ -480,16 +534,17 @@ class BaselineSubtractionDataManager(object):
                             map_data[ix, iy, ipol] = this_data[ipol].real
                             map_mask[ix, iy, ipol] = this_mask[ipol]
 
-                            # save the 'median index' with its ids_idx : to be used in get_lines() later
-                            midxperpol.append( median_index['ids_idx'] )
+                            # save the 'representative index' with its ids_idx : to be used in get_lines() later
+                            repidxperpol.append( rep_index['ids_idx'] )
                         else:
-                            midxperpol.append(None)
+                            repidxperpol.append(None)
                 else:
                     LOG.debug('no data is available for (%s,%s)', ix, iy)
-                    midxperpol = [None for ipol in range(num_pol)]
-                # push median_index into the specific component of rowlist
-                d['MEDIAN_INDEX'] = midxperpol
-                LOG.debug('MEDIAN_INDEX for %s, %s is %s', ix, iy, midxperpol)
+                    repidxperpol = [None for ipol in range(num_pol)]
+
+                # push representative index into the specific component of rowlist
+                d['REP_INDEX'] = repidxperpol
+                LOG.debug('REP_INDEX for %s, %s is %s', ix, iy, repidxperpol)
 
         # calculate integrated data
         integrated_data_masked = numpy.ma.masked_array(integrated_data, num_integrated == 0)
@@ -782,6 +837,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         else:
             atm_transmission = None
             atm_freq = None
+        spw = self.ms.get_spectral_window(spw_id)
+        freq_frame = spw.frame
         plot_list = self.plot_profile_map_with_fit(prefit_prefix, postfit_prefix,
                                                    postfit_integrated_data, postfit_map_data,
                                                    prefit_integrated_data, prefit_map_data,
@@ -790,7 +847,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
                                                    npol, frequency,
                                                    deviation_mask, line_range,
                                                    atm_transmission, atm_freq,
-                                                   edge, in_rowmap=in_rowmap)
+                                                   edge, in_rowmap=in_rowmap,
+                                                   freq_frame=freq_frame)
         plot_flatness = self.plot_flatness_profile(postfit_prefix,
                                                    postfit_integrated_data,
                                                    npol)
@@ -849,7 +907,8 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
         atm_transmission: Optional[numpy.ndarray],
         atm_frequency: Optional[numpy.ndarray],
         edge: Optional[List[int]],
-        in_rowmap: Optional[dict] = None
+        in_rowmap: Optional[dict] = None,
+        freq_frame: str = ''
     ) -> Dict[str, Dict[int, str]]:
         """Create various type of plots.
 
@@ -880,7 +939,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
             edge: Edge channels excluded from the baseline fitting
             in_rowmap: Row mapping between original (calibrated) MS and the MS
                        before baseline subtraction.
-
+            freq_frame: frequency reference frame
         Returns:
             Dictionary containing names of the figure with plot type and
             polarization id as keys
@@ -901,7 +960,7 @@ class BaselineSubtractionPlotManager(BaselineSubtractionDataManager):
 
         plotter = self.pool.create_plotter(num_ra, num_dec, ralist, declist,
                                            direction_reference=self.datatable.direction_ref,
-                                           brightnessunit=bunit)
+                                           brightnessunit=bunit, freq_frame=freq_frame)
 
         if line_range is not None:
             lines_map = get_lines(self.datatable, num_ra, npol, rowlist)
@@ -1145,7 +1204,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
                       line_range: Optional[List[Tuple[float, float]]],
                       deviation_mask: Optional[List[Tuple[int, int]]],
                       edge: Tuple[int, int], brightnessunit: str,
-                      stat: BinnedStat,
+                      freq_frame: str, stat: BinnedStat,
                       figfile: str) -> None:
         """
         Create a plot of baseline flatness of a spectrum.
@@ -1161,6 +1220,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
             edge: Number of elements in left and right edges that should be
                 eliminated from inspection of baseline flatness.
             brightnessunit: Brightness unit of spectrum.
+            freq_frame: frequency reference frame
             stat: Binned statistics data
             figfile: A file name to save figure.
         """
@@ -1182,7 +1242,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         plt.gca().get_yaxis().get_major_formatter().set_useOffset(False)
         plt.title('Spatially Averaged Spectrum')
         plt.ylabel(f'Intensity ({brightnessunit})')
-        plt.xlabel('Frequency (GHz)')
+        plt.xlabel(f'Frequency (GHz) {freq_frame}')
         if edge is not None:
             (ch1, ch2) = edge
             fedge0 = ch_to_freq(0, frequency)
@@ -1298,8 +1358,11 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
 
             if not basetask.DISABLE_WEBLOG:
                 postfit_qa_figfile = self.postfit_prefix + '_flatness_pol%s.png' % ipol
+                spw = self.ms.get_spectral_window(spw_id)
+                freq_frame = spw.frame
                 self.plot_flatness(postfit_integrated_data[ipol], frequency, line_range,
-                                   deviation_mask, edge, bunit, stat, postfit_qa_figfile)
+                                   deviation_mask, edge, bunit, freq_frame,
+                                   stat, postfit_qa_figfile)
 
                 if not os.path.exists(postfit_qa_figfile):
                     LOG.warning(
@@ -1312,6 +1375,7 @@ class BaselineSubtractionQualityManager(BaselineSubtractionDataManager):
         del postfit_integrated_data
 
         return baseline_quality_stat
+
 
 def generate_grid_panel_map(ngrid: int, npanel: int, num_plane: int = 1) -> Generator[List[int], None, None]:
     """Yield list of grid table indices that belong to the sparse map panel.
@@ -1435,11 +1499,11 @@ def get_lines(
         ix = num_ra - 1 - d['RAID']
         iy = d['DECID']
         ids = d['IDS']
-        midx = d['MEDIAN_INDEX']
-        for ipol in range(len(midx)):
-            if midx is not None:
-                if midx[ipol] is not None:
-                    masklist = datatable.getcell('MASKLIST', ids[midx[ipol]])
+        rep_idx = d['REP_INDEX']
+        for ipol in range(len(rep_idx)):
+            if rep_idx is not None:
+                if rep_idx[ipol] is not None:
+                    masklist = datatable.getcell('MASKLIST', ids[rep_idx[ipol]])
                     lines_map[ipol][ix][iy] = None if (len(masklist) == 0 or numpy.all(masklist == -1)) else masklist
                 else:
                     lines_map[ipol][ix][iy] = None
@@ -1558,7 +1622,7 @@ def binned_mean_ma(x: List[float], masked_data: MaskedArray,
     return binned_x, binned_data
 
 
-def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool]=False ) -> List[Dict[str, Any]]:
+def sort_with_key( arr: List[Dict[str, Any]], key: str, reverse: Optional[bool] = False ) -> List[Dict[str, Any]]:
     """
     Sort the list of dictionaries with the value of the specified key in each list component
 

@@ -1,14 +1,13 @@
+import copy
+import datetime
+import json
 import os
 import shutil
-import traceback
-import copy
-
-import numpy as np
-import json
-import datetime
 import tarfile
+import traceback
 from fnmatch import fnmatch
 
+import numpy as np
 from astropy.utils.misc import JsonCustomEncoder
 
 import pipeline.domain.measures as measures
@@ -17,15 +16,15 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.vdp as vdp
+from pipeline import environment
 from pipeline.domain import DataType
 from pipeline.hif.heuristics.auto_selfcal import auto_selfcal
 from pipeline.hif.tasks.applycal import SerialIFApplycal
 from pipeline.hif.tasks.makeimlist import MakeImList
-from pipeline.infrastructure import callibrary, casa_tasks, casa_tools, utils, task_registry
+from pipeline.infrastructure import (callibrary, casa_tasks, casa_tools,
+                                     task_registry, utils)
 from pipeline.infrastructure.contfilehandler import contfile_to_chansel
 from pipeline.infrastructure.mpihelpers import TaskQueue
-from pipeline import environment
-
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -74,7 +73,6 @@ class SelfcalResults(basetask.Results):
         for calto in calto_list:
 
             vis = calto.vis
-            field_sel = calto.field
             spw_sel = calto.spw
 
             # Create a mapping of regcal data types to their applied selfcal types
@@ -84,14 +82,26 @@ class SelfcalResults(basetask.Results):
                 DataType.REGCAL_CONT_SCIENCE: DataType.SELFCAL_CONT_SCIENCE
             }
 
+            # `calto.field` is a reduced CASA-style selection string derived from the calapp-apply consolidation.
+            # The value can be a field name, a comma separated field id selection string, or an empty string.
+            # See `CaltoIDAdapter.field` for more details on this structure.
+            # Here, its selection scope needs to be translated back to the source name(s) used in `cleantarget`.
+
+            # Retrieve the MS object for the observing run associated with the given visibility (`vis`).
+            ms = context.observing_run.get_ms(vis)
+
+            # Fetch the field names matching the given `calto.field` and `calto.intent`.
+            # Use a set comprehension to collect unique field names, and join them into a single string.
+            field_name = ','.join({field.name for field in ms.get_fields(task_arg=calto.field, intent=calto.intent)})
+
             # Retrieve the data type
-            data_dtype = context.observing_run.get_ms(vis).get_data_type('DATA', field_sel, spw_sel)
+            data_dtype = ms.get_data_type('DATA', field_name, spw_sel)
 
             # Find the corresponding selfcal type
             dtype_applied = data_type_mapping.get(data_dtype, None)
             if dtype_applied is None:
                 LOG.warning(f"No selfcal data type found corresponding to the data type: {data_dtype} "
-                            f"associated with field={field_sel}, spw={spw_sel} in vis={vis}. Skipping registration.")
+                            f"associated with field={field_name!r}, spw={spw_sel!r} in vis={vis}. Skipping registration.")
                 continue
 
             with casa_tools.TableReader(vis) as tb:
@@ -100,9 +110,8 @@ class SelfcalResults(basetask.Results):
                     LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype_applied} registration')
                     continue
                 LOG.info(
-                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_sel!r} spw={spw_sel!r}')
-                ms = context.observing_run.get_ms(vis)
-                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_sel, spw=spw_sel, overwrite=False)
+                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_name!r} spw={spw_sel!r}')
+                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_name, spw=spw_sel, overwrite=False)
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -129,9 +138,12 @@ class SelfcalInputs(vdp.StandardInputs):
 
     spw = vdp.VisDependentProperty(default='')
     contfile = vdp.VisDependentProperty(default='cont.dat')
+    imsize = vdp.VisDependentProperty(default=None)
+    cell = vdp.VisDependentProperty(default=None)
     apply = vdp.VisDependentProperty(default=True)
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
+    restore_only = vdp.VisDependentProperty(default=False)
 
     n_solints = vdp.VisDependentProperty(default=4.0)
     amplitude_selfcal = vdp.VisDependentProperty(default=False)
@@ -144,20 +156,35 @@ class SelfcalInputs(vdp.StandardInputs):
     check_all_spws = vdp.VisDependentProperty(default=False)
     inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
+
+    usermask = vdp.VisDependentProperty(default=None)
+    # input as dictionary for individual clean targets, e.g.
+    #   usermask={'IRAS32':'IRAS32.rgn', 'IRS5N':'IRS5N.rgn'}
+    #   usermask={'IRAS32':{'Band_6':'IRAS32.rgn'}, 'IRS5N':{'Band_6': 'IRS5N.rgn'}}
+    #   in which .rgn is a CRTF region (CASA region format)
+    # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
+    usermodel = vdp.VisDependentProperty(default=None)
+    # input as dictiionary for individual clean targets, e.g.
+    #   usermodel={'IRAS32':['IRAS32-model.tt0','IRAS32-model.tt1'], 'IRS5N':['IRS5N-model.tt0','IRS5N-model.tt1']}
+    #   usermodel={'IRAS32':{'Band_6':['IRAS32-model.tt0','IRAS32-model.tt1']}, 'IRS5N':{'Band_6':['IRS5N-model.tt0','IRS5N-model.tt1']}}
+    # for clean targets not found in the (nested) dictionary structure (source->band), the usermask value will be empty (default)
+
+    allow_wproject = vdp.VisDependentProperty(default=False)
     restore_resources = vdp.VisDependentProperty(default=None)
 
     # docstring and type hints: supplements hif_selfcal
-    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, n_solints=None,
+    def __init__(self, context, vis=None, field=None, spw=None, contfile=None, imsize=None, cell=None, n_solints=None,
                  amplitude_selfcal=None, gaincal_minsnr=None, refantignore=None,
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
-                 apply=None, parallel=None, recal=None, restore_resources=None):
+                 usermask=None, usermodel=None, allow_wproject=None,
+                 apply=None, parallel=None, recal=None, restore_only=None, restore_resources=None):
         """Initialize Inputs.
 
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
 
                 default = "": use all MeasurementSets in the context
 
@@ -173,6 +200,10 @@ class SelfcalInputs(vdp.StandardInputs):
             contfile: Name of file to specify line-free frequency ranges for selfcal continuum imaging.
 
                 default="cont.dat"
+
+            imsize: Image X and Y size in pixels or PB level for single fields.
+            
+            cell: Image X and Y cell sizes     
 
             n_solints: number of solution intervals to attempt for self-calibration. default: 4
 
@@ -220,6 +251,12 @@ class SelfcalInputs(vdp.StandardInputs):
                 the gaincal combine parameter will be set to 'scan'.
 
                 default=False
+            
+            usermask: User mask to be used for self-calibration imaging.
+            
+            usermodel: User model to be used for self-calibration imaging.                
+
+            allow_wproject: Allow the wproject heuristics for imaging.
 
             apply: Apply final selfcal solutions back to the input MeasurementSets. default = True
 
@@ -232,6 +269,11 @@ class SelfcalInputs(vdp.StandardInputs):
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
 
                 default = False
+
+            restore_only:   Only attempt to apply pre-existing selfcal calibration tables and would not run 
+                            the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
+                            default = False
+                            note: restore_only will take precedence over recal=True/False                
 
             restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify
                 the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred
@@ -247,9 +289,12 @@ class SelfcalInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.contfile = contfile
+        self.imsize = imsize
+        self.cell = cell
         self.apply = apply
         self.parallel = parallel
         self.recal = recal
+        self.restore_only = restore_only
         self.refantignore = refantignore
 
         self.n_solints = n_solints
@@ -263,6 +308,9 @@ class SelfcalInputs(vdp.StandardInputs):
         self.check_all_spws = check_all_spws
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine
         self.restore_resources = restore_resources
+        self.usermask = usermask
+        self.usermodel = usermodel
+        self.allow_wproject = allow_wproject
 
 
 @task_registry.set_equivalent_casa_task('hif_selfcal')
@@ -289,7 +337,8 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets_json['datetime'] = current_datetime
         scal_targets_json['pipeline_version'] = environment.pipeline_revision
         with open(filename, 'w') as fp:
-            json.dump(scal_targets_json, fp, sort_keys=True, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
+            # We can’t sort the keys here because they may include a mix of strings and integers (e.g., field IDs).
+            json.dump(scal_targets_json, fp, sort_keys=False, indent=4, cls=JsonCustomEncoder, separators=(',', ': '))
 
     @staticmethod
     def _scal_targets_from_json(filename='selfcal.json'):
@@ -449,6 +498,11 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         if not scal_targets:
 
+            if self.inputs.restore_only:
+                LOG.info('No valid selfcal restoration resource is found and restore_only=True; skip a new self-calibration sequence.')
+                return SelfcalResults(
+                    scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
+
             if self.inputs.recal:
                 LOG.info('recal=True, override any existing selfcal solution in context or json, '
                          'and alway execute the selfcal solver.')
@@ -476,10 +530,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
                 else:
-                    LOG.info('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
+                    LOG.warning('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
                     for ms in mses_selfcal_contline:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.info('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
+                    LOG.warning('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
 
             if mses_regcal_line:
                 if not mses_selfcal_line:
@@ -489,10 +543,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
                     applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
                 else:
-                    LOG.info('Found DataType:SELFCAL_LINE_SCIENCE.')
+                    LOG.warning('Found DataType:SELFCAL_LINE_SCIENCE.')
                     for ms in mses_selfcal_line:
                         LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.info('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+                    LOG.warning('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
 
         return SelfcalResults(
             scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
@@ -537,20 +591,28 @@ class Selfcal(basetask.StandardTaskTemplate):
         tq_results = tq.get_results()
 
         for idx, target in enumerate(scal_targets):
-            scal_library, solints, bands, _ = tq_results[idx]
+            scal_library, _ = tq_results[idx]
             sc_exception = False
             if scal_library is None:
                 sc_exception = True
             if not sc_exception:
                 try:
-                    target['sc_band'] = bands[0]
-                    target['sc_solints'] = solints[bands[0]]
-                    # note scal_library is keyed by field name without quotes at this moment.
-                    # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
-                    #       utils.fieldname_for_casa() and
-                    #       utils.dequote()
-                    field_name = target['field_name']  # the dequoted field name
-                    target['sc_lib'] = scal_library[field_name][target['sc_band']]
+                    # scal_library here is expected to contain only a single target/band combination.
+                    sc_field = list(scal_library.keys())[0]                  # the selfcal heuristics target name
+                    sc_band = list(scal_library[sc_field].keys())[0]        # the selfcal heuristics band name
+
+                    if sc_field != target['sc_field']:
+                        # note scal_library is keyed by field name without quotes at this moment.
+                        # see. https://casadocs.readthedocs.io/en/stable/notebooks/visibility_data_selection.html#The-field-Parameter
+                        #       utils.fieldname_for_casa() and
+                        #       utils.dequote()
+                        LOG.warning(
+                            'The field name of the selfcal library (%s) is different from the clean target dequoted field name: %s != %s',
+                            sc_field, target['sc_field'])
+                    target['sc_band'] = sc_band
+
+                    target['sc_lib'] = scal_library[sc_field][sc_band]
+                    target['sc_solints'] = target['sc_lib']['solints']
                     target['sc_rms_scale'] = target['sc_lib']['RMS_final'] / target['sc_lib']['theoretical_sensitivity']
                     target['sc_success'] = target['sc_lib']['SC_success']
                 except Exception as err:
@@ -569,9 +631,13 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     @staticmethod
     def _run_selfcal_sequence(scal_target, **kwargs):
+        """Run the selfcal sequence for a single target.
+        
+        Note that this function is executed in a TaskQueue so potentially on an MPI server process.
+        """
 
         workdir = os.path.abspath('./')
-        selfcal_library = solints = bands = trackback_msg = None
+        selfcal_library = trackback_msg = None
 
         try:
             os.chdir(scal_target['sc_workdir'])
@@ -584,7 +650,7 @@ class Selfcal(basetask.StandardTaskTemplate):
             # with open('selfcal_heuristics.pickle', 'wb') as handle:
             #     pickle.dump(selfcal_library, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-            selfcal_library, solints, bands = selfcal_heuristics()
+            selfcal_library = selfcal_heuristics()
         except Exception as err:
             traceback_msg = traceback.format_exc()
             LOG.info(traceback_msg)
@@ -598,7 +664,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                 mpihelpers.mpiclient.push_command_request(
                     f'os.chdir({workdir!r})', block=True, target_server=mpihelpers.mpi_server_list)
 
-        return selfcal_library, solints, bands, trackback_msg
+        return selfcal_library, trackback_msg
 
     def _apply_scal(self, sc_targets, mses):
 
@@ -666,7 +732,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         final_scal_target = []
         for scal_target in scal_targets:
-            disable_mosaic = True
+            disable_mosaic = False
             if disable_mosaic and scal_target['is_mosaic']:
                 LOG.warning(
                     'The self-calibration heuristics do not fully support mosaic yet. Skipping target=%r spw=%r.',
@@ -707,11 +773,25 @@ class Selfcal(basetask.StandardTaskTemplate):
                                               scal=scal, contfile=self.inputs.contfile,
                                               field=self.inputs.field,
                                               spw=self.inputs.spw,
+                                              hm_imsize=self.inputs.imsize,
+                                              hm_cell=self.inputs.cell,
+                                              allow_wproject=self.inputs.allow_wproject,
+                                              datatype='regcal',
                                               parallel=self.inputs.parallel)
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute()
 
         scal_targets = makeimlist_results.targets
+
+        if isinstance(self.inputs.usermask, dict):
+            usermask = self.inputs.usermask
+        else:
+            usermask = {}
+        if isinstance(self.inputs.usermodel, dict):
+            usermodel = self.inputs.userrmodel
+        else:
+            usermodel = {}
+
         for scal_target in scal_targets:
             scal_target['sc_telescope'] = telescope
             _, repr_source, repr_spw, _, _, repr_real, _, _, _, _ = scal_target['heuristics'].representative_target()
@@ -725,6 +805,10 @@ class Selfcal(basetask.StandardTaskTemplate):
             # Note that scal_library is currently keyed by field name without quotes.
             # We use the 'field_name' value to retrieve self-calibration results from scal_library generated by the self-cal solver.
             scal_target['field_name'] = utils.dequote(scal_target['field'])
+            scal_target['sc_field'] = utils.dequote(scal_target['field'])
+            # not supporting the target->band nest dictionary structure yet.
+            scal_target['sc_usermask'] = usermask.get(scal_target['sc_field'], '')
+            scal_target['sc_usermodel'] = usermodel.get(scal_target['sc_field'], '')
 
         LOG.debug('scal_targets: %s', scal_targets)
 
@@ -740,19 +824,20 @@ class Selfcal(basetask.StandardTaskTemplate):
 
     def _split_scaltargets(self, scal_targets):
         """Split the input MSes into smaller MSes per cleantargets effeciently."""
-
         # mt_inputvis_list aggregates input vis argument values of expected mstransform calls
         # therefore len(mt_inputvis_list) represents the number of ms to be split out
-        mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype']) for target in scal_targets for vis in target['vis']]
+        mt_inputvis_list = [(vis, '_CONTLINE_' in target['datatype'])
+                            for target in scal_targets for vis in target['vis']]
 
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(mt_inputvis_list) > 1 and parallel
 
         inputvis_list = utils.deduplicate([m[0] for m in mt_inputvis_list])
-        inputvis_contline = utils.deduplicate([m[0] for m in mt_inputvis_list if m[1]])
         outputvis_list = []
 
-        self._flag_lines(inputvis_contline)
+        # PIPE-2497: Attempting line flagging for all input visibilities,
+        # regardless of whether the datatype is "CONTLINE" or "CONT".
+        self._flag_lines(inputvis_list)
 
         with utils.ignore_pointing(inputvis_list):
             with TaskQueue(parallel=taskqueue_parallel_request) as tq:
@@ -806,7 +891,7 @@ class Selfcal(basetask.StandardTaskTemplate):
                     target['spw_real'] = spw_real
                     target['sc_vislist'] = vislist
 
-        self._restore_flags(inputvis_contline)
+        self._restore_flags(inputvis_list)
 
         for outputvis in outputvis_list:
             # Copy across requisite XML files.

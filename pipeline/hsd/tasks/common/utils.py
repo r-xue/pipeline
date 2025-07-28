@@ -6,7 +6,6 @@ import functools
 import os
 import sys
 import time
-from logging import Logger as pyLogger
 from typing import Any, Callable, Dict, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
 
 from astropy.time import Time
@@ -20,6 +19,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure.utils import absolute_path, relative_path, list_to_str
@@ -517,6 +517,9 @@ def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
                            ) -> Generator[int, None, None]:
     """
     Yield row IDs in datatable that matches given selection criteria.
+
+    Note: this method skips DataTable row IDs in which online flag is active
+    in all polarizations
 
     Args:
         datatable: A datatable instance.
@@ -1099,7 +1102,7 @@ def make_spwid_map(srcvis: str, dstvis: str) -> dict:
     map_byname = collections.defaultdict(list)
     for src_spw in src_spws:
         for dst_spw in dst_spws:
-            if src_spw.name == dst_spw.name:
+            if match_spw_basename(src_spw.name, dst_spw.name):
                 map_byname[src_spw].append(dst_spw)
 
     spwid_map = {}
@@ -1292,7 +1295,7 @@ class RGAccumulator(object):
         Args:
             field_id: A field ID.
             antenna_id: An antenna ID.
-            spw_id: A spectral windpw ID.
+            spw_id: A spectral window ID.
             pol_ids: Polarizations.
             grid_table: A grid table.
             channelmap_range: Channel map ranges.

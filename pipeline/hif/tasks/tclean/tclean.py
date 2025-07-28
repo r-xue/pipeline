@@ -464,7 +464,10 @@ class Tclean(cleanbase.CleanBase):
                     self.width_as_frequency = inputs.width
 
                 channel_width_manual = qaTool.convert(inputs.width, 'Hz')['value']
-                if abs(channel_width_manual) < channel_width_auto:
+                # PIPE-1984: add tolerance acceptance when comparing user-specified chanwidths with
+                # the intrinsic vis chanwidths.
+                channel_width_tolerance = 0.05
+                if abs(channel_width_manual) < channel_width_auto*(1-channel_width_tolerance):
                     LOG.error('User supplied channel width (%s GHz) smaller than native '
                               'value (%s GHz) for Field %s SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw))
                     error_result = TcleanResult(vis=inputs.vis,
@@ -477,9 +480,15 @@ class Tclean(cleanbase.CleanBase):
                                                                                                     inputs.intent,
                                                                                                     inputs.spw)
                     return error_result
-
-                LOG.info('Using supplied width %s' % inputs.width)
-                channel_width = channel_width_manual
+                else:
+                    if abs(channel_width_manual) < channel_width_auto:
+                        LOG.warning('User supplied channel width (%s GHz) smaller than native '
+                                    'value (%s GHz) for Field %s SPW %s but within the tolerance of %f; '
+                                    'use the native value instead.', channel_width_manual/1e9, channel_width_auto/1e9, inputs.field, inputs.spw, channel_width_tolerance)
+                        channel_width = channel_width_auto
+                    else:
+                        LOG.info('Using supplied width %s' % inputs.width)
+                        channel_width = channel_width_manual
                 if abs(channel_width) > channel_width_auto:
                     inputs.nbin = int(utils.round_half_up(abs(channel_width) / channel_width_auto) + 0.5)
             elif inputs.nbin not in (None, -1):
@@ -496,7 +505,7 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                 # Skip 1 km/s
                 extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
             else:
@@ -709,9 +718,7 @@ class Tclean(cleanbase.CleanBase):
         # not optimal. Thus, PSFs need to be created with the tclean parameter
         # wbawp set to False. The awproject mosaic cleaning then continued
         # with this PSF. CASA is expected to handle this with version 6.2.
-
-        if self.image_heuristics.imaging_mode in ['VLASS-SE-CONT', 'VLASS-SE-CONT-AWP-P001', 'VLASS-SE-CONT-AWP-P032',
-                                                  'VLASS-SE-CONT-MOSAIC', 'VLASS-SE-CUBE']:
+        if self.image_heuristics.imaging_mode.startswith('VLASS-SE-'):
             result = self._do_iterative_vlass_se_imaging(sequence_manager=sequence_manager)
         elif '-SCAL' in self.image_heuristics.imaging_mode:
             result = self._do_scal_imaging(sequence_manager=sequence_manager)
@@ -988,10 +995,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1155,10 +1162,10 @@ class Tclean(cleanbase.CleanBase):
         # All continuum
         if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1246,20 +1253,21 @@ class Tclean(cleanbase.CleanBase):
                                ignore='mask' if do_not_copy_mask else None)
 
             threshold = self.image_heuristics.threshold(iteration, sequence_manager.threshold, inputs.hm_masking)
-            nsigma = self.image_heuristics.nsigma(iteration, inputs.hm_nsigma, inputs.hm_masking)
+
             savemodel = self.image_heuristics.savemodel(iteration)
             niter = self.image_heuristics.niter_by_iteration(iteration, inputs.hm_masking, seq_result.niter)
             if inputs.cyclefactor not in (None, -999):
                 cyclefactor = inputs.cyclefactor
             else:
-                cyclefactor = self.image_heuristics.cyclefactor(iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+                cyclefactor = self.image_heuristics.cyclefactor(
+                    iteration, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
 
             LOG.info('Iteration %s: Clean control parameters' % iteration)
             LOG.info('    Mask %s', new_cleanmask)
             LOG.info('    Threshold %s', threshold)
             LOG.info('    Niter %s', niter)
 
-            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=nsigma,
+            result = self._do_clean(iternum=iteration, cleanmask=new_cleanmask, niter=niter, nsigma=inputs.hm_nsigma,
                                     threshold=threshold, sensitivity=sequence_manager.sensitivity, savemodel=savemodel,
                                     result=result, cyclefactor=cyclefactor)
             if result.image is None:
@@ -1290,10 +1298,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1612,10 +1620,15 @@ class Tclean(cleanbase.CleanBase):
             else:
                 flattened_mask_name = None
 
+            # The PIPE-704 edge exclusion of 5% fails for smaller than regular PL imsizes because
+            # the fraction of the PB becomes too small. Thus covering these cases with the actual
+            # ratio of pblimit_cleanmask/pblimit_image.
+            pblimit_factor = min(1.05, utils.math.round_down(1.0 + 0.5 * (result.pblimit_cleanmask / result.pblimit_image - 1.0), 2))
+
             # Calculate MOM8_FC statistics
             with casa_tools.ImageReader(mom8fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM8 FC image from the area excluding the cleaned area edges (PIPE-704)
-                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom8_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor)
                 mom8_stats = image.statistics(mask=mom8_statsmask, robust=True, stretch=True)
                 mom8_image_median_all = mom8_stats.get('median')[0]
                 mom8_image_mad = mom8_stats.get('medabsdevmed')[0]
@@ -1624,7 +1637,7 @@ class Tclean(cleanbase.CleanBase):
                 mom8_n_pixels = int(mom8_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom8_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 mom8_stats2 = image.statistics(mask=mom8_statsmask2, robust=True, stretch=True)
 
                 mom8_image_median_annulus = mom8_stats2.get('median')[0]
@@ -1632,7 +1645,7 @@ class Tclean(cleanbase.CleanBase):
             # Calculate MOM10 FC statistics
             with casa_tools.ImageReader(mom10fc_name) as image:
                 # Get the min, max, median, MAD and number of pixels of the MOM10 FC image from the area excluding the cleaned area edges
-                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05)
+                mom10_statsmask = '"{:s}" > {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor)
                 mom10_stats = image.statistics(mask=mom10_statsmask, robust=True)
                 mom10_image_median_all = mom10_stats.get('median')[0]
                 mom10_image_mad = mom10_stats.get('medabsdevmed')[0]
@@ -1641,19 +1654,19 @@ class Tclean(cleanbase.CleanBase):
                 mom10_n_pixels = int(mom10_stats.get('npts')[0])
 
                 # Additionally get the median in the MOM8 FC annulus region for the peak SNR calculation
-                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                mom10_statsmask2 = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
                 mom10_stats2 = image.statistics(mask=mom10_statsmask2, robust=True)
 
                 mom10_image_median_annulus = mom10_stats2.get('median')[0]
 
             # Get sigma and channel scaled MAD from the cube
             if flattened_mask_name is not None:
-                # Mask cleanmask and 1.05 * pblimit_image < pb < pblimit_cleanmask
-                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
+                # Mask cleanmask and pblimit_factor * pblimit_image < pb < pblimit_cleanmask
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f} && "{:s}" < 0.1'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask, flattened_mask_name)
             else:
-                # Mask 1.05 * pblimit_image < pb < pblimit_cleanmask
-                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * 1.05, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
-                LOG.info('No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of 1.05 x pblimit_image < pb < pblimit_cleanmask.')
+                # Mask pblimit_factor * pblimit_image < pb < pblimit_cleanmask
+                cube_statsmask = '"{:s}" > {:f} && "{:s}" < {:f}'.format(os.path.basename(flattened_pb_name), result.pblimit_image * pblimit_factor, os.path.basename(flattened_pb_name), result.pblimit_cleanmask)
+                LOG.info(f'No cleanmask available to exclude for MOM8_FC RMS and peak SNR calculation. Calculating sigma, channel scaled MAD and peak SNR from annulus area of {pblimit_factor} x pblimit_image < pb < pblimit_cleanmask.')
 
             with casa_tools.ImageReader(imagename) as image:
                 cube_stats_masked = image.statistics(mask=cube_statsmask, stretch=True, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5)
@@ -1678,13 +1691,13 @@ class Tclean(cleanbase.CleanBase):
                 mom8fc_image = image.getchunk()[:,:,0,0]
                 mom8fc_image_summary = image.summary()
 
-            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get number of pixels per beam
-            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
-            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
-            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
-            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
+            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad'))[0] / 2
+            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad'))[0] / 2
+            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad'))[0])
+            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad'))[0])
             num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
             # Get threshold for maximum segment calculation
             cut1 = mom8_image_median_annulus + 3.0 * cube_scaledMAD_fc_chans
@@ -1710,7 +1723,7 @@ class Tclean(cleanbase.CleanBase):
             with casa_tools.ImageReader(mom10fc_name) as image:
                 mom10fc_image = image.getchunk()[:,:,0,0]
 
-            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * 1.05, False, True))
+            mom10fc_masked_image = np.ma.array(np.abs(mom10fc_image), mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get histogram asymmetry
 

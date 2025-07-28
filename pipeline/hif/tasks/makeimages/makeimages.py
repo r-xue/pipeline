@@ -29,6 +29,7 @@ class MakeImagesInputs(vdp.StandardInputs):
     cleancontranges = vdp.VisDependentProperty(default=False)
     hm_cleaning = vdp.VisDependentProperty(default='rms')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
+    hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
     hm_growiterations = vdp.VisDependentProperty(default=-999)
     hm_lownoisethreshold = vdp.VisDependentProperty(default=-999.0)
@@ -81,7 +82,7 @@ class MakeImagesInputs(vdp.StandardInputs):
                  hm_masking=None, hm_sidelobethreshold=None, hm_noisethreshold=None,
                  hm_lownoisethreshold=None, hm_negativethreshold=None, hm_minbeamfrac=None, hm_growiterations=None,
                  hm_dogrowprune=None, hm_minpercentchange=None, hm_fastnoise=None, hm_nsigma=None,
-                 hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_minpsffraction=None,
+                 hm_perchanweightdensity=None, hm_npixels=None, hm_cyclefactor=None, hm_nmajor=None, hm_minpsffraction=None,
                  hm_maxpsffraction=None, hm_weighting=None, hm_cleaning=None, tlimit=None, drcorrect=None, masklimit=None,
                  cleancontranges=None, calcsb=None, hm_mosweight=None, overwrite_on_export=None, vlass_plane_reject_im=None,
                  parallel=None,
@@ -95,7 +96,7 @@ class MakeImagesInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
@@ -131,6 +132,8 @@ class MakeImagesInputs(vdp.StandardInputs):
             hm_npixels: Number of pixels to determine uv-cell size for super-uniform weighting
 
             hm_cyclefactor: Scaling on PSF sidelobe level to compute the minor-cycle stopping threshold
+
+            hm_nmajor: Controls the maximum number of major cycles to evaluate.
 
             hm_minpsffraction: PSF fraction that marks the max depth of cleaning in the minor cycle
 
@@ -203,6 +206,7 @@ class MakeImagesInputs(vdp.StandardInputs):
         self.hm_npixels = hm_npixels
         self.hm_cleaning = hm_cleaning
         self.hm_cyclefactor = hm_cyclefactor
+        self.hm_nmajor = hm_nmajor
         self.hm_minpsffraction = hm_minpsffraction
         self.hm_maxpsffraction = hm_maxpsffraction
         self.hm_weighting = hm_weighting
@@ -331,12 +335,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         # as the ImageItem instance 'metadata' attribute.
         for idx, tclean_result in enumerate(result.results):
             target = result.targets[idx]
-            imaging_metadata = {'keep': False,
-                                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
-                                'flagpct': target['flagpct'],
-                                'spw': target['spw'],
-                                'freq': float(target['reffreq'].replace('GHz', '')),
-                                'beam': [None, None, None]}
+            imaging_metadata = {
+                'keep': False,
+                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
+                'flagpct': target['misc_vlass']['flagpct'],
+                'spw': target['spw'],
+                'freq': float(target['reffreq'].replace('GHz', '')),
+                'beam': [None, None, None],
+            }
 
             if isinstance(tclean_result.image, str):
                 ext = '.tt0' if tclean_result.multiterm else ''
@@ -429,6 +435,12 @@ class MakeImages(basetask.StandardTaskTemplate):
         # ALMA pipeline
         if heuristics.imaging_mode == 'ALMA':
             return clean_result.intent == 'TARGET'
+
+        # VLA pipeline
+        # note: Need to check are their any conditions to
+        # export image sensitivities for VLA
+        if heuristics.imaging_mode == 'VLA':
+            return True
 
         # Representative source and SpW
         _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
@@ -675,6 +687,9 @@ class CleanTaskFactory(object):
             # keep compatibility with hif_editimlist and cleantarget.py
             # we keep the name now. Could be refactored later.
             task_args['cyclefactor'] = inputs.hm_cyclefactor
+
+        if inputs.hm_nmajor not in (None, -999.0):
+            task_args['nmajor'] = inputs.hm_nmajor        
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction

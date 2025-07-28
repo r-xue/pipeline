@@ -12,15 +12,56 @@ from pipeline.infrastructure.filenamer import sanitize_for_ms
 
 LOG = infrastructure.get_logger(__name__)
 
+__all__ = [
+    'Flagtargetsdata',
+    'FlagtargetsdataInputs',
+    'FlagtargetsdataResults'
+]
+
 
 class FlagtargetsdataInputs(vdp.StandardInputs):
-    """Inputs class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+    """Defines the input parameters for the `hifv_flagtargetsdata` pipeline task.
 
-    The class inherits from vdp.StandardInputs.
+    This class is used for flagging target data in VLA measurement sets (MSes). It 
+    extends `vdp.StandardInputs` and provides attributes and methods to manage 
+    relevant input parameters for the `flagdata` task in CASA.
+
+    Attributes:
+        processing_data_type (list[DataType]): Defines the priority order of input 
+            visibility data types.
+        flagbackup (vdp.VisDependentProperty): Determines whether a backup of the 
+            flagging state should be created before applying flags. Defaults to `True`.
+        template (vdp.VisDependentProperty): Indicates whether a flagging template 
+            should be used. Defaults to `True`.
+        filetemplate (vdp.VisDependentProperty): The filename of the flagging 
+            template. This template is applied to all relevant measurement sets. 
+            The property is automatically derived from the `vis` input.
+        inpfile (vdp.VisDependentProperty): The full path to the flagging command 
+            file. This file is generated based on `vis` and stored in `output_dir`.
+
+    Args:
+        context (object): The execution context for the pipeline.
+        vis (str, optional): The name of the pre-split measurement set.
+        output_dir (str, optional): The directory where output files will be stored.
+        flagbackup (bool, optional): Whether to create a backup of flagging data 
+            before applying flags. Defaults to `None`, which resolves to the class default.
+        template (bool, optional): Whether to use a flagging template. Defaults to 
+            `None`, which resolves to the class default.
+        filetemplate (str, optional): The filename of the flagging template to use. 
+            Flags from this template will be applied to all relevant measurement sets.
+
+    Methods:
+        to_casa_args(vis):
+            Converts the class attributes into a dictionary of parameters required 
+            for the CASA `flagdata` task.
 
     """
     # Search order of input vis
-    processing_data_type = [DataType.REGCAL_CONTLINE_SCIENCE, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
+    # PIPE-2313: moved REGCAL_CONTLINE_SCIENCE to end of priority in rare case that the
+    # others don't exist
+    processing_data_type = [DataType.REGCAL_CONTLINE_ALL,
+                            DataType.RAW,
+                            DataType.REGCAL_CONTLINE_SCIENCE]
 
     flagbackup = vdp.VisDependentProperty(default=True)
     template = vdp.VisDependentProperty(default=True)
@@ -33,7 +74,9 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
     @filetemplate.convert
     def filetemplate(self, value):
         if isinstance(value, str):
-            return list(value.replace('[', '').replace(']', '').replace("'", "").split(','))
+            return list(
+                value.replace('[', '').replace(']', '').replace("'", "").split(',')
+            )
         else:
             return value
 
@@ -49,22 +92,21 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis(str): The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
+            vis (str): The list of input MeasurementSets. Defaults to the list of MeasurementSets defined in the pipeline context.
 
-            output_dir(str): Output directory.
+            output_dir (str): Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            flagbackup(bool): Back up any pre-existing flags.
+            flagbackup (bool): Back up any pre-existing flags.
 
-            template(bool): Apply flagging templates.
+            template (bool): Apply flagging templates.
 
             filetemplate(str): The name of a text file that contains the flagging template for issues with the science target data etc.
-                If the template flags files is undefined a name of the
-                form 'msname_flagtargetstemplate.txt' is assumed.
+                If the template flags files is undefined a name of the form 'msname_flagtargetstemplate.txt' is assumed.
+                Flags from template will be applied to all relevant MSes.
 
         """
-
-        super(FlagtargetsdataInputs, self).__init__()
+        super().__init__()
 
         self.context = context
         self.vis = vis
@@ -74,16 +116,19 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
         self.template = template
         self.filetemplate = filetemplate
 
-    def to_casa_args(self):
+    def to_casa_args(self, vis):
         """
         Translate the input parameters of this class to task parameters
         required by the CASA task flagdata. The returned object is a
         dictionary of flagdata arguments as keyword/value pairs.
 
+        Args:
+            vis (str): String name of the measurement set to be flagged
+
         Return:
             Dict: dictionary of CASA task inputs
         """
-        return {'vis': self.vis,
+        return {'vis': vis,
                 'mode': 'list',
                 'action': 'apply',
                 'inpfile': self.inpfile,
@@ -91,21 +136,53 @@ class FlagtargetsdataInputs(vdp.StandardInputs):
 
 
 class FlagtargetsdataResults(basetask.Results):
-    """Results class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+    """Stores and processes results for the `hifv_flagtargetsdata` pipeline task.
 
-    The class inherits from basetask.Results.
+    This class handles the results of flagging operations performed on VLA measurement 
+    sets (MSes). It provides access to flagging summaries, executed flagging commands, 
+    and the list of processed measurement sets. It extends `basetask.Results`.
 
+    Attributes:
+        pipeline_casa_task (str): The name of the CASA task associated with these results, 
+            set to `'Flagtargetsdata'`.
+        summaries (list): A list of flagging summaries, where each summary contains 
+            details about flagged and total data points.
+        _flagcmds (list): A list of string flagging commands executed during processing.
+        mses (list): A list of measurement sets that were processed.
+
+    Args:
+        summaries (list): A list containing flagging summaries for each processed MS.
+        flagcmds (list): A list of string commands that were used for flagging.
+        mses (list, optional): A list of measurement sets that were processed. 
+            Defaults to an empty list if not provided.
+
+    Methods:
+        flagcmds():
+            Returns the list of flagging commands executed.
+
+        merge_with_context(context):
+            Merges results with a given pipeline context.
+            See `pipeline.infrastructure.api.Results.merge_with_context` for details.
+
+        __repr__():
+            Generates a human-readable string representation of the flagging results,
+            summarizing the flagging statistics for each processed measurement set.
     """
-    def __init__(self, summaries, flagcmds):
+
+    def __init__(self, summaries, flagcmds, mses=None):
         """
         Args:
-            summaries(dict):  Flagging summaries
-            flagcmds(List):  List of string flagging commands
+            summaries (List):  Flagging summaries
+            flagcmds (List):  List of string flagging commands
+            mses (List): List of measurement sets that were processed
         """
-        super(FlagtargetsdataResults, self).__init__()
+        if mses is None:
+            mses = []
+        super().__init__()
         self.pipeline_casa_task = 'Flagtargetsdata'
         self.summaries = summaries
         self._flagcmds = flagcmds
+        self.mses = mses
 
     def flagcmds(self):
         return self._flagcmds
@@ -122,18 +199,21 @@ class FlagtargetsdataResults(basetask.Results):
         # cumulative.
         s = 'Flagtargetsdata flagging results:\n'
 
-        for idx in range(0, len(self.summaries)):
-            flagcount = int(self.summaries[idx]['flagged'])
-            totalcount = int(self.summaries[idx]['total'])
+        # iterate through list of summaries
+        for vis_idx, summary in enumerate(self.summaries):
+            s += f'\t{self.mses[vis_idx].name}\n'
+            for idx in range(0, len(summary)):
+                flagcount = int(summary[idx]['flagged'])
+                totalcount = int(summary[idx]['total'])
 
-            # From the second summary onwards, subtract counts from the previous
-            # one
-            if idx > 0:
-                flagcount = flagcount - int(self.summaries[idx-1]['flagged'])
+                # From the second summary onwards, subtract counts from the previous
+                # one
+                if idx > 0:
+                    flagcount = flagcount - int(summary[idx-1]['flagged'])
 
-            s += '\tSummary %s (%s) :  Flagged : %s out of %s (%0.2f%%)\n' % (
-                    idx, self.summaries[idx]['name'], flagcount, totalcount,
-                    100.0*flagcount/totalcount)
+                countper = 100.0*flagcount/totalcount
+                s += (f"\t\tSummary {idx} ({summary[idx]['name']}) :  "
+                      f"Flagged : {flagcount} out of {totalcount} ({countper:.2f}%)\n")
 
         return s
 
@@ -141,10 +221,39 @@ class FlagtargetsdataResults(basetask.Results):
 @task_registry.set_equivalent_casa_task('hifv_flagtargetsdata')
 @task_registry.set_casa_commands_comment('Flagtargetsdata')
 class Flagtargetsdata(basetask.StandardTaskTemplate):
-    """Class for the hifv_flagtargetsdata pipeline task.  Used on VLA measurement sets.
+    """Handles the `hifv_flagtargetsdata` pipeline task for VLA measurement sets.
 
-    The class inherits from basetask.StandardTaskTemplate
+    This class performs automated flagging of target data on VLA measurement sets (MSes)
+    using predefined flagging commands and templates. It inherits from 
+    `basetask.StandardTaskTemplate` and integrates with CASA's `flagdata` task.
 
+    Attributes:
+        Inputs (class): The input parameters class for the task (`FlagtargetsdataInputs`).
+
+    Methods:
+        prepare():
+            Executes the flagging process, applying the necessary flagging commands 
+            to the measurement sets and generating flagging summaries.
+
+        analyse(results):
+            Analyzes the flagging results. This implementation simply returns the 
+            results unchanged.
+
+        _get_flag_commands():
+            Generates a list of flagging commands to be executed by CASA's `flagdata` 
+            task.
+
+        _read_flagfile(filename):
+            Reads a flagging template file, filtering out comments and empty lines, 
+            and returns a list of valid flagging commands.
+
+        _create_mses(inputs):
+            Creates and returns a list of measurement sets (MSes) to be processed, 
+            checking for various data types.
+
+    Returns:
+        FlagtargetsdataResults: An object containing flagging summaries, executed 
+        flagging commands, and the processed measurement sets.
     """
     Inputs = FlagtargetsdataInputs
 
@@ -152,32 +261,49 @@ class Flagtargetsdata(basetask.StandardTaskTemplate):
 
         inputs = self.inputs
 
-        flag_cmds = self._get_flag_commands()
-        flag_str = '\n'.join(flag_cmds)
+        mses = self._create_mses(inputs)
 
-        with open(inputs.inpfile, 'w') as stream:
-            stream.writelines(flag_str)
+        summaries = []
+        flag_cmds_list = []
+        for ms in mses:
+            flag_cmds = self._get_flag_commands()
+            flag_str = '\n'.join(flag_cmds)
 
-        LOG.debug('Flag commands for %s:\n%s', inputs.vis, flag_str)
+            with open(inputs.inpfile, 'w') as stream:
+                stream.writelines(flag_str)
 
-        # Map the pipeline inputs to a dictionary of CASA task arguments
-        task_args = inputs.to_casa_args()
+            LOG.debug('Flag commands for %s:\n%s', ms.name, flag_str)
 
-        # create and execute a flagdata job using these task arguments
-        job = casa_tasks.flagdata(**task_args)
-        summary_dict = self._executor.execute(job)
+            # Map the pipeline inputs to a dictionary of CASA task arguments
+            task_args = inputs.to_casa_args(ms.name)
 
-        agent_summaries = dict((v['name'], v) for v in summary_dict.values())
+            # create and execute a flagdata job using these task arguments
+            job = casa_tasks.flagdata(**task_args)
+            summary_dict = self._executor.execute(job)
 
-        ordered_agents = ['before', 'template']
+            agent_summaries = dict((v['name'], v) for v in summary_dict.values())
 
-        summary_reps = [agent_summaries[agent]
-                        for agent in ordered_agents
-                        if agent in agent_summaries]
+            ordered_agents = ['before', 'template']
 
-        return FlagtargetsdataResults(summary_reps, flag_cmds)
+            summary_reps = [agent_summaries[agent]
+                            for agent in ordered_agents
+                            if agent in agent_summaries]
+            summaries.append(summary_reps)
+            flag_cmds_list.append(flag_cmds)
+
+        return FlagtargetsdataResults(
+            summaries=summaries, flagcmds=flag_cmds_list, mses=mses
+        )
 
     def analyse(self, results):
+        """
+        Analyse the results of the flagging operation.
+
+        This method does not perform any analysis, so the results object is
+        returned exactly as-is, with no data massaging or results items
+        added. If additional statistics needed to be calculated based on the
+        post-flagging state, this would be a good place to do it.
+        """
         return results
 
     def _get_flag_commands(self):
@@ -214,4 +340,19 @@ class Flagtargetsdata(basetask.StandardTaskTemplate):
                 if not cmd.strip().startswith('#')
                 and not all(c in string.whitespace for c in cmd)]
 
+    def _create_mses(self, inputs):
+        """
+        Create the MS list for multi-ms processing; checks for various datatypes
+        """
 
+        mses = []
+        for dtype in [DataType.REGCAL_CONT_SCIENCE, DataType.REGCAL_CONTLINE_SCIENCE]:
+            ms = inputs.context.observing_run.get_measurement_sets_of_type([dtype])
+            if ms:
+                mses.append(ms[0])
+
+        # PIPE-2560: fix case for VLASS data without any of the registered datatypes
+        if not mses:
+            mses = inputs.context.observing_run.get_measurement_sets_of_type([DataType.RAW])
+
+        return mses

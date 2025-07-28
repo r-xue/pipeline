@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import copy
 import fnmatch
@@ -8,14 +10,13 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
-from casatasks.private.imagerhelpers.imager_parallel_continuum import \
-    PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -26,8 +27,12 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
 from pipeline.infrastructure import casa_tools, logging
-from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
-                                                      refcode_to_skyframe)
+from pipeline.infrastructure.utils.conversion import phasecenter_to_skycoord, refcode_to_skyframe
+
+if TYPE_CHECKING:
+    from pipeline.hif.tasks.makeimlist import CleanTarget
+    from pipeline.infrastructure.vdp import StandardInputs
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -205,7 +210,8 @@ class ImageParamsHeuristics(object):
                     min_frequency = float(spw.min_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                     max_frequency = float(spw.max_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ))
                     spw_sel_intervals = utils.spw_intersect([min_frequency, max_frequency], merged_line_ranges_GHz)
-                    spw_selection = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
+                    spw_selection = ';'.join(['%.10f~%.10fGHz' % (float(spw_sel_interval[0]), float(
+                        spw_sel_interval[1])) for spw_sel_interval in spw_sel_intervals])
 
                     # Skip selection syntax completely if the whole spw is selected
                     if (spw_selection == '%.10f~%.10fGHz' % (float(min_frequency), float(max_frequency))):
@@ -214,7 +220,7 @@ class ImageParamsHeuristics(object):
                     for source_name in [s.name for s in ms.sources]:
                         cont_ranges_spwsel[source_name][str(spwid)] = '%s LSRK' % (spw_selection)
                 except Exception as e:
-                    LOG.warn(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning(f'Could not determine continuum ranges for spw {spwid}. Exception: {str(e)}')
 
         return cont_ranges_spwsel, all_continuum_spwsel, low_bandwidth_spwsel, low_spread_spwsel
 
@@ -329,7 +335,7 @@ class ImageParamsHeuristics(object):
             try:
                 largest_primary_beam_size = max(largest_primary_beam_size, self.primary_beam_size(spwid, intent))
             except Exception as e:
-                LOG.warn(f'Could not determine primary beam size for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine primary beam size for spw {spwid}. Exception: {str(e)}')
 
         return largest_primary_beam_size
 
@@ -457,7 +463,7 @@ class ImageParamsHeuristics(object):
 
                     if not valid_data[(field, intent)]:
                         # no point carrying on for this field/intent
-                        LOG.warn('No data for field %s' % (field))
+                        LOG.warning('No data for field %s' % (field))
                         utils.set_nested_dict(local_known_beams,
                                               (field, intent, ','.join(map(str, sorted(spwids))), 'beam'),
                                               'invalid')
@@ -553,8 +559,8 @@ class ImageParamsHeuristics(object):
                                 restoringbeam = image.restoringbeam()
                                 # CAS-11193: Round to 3 digits to avoid confusion when comparing
                                 # heuristics against the beam weblog display (also using 3 digits)
-                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))))
-                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))))
+                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))[0]))
+                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))[0]))
                                 restoringbeam_rounded = {'major': {'value': restoringbeam_major_rounded, 'unit': 'arcsec'},
                                                          'minor': {'value': restoringbeam_minor_rounded, 'unit': 'arcsec'},
                                                          'positionangle': restoringbeam['positionangle']}
@@ -577,8 +583,8 @@ class ImageParamsHeuristics(object):
             # beam that's good for all field/intents
             smallest_beam = {'minor': '1e9arcsec', 'major': '1e9arcsec', 'positionangle': '0.0deg'}
             for beam in makepsf_beams:
-                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))
-                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec')):
+                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))[0]
+                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec'))[0]:
                     smallest_beam = beam
         else:
             smallest_beam = 'invalid'
@@ -591,7 +597,7 @@ class ImageParamsHeuristics(object):
 
         cqa = casa_tools.quanta
         try:
-            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec')) / pixperbeam
+            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0] / pixperbeam
             return ['%.2garcsec' % (cell_size)]
         except:
             return ['invalid']
@@ -628,7 +634,7 @@ class ImageParamsHeuristics(object):
                         nchan = min_nchan
                         width = str(bandwidth / nchan)
             except Exception as e:
-                LOG.warn(f'Could not determine nchan and width for spw {spwids[0]}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine nchan and width for spw {spwids[0]}. Exception: {str(e)}')
                 nchan = -1
                 width = ''
         else:
@@ -1060,7 +1066,7 @@ class ImageParamsHeuristics(object):
                 except:
                     b2bMode = False
                 if not b2bMode:
-                    LOG.warn(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
+                    LOG.warning(f'Could not determine aggregate bandwidth frequency range for spw {spwid}. Exception: {str(e)}')
 
         aggregate_bandwidth_Hz = np.sum([r[1] - r[0] for r in utils.merge_ranges(spw_frequency_ranges)])
 
@@ -1096,9 +1102,9 @@ class ImageParamsHeuristics(object):
             # Check if there is a non-zero min/max angular resolution
             minAcceptableAngResolution = cqa.convert(self.proj_params.min_angular_resolution, 'arcsec')
             maxAcceptableAngResolution = cqa.convert(self.proj_params.max_angular_resolution, 'arcsec')
-            if cqa.getvalue(minAcceptableAngResolution) == 0.0 or cqa.getvalue(maxAcceptableAngResolution) == 0.0:
+            if cqa.getvalue(minAcceptableAngResolution)[0] == 0.0 or cqa.getvalue(maxAcceptableAngResolution)[0] == 0.0:
                 desired_angular_resolution = cqa.convert(self.proj_params.desired_angular_resolution, 'arcsec')
-                if cqa.getvalue(desired_angular_resolution) != 0.0:
+                if cqa.getvalue(desired_angular_resolution)[0] != 0.0:
                     minAcceptableAngResolution = cqa.mul(desired_angular_resolution, 0.8)
                     maxAcceptableAngResolution = cqa.mul(desired_angular_resolution, 1.2)
                 else:
@@ -1109,7 +1115,7 @@ class ImageParamsHeuristics(object):
 
             # Check if there is a non-zero sensitivity goal
             sensitivityGoal = cqa.convert(self.proj_params.desired_sensitivity, 'mJy')
-            if cqa.getvalue(sensitivityGoal) == 0.0:
+            if cqa.getvalue(sensitivityGoal)[0] == 0.0:
                 sensitivityGoal = cqa.convert(science_goals['sensitivity'], 'mJy')
 
         else:
@@ -1187,7 +1193,6 @@ class ImageParamsHeuristics(object):
             _, _, xspread, yspread = self.phasecenter(fields, centreonly=centreonly, vislist=vislist)
 
         cqa = casa_tools.quanta
-        csu = casa_tools.synthesisutils
 
         cellx = cell[0]
         if len(cell) > 1:
@@ -1199,8 +1204,8 @@ class ImageParamsHeuristics(object):
             return [0, 0]
 
         # get cell and beam sizes in arcsec
-        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))
-        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))
+        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))[0]
+        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))[0]
         beam_radius_v = primary_beam
 
         # set size of image to spread of field centres plus a
@@ -1227,6 +1232,7 @@ class ImageParamsHeuristics(object):
             nypix = min(nypix, max_pixels)
 
         # set nxpix, nypix to next highest 'composite number'
+        csu = casa_tools.synthesisutils
         nxpix = csu.getOptimumSize(nxpix)
         nypix = csu.getOptimumSize(nypix)
         csu.done()
@@ -1292,7 +1298,7 @@ class ImageParamsHeuristics(object):
             # width = decimal.Decimal('1.0001') * width
             width = str(width)
         except Exception as e:
-            LOG.warn(f'Could not determine width for spw {spwid}. Exception: {str(e)}')
+            LOG.warning(f'Could not determine width for spw {spwid}. Exception: {str(e)}')
             width = ''
 
         return width
@@ -1318,7 +1324,7 @@ class ImageParamsHeuristics(object):
                 ncorr = 0
 
         except Exception as e:
-            LOG.warn(f'Could not determine ncorr for spw {spwid}. Exception: {str(e)}')
+            LOG.warning(f'Could not determine ncorr for spw {spwid}. Exception: {str(e)}')
             ncorr = 0
 
         return ncorr
@@ -1401,7 +1407,7 @@ class ImageParamsHeuristics(object):
                     abs_max_frequency = max_frequency
                     max_freq_spwid = spwid
             except Exception as e:
-                LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
         return {'abs_min_freq': abs_min_frequency, 'abs_max_freq': abs_max_frequency,
                 'min_freq_spwid': min_freq_spwid, 'max_freq_spwid': max_freq_spwid}
@@ -1541,7 +1547,7 @@ class ImageParamsHeuristics(object):
                     if (inputs.intent == 'TARGET') and (inputs.specmode in ('mfs', 'cont') and self.warn_missing_cont_ranges()):
                         LOG.warning('No continuum frequency selection for Target Field %s SPW %s' % (inputs.field, spwid))
             except Exception as e:
-                LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
             aggregate_lsrk_bw = qaTool.add(aggregate_lsrk_bw, aggregate_spw_lsrk_bw)
 
@@ -1702,8 +1708,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
@@ -1719,8 +1725,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_full_freq_ranges.append((f0_full, f1_full))
 
@@ -2183,8 +2189,14 @@ class ImageParamsHeuristics(object):
     def niter(self):
         return None
 
-    def get_autobox_params(self, iteration, intent, specmode, robust):
-
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters."""
 
         sidelobethreshold = None
@@ -2197,8 +2209,17 @@ class ImageParamsHeuristics(object):
         minpercentchange = None
         fastnoise = None
 
-        return (sidelobethreshold, noisethreshold, lownoisethreshold, negativethreshold, minbeamfrac, growiterations,
-                dogrowprune, minpercentchange, fastnoise)
+        return (
+            sidelobethreshold,
+            noisethreshold,
+            lownoisethreshold,
+            negativethreshold,
+            minbeamfrac,
+            growiterations,
+            dogrowprune,
+            minpercentchange,
+            fastnoise,
+        )
 
     def nterms(self, spwspec):
         return None
@@ -2364,7 +2385,7 @@ class ImageParamsHeuristics(object):
         else:
             return threshold
 
-    def nsigma(self, iteration, hm_nsigma, hm_masking):
+    def nsigma(self, iteration, hm_nsigma, hm_masking, rms_multiplier=None):
         """Tclean nsigma parameter heuristics."""
         return hm_nsigma
 
@@ -2504,4 +2525,34 @@ class ImageParamsHeuristics(object):
 
     def psfcutoff(self) -> None:
         """Tclean psfcutoff parameter heuristics."""
+        return None
+
+    def get_nfrms_multiplier(self, iteration, intent, specmode, imagename) -> None:
+        """PIPE-1878: Determine the nfrms-based threshold multiplier for TARGET imaging.
+
+        Args:
+            iteration (int): The iteration number.
+            intent (str): The intent.
+            specmode (str): The spectral mode.
+            imagename (str): The name of the shallowly cleaned image to calculate the multiplier.
+
+        Returns:
+            float: The multiplier for the nfrms-based threshold.
+
+        """
+        return None
+
+    def get_subtargets(self, cleantarget: CleanTarget, inputs: StandardInputs) -> list[CleanTarget] | None:
+        """Derive sub-targets from the original clean target.
+
+        Processes the original CleanTarget specification to generate sub-targets, e.g. for individual fine-grained selected
+        frequency ranges or pointings from the original CleanTarget planning.
+
+        Args:
+            cleantarget: The original clean target object to process.
+            inputs: Pipeline Task Input object.
+
+        Returns:
+            List containing sub-targets or None values if none found.
+        """
         return None

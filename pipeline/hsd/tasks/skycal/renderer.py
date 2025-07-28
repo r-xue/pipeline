@@ -100,22 +100,21 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 detail_plotter = skycal_display.SingleDishSkyCalAmpVsFreqDetailChart(context, result, gainfield)
                 details_freq.extend(detail_plotter.plot())
 
-                # Amp vs. Time: summary plots
-                summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, calapp)
-                summaries_time.extend(summary_plotter.plot())
-
-                # Amp vs. Time: detail plots
-                detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, calapp)
-                details_time.extend(detail_plotter.plot())
-
                 # reference coordinates
-                #LOG.debug('calapp=%s'%(calapp))
                 calmode = utils.get_origin_input_arg(calapp, 'calmode')
-                LOG.debug('calmode=\'%s\''%(calmode))
+                LOG.debug('calmode=\'%s\'' % (calmode))
                 field_domain = ms.get_fields(gainfield)[0]
                 if calmode == 'ps':
                     reference_coord = self._get_reference_coord(context, ms, field_domain)
                     reference_coords[vis][field_domain.name] = reference_coord
+
+            # Amp vs. Time: summary plots
+            summary_plotter = skycal_display.SingleDishSkyCalAmpVsTimeSummaryChart(context, result, final_original)
+            summaries_time.extend(summary_plotter.plot())
+
+            # Amp vs. Time: detail plots
+            detail_plotter = skycal_display.SingleDishSkyCalAmpVsTimeDetailChart(context, result, final_original)
+            details_time.extend(detail_plotter.plot())
 
             result.final = final_original
 
@@ -146,17 +145,10 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                 field_id = name_id_map[field_name]
                 return field_id, spw_id
 
-            for summary_dict in (summary_amp_vs_freq, summary_amp_vs_time,):
-                if vis not in summary_dict:
-                    continue
-
-                _plot_list = summary_dict[vis]
-
-                if len(_plot_list) == 0:
-                    continue
-
+            _plot_list = summary_amp_vs_freq.get(vis, [])
+            if len(_plot_list) > 0:
                 LOG.debug('sorting plot list for %s xaxis %s yaxis %s' %
-                         (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
+                          (vis, _plot_list[0].x_axis, _plot_list[0].y_axis))
                 LOG.debug('before: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
                 _plot_list.sort(key=sort_by_field_spw)
                 LOG.debug(' after: %s' % [(p.parameters['field'], p.parameters['spw']) for p in _plot_list])
@@ -167,7 +159,7 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
-                                                  title ='Sky Level vs Frequency',
+                                                  title='Sky Level vs Frequency',
                                                   outfile='sky_level_vs_frequency.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())
@@ -176,11 +168,11 @@ class T2_4MDetailsSingleDishSkyCalRenderer(basetemplates.T2_4MDetailsDefaultRend
 
         # Sky Level vs Time
         flattened = [plot for inner in details_amp_vs_time.values() for plot in inner]
-        renderer = basetemplates.JsonPlotRenderer(uri='hsd_generic_x_vs_y_ant_field_spw_plots.mako',
+        renderer = basetemplates.JsonPlotRenderer(uri='generic_x_vs_y_spw_ant_plots.mako',
                                                   context=context,
                                                   result=result,
                                                   plots=flattened,
-                                                  title ='Sky Level vs Time',
+                                                  title='Sky Level vs Time',
                                                   outfile='sky_level_vs_time.html')
         with renderer.get_file() as fileobj:
             fileobj.write(renderer.render())

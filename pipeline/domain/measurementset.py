@@ -4,35 +4,24 @@ from __future__ import annotations
 
 import collections
 import contextlib
+import datetime
 import inspect
 import itertools
 import operator
 import os
-import re
 from typing import TYPE_CHECKING, Sequence
 
 import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
+from pipeline import infrastructure
+from pipeline.domain import measures, spectralwindow
+from pipeline.infrastructure import casa_tools, tablereader, utils
 
-if TYPE_CHECKING:  # Avoid circular import. Used only for type annotation.
+if TYPE_CHECKING:
+    from pipeline.domain import AntennaArray, Antenna, DataDescription, DataType, Field, Polarization, Scan, State
     from pipeline.infrastructure.tablereader import RetrieveByIndexContainer
-    from .antenna import Antenna
-    from .datadescription import DataDescription
-    from .field import Field
-    from .scan import Scan
-    from .state import State
 
-from pipeline.infrastructure import logging
-
-from . import measures, spectralwindow
-from .antennaarray import AntennaArray
-from .datatype import DataType
-from .polarization import Polarization
-
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class MeasurementSet(object):
@@ -390,9 +379,9 @@ class MeasurementSet(object):
 
         # PIPE-1504: only issue certain messages at the WARNING level if they are executed by hifa_imageprecheck
         if 'hifa_imageprecheck' in [fn_name for (_, _, _, fn_name, _, _) in inspect.stack()]:
-            log_level = logging.WARNING
+            log_level = infrastructure.logging.WARNING
         else:
-            log_level = logging.INFO
+            log_level = infrastructure.logging.INFO
 
         if source_name:
             # Use the first target source that matches the user defined name
@@ -486,7 +475,7 @@ class MeasurementSet(object):
             if self.antenna_array.name not in ('VLA', 'EVLA'):
                 LOG.warning('Undefined representative bandwidth for data set %s' % self.basename)
             return target_source_name, None
-        
+
         target_bw = cme.frequency('TOPO',
             qa.quantity(qa.getvalue(self.representative_target[2]),
             qa.getunit(self.representative_target[2])))
@@ -520,7 +509,7 @@ class MeasurementSet(object):
         if not target_frequency_topo:
             return target_source_name, None
 
-        # Find the science spw 
+        # Find the science spw
 
         # Get the science spw ids
         science_spw_ids = [spw.id for spw in self.get_spectral_windows()]
@@ -768,7 +757,7 @@ class MeasurementSet(object):
             for given CASA-style search criteria.
         """
         # we may have more spectral windows in our MeasurementSet than have
-        # data in the measurement set on disk. Ask for all 
+        # data in the measurement set on disk. Ask for all
         if task_arg in (None, ''):
             task_arg = '*'
 
@@ -848,18 +837,32 @@ class MeasurementSet(object):
 
     def get_alma_cycle_number(self) -> int | None:
         """
-        Get the ALMA cycle number from the ALMA control software version that
-        this MeasurementSet was acquired with.
+        Get the ALMA cycle number from the observation start time.
 
         Returns:
-            int cycle_number or None if not found
+            Cycle number or None if not found
         """
-        match = re.search(r"CYCLE(\d+)", self.acs_software_build_version)
-        if match:
-            cycle_number = int(match.group(1))
-            return cycle_number
-        else:
-            return None
+        cycle_numbers = {
+            '0': ['2011-09-30', '2013-01-20'],
+            '1': ['2013-01-21', '2014-06-02'],
+            '2': ['2014-06-03', '2015-09-30'],
+            '3': ['2015-10-01', '2016-09-30'],
+            '4': ['2016-10-01', '2017-09-30'],
+            '5': ['2017-10-01', '2018-09-30'],
+            '6': ['2018-10-01', '2019-09-30'],
+            '7': ['2019-10-01', '2021-09-30'],
+            '8': ['2021-10-01', '2022-09-30'],
+            '9': ['2022-10-01', '2023-09-30'],
+            '10': ['2023-10-01', '2024-09-30'],
+            '11': ['2024-10-01', '2025-09-30'],
+        }
+        start_time = utils.get_epoch_as_datetime(self.start_time)
+        for cycle, (start_str, end_str) in cycle_numbers.items():
+            start = datetime.datetime.strptime(start_str, '%Y-%m-%d')
+            end = datetime.datetime.strptime(end_str, '%Y-%m-%d')
+            if start <= start_time <= end:
+                return cycle
+        return None  # No match
 
     @property
     def start_time(self) -> dict:
@@ -928,26 +931,46 @@ class MeasurementSet(object):
 
         return corrstring
 
-    def get_vla_spw2band(self) -> dict:
-        """Find field spws for VLA
-
+    def get_vla_spw2band(self) -> dict[int, str]:
+        """Find spectral windows id-to-band mapping for VLA.
+        
+        Creat spw id-to-band mapping from spw names or derives it from reference frequency
+        when name parsing fails. Handles special cases for KU and KA band naming conventions.
+        
         Returns:
-            spw2band: dictionary with each string key spw index giving a single letter string value of the band
+            Dictionary mapping spectral window IDs to single-letter band codes (e.g., '4', 'P', 'L', 
+            'S', 'C', 'X', 'U', 'K', 'A', 'Q').
         """
-
-        spw2band = {}
+        spw2band: dict[int, str] = {}
 
         for spw in self.spectral_windows:
+            
+            try:
+                # Extract band from 6th character of SPW name
+                spw_name_chars = list(spw.name)
+                band_char = spw_name_chars[5]
 
-            strelems = list(spw.name)
-            bandname = strelems[5]
-            if bandname in '4PLSCXUKAQ':
-                spw2band[spw.id] = strelems[5]
-            # Check for U / KU
-            if strelems[5] == 'K' and strelems[6] == 'U':
-                spw2band[spw.id] = 'U'
-            if strelems[5] == 'K' and strelems[6] == 'A':
-                spw2band[spw.id] = 'A'
+                if band_char in '4PLSCXUKAQ':
+                    spw2band[spw.id] = band_char
+
+                # Handle special multi-character band names
+                if band_char == 'K' and len(spw_name_chars) > 6:
+                    if spw_name_chars[6] == 'U':  # KU band
+                        spw2band[spw.id] = 'U'
+                    elif spw_name_chars[6] == 'A':  # KA band
+                        spw2band[spw.id] = 'A'
+            except IndexError:
+                # SPW name too short or malformed
+                pass
+
+            # Fallback to frequency-based band determination
+            if spw.id not in spw2band:
+                evla_band = tablereader.find_EVLA_band(float(spw.ref_frequency.value))
+                LOG.info(
+                    "Unable to extract band name from SPW ID %s (name: %s); "
+                    "derived band name %s from reference frequency",
+                    spw.id, spw.name, evla_band)
+                spw2band[spw.id] = evla_band
 
         return spw2band
 
@@ -1088,26 +1111,46 @@ class MeasurementSet(object):
 
         return critfrac
 
-    def get_vla_baseband_spws(self, science_windows_only: bool = True, return_select_list: bool = True,
-                              warning: bool = True) -> dict | tuple[dict, list]:
+    def get_vla_baseband_spws(
+        self, science_windows_only: bool = True, return_select_list: bool = True, warning: bool = True
+    ) -> dict | list[list[int]]:
         """Get the SPW information from individual VLA band/baseband.
 
         Args:
-            science_windows_only (bool, optional): Defaults to True.
-            return_select_list (bool, optional): return spw list of each baseband. Defaults to True.
-            warning (bool, optional): Defaults to True.
+            science_windows_only: Whether to include only science spectral windows.
+            return_select_list: Whether to return SPW list of each baseband instead of full band/subband info.
+            warning: Whether to log warnings for parsing errors.
 
         Returns:
-            baseband_spws: spws info of individual basebands as baseband_spws[band][baseband]
-            baseband_spws_list: spw_list of individual basebands
-                e.g., [[0,1,2,3],[4,5,6,7]]
+            If return_select_list is False:
+                Dictionary with SPW info organized as baseband_spws[band][baseband], where each
+                entry contains a list of spw info as {spwid, (min_freq, max_freq, mean_freq, chan_width)}.
+
+            If return_select_list is True:
+                List of SPW ID lists for each band.baseband, e.g., [[0,1,2,3], [4,5,6,7]].
         """
         baseband_spws = collections.defaultdict(lambda: collections.defaultdict(list))
+        spw2band = self.get_vla_spw2band()
 
         for spw in self.get_spectral_windows(science_windows_only=science_windows_only):
             try:
-                band = spw.name.split('#')[0].split('_')[1]
-                baseband = spw.name.split('#')[1]
+                band = spw2band.get(spw.id, 'unknown')
+                # PIPE-2634: historically, the codes calling `ms.get_vla_baseband_spws` was imeplemented to
+                # use two-letter convetions for KU and KA bands, e.g. 'KU' and 'KA' instead of 'U' and 'A'.
+                if band in ('U', 'A'):
+                    band = 'K' + band
+                if '#' in spw.name:
+                    baseband = spw.name.split('#')[1]
+                else:
+                    # older VLA data might have this spw naming pattern:
+                    # spwid - name
+                    #   0   - Subband:7
+                    #   1   - Subband:5
+                    #     ..
+                    #   8   - Subband:7
+                    # Here as a fallback, we use the full spw name as baseband; likely band name is generated from
+                    # the frequency-base heuristics in ms.spw2band
+                    baseband = spw.name
                 min_freq = spw.min_frequency
                 max_freq = spw.max_frequency
                 mean_freq = spw.mean_frequency
@@ -1115,7 +1158,7 @@ class MeasurementSet(object):
                 baseband_spws[band][baseband].append({spw.id: (min_freq, max_freq, mean_freq, chan_width)})
             except Exception as ex:
                 if warning:
-                    LOG.warning("Exception: Baseband name cannot be parsed. {!s}".format(str(ex)))
+                    LOG.warning('Exception: Baseband name cannot be parsed. %s', ex)
                 else:
                     pass
 
@@ -1124,11 +1167,12 @@ class MeasurementSet(object):
             for band in baseband_spws.values():
                 for baseband in band.values():
                     baseband_spws_list.append([[*spw_info][0] for spw_info in baseband])
-            return baseband_spws, baseband_spws_list
+            return baseband_spws_list
         else:
             return baseband_spws
 
-    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False, stat_type: str = "max") -> np.float:
+    def get_integration_time_stats(self, intent: str | None = None, spw: str | None = None, science_windows_only: bool = False,
+                                   stat_type: str = "max", band: str | None = None) -> float:
         """Get the given statistcs of integration time.
 
         Args:
@@ -1136,6 +1180,8 @@ class MeasurementSet(object):
             spw: spw string list - '1,7,11,18'.
             science_windows_only: Use integration time of science spws only to compute the given statistics.
             stat_type: Type of the statistics.
+            band: return maximum integration time for the given VLA band.
+                Ignored for non-VLA datasets; has no effect in that case. Default is None.default None
         Returns
             Computed statistics value.
         """
@@ -1168,8 +1214,13 @@ class MeasurementSet(object):
                 spws = [ispw for ispw in all_spws if str(ispw.id) in spw_string_list]
             except:
                 LOG.error("Incorrect spw string format.")
-
-        if science_windows_only == True:
+        if band is not None:
+            if self.antenna_array.name not in ('VLA', 'EVLA'):
+                LOG.warning("The band parameter is only applicable to VLA data. For non-VLA datasets, it has no effect on the maximum integration time calculation.")
+            spw2band = self.get_vla_spw2band()
+            spws = [spw_obj for spw_obj in spws if spw2band[spw_obj.id].lower() == band.lower()]
+            science_spw_dd_ids = [self.get_data_description(spw).id for spw in spws]
+        if science_windows_only:
             # now get the science spws, those used for scientific intent
             science_spws = [
                 ispw for ispw in spws
@@ -1181,11 +1232,11 @@ class MeasurementSet(object):
             science_field_ids = [
                 fid for fid in field_ids
                 if not set(self.fields[fid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
             science_state_ids = [
                 sid for sid in state_ids
                 if not set(self.states[sid].intents).isdisjoint(['BANDPASS', 'AMPLITUDE',
-                                                    'PHASE', 'TARGET'])]
+                                                                 'PHASE', 'TARGET'])]
 
             science_spw_dd_ids = [self.get_data_description(spw).id for spw in science_spws]
 
@@ -1196,17 +1247,19 @@ class MeasurementSet(object):
 
         state_str = utils.list_to_str(science_state_ids if science_windows_only else state_ids)
         field_str = utils.list_to_str(science_field_ids if science_windows_only else field_ids)
-        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only else ""
+        spw_str = utils.list_to_str(science_spw_dd_ids) if science_windows_only or band is not None else ""
 
-        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + (f" AND DATA_DESC_ID IN {spw_str}" if science_windows_only else "") + ")"
+        taql = f"(STATE_ID IN {state_str} AND FIELD_ID IN {field_str}" + \
+            (f" AND DATA_DESC_ID IN {spw_str}" if spw_str else "") + ")"
 
         with casa_tools.TableReader(self.name) as table:
             with contextlib.closing(table.query(taql)) as subtable:
                 integration = subtable.getcol('INTERVAL')
+            # PIPE-2370: convert np.float64 to a native float for better weblog presentations.
             if stat_type == "max":
-                return np.max(integration)
+                return float(np.max(integration))
             elif stat_type == "median":
-                return np.median(integration)
+                return float(np.median(integration))
 
     def get_times_on_source_per_field_id(self, field: str, intent: str) -> dict[int, np.float]:
         """
@@ -1334,10 +1387,25 @@ class MeasurementSet(object):
         """
         return [colname for colname in self.all_colnames() if colname in ('DATA', 'FLOAT_DATA', 'CORRECTED_DATA')]
 
-    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
-                        overwrite: bool = False) -> None:
+    def set_data_type_dicts(self, data_type_per_column: dict, data_types_per_source_and_spw: dict) -> None:
         """
-        Set data type and column.
+        Set the data type lookup dictionaries directly without writing new
+        MS HISTORY entries as they would already exist when calling this
+        method. Also do not auto-generate the per source and spw lookup
+        dictionary from the per column information since it might have a
+        sparse structure (e.g. selfcal use case).
+
+        Args:
+            data_type_per_column: Data type per column lookup dictionary
+            data_types_per_source_and_spw: Data type per source and spw
+                lookup dictionary.
+        """
+        self.data_column = data_type_per_column
+        self.data_types_per_source_and_spw = data_types_per_source_and_spw
+
+    def set_data_column(self, dtype: DataType, column: str, source: str | None = None, spw: str | None = None,
+                        overwrite: bool = False, save_to_ms: bool = True) -> None:
+        """Assign a data type to a column in the MS domain object.
 
         Set data type and column to MS domain object and record the available
         data types per (source,spw) tuple. If source or spw are unset, they
@@ -1353,6 +1421,8 @@ class MeasurementSet(object):
             overwrite: if True existing data colum is overwritten by the new
                 column. If False and if type is already associated with other
                 column, the function raises ValueError.
+            save_to_ms (bool, optional): If True, persists the datatype-to-column mapping
+                to the MS history subtable. Defaults to True.                
 
         Raises:
             ValueError: An error raised when the column does not exist
@@ -1398,6 +1468,20 @@ class MeasurementSet(object):
         if dtype not in self.data_column:
             self.data_column[dtype] = column
             LOG.info('Updated data column information of {}. Set {} to column {}'.format(self.basename, dtype, column))
+
+        # Write data type lookup dictionaries to MS history (PIPEREQ-195). This is a
+        # minimum fallback implementation and should be replaced by a properly
+        # structured solution with sub-tables or other kind of metadata (maybe only in MSv4).
+        if save_to_ms:
+            with casa_tools.MSReader(self.name) as ms:
+                ms.writehistory(
+                    f"data_type_per_column = {dict((k.name, v) for k, v in self.data_column.items())}",
+                    origin="Datatype Handler",
+                )
+                ms.writehistory(
+                    f"data_types_per_source_and_spw = {dict((k, [item.name for item in v]) for k, v in self.data_types_per_source_and_spw.items())}",
+                    origin="Datatype Handler",
+                )
 
     def get_data_column(self, dtype: DataType, source: str | None = None, spw: str | None = None) -> str | None:
         """
@@ -1526,3 +1610,56 @@ class MeasurementSet(object):
             spw_list = utils.range_to_list(spw_select)
 
         return spw_list
+
+    # PIPE-2307: moving compute_az_el_to_field, compute_az_el_for_ms methods from pipeline.infrastructure.htmlrenderer to here
+    def compute_az_el_to_field(self, field: Field | None = None, epoch: dict | None = None) -> list[float]:
+        """Computes azimuth and elevation of a field at a given epoch.
+
+        This method uses the CASA `measures` tool to convert the direction
+        of a field to azimuth and elevation (AZELGEO frame) at the time
+        specified by the epoch and location of the observatory.
+
+        Args:
+            field : Field domain object or None.
+            epoch :  A dictionary representing the time epoch.
+
+        Returns:
+            list: A list containing azimuth (degrees) and elevation (degrees), in that order.
+        """
+        me = casa_tools.measures
+        me.doframe(epoch)
+        me.doframe(me.observatory(self.antenna_array.name))
+        myazel = me.measure(field.mdirection, 'AZELGEO')
+        myaz = myazel['m0']['value']
+        myel = myazel['m1']['value']
+        myaz = (myaz * 180 / np.pi) % 360
+        myel *= 180 / np.pi
+
+        return [myaz, myel]
+
+    def compute_az_el_for_ms(self, func: callable) -> tuple[float, float]:
+        """Computes overall azimuth and elevation values across POINTING, SIDEBAND, ATMOSPHERE scans.
+
+        Applies the given aggregation function (e.g. `min`, `max`, `mean`) to azimuth and elevation
+        values computed at the start and end of each field in science scans.
+
+        Args:
+            func (callable): A function that takes a list of floats and returns a single float.
+                Common examples include `min`, `max`, or `np.mean`.
+
+        Returns:
+            tuple[float, float]: A tuple containing the aggregated azimuth and elevation values.
+        """
+        cal_scans = self.get_scans(scan_intent='POINTING,SIDEBAND,ATMOSPHERE')
+        scans = [s for s in self.scans if s not in cal_scans]
+
+        az = []
+        el = []
+        for scan in scans:
+            for field in scan.fields:
+                az0, el0 = self.compute_az_el_to_field(field, scan.start_time)
+                az1, el1 = self.compute_az_el_to_field(field, scan.end_time)
+                az.append(func([az0, az1]))
+                el.append(func([el0, el1]))
+
+        return func(az), func(el)

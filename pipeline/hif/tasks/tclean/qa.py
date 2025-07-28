@@ -236,7 +236,7 @@ class TcleanQAHandler(pqa.QAPlugin):
 
                 imagename = result.image.replace('.pbcor', '')
                 poli_imagename = imagename.replace('IQUV', 'POLI')
-                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'poli', 'sigma': '0.0Jy/beam'}
+                immath_arg = {'imagename': imagename, 'outfile': poli_imagename, 'mode': 'lpoli', 'sigma': '0.0Jy/beam'}
                 job = casa_tasks.immath(**immath_arg)
                 res = job.execute()
                 pola_imagename = imagename.replace('IQUV', 'POLA')
@@ -313,7 +313,7 @@ class TcleanQAHandler(pqa.QAPlugin):
                         1.0, longmsg=f"Stokes fits for field {result.inputs['field']} spw {result.inputs['spw']} succeeded",
                         shortmsg='Stokes fits succeeded', origin=origin, applies_to=data_selection))
             except Exception as e:
-                LOG.warn(str(e))
+                LOG.warning(str(e))
                 result.polcal_fit = {'session': context.observing_run.get_ms(result.vis[0]).session,
                                      'converged': False,
                                      'flux_pol_intens': 'N/A',

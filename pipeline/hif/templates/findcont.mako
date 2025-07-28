@@ -37,6 +37,7 @@
                 <th rowspan="2">Spw</th>
                 <th colspan="3">Continuum Frequency Range</th>
                 <th rowspan="2">Status</th>
+                <th rowspan="2">Mom diff SNR</th>
                 <th rowspan="2">Average spectrum</th>
                 <th rowspan="2">Joint mask</th>
             </tr>

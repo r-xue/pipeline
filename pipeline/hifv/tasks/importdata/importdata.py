@@ -25,12 +25,13 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
     process_caldevice = vdp.VisDependentProperty(default=True)
     createmms = vdp.VisDependentProperty(default='false')
     specline_spws = vdp.VisDependentProperty(default='auto')
+    minparang = vdp.VisDependentProperty(default=0.0)
     parallel = sessionutils.parallel_inputs_impl(default=False)
 
     # docstring and type hints: supplements hifv_importdata
     def __init__(self, context, vis=None, output_dir=None, asis=None, process_caldevice=None, session=None,
                  overwrite=None, nocopy=None, bdfflags=None, lazy=None, save_flagonline=None, createmms=None,
-                 ocorr_mode=None, datacolumns=None, specline_spws=None, parallel=None):
+                 ocorr_mode=None, datacolumns=None, specline_spws=None, minparang=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -109,6 +110,10 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
 
                 Example: specline_spws='2, 3, 4~9, 23'
 
+            minparang: Minimum required parallactic angle range for polarisation
+                calibrator, in degrees. The default of 0.0 is used for
+                non-polarisation processing.
+
             parallel: Execute using CASA HPC functionality, if available.
 
         """
@@ -118,6 +123,7 @@ class VLAImportDataInputs(importdata.ImportDataInputs):
                          save_flagonline=save_flagonline, createmms=createmms,
                          ocorr_mode=ocorr_mode, datacolumns=datacolumns)
         self.specline_spws = specline_spws
+        self.minparang = minparang
         self.parallel = parallel
 
 
@@ -162,7 +168,7 @@ class VLAImportDataResults(basetask.Results):
                     context.evla['msinfo'][m.name].longsolint[bandname] = 0.0
                     context.evla['msinfo'][m.name].short_solint[bandname] = 0.0
                     context.evla['msinfo'][m.name].new_gain_solint1[bandname] = '1.0s'
-
+                    context.evla['msinfo'][m.name].setjy_results = self.setjy_results
         if self.setjy_results:
             for result in self.setjy_results:
                 result.merge_with_context(context)
