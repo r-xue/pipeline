@@ -69,7 +69,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 
-        stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+        self.stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
     def plot(self) -> list[logger.Plot]:
         """Generate calibrated amplitude vs. time plots.

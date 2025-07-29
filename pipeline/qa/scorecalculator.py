@@ -4607,7 +4607,7 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         spw = onedata['name']
         filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
             vis=vis, ant='all', spw=spw)
-        figfile = os.path.join(stage_dir, '{prefix}.png'.format(prefix=prefix))
+        figfile = os.path.join(stage_dir, filename)
         score = 1.0
         if not os.path.exists(figfile):
             shortmsg = 'Failed to create calibrated amplitude vs time plot'
