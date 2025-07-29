@@ -5,6 +5,8 @@ Created on 24 Oct 2014
 
 @author: sjw
 """
+from __future__ import annotations
+
 import collections
 import os
 from typing import TYPE_CHECKING, Dict, List, Tuple, Union
@@ -17,13 +19,13 @@ import pipeline.infrastructure.utils as utils
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
 from pipeline.h.tasks.common.displays import applycal as applycal
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.launcher import Context
-from pipeline.infrastructure.basetask import ResultsList
 
 if TYPE_CHECKING:
     from pipeline.domain.source import Source
     from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
+    from pipeline.infrastructure.basetask import ResultsList
+    from pipeline.infrastructure.launcher import Context
     from pipeline.infrastructure.renderer.logger import Plot
 
 LOG = logging.get_logger(__name__)
@@ -243,12 +245,12 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         """Create detail page.
 
         Args:
-            context : pipeline context
-            result : List of applycal result object
-            plots : Dictionary contains 'vis' and List of Plot object
+            context : Pipeline context
+            result : List of applycal result objects
+            plots : Dictionary which contains 'vis' and List of Plot object
 
         Returns:
-            amp_vs_time_subpages: Dictionary contains 'vis' and filepath of detail page
+            amp_vs_time_subpages: Dictionary which contains 'vis' and filepath of detail page
         """
         amp_vs_time_subpage = None
         for d, plotter_cls in ((plots, super_renderer.ApplycalAmpVsTimePlotRenderer),):

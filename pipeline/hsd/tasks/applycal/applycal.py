@@ -1,6 +1,7 @@
 from __future__ import annotations
+
 import os
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 import numpy
 
 import pipeline.infrastructure as infrastructure
@@ -12,14 +13,14 @@ from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain import DataType
 from pipeline.h.tasks.applycal.applycal import SerialApplycal, ApplycalInputs, ApplycalResults
 from pipeline.hsd.tasks.applycal.display import ApplyCalSingleDishPlotmsSpwComposite, ApplyCalSingleDishPlotmsAntSpwComposite
-from . import display as display
+import pipeline.hsd.tasks.applycal.display as display
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import task_registry
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure import CalApplication
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -37,18 +38,18 @@ class SDApplycalInputs(ApplycalInputs):
     # docstring and type hints: supplements hsd_applycal
     def __init__(self,
                  context: Context,
-                 output_dir: Optional[str] = None,
-                 vis: Optional[str | list[str]] = None,
-                 field: Optional[str | list[str]] = None,
-                 spw: Optional[str | list[str]] = None,
-                 antenna: Optional[str | list[str]] = None,
-                 intent: Optional[str | list[str]] = None,
-                 parang: Optional[bool] = None,
-                 applymode: Optional[str] = None,
-                 flagbackup: Optional[bool] = None,
-                 flagsum: Optional[bool] = None,
-                 flagdetailedsum: Optional[bool] = None,
-                 parallel: Optional[bool | str] = None):
+                 output_dir: str | None = None,
+                 vis: str | list[str] = None,
+                 field: str | list[str] = None,
+                 spw: str | list[str] = None,
+                 antenna: str | list[str] = None,
+                 intent: str | list[str] = None,
+                 parang: bool | None = None,
+                 applymode: str | None = None,
+                 flagbackup: bool | None = None,
+                 flagsum: bool | None = None,
+                 flagdetailedsum: bool | None = None,
+                 parallel: bool | str = None):
         """Inputs for SDApplycal task.
 
         Args:
@@ -125,8 +126,8 @@ class SDApplycalResults(ApplycalResults):
     Please see parent task's docstring for detail.
     """
     def __init__(self,
-                 applied: Optional[list[CalApplication]] = None,
-                 data_type: Optional[DataType] = None):
+                 applied: list[CalApplication] | None = None,
+                 data_type: DataType | None = None):
         """Construct SDApplycalResults instance.
         Please see parent task's docstring for detail.
 
@@ -242,17 +243,14 @@ class SerialSDApplycal(SerialApplycal):
             results instance
         """
         context = self.inputs.context
-        vis = os.path.basename(self.inputs.vis)
-        ms = context.observing_run.get_ms(vis)
+        msobj = context.observing_run.get_ms(self.inputs.vis)
 
         if not basetask.DISABLE_WEBLOG:
             # mkdir stage_dir if it doesn't exist
-            result.stage_number = context.task_counter
-            stage_dir = os.path.join(context.report_dir, 'stage%s' % result.stage_number)
-            if not os.path.exists(stage_dir):
-                os.makedirs(stage_dir)
+            stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+            os.makedirs(stage_dir, exist_ok=True)
 
-            fields = [x.name for x in ms.get_fields(intent='TARGET')]
+            fields = [x.name for x in msobj.get_fields(intent='TARGET')]
             if len(fields) > 0:
                 # For summary plots
                 amp_vs_time_summary_plots = self.sd_plots_for_result(
@@ -286,11 +284,10 @@ class SerialSDApplycal(SerialApplycal):
         Returns:
             plots: List of plot objects of amplitude vs. time.
         """
-        vis = os.path.basename(self.inputs.vis)
         xaxis = 'time'
         yaxis = 'real'
-        ms = context.observing_run.get_ms(vis)
-        plotter = plotter_cls(context, result, ms, xaxis, yaxis, **kwargs)
+        msobj = context.observing_run.get_ms(self.inputs.vis)
+        plotter = plotter_cls(context, result, msobj, xaxis, yaxis, **kwargs)
         plots = plotter.plot()
 
         return plots

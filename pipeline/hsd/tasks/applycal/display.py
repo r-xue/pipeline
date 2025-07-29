@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import os
 from typing import TYPE_CHECKING, Any
 
@@ -6,11 +7,11 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import common as common
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure.launcher import Context
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
     from pipeline.infrastructure.jobrequest import JobRequest
+    from pipeline.infrastructure.launcher import Context
     from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
 
 LOG = infrastructure.get_logger(__name__)
@@ -24,9 +25,9 @@ class ApplyCalSingleDishPlotmsLeaf(object):
 
     def __init__(
         self,
-        context: 'Context',
-        result: 'SDApplycalResults',
-        ms: 'MeasurementSet',
+        context: Context,
+        result: SDApplycalResults,
+        ms: MeasurementSet,
         xaxis: str,
         yaxis: str,
         spw: str = '',
@@ -56,40 +57,38 @@ class ApplyCalSingleDishPlotmsLeaf(object):
         self.antenna = str(ant)
         self.field = [i.name for i in ms.get_fields(intent='TARGET')]
 
-        ms = context.observing_run.get_ms(self.vis)
+        msobj = context.observing_run.get_ms(self.vis)
         if len(self.field) == 0:
             # failed to find field domain object with field
             raise RuntimeError(f'No match found for field "{self.field}".')
 
-        self.antmap = dict((a.id, a.name) for a in ms.antennas)
+        self.antmap = dict((a.id, a.name) for a in msobj.antennas)
         if len(self.antenna) == 0:
             self.antenna_selection = 'all'
         else:
             self.antenna_selection = list(self.antmap.values())[int(self.antenna)]
         LOG.info('antenna: ID %s Name \'%s\'' % (self.antenna, self.antenna_selection))
 
-        self._figroot = os.path.join(context.report_dir,
-                                     'stage%s' % result.stage_number)
+        stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
     def plot(self) -> list[logger.Plot]:
-        """Generate an calibrated amplitude vs. time plot.
+        """Generate calibrated amplitude vs. time plots.
 
         Return:
             List of plot object.
         """
 
-        prefix = '{ms}-{y}_vs_{x}-{ant}-spw{spw}'.format(
-            ms=os.path.basename(self.vis), y=self.yaxis, x=self.xaxis,
-            ant=self.antenna_selection, spw=self.spw)
+        filename = '{ms_name}-real_vs_time-{ant}-spw{spw}.png'.format(
+            ms_name=os.path.basename(self.vis), ant=self.antenna_selection, spw=self.spw)
         title = 'Science target: calibrated amplitude vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
             ant=self.antenna_selection, spw=self.spw, coloraxis='field')
-        figfile = os.path.join(self._figroot, '{prefix}.png'.format(prefix=prefix))
-        task = self._create_task(title, figfile)
+        figfile = os.path.join(self.stage_dir, filename)
 
         if os.path.exists(figfile):
             LOG.debug('Returning existing plot')
         else:
             try:
+                task = self._create_task(title, figfile)
                 task.execute()
                 return [self._get_plot_object(figfile, task)]
             except Exception as e:
@@ -159,9 +158,20 @@ class ApplyCalSingleDishPlotmsSpwComposite(common.LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = ApplyCalSingleDishPlotmsLeaf
 
-    def __init__(self, context, result, ms: MeasurementSet,
-                 xaxis, yaxis, ant='', pol='', **kwargs):
+    def __init__(self, context: Context, result: SDApplycalResults, ms: MeasurementSet,
+                 xaxis: str, yaxis: str, ant='', pol='', **kwargs):
+        """Construct ApplyCalSingleDishPlotmsSpwComposite instance.
 
+        Args:
+            context: Pipeline context.
+            result: SDApplycalResults instance.
+            ms: Measurement Set.
+            xaxis: The content of X-axis of the plot.
+            yaxis: The content of Y-axis of the plot.
+            ant: Antenna selection. Defaults to '' (all antenna).
+            pol: Polarization selection. Defaults to '' (all polarization).
+
+        """
         spwids = [spws.id for spws in ms.get_spectral_windows()]
         children = [self.leaf_class(context, result, ms, xaxis, yaxis,
                     spw=int(spw), ant=ant, pol=pol, **kwargs)
@@ -174,9 +184,19 @@ class ApplyCalSingleDishPlotmsAntSpwComposite(common.LeafComposite):
 
     leaf_class = ApplyCalSingleDishPlotmsSpwComposite
 
-    def __init__(self, context, result, ms: 'MeasurementSet',
-                 xaxis, yaxis, pol='', **kwargs):
+    def __init__(self, context: Context, result: SDApplycalResults, ms: MeasurementSet,
+                 xaxis: str, yaxis: str, pol='', **kwargs):
+        """Construct ApplyCalSingleDishPlotmsAntSpwComposite instance.
 
+        Args:
+            context: Pipeline context.
+            result: SDApplycalResults instance.
+            ms: Measurement Set.
+            xaxis: The content of X-axis of the plot.
+            yaxis: The content of Y-axis of the plot.
+            pol: Polarization selection. Defaults to '' (all polarization).
+
+        """
         ants = [int(i.id) for i in ms.get_antenna()]
         children = [self.leaf_class(context, result, ms, xaxis, yaxis,
                     ant=ant, pol=pol, **kwargs)

@@ -4590,30 +4590,28 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         result: SDApplycalResults instance.
 
     Returns:
-        list[pqa.QAScore]: lists contains QAScore objects.
+        list[pqa.QAScore]: List which contains QAScore objects.
     """
 
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
-    figroot = os.path.join(context.report_dir,
-                           'stage%s' % result.stage_number)
+    stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
     flagdata = {}
-    flagkwargs = ["spw='{!s}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
+    flagkwargs = ["spw='{0}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{1}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
     flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
     flagdata = flagdata_task.execute()
 
     scores = []
     for onedata in flagdata.values():
         spw = onedata['name']
-        prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
-            vis=vis, y='real', x='time', ant='all', spw=spw)
-        figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
-        is_figfile_exists = os.path.exists(figfile)
+        filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
+            vis=vis, ant='all', spw=spw)
+        figfile = os.path.join(stage_dir, '{prefix}.png'.format(prefix=prefix))
         score = 1.0
-        if not is_figfile_exists:
-            shortmsg = 'Generating amp vs time plot was failed.'
-            longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was failed.'.format(spw, vis)
+        if not os.path.exists(figfile):
+            shortmsg = 'Failed to create calibrated amplitude vs time plot'
+            longmsg = 'Failed to create calibrated amplitude vs time plot for {0} and Antenna=all of {1} was failed.'.format(spw, vis)
             score = 0.65
         else:
             sumflagged = 0
@@ -4622,20 +4620,20 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                 sumflagged += value['flagged']
                 sumtotal += value['total']
             if sumflagged == sumtotal:
-                shortmsg = 'Generating amp vs time plot was successful but empty.'
-                longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was successful but empty.'.format(spw, vis)
+                shortmsg = 'Calibrated amplitude vs time plot is empty'
+                longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna=all of {1} was successful but empty.'.format(spw, vis)
                 score = 0.8
             else:
-                shortmsg = 'Generating amp vs time plot was successful.'
-                longmsg = 'Generating amp vs time plot for {0} and Antenna=all of {1} was successful.'.format(spw, vis)
+                shortmsg = 'Calibrated amplitude vs time plot is successfully created'
+                longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna=all of {1} was successful.'.format(spw, vis)
 
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         for ant, value in onedata['antenna'].items():
             score = 1.0
-            prefix = '{vis}-{y}_vs_{x}-{ant}-{spw}'.format(
-                vis=vis, y='real', x='time', ant=ant, spw=spw)
-            figfile = os.path.join(figroot, '{prefix}.png'.format(prefix=prefix))
+            filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
+                vis=vis, ant=ant, spw=spw)
+            figfile = os.path.join(stage_dir, filename)
             is_figfile_exists = os.path.exists(figfile)
             if not is_figfile_exists:
                 shortmsg = 'Generating amp vs time plot was failed.'

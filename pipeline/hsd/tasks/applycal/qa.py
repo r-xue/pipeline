@@ -1,12 +1,14 @@
 """QA score module for applycal task."""
 
 from __future__ import annotations
+
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.qa.scorecalculator as scorecal
 from . import applycal
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from pipeline.infrastructure.launcher import Context
     from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
