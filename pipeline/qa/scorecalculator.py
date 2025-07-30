@@ -4621,11 +4621,11 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                 sumtotal += value['total']
             if sumflagged == sumtotal:
                 shortmsg = 'Calibrated amplitude vs time plot is empty'
-                longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna=all of {1} was successful but empty.'.format(spw, vis)
+                longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna=all of {1}.'.format(spw, vis)
                 score = 0.8
             else:
                 shortmsg = 'Calibrated amplitude vs time plot is successfully created'
-                longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna=all of {1} was successful.'.format(spw, vis)
+                longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna=all of {1}.'.format(spw, vis)
 
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
@@ -4643,12 +4643,12 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                 flagged = value['flagged']
                 total = value['total']
                 if flagged == total:
-                    shortmsg = 'Generating amp vs time plot was successful but empty.'
-                    longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful but empty.'.format(spw, ant, vis)
+                    shortmsg = 'Calibrated amplitude vs time plot is empty'
+                    longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
                     score = 0.8
                 else:
-                    shortmsg = 'Generating amp vs time plot was successful.'
-                    longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was successful.'.format(spw, ant, vis)
+                    shortmsg = 'Calibrated amplitude vs time plot is successfully created'
+                    longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
