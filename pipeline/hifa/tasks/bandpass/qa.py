@@ -8,9 +8,12 @@ import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
-import pipeline.qa.scorecalculator as qacalc
 from pipeline.hif.tasks.bandpass.common import BandpassResults
 from pipeline.hif.tasks.bandpass.qa import BandpassQAHandler
+from pipeline.hifa.tasks.bandpass.almaphcorbandpass import LowSNRPhaseupSolintOrigin
+from pipeline.infrastructure.pipelineqa import QAOrigin
+from pipeline.infrastructure.utils import commafy
+from pipeline.qa.scorecalculator import linear_score
 from .almaphcorbandpass import ALMAPhcorBandpass
 
 LOG = logging.get_logger(__name__)
@@ -33,6 +36,8 @@ class AlmaBandpassQAHandler(pqa.QAPlugin):
             _phaseup_combine_handler,
             _phaseup_missing_handler,
             _phaseup_snr_handler,
+            _low_channel_solutions_handler,
+            _adjusted_phaseup_solint_handler,
         ]:
             result.qa.pool.extend(handler(result))
 
@@ -188,3 +193,179 @@ def _phaseup_snr_handler(result: BandpassResults) -> list[pqa.QAScore]:
     )
 
     return [qascore]
+
+
+def _low_channel_solutions_handler(result) -> list[pqa.QAScore]:
+    """
+    Generate QA scores for solutions with fewer than 8 channels.
+
+    :param result: the task Result to inspect
+    :return: a list of QA scores warning about low channel solutions
+    """
+    if not result.low_channel_solutions:
+        return []
+
+    unique_spws = sorted(list(set(result.low_channel_solutions)))
+    spws_text = commafy(unique_spws, quotes=False, multi_prefix="s")
+
+    vis = os.path.basename(result.inputs["vis"])
+    score = pqa.QAScore(
+        0.7,
+        longmsg=f"Low SNR heuristics: {vis} would have fewer than 8 channels in its solution for spw{spws_text}.",
+        shortmsg="Low SNR heuristics",
+        applies_to=pqa.TargetDataSelection(vis={vis}, spw=set(unique_spws)),
+        weblog_location=pqa.WebLogLocation.ACCORDION,
+        hierarchy="bandpass.low_channel_solutions",
+        origin=pqa.QAOrigin(
+            metric_name="bandpass.low_channel_solutions",
+            metric_score=",".join(map(str, unique_spws)),
+            metric_units="IDs of spws with fewer than 8 channels in solution",
+        ),
+    )
+    return [score]
+
+
+def _adjusted_phaseup_solint_handler(result: BandpassResults) -> list[pqa.QAScore]:
+    """
+    Generate QA scores for adjusted phase-up solution intervals that could
+    indicate a suboptimal calibration.
+
+    These QA scores cover points 2, 3, and 4 in the PIPE-1760 spec.
+
+    :param result: the task Result to inspect
+    :return: a list of QA scores warning about suboptimal solints
+    """
+    vis = result.inputs['vis']
+    qa_scores = []
+
+    # Group adjustments by their key characteristics
+    grouped_adjustments = {}
+    for adjustment in result.solint_adjustments:
+        # Skip adjustments we don't want to handle
+        if adjustment.origin not in [
+            LowSNRPhaseupSolintOrigin.UNCOMBINED_GT_PHASEUPMAXSOLINT.value,
+            LowSNRPhaseupSolintOrigin.COMBINED_GT_PHASEUPMAXSOLINT.value,
+            LowSNRPhaseupSolintOrigin.NO_SNR_RESULT.value,
+            LowSNRPhaseupSolintOrigin.SPWS_MISSING_DATA.value,
+            LowSNRPhaseupSolintOrigin.INSUFFICIENT_POINTS.value,
+            LowSNRPhaseupSolintOrigin.TOO_FEW_CHANNELS.value,
+        ]:
+            continue
+
+        # Create a key that uniquely identifies similar adjustments
+        key = (
+            adjustment.origin,
+            adjustment.adjusted,
+            getattr(adjustment, "threshold", None),
+        )
+        if key not in grouped_adjustments:
+            grouped_adjustments[key] = {"adjustment": adjustment, "spws": set()}
+        # Combine SPWs from the same type of adjustment
+        grouped_adjustments[key]["spws"].update(adjustment.applies_to.spw)
+
+    # Generate QA scores for each group
+    for key, group in grouped_adjustments.items():
+        adjustment = group["adjustment"]
+        applies_to = pqa.TargetDataSelection(vis={vis})
+
+        match adjustment.origin:
+            case LowSNRPhaseupSolintOrigin.TOO_FEW_CHANNELS.value:
+                # Handles the case where there are too few channels available for reliable smoothing.
+                #
+                # This covers point 2 in the PIPE-1760 spec
+                #       2. "Warning! Too few channels..."
+                spws_str = commafy(
+                    sorted(group["spws"]), quotes=False, multi_prefix="s"
+                )
+                longmsg = (
+                    f"insufficient channels for smoothing. Changing recommended solint from {adjustment.original} to "
+                    f"{adjustment.adjusted} for {vis} spw{spws_str}."
+                )
+                applies_to.spw |= group["spws"]
+                score = 0.7
+                origin = pqa.QAOrigin(
+                    metric_name=adjustment.origin,
+                    metric_score=",".join(map(str, sorted(group["spws"]))),
+                    metric_units="Spw with insufficient channels",
+                )
+
+            case LowSNRPhaseupSolintOrigin.UNCOMBINED_GT_PHASEUPMAXSOLINT.value:
+                spws_str = commafy(
+                    sorted(group["spws"]), quotes=False, multi_prefix="s"
+                )
+                longmsg = (f"optimal solint for {vis} spw{spws_str} is greater than the maximum allowed value "
+                           f"({adjustment.threshold}). Solint adjusted to {adjustment.adjusted}.")
+                applies_to.spw |= group["spws"]
+                score, origin = _score_bandpass_phaseup_solint(
+                    adjustment.adjusted, adjustment.integration_time
+                )
+
+            case LowSNRPhaseupSolintOrigin.COMBINED_GT_PHASEUPMAXSOLINT.value:
+                longmsg = (f"optimal solint for combined spws in {vis} is greater than the maximum allowed value "
+                           f"({adjustment.threshold}). Solint adjusted to {adjustment.adjusted}.")
+                score, origin = _score_bandpass_phaseup_solint(
+                    adjustment.adjusted, adjustment.integration_time
+                )
+
+            case LowSNRPhaseupSolintOrigin.NO_SNR_RESULT.value:
+                longmsg = (f"no SNR result available for {vis}. Could not calculate optimal phase-up solint; reverted "
+                           f"to default solint ({adjustment.adjusted}) which could result in poor solutions.")
+                score = rutils.SCORE_THRESHOLD_WARNING
+                origin = pqa.QAOrigin(metric_name=adjustment.origin)
+
+            case LowSNRPhaseupSolintOrigin.SPWS_MISSING_DATA.value:
+                longmsg = (f"insufficent data in {vis} to calculate optimal phase-up solint; reverted to default "
+                           f"solint ({adjustment.adjusted}) which could result in poor solutions.")
+                score = rutils.SCORE_THRESHOLD_WARNING
+                origin = pqa.QAOrigin(metric_name=adjustment.origin)
+
+            case LowSNRPhaseupSolintOrigin.INSUFFICIENT_POINTS.value:
+                spws_str = commafy(
+                    sorted(group["spws"]), quotes=False, multi_prefix="s"
+                )
+                longmsg = (f"insufficient points in phase-up solution for {vis} spw{spws_str}, solint adjusted to "
+                           f"{adjustment.adjusted:0.3f}.")
+                applies_to.spw |= group["spws"]
+                score = rutils.SCORE_THRESHOLD_WARNING
+                origin = pqa.QAOrigin(metric_name=adjustment.origin)
+
+        qa_score = pqa.QAScore(
+            score,
+            longmsg="Low SNR heuristics: " + longmsg,
+            shortmsg="Low SNR heuristics",
+            applies_to=applies_to,
+            weblog_location=pqa.WebLogLocation.ACCORDION,
+            hierarchy=adjustment.origin,
+            origin=origin,
+        )
+        qa_scores.append(qa_score)
+
+    return qa_scores
+
+
+def _score_bandpass_phaseup_solint(
+    solint: str | float, int_time: float
+) -> tuple[float, QAOrigin]:
+    """
+    Score the expected phase-up solint for bandpass calibrator.
+
+    Scales the score between 0.66 and 0.9 based on the integration time.
+
+    :param solint: the solution interval used for bandpass phase-up
+    :param int_time: the integration time for the bandpass calibrator
+    """
+    origin = pqa.QAOrigin(
+        metric_name='score_bandpass_phaseup_solint',
+        metric_score=solint,
+        metric_units='Solution interval used for bandpass phase-up',
+    )
+
+    match solint:
+        case "int":
+            score = 1.0
+        case _:
+            float_solint = float((solint).split("s")[0])
+            # limit score to blue INFO range
+            score = linear_score(float_solint, 2 * int_time, 60.0, rutils.SCORE_THRESHOLD_SUBOPTIMAL, rutils.SCORE_THRESHOLD_WARNING + 0.01)
+
+    return score, origin

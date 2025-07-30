@@ -1,6 +1,5 @@
 import collections
 import os
-import shutil
 from typing import Dict, List
 
 import pipeline.infrastructure.logging as logging
@@ -9,13 +8,13 @@ import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
+from pipeline.hifa.tasks.common.common_renderer_utils import get_spwmaps
 from pipeline.hifa.tasks.spwphaseup import display
 
 LOG = logging.get_logger(__name__)
 
 PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
-SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
@@ -111,42 +110,6 @@ def get_gaincal_applications(context: Context, results: ResultsList) -> List[Spw
     return applications
 
 
-def get_spwmaps(context: Context, results: ResultsList) -> List[SpwMapInfo]:
-    """
-    Return list of SpwMapInfo entries that contain all the necessary
-    information to be shown in a Spectral Window Mapping table in the task
-    weblog page.
-
-    Args:
-        context: the pipeline context.
-        results: list of task results.
-
-    Returns:
-        List of SpwMapInfo instances.
-    """
-    spwmaps = []
-
-    for result in results:
-        ms = context.observing_run.get_ms(result.vis)
-
-        # Get science spws
-        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-
-        if result.spwmaps:
-            for (intent, field), spwmapping in result.spwmaps.items():
-                # Get ID of field and scans.
-                fieldid = ms.get_fields(name=[field])[0].id
-                scanids = ", ".join(str(scan.id) for scan in ms.get_scans(scan_intent=intent, field=field))
-
-                # Append info on spwmap to list.
-                spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
-                                          scanids, science_spw_ids))
-        else:
-            spwmaps.append(SpwMapInfo(ms.basename, '', '', '', '', '', '', ''))
-
-    return spwmaps
-
-
 def get_pcal_table_rows(context: Context, results: ResultsList) -> List[str]:
     """
     Return list of strings containing HTML TD columns, representing rows for
@@ -189,16 +152,35 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
     for result in results:
         ms = context.observing_run.get_ms(result.vis)
         if result.spwmaps:
-            # Get phase SNR threshold, and present this in the table if the phase
-            # SNR test was run during task.
-            threshold = result.inputs['phasesnr']
-            spwmapmode = result.inputs['hm_spwmapmode']
-            if spwmapmode == 'auto':
-                thr_str = str(threshold)
-            else:
-                thr_str = f"N/A <p>(hm_spwmapmode='{spwmapmode}')"
+            # In case of Band-to-Band datasets, retrieve which SpWs IDs are
+            # expected. Will be empty and not used for non-B2B datasets.
+            dg_refspwids = [str(s.id) for s in ms.get_spectral_windows(intent='DIFFGAINREF')]
+            dg_srcspwids = [str(s.id) for s in ms.get_spectral_windows(intent='DIFFGAINSRC')]
 
+            # Generate entries for each SpW mapping in the result.
             for (intent, field), spwmapping in result.spwmaps.items():
+                # Present in the table which phase SNR threshold was used.
+                # If this info is populated in the SpW mapping, then the SNR
+                # threshold was used to compute optimal solint based on
+                # estimated SNR, so report this used value.
+                if spwmapping.snr_threshold_used is not None:
+                    threshold = spwmapping.snr_threshold_used
+                # Otherwise, the SNR threshold was never used, so instead
+                # report what the appropriate value would have been based on
+                # intent.
+                else:
+                    threshold = result.inputs['phasesnr'] if intent in {'CHECK', 'PHASE'} else results.inputs['intphasesnr']
+                # Create string representation of threshold, and indicated based
+                # on intent whether it would have been scan or integration time
+                # based.
+                thr_str = f"{threshold}"
+                thr_str += " (scan)" if intent in {'CHECK', 'PHASE'} else " (int)"
+
+                # If hm_spwmapmode input parameter was not "auto", then no need
+                # to report the SNR threshold in the table.
+                if result.inputs['hm_spwmapmode'] != 'auto':
+                    thr_str = f"N/A <p>(hm_spwmapmode='{result.inputs['hm_spwmapmode']}')"
+
                 # Compose field string.
                 fieldid = ms.get_fields(name=[field])[0].id
                 field_str = f"{field} (#{fieldid})"
@@ -207,13 +189,27 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                 # the SNR was missing or below the phase SNR threshold.
                 for row in spwmapping.snr_info:
                     spwid = row[0]
+                    # PIPE-2499: for Band-to-Band datasets, it is expected that
+                    # the PHASE and DIFFGAINREF intents only cover the diffgain
+                    # reference (low-frequency) SpWs and that CHECK and
+                    # DIFFGAINSRC intents only cover the diffgain source
+                    # (high-frequency) SpWs.
                     if row[1] is None:
-                        snr = '<strong class="alert-danger">N/A</strong>'
+                        # If info is expected to be missing for a B2B SpW for
+                        # given intent, then skip rather than rendering "N/A".
+                        if ms.is_band_to_band and (
+                            (intent in {'CHECK', 'DIFFGAINSRC'} and spwid in dg_refspwids) or
+                            (intent in {'PHASE', 'DIFFGAINREF'} and spwid in dg_srcspwids)
+                        ):
+                            continue
+                        # Otherwise, for all SpWs where info was not expected to
+                        # be missing, report estimated SNR as "N/A".
+                        else:
+                            snr = '<strong class="alert-danger">N/A</strong>'
                     elif row[1] < threshold:
                         snr = f'<strong class="alert-danger">{row[1]:.1f}</strong>'
                     else:
                         snr = f'{row[1]:.1f}'
-
                     rows.append(SnrTR(ms.basename, thr_str, field_str, intent, spwid, snr))
         else:
             rows.append(SnrTR(ms.basename, '', '', '', '', ''))

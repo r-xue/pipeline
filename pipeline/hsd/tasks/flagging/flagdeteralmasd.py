@@ -171,7 +171,7 @@ class FlagDeterALMASingleDishInputs(flagdeterbase.FlagDeterBaseInputs):
                 Default: None (equivalent to True)
 
             fileonline: File containing the online flags. These are computed
-                by the h_init or hif_importdata data tasks. If the online flags files
+                by the h_init or hsd_importdata data tasks. If the online flags files
                 are undefined a name of the form 'msname.flagonline.txt' is assumed.
 
             template: Apply a flagging template.

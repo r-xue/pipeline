@@ -18,15 +18,14 @@ class VlassFlagSummary(object):
 
     @matplotlibrc_formal
     def plot(self):
-
-        stage_dir = os.path.join(self.context.report_dir,
-                                 'stage%d' % self.result.stage_number)
+        stage_dir = os.path.join(self.context.report_dir, f'stage{self.result.stage_number}')
         if not os.path.exists(stage_dir):
             os.mkdir(stage_dir)
 
         plot_wrappers = []
 
-        vlass_flag_stats = self.result.vlass_flag_stats
+        # all vlass-se-cube cleantargets have the identical misc info
+        vlass_flag_stats=self.result.targets[0]['misc_vlass']
 
         spwgroup_list = vlass_flag_stats['spwgroup_list']
         flagpct_thresh = vlass_flag_stats['flagpct_thresh']
@@ -43,20 +42,22 @@ class VlassFlagSummary(object):
         for scan_unique in np.unique(scan_list):
             field_idxs = np.where(scan_list == scan_unique)[0]
             scan_idx.append(np.min(field_idxs))
-            scan_edge.append((np.min(field_idxs)-0.5, np.max(field_idxs)+0.5))
-            scan_desc = [fname_list[field_idxs[0]],
-                         f'scan no.: {int(scan_list[field_idxs[0]])}']
+            scan_edge.append((np.min(field_idxs) - 0.5, np.max(field_idxs) + 0.5))
+            scan_desc = [fname_list[field_idxs[0]], f'scan no.: {int(scan_list[field_idxs[0]])}']
             scan_label.append('\n'.join(scan_desc))
 
         figfile = os.path.join(stage_dir, 'vlass_flagsummary_field_spwgroup.png')
         n_field, n_spwgroup = flagpct_field_spwgroup.shape
 
         try:
-
             fig, ax = plt.subplots(figsize=(10, 10))
 
-            im = ax.imshow(flagpct_field_spwgroup*100., origin='lower', aspect='auto',
-                           extent=(-0.5, n_spwgroup-0.5, -0.5, n_field-0.5))
+            im = ax.imshow(
+                flagpct_field_spwgroup * 100.0,
+                origin='lower',
+                aspect='auto',
+                extent=(-0.5, n_spwgroup - 0.5, -0.5, n_field - 0.5),
+            )
 
             ax.set_xticks(np.arange(n_spwgroup))
             xticklabels = []
@@ -72,22 +73,24 @@ class VlassFlagSummary(object):
             for idx, reject in enumerate(spwgroup_reject):
                 if reject:
                     xticklabels[idx].set_color('red')
-            with plt.rc_context({'mathtext.default':  'regular'}):
+            with plt.rc_context({'mathtext.default': 'regular'}):
                 ax.set_xlabel(
-                    f'Spw Selection\n n$_\mathdefault{{field}}$ (flagpct>flagpct$_\mathdefault{{th}}$): n$_\mathdefault{{th}}$={nfield_thresh}, flagpct$_\mathdefault{{th}}$={flagpct_thresh*100}%')
+                    rf'Spw Selection\n n$_\mathdefault{{field}}$ (flagpct>flagpct$_\mathdefault{{th}}$): '
+                    rf'n$_\mathdefault{{th}}$={nfield_thresh}, flagpct$_\mathdefault{{th}}$={flagpct_thresh * 100}%'
+                )
             ax.set_ylabel('VLASS Image Row: 1st field name')
             ax.tick_params(which='minor', bottom=False, left=False)
 
-            ax.set_xticks(np.arange(n_spwgroup+1)-0.5, minor=True)
-            ax.set_yticks(np.arange(n_field+1)-0.5, minor=True)
+            ax.set_xticks(np.arange(n_spwgroup + 1) - 0.5, minor=True)
+            ax.set_yticks(np.arange(n_field + 1) - 0.5, minor=True)
 
             ax.set_yticks(np.unique(scan_idx), minor=False)
-            ax.set_yticklabels(scan_label, rotation=45, ma='left', va='center', rotation_mode="anchor")
+            ax.set_yticklabels(scan_label, rotation=45, ma='left', va='center', rotation_mode='anchor')
 
             ax.grid(which='minor', axis='both', color='white', linestyle='-', linewidth=2)
             ax.set_title('Flagged fraction per field')
 
-            cax = make_axes_locatable(ax).append_axes("right", size="5%", pad=0.05)
+            cax = make_axes_locatable(ax).append_axes('right', size='5%', pad=0.05)
             cba = plt.colorbar(im, cax=cax)
             cba.set_label('percent flagged [%]')
 
@@ -95,10 +98,7 @@ class VlassFlagSummary(object):
             fig.savefig(figfile, bbox_inches='tight')
             plt.close(fig)
 
-            plot = logger.Plot(figfile,
-                               x_axis='Spw Group',
-                               y_axis='Field',
-                               parameters={})
+            plot = logger.Plot(figfile, x_axis='Spw Group', y_axis='Field', parameters={})
 
             plot_wrappers.append(plot)
 

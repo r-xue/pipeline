@@ -5,6 +5,9 @@ from .. import domain
 from . import casa_tools
 from . import contfilehandler
 
+cont_ranges_test_params = ({'fields': {'helms30': {'0': {'spwname': 'X339408637#ALMA_RB_06#BB_1#SW-01#FULL_RES', 'flags': ['ALLCONT'], 'ranges': [{'range': (214.4892469235, 216.2235771905),
+'refer': 'LSRK'}]}}}, 'version': 3},)
+
 to_topo_test_params = (
     ('214.5.0~215.5GHz;215.6~216.1GHz LSRK',
      [casa_tools.utils.resolve('pl-unittest/uid___A002_Xc46ab2_X15ae_repSPW_spw16_17_small.ms')],
@@ -20,11 +23,23 @@ to_topo_test_params = (
       {'unit': 'GHz', 'value': 0.5}))
     )
 
+@pytest.mark.parametrize("result", cont_ranges_test_params)
+def test_cont_ranges(result):
+    """
+    Test ContFileHandler::cont_ranges
+    """
+
+    cfh = contfilehandler.ContFileHandler(casa_tools.utils.resolve('pl-unittest/cont.dat'))
+    assert cfh.cont_ranges == result
+
 @pytest.mark.parametrize("selection, msnames, fields, spw_id, observing_run, result", to_topo_test_params)
 def test_to_topo(selection, msnames, fields, spw_id, observing_run, result):
     """
     Test ContFileHandler::to_topo()
     """
 
-    cfh = contfilehandler.ContFileHandler('cont.dat')
+    cfh = contfilehandler.ContFileHandler(casa_tools.utils.resolve('pl-unittest/cont.dat'))
     assert cfh.to_topo(selection, msnames, fields, spw_id, observing_run) == result
+
+
+

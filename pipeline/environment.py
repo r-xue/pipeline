@@ -443,6 +443,8 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'cpu' not in controllers:
+                return 'N/A'
             controller = controllers['cpu']
             str_limits = controller.get_limits([], ['cpu.weight'])
             limits = [CGroupLimit.CPUWeight(val) for val in str_limits]
@@ -484,8 +486,10 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
-            controller = controllers['cpu']
+            if 'cpu' not in controllers:
+                return 'N/A'
 
+            controller = controllers['cpu']
             if controller.enabled and controller.hierarchy_id == 0:
                 str_limits = controller.get_limits([], ['cpu.max'])
             else:
@@ -532,7 +536,10 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]) -> CGroupLimit.CPUAllocation:
-            controller = controllers['cpuset']
+            if 'cpuset' not in controllers:
+                return 'N/A'
+
+            controller = controllers.get('cpuset')
             str_limits = controller.get_limits(
                 ['cpuset.cpus'],
                 ['cpuset.cpus', 'cpuset.cpus.effective']
@@ -562,6 +569,9 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'memory' not in controllers:
+                return 'N/A'
+
             controller = controllers['memory']
             str_limits = controller.get_limits(
                 ["memory.limit_in_bytes", "memory.memsw.limit_in_bytes", "memory.soft_limit_in_bytes"],
@@ -643,9 +653,17 @@ def _get_dependency_details(package_list=None):
     See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
     """
     if package_list is None:
-        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'almatasks', 'casadata',
-                        'casampi', 'casaplotms']
+        package_list = [
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'astropy',
+            'bdsf',
+            'casatools',
+            'casatasks',
+            'casampi',
+            'casaplotms',
+        ]
 
     package_details = dict.fromkeys(package_list)
     for package in package_list:

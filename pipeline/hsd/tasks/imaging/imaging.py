@@ -51,7 +51,11 @@ RasterInfo = collections.namedtuple('RasterInfo', 'center_ra center_dec width he
                                                   'scan_angle row_separation row_duration')
 # Reference MS in combined list
 REF_MS_ID = 0
-
+# The minimum limit of integration time (seconds) to be a valid scan duration (0.99 ms)
+# The current minimum, 0.99 ms, comes from the typical integration time of fast-scan observation
+# by SQLD in ALMA (1 ms) with 1% margin to avoid rejecting the exact 1 ms case (w/ numerical error).
+# Adjust the value when Pipeline supports observation modes/instruments with smaller integration time.
+MIN_INTEGRATION_SEC = 9.9e-4
 
 class SDImagingInputs(vdp.StandardInputs):
     """Inputs for imaging task class."""
@@ -864,7 +868,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.v_spwids, antenna=rgp.ant_name, specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=self.stokes,
@@ -894,7 +898,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result_nro, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.v_spwids, antenna=rgp.ant_name, specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=rgp.stokes_list[1],
@@ -1102,7 +1106,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
                                          sensitivity=pp.theoretical_rms)
         _sensitivity_info = SensitivityInfo(_sensitivity, pp.stat_freqs, (cp.is_not_nro()))
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.combined.v_spws, antenna='COMBINED', specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=self.stokes,
@@ -1149,7 +1153,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _spwid = str(rgp.combined.v_spws[REF_MS_ID])
             _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
             _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-            effbw = float(_cqa.getvalue(_effective_bw))
+            effbw = float(_cqa.getvalue(_effective_bw)[0])
             self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                          spwlist=rgp.combined.v_spws, antenna='COMBINED', specmode=rgp.specmode,
                                          imagemode=cp.imagemode, stokes=rgp.stokes_list[1],
@@ -1533,7 +1537,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         cqa = casa_tools.quanta
         beam_unit = cqa.getunit(pp.beam['major'])
         assert cqa.getunit(pp.beam['minor']) == beam_unit
-        beam_size = numpy.sqrt(cqa.getvalue(pp.beam['major']) * cqa.getvalue(pp.beam['minor']))[0]
+        beam_size = numpy.sqrt(cqa.getvalue(pp.beam['major'])[0] * cqa.getvalue(pp.beam['minor'])[0])
         center_unit = 'deg'
         angle_unit = None
         for r in pp.raster_infos:
@@ -1660,33 +1664,38 @@ class SDImaging(basetask.StandardTaskTemplate):
             self._obtain_wx_and_wy(tirp)
             # obtain T_ON
             self._obtain_t_on_actual(tirp)
+            if tirp.t_on_act < MIN_INTEGRATION_SEC:
+                continue
             # obtain calibration tables applied
             self._obtain_calibration_tables_applied(tirp)
-            # obtain T_sub,on, T_sub,off
+            # obtain Tsub,on, Tsub,off (average ON and OFF integration duration per raster row)
             if not self._obtain_t_sub_on_off(tirp):
                 return tirp.failed_rms
+            if tirp.t_sub_on < MIN_INTEGRATION_SEC or \
+                    tirp.t_sub_off < MIN_INTEGRATION_SEC:
+                continue
             # obtain factors by convolution function
             # (THIS ASSUMES SF kernel with either convsupport = 6 (ALMA) or 3 (NRO)
             # TODO: Ggeneralize factor for SF, and Gaussian convolution function
             if not self._obtain_and_set_factors_by_convolution_function(pp, tirp):
                 return tirp.failed_rms
 
-        if tirp.N == 0:
+        if tirp.weight_sum == 0:
             LOG.warning('No rms estimate is available.')
             return tirp.failed_rms
 
-        _theoretical_rms = numpy.sqrt(tirp.sq_rms) / tirp.N
+        _theoretical_rms = numpy.sqrt(tirp.sq_rms) / tirp.weight_sum
         LOG.info('Theoretical RMS of image = {} {}'.format(_theoretical_rms, pp.brightnessunit))
         return tirp.cqa.quantity(_theoretical_rms, pp.brightnessunit)
 
     def _obtain_t_sub_on_off(self, tirp: imaging_params.TheoreticalImageRmsParameters) -> bool:
-        """Obtain TsubON and TsubOFF. A sub method of calculate_theoretical_image_rms().
+        """Obtain Tsub,on and Tsub,off. A sub method of calculate_theoretical_image_rms().
 
         Args:
             tirp : Parameter object of calculate_theoretical_image_rms()
 
         Returns:
-            False if it cannot get Tsub On/Off values by some error.
+            False if it cannot get Tsub,on/off values by some error.
 
         Raises:
             BaseException : raises when it cannot find a sky caltable applied.
@@ -1805,10 +1814,11 @@ class SDImaging(basetask.StandardTaskTemplate):
         inv_variant_on = tirp.effBW * numpy.abs(tirp.cx_val * tirp.cy_val) * \
             tirp.t_on_act / tirp.width / tirp.height
         inv_variant_off = tirp.effBW * c_proj * tirp.t_sub_off * tirp.t_on_act / tirp.t_sub_on / tirp.height
+        weight = tirp.t_on_act ** 2 * tirp.t_sub_off / tirp.t_sub_on
         for ipol in tirp.polids:
-            tirp.sq_rms += (jy_per_k * tirp.mean_tsys_per_pol[ipol]) ** 2 * \
+            tirp.sq_rms += (jy_per_k * tirp.mean_tsys_per_pol[ipol] * weight) ** 2 * \
                 (policy.get_conv2d() ** 2 / inv_variant_on + policy.get_conv1d() ** 2 / inv_variant_off)
-            tirp.N += 1.0
+            tirp.weight_sum += weight
         return True
 
     def _obtain_t_on_actual(self, tirp: imaging_params.TheoreticalImageRmsParameters):
@@ -1818,23 +1828,23 @@ class SDImaging(basetask.StandardTaskTemplate):
             tirp : Parameter object of calculate_theoretical_image_rms()
         """
         unit = tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
+        # Total time on source of data not online flagged for all polarizations.
         t_on_tot = tirp.cqa.getvalue(tirp.cqa.convert(tirp.cqa.quantity(
             tirp.dt.getcol('EXPOSURE').take(tirp.index_list, axis=-1).sum(), unit), tirp.time_unit))[0]
-        # flagged fraction
-        full_intent = utils.to_CASA_intent(tirp.msobj, 'TARGET')
-        flagdata_summary_job = casa_tasks.flagdata(vis=tirp.infile, mode='summary',
-                                                   antenna='{}&&&'.format(tirp.antid),
-                                                   field=str(tirp.fieldid),
-                                                   spw=str(tirp.spwid), intent=full_intent,
-                                                   spwcorr=False, fieldcnt=False,
-                                                   name='summary')
-        flag_stats = self._executor.execute(flagdata_summary_job)
-        frac_flagged = flag_stats['spw'][str(tirp.spwid)]['flagged'] / flag_stats['spw'][str(tirp.spwid)]['total']
+        # Additional flag fraction
+        flag_summary = tirp.dt.getcol('FLAG_SUMMARY').take(tirp.index_list, axis=-1)
+        (num_pol, num_data) = flag_summary.shape
+        # PIPE-2508: fraction of data where any of polarization is flagged. (FLAG_SUMMARY is 0 for flagged data)
+        # TODO: This logic should be improved in future when full polarization is supported.
+        num_flagged = numpy.count_nonzero(flag_summary.sum(axis=0) < num_pol)
+        frac_flagged = num_flagged / num_data
+        LOG.debug('Per polarization flag summary (# of integrations): total=%d, flagged per pol=%s, any pol flagged=%d',
+                  num_data, num_data - flag_summary.sum(axis=1), num_flagged)
         # the actual time on source
         tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
         LOG.info('The actual on source time = {} {}'.format(tirp.t_on_act, tirp.time_unit))
-        LOG.info('- total time on source = {} {}'.format(t_on_tot, tirp.time_unit))
-        LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
+        LOG.info('- total time on source (excl. online flagged integrations) = {} {}'.format(t_on_tot, tirp.time_unit))
+        LOG.info('- addtional flag fraction = {} %'.format(100 * frac_flagged))
 
     def _obtain_calibration_tables_applied(self, tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
@@ -1917,6 +1927,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{tirp.msobj.execblock_id}:{tirp.msobj.antennas[tirp.antid].name}')
             return SKIP
         tirp.dt = cp.dt_dict[tirp.msobj.basename]
+        # Note: index_list is a list of DataTable row IDs for selected data EXCLUDING rows where all pols are flagged online.
         tirp.index_list = common.get_index_list_for_ms(tirp.dt, [tirp.msobj.origin_ms],
                                                        [tirp.antid], [tirp.fieldid], [tirp.spwid])
         if len(tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
@@ -2043,17 +2054,20 @@ def _analyze_raster_pattern(datatable: DataTable, msobj: MeasurementSet,
     complete_idx = numpy.where(num_integration >= num_row_int)
     # raster scan parameters
     row_duration = numpy.array(duration)[complete_idx].mean()
+    assert row_duration > 0
     row_delta_ra = numpy.abs(delta_ra)[complete_idx].mean()
     row_delta_dec = numpy.abs(delta_dec)[complete_idx].mean()
     width = numpy.hypot(row_delta_ra, row_delta_dec)
+    assert width > 0
     sign_ra = +1.0 if delta_ra[complete_idx[0][0]] >= 0 else -1.0
     sign_dec = +1.0 if delta_dec[complete_idx[0][0]] >= 0 else -1.0
     scan_angle = math.atan2(sign_dec * row_delta_dec, sign_ra * row_delta_ra)
-    hight = numpy.max(height_list)
+    height = numpy.max(height_list)
+    assert height > 0
     center = (cqa.quantity(0.5 * (center_ra.min() + center_ra.max()), radec_unit),
               cqa.quantity(0.5 * (center_dec.min() + center_dec.max()), radec_unit))
     raster_info = RasterInfo(center[0], center[1],
-                             cqa.quantity(width, radec_unit), cqa.quantity(hight, radec_unit),
+                             cqa.quantity(width, radec_unit), cqa.quantity(height, radec_unit),
                              cqa.quantity(scan_angle, 'rad'), cqa.quantity(row_separation, radec_unit),
                              cqa.quantity(row_duration, exp_unit))
     LOG.info('Raster Information')

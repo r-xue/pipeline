@@ -267,8 +267,8 @@ class ContFileHandler(object):
                             result = suTool.advisechansel(msname=msname, fieldid=field,
                                                           spwselection='%d:%d~%d' % (real_spw_id, start, stop),
                                                           freqframe='TOPO', getfreqrange=True)
-                            fLow = float(qaTool.getvalue(qaTool.convert(result['freqstart'], 'GHz')))
-                            fHigh = float(qaTool.getvalue(qaTool.convert(result['freqend'], 'GHz')))
+                            fLow = float(qaTool.getvalue(qaTool.convert(result['freqstart'], 'GHz'))[0])
+                            fHigh = float(qaTool.getvalue(qaTool.convert(result['freqend'], 'GHz'))[0])
                             topo_freq_selection.append((fLow, fHigh))
             except Exception as e:
                 LOG.info('Cannot calculate TOPO range for MS %s Field %s SPW %s. Exception: %s' % (msname, field, real_spw_id, e))
