@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import collections
 import datetime
-import enum
 import functools
 import math
 import operator
@@ -21,14 +20,16 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 from scipy import interpolate, special
 
+import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
+
 from pipeline import infrastructure
 from pipeline.domain import measures
 from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
-from pipeline.qa import checksource
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
     from casatools import coordsys
@@ -2775,7 +2776,6 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     antenna_id = reduction_group_member.antenna_id
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
-
 def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
@@ -2823,32 +2823,34 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
 
 @log_qa
 def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
-    """Compute QA score based on the line detection result.
+    """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
     QA scores are evaluated based on the line detection result for
     each combination of spw and field individually. Scoring scheme of
     individual results are as follows:
 
-        - skip scoring if no lines were detected (no QAScore object)
-        - 0.55 if there are lines extends to edge channels
-        - 0.6 if there are lines that covers more than 1/3 of spw
-          bandwidth in total
-        - 1.0 otherwise
+        - Line detection:
+            - 0.55 if lines extend to edge channels
+            - 0.6 if lines cover more than 1/3 of SPW bandwidth
+            - 1.0 otherwise
+            - 0.8 if no lines were detected in any SPW/field (default)
 
-    If no lines were detected in any spws/fields so that no QAScore
-    objects were created, this function creates QAScore object with
-    the score of 0.8 and the message indicating that no lines were
-    detected. Therefore, returned list should contain at least one
-    QAScore object.
+        - Deviation masks:
+            - 0.65 if deviation masks are present but do not overlap with lines
+            - 0.88 if deviation masks overlap with detected spectral lines
 
-    In addition to the detected lines, deviation masks are also
-    examined. Score will be 0.65 if deviation masks with any widths
-    exist. Returned QAScore objects are the collection of scores from
-    both spectral lines and deviation masks but they can be
-    differentiated by the associated messages and/or metric units.
+        - Deviation mask and atmospheric lines:
+            - 0.88 if deviation masks overlap with atmospheric lines
+
+    Returned QAScore objects include metric values (channel ranges) and
+    informative messages that distinguish between spectral lines,
+    deviation masks, and atmospheric overlap. The function ensures that
+    at least one score is returned, even if no lines are detected.
 
     Relevant JIRA tickets:
         PIPE-2136
+        PIPE-2509
+        PIPE-2530
         PIPEREQ-304
 
     Args:
@@ -2857,22 +2859,75 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     Returns:
         List of QAScore objects derived from line detection results
-        and/or deviation masks
+        and/or deviation masks, with atm lines, if available
     """
-    line_detection_scores = []
-    # deviation_mask_qa_data collects set of (spw_id, antenna_id, masked_ranges)
-    # data per field per EB
-    deviation_mask_qa_data = {}
-    deviation_mask_all = result.outcome['deviation_mask']
 
-    # edge parameter
-    # channels specified by edge will be excluded from resulting images
+    def mask_to_ranges(mask: np.ndarray) -> list[tuple[int,int]]:
+        """
+        Convert a boolean channel mask into a list of contiguous channel ranges.
+
+        Parameters:
+            mask (np.ndarray): 1D boolean array where True indicates
+                            channels to include.
+
+        Returns:
+            list[tuple[int, int]]: List of (start, end) tuples for each
+                                contiguous run of True values in the mask.
+        """
+        idx = np.where(mask)[0]
+        if idx.size == 0:
+            return []
+        groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
+        return [(grp[0], grp[-1]) for grp in groups]
+
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str, ms_name: str, field: str = '', spws: set[int] = set(), ants: set[str] = set()):
+        """
+        Build a QAScore object for score_sd_line_detection.
+
+        Parameters:
+            score_val (float): The numeric QA score.
+            msg (str): Description of the QA result.
+            metric_val (str): The metric value of score.
+            metric_units (str): Units for the metric_value.
+            ms_name (str): Name of the Measurement Set (EB).
+            field (str): Field name (optional).
+            spws (set[int]): Set of spectral window IDs (optional).
+            ants (set[str]): Set of antenna names (optional).
+
+        Returns:
+            pqa.QAScore: A fully populated QAScore with long and short messages,
+                        origin (metric name/score/units), and target selection.
+        """
+        spw_str = ', '.join(map(str, sorted(spws)))
+        ant_str = ', '.join(sorted(ants))
+        longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
+        shortmsg = f'{msg}.'
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score=metric_val,
+                              metric_units=metric_units)
+        selection = pqa.TargetDataSelection(vis={ms_name}, spw=spws, field={field}, ant=ants, intent={'TARGET'})
+        return pqa.QAScore(score_val, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+
+    # Precompute ATM masks per MS/SPW
+    atm_masks = {}
+    for bl in result.outcome['baselined']:
+        for mid in bl['members']:
+            rgm = reduction_group[bl['group_id']][mid]
+            ms = rgm.ms.origin_ms
+            if ms not in atm_masks:
+                spwsetup = sdatm.getSpecSetup(rgm.ms.basename)
+                spws = list(map(int, spwsetup['spwlist']))
+                tau = sdatm.getCalAtmData(rgm.ms.basename, spws, spwsetup)[-2]
+                skylines = {spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05) for spw in spws}
+                atm_masks[ms] = {spw: sdatm.skysel(skylines[spw], linestouse='all') for spw in spws}
+
+    line_detection_scores, dm_scores = [], []
+
+    # edge parameter for image channel mapping
     _edge = result.outcome['edge']
     edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
-    # enumeration to represent overlap status
-    Overlap = enum.Enum('Overlap', [('NO', 0), ('PARTIAL', 1), ('FULL', 2)])
-
+    # Process each baseline for line detection and DM
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
@@ -2883,51 +2938,16 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
         lines = get_line_ranges(bl['lines'])
-
+        
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
-        # line mask for checking overlap with deviation mask
-        # 1: channels detected as line, 0: line-free channels
-        line_mask = np.zeros(nchan, dtype=np.uint8)
-        for left, right in lines:
-            line_mask[max(0, left):right + 1] = 1
-
-        # deviation mask
-        for member_id in member_list:
-            LOG.debug('Processing member %s', member_id)
-
-            reduction_group_member = reduction_group_desc[member_id]
-            deviation_masks = select_deviation_masks(
-                deviation_mask_all, reduction_group_member
-            )
-
-            if deviation_masks:
-                data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
-                spw_id = reduction_group_member.spw_id
-                ms_name = reduction_group_member.ms.origin_ms
-                antenna_name = reduction_group_member.antenna_name
-                is_overlap = []
-                for left, right in deviation_masks:
-                    mask_range = line_mask[left:right + 1]
-                    if np.all(mask_range == 1):
-                        overlap = Overlap.FULL
-                    elif np.any(mask_range == 1):
-                        overlap = Overlap.PARTIAL
-                    else:
-                        overlap = Overlap.NO
-                    is_overlap.append(overlap)
-                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
-
-        # spectral lines
+        # spectral-line scoring
         if len(lines) > 0:
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
-
             is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
             is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
-
+            
             if is_edge_line and is_wide_line:
                 score = 0.55  # min(0.55, 0.6)
                 msg = 'Edge and wide lines were detected'
@@ -2941,122 +2961,71 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 # detected lines do not harm baseline subtraction
                 score = 1.0
                 msg = 'Line ranges were detected'
-
-            spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
-            spw_desc = ', '.join(map(str, spw_ids))
-            shortmsg = f'{msg}.'
-            longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) of detected lines')
-            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
-                                                field=set([field_name]),
-                                                intent={'TARGET'})
-            line_detection_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
+            line_detection_scores.append(make_score(score, msg, metric_value, 
+                                          'Channel range(s) of detected lines',
+                                          reduction_group_desc[member_list[0]].ms.origin_ms, field_name,
+                                          {reduction_group_desc[m].spw_id for m in member_list},
+                                          {reduction_group_desc[m].antenna_name for m in member_list}))
 
+        # deviation-mask and ATM overlap
+        for mid in member_list:
+            rgm = reduction_group_desc[mid]
+            dmlist = select_deviation_masks(result.outcome['deviation_mask'], rgm)
+            if not dmlist:
+                continue
+            ndm = len(dmlist)
+            ms, spw = rgm.ms.origin_ms, rgm.spw_id
+            # build masks
+            dm_masks = np.zeros((ndm, nchan), bool)
+            for i, (l, r) in enumerate(dmlist):
+                dm_masks[i, l:r+1] = True
+            line_mask = np.zeros(nchan, bool)
+            for l, r in lines:
+                line_mask[l:r+1] = True
+            atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
+            
+            # DM scoring
+            for dm_mask in dm_masks:
+                ranges = mask_to_ranges(dm_mask)
+                unit = 'Channel range(s) of deviation mask'
+                dm_atm = dm_mask & atm_mask
+                if np.any(line_mask & dm_mask):
+                    score = 0.88 
+                    msg = 'Deviation mask overlapped with spectral lines'
+                    LOG.debug(
+                        'Deviation masks overlap with lines. '
+                        'Set deviation mask QA score to %s', score
+                    ) 
+                # ATM-DM overlap
+                elif np.any(dm_atm):
+                    score = 0.88
+                    msg = 'Deviation mask overlapped with atmospheric lines'
+                    unit = 'Channel range(s) of DM/ATM/Spectral overlap'
+                    LOG.debug(
+                        'Deviation mask overlapped with atmospheric lines'
+                        'Set atm overlap QA score to %s', score
+                    )
+                else:
+                    score = 0.65 
+                    msg = 'Deviation mask was triggered'
+                    LOG.debug(
+                        'Found deviation mask with no overlap'
+                        'Set deviation mask QA score to %s', score
+                    )
+                metric = ','.join(f'{l}~{r}' for l, r in ranges) 
+                dm_scores.append(make_score(score, msg, metric, unit,
+                                        ms, field_name, {spw}, {rgm.antenna_name}))                           
+        
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        score = 0.8
-        longmsg = 'No line ranges were detected in all SPWs.'
-        shortmsg = 'No line ranges were detected in all SPWs.'
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
+                                    'N/A', 'Channel range(s) of detected lines',
+                                    next(iter(atm_masks))))
 
-        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                              metric_score='N/A',
-                              metric_units='Channel range(s) of detected lines')
-        selection = pqa.TargetDataSelection(intent={'TARGET'})
-        line_detection_scores.append(
-            pqa.QAScore(
-                score, longmsg=longmsg, shortmsg=shortmsg,
-                origin=origin, applies_to=selection
-            )
-        )
-
-    # dictionary for spw setup
-    spw_config_dict = {}
-    for reduction_group_desc in reduction_group.values():
-        for reduction_group_member in reduction_group_desc:
-            ms_name = reduction_group_member.ms.origin_ms
-            spw = reduction_group_member.spw
-            spw_id = spw.id
-            nchan = spw.num_channels
-            sideband = int(spw.sideband)
-            dict_for_ms = spw_config_dict.setdefault(ms_name, {})
-            dict_for_spw = dict_for_ms.setdefault(spw_id, {})
-            dict_for_spw['nchan'] = nchan
-            dict_for_spw['sideband'] = sideband
-
-    # generate deviation mask QA scores with merged spws and antennas
-    deviation_mask_scores = []
-    for field_name, data_per_ms in deviation_mask_qa_data.items():
-        for ms_name, data in data_per_ms.items():
-            spw_ids = {x[0] for x in data}
-            antenna_names = {x[1] for x in data}
-            is_overlaps = {y for x in data for y in x[3]}
-            LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
-
-            # score depends on whether deviation masks overlap with lines
-            # see PIPEREQ-293 for detail
-            if Overlap.NO in is_overlaps:
-                # by default score is 0.65
-                score = 0.65
-                msg = 'Deviation mask was triggered'
-                LOG.debug(
-                    'Found deviation mask with no overlap. '
-                    'Set deviation mask QA score to %s', score
-                )
-            elif is_overlaps.intersection({Overlap.PARTIAL, Overlap.FULL}):
-                # score is 0.88 if all deviation masks partially/fullly
-                # overlap with detected line
-                score = 0.88
-                msg = 'Deviation mask overlapped with spectral lines was triggered'
-                LOG.debug(
-                    'All deviation masks overlap with lines. '
-                    'Set deviation mask QA score to %s', score
-                )
-            else:
-                raise ValueError('Unexpected overlap status')
-
-            shortmsg = f'{msg}.'
-            spw_string = ', '.join(map(str, sorted(spw_ids)))
-            antenna_string = ', '.join(sorted(antenna_names))
-            longmsg = f'{msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
-
-            # get list of unique mask ranges per spw
-            deviation_masks_per_spw = collections.defaultdict(set)
-            for spw_id, _, deviation_mask, _ in data:
-                deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
-
-            # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
-            deviation_masks_for_image = []
-            for spw_id, deviation_masks in deviation_masks_per_spw.items():
-                spw_config = spw_config_dict[ms_name][spw_id]
-                nchan = spw_config['nchan']
-                sideband = spw_config['sideband']
-                devmasks_image = channel_ranges_for_image(edge, nchan, sideband, sorted(deviation_masks))
-                deviation_masks_for_image.append((spw_id, devmasks_image))
-
-            metric_value = ','.join([
-                f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
-                for spw_id, deviation_masks in deviation_masks_for_image
-            ])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) possibly affected by instrumental instabilities')
-            selection = pqa.TargetDataSelection(vis=set([ms_name]),
-                                                spw=spw_ids,
-                                                field=set([field_name]),
-                                                ant=antenna_names,
-                                                intent={'TARGET'})
-            deviation_mask_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
-
-    return line_detection_scores + deviation_mask_scores
+    return line_detection_scores + dm_scores
 
 
 
