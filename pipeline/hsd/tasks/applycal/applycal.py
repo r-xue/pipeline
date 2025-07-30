@@ -39,11 +39,11 @@ class SDApplycalInputs(ApplycalInputs):
     def __init__(self,
                  context: Context,
                  output_dir: str | None = None,
-                 vis: str | list[str] = None,
-                 field: str | list[str] = None,
-                 spw: str | list[str] = None,
-                 antenna: str | list[str] = None,
-                 intent: str | list[str] = None,
+                 vis: str | list[str] | None = None,
+                 field: str | list[str] | None = None,
+                 spw: str | list[str] | None = None,
+                 antenna: str | list[str] | None = None,
+                 intent: str | list[str] | None = None,
                  parang: bool | None = None,
                  applymode: str | None = None,
                  flagbackup: bool | None = None,
@@ -269,7 +269,8 @@ class SerialSDApplycal(SerialApplycal):
                 result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
                 result.amp_vs_time_detail_plots = amp_vs_time_detail_plots
         else:
-            pass
+            result.amp_vs_time_summary_plots = None
+            result.amp_vs_time_detail_plots = None
 
         return result
 
