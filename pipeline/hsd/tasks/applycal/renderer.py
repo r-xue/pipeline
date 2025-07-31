@@ -241,13 +241,13 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
         return plots
 
-    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: dict[str, List['Plot']]) -> dict[str, str]:
+    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: dict[str, list[Plot]]) -> dict[str, str]:
         """Create detail page.
 
         Args:
             context : Pipeline context
             result : List of applycal result objects
-            plots : Dictionary which contains 'vis' and List of Plot object
+            plots : Dictionary which contains 'vis' and list of Plot objects
 
         Returns:
             amp_vs_time_subpages: Dictionary which contains 'vis' and filepath of detail page
