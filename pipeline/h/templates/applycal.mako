@@ -154,7 +154,7 @@ def format_spwmap(spwmap, scispws):
   <li><a href="#calampvstime">Calibrated amplitude vs time</a></li>
 %endif
 %if sd_amp_vs_time_plots:
-  <li><a href="#sdcalampvstime">Science target: Calibrated amplitude vs time</a></li>
+  <li><a href="#sdcalampvstime">Science target: calibrated amplitude vs time</a></li>
 %endif
 %if phase_vs_time_plots:
   <li><a href="#calphasevstime">Calibrated phase vs time</a></li>
@@ -486,7 +486,7 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="preamble()">
-		Plots of calibrated amplitude vs time for all fields, antennas and
+		Calibrated amplitude vs time for all fields, antennas and
 		correlations. Data are coloured by field.
 	</%def>
 
