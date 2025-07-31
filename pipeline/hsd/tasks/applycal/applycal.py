@@ -271,22 +271,19 @@ class SerialSDApplycal(SerialApplycal):
                 weblog_output_path=weblog_output_dir,
             )
             qascore_list, plots_fnames, qascore_per_scan_list = qa_result
-            qascore_list_all_scans = [
-                x for x in qascore_list if "all" in x.applies_to.scan
-            ]
             sd_qa_reports.makeSummaryTable(
-                qascore_list_all_scans,
+                qascore_list,
                 '',
                 plfolder=applycal_qa_dir,
                 output_file=os.path.join(applycal_qa_dir, 'qascore_summary.csv')
             )
             sd_qa_reports.makeQAmsgTable(
-                qascore_list_all_scans,
+                qascore_list,
                 plfolder=applycal_qa_dir,
                 output_file=os.path.join(applycal_qa_dir, 'qascores_details.csv')
             )
             valid_plots_fnames = [x for x in plots_fnames if x != "N/A"]
-            results.xy_deviation_score.extend(qascore_list_all_scans)
+            results.xy_deviation_score.extend(qascore_list)
             results.xy_deviation_plots.extend(valid_plots_fnames)
 
         return results
