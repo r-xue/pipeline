@@ -5,7 +5,11 @@
 
 <ProcessingIntents>
     <Intents>
-        <Keyword xmlns="">SINGLEDISH_STANDARD_OBSERVING_MODE</Keyword>
+        <Keyword xmlns="">INTERFEROMETRY_STANDARD_OBSERVING_MODE</Keyword>
         <Value xmlns="">Undefined</Value>
+    </Intents>
+    <Intents>
+        <Keyword xmlns="">INTERFEROMETRY_FULL_POL_CUBE_IMAGING</Keyword>
+        <Value xmlns="">True</Value>
     </Intents>
 </ProcessingIntents>

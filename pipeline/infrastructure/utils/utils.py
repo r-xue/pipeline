@@ -64,6 +64,7 @@ __all__ = [
     'get_obj_size',
     'get_products_dir',
     'get_receiver_type_for_spws',
+    'get_row_count',
     'get_si_prefix',
     'get_spectralspec_to_spwid_map',
     'get_stokes',
@@ -1226,6 +1227,30 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def get_row_count(table_name: str, taql: str) -> int:
+    """Return the number of rows in the specified table that match the given TaQL query.
+
+    Parameters:
+        table_name: Path to the CASA table.
+        taql: The TaQL query string used to filter the table rows.
+
+    Returns:
+        The number of rows matching the query, or 0 if an error occurs.
+    """
+
+    nrows = 0
+    try:
+        with casa_tools.TableReader(table_name) as table:
+            subtb = table.query(taql)
+            nrows = subtb.nrows()
+            subtb.close()
+    except Exception as ex:
+        nrows = 0
+        LOG.warning(ex)
+
+    return nrows
 
 
 def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
