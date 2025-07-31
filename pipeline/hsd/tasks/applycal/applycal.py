@@ -275,12 +275,12 @@ class SerialSDApplycal(SerialApplycal):
                 qascore_list,
                 '',
                 plfolder=applycal_qa_dir,
-                output_file=os.path.join(applycal_qa_dir, 'qascore_summary.csv')
+                output_file=os.path.join(applycal_qa_dir, f'qascore_summary_{self.inputs.ms.basename}.csv')
             )
             sd_qa_reports.makeQAmsgTable(
                 qascore_list,
                 plfolder=applycal_qa_dir,
-                output_file=os.path.join(applycal_qa_dir, 'qascores_details.csv')
+                output_file=os.path.join(applycal_qa_dir, f'qascores_details_{self.inputs.ms.basename}.csv')
             )
             valid_plots_fnames = [x for x in plots_fnames if x != "N/A"]
             results.xy_deviation_score.extend(qascore_list)
