@@ -4552,7 +4552,16 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 @log_qa
 def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
     """
-    Calculate score about amp vs. time plot of Single Dish Applycal.
+    Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+
+    Check the following two items:
+    1. The file of plot exists or not.
+    2. All data are flagged or not, executing flagdata task.
+
+    Then, the score for each plot is set to the following value:
+    1.0: The file exists and also the content exists.
+    0.88: The file is created but the content is empty because all data are flagged.
+    0.65: The file does not exist.
 
     Args:
         context: Pipeline context.
@@ -4574,6 +4583,8 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     scores = []
     for onedata in flagdata.values():
         spw = onedata['name']
+
+        # Calculate the score for the plot of each spw and antenna=all.
         filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
             vis=vis, ant='all', spw=spw)
         figfile = os.path.join(stage_dir, filename)
@@ -4598,20 +4609,18 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
 
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
+        # Calculate the score for the plot of each spw and each antenna.
         for ant, value in onedata['antenna'].items():
             score = 1.0
             filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
                 vis=vis, ant=ant, spw=spw)
             figfile = os.path.join(stage_dir, filename)
-            is_figfile_exists = os.path.exists(figfile)
-            if not is_figfile_exists:
-                shortmsg = 'Generating amp vs time plot was failed.'
-                longmsg = 'Generating amp vs time plot for {0} and Antenna={1} of {2} was failed.'.format(spw, ant, vis)
+            if not os.path.exists(figfile):
+                shortmsg = 'Failed to create calibrated amplitude vs time plot'
+                longmsg = 'Failed to create calibrated amplitude vs time plot for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
                 score = 0.65
             else:
-                flagged = value['flagged']
-                total = value['total']
-                if flagged == total:
+                if value['flagged'] == value['total']:
                     shortmsg = 'Calibrated amplitude vs time plot is empty'
                     longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
                     score = 0.8
