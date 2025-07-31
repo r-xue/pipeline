@@ -4554,14 +4554,15 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     """
     Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
 
-    Check the following two items:
-    1. The file of plot exists or not.
-    2. All data are flagged or not, executing flagdata task.
-
-    Then, the score for each plot is set to the following value:
-    1.0: The file exists and also the content exists.
-    0.88: The file is created but the content is empty because all data are flagged.
-    0.65: The file does not exist.
+    Calculate score according to the existence of plot file for each EB, spw and antenna
+    and the quality of it.
+    Requirement of PIPE-2168:
+      When the plot is created successfully, score = 1.
+      When the plot is generated but contains no data of target, score = 0.8.
+      When the plot generation failed, score = 0.65.
+    To give such score values, check the following:
+      1. Check whether the file of plot exists or not.
+      2. Check whether the number of flagged data is equal to that of total data or not.
 
     Args:
         context: Pipeline context.
@@ -4585,13 +4586,12 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
         spw = onedata['name']
 
         # Calculate the score for the plot of each spw and antenna=all.
-        filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
-            vis=vis, ant='all', spw=spw)
+        filename = f'{vis}-real_vs_time-all-{spw}.png'
         figfile = os.path.join(stage_dir, filename)
         score = 1.0
         if not os.path.exists(figfile):
             shortmsg = 'Failed to create calibrated amplitude vs time plot'
-            longmsg = 'Failed to create calibrated amplitude vs time plot for {0} and Antenna=all of {1} was failed.'.format(spw, vis)
+            longmsg = f'Failed to create calibrated amplitude vs time plot for {spw} and Antenna=all of {vis} was failed.'
             score = 0.65
         else:
             sumflagged = 0
@@ -4601,32 +4601,31 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                 sumtotal += value['total']
             if sumflagged == sumtotal:
                 shortmsg = 'Calibrated amplitude vs time plot is empty'
-                longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna=all of {1}.'.format(spw, vis)
+                longmsg = f'Calibrated amplitude vs time plot is empty for {spw} and Antenna=all of {vis}.'
                 score = 0.8
             else:
                 shortmsg = 'Calibrated amplitude vs time plot is successfully created'
-                longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna=all of {1}.'.format(spw, vis)
+                longmsg = f'Calibrated amplitude vs time plot is successfully created for {spw} and Antenna=all of {vis}.'
 
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         # Calculate the score for the plot of each spw and each antenna.
         for ant, value in onedata['antenna'].items():
             score = 1.0
-            filename = '{vis}-real_vs_time-{ant}-{spw}.png'.format(
-                vis=vis, ant=ant, spw=spw)
+            filename = f'{vis}-real_vs_time-{ant}-{spw}.png'
             figfile = os.path.join(stage_dir, filename)
             if not os.path.exists(figfile):
                 shortmsg = 'Failed to create calibrated amplitude vs time plot'
-                longmsg = 'Failed to create calibrated amplitude vs time plot for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
+                longmsg = f'Failed to create calibrated amplitude vs time plot for {spw} and Antenna={ant} of {vis}.'
                 score = 0.65
             else:
                 if value['flagged'] == value['total']:
-                    shortmsg = 'Calibrated amplitude vs time plot is empty'
-                    longmsg = 'Calibrated amplitude vs time plot is empty for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
+                    shortmsg = 'No target data for calibrated amplitude vs time plot'
+                    longmsg = f'No target data about calibrated amplitude vs time plot for EB {vis}, {spw} SPW, {ant} ant.'
                     score = 0.8
                 else:
                     shortmsg = 'Calibrated amplitude vs time plot is successfully created'
-                    longmsg = 'Calibrated amplitude vs time plot is successfully created for {0} and Antenna={1} of {2}.'.format(spw, ant, vis)
+                    longmsg = f'Calibrated amplitude vs time plot is successfully created for {spw} and Antenna={ant} of {vis}.'
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
