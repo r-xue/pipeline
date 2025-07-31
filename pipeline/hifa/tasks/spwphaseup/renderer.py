@@ -14,7 +14,7 @@ from pipeline.hifa.tasks.spwphaseup import display
 LOG = logging.get_logger(__name__)
 
 PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
-SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
+SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw calc_snr gaintable_snr')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
@@ -185,16 +185,17 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                 fieldid = ms.get_fields(name=[field])[0].id
                 field_str = f"{field} (#{fieldid})"
 
+                calc_snr_dict = dict(spwmapping.calc_snr_info)
+
                 # For each SpW in SNR info, create a row, and highlight when
                 # the SNR was missing or below the phase SNR threshold.
-                for row in spwmapping.snr_info:
-                    spwid = row[0]
+                for (spwid, gaintable_snr) in spwmapping.snr_info:
                     # PIPE-2499: for Band-to-Band datasets, it is expected that
                     # the PHASE and DIFFGAINREF intents only cover the diffgain
                     # reference (low-frequency) SpWs and that CHECK and
                     # DIFFGAINSRC intents only cover the diffgain source
                     # (high-frequency) SpWs.
-                    if row[1] is None:
+                    if gaintable_snr is None:
                         # If info is expected to be missing for a B2B SpW for
                         # given intent, then skip rather than rendering "N/A".
                         if ms.is_band_to_band and (
@@ -206,13 +207,19 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                         # be missing, report estimated SNR as "N/A".
                         else:
                             snr = '<strong class="alert-danger">N/A</strong>'
-                    elif row[1] < threshold:
-                        snr = f'<strong class="alert-danger">{row[1]:.1f}</strong>'
+                            calc_snr = 'N/A'
                     else:
-                        snr = f'{row[1]:.1f}'
-                    rows.append(SnrTR(ms.basename, thr_str, field_str, intent, spwid, snr))
+                        snr = f'{gaintable_snr:.1f}'
+                        if gaintable_snr < threshold:
+                            snr = f'<strong class="alert-danger">{snr}</strong>'
+                        calc_snr = calc_snr_dict.get(spwid, 'N/A')
+
+                    if calc_snr != 'N/A':
+                        calc_snr = f'{calc_snr:.1f}'
+
+                    rows.append(SnrTR(ms.basename, thr_str, field_str, intent, spwid, calc_snr, snr))
         else:
-            rows.append(SnrTR(ms.basename, '', '', '', '', ''))
+            rows.append(SnrTR(ms.basename, '', '', '', '', '', ''))
 
     return utils.merge_td_columns(rows)
 

@@ -531,6 +531,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # default SNRTestResult instance to provide a common interface for methods calls
         # that operate on instances and instance properties
         snr_test_result = SNRTestResult()
+        # snr_test_result will be modified in place, so create another instance to hold
+        # catalogue SNRs
+        calc_snr_result = SNRTestResult()
         # The list of combined SpW SNRs is empty; only updated if SpW
         # combination is necessary; needed for SNR info shown in task weblog.
         combined_snrs = []
@@ -548,6 +551,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Run a task to estimate the gaincal SNR for given intent, field,
             # and spectral windows.
             snr_test_result = self._do_snrtest(intent, field, spws)
+            calc_snr_result = copy.deepcopy(snr_test_result)
 
             # No SNR estimates available, so stick with default values.
             if snr_test_result.has_no_snrs:
@@ -574,6 +578,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Run a task to estimate the gaincal SNR for given intent, field,
             # and spectral windows.
             snr_test_result = self._do_snrtest(intent, field, spws)
+            calc_snr_result = copy.deepcopy(snr_test_result)
 
             # PIPE-2505: adjust the SNRs using a gain caltable, where possible
             self._compute_snr_from_gaincal(snr_test_result, field, intent)
@@ -783,6 +788,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Run a task to estimate the gaincal SNR for given intent, field,
             # and spectral windows.
             snr_test_result = self._do_snrtest(intent, field, spws)
+            calc_snr_result = copy.deepcopy(snr_test_result)
 
             # If no SNR estimates are available then set solint based on intent.
             if snr_test_result.has_no_snrs:
@@ -848,7 +854,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Collect SNR info.
         snr_info = self._get_snr_info(snr_test_result, combined_snrs)
 
-        return SpwMapping(combine, spwmap, snr_info, snr_thr_used, solint, gaintype)
+        # transform estimated SNRs into same structure for easier handling in renderer
+        calc_snr_info = self._get_snr_info(calc_snr_result, combined_snrs)
+
+        return SpwMapping(combine, spwmap, snr_info, snr_thr_used, solint, gaintype, calc_snr_info)
 
     def _do_snrtest(self, intent: str, field: str, spws: list[SpectralWindow]) -> SNRTestResult:
         """
