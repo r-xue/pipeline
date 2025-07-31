@@ -1088,12 +1088,13 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
+        _theoretical_rms = None if pp.brightnessunit == 'K' else pp.theoretical_rms
         _sensitivity = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                    spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                    bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
                                    sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
                                    effective_bw=_effective_bw, imagename=rgp.imagename,
-                                   datatype=self.inputs.datatype.name, theoretical_rms=pp.theoretical_rms)
+                                   datatype=self.inputs.datatype.name, theoretical_rms=_theoretical_rms)
         _theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                          spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
