@@ -1,6 +1,5 @@
 import collections
 import os
-import shutil
 from typing import Dict, List
 
 import pipeline.infrastructure.logging as logging
@@ -9,13 +8,13 @@ import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.basetask import ResultsList
+from pipeline.hifa.tasks.common.common_renderer_utils import get_spwmaps
 from pipeline.hifa.tasks.spwphaseup import display
 
 LOG = logging.get_logger(__name__)
 
 PhaseTR = collections.namedtuple('PhaseTR', 'ms phase_field field_names')
 SnrTR = collections.namedtuple('SnrTR', 'ms threshold field intent spw snr')
-SpwMapInfo = collections.namedtuple('SpwMapInfo', 'ms intent field fieldid combine spwmap scanids scispws solint gaintype')
 SpwPhaseupApplication = collections.namedtuple('SpwPhaseupApplication', 'ms gaintable calmode solint intent spw')
 PhaseRmsTR = collections.namedtuple('PhaseRmsTR', 'ms type time median_phase_rms noisy_ant')
 
@@ -109,42 +108,6 @@ def get_gaincal_applications(context: Context, results: ResultsList) -> List[Spw
             applications.append(SpwPhaseupApplication(ms.basename, gaintable, solint, calmode, to_intent, spw))
 
     return applications
-
-
-def get_spwmaps(context: Context, results: ResultsList) -> List[SpwMapInfo]:
-    """
-    Return list of SpwMapInfo entries that contain all the necessary
-    information to be shown in a Spectral Window Mapping table in the task
-    weblog page.
-
-    Args:
-        context: the pipeline context.
-        results: list of task results.
-
-    Returns:
-        List of SpwMapInfo instances.
-    """
-    spwmaps = []
-
-    for result in results:
-        ms = context.observing_run.get_ms(result.vis)
-
-        # Get science spws
-        science_spw_ids = [spw.id for spw in ms.get_spectral_windows(science_windows_only=True)]
-
-        if result.spwmaps:
-            for (intent, field), spwmapping in result.spwmaps.items():
-                # Get ID of field and scans.
-                fieldid = ms.get_fields(name=[field])[0].id
-                scanids = ", ".join(str(scan.id) for scan in ms.get_scans(scan_intent=intent, field=field))
-
-                # Append info on spwmap to list.
-                spwmaps.append(SpwMapInfo(ms.basename, intent, field, fieldid, spwmapping.combine, spwmapping.spwmap,
-                                          scanids, science_spw_ids, spwmapping.solint, spwmapping.gaintype))
-        else:
-            spwmaps.append(SpwMapInfo(ms.basename, '', '', '', '', '', '', '', '', ''))
-
-    return spwmaps
 
 
 def get_pcal_table_rows(context: Context, results: ResultsList) -> List[str]:

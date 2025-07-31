@@ -1,6 +1,7 @@
 """Set of plotting classes for hsd_imaging task."""
 import copy
 import datetime
+import functools
 import itertools
 import math
 from math import ceil, floor
@@ -812,6 +813,28 @@ class SDChannelMapDisplay(SDImageDisplay):
     NvPanel = 3
     NUM_CHANNELMAP = NhPanel * NvPanel
 
+    @functools.cached_property
+    def extended_velocity( self ) -> numpy.ndarray:
+        """
+        Extend self.velocity for 1 channel to cover edge cases
+
+        Added for PIPE-2683.
+        In some cases, the code tries to lookup the velocity value at 1 channel beyond
+        the array range, in order to determine the (upper) boundary of an edge channel.
+        To cover this case, an extended velocity array is prepared by extrapolating
+        for 1 channel.
+
+        Returns:
+            extended ndarray of velocities
+        """
+        assert len( self.velocity ) > 1
+
+        extended_velocity = numpy.append(
+            self.velocity,
+            self.velocity[-1] + ( self.velocity[-1] - self.velocity[-2] )
+        )
+        return extended_velocity
+
     def plot(self) -> List[logger.Plot]:
         """Create list of channel maps.
 
@@ -1107,8 +1130,8 @@ class SDChannelMapDisplay(SDImageDisplay):
                         continue
                     C0 = idx_vertlines[i]
                     C1 = idx_vertlines[i+1]
-                    velo = (self.velocity[C0] + self.velocity[C1 - 1]) / 2.0 - velocity_line_center
-                    width = abs(self.velocity[C0] - self.velocity[C1])
+                    velo = (self.extended_velocity[C0] + self.extended_velocity[C1 - 1]) / 2.0 - velocity_line_center
+                    width = abs(self.extended_velocity[C0] - self.extended_velocity[C1])
                     Title.append('(Vel,Wid) = (%.1f, %.1f) (km/s)' % (velo, width))
                     NMap += 1
                     _mask = masked_data[:, :, C0:C1].sum(axis=2) * velocity_per_channel
@@ -1331,7 +1354,7 @@ class SDChannelMapDisplay(SDImageDisplay):
             List[float]: relative velocities for red vertical lines
         """
         # interpolate function to calculate velocities using extrapolation
-        chan2vel = interpolate.interp1d(idx_vertlines, self.velocity[idx_vertlines],
+        chan2vel = interpolate.interp1d(idx_vertlines, self.extended_velocity[idx_vertlines],
                                         bounds_error=False, fill_value='extrapolate')
         
         # get size of difference between the number of vertical lines and NUM_CHANNELMAP

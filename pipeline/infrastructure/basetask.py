@@ -953,6 +953,8 @@ def write_pipeline_casa_tasks(context):
     Write the equivalent pipeline CASA tasks for results in the context to a
     file
     """
+    h_init_params = f'processing_intents={context.processing_intents}' if context.processing_intents else ''
+
     pipeline_tasks = []
     for proxy in context.results:
         result = proxy.read()
@@ -973,13 +975,13 @@ def write_pipeline_casa_tasks(context):
         state_commands += ['context.set_state({!r}, {!r}, {!r})'.format(cls, name, value)
                            for cls, name, value in project.get_state(o)]
 
-    template = '''context = h_init()
+    template = '''context = h_init(%s)
 %s
 try:
 %s
 finally:
     h_save()
-''' % ('\n'.join(state_commands), task_string)
+''' % (h_init_params, '\n'.join(state_commands), task_string)
 
     f = os.path.join(context.report_dir, context.logs['pipeline_script'])
     with open(f, 'w') as casatask_file:

@@ -121,7 +121,7 @@ class AtmHeuristics(object):
         ms = self.context.observing_run.get_ms(name=self.vis)
 
         # Get the Tsys spw map from caltable.
-        unmapped, mapped = tsysspwmap(ms, table)
+        unmapped, mapped = tsysspwmap(ms, tsystable=table)
 
         # Get list of science spw ids to consider.
         sci_spwids = [spw.id for spw in self.science_spws]
