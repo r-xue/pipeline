@@ -1651,10 +1651,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             None
         """
         for spw_id in sorted(low_snr_spws):
+            old_snr = snr_corrections[spw_id]
             snr_corrections[spw_id] *= multiplier
-            LOG.info(f"SNR for {self.inputs.vis} spw {spw_id} is below threshold "
-                     f"{threshold}. Skipping gaincal; estimated SNR set to "
-                     f"{snr_corrections[spw_id]:.3f}")
+            LOG.info(f"Estimated SNR for {self.inputs.vis} spw {spw_id} is below threshold "
+                     f"{threshold}. Skipping gaincal; setting SNR for combine heuristics to "
+                     f"{snr_corrections[spw_id]:.3f} = {multiplier} * {old_snr:.3f}.")
 
     def _generate_gain_caltable(self, field: str, intent: str, high_snr_spws: set[int]) -> str:
         """
@@ -1726,7 +1727,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             try:
                 snr_data = caltable.filter(spw=spw).data['SNR']
             except KeyError:
-                LOG.info(f'No SNR data present in phaseup caltable for {self.inputs.vis} '
+                LOG.info(f'No SNR data present in temporary gain table for {self.inputs.vis} '
                          f'spw {spw}. Setting estimated SNR to zero.')
                 snr_corrections[spw] = 0
                 continue
@@ -1751,13 +1752,15 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 median_snr = numpy.median(snr_data.data)
 
             if median_snr in (numpy.inf, numpy.nan):
-                LOG.info(f'No valid data in phaseup caltable for {self.inputs.vis} '
+                LOG.info(f'No valid data in temporary gain table for {self.inputs.vis} '
                          f'spw {spw}. Setting estimated SNR to zero.')
                 snr_corrections[spw] = 0
             else:
                 snr_corrections[spw] = float(median_snr * multiplier)
-                LOG.info(f'Estimated SNR for {self.inputs.vis} spw {spw} = '
-                         f'{snr_corrections[spw]:.3f} (median SNR = {median_snr:.3f})')
+                # Based on a temporary gain table, Spw  19  scan = 1.008 minutes;  calculated sensitivity = xxxx mJy, calculated SNR = 18.6 \n Setting SNR for combine heuristics to 13.9 = 0.75 * 18.6
+                LOG.info(f'Based on a temporary gain table, calculated SNR for {self.inputs.vis} '
+                         f'spw {spw} = {median_snr:.3f}. Setting SNR for combine heuristics to '
+                         f'{snr_corrections[spw]:.3f} = {multiplier} * {median_snr:.3f}')
 
     def _update_snr_result(self, snr_result: SNRTestResult, snr_corrections: dict[int, float], snr_limit: float) -> None:
         """
