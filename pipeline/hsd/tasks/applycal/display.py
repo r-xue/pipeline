@@ -75,7 +75,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
         """Generate calibrated amplitude vs. time plots.
 
         Return:
-            List of plot object.
+            List of plot objects.
         """
 
         filename = '{ms_name}-real_vs_time-{ant}-spw{spw}.png'.format(
@@ -159,7 +159,7 @@ class ApplyCalSingleDishPlotmsSpwComposite(common.LeafComposite):
     leaf_class = ApplyCalSingleDishPlotmsLeaf
 
     def __init__(self, context: Context, result: SDApplycalResults, ms: MeasurementSet,
-                 xaxis: str, yaxis: str, ant='', pol='', **kwargs):
+                 xaxis: str, yaxis: str, ant: str = '', pol: str = '', **kwargs):
         """Construct ApplyCalSingleDishPlotmsSpwComposite instance.
 
         Args:
@@ -185,7 +185,7 @@ class ApplyCalSingleDishPlotmsAntSpwComposite(common.LeafComposite):
     leaf_class = ApplyCalSingleDishPlotmsSpwComposite
 
     def __init__(self, context: Context, result: SDApplycalResults, ms: MeasurementSet,
-                 xaxis: str, yaxis: str, pol='', **kwargs):
+                 xaxis: str, yaxis: str, pol: str = '', **kwargs):
         """Construct ApplyCalSingleDishPlotmsAntSpwComposite instance.
 
         Args:
