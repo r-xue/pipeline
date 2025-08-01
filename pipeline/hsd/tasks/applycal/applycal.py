@@ -288,7 +288,6 @@ class SerialSDApplycal(SerialApplycal):
         msobj = context.observing_run.get_ms(self.inputs.vis)
         plotter = plotter_cls(context, result, msobj, xaxis, yaxis, **kwargs)
         plots = plotter.plot()
-        LOG.info("plots in sd_plots_for_result() applycal.py = {}".format(plots))  ##
 
         return plots
 
