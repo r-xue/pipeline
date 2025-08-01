@@ -49,7 +49,7 @@ class SDApplycalInputs(ApplycalInputs):
                  flagbackup: bool | None = None,
                  flagsum: bool | None = None,
                  flagdetailedsum: bool | None = None,
-                 parallel: bool | str = None):
+                 parallel: bool | str | None = None):
         """Inputs for SDApplycal task.
 
         Args:
