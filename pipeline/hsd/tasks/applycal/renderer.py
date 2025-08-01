@@ -228,7 +228,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             source : target source
 
         Returns:
-            List of Plot object
+            List of Plot objects
         """
         brightest_field = super_renderer.get_brightest_field(ms, source)
         plots = self.science_plots_for_result(context,
