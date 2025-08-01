@@ -84,14 +84,16 @@ class fluxgaincalSummaryChart(object):
 
     def create_plot(self):
         figfile = self.get_figfile()
+        if os.path.exists(self.caltable):
+            job = casa_tasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', ydatacolumn='', selectdata=True,
+                            scan='', correlation='', averagedata=True,
+                            avgtime='', avgscan=False, transform=False, extendflag=False, iteraxis='',
+                            coloraxis='field', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
+                            showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
 
-        job = casa_tasks.plotms(vis=self.caltable, xaxis='freq', yaxis='amp', ydatacolumn='', selectdata=True,
-                         scan='', correlation='', averagedata=True,
-                         avgtime='', avgscan=False, transform=False, extendflag=False, iteraxis='',
-                         coloraxis='field', plotrange=[], title='', xlabel='', ylabel='', showmajorgrid=False,
-                         showminorgrid=False, plotfile=figfile, overwrite=True, clearplots=True, showgui=False)
-
-        job.execute()
+            job.execute()
+        else:
+            LOG.warning("{!s} not found".format(self.caltable))
 
     def get_figfile(self):
         return os.path.join(self.context.report_dir,
@@ -114,7 +116,7 @@ class fluxgaincalSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxgaincal plot.')
-                LOG.exception(ex)
+                LOG.debug(ex.format_exc())
                 return None
 
         return wrapper
@@ -136,9 +138,11 @@ class modelfitSummaryChart(object):
         return [p for p in plots if p is not None]
 
     def create_plot(self):
-        figfile = self.get_figfile()
 
         webdicts = self.webdicts
+        if len(webdicts.keys()) == 0:
+            return
+        figfile = self.get_figfile()
         plt.clf()
 
         mysize = 'small'
@@ -269,7 +273,7 @@ class modelfitSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxboot fitting plot.')
-                LOG.exception(ex)
+
                 return None
 
         return wrapper
@@ -291,10 +295,11 @@ class residualsSummaryChart(object):
         return [p for p in plots if p is not None]
 
     def create_plot(self):
-        figfile = self.get_figfile()
 
         webdicts = self.webdicts
-
+        if len(webdicts.keys()) == 0:
+            return
+        figfile = self.get_figfile()
         fig = plt.figure(figsize=(10, 6))
         ax1 = fig.add_subplot(111)
         ax2 = ax1.twiny()
@@ -386,7 +391,7 @@ class residualsSummaryChart(object):
                 self.create_plot()
             except Exception as ex:
                 LOG.error('Could not create fluxboot residuals plot.')
-                LOG.exception(ex)
+
                 return None
 
         return wrapper

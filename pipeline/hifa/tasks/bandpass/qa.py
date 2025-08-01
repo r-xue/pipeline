@@ -354,12 +354,10 @@ def _score_bandpass_phaseup_solint(
     :param solint: the solution interval used for bandpass phase-up
     :param int_time: the integration time for the bandpass calibrator
     """
-    origin = (
-        pqa.QAOrigin(
-            metric_name="score_bandpass_phaseup_solint",
-            metric_score=solint,
-            metric_units="Solution interval used for bandpass phase-up",
-        ),
+    origin = pqa.QAOrigin(
+        metric_name='score_bandpass_phaseup_solint',
+        metric_score=solint,
+        metric_units='Solution interval used for bandpass phase-up',
     )
 
     match solint:

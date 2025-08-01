@@ -52,14 +52,12 @@ class GaincalSnrInputs(vdp.StandardInputs):
         spws = [str(spw) for spw in sorted(spws)]
         return ','.join(spws)
 
-    phasesnr = vdp.VisDependentProperty(default=25.0)
     bwedgefrac = vdp.VisDependentProperty(default=0.03125)
     hm_nantennas = vdp.VisDependentProperty(default='unflagged')
     maxfracflagged = vdp.VisDependentProperty(default=0.90)
 
     # docstring and type hints: supplements hifa_gaincalsnr
-    def __init__(self, context, output_dir=None, vis=None, field=None,
-                 intent=None, spw=None, phasesnr=None, bwedgefrac=None,
+    def __init__(self, context, output_dir=None, vis=None, field=None, intent=None, spw=None, bwedgefrac=None,
                  hm_nantennas=None, maxfracflagged=None):
         """Initialize Inputs.
 
@@ -79,7 +77,7 @@ class GaincalSnrInputs(vdp.StandardInputs):
 
                 Example: field='3C279'
 
-            intent: A string containing a comma delimited list of intents against which
+            intent: A string containing a comma-delimited list of intents against which
                 the selected fields are matched. Defaults to 'PHASE'.
 
                 Example: intent='BANDPASS'
@@ -89,10 +87,6 @@ class GaincalSnrInputs(vdp.StandardInputs):
                 both 'intent' and TARGET intents.
 
                 Example: spw='13,15'
-
-            phasesnr: The required gaincal solution signal to noise.
-
-                Example: phasesnr=20.0
 
             bwedgefrac: The fraction of the bandwidth edges that is flagged.
 
@@ -108,9 +102,7 @@ class GaincalSnrInputs(vdp.StandardInputs):
                 before it is excluded from the signal to noise estimate.
 
                 Example: maxfracflagged=0.80
-
         """
-
         super(GaincalSnrInputs, self).__init__()
 
         self.context = context
@@ -120,7 +112,6 @@ class GaincalSnrInputs(vdp.StandardInputs):
         self.field = field
         self.intent = intent
         self.spw = spw
-        self.phasesnr = phasesnr
         self.bwedgefrac = bwedgefrac
         self.hm_nantennas = hm_nantennas
         self.maxfracflagged = maxfracflagged
@@ -144,13 +135,11 @@ class GaincalSnr(basetask.StandardTaskTemplate):
         LOG.info('    Setting gaincal intent to %s ' % inputs.intent)
         LOG.info('    Selecting gaincal fields %s ' % fieldlist)
         LOG.info('    Selecting gaincal spws %s ' % spwlist)
-        LOG.info('    Setting requested gaincal snr to %0.1f ' % inputs.phasesnr)
         if len(fieldlist) <= 0 or len(spwlist) <= 0:
             LOG.info('    No gaincal data')
             return GaincalSnrResults(vis=inputs.vis)
 
-        # Compute the bandpass solint parameters and return a solution
-        # dictionary
+        # Compute the gain SNR values.
         snr_dict = snr_heuristics.estimate_gaincalsnr(
             inputs.ms, fieldlist, inputs.intent, spwlist, inputs.hm_nantennas,
             inputs.maxfracflagged, inputs.bwedgefrac)
@@ -179,7 +168,9 @@ class GaincalSnr(basetask.StandardTaskTemplate):
         scantimes = []
         inttimes = []
         sensitivities = []
+        sensitivitiesint = []
         snrs = []
+        snrsint = []
 
         # Loop over the spws. Values for spws with
         # not dictionary entries are set to None
@@ -189,49 +180,55 @@ class GaincalSnr(basetask.StandardTaskTemplate):
                 scantimes.append(None)
                 inttimes.append(None)
                 sensitivities.append(None)
+                sensitivitiesint.append(None)
                 snrs.append(None)
+                snrsint.append(None)
             else:
                 scantimes.append(snr_dict[spwid]['scantime_minutes'])
                 inttimes.append(snr_dict[spwid]['inttime_minutes'])
                 sensitivities.append(snr_dict[spwid]['sensitivity_per_scan_mJy'])
+                sensitivitiesint.append(snr_dict[spwid]['sensitivity_per_int_mJy'])
                 snrs.append(snr_dict[spwid]['snr_per_scan'])
+                snrsint.append(snr_dict[spwid]['snr_per_int'])
 
         # Populate the result.
         result.scantimes = scantimes
         result.inttimes = inttimes
         result.sensitivities = sensitivities
+        result.sensitivitiesint = sensitivitiesint
         result.snrs = snrs
+        result.snrsint = snrsint 
 
         return result
 
 
 # The results class
 class GaincalSnrResults(basetask.Results):
-    def __init__(self, vis=None, spwids=[], scantimes=[], inttimes=[],
-                 sensitivities=[], snrs=[]):
+    def __init__(self, vis=None, spwids=None):
         """
         Initialise the results object.
         """
         super(GaincalSnrResults, self).__init__()
 
         self.vis = vis
-
-        # Spw list
+        if spwids is None:
+            spwids = []
         self.spwids = spwids
 
-        self.scantimes = scantimes
-        self.inttimes = inttimes
-        self.sensitivities = sensitivities
-        self.snrs = snrs
+        self.scantimes = []
+        self.inttimes = []
+        self.sensitivities = []
+        self.sensitivitiesint = []
+        self.snrs = []
+        self.snrsint = []
 
     def __repr__(self):
         if self.vis is None or not self.spwids:
             return 'GaincalSnrResults:\n\tNo gaincal SNRs computed'
         else:
-            line = 'GaincalSnrResults:\nvis %s\n' % self.vis
-            line = line + 'Gaincal SNRs\n'
+            s = f"GaincalSnrResults:\nvis={self.vis}\nGaincal SNRs\n"
             for i in range(len(self.spwids)):
-                line = line + \
-                    "    spwid %2d sensitivity: %10.3f SNR: %8.3f\n" % \
-                    (self.spwids[i], self.sensitivities[i], self.snrs[i])
-            return line
+                s += (f"\tspwid {self.spwids[i]:2d}\n"
+                      f"\t\tscan-based sensitivity: {self.sensitivities[i]:10.3f}; SNR: {self.snrs[i]:8.3f}\n"
+                      f"\t\tintegration-based sensitivity: {self.sensitivitiesint[i]:10.3f}; SNR: {self.snrsint[i]:8.3f}\n")
+            return s

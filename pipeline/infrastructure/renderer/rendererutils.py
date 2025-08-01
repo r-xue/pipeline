@@ -4,7 +4,7 @@ from __future__ import annotations
 import html
 import itertools
 import os
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Iterable
 
 import numpy as np
 
@@ -461,7 +461,7 @@ def make_parang_plots(
         context: Context,
         result: Results,
         intent_lookup: dict[str, str],
-        ) -> dict:
+) -> dict:
     """
     Create parallactic angle plots for each session.
     """
@@ -547,3 +547,27 @@ def make_parang_plots(
         parang_plots[session_name]['html'] = html
 
     return parang_plots
+
+
+def get_multiple_line_string(values: Iterable[Any], str_format: str = '{}', separator: str = '<br>') -> str:
+    """Formats a sequence of values into a single delimited string.
+
+    Args:
+        values: An iterable of values to be formatted and joined.
+        str_format: A format string to apply to each value. Defaults to '{}'.
+        separator: The string used to join the formatted values.
+            Defaults to '<br>'.
+
+    Returns:
+        A single string containing the formatted and joined values, or an
+        empty string if the input iterable is empty.
+
+    Example:
+        >>> items = ['apple', 'banana', 'cherry']
+        >>> get_multiple_line_string(items, str_format='- {}')
+        '- apple<br>- banana<br>- cherry'
+    """
+    if not values:
+        return ''
+
+    return separator.join(str_format.format(value) for value in values)

@@ -21,15 +21,24 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 from scipy import interpolate, special
 
+import pipeline.hsd.heuristics.SDcalatmcorr as sdatm
 import pipeline.infrastructure.pipelineqa as pqa
+
 from pipeline import infrastructure
-from pipeline.domain import datatable, measures
+from pipeline.domain import measures
+from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
+from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
+from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
 from pipeline.infrastructure import basetask, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
-from pipeline.qa import checksource
 from pipeline.infrastructure.utils import ous_parallactic_range
+from pipeline.hsd.tasks.common import utils as sdutils
+from pipeline.qa import checksource
 
 if TYPE_CHECKING:
+    from casatools import coordsys
     from pipeline.domain.measurementset import MeasurementSet
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
@@ -49,7 +58,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_number_antenna_offsets',                    # ALMA specific
            'score_missing_derived_fluxes',                    # ALMA specific
            'score_derived_fluxes_snr',                        # ALMA specific
-           'score_phaseup_spw_median_snr_for_phase',          # ALMA specific
+           'score_phaseup_spw_median_snr_for_cal',            # ALMA specific
            'score_phaseup_spw_median_snr_for_check',          # ALMA specific
            'score_decoherence_assessment',                    # ALMA specific
            'score_refspw_mapping_fraction',                   # ALMA specific
@@ -64,6 +73,7 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_gfluxscale_k_spw',                          # ALMA specific
            'score_fluxservice',                               # ALMA specific
            'score_observing_modes',                           # ALMA specific
+           'score_diffgaincal_combine',                       # ALMA IF specific
            'score_renorm',                                    # ALMA IF specific
            'score_polcal_gain_ratio',                         # ALMA IF specific
            'score_polcal_gain_ratio_rms',                     # ALMA IF specific
@@ -476,6 +486,50 @@ def score_observing_modes(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
         scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
+
+
+@log_qa
+def score_diffgaincal_combine(vis: str, combine: str, qa_message: str, phaseup_type: str) -> pqa.QAScore:
+    """
+    Compute QA score based on whether the phase solution gaintable, computed as
+    part of the hifa_diffgaincal stage, used spectral window combination, and
+    whether any SpWs were missing (in case of no SpW combination).
+
+    Args:
+        vis: Name of measurement set to score.
+        combine: combine parameter used in diffgain gaincal.
+        qa_message: String representing QA message derived during task, included
+            when no SpW combination is used (presumably forced by user) even
+            though there were indicators that would have triggered SpW
+            combination in automatic mode.
+        phaseup_type: String representing the type of diffgain phase-up.
+
+    Returns:
+        QA score.
+    """
+    # If SpW combination was used, turn this into a blue QA score.
+    if 'spw' in combine:
+        score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+        shortmsg = f"SpW combination used."
+        longmsg = f"{vis}: Spectral window combination used for B2B {phaseup_type} to improve phase-up solution SNR."
+    # If no SpW combination was used and a SpW is missing, then turn this into a
+    # warning QA score.
+    elif qa_message:
+        score = rendererutils.SCORE_THRESHOLD_WARNING
+        shortmsg = f"SpWs missing or heavily flagged."
+        longmsg = (f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution but"
+                   f" {qa_message}.")
+    # Otherwise, no missing SpWs or SpW combination, so return good score of 1.
+    else:
+        score = 1.0
+        shortmsg = f"No SpW combination used."
+        longmsg = f"{vis}: No spectral window combination used for diffgain {phaseup_type} solution."
+
+    origin = pqa.QAOrigin(metric_name='score_diffgaincal_combine',
+                          metric_score=score,
+                          metric_units='Score based on whether diffgain used combine')
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
 
 
 @log_qa
@@ -1181,6 +1235,15 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
     spixl: list of a spectral index
     """
 
+    if len(fractional_residuals) == 0:
+        score = 0.0
+        longmsg = 'No fractional residuals available.'
+        shortmsg = longmsg
+        origin = pqa.QAOrigin(metric_name='score_vla_flux_residual_rms',
+                              metric_score=score,
+                              metric_units='')
+        return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
     # PIPE-119, part a
     max_res = max(max(res) for res in fractional_residuals)
     if max_res < 0.01:
@@ -1190,7 +1253,7 @@ def score_vla_flux_residual_rms(fractional_residuals, num_spws, spixl):
 
     # PIPE-119 part b
     for res in fractional_residuals:
-        if max(np.abs(res))> 0.3:
+        if max(np.abs(res)) > 0.3:
             LOG.warning("Fractional residuals are > 0.3")
             break
 
@@ -1874,37 +1937,74 @@ def score_phaseup_mapping_fraction(ms, intent, field, spwmapping):
 
 
 @log_qa
-def score_phaseup_spw_median_snr_for_phase(ms, field, spw, median_snr, snr_threshold):
+def score_phaseup_spw_median_snr_for_cal(ms, field, spw, intent, median_snr, snr_threshold):
     """
-    Score the median achieved SNR for a given phase calibrator field and SpW.
-    Introduced for hifa_spwphaseup (PIPE-665).
+    Score the median achieved SNR for a given calibrator field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665, PIPE-2499).
     """
     if median_snr <= 0.3 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_ERROR
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.5 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_WARNING
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
     elif median_snr <= 0.75 * snr_threshold:
         score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
         shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
     else:
         score = 1.0
         shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=PHASE), SpW={spw}, the median achieved SNR' \
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
                   f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
 
-    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr_for_cal',
                           metric_score=median_snr,
                           metric_units='Median SNR')
 
-    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw}, intent={intent})
+
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
+
+
+@log_qa
+def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
+    """
+    Score the median achieved SNR for a given check source field and SpW.
+    Introduced for hifa_spwphaseup (PIPE-665).
+    """
+    intent = "CHECK"
+    if median_snr <= 0.3 * snr_threshold:
+        score = 0.7
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.5 * snr_threshold:
+        score = 0.8
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
+    elif median_snr <= 0.75 * snr_threshold:
+        score = 0.9
+        shortmsg = 'Low median SNR'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
+    else:
+        score = 1.0
+        shortmsg = 'Median SNR is ok'
+        longmsg = f'For {ms.basename}, field={field} (intent={intent}), SpW={spw}, the median achieved SNR' \
+                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
+
+    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr_for_check',
+                          metric_score=median_snr,
+                          metric_units='Median SNR')
+
+    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw}, intent={intent})
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
@@ -2008,42 +2108,6 @@ def score_decoherence_assessment(ms: MeasurementSet, phaserms_results, outlier_a
 
     return pqa.QAScore(base_score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=phase_stability_origin,
                        weblog_location=pqa.WebLogLocation.ACCORDION)
-
-
-@log_qa
-def score_phaseup_spw_median_snr_for_check(ms, field, spw, median_snr, snr_threshold):
-    """
-    Score the median achieved SNR for a given check source field and SpW.
-    Introduced for hifa_spwphaseup (PIPE-665).
-    """
-    if median_snr <= 0.3 * snr_threshold:
-        score = 0.7
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 30% of the phase SNR threshold ({snr_threshold:.1f}).'
-    elif median_snr <= 0.5 * snr_threshold:
-        score = 0.8
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 50% of the phase SNR threshold ({snr_threshold:.1f}).'
-    elif median_snr <= 0.75 * snr_threshold:
-        score = 0.9
-        shortmsg = 'Low median SNR'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is <= 75% of the phase SNR threshold ({snr_threshold:.1f}).'
-    else:
-        score = 1.0
-        shortmsg = 'Median SNR is ok'
-        longmsg = f'For {ms.basename}, field={field} (intent=CHECK), SpW={spw}, the median achieved SNR' \
-                  f' ({median_snr:.1f}) is > 75% of the phase SNR threshold ({snr_threshold:.1f}).'
-
-    origin = pqa.QAOrigin(metric_name='score_phaseup_spw_median_snr',
-                          metric_score=median_snr,
-                          metric_units='Median SNR')
-
-    applies_to = pqa.TargetDataSelection(vis={ms.basename}, field={field}, spw={spw})
-
-    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin, applies_to=applies_to)
 
 
 @log_qa
@@ -2717,7 +2781,6 @@ def select_deviation_masks(deviation_masks: dict, reduction_group_member: 'MSRed
     antenna_id = reduction_group_member.antenna_id
     return deviation_masks[ms_name].get((field_id, antenna_id, spw_id), [])
 
-
 def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
     """Convert channel ranges in MS coordinate to those in image coordinate.
 
@@ -2765,32 +2828,34 @@ def channel_ranges_for_image(edge: tuple[int, int], nchan: int, sideband: int, r
 
 @log_qa
 def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') -> list[pqa.QAScore]:
-    """Compute QA score based on the line detection result.
+    """Compute QA score based on detected lines and deviation/ATM mask overlaps.
 
     QA scores are evaluated based on the line detection result for
     each combination of spw and field individually. Scoring scheme of
     individual results are as follows:
 
-        - skip scoring if no lines were detected (no QAScore object)
-        - 0.55 if there are lines extends to edge channels
-        - 0.6 if there are lines that covers more than 1/3 of spw
-          bandwidth in total
-        - 1.0 otherwise
+        - Line detection:
+            - 0.55 if lines extend to edge channels
+            - 0.6 if lines cover more than 1/3 of SPW bandwidth
+            - 1.0 otherwise
+            - 0.8 if no lines were detected in any SPW/field (default)
 
-    If no lines were detected in any spws/fields so that no QAScore
-    objects were created, this function creates QAScore object with
-    the score of 0.8 and the message indicating that no lines were
-    detected. Therefore, returned list should contain at least one
-    QAScore object.
+        - Deviation masks:
+            - 0.65 if deviation masks are present but do not overlap with lines
+            - 0.88 if deviation masks overlap with detected spectral lines
 
-    In addition to the detected lines, deviation masks are also
-    examined. Score will be 0.65 if deviation masks with any widths
-    exist. Returned QAScore objects are the collection of scores from
-    both spectral lines and deviation masks but they can be
-    differentiated by the associated messages and/or metric units.
+        - Deviation mask and atmospheric lines:
+            - 0.88 if deviation masks overlap with atmospheric lines
+
+    Returned QAScore objects include metric values (channel ranges) and
+    informative messages that distinguish between spectral lines,
+    deviation masks, and atmospheric overlap. The function ensures that
+    at least one score is returned, even if no lines are detected.
 
     Relevant JIRA tickets:
         PIPE-2136
+        PIPE-2509
+        PIPE-2530
         PIPEREQ-304
 
     Args:
@@ -2799,22 +2864,75 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
 
     Returns:
         List of QAScore objects derived from line detection results
-        and/or deviation masks
+        and/or deviation masks, with atm lines, if available
     """
-    line_detection_scores = []
-    # deviation_mask_qa_data collects set of (spw_id, antenna_id, masked_ranges)
-    # data per field per EB
-    deviation_mask_qa_data = {}
-    deviation_mask_all = result.outcome['deviation_mask']
 
-    # edge parameter
-    # channels specified by edge will be excluded from resulting images
+    def mask_to_ranges(mask: np.ndarray) -> list[tuple[int,int]]:
+        """
+        Convert a boolean channel mask into a list of contiguous channel ranges.
+
+        Parameters:
+            mask (np.ndarray): 1D boolean array where True indicates
+                            channels to include.
+
+        Returns:
+            list[tuple[int, int]]: List of (start, end) tuples for each
+                                contiguous run of True values in the mask.
+        """
+        idx = np.where(mask)[0]
+        if idx.size == 0:
+            return []
+        groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
+        return [(grp[0], grp[-1]) for grp in groups]
+
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str, ms_name: str, field: str = '', spws: set[int] = set(), ants: set[str] = set()):
+        """
+        Build a QAScore object for score_sd_line_detection.
+
+        Parameters:
+            score_val (float): The numeric QA score.
+            msg (str): Description of the QA result.
+            metric_val (str): The metric value of score.
+            metric_units (str): Units for the metric_value.
+            ms_name (str): Name of the Measurement Set (EB).
+            field (str): Field name (optional).
+            spws (set[int]): Set of spectral window IDs (optional).
+            ants (set[str]): Set of antenna names (optional).
+
+        Returns:
+            pqa.QAScore: A fully populated QAScore with long and short messages,
+                        origin (metric name/score/units), and target selection.
+        """
+        spw_str = ', '.join(map(str, sorted(spws)))
+        ant_str = ', '.join(sorted(ants))
+        longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
+        shortmsg = f'{msg}.'
+        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
+                              metric_score=metric_val,
+                              metric_units=metric_units)
+        selection = pqa.TargetDataSelection(vis={ms_name}, spw=spws, field={field}, ant=ants, intent={'TARGET'})
+        return pqa.QAScore(score_val, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
+
+    # Precompute ATM masks per MS/SPW
+    atm_masks = {}
+    for bl in result.outcome['baselined']:
+        for mid in bl['members']:
+            rgm = reduction_group[bl['group_id']][mid]
+            ms = rgm.ms.origin_ms
+            if ms not in atm_masks:
+                spwsetup = sdatm.getSpecSetup(rgm.ms.basename)
+                spws = list(map(int, spwsetup['spwlist']))
+                tau = sdatm.getCalAtmData(rgm.ms.basename, spws, spwsetup)[-2]
+                skylines = {spw: sdatm.getskylines(tau[spw], spw, spwsetup, fraclevel=0.3, minpeaklevel=0.05) for spw in spws}
+                atm_masks[ms] = {spw: sdatm.skysel(skylines[spw], linestouse='all') for spw in spws}
+
+    line_detection_scores, dm_scores = [], []
+
+    # edge parameter for image channel mapping
     _edge = result.outcome['edge']
     edge = (_edge, _edge) if isinstance(_edge, int) else tuple(_edge[:2])
 
-    # enumeration to represent overlap status
-    Overlap = enum.Enum('Overlap', [('NO', 0), ('PARTIAL', 1), ('FULL', 2)])
-
+    # Process each baseline for line detection and DM
     for bl in result.outcome['baselined']:
         reduction_group_id = bl['group_id']
         reduction_group_desc = reduction_group[reduction_group_id]
@@ -2825,51 +2943,16 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
         lines = get_line_ranges(bl['lines'])
-
+        
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
-        # line mask for checking overlap with deviation mask
-        # 1: channels detected as line, 0: line-free channels
-        line_mask = np.zeros(nchan, dtype=np.uint8)
-        for left, right in lines:
-            line_mask[max(0, left):right + 1] = 1
-
-        # deviation mask
-        for member_id in member_list:
-            LOG.debug('Processing member %s', member_id)
-
-            reduction_group_member = reduction_group_desc[member_id]
-            deviation_masks = select_deviation_masks(
-                deviation_mask_all, reduction_group_member
-            )
-
-            if deviation_masks:
-                data_per_field = deviation_mask_qa_data.setdefault(field_name, collections.defaultdict(list))
-                spw_id = reduction_group_member.spw_id
-                ms_name = reduction_group_member.ms.origin_ms
-                antenna_name = reduction_group_member.antenna_name
-                is_overlap = []
-                for left, right in deviation_masks:
-                    mask_range = line_mask[left:right + 1]
-                    if np.all(mask_range == 1):
-                        overlap = Overlap.FULL
-                    elif np.any(mask_range == 1):
-                        overlap = Overlap.PARTIAL
-                    else:
-                        overlap = Overlap.NO
-                    is_overlap.append(overlap)
-                    LOG.debug('Deviation mask [%s, %s], overlap is %s', left, right, overlap)
-
-                data_per_field[ms_name].append((spw_id, antenna_name, deviation_masks, is_overlap))
-
-        # spectral lines
+        # spectral-line scoring
         if len(lines) > 0:
             # sort lines by left channel
             lines.sort(key=operator.itemgetter(0))
-
             is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
             is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
-
+            
             if is_edge_line and is_wide_line:
                 score = 0.55  # min(0.55, 0.6)
                 msg = 'Edge and wide lines were detected'
@@ -2883,122 +2966,71 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 # detected lines do not harm baseline subtraction
                 score = 1.0
                 msg = 'Line ranges were detected'
-
-            spw_ids = set(reduction_group_desc[m].spw_id for m in member_list)
-            spw_desc = ', '.join(map(str, spw_ids))
-            shortmsg = f'{msg}.'
-            longmsg = f'{msg} in Field {field_name}, Spw {spw_desc}.'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) of detected lines')
-            selection = pqa.TargetDataSelection(spw=set(spw_desc.split(', ')),
-                                                field=set([field_name]),
-                                                intent={'TARGET'})
-            line_detection_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
+            line_detection_scores.append(make_score(score, msg, metric_value, 
+                                          'Channel range(s) of detected lines',
+                                          reduction_group_desc[member_list[0]].ms.origin_ms, field_name,
+                                          {reduction_group_desc[m].spw_id for m in member_list},
+                                          {reduction_group_desc[m].antenna_name for m in member_list}))
 
+        # deviation-mask and ATM overlap
+        for mid in member_list:
+            rgm = reduction_group_desc[mid]
+            dmlist = select_deviation_masks(result.outcome['deviation_mask'], rgm)
+            if not dmlist:
+                continue
+            ndm = len(dmlist)
+            ms, spw = rgm.ms.origin_ms, rgm.spw_id
+            # build masks
+            dm_masks = np.zeros((ndm, nchan), bool)
+            for i, (l, r) in enumerate(dmlist):
+                dm_masks[i, l:r+1] = True
+            line_mask = np.zeros(nchan, bool)
+            for l, r in lines:
+                line_mask[l:r+1] = True
+            atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
+            
+            # DM scoring
+            for dm_mask in dm_masks:
+                ranges = mask_to_ranges(dm_mask)
+                unit = 'Channel range(s) of deviation mask'
+                dm_atm = dm_mask & atm_mask
+                if np.any(line_mask & dm_mask):
+                    score = 0.88 
+                    msg = 'Deviation mask overlapped with spectral lines'
+                    LOG.debug(
+                        'Deviation masks overlap with lines. '
+                        'Set deviation mask QA score to %s', score
+                    ) 
+                # ATM-DM overlap
+                elif np.any(dm_atm):
+                    score = 0.88
+                    msg = 'Deviation mask overlapped with atmospheric lines'
+                    unit = 'Channel range(s) of DM/ATM/Spectral overlap'
+                    LOG.debug(
+                        'Deviation mask overlapped with atmospheric lines'
+                        'Set atm overlap QA score to %s', score
+                    )
+                else:
+                    score = 0.65 
+                    msg = 'Deviation mask was triggered'
+                    LOG.debug(
+                        'Found deviation mask with no overlap'
+                        'Set deviation mask QA score to %s', score
+                    )
+                metric = ','.join(f'{l}~{r}' for l, r in ranges) 
+                dm_scores.append(make_score(score, msg, metric, unit,
+                                        ms, field_name, {spw}, {rgm.antenna_name}))                           
+        
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        score = 0.8
-        longmsg = 'No line ranges were detected in all SPWs.'
-        shortmsg = 'No line ranges were detected in all SPWs.'
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
+                                    'N/A', 'Channel range(s) of detected lines',
+                                    next(iter(atm_masks))))
 
-        origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                              metric_score='N/A',
-                              metric_units='Channel range(s) of detected lines')
-        selection = pqa.TargetDataSelection(intent={'TARGET'})
-        line_detection_scores.append(
-            pqa.QAScore(
-                score, longmsg=longmsg, shortmsg=shortmsg,
-                origin=origin, applies_to=selection
-            )
-        )
-
-    # dictionary for spw setup
-    spw_config_dict = {}
-    for reduction_group_desc in reduction_group.values():
-        for reduction_group_member in reduction_group_desc:
-            ms_name = reduction_group_member.ms.origin_ms
-            spw = reduction_group_member.spw
-            spw_id = spw.id
-            nchan = spw.num_channels
-            sideband = int(spw.sideband)
-            dict_for_ms = spw_config_dict.setdefault(ms_name, {})
-            dict_for_spw = dict_for_ms.setdefault(spw_id, {})
-            dict_for_spw['nchan'] = nchan
-            dict_for_spw['sideband'] = sideband
-
-    # generate deviation mask QA scores with merged spws and antennas
-    deviation_mask_scores = []
-    for field_name, data_per_ms in deviation_mask_qa_data.items():
-        for ms_name, data in data_per_ms.items():
-            spw_ids = {x[0] for x in data}
-            antenna_names = {x[1] for x in data}
-            is_overlaps = {y for x in data for y in x[3]}
-            LOG.debug('Field %s, MS %s, spw %s, is_overlaps: %s', field_name, ms_name, spw_ids, is_overlaps)
-
-            # score depends on whether deviation masks overlap with lines
-            # see PIPEREQ-293 for detail
-            if Overlap.NO in is_overlaps:
-                # by default score is 0.65
-                score = 0.65
-                msg = 'Deviation mask was triggered'
-                LOG.debug(
-                    'Found deviation mask with no overlap. '
-                    'Set deviation mask QA score to %s', score
-                )
-            elif is_overlaps.intersection({Overlap.PARTIAL, Overlap.FULL}):
-                # score is 0.88 if all deviation masks partially/fullly
-                # overlap with detected line
-                score = 0.88
-                msg = 'Deviation mask overlapped with spectral lines was triggered'
-                LOG.debug(
-                    'All deviation masks overlap with lines. '
-                    'Set deviation mask QA score to %s', score
-                )
-            else:
-                raise ValueError('Unexpected overlap status')
-
-            shortmsg = f'{msg}.'
-            spw_string = ', '.join(map(str, sorted(spw_ids)))
-            antenna_string = ', '.join(sorted(antenna_names))
-            longmsg = f'{msg} in EB {ms_name}, Field {field_name}, Spw {spw_string}, Antenna {antenna_string}.'
-
-            # get list of unique mask ranges per spw
-            deviation_masks_per_spw = collections.defaultdict(set)
-            for spw_id, _, deviation_mask, _ in data:
-                deviation_masks_per_spw[spw_id].update(map(tuple, deviation_mask))
-
-            # metric value format: spw0:c0~c1:c2~c3,spw1:c4~c5
-            deviation_masks_for_image = []
-            for spw_id, deviation_masks in deviation_masks_per_spw.items():
-                spw_config = spw_config_dict[ms_name][spw_id]
-                nchan = spw_config['nchan']
-                sideband = spw_config['sideband']
-                devmasks_image = channel_ranges_for_image(edge, nchan, sideband, sorted(deviation_masks))
-                deviation_masks_for_image.append((spw_id, devmasks_image))
-
-            metric_value = ','.join([
-                f'{spw_id}:' + ';'.join([f'{left}~{right}' for left, right in sorted(deviation_masks)])
-                for spw_id, deviation_masks in deviation_masks_for_image
-            ])
-            origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
-                                  metric_score=metric_value,
-                                  metric_units='Channel range(s) possibly affected by instrumental instabilities')
-            selection = pqa.TargetDataSelection(vis=set([ms_name]),
-                                                spw=spw_ids,
-                                                field=set([field_name]),
-                                                ant=antenna_names,
-                                                intent={'TARGET'})
-            deviation_mask_scores.append(
-                pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
-            )
-
-    return line_detection_scores + deviation_mask_scores
+    return line_detection_scores + dm_scores
 
 
 
@@ -3327,7 +3359,56 @@ def score_sd_skycal_elevation_difference(ms, resultdict, threshold=3.0):
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, vis=ms.basename)
 
 
-def generate_metric_mask(context, result, cs, mask):
+def log_edge_channels(
+        imagename: str,
+        nchan: int,
+        edge_count_lower: int,
+        edge_count_upper: int
+):
+    """Print proper log message for detected edge channels.
+
+    Args:
+        imagename: Name of the input image
+        nchan: Number of channels in the image
+        edge_count_lower: Number of edge channels
+                          excluded from the lower frequency side
+        edge_count_upper: Number of edge channels
+                          excluded from the higher frequency side
+    """
+    LOG.debug("nchan %s: edge lower %s, upper %s",
+              nchan, edge_count_lower, edge_count_upper)
+    edge_chan_list = []
+    # lower edge channels
+    if edge_count_lower == 1:
+        edge_chan_list.append("0")
+    elif edge_count_lower > 1:
+        edge_chan_list.append(f"0~{edge_count_lower - 1}")
+
+    # upper edge channels
+    if edge_count_lower == nchan:
+        # all the channels are invalid, should be covered
+        # by edge_count_lower alone
+        pass
+    elif edge_count_upper == 1:
+        edge_chan_list.append(f"{nchan - 1}")
+    elif edge_count_upper > 1:
+        edge_chan_list.append(
+            f"{nchan - edge_count_upper}~{nchan - 1}"
+        )
+
+    # emit log
+    LOG.info(
+        f"masked pixel QA for {imagename}: "
+        f"detected edge channels: {';'.join(edge_chan_list)}"
+    )
+
+
+def generate_metric_mask(
+        context: Context,
+        result: SDImagingResultItem,
+        cs: coordsys,
+        mask: np.ndarray
+) -> np.ndarray:
     """
     Generate boolean mask array for metric calculation in
     score_sdimage_masked_pixels. If image pixel contains
@@ -3335,11 +3416,10 @@ def generate_metric_mask(context, result, cs, mask):
     False.
 
     Arguments:
-        context {Context} -- Pipeline context
-        result {SDImagingResultItem} -- result item created by
-                                        hsd_imaging
-        cs {coordsys} -- CASA coordsys tool
-        mask {bool array} -- image mask
+        context: Pipeline context
+        result: result item created by hsd_imaging
+        cs: CASA coordsys tool
+        mask: image mask
 
     Returns:
         bool array -- metric mask (True: valid, False: invalid)
@@ -3354,124 +3434,184 @@ def generate_metric_mask(context, result, cs, mask):
     vspw_list = np.asarray(outcome['assoc_spws'])
 
     mses = context.observing_run.measurement_sets
-    ms_list = [mses[i] for i in file_index]
-    spw_list = np.asarray([context.observing_run.virtual2real_spw_id(i, m) for i, m in zip(vspw_list, ms_list)])
+    # avoid processing the same MS multiple times
+    unique_file_index = np.unique(file_index)
 
-    ra = []
-    dec = []
-    ofs_ra = []
-    ofs_dec = []
-    online_flag = []
+    refval = cs.referencevalue()
+    units = cs.units()
+    metric_mask = np.zeros(imshape, dtype=bool)
 
-    for i in range(len(ms_list)):
-        origin_basename = os.path.basename(ms_list[i].origin_ms)
-        datatable_name = os.path.join(context.observing_run.ms_datatable_name, origin_basename)
+    for ms_id in unique_file_index:
+        target_ms = mses[ms_id]
+        origin_basename = os.path.basename(target_ms.origin_ms)
+        datatable_name = os.path.join(
+            context.observing_run.ms_datatable_name,
+            origin_basename
+        )
         rotable_name = os.path.join(datatable_name, 'RO')
-        rwtable_name = os.path.join(datatable_name, 'RW')
-        _index = np.where(file_index == file_index[i])
+        _index = np.where(file_index == ms_id)
         if len(_index[0]) == 0:
             continue
 
         _antlist = antenna_list[_index]
         _fieldlist = field_list[_index]
-        _spwlist = spw_list[_index]
+        _vspwlist = vspw_list[_index]
+
+        # Here, we are trying to process data with the same field
+        # and spw in one MS but from different antennas. Therefore,
+        # field and spw should be unique in the list.
+        field_id = _fieldlist[0]  # should be unique
+        if not np.all(_fieldlist == field_id):
+            LOG.warning(
+                f"Multiple fields found in MS {target_ms.basename}:"
+                f" {_fieldlist}. Skip evaluating."
+            )
+            continue
+        vspw_id = _vspwlist[0]  # should be unique
+        if not np.all(_vspwlist == vspw_id):
+            LOG.warning(
+                f"Multiple SPWs found in MS {target_ms.basename}:"
+                f" {_vspwlist}. Skip evaluating."
+            )
+            continue
+        spw_id = context.observing_run.virtual2real_spw_id(vspw_id, target_ms)
 
         with casa_tools.TableReader(rotable_name) as tb:
-            unit_ra = tb.getcolkeyword('OFS_RA', 'UNIT')
-            unit_dec = tb.getcolkeyword('OFS_DEC', 'UNIT')
-            tsel = tb.query('SRCTYPE==0&&ANTENNA IN {}&&FIELD_ID IN {}&&IF IN {}'.format(utils.list_to_str(_antlist), utils.list_to_str(_fieldlist), utils.list_to_str(_spwlist)))
-            ofs_ra.extend(tsel.getcol('OFS_RA'))
-            ofs_dec.extend(tsel.getcol('OFS_DEC'))
-            rows = tsel.rownumbers()
+            taql = f'SRCTYPE==0 && ANTENNA IN {utils.list_to_str(_antlist)} && FIELD_ID == {field_id} && IF == {spw_id}'
+            LOG.debug("MS: %s, TaQL string: %s", target_ms.basename, taql)
+            tsel = tb.query(taql)
+            ofs_ra = tsel.getcol('OFS_RA')
+            ofs_dec = tsel.getcol('OFS_DEC')
+            origin_ms_rows = tsel.getcol('ROW')
             tsel.close()
 
-        with casa_tools.TableReader(rwtable_name) as tb:
-            permanent_flag = tb.getcol('FLAG_PERMANENT').take(rows, axis=2)
-            online_flag.extend(permanent_flag[0, datatable.OnlineFlagIndex])
+        if org_direction is None:
+            ra_deg = ofs_ra
+            dec_deg = ofs_dec
+        else:
+            ra_deg = np.empty(len(ofs_ra), dtype=float)
+            dec_deg = np.empty(len(ofs_dec), dtype=float)
+            for i, rr, dd in zip(range(len(ofs_ra)), ofs_ra, ofs_dec):
+                shift_ra, shift_dec = direction_recover(rr, dd, org_direction)
+                ra_deg[i] = shift_ra
+                dec_deg[i] = shift_dec
 
-    if org_direction is None:
-        ra = np.asarray(ofs_ra)
-        dec = np.asarray(ofs_dec)
-    else:
-        for rr, dd in zip(ofs_ra, ofs_dec):
-            shift_ra, shift_dec = direction_recover( rr, dd, org_direction )
-            ra.append(shift_ra)
-            dec.append(shift_dec)
-        ra = np.asarray(ra)
-        dec = np.asarray(dec)
-    online_flag = np.asarray(online_flag)
+        rowmap = sdutils.make_row_map_between_ms(
+            context.observing_run.get_ms(target_ms.origin_ms),
+            target_ms.name
+        )
 
-    del ofs_ra, ofs_dec
+        with casa_tools.TableReader(target_ms.name) as tb:
+            flag = map(
+                lambda irow: tb.getcell('FLAG', rowmap[irow]),
+                origin_ms_rows
+            )
+            # invert flag: True for valid data
+            ms_mask = map(
+                lambda f: np.logical_not(f),
+                flag
+            )
+            # data will contribute to the image if all polarizations are valid
+            ms_mask_collapsed_pol = map(
+                lambda f: np.all(f, axis=0),
+                ms_mask
+            )
+            # data will contribute to the image if there are any valid channels
+            ms_mask_per_row = map(
+                lambda f: np.any(f),
+                ms_mask_collapsed_pol
+            )
+            # validity mask for each row: True for valid data
+            validity_mask = np.fromiter(ms_mask_per_row, dtype=bool)
 
-    metric_mask = np.empty(imshape, dtype=bool)
-    metric_mask[:] = False
+        # world-pixel conversion using cs.topixelmany
+        ra_deg = ra_deg[validity_mask]
+        dec_deg = dec_deg[validity_mask]
 
-    qa = casa_tools.quanta
-
-    # template measure for world-pixel conversion
-    # 2019/06/03 TN
-    # Workaround for memory consumption issue (PIPE-362)
-    # cs.topixel consumes some amount of memory and it accumulates,
-    # too many call of cs.topixel results in unexpectedly large amount of
-    # memory usage. To avoid cs.topixel, approximate mapping to pixel
-    # coordinate is done manually.
-    blc = cs.toworld([-0.5, -0.5, 0, 0], format='q')
-    brc = cs.toworld([imshape[0] - 0.5, -0.5, 0, 0], format='q')
-    tlc = cs.toworld([-0.5, imshape[1] - 0.5, 0, 0], format='q')
-    trc = cs.toworld([imshape[0] - 0.5, imshape[1] - 0.5, 0, 0], format='q')
-    #print('blc {} {}'.format(blc['quantity']['*1'], blc['quantity']['*2']))
-    #print('brc {} {}'.format(brc['quantity']['*1'], brc['quantity']['*2']))
-    #print('tlc {} {}'.format(tlc['quantity']['*1'], tlc['quantity']['*2']))
-    #print('trc {} {}'.format(trc['quantity']['*1'], trc['quantity']['*2']))
-    #print('cen {} {}'.format(cen['quantity']['*1'], cen['quantity']['*2']))
-    cpi = qa.convert(qa.quantity(180, 'deg'), unit_ra)['value']
-    s0 = (qa.convert(tlc['quantity']['*1'], unit_ra)['value'] - qa.convert(blc['quantity']['*1'], unit_ra)['value']) \
-        / (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] - qa.convert(blc['quantity']['*2'], unit_dec)['value'])
-    t0 = ((qa.convert(blc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
-    s1 = (qa.convert(trc['quantity']['*1'], unit_ra)['value'] - qa.convert(brc['quantity']['*1'], unit_ra)['value']) \
-        / (qa.convert(trc['quantity']['*2'], unit_dec)['value'] - qa.convert(brc['quantity']['*2'], unit_dec)['value'])
-    t1 = ((qa.convert(brc['quantity']['*1'], unit_ra)['value']) + cpi) % (cpi * 2) - cpi
-    ymax = (qa.convert(tlc['quantity']['*2'], unit_dec)['value'] + qa.convert(trc['quantity']['*2'], unit_dec)['value']) / 2
-    ymin = (qa.convert(blc['quantity']['*2'], unit_dec)['value'] + qa.convert(brc['quantity']['*2'], unit_dec)['value']) / 2
-    dy = (ymax - ymin) / imshape[1]
-    #print('s0 {} t0 {} s1 {} t1 {}'.format(s0, t0, s1, t1))
-    #print('ymax {} ymin {} dy {}'.format(ymax, ymin, dy))
-    #world = cs.toworld([0, 0, 0, 0], format='m')
-    px = np.empty_like(ra)
-    py = np.empty_like(dec)
-    px[:] = -1
-    py[:] = -1
-    for i, (x, y, f) in enumerate(zip(ra, dec, online_flag)):
-        if f != 1:
-            # PIPE-439 flagged pointing data are not taken into account
+        # skip if no valid data exists
+        if len(ra_deg) == 0:
+            LOG.info(
+                f'No valid data in MS {target_ms.basename},'
+                f' field {field_id}, spw {spw_id}, antenna {_antlist}.'
+                f' Excluding the MS from mask evaluation.'
+            )
             continue
 
-        #world['measure']['direction']['m0']['value'] = qa.quantity(x, unit_ra)
-        #world['measure']['direction']['m1']['value'] = qa.quantity(y, unit_dec)
-        #p = cs.topixel(world)
-        #px[i] = p['numeric'][0]
-        #py[i] = p['numeric'][1]
-        y0 = y
-        xmin = s0 * (y - y0) + t0
-        xmax = s1 * (y - y0) + t1
-        dx = (xmax - xmin) / imshape[0]
-        #print('xmin {} xmax {} dx {}'.format(xmin, xmax, dx))
-        #print('x {} y {}'.format(x, y))
-        py[i] = (y - ymin) / dy - 0.5
-        px[i] = (x - xmin) / dx - 0.5
-        #print('WORLD {} {} <-> PIXEL {} {}'.format(x, y, px[i], py[i]))
+        # unit should be either 'rad' or 'deg'
+        deg2rad = np.pi / 180.0
+        ra = ra_deg * deg2rad if units[0] == 'rad' else ra_deg
+        dec = dec_deg * deg2rad if units[1] == 'rad' else dec_deg
+        wpol = np.zeros(len(ra), dtype=float)
+        wfreq = np.zeros(len(ra), dtype=float) + refval['numeric'][3]
+        world_array = np.stack((ra, dec, wpol, wfreq))
+        pixel_array = cs.topixelmany(world_array)['numeric']
+        px = pixel_array[0]
+        py = pixel_array[1]
 
-    for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
-        #print(x, y)
-        if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
-            metric_mask[x, y, :, :] = True
+        for x, y in zip(map(int, np.round(px)), map(int, np.round(py))):
+            if 0 <= x and x <= imshape[0] - 1 and 0 <= y and y <= imshape[1] - 1:
+                metric_mask[x, y, :, :] = True
 
     # exclude edge channels
-    edge_channels = [i for i in range(imshape[3]) if np.all(mask[:, :, :, i] == False)]
-    LOG.debug('edge channels: {}'.format(edge_channels))
-    metric_mask[:, :, :, edge_channels] = False
+    imagename = outcome['image'].imagename
+    nchan = metric_mask.shape[3]
+    edge_count_lower, edge_count_upper = detect_edge_channels(mask)
+    log_edge_channels(imagename, nchan, edge_count_lower, edge_count_upper)
+    if edge_count_lower > 0:
+        metric_mask[:, :, :, :edge_count_lower] = False
+    if edge_count_upper > 0:
+        metric_mask[:, :, :, -edge_count_upper:] = False
 
     return metric_mask
+
+
+def detect_edge_channels(mask: np.ndarray) -> tuple[int, int]:
+    """Detect list of edge channels to be excluded from QA evaluation.
+
+    There are a few edge channels that have less valid spatial pixels
+    than other spectral channels, probably due to the effect of frame
+    conversion from TOPO to LSRK with progressively varying time stamp.
+    Raster OTF scan without frequency tracking can cause this effect.
+
+    Other possible reason is edge channel flagging by hsd_flagdata
+    and/or hsd_tsysflag.
+
+    This function detects such edge channels by calculating the median
+    number of valid spatial pixels in each channel. Consecutive
+    channels with less valid spatial pixels than the median are
+    regarded as edge channels.
+
+    Args:
+        mask: boolean numpy array of shape (nx, ny, npol, nchan)
+
+    Returns:
+        Number of edge channels excluded from lower and upper
+        side of the spectral axis
+    """
+    num_valid_pixels = np.sum(mask, axis=(0, 1, 2))
+    nchan = len(num_valid_pixels)
+    # PIPE-1727 threshold for edge channels should be strict,
+    # no tolerance using stddev nor MAD
+    median_num_valid_pixels = np.median(num_valid_pixels)
+    LOG.debug(
+        "typical number of valid pixels %s",
+        median_num_valid_pixels
+    )
+    threshold = median_num_valid_pixels
+    edge_count_lower = 0
+    for i in range(nchan):
+        if num_valid_pixels[i] < threshold:
+            edge_count_lower += 1
+        else:
+            break
+    edge_count_upper = 0
+    for i in range(nchan - 1, -1, -1):
+        if num_valid_pixels[i] < threshold:
+            edge_count_upper += 1
+        else:
+            break
+
+    return edge_count_lower, edge_count_upper
 
 
 def direction_recover( ra, dec, org_direction ):
@@ -3491,10 +3631,9 @@ def direction_recover( ra, dec, org_direction ):
 
 
 @log_qa
-def score_sdimage_masked_pixels(context, result):
+def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """
     Evaluate QA score based on the fraction of masked pixels in image.
-
 
     Requirements (PIPE-249):
         - calculate the number of masked pixels in image
@@ -3506,8 +3645,8 @@ def score_sdimage_masked_pixels(context, result):
             *linearly interpolate between 0.5 and 0.0
 
     Arguments:
-        context {Context} -- Pipeline context
-        result {SDImagingResultItem} -- Imaging result instance
+        context: Pipeline context
+        result: Imaging result instance
 
     Returns:
         QAScore -- QAScore instance holding the score based on number of
@@ -3536,7 +3675,6 @@ def score_sdimage_masked_pixels(context, result):
         # metric_mask is boolean array that defines the region to be excluded
         #    True: included in the metric calculation
         #   False: excluded from the metric calculation
-        # TODO: decide if any margin is necessary
         metric_mask = generate_metric_mask(context, result, cs, mask)
     finally:
         # done using coordsys tool
@@ -4539,7 +4677,7 @@ def score_pointing_outlier(
     return qa_scores
 
 @log_qa
-def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
+def score_syspowerdata(data: dict) -> list[pqa.QAScore]:
     """Calculates QA score as the minimum of per-band scores based on data points outside 0.7-1.2 range.
 
         For each band:
@@ -4574,7 +4712,7 @@ def score_syspowerdata(data: dict) -> List[pqa.QAScore]:
     return qascores
 
 @log_qa
-def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
+def score_solint(short_solint:dict, long_solint:dict) -> list[pqa.QAScore]:
     """Compute a QA score by comparing short and long solints for each band.
 
     If any band has a short solint value greater than the corresponding long solint,
@@ -4608,7 +4746,7 @@ def score_solint(short_solint:dict, long_solint:dict) -> List[pqa.QAScore]:
 
 
 @log_qa
-def score_longsolint(context, result) -> List[pqa.QAScore]:
+def score_longsolint(context, result) -> list[pqa.QAScore]:
     bandlist = []
     calscantime = []
     long_solint = result.longsolint

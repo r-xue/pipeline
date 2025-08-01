@@ -283,8 +283,8 @@ class Hanning(basetask.StandardTaskTemplate):
             return False
 
         to_lsrk = suTool.advisechansel(msname=ms_info.name, spwselection=spw, getfreqrange=True, freqframe='LSRK')
-        freq_low = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqstart'], 'Hz')))
-        freq_high = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqend'], 'Hz')))
+        freq_low = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqstart'], 'Hz'))[0])
+        freq_high = float(qaTool.getvalue(qaTool.convert(to_lsrk['freqend'], 'Hz'))[0])
         LOG.debug("Freq low: {}; Freq high: {}".format(freq_low, freq_high))
 
         for value in maser_dict.values():
