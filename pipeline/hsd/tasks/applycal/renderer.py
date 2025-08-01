@@ -122,11 +122,11 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             amp_vs_time_summary_plots[vis] = []
             amp_vs_time_detail_plots[vis] = []
 
-            if r.amp_vs_time_summary_plots is not None:
+            if r.amp_vs_time_summary_plots:
                 summary_plots = r.amp_vs_time_summary_plots
                 amp_vs_time_summary_plots[vis].append(["", summary_plots])
 
-            if r.amp_vs_time_detail_plots is not None:
+            if r.amp_vs_time_detail_plots:
                 detail_plots = r.amp_vs_time_detail_plots
                 amp_vs_time_detail_plots[vis].extend(detail_plots)
 
