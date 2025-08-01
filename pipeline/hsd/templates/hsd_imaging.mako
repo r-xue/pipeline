@@ -331,7 +331,7 @@ It generates an image combined spectral data from whole antenna as well as image
                     </a>
                                         <div class="caption">
                                                 <h4>${get_spw_exp(plot.parameters['spw'])}</h4>
-                                                <p>Diagnostic plot ffor possible missed line channels of Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
+                                                <p>Diagnostic plot for possible missed line channels of Field ${field} ${get_spw_inline_desc(plot.parameters['spw'])}.</p>
                                         </div>
                                 </div>
                         </div>
