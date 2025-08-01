@@ -588,7 +588,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # subsequent SNR-based narrow-to-wide SpW mapping. For the CHECK and
             # PHASE intents, use the scan-based SNR limit; for all other
             # calibrator intents, use the integration-based SNR limit.
-            snrlimit = inputs.phasesnr if intent in {'CHECK', 'PHASE'} else inputs.intphasesnr
+            snrlimit = inputs.phasesnr if intent in WEAK_CALIBRATOR_INTENTS else inputs.intphasesnr
 
             # No SNR estimates available, default to simple narrow-to-wide SpW
             # mapping and stick to default values.
