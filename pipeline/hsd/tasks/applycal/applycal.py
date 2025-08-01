@@ -245,6 +245,8 @@ class SerialSDApplycal(SerialApplycal):
         context = self.inputs.context
         msobj = context.observing_run.get_ms(self.inputs.vis)
 
+        result.amp_vs_time_summary_plots = None
+        result.amp_vs_time_detail_plots = None
         if not basetask.DISABLE_WEBLOG:
             # mkdir stage_dir if it doesn't exist
             stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
@@ -265,12 +267,8 @@ class SerialSDApplycal(SerialApplycal):
                     result,
                     display.ApplyCalSingleDishPlotmsAntSpwComposite
                 )
-
                 result.amp_vs_time_summary_plots = amp_vs_time_summary_plots
                 result.amp_vs_time_detail_plots = amp_vs_time_detail_plots
-        else:
-            result.amp_vs_time_summary_plots = None
-            result.amp_vs_time_detail_plots = None
 
         return result
 
@@ -290,6 +288,7 @@ class SerialSDApplycal(SerialApplycal):
         msobj = context.observing_run.get_ms(self.inputs.vis)
         plotter = plotter_cls(context, result, msobj, xaxis, yaxis, **kwargs)
         plots = plotter.plot()
+        LOG.info("plots in sd_plots_for_result() applycal.py = {}".format(plots))  ##
 
         return plots
 
