@@ -537,6 +537,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # The list of combined SpW SNRs is empty; only updated if SpW
         # combination is necessary; needed for SNR info shown in task weblog.
         combined_snrs = []
+        calc_combined_snrs = []
         # The SNR threshold used is initially unknown, and only updated if an
         # SNR-based optimal solint gets computed; needed in task weblog.
         snr_thr_used = None
@@ -676,9 +677,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                             intent=intent,
                             mappingmode='combine'
                         )
-                        combined_snrs = self._do_combined_snr_test(
-                            snr_test_result.spw_ids,
-                            snr_test_result.snr_values,
+                        combined_snrs, calc_combined_snrs = self._process_combined_snrs(
+                            snr_test_result,
+                            calc_snr_result,
                             spwmap
                         )
 
@@ -709,9 +710,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     intent=intent,
                     mappingmode='combine'
                 )
-                combined_snrs = self._do_combined_snr_test(
-                    snr_test_result.spw_ids,
-                    snr_test_result.snr_values,
+                combined_snrs, calc_combined_snrs = self._process_combined_snrs(
+                    snr_test_result,
+                    calc_snr_result,
                     spwmap
                 )
 
@@ -769,12 +770,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                         intent=intent,
                         mappingmode='combine'
                     )
-                    combined_snrs = self._do_combined_snr_test(
-                        snr_test_result.spw_ids,
-                        snr_test_result.snr_values,
+                    combined_snrs, calc_combined_snrs = self._process_combined_snrs(
+                        snr_test_result,
+                        calc_snr_result,
                         spwmap
                     )
-
 
         # For the "hm_spwmapmode=combine" spw mapping mode, force the use of
         # SpW combination. PIPE-2499: still attempt to find optimal values for
@@ -817,9 +817,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                     intent=intent,
                     mappingmode='combine'
                 )
-                combined_snrs = self._do_combined_snr_test(
-                    snr_test_result.spw_ids,
-                    snr_test_result.snr_values,
+                combined_snrs, calc_combined_snrs = self._process_combined_snrs(
+                    snr_test_result,
+                    calc_snr_result,
                     spwmap
                 )
 
@@ -855,7 +855,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         snr_info = self._get_snr_info(snr_test_result, combined_snrs)
 
         # transform estimated SNRs into same structure for easier handling in renderer
-        calc_snr_info = self._get_snr_info(calc_snr_result, combined_snrs)
+        calc_snr_info = self._get_snr_info(calc_snr_result, calc_combined_snrs)
 
         return SpwMapping(combine, spwmap, snr_info, snr_thr_used, solint, gaintype, calc_snr_info)
 
@@ -1798,6 +1798,38 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         snr_result.snr_values = new_snrs
         snr_result.is_good_snr = good_snrs
+
+    def _process_combined_snrs(
+            self,
+            snr_result: SNRTestResult,
+            calc_snr_result: SNRTestResult,
+            spwmap: list[int]
+    ) -> tuple[dict[str, tuple[list[int], float]], dict[str, tuple[list[int], float]]]:
+        """
+        Process SNR results for combined spws for both empirical and catalogue SNRs
+        using the same spwmap.
+
+        Args:
+            snr_result: SNRTestResult object containing empirical SNR values
+            calc_snr_result: SNRTestResult object containing catalogue SNR values
+            spwmap: list representing spectral window mapping
+
+        Returns:
+            tuple: (combined_snrs, calc_combined_snrs) containing the combined SNR results
+        """
+        combined_snrs = self._do_combined_snr_test(
+            snr_result.spw_ids,
+            snr_result.snr_values,
+            spwmap
+        )
+
+        calc_combined_snrs = self._do_combined_snr_test(
+            calc_snr_result.spw_ids,
+            calc_snr_result.snr_values,
+            spwmap
+        )
+
+        return combined_snrs, calc_combined_snrs
 
 
 class SpwPhaseupResults(basetask.Results):
