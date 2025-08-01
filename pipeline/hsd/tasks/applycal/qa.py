@@ -59,5 +59,5 @@ class SDApplycalListQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(collated)
 
 
-aqua_exporter = aqua.xml_generator_for_metric('%ApplycalFlags', '{:0.3%}')
+aqua_exporter = aqua.xml_generator_for_metric('%AmpVsTimePlotQuality', '{:0.3%}')
 aqua.register_aqua_metric(aqua_exporter)
