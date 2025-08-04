@@ -34,6 +34,7 @@ from matplotlib.offsetbox import AnnotationBbox, HPacker, TextArea
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks, casa_tools, filenamer
 from pipeline.infrastructure.utils import get_stokes
 
@@ -140,20 +141,41 @@ class SkyDisplay(object):
 
         return None
 
-    def _get_vla_band(self, context, miscinfo):
+    def _get_vla_band(self, context, miscinfo) -> str | None:
         """Get the VLA band string, only for VLA aggregated cont imaging."""
-
         last_result = context.results[-1]
-        if last_result.taskname == 'hif_makeimages':
-            if (context.results[-1].results[0].imaging_mode in ('VLA', 'EVLA', 'JVLA') and
-                    context.results[-1].results[0].specmode == 'cont'):
-                ms = context.observing_run.get_measurement_sets()[0]  # only 1 ms for VLA
-                spw2band = ms.get_vla_spw2band()
-                bands = {spw2band[int(spw)] for spw in miscinfo['virtspw'].split(',') if int(spw) in spw2band}
-                # VLA imaging only happens per-band and you will likely end up with one-element set
-                if bands:
-                    return ','.join(bands)
-        return None
+
+        # Check if we should use band notation based on task and imaging mode
+        use_band_notation = (
+            # hif_makeimage VLA-PI cont imaging sky plots
+            (
+                last_result.taskname == 'hif_makeimages'
+                and last_result.results[0].imaging_mode in {'VLA', 'EVLA', 'JVLA'}
+                and miscinfo.get('specmode') == 'cont'
+            )
+            or
+            # hifv_pbcor VLA-PI cont imaging sky plots
+            (
+                last_result.taskname == 'hifv_pbcor'
+                and context.imaging_mode is None
+                and miscinfo.get('specmode') == 'cont'
+            )
+        )
+
+        if not use_band_notation:
+            return None
+
+        # Get measurement set and band mapping - VLA has only 1 MS
+        ms = context.observing_run.get_measurement_sets()[0]
+        spw2band = ms.get_vla_spw2band()
+        virtspw_str = miscinfo.get('virtspw', '')
+        if not virtspw_str:
+            return None
+
+        bands = {spw2band[spw_id] for spw in virtspw_str.split(',') if (spw_id := int(spw)) in spw2band}
+
+        # VLA imaging happens per-band, typically resulting in single-element set
+        return ','.join(bands) if bands else None
 
     def plot(self, context, imagename, reportdir, intent=None, collapseFunction='mean',
              stokes: Optional[str] = None, vmin=None, vmax=None, mom8_fc_peak_snr=None,
@@ -394,6 +416,9 @@ class SkyDisplay(object):
 
             image_info = {'display': mode_texts[collapseFunction]}
             image_info.update(miscinfo)
+            # PIPE-2708: improve the virtspw key formatting
+            if image_info.get('virtspw') is not None:
+                image_info['virtspw'] = utils.find_ranges(image_info['virtspw'])
 
             type_mapping = {
                 'flux': 'pb',
