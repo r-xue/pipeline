@@ -45,6 +45,9 @@ WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
 # desired, force caltable generation for all spws.
 LOW_SNR_THRESHOLD = 6
 
+# Multiplier applied to catalogue and gaintable SNRs for their subsequent use in heuristics
+SNR_MULTIPLIER = 0.75
+
 
 @dataclass
 class SNRTestResult:
@@ -1536,7 +1539,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             field: str,
             intent: str,
             low_snr_threshold: float = None,
-            estimated_snr_multiplier: float = 0.75
+            snr_multiplier: float = None
     ):
         """
         Estimates the Signal-to-Noise Ratio (SNR) by generating and analyzing a gaincal
@@ -1558,7 +1561,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             low_snr_threshold: float, optional
                 Threshold below which SPWs are considered low SNR and gaincal is not attempted.
                 Default is 6 (corresponds to 'X' in PIPE-2505).
-            estimated_snr_multiplier: float, optional
+            snr_multiplier: float, optional
                 Scaling factor applied to both estimated and measured SNR values.
                 Default is 0.75 (corresponds to 'Y' in PIPE-2505).
 
@@ -1568,9 +1571,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         """
         if snr_result.has_no_snrs:
             return
-        # can't be an arg default as it would be impossible to change post-import
+
+        # these variables can't be arg defaults as it would make them impossible to change post-import
         if low_snr_threshold is None:
             low_snr_threshold = LOW_SNR_THRESHOLD
+        if snr_multiplier is None:
+            snr_multiplier = SNR_MULTIPLIER
 
         # dict to map spw IDs to corrected SNR values
         snr_corrections = {spw_id: snr for spw_id, snr in zip(snr_result.spw_ids, snr_result.snr_values)
@@ -1581,13 +1587,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # running gaincal minsnr=2 would result in failure for low-SNR spws. For these
         # low-SNR spws, set the estimated SNR to Y * SNR
-        self._update_snr_for_low_snr_spws(snr_corrections, low_snr_spws, low_snr_threshold, estimated_snr_multiplier)
+        self._update_snr_for_low_snr_spws(snr_corrections, low_snr_spws, low_snr_threshold, snr_multiplier)
 
         # For the remaining high SNR windows, generate a G caltable and set the
         # estimated SNR to Y * median SNR, as measured from the caltable
         if high_snr_spws:
             caltable_filename = self._generate_gain_caltable(field, intent, high_snr_spws)
-            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable_filename, estimated_snr_multiplier)
+            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable_filename, snr_multiplier)
 
         snr_limit = self._snr_limit_for_intent(intent)
         self._update_snr_result(snr_result, snr_corrections, snr_limit)
