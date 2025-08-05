@@ -381,16 +381,17 @@ class SkyDisplay:
             height = '50%'
         cax = inset_axes(
             ax,
-            width='3%',
+            width='4%',
             height=height,
             loc='center left',
-            bbox_to_anchor=(1.02, 0.0, 1, 1),
+            bbox_to_anchor=(1.01, 0.0, 1, 1),
             bbox_transform=ax.transAxes,
         )
         cb = plt.colorbar(im, cax=cax)
         fontsize = 8
         cb.ax.tick_params(labelsize=fontsize)
         cb.set_label(brightness_unit, fontsize=fontsize)
+        cb.ax.yaxis.set_offset_position('left')
 
         # plot beam
         if beam is not None:
