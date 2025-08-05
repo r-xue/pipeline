@@ -1330,16 +1330,31 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         else:
             scispws = inputs.ms.get_spectral_windows()
             to_keep = []
-            snr_max = 0.0
-            for spwids_in_spspec in utils.get_spectralspec_to_spwid_map(scispws).values():
-                spwindex = [i for i, spwid in enumerate(spwids) if spwid in spwids_in_spspec]
-                snrs_in_spspec = [snrs[i] for i in spwindex]
-                if snrs_in_spspec:
-                    max_snr_in_spspec = max(snrs_in_spspec)
-                    if max_snr_in_spspec > snr_max:
-                        to_keep = spwindex
-                        snr_max = max_snr_in_spspec
-        # Filter SNRs and times for SpWs to keep.
+            snr_min = float('inf')
+            spectralspec_to_spw_ids = utils.get_spectralspec_to_spwid_map(scispws)
+
+            # Identify the spws with the lowest SNR that's still usable. This runs two
+            # passes through the data:
+            #     first pass: only consider SNRs above the threshold
+            #     second pass: consider all SNRs if nothing was found in the first pass
+            for above_threshold in (True, False):
+                for spwids_in_spec in spectralspec_to_spw_ids.values():
+                    # Gets indices of SpWs that are in current spectral spec
+                    spw_index = [i for i, spwid in enumerate(spwids) if spwid in spwids_in_spec]
+                    # and their corresponding SNR values
+                    spectralspec_snrs = [snrs[i] for i in spw_index]
+                    # filter out SNRs below threshold for first pass
+                    if above_threshold:
+                        spectralspec_snrs = [s for s in spectralspec_snrs if s > snr_threshold_used]
+                    # find the minimum and the corresponding spw to keep
+                    if spectralspec_snrs:
+                        min_snr = min(spectralspec_snrs)
+                        if min_snr < snr_min:
+                            to_keep, snr_min = spw_index, min_snr
+                # if we found an SNR, we're done - otherwise, loop again with above_threshold=False
+                if to_keep:
+                    break
+
         # PIPE-2499: for reference and integration time, it is assumed this is
         # the same across all SpWs, so pick the first element as representative,
         # and convert these times from minutes to seconds.
