@@ -45,8 +45,11 @@ WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
 # desired, force caltable generation for all spws.
 LOW_SNR_THRESHOLD = 6
 
-# Multiplier applied to catalogue and gaintable SNRs for their subsequent use in heuristics
-SNR_MULTIPLIER = 0.75
+# Multiplier applied to catalogue SNRs for their subsequent use in heuristics
+CATALOGUE_SNR_MULTIPLIER = 0.75
+
+# Multiplier applied to gaintable SNRs for their subsequent use in heuristics
+GAINTABLE_SNR_MULTIPLIER = 1.0
 
 
 @dataclass
@@ -1539,7 +1542,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             field: str,
             intent: str,
             low_snr_threshold: float = None,
-            snr_multiplier: float = None
+            catalogue_snr_multiplier: float = None,
+            gaintable_snr_multiplier: float = None
     ):
         """
         Estimates the Signal-to-Noise Ratio (SNR) by generating and analyzing a gaincal
@@ -1547,8 +1551,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         based on the analysis results.
 
         This function implements the SNR estimation logic described in PIPE-2505:
-        - For SPWs with SNR below threshold: applies a scaling factor to avoid calibration failures
-        - For SPWs with SNR above threshold: computes new SNR estimates using gaincal analysis
+        - For SPWs with SNR below threshold: applies a scaling factor (catalogue_snr_multiplier)
+          to avoid calibration failures
+        - For SPWs with SNR above threshold: computes new SNR estimates using gaincal analysis,
+          applying a scaling factor to the measured values.
 
         Parameters:
             snr_result: SnrTestResult
@@ -1561,9 +1567,12 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             low_snr_threshold: float, optional
                 Threshold below which SPWs are considered low SNR and gaincal is not attempted.
                 Default is 6 (corresponds to 'X' in PIPE-2505).
-            snr_multiplier: float, optional
-                Scaling factor applied to both estimated and measured SNR values.
+            catalogue_snr_multiplier: float, optional
+                Scaling factor applied to SNR values derived from the flux catalogue.
                 Default is 0.75 (corresponds to 'Y' in PIPE-2505).
+            gaintable_snr_multiplier: float, optional
+                Scaling factor applied to SNR values measured from the temporary gaintable.
+                Default is 1.0 (corresponds to 'Z' in PIPE-2505).
 
         Returns:
             None
@@ -1575,8 +1584,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # these variables can't be arg defaults as it would make them impossible to change post-import
         if low_snr_threshold is None:
             low_snr_threshold = LOW_SNR_THRESHOLD
-        if snr_multiplier is None:
-            snr_multiplier = SNR_MULTIPLIER
+        if catalogue_snr_multiplier is None:
+            catalogue_snr_multiplier = CATALOGUE_SNR_MULTIPLIER
+        if gaintable_snr_multiplier is None:
+            gaintable_snr_multiplier = GAINTABLE_SNR_MULTIPLIER
 
         # dict to map spw IDs to corrected SNR values
         snr_corrections = {spw_id: snr for spw_id, snr in zip(snr_result.spw_ids, snr_result.snr_values)
@@ -1587,13 +1598,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
         # running gaincal minsnr=2 would result in failure for low-SNR spws. For these
         # low-SNR spws, set the estimated SNR to Y * SNR
-        self._update_snr_for_low_snr_spws(snr_corrections, low_snr_spws, low_snr_threshold, snr_multiplier)
+        self._update_snr_for_low_snr_spws(snr_corrections, low_snr_spws, low_snr_threshold, catalogue_snr_multiplier)
 
         # For the remaining high SNR windows, generate a G caltable and set the
-        # estimated SNR to Y * median SNR, as measured from the caltable
+        # estimated SNR to Z * median SNR, as measured from the caltable
         if high_snr_spws:
             caltable_filename = self._generate_gain_caltable(field, intent, high_snr_spws)
-            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable_filename, snr_multiplier)
+            self._update_snr_for_high_snr_spws(snr_corrections, high_snr_spws, caltable_filename, gaintable_snr_multiplier)
 
         snr_limit = self._snr_limit_for_intent(intent)
         self._update_snr_result(snr_result, snr_corrections, snr_limit)
