@@ -242,7 +242,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
 
     pldir = str(pathlib.Path(output_dir).parent)
 
-    caltable_name = caltable.split('/')[-1]  # FIXME: better way to do this?
+    caltable_name = pathlib.Path(caltable).name
     LOG.info(f"{caltable} in Platforming evaluation")
 
     # Get the meta data from caltable
@@ -299,7 +299,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         ispw = spwIds[k]
 
         # This heuristic is only evaluated for FDM spws
-        spw_type = ms.get_spectral_window(spwid).type
+        spw_type = ms.get_spectral_window(ispw).type
         if 'FDM' not in spw_type:
             LOG.info(f"Subband qa heuristic not evaluated for spw {ispw} as it is not a FDM spw.")
             continue
@@ -350,7 +350,6 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
 
         # Loop 3: Polarization
         for ipol in range(2):
-            note_platform_start = ''
             flagnote = ''
 
             # This is a container to keep the value: value[i+4]-value[i]
@@ -1364,11 +1363,10 @@ def setup_bandpass_dict(ms: MeasurementSet, caltable: str) -> dict:
 
     bandpass_library = {}
 
-    mytab = caltable.split('/')[-1]  # FIXME: better way to do this?
+    mytab = pathlib.Path(caltable).name
     with casa_tools.TableReader(caltable) as tb:
         LOG.info(f"Bandpass subband QA, processing table: {mytab}")
         fieldIds, fieldNames, spwIds, antennaNames, antIds, pwv = getInfoFromTable(ms.name, caltable)
-        bandpass_library = {}
 
         tmp = tb.getcol('ANTENNA2')
         _ = scipy.stats.mode(tmp)
