@@ -4582,20 +4582,18 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
     flagdata = {}
-    flagkwargs = [f"spw='{spw.id}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spw.id}'" for spw in ms.get_spectral_windows()]
+    flagkwargs = [f"spw='{spwid}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spwid}'" for spwid in spwids]
     flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
     flagdata = flagdata_task.execute()
     flagdata_summary = list(flagdata.values())
     scores = []
-    shortmsg = ""
-    longmsg = ""
-    for n, spwid in enumerate(spwids):
+    for spwid in spwids:
         shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
-        longmsg_success = f'Calibrated amplitude vs time plot is successfully created for EB {vis}, SPW {spwid}'
+        longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}.'
         shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
-        longmsg_failed = f'Failed to create calibrated amplitude vs time plot for EB {vis}, SPW {spwid}'
+        longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}.'
         shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
-        longmsg_empty = f'No target data about calibrated amplitude vs time plot for EB {vis}, SPW {spwid}'
+        longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}.'
         sumflagged = 0
         sumtotal = 0
         key = f'spw{spwid}'
@@ -4617,24 +4615,17 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                     for value in target_for_spw_ant.values():
                         sumflagged += value['flagged']
                         sumtotal += value['total']
-                    if sumflagged == sumtotal:
-                        shortmsg = shortmsg_empty
-                        longmsg = f'{longmsg_empty}, Antenna {ant}.'
-                        score = 0.8
-                    else:
-                        shortmsg = shortmsg_success
-                        longmsg = f'{longmsg_success}, Antenna {ant}.'
-                        score = 1.0
+                    all_flagged = sumflagged == sumtotal
                 else:
-                    value = target_for_spw_ant[ant]
-                    if value['flagged'] == value['total']:
-                        shortmsg = shortmsg_empty
-                        longmsg = f'{longmsg_empty}, Antenna {ant}.'
-                        score = 0.8
-                    else:
-                        shortmsg = shortmsg_success
-                        longmsg = f'{longmsg_success}, Antenna {ant}.'
-                        score = 1.0
+                    all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
+                if all_flagged:
+                    shortmsg = shortmsg_empty
+                    longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                    score = 0.8
+                else:
+                    shortmsg = shortmsg_success
+                    longmsg = f'{longmsg_success}, Antenna {ant}.'
+                    score = 1.0
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
