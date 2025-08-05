@@ -57,12 +57,11 @@ class ApplyCalSingleDishPlotmsLeaf(object):
         self.antenna = str(ant)
         self.field = [i.name for i in ms.get_fields(intent='TARGET')]
 
-        msobj = context.observing_run.get_ms(self.vis)
         if len(self.field) == 0:
             # failed to find field domain object with field
             raise RuntimeError(f'No match found for field "{self.field}".')
 
-        self.antmap = dict((a.id, a.name) for a in msobj.antennas)
+        self.antmap = dict((a.id, a.name) for a in ms.antennas)
         if len(self.antenna) == 0:
             self.antenna_selection = 'all'
         else:
