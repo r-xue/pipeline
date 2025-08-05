@@ -53,11 +53,6 @@ CATALOGUE_SNR_MULTIPLIER = 0.75
 # Equivalent to Z in PIPE-2505 spec.
 GAINTABLE_SNR_MULTIPLIER = 1.0
 
-# Controls whether SNR estimates should additionally be measured from a temporary
-# gaintable when mode='combine'. This is a module variable as we are unsure whether
-# to activate this for Pipeline 2025 release
-COMPUTE_SNR_FROM_GAINTABLE_WHEN_MODE_IS_COMBINE = False
-
 
 @dataclass
 class SNRTestResult:
@@ -567,6 +562,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             snr_test_result = self._do_snrtest(intent, field, spws)
             calc_snr_result = copy.deepcopy(snr_test_result)
 
+            # Additionally, compute the SNRs empirically using a gain caltable
+            self._compute_snr_from_gaincal(snr_test_result, field, intent)
+
             # No SNR estimates available, so stick with default values.
             if snr_test_result.has_no_snrs:
                 LOG.warning(f"{inputs.ms.basename}, intent={intent}, field={field}: no SNR estimates for any SpWs,"
@@ -594,7 +592,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             snr_test_result = self._do_snrtest(intent, field, spws)
             calc_snr_result = copy.deepcopy(snr_test_result)
 
-            # PIPE-2505: adjust the SNRs using a gain caltable, where possible
+            # Additionally, compute the SNRs empirically using a gain caltable
             self._compute_snr_from_gaincal(snr_test_result, field, intent)
 
             # PIPE-2499: set SNR limit to use in the derivation of any
@@ -801,12 +799,10 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Run a task to estimate the gaincal SNR for given intent, field,
             # and spectral windows.
             snr_test_result = self._do_snrtest(intent, field, spws)
-
-            # PIPE-2505: adjust the SNRs using a gain caltable, where possible
-            if COMPUTE_SNR_FROM_GAINTABLE_WHEN_MODE_IS_COMBINE:
-                self._compute_snr_from_gaincal(snr_test_result, field, intent)
-
             calc_snr_result = copy.deepcopy(snr_test_result)
+
+            # Additionally, compute the SNRs empirically using a gain caltable
+            self._compute_snr_from_gaincal(snr_test_result, field, intent)
 
             # If no SNR estimates are available then set solint based on intent.
             if snr_test_result.has_no_snrs:
