@@ -1391,7 +1391,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Scale the integration-time based SNR threshold, assuming that with
             # gaintype='T' the signal is combined from at least 2 polarizations;
             # and re-compute the required solint with this scaled int-time SNR.
-            int_snr = int_snr / numpy.sqrt(2)
+            int_snr = int_snr * numpy.sqrt(2)
             req_solint = int_time * (req_snr/int_snr)**2
             # If the required solint with gaintype='T' after rounding is
             # at/below the integration time, then return early with this as the
