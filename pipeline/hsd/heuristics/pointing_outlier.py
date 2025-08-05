@@ -1,42 +1,14 @@
 import collections
-import copy
 
-from astropy.coordinates import SkyCoord
 import numpy as np
 
 import pipeline.infrastructure.api as api
-import pipeline.infrastructure.utils.conversion as conversion
+from pipeline.infrastructure.utils import coordinate_utils
 
 PointingOutlierHeuristicsResult = collections.namedtuple(
     "PointingOutlierHeuristicsResult",
     ["cx", "cy", "med_dist", "factor", "mask", "dist"]
 )
-
-
-def compute_distance(dir_frame: str,
-                     ra: np.ndarray,
-                     dec: np.ndarray,
-                     ref_ra: float,
-                     ref_dec: float) -> np.ndarray:
-    """Compute distance from a reference position.
-
-    Args:
-        dir_frame: direction reference frame.
-        ra: List of RA values in degrees.
-        dec: List of DEC values in degrees.
-        ref_ra: RA value of reference position in degrees.
-        ref_dec: DEC value of reference position in degrees.
-
-    Returns:
-        List of distance values from the reference position in degrees.
-    """
-    sky_frame = conversion.refcode_to_skyframe(dir_frame)
-    ref_dir = SkyCoord(ra=ref_ra, dec=ref_dec, unit='deg', frame=sky_frame)
-
-    _dir = SkyCoord(ra=ra, dec=dec, unit='deg', frame=sky_frame)
-    dist = ref_dir.separation(_dir).degree
-
-    return dist
 
 
 class PointingOutlierHeuristics(api.Heuristic):
@@ -121,7 +93,7 @@ class PointingOutlierHeuristics(api.Heuristic):
         """
         med_x = np.median(x)
         med_y = np.median(y)
-        distance = compute_distance(dir_frame, x, y, med_x, med_y)
+        distance = coordinate_utils.angular_distances(dir_frame, x, y, med_x, med_y)
         median_distance = np.median(distance)
         # raster scan can be interrupted, and number of raster rows > 2
         threshold = self.FACTOR_INTERRUPT

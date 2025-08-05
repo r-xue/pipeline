@@ -21,6 +21,7 @@ from .sorting import *
 from .utils import *
 from .weblog import *
 from .math import *
+from .parallactic_range import *
 from .positioncorrection import *
 from .subprocess import *
 
@@ -38,6 +39,7 @@ _all_modules = [
     'utils',
     'weblog',
     'math',
+    'parallactic_range',
     'positioncorrection',
     'subprocess'
 ]

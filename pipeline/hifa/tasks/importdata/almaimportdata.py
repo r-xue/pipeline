@@ -162,7 +162,6 @@ class ALMAImportDataResults(importdata.ImportDataResults):
             setjy_results: list[FluxCalibrationResults] | None = None
             ):
         super().__init__(mses=mses, setjy_results=setjy_results)
-        self.parang_ranges = {}
 
     def __repr__(self) -> str:
         return 'ALMAImportDataResults:\n\t{0}'.format(

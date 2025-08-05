@@ -133,6 +133,12 @@ def truncate_paths(arg):
                         'fluxtable', 'infile', 'infiles', 'mask', 'imagename', 'fitsimage', 'outputvis'):
         return arg
 
+    # PIPE-51: 'asdm' can be either a full path location used by `importasdm`
+    # or a UID parameter for `getantposalma`. This logic ensures that the
+    # latter is not truncated.
+    if arg.name == "asdm" and isinstance(arg.value, str) and is_uid(arg.value):
+        return arg  # Return unmodified if it's a UID
+
     # PIPE-639: 'inpfile' is an argument for CASA's flagdata task, and it can
     # contain either a path name, a list of path names, or a list of flagging
     # commands. Attempting to get the basename of a flagging command can cause
@@ -146,6 +152,11 @@ def truncate_paths(arg):
     # the recursive map function
     basename_value = _recur_map(func, (arg.value,))[0]
     return FunctionArg(arg.name, basename_value)
+
+
+def is_uid(string: str) -> bool:
+    """Check if the given string is formatted as a UID."""
+    return string.startswith("uid://")
 
 
 def basename_if_isfile(arg: str) -> str:

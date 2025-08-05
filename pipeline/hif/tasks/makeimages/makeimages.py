@@ -96,7 +96,7 @@ class MakeImagesInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
 
@@ -335,12 +335,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         # as the ImageItem instance 'metadata' attribute.
         for idx, tclean_result in enumerate(result.results):
             target = result.targets[idx]
-            imaging_metadata = {'keep': False,
-                                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
-                                'flagpct': target['flagpct'],
-                                'spw': target['spw'],
-                                'freq': float(target['reffreq'].replace('GHz', '')),
-                                'beam': [None, None, None]}
+            imaging_metadata = {
+                'keep': False,
+                # Flagging percentage of a VLASS-SE-CUBE plane within a 1deg^2 box.
+                'flagpct': target['misc_vlass']['flagpct'],
+                'spw': target['spw'],
+                'freq': float(target['reffreq'].replace('GHz', '')),
+                'beam': [None, None, None],
+            }
 
             if isinstance(tclean_result.image, str):
                 ext = '.tt0' if tclean_result.multiterm else ''

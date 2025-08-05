@@ -63,11 +63,13 @@ __all__ = [
     'get_obj_size',
     'get_products_dir',
     'get_receiver_type_for_spws',
+    'get_row_count',
     'get_si_prefix',
     'get_spectralspec_to_spwid_map',
     'get_stokes',
     'get_task_result_count',
     'get_taskhistory_fromimage',
+    'get_valid_url',
     'glob_ordered',
     'ignore_pointing',
     'imstat_items',
@@ -1197,3 +1199,63 @@ def validate_url(url: str) -> bool:
     parsed = urlparse(url)
 
     return all([parsed.scheme, parsed.netloc])
+
+
+def get_row_count(table_name: str, taql: str) -> int:
+    """Return the number of rows in the specified table that match the given TaQL query.
+
+    Parameters:
+        table_name: Path to the CASA table.
+        taql: The TaQL query string used to filter the table rows.
+
+    Returns:
+        The number of rows matching the query, or 0 if an error occurs.
+    """
+
+    nrows = 0
+    try:
+        with casa_tools.TableReader(table_name) as table:
+            subtb = table.query(taql)
+            nrows = subtb.nrows()
+            subtb.close()
+    except Exception as ex:
+        nrows = 0
+        LOG.warning(ex)
+
+    return nrows
+
+
+def get_valid_url(env_var: str, default: str | list[str]) -> str | list[str]:
+    """
+    Fetches one or more URLs from an environment variable. If a comma-delimited string is provided,
+    it is split and each URL is validated. Falls back to the default if any URL is invalid or not set.
+
+    Args:
+        env_var: The name of the environment variable.
+        default: A single default URL or a list of default URLs.
+
+    Returns:
+        A valid URL string or a list of valid URL strings.
+    """
+    envvar_value = os.getenv(env_var)
+    if not envvar_value:
+        LOG.info('Environment variable %s not defined. Switching to default %s.', env_var, default)
+        return default
+
+    urls = [u.strip() for u in envvar_value.split(',') if u.strip()]
+    if not urls:
+        LOG.warning('Environment variable %s is empty after parsing. Switching to default %s.', env_var, default)
+        return default
+
+    for url in urls:
+        if not validate_url(url):
+            LOG.warning('Environment variable %s URL was set to %s but is misconfigured.', env_var, url)
+            LOG.info('Switching to default %s.', default)
+            return default
+
+    if len(urls) == 1:
+        LOG.info('Environment variable %s set to URL %s.', env_var, urls[0])
+        return urls[0]
+
+    LOG.info('Environment variable %s set to list of URLs %s.', env_var, urls)
+    return urls
