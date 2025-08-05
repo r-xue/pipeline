@@ -4574,58 +4574,67 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
 
     vis = os.path.basename(result.inputs['vis'])
     ms = context.observing_run.get_ms(vis)
+    spwids = [spw.id for spw in ms.get_spectral_windows()]
+    ants = ['all']
+    ants_foreach = [ant.name for ant in ms.get_antenna()]
+    ants.extend(ants_foreach)
+
     stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
 
     flagdata = {}
-    flagkwargs = ["spw='{0}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{1}'".format(spw.id, spw.id) for spw in ms.get_spectral_windows()]
+    flagkwargs = [f"spw='{spw.id}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spw.id}'" for spw in ms.get_spectral_windows()]
     flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
     flagdata = flagdata_task.execute()
-
+    flagdata_summary = list(flagdata.values())
     scores = []
-    for onedata in flagdata.values():
-        spw = onedata['name']
+    shortmsg = ""
+    longmsg = ""
+    for n, spwid in enumerate(spwids):
+        shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
+        longmsg_success = f'Calibrated amplitude vs time plot is successfully created for EB {vis}, SPW {spwid}'
+        shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
+        longmsg_failed = f'Failed to create calibrated amplitude vs time plot for EB {vis}, SPW {spwid}'
+        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+        longmsg_empty = f'No target data about calibrated amplitude vs time plot for EB {vis}, SPW {spwid}'
+        sumflagged = 0
+        sumtotal = 0
+        key = f'spw{spwid}'
+        target_summary = [x for x in flagdata_summary if x['name'] == key]
+        assert len(target_summary) == 1
+        target_summary_for_spw = target_summary[0]
 
-        # Calculate the score for the plot of each spw and antenna=all.
-        filename = f'{vis}-real_vs_time-all-{spw}.png'
-        figfile = os.path.join(stage_dir, filename)
-        score = 1.0
-        if not os.path.exists(figfile):
-            shortmsg = 'Failed to create calibrated amplitude vs time plot'
-            longmsg = f'Failed to create calibrated amplitude vs time plot for {spw} and Antenna=all of {vis} was failed.'
-            score = 0.65
-        else:
-            sumflagged = 0
-            sumtotal = 0
-            for ant, value in onedata['antenna'].items():
-                sumflagged += value['flagged']
-                sumtotal += value['total']
-            if sumflagged == sumtotal:
-                shortmsg = 'Calibrated amplitude vs time plot is empty'
-                longmsg = f'Calibrated amplitude vs time plot is empty for {spw} and Antenna=all of {vis}.'
-                score = 0.8
-            else:
-                shortmsg = 'Calibrated amplitude vs time plot is successfully created'
-                longmsg = f'Calibrated amplitude vs time plot is successfully created for {spw} and Antenna=all of {vis}.'
-
-        scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
-
-        # Calculate the score for the plot of each spw and each antenna.
-        for ant, value in onedata['antenna'].items():
-            score = 1.0
-            filename = f'{vis}-real_vs_time-{ant}-{spw}.png'
+        for ant in ants:
+            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
             figfile = os.path.join(stage_dir, filename)
+
             if not os.path.exists(figfile):
-                shortmsg = 'Failed to create calibrated amplitude vs time plot'
-                longmsg = f'Failed to create calibrated amplitude vs time plot for {spw} and Antenna={ant} of {vis}.'
+                shortmsg = shortmsg_failed
+                longmsg = f'{longmsg_failed}, Antenna {ant}.'
                 score = 0.65
             else:
-                if value['flagged'] == value['total']:
-                    shortmsg = 'No target data for calibrated amplitude vs time plot'
-                    longmsg = f'No target data about calibrated amplitude vs time plot for EB {vis}, {spw} SPW, {ant} ant.'
-                    score = 0.8
+                target_for_spw_ant = target_summary_for_spw['antenna']
+                if ant == 'all':
+                    for value in target_for_spw_ant.values():
+                        sumflagged += value['flagged']
+                        sumtotal += value['total']
+                    if sumflagged == sumtotal:
+                        shortmsg = shortmsg_empty
+                        longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                        score = 0.8
+                    else:
+                        shortmsg = shortmsg_success
+                        longmsg = f'{longmsg_success}, Antenna {ant}.'
+                        score = 1.0
                 else:
-                    shortmsg = 'Calibrated amplitude vs time plot is successfully created'
-                    longmsg = f'Calibrated amplitude vs time plot is successfully created for {spw} and Antenna={ant} of {vis}.'
+                    value = target_for_spw_ant[ant]
+                    if value['flagged'] == value['total']:
+                        shortmsg = shortmsg_empty
+                        longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                        score = 0.8
+                    else:
+                        shortmsg = shortmsg_success
+                        longmsg = f'{longmsg_success}, Antenna {ant}.'
+                        score = 1.0
 
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
