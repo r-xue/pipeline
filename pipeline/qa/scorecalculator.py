@@ -3740,6 +3740,94 @@ def score_sdimage_masked_pixels(context: Context, result: SDImagingResultItem) -
                        origin=origin)
 
 
+def score_sd_line_emission_off_range_at_peak(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on the detection of off-line-range emission at peak.
+
+    Requirements (PIPE-2416):
+        - QA score should be
+          - 0.6 if significant off-line-range emission is detected at peak
+          - 1.0 if no significant off-line-range emission is detected at peak
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the Requirements
+    """
+    emission_off_range_at_peak = result.outcome.get('line_emission_off_range_at_peak', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if emission_off_range_at_peak:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Significant off-line-range emission is detected at peak.')
+        smsg = 'Significant off-line-range emission is detected at peak.'
+        score = 0.6
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No significant off-line-range emission is detected at peak.')
+        smsg = 'No significant off-line-range emission is detected at peak.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='line_emission_off_range_at_peak',
+                          metric_score=score,
+                          metric_units='')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
+def score_sd_line_emission_off_range_extended(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
+    """Evaluate QA score based on the detetion of off-line-range extended emission.
+
+    Requirements (PIPE-2416):
+        - QA score should be
+          - 0.6 if significant off-line-range extended emission is detected.
+          - 1.0 if no significant off-line-range extended emission is detected.
+
+    Args:
+        context: Pipeline context
+        result: Imaging result instance
+
+    Returns:
+        QAScore -- QAScore instance holding the score based on the Requirements
+    """
+    emission_off_range_extended = result.outcome.get('line_emission_off_range_extended', False)
+    imageitem = result.outcome['image']
+    field = imageitem.sourcename
+    spw = ','.join(map(str, np.unique(imageitem.spwlist)))
+    if emission_off_range_extended:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'Significant off-line-range extended emission is detected.')
+        smsg = 'Significant off-line-range extended emission is detected.'
+        score = 0.6
+    else:
+        lmsg = (f'Field {field} Spw {spw}: '
+                'No significant off-line-range extended emission is detected.')
+        smsg = 'No significant off-line-range extended emission is detected.'
+        score = 1.0
+
+    origin = pqa.QAOrigin(metric_name='score_sd_line_emission_off_range_extended',
+                          metric_score=score,
+                          metric_units='')
+    selection = pqa.TargetDataSelection(spw=set(result.outcome['assoc_spws']),
+                                        field=set(result.outcome['assoc_fields']),
+                                        intent={'TARGET'},
+                                        pol={'I'})
+    return pqa.QAScore(score,
+                       longmsg=lmsg,
+                       shortmsg=smsg,
+                       origin=origin,
+                       applies_to=selection)
+
+
 @log_qa
 def score_sdimage_contamination(context: Context, result: SDImagingResultItem) -> pqa.QAScore:
     """Evaluate QA score based on the absorption feature in the image.
