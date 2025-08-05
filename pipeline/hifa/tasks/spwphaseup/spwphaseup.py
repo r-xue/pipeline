@@ -45,11 +45,18 @@ WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
 # desired, force caltable generation for all spws.
 LOW_SNR_THRESHOLD = 6
 
-# Multiplier applied to catalogue SNRs for their subsequent use in heuristics
+# Multiplier applied to catalogue SNRs for their subsequent use in heuristics.
+# Equivalent to Y in PIPE-2505 spec.
 CATALOGUE_SNR_MULTIPLIER = 0.75
 
-# Multiplier applied to gaintable SNRs for their subsequent use in heuristics
+# Multiplier applied to gaintable SNRs for their subsequent use in heuristics.
+# Equivalent to Z in PIPE-2505 spec.
 GAINTABLE_SNR_MULTIPLIER = 1.0
+
+# Controls whether SNR estimates should additionally be measured from a temporary
+# gaintable when mode='combine'. This is a module variable as we are unsure whether
+# to activate this for Pipeline 2025 release
+COMPUTE_SNR_FROM_GAINTABLE_WHEN_MODE_IS_COMBINE = False
 
 
 @dataclass
@@ -794,6 +801,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # Run a task to estimate the gaincal SNR for given intent, field,
             # and spectral windows.
             snr_test_result = self._do_snrtest(intent, field, spws)
+
+            # PIPE-2505: adjust the SNRs using a gain caltable, where possible
+            if COMPUTE_SNR_FROM_GAINTABLE_WHEN_MODE_IS_COMBINE:
+                self._compute_snr_from_gaincal(snr_test_result, field, intent)
+
             calc_snr_result = copy.deepcopy(snr_test_result)
 
             # If no SNR estimates are available then set solint based on intent.
