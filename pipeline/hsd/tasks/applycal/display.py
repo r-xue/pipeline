@@ -78,10 +78,8 @@ class ApplyCalSingleDishPlotmsLeaf(object):
             List of plot objects.
         """
 
-        filename = '{ms_name}-real_vs_time-{ant}-spw{spw}.png'.format(
-            ms_name=os.path.basename(self.vis), ant=self.antenna_selection, spw=self.spw)
-        title = 'Science target: calibrated amplitude vs time\nAntenna {ant} Spw {spw} \ncoloraxis={coloraxis}'.format(
-            ant=self.antenna_selection, spw=self.spw, coloraxis='field')
+        filename = f'{self.vis}-real_vs_time-{self.antenna_selection}-spw{self.spw}.png'
+        title = f'Science target: calibrated amplitude vs time\nAntenna {self.antenna_selection} Spw {self.spw} \ncoloraxis="field"'
         figfile = os.path.join(self.stage_dir, filename)
 
         if os.path.exists(figfile):
@@ -91,8 +89,8 @@ class ApplyCalSingleDishPlotmsLeaf(object):
                 task = self._create_task(title, figfile)
                 task.execute()
                 return [self._get_plot_object(figfile, task)]
-            except Exception as e:
-                LOG.error(str(e))
+            except Exception:
+                LOG.error(f"Failed to create calibrated amplitude vs time plot for EB {self.vis} Spw {self.spw} Antenna {self.antenna_selection}.")
                 return []
 
     def _create_task(self, title: str, figfile: str) -> JobRequest:
@@ -140,7 +138,7 @@ class ApplyCalSingleDishPlotmsLeaf(object):
         Return:
             logger.Plot
         """
-        parameters = {'vis': os.path.basename(self.vis),
+        parameters = {'vis': self.vis,
                       'ant': self.antenna_selection,
                       'spw': self.spw}
 
