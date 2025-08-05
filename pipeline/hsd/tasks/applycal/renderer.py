@@ -253,13 +253,12 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             amp_vs_time_subpages: Dictionary which contains 'vis' and filepath of detail page
         """
         amp_vs_time_subpage = None
-        for d, plotter_cls in ((plots, super_renderer.ApplycalAmpVsTimePlotRenderer),):
-            if d:
-                all_plots = list(utils.flatten([v for v in d.values()]))
-                renderer = plotter_cls(context, result, all_plots)
-                with renderer.get_file() as fileobj:
-                    fileobj.write(renderer.render())
-                amp_vs_time_subpage = renderer.path
+        if plots:
+            all_plots = list(utils.flatten([v for v in plots.values()]))
+            renderer = super_renderer.ApplycalAmpVsTimePlotRenderer(context, result, all_plots)
+            with renderer.get_file() as fileobj:
+                fileobj.write(renderer.render())
+            amp_vs_time_subpage = renderer.path
         amp_vs_time_subpages = dict((vis, amp_vs_time_subpage) for vis in plots.keys())
 
         return amp_vs_time_subpages
