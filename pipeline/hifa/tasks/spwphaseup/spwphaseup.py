@@ -1462,8 +1462,11 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
 
                 # Re-compute the required solint based on re-scaling from
                 # normal integration-time based SNR threshold to the minimum
-                # integration-time based SNR threshold.
-                solint = solint * (inputs.intphasesnrmin / inputs.intphasesnr) ** 2
+                # integration-time based SNR threshold. First, propagate the
+                # SNR scaling from the working 'req_solint' (i.e. unrounded)
+                req_solint = req_solint * (inputs.intphasesnrmin / inputs.intphasesnr) ** 2
+                # now round it according to a unit of integration time
+                solint = round_half_up(req_solint / int_time) * int_time
                 snr_threshold_used  = inputs.intphasesnrmin
 
                 # If this adjusted solint after rounding would be at/below the
