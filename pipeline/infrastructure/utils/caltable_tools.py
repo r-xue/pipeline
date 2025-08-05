@@ -5,6 +5,13 @@ import numpy as np
 
 from pipeline.infrastructure import casa_tools
 
+__all__ = [
+    'get_num_caltable_polarizations',
+    'nchan_from_caltable',
+    'chan_freq_from_caltable',
+    'antenna_names_from_caltable',
+    'get_ant_ids_from_caltable',
+]
 
 def get_num_caltable_polarizations(caltable: str) -> int:
     """Obtain number of polarisations from calibration table.
