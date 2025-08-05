@@ -1302,6 +1302,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
         quanta = casa_tools.quanta
 
+        # Set SNR limits first
+        if intent in {"CHECK", "PHASE"}:
+            snr_threshold_used = inputs.phasesnr
+        else:
+            # No scaling for the other calibrators (BANDPASS, DIFFGAIN, ...).
+            snr_threshold_used = inputs.intphasesnr
+
         # Restrict the input SpWs, SNRs, and times to the SpWs to use.
         #
         # Bright AMPLITUDE or BANDPASS calibrators in Band-to-Band datasets will
@@ -1343,29 +1350,33 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # Select what SNR (among SNRs for all considered SpWs) to let govern the
         # optimal solution interval based on what type of SpW mapping mode will
         # be used in subsequent phase-up solves.
-        if mappingmode == 'single':
-            # If no mapping is used (each spw mapped to itself), then use the
-            # lowest (worst) SNR to govern the optimal solint.
-            snr_to_use = min(snrs)
-        elif mappingmode == 'mapping':
-            # If using SpW re-mapping, then use the highest (best) SNR.
-            snr_to_use = max(snrs)
-        elif mappingmode == 'combine':
-            # If using SpW combination, then compute the Euclidean norm of the
-            # SNR values to represent the combined SNR.
-            snr_to_use = numpy.linalg.norm(snrs)
+        match mappingmode:
+            case 'single':
+                # If no mapping is used (each spw mapped to itself), then use the
+                # lowest (worst) SNR to govern the optimal solint.
+                snr_to_use = min(snrs)
+            case 'mapping':
+                # Use lowest SNR of all 'good' SNRs, i.e. those above snr_threshold_used.
+                # As 'mapping' is only set when there is least one good SNR, we do not need
+                # to provide a default or handle the ValueError that would be raised by taking
+                # min() of an empty list
+                snr_to_use = min([snr for snr in snrs if snr > snr_threshold_used])
+            case 'combine':
+                # If using SpW combination, then compute the Euclidean norm of the
+                # SNR values to represent the combined SNR.
+                snr_to_use = numpy.linalg.norm(snrs)
+            case _:
+                raise ValueError(f"Invalid mappingmode: {mappingmode}")
 
         # Set SNR for integration time and required SNR based on the intent.
         if intent in {"CHECK", "PHASE"}:
             # For the CHECK and PHASE intents, scale the SNR thresholds.
             int_snr = numpy.sqrt(int_time/ref_time) * snr_to_use
             req_snr = numpy.sqrt(int_time/ref_time) * inputs.phasesnr
-            snr_threshold_used = inputs.phasesnr
         else:
             # No scaling for the other calibrators (BANDPASS, DIFFGAIN, ...).
             int_snr = snr_to_use
             req_snr = inputs.intphasesnr
-            snr_threshold_used = inputs.intphasesnr
 
         # Compute the required solint by scaling the integration time by the
         # ratio of required SNR over integration-time-based SNR.
