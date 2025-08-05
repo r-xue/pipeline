@@ -486,7 +486,7 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="preamble()">
-		Calibrated amplitude vs time for all fields, antennas and
+		Calibrated amplitude vs time plots for all fields, antennas and
 		correlations. Data are coloured by field.
 	</%def>
 
