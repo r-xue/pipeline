@@ -66,7 +66,9 @@ class TsyscalInputs(vdp.StandardInputs):
 
                 Example: chantol=5
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         super().__init__()

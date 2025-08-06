@@ -318,7 +318,9 @@ class MakeImListInputs(vdp.StandardInputs):
 
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallel processing when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'
 
             known_synthesized_beams:
 

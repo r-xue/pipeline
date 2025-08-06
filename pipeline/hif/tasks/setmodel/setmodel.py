@@ -100,7 +100,9 @@ class SetModelsInputs(vdp.StandardInputs):
 
             scalebychan: Scale the flux density on a per channel basis or else on a per spw basis
 
-            parallel: Execute using CASA HPC functionality, if available. 
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         super(SetModelsInputs, self).__init__()

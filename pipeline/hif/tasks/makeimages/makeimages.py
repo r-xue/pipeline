@@ -183,7 +183,11 @@ class MakeImagesInputs(vdp.StandardInputs):
                 - beamdev_thresh: default: 0.2
                   Threshold for the fractional beam deviation from the expected value required for the plane rejection.
 
-            parallel: Clean images using MPI cluster
+            parallel: Use CASA/tclean built-in parallel imaging for individual scientific targets, or, perform continuum imaging 
+                of multiple target (calibrators) concurrently without the CASA/tclean built-in parallelization.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' - Optimizes the parallelization mode based on the imaging target type
+                    (scientific targets vs. calibrators) and the specific operation.
 
         """
         self.context = context

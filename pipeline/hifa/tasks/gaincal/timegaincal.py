@@ -152,7 +152,9 @@ class TimeGaincalInputs(gtypegaincal.GTypeGaincalInputs):
 
                 Example: smodel=[1,0,0,0]  - (I=1, unpolarized)
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         super().__init__(context, vis=vis, output_dir=output_dir,  **parameters)
