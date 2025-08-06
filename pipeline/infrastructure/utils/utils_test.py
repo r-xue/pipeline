@@ -10,7 +10,7 @@ import os
 
 from pipeline import domain
 from pipeline.infrastructure import casa_tools, casa_tasks
-from pipeline.infrastructure import caltable_tools
+from pipeline.infrastructure.utils import caltable_tools
 from .utils import find_ranges, dict_merge, are_equal, approx_equal, flagged_intervals, \
     get_casa_quantity, fieldname_for_casa, fieldname_clean, \
     get_field_accessor, get_field_identifiers, get_receiver_type_for_spws, place_repr_source_first, \
