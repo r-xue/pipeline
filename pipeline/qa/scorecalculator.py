@@ -4672,50 +4672,55 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
     flagdata = {}
     flagkwargs = [f"spw='{spwid}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spwid}'" for spwid in spwids]
     flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
-    flagdata = flagdata_task.execute()
-    flagdata_summary = list(flagdata.values())
+    try:
+        flagdata = flagdata_task.execute()
+    except Exception as e:
+        LOG.error(e)
+
     scores = []
-    for spwid in spwids:
-        shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
-        longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}.'
-        shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
-        longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}.'
-        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
-        longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}.'
-        sumflagged = 0
-        sumtotal = 0
-        key = f'spw{spwid}'
-        target_summary = [x for x in flagdata_summary if x['name'] == key]
-        assert len(target_summary) == 1
-        target_summary_for_spw = target_summary[0]
+    if any(flagdata):
+        flagdata_summary = list(flagdata.values())
+        for spwid in spwids:
+            shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
+            longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}.'
+            shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
+            longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}.'
+            shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+            longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}.'
+            sumflagged = 0
+            sumtotal = 0
+            key = f'spw{spwid}'
+            target_summary = [x for x in flagdata_summary if x['name'] == key]
+            assert len(target_summary) == 1
+            target_summary_for_spw = target_summary[0]
 
-        for ant in ants:
-            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
-            figfile = os.path.join(stage_dir, filename)
+            for ant in ants:
+                filename = f'{vis}-real_vs_time-{ant}-{key}.png'
+                figfile = os.path.join(stage_dir, filename)
 
-            if not os.path.exists(figfile):
-                shortmsg = shortmsg_failed
-                longmsg = f'{longmsg_failed}, Antenna {ant}.'
-                score = 0.65
-            else:
-                target_for_spw_ant = target_summary_for_spw['antenna']
-                if ant == 'all':
-                    for value in target_for_spw_ant.values():
-                        sumflagged += value['flagged']
-                        sumtotal += value['total']
-                    all_flagged = sumflagged == sumtotal
+                if not os.path.exists(figfile):
+                    shortmsg = shortmsg_failed
+                    longmsg = f'{longmsg_failed}, Antenna {ant}.'
+                    score = 0.65
                 else:
-                    all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
-                if all_flagged:
-                    shortmsg = shortmsg_empty
-                    longmsg = f'{longmsg_empty}, Antenna {ant}.'
-                    score = 0.8
-                else:
-                    shortmsg = shortmsg_success
-                    longmsg = f'{longmsg_success}, Antenna {ant}.'
-                    score = 1.0
+                    target_for_spw_ant = target_summary_for_spw['antenna']
+                    if ant == 'all':
+                        for value in target_for_spw_ant.values():
+                            sumflagged += value['flagged']
+                            sumtotal += value['total']
+                        all_flagged = sumflagged == sumtotal
+                    else:
+                        all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
+                    if all_flagged:
+                        shortmsg = shortmsg_empty
+                        longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                        score = 0.8
+                    else:
+                        shortmsg = shortmsg_success
+                        longmsg = f'{longmsg_success}, Antenna {ant}.'
+                        score = 1.0
 
-            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
+                scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
     return scores
 
