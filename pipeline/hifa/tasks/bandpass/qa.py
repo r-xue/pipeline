@@ -453,7 +453,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.
 
         spw_messages = [
             f"Spw {spw} ({data['failure']}): {', '.join(data['antennas'])}"
-            for spw, data in spw_dict.items()
+            for spw, data in sorted(spw_dict.items())
         ]
         longmsg += "; ".join(spw_messages)
 
@@ -468,7 +468,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.
             metric_score=score,
         ),
         applies_to=pqa.TargetDataSelection(vis={ms.name}),
-        )
+    )
     return qascore
 
 
@@ -494,8 +494,8 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     if "ALMA_BASELINE" not in ms.correlator_name or not result.final:
         not_blc_qa_score = pqa.QAScore(
             1.0,
-            longmsg="No BLC FDM bandpass tables. Bandpass subband QA is not evaluated",
-            shortmsg="Bandpass subband QA not evaluated.",
+            longmsg="No BLC FDM bandpass tables. Bandpass subband QA is not evaluated.",
+            shortmsg="Bandpass subband QA not evaluated",
             vis=vis,
             origin=pqa.QAOrigin(
             metric_name='bandpass.subband',
@@ -523,13 +523,13 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
             LOG.warning(f"Failed to process bandpass QA for {vis}, caltable {caltable}: {e}", exc_info=True)
 
             failing_qascore = pqa.QAScore(
-                0.66,
-                longmsg=f"Bandpass subband QA calculation failed for {vis}: {caltable}",
-                shortmsg="Bandpass subband QA calculation failed.",
+                rutils.SCORE_THRESHOLD_WARNING,
+                longmsg=f"Bandpass subband QA calculation failed for {vis}: {caltable}.",
+                shortmsg="Bandpass subband QA calculation failed",
                 vis=vis,
                 origin=pqa.QAOrigin(
                 metric_name='bandpass.subband',
-                metric_score=0.66,
+                metric_score=rutils.SCORE_THRESHOLD_WARNING,
                 ),
                 applies_to=pqa.TargetDataSelection(vis={vis}),
             )
