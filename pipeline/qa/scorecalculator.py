@@ -4722,7 +4722,7 @@ def score_pointing_outlier(
         List of QAScore objects.
     """
     # If no pointing outliers are detected, return QAScore with score of 1.0
-    metric_name = "NumberOfPointingOutlier"
+    metric_name = "NumberOfPointingOutliers"
     metric_units = "number of pointing outliers"
     if len(pointing_outlier_stats) == 0:
         score = 1.0
