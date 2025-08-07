@@ -4715,7 +4715,11 @@ def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list
                     longmsg = f'{longmsg_success}, Antenna {ant}.'
                     score = 1.0
 
-            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
+            origin = pqa.QAOrigin(metric_name='%AmpVsTimePlotQuality',
+                                  metric_score=scores,
+                                  metric_units='Score based on quality of calibrated amp vs time plots')
+
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin))
 
     return scores
 
