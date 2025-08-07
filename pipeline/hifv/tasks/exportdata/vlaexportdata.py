@@ -136,7 +136,6 @@ class VLAExportData(exportdata.ExportData):
                     )
                     self._executor.execute(task)
 
-                    # add new pbcor fits to 'fitsfiles'
                     target['auxfitsfiles'].append(flatnoisefits)
 
         oussid = self.inputs.context.get_oussid()  # returns string of 'unknown' for VLA
