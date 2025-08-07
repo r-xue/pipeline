@@ -10,7 +10,7 @@ This file can be found in a typical pipeline distribution directory, e.g.:
 /lustre/naasc/sciops/comm/rindebet/pipeline/branches/trunk/pipeline/extern
 As of March 7, 2019 (version 3.36), it is compatible with both python 2 and 3.
 
-Code changes for Pipeline2025 (as of May 02, 2025)
+Code changes for Pipeline2025 (as of July 18, 2025)
 0) Fix crash in recalcMomDiffSNR (not used by pipeline)
 1) Prevent crash due to no pyfits module available in CASA 6.6.6.
 2) Change np.string_ to np.bytes_
@@ -22,6 +22,8 @@ Code changes for Pipeline2025 (as of May 02, 2025)
 7) Prevent undefined variable jointMaskTemp (PIPEREQ-368 / PIPE-2563)
 8) Fix for PIPE-2261 (touch original momDiff image when reverting)
 9) Fix for PIPE-2355 (draw AllCont label on plot)
+10) Fixes for PIPE-2673 (remove DeprecationWarnings)
+
 
 Code changes for Pipeline2024 (as of July 30, 2024)
 0) No longer disable onlyExtraMask when returnBluePoints==True
@@ -324,7 +326,7 @@ def version(showfile=True):
     """
     Returns the CVS revision number.
     """
-    myversion = "$Id: findContinuumCycle12.py,v 8.8 2025/05/02 21:06:09 we Exp $" 
+    myversion = "$Id: findContinuumCycle12.py,v 8.13 2025/07/19 03:52:18 we Exp $" 
     if (showfile):
         print("Loaded from %s" % (__file__))
     return myversion
@@ -1875,6 +1877,7 @@ def findContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3, spw='',
                     MADCubeOutside, cubeMedian = cubeNoiseLevel(img, pbcube=pbmom, mask=jointMaskTest, chans=selection, subimage=subimage, imageInfo=imageInfo) # no need for jointMaskTestAnnulus since pbmom is passed already
                 mom8fcSNRCube = (mom8fcPeakOutside-mom8fcMedian)/MADCubeOutside
                 npix = imstat(img, listit=imstatListit)['npts']
+                npix = pickFirstElementIfNecessary(npix)   # fix for PIPE-2673
                 TenEventSigma = oneEvent(npix, 10)
                 casalogPost("%d pixels yields 10-event sigma = %f,  MAD of cube outside joint mask = %f" % (npix, TenEventSigma, MADCubeOutside))
                 NpixCubeMedian = computeNpixCubeMedian(mom8fcMedian, cubeLevel, MADCubeOutside, mymom8fc, jointMaskTest)
@@ -5649,7 +5652,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
                 group0 = [-1,-1]
             else:
                 group0 = [int(j) for j in selection.split(',')[0].split('~')]
-                channelsInSingleGroup = np.abs(np.diff(group0)) + 1
+                channelsInSingleGroup = np.abs(np.diff(group0))[0] + 1
             minPercentInSingleGroup = 5.0
             if float(channelsInSingleGroup)/nchan < minPercentInSingleGroup/100:
                 percentage = 100.*channelsInSingleGroup / nchan
@@ -6005,6 +6008,7 @@ def runFindContinuum(img='', pbcube=None, psfcube=None, minbeamfrac=0.3,
     else:
         bottomLegend = ''
     if madRatio is not None:
+        print("types: ",type(peakOverMad),type(peakMinusMedianOverMad),type(mom0peakOverMad),type(mom8peakOverMad),type(signalRatio),type(madRatio))
         bottomLegend += "peak/MAD: %.2f, %.2f, %.2f, %.2f, signalRatio: %.3f, madRatio: %.3f" % (peakOverMad,peakMinusMedianOverMad,mom0peakOverMad,mom8peakOverMad,signalRatio,madRatio)
     elif useMiddleChannels:
         bottomLegend += "peak/MAD: %.2f, %.2f, %.2f, %.2f, signalRatio: %.3f, middle chans used" % (peakOverMad,peakMinusMedianOverMad,mom0peakOverMad,mom8peakOverMad,signalRatio)
@@ -6388,7 +6392,8 @@ def findWidestContiguousListInChannelRange(channels, channelRange, continuumChan
         if (contiguousList[0] >= startchan) and (contiguousList[-1] < endchan):
             spreadFactor = np.max([contiguousList[-1]-continuumChannels[0]+1,continuumChannels[-1]-contiguousList[0]+1])/currentRange
             mylengths[j] = len(contiguousList) * spreadFactor
-            casalogPost('Possible region: %s, %d*%f = %f' % (contiguousList, len(contiguousList), spreadFactor, mylengths[j]))
+            mylist = [int(i) for i in contiguousList] # convert int64 to int for shorter messages
+            casalogPost('Possible region: %s, %d*%f = %f' % (mylist, len(mylist), spreadFactor, mylengths[j]))
         if mylengths[j] > widestListLength:
             widestListLength = mylengths[j]
             widestList = contiguousList
@@ -7558,6 +7563,10 @@ def countUnmaskedPixels(img, useImstat=True, outdir='.'):
             if not alreadyExists:
                 f.write('# dirtyCubeName min max rms medabsdevmed\n')
             mymin = stats['min']; mymax = stats['max']; mystd = stats['rms']; mymad = stats['medabsdevmed']
+            mymin = pickFirstElementIfNecessary(mymin)
+            mymax = pickFirstElementIfNecessary(mymax)
+            mystd = pickFirstElementIfNecessary(mystd)
+            mymad = pickFirstElementIfNecessary(mymad)
             f.write('%s %.7f %.7f %.7f %.7f\n' % (img,mymin,mymax,mystd,mymad))
             f.close()
         
@@ -7815,8 +7824,10 @@ def meanSpectrumFromMom0Mom8JointMask(cube, imageInfo, nchan, pbcube=None, psfcu
     # PL2024: PIPE-1992 if dynamic range of mom0 is high, raise the mom0minsnr mask threshold
     imstatResults = imstat(moment0name)
     mom0peakOverMad = imstatResults['max']/imstatResults['medabsdevmed']
+    mom0peakOverMad = pickFirstElementIfNecessary(mom0peakOverMad)   # fix for PIPE-2673
     imstatResults = imstat(moment8name)
     mom8peakOverMad = imstatResults['max']/imstatResults['medabsdevmed']
+    mom8peakOverMad = pickFirstElementIfNecessary(mom8peakOverMad)  # fix for PIPE-2673
     if mom0peakOverMad > 90:    # 2019.1.01184 needs 93
         new_mom0minsnr = np.max([mom0minsnr, 8])
         casalogPost('Raising mom0minsnr from %f to %f because mom0peakOverMad=%.1f > 90' % (mom0minsnr,new_mom0minsnr,mom0peakOverMad))
@@ -8910,7 +8921,7 @@ def cubeFrameToTopo(img, imageInfo, freqrange='', prec=4, verbose=False,
         fieldid = fieldIDForName(mymsmd, source)
         chanfreqs = mymsmd.chanfreqs(spw)
         mymsmd.close()
-        casalogPost("    Calling fc.casaRestToTopo(%f, %f, %s, %s, %d)" % (startFreq, stopFreq, vis, str(spw), fieldid))
+        casalogPost("    Calling fc.casaRestToTopo(%f, %f, '%s', %s, %d)" % (startFreq, stopFreq, vis, str(spw), fieldid))
         c0, c1 = casaRestToTopo(startFreq, stopFreq, vis, spw, fieldid)
         # convert TOPO channel to TOPO frequency
         if chanfreqs[1] > chanfreqs[0]:  # USB
@@ -9067,8 +9078,8 @@ def casaRestToTopo(restFrequency, restFrequency2, msname, spw, fieldid):
                               freqstart='%fHz'%(restFrequency),
                               freqend='%fHz'%(restFrequency2))
     idx = np.where(mydict['spw'] == spw)[0]
-    startChan = mydict['start'][idx]
-    nchan = mydict['nchan'][idx]
+    startChan = int(pickFirstElementIfNecessary(mydict['start'][idx])) # fix for PIPE-2673
+    nchan = int(pickFirstElementIfNecessary(mydict['nchan'][idx])) # fix for PIPE-2673
     stopChan = startChan + nchan - 1
     print("    TOPO channel range in ms: %d-%d" % (startChan,stopChan))
     return startChan, stopChan
@@ -9572,12 +9583,16 @@ def imageSNR(img, axes=[], mask='', maskWithAnnulus='', useAnnulus=False,
     if usepb != '':
         mask += ' && "%s">0.23' % (usepb)
     stats = imstat(img, axes=axes, mask=mask, listit=imstatListit, chans=chans)
+    for myval in ['median','max','medabsdevmed','min','sigma','npts']: # fix for PIPE-2673
+        stats[myval] = pickFirstElementIfNecessary(stats[myval])       # fix for PIPE-2673
     if useAnnulus:
         statsAnnulus = imstat(img, axes=axes, mask=maskWithAnnulus, listit=imstatListit, chans=chans)
+        for myval in ['median','max','medabsdevmed','min','sigma','npts']: # fix for PIPE-2673
+            statsAnnulus[myval] = pickFirstElementIfNecessary(statsAnnulus[myval])       # fix for PIPE-2673
     if not applyMaskToAll:
         stats_nomask = imstat(img, listit=imstatListit, axes=axes, chans=chans)
         # replace max with the max over the whole image
-        stats['max'] = stats_nomask['max']
+        stats['max'] = pickFirstElementIfNecessary(stats_nomask['max'])
     if useAnnulus:
         # use the median from the annulus
         casalogPost("median = %f, median from annulus = %f;  scMAD = %f, scMAD from annulus = %f" % (stats['median'],statsAnnulus['median'],stats['medabsdevmed']/.6745,statsAnnulus['medabsdevmed']/.6745))
@@ -9585,7 +9600,8 @@ def imageSNR(img, axes=[], mask='', maskWithAnnulus='', useAnnulus=False,
         # pick the lower of the two possible MADs; otherwise, do not use the rest of the statsAnnulus results
         if statsAnnulus['medabsdevmed'] > 0 and stats['medabsdevmed'] > 0:
             # keep it as an array of length 1
-            stats['medabsdevmed'] = np.array([np.min([statsAnnulus['medabsdevmed'], stats['medabsdevmed']])])
+#            stats['medabsdevmed'] = np.array([np.min([statsAnnulus['medabsdevmed'], stats['medabsdevmed']])])
+            stats['medabsdevmed'] = np.min([statsAnnulus['medabsdevmed'], stats['medabsdevmed']])
         elif statsAnnulus['medabsdevmed'] > 0: # this means that stats['medabsdevmed'] is zero, so we replace it
             stats['medabsdevmed'] = statsAnnulus['medabsdevmed']
     if stats['medabsdevmed'] > 0:
@@ -9595,6 +9611,9 @@ def imageSNR(img, axes=[], mask='', maskWithAnnulus='', useAnnulus=False,
         casalogPost('Because the MAD is zero, using the sigma instead in the calculation of SNR')
         snr = (stats['max']-stats['median'])/stats['sigma']
         casalogPost('snr = (%f-%f)/%f = %f (npts=%d)' % (stats['max'],stats['median'],stats['sigma'],snr, stats['npts']))
+    mymax = stats['max'] # fix for PIPE-2673
+    mymedian = stats['median'] # fix for PIPE-2673
+    myscaledMAD = stats['medabsdevmed']/.6745 # fix for PIPE-2673
     if type(snr) == list or type(snr) == np.ndarray:
         if len(snr) == 1:
             snr = snr[0]
@@ -10078,6 +10097,12 @@ def getScienceSpws(vis, intent='OBSERVE_TARGET#ON_SOURCE', returnString=True,
         return list([str(i) for i in scienceSpws])
     else:
         return(list(scienceSpws))
+
+def pickFirstElementIfNecessary(value):
+    if isinstance(value, (tuple, list, np.ndarray)):
+        return value[0]
+    else:
+        return value
     
 ################################################################################
 # Functions below this point are not used by the Cycle 6 or 7 pipeline or PL2020
