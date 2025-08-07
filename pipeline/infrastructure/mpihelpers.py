@@ -1,15 +1,15 @@
 import abc
 import os
 import pickle
+import pprint
 import tempfile
 from inspect import signature
-import pprint 
 
 from pipeline.domain.unitformat import file_size
 
 try:
-    from casampi.MPIEnvironment import MPIEnvironment
     from casampi.MPICommandClient import MPICommandClient
+    from casampi.MPIEnvironment import MPIEnvironment
 except ImportError:
     # MPI not available on MacOS
     class DummyMPIEnvironment:
@@ -20,9 +20,8 @@ except ImportError:
     MPICommandClient = object
 
 
-from pipeline.infrastructure import exceptions
-from pipeline.infrastructure import logging
-from pipeline.infrastructure.utils import get_obj_size, gen_hash
+from pipeline.infrastructure import exceptions, logging
+from pipeline.infrastructure.utils import gen_hash, get_obj_size
 
 # global variable for toggling MPI usage
 USE_MPI = True
@@ -512,8 +511,8 @@ class TaskQueue:
     def __call__(self):
         return self.get_results(clear=False)
 
-    def done(self):
-        return self.get_results(clear=False)
+    def done(self, clear=False):
+        return self.get_results(clear=clear)
 
     def is_async(self):
         """Return True if the TaskQueue is running in parallel mode."""

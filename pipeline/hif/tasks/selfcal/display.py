@@ -4,6 +4,7 @@ import shutil
 
 import matplotlib.pyplot as plt
 import numpy as np
+import traceback
 
 import pipeline.infrastructure.logging as logging
 from pipeline.h.tasks.common.displays import sky
@@ -17,8 +18,7 @@ from pipeline.infrastructure.renderer import logger
 LOG = logging.get_logger(__name__)
 
 ct = CasaTasks()
-tq = TaskQueue(unique=True)
-
+tq = None # a module-level TaskQueue instance, intialized as None, but could be later set by the renderer
 
 class SelfcalSummary(object):
     def __init__(self, context, r, target):
@@ -311,10 +311,19 @@ class SelfcalSummary(object):
                 plotrange = [0, 0, -180, 180]
             try:
                 figname = os.path.join(self.stage_dir, 'plot_' + ant_name + '_' + gaintable.replace('.g', '.png'))
-                tq.add_functioncall(self._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant_name, figname)
-                phasefreq_plots.append(logger.Plot(
-                    figname, x_axis=f'{xtitle} ({ant_name})', y_axis=f'{ytitle}', thumbnail_check=False))
-            except Exception as e:
+                if isinstance(tq, TaskQueue):
+                    tq.add_functioncall(
+                        SelfcalSummary._plot_gain_perant, caltb_loc, xaxis, yaxis, plotrange, ant_name, figname
+                    )
+                else:
+                    SelfcalSummary._plot_gain_perant(caltb_loc, xaxis, yaxis, plotrange, ant_name, figname)
+                phasefreq_plots.append(
+                    logger.Plot(figname, x_axis=f'{xtitle} ({ant_name})', y_axis=f'{ytitle}', thumbnail_check=False)
+                )
+            except Exception as ex:
+                LOG.debug('Failed to generate gain plot for %s: %s', ant_name, ex)
+                traceback_msg = traceback.format_exc()
+                LOG.debug(traceback_msg)
                 continue
 
         return phasefreq_plots

@@ -326,9 +326,9 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
         summary_tabs, solint_tabs, spw_tabs, spw_tabs_msg = {}, {}, {}, {}
 
-        with TaskQueue(unique=True) as display.tq:
-            for target in cleantargets:
-                if not is_restore:
+        if not is_restore:
+            with TaskQueue(unique=True) as display.tq:
+                for target in cleantargets:
                     # only do this when not restoring from a previous run (selfcal_resourcs avaibility is not warranted)
                     key = (target['field_name'], target['sc_band'])
                     slib = target['sc_lib']
