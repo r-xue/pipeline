@@ -40,10 +40,9 @@ __all__ = [
 
 WEAK_CALIBRATOR_INTENTS = {'CHECK', 'PHASE'}
 
-# Estimated SNR threshold for spw above which a gaintable will be generated. Equates
-# to X in PIPE-2505 spec. Extracted as a module variable so that testers could, if
-# desired, force caltable generation for all spws.
-LOW_SNR_THRESHOLD = 6
+# Estimated SNR threshold for spw above which a gaintable will be generated. Equivalent
+# to X in PIPE-2505 spec. Setting to -1 forces gaintable SNR estimation for all SPWs.
+LOW_SNR_THRESHOLD = -1
 
 # Multiplier applied to catalogue SNRs for their subsequent use in heuristics.
 # Equivalent to Y in PIPE-2505 spec.
