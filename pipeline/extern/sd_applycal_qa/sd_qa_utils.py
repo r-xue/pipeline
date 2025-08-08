@@ -645,7 +645,7 @@ def getAtmDataForSPW(fname: str, spw_setup: dict, spw: int, antenna: str, smooth
     atmtimes = np.unique(tmatm_all[spw])
     start_times = np.array([spw_setup['scantimes'][i][0] for i in tsys_scanlist])
     timediff = [np.min(np.abs(time-atmtimes)) for time in start_times]
-    if len(atmtimes) > 1:
+    if len(start_times) > 1:
         delta_atmtimes = np.min(np.diff(start_times))
         isclose = (timediff/delta_atmtimes < 0.5)
     else:
