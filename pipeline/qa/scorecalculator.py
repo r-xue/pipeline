@@ -2915,6 +2915,10 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             rgm = reduction_group[bl['group_id']][mid]
             ms = rgm.ms.origin_ms
             if ms not in atm_masks:
+                if rgm.ms.antenna_array.name == 'NRO':
+                    atm_masks.setdefault(ms, {})
+                    continue
+
                 spwsetup = sdatm.getSpecSetup(rgm.ms.basename)
                 spws = list(map(int, spwsetup['spwlist']))
                 tau = sdatm.getCalAtmData(rgm.ms.basename, spws, spwsetup)[-2]
@@ -2938,7 +2942,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
         lines = get_line_ranges(bl['lines'])
-        
+
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
         # spectral-line scoring
@@ -2947,7 +2951,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             lines.sort(key=operator.itemgetter(0))
             is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
             is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
-            
+
             if is_edge_line and is_wide_line:
                 score = 0.55  # min(0.55, 0.6)
                 msg = 'Edge and wide lines were detected'
@@ -2963,7 +2967,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 msg = 'Line ranges were detected'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            line_detection_scores.append(make_score(score, msg, metric_value, 
+            line_detection_scores.append(make_score(score, msg, metric_value,
                                           'Channel range(s) of detected lines',
                                           reduction_group_desc[member_list[0]].ms.origin_ms, field_name,
                                           {reduction_group_desc[m].spw_id for m in member_list},
@@ -2985,19 +2989,19 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             for l, r in lines:
                 line_mask[l:r+1] = True
             atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
-            
+
             # DM scoring
             for dm_mask in dm_masks:
                 ranges = mask_to_ranges(dm_mask)
                 unit = 'Channel range(s) of deviation mask'
                 dm_atm = dm_mask & atm_mask
                 if np.any(line_mask & dm_mask):
-                    score = 0.88 
+                    score = 0.88
                     msg = 'Deviation mask overlapped with spectral lines'
                     LOG.debug(
                         'Deviation masks overlap with lines. '
                         'Set deviation mask QA score to %s', score
-                    ) 
+                    )
                 # ATM-DM overlap
                 elif np.any(dm_atm):
                     score = 0.88
@@ -3008,20 +3012,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                         'Set atm overlap QA score to %s', score
                     )
                 else:
-                    score = 0.65 
+                    score = 0.65
                     msg = 'Deviation mask was triggered'
                     LOG.debug(
                         'Found deviation mask with no overlap'
                         'Set deviation mask QA score to %s', score
                     )
-                metric = ','.join(f'{l}~{r}' for l, r in ranges) 
+                metric = ','.join(f'{l}~{r}' for l, r in ranges)
                 dm_scores.append(make_score(score, msg, metric, unit,
-                                        ms, field_name, {spw}, {rgm.antenna_name}))                           
-        
+                                        ms, field_name, {spw}, {rgm.antenna_name}))
+
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.',
                                     'N/A', 'Channel range(s) of detected lines',
                                     next(iter(atm_masks))))
 

@@ -880,12 +880,14 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
             if 'VLA' in result.imaging_mode:
-                # PIPE-1462 / PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
                 # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
                 # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
                 # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
                 # vs. specmode='mvc') but with a different warning.
-                # For consistency and clarity in VLA continuum imaging plots, we continue to use non-pbcor images here.
+                # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
+                # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
+                # the primary beam (PB) mask limit.
                 colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
