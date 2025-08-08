@@ -569,7 +569,7 @@ def smoothed_sigma_clip(data: np.ma.MaskedArray, threshold: float, max_smooth_fr
         snrmax: SNR of the maximum outlier.
         outliers: Numpy boolean array for selection of outliers.
         widthmax: Smoothing width that maximizes SNR of maximum outlier.
-        smsigma: Channel-to-channel standard deviation 
+        smsigma: Channel-to-channel standard deviation
         datamax: Data value of the maximum outlier.
         widths: List of boxcar smoothing widths used.
         normdata: Normalized data used for outlier detection, in units of number of sigmas.
@@ -644,9 +644,12 @@ def getAtmDataForSPW(fname: str, spw_setup: dict, spw: int, antenna: str, smooth
     #Find out if there is some missing scan, if so, fill in with masked data
     atmtimes = np.unique(tmatm_all[spw])
     start_times = np.array([spw_setup['scantimes'][i][0] for i in tsys_scanlist])
-    delta_atmtimes = np.min(np.diff(start_times))
     timediff = [np.min(np.abs(time-atmtimes)) for time in start_times]
-    isclose = (timediff/delta_atmtimes < 0.5)
+    if len(start_times) > 1:
+        delta_atmtimes = np.min(np.diff(start_times))
+        isclose = (timediff/delta_atmtimes < 0.5)
+    else:
+        isclose = np.array([False] * len(timediff))
     idx = np.intp(np.cumsum(1.0*isclose) - 1.0)
     tsys = np.ma.MaskedArray(np.zeros((npol, nchan, ntsysscans)), mask=np.zeros((npol, nchan, ntsysscans)))
     trec = np.ma.MaskedArray(np.zeros((npol, nchan, ntsysscans)), mask=np.zeros((npol, nchan, ntsysscans)))
