@@ -127,8 +127,10 @@ class CleanSummary(object):
                 # MOM0_FC for this iteration (currently only last but allow for others in future).
                 if 'mom0_fc' in iteration and os.path.exists(iteration['mom0_fc'] + extension):
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM0_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom0_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list))
+                                                         intent=r.intent, stokes_list=['I']))
 
                 # MOM8_FC for this iteration (currently only last but allow for others in future).
                 if 'mom8_fc' in iteration and os.path.exists(iteration['mom8_fc'] + extension):
@@ -149,15 +151,19 @@ class CleanSummary(object):
                         extra_args = {}
 
                     plot_wrappers.extend(
+                        # PIPE-2464 introduced TARGET IQUV imaging. The MOM8_FC image can only be
+                        # be made for stokes='I', so using an explicit setting here.
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration['mom8_fc'] + extension, reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, **extra_args))
+                                                         intent=r.intent, stokes_list=['I'], **extra_args))
 
                 # cleanmask - not for iter 0
                 if i > 0:
                     collapse_function = 'mom8' if self._is_cube_repbw(iteration, imagetype='cleanmask') else 'mean'
+                    # Plot only Stokes I since the QUV planes are not present in re-used mask from
+                    # the previous Stokes I imaging step (PIPE-2464).
                     plot_wrappers.extend(
                         sky.SkyDisplay().plot_per_stokes(self.context, iteration.get('cleanmask', ''), reportdir=stage_dir,
-                                                         intent=r.intent, stokes_list=stokes_list, collapseFunction=collapse_function,
+                                                         intent=r.intent, stokes_list=['I'], collapseFunction=collapse_function,
                                                          **{'cmap': copy.copy(matplotlib.cm.YlOrRd)}))
 
                 # cube spectra and PSF per channel plot for this iteration
@@ -204,11 +210,11 @@ class CleanSummary(object):
             # polarization intensity and angle
             if r.intent == 'POLARIZATION' and set(stokes_list) == {'I', 'Q', 'U', 'V'} and r.imaging_mode == 'ALMA':
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLI'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLI'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
                 plot_wrappers.extend(sky.SkyDisplay().plot_per_stokes(self.context,
-                                                                      r.image.replace('.pbcor', '').replace('IQUV', 'POLA'),
+                                                                      r.image.replace('.pbcor', '').replace('.image', f'.image{extension}').replace('IQUV', 'POLA'),
                                                                       reportdir=stage_dir, intent=r.intent,
                                                                       collapseFunction='mean'))
 

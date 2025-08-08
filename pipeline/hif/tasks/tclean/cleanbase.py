@@ -284,7 +284,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         context = self.inputs.context
         inputs = self.inputs
 
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             image_name = ''
         else:
             image_name = '%s.%s.iter%s.image' % (
@@ -303,9 +303,16 @@ class CleanBase(basetask.StandardTaskTemplate):
         pbcor_image_name = '%s.%s.iter%s.image.pbcor' % (
             inputs.imagename, inputs.stokes, iter)
 
-        # For ephemeris objects, tclean/parallel was explicit set to False between 2018/07/10 and
-        # 2021-02/16 due to a tclean bug (see CAS-11631 and PIPE-981)
-        parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
+        if inputs.intent == 'TARGET' and inputs.specmode in ('mfs', 'cont') and inputs.stokes == 'IQUV':
+            # There seems to be a tclean parallelization bug with usemask='user'
+            # and an explict mask for specmode='cont' mode (PIPE-2464, CAS-14618)
+            parallel = False
+            if mpihelpers.is_mpi_ready():
+                LOG.info('Temporarily turning off Tier-0 parallelization for Stokes IQUV target continuum imaging (PIPE-2464).')
+        else:
+            # For ephemeris objects, tclean/parallel was explicit set to False between 2018/07/10 and
+            # 2021-02/16 due to a tclean bug (see CAS-11631 and PIPE-981)
+            parallel = all([mpihelpers.parse_mpi_input_parameter(inputs.parallel), 'TARGET' in inputs.intent])
 
         # PIPE-1878: calculate iteration/specmode-dependent threshold scaling factor (only used for VLA-PI) to correct the
         # potential tclean noise estimation bias.
@@ -475,6 +482,7 @@ class CleanBase(basetask.StandardTaskTemplate):
                 tclean_job_parameters['fastnoise'] = inputs.hm_fastnoise
             else:
                 tclean_job_parameters['fastnoise'] = True
+
             if inputs.hm_masking != 'none' and inputs.mask == 'pb':
                 # In manual cleaning mode decide for cleaning with pbmask according
                 # to heuristic class method (see PIPE-977)
@@ -489,7 +497,7 @@ class CleanBase(basetask.StandardTaskTemplate):
             tclean_job_parameters['nterms'] = result.multiterm
 
         # Select whether to restore image
-        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if inputs.niter == 0 and not (inputs.specmode == 'cube' and inputs.spwsel_all_cont) and not (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             tclean_job_parameters['restoration'] = False
             tclean_job_parameters['pbcor'] = False
         else:
@@ -699,7 +707,7 @@ class CleanBase(basetask.StandardTaskTemplate):
         # Note: result.model does not include the `.ttx` suffix from mtmfs cases.
         model_name = f"{inputs.imagename}.{inputs.stokes}.iter{iter}.model"
 
-        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont):
+        if iter > 0 or (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
             im_names['model'] = model_name
             im_names['image'] = image_name
             im_names['pbcorimage'] = pbcor_image_name
