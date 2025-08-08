@@ -23,6 +23,7 @@ from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.callibrary import CalTo
 from pipeline.infrastructure.launcher import Context
 from .resultobjects import GfluxscaleflagResults
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = [
     'GfluxscaleflagInputs',
@@ -118,10 +119,13 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
     # tooManyIntegrationsFraction
     tmint = vdp.VisDependentProperty(default=0.085)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_gfluxscaleflag
     def __init__(self, context, output_dir=None, vis=None, intent=None, field=None, spw=None, solint=None,
                  phaseupsolint=None, minsnr=None, refant=None, antnegsig=None, antpossig=None, tmantint=None,
-                 tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None):
+                 tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None,
+                 parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -212,8 +216,12 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
 
                 Example: niter=2
 
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
         """
-        super(GfluxscaleflagInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -242,15 +250,10 @@ class GfluxscaleflagInputs(vdp.StandardInputs):
         self.antblpossig = antblpossig
         self.relaxed_factor = relaxed_factor
         self.niter = niter
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_gfluxscaleflag')
-@task_registry.set_casa_commands_comment(
-    'This task calls hif_correctedampflag to evaluate flagging heuristics on the phase calibrator and flux calibrator, '
-    'looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes '
-    'minus model amplitudes, and flagging those outliers.'
-)
-class Gfluxscaleflag(basetask.StandardTaskTemplate):
+class SerialGfluxscaleflag(basetask.StandardTaskTemplate):
     Inputs = GfluxscaleflagInputs
 
     def prepare(self):
@@ -529,6 +532,17 @@ class Gfluxscaleflag(basetask.StandardTaskTemplate):
         return combine, interp, spwmap
 
 
+@task_registry.set_equivalent_casa_task('hifa_gfluxscaleflag')
+@task_registry.set_casa_commands_comment(
+    'This task calls hif_correctedampflag to evaluate flagging heuristics on the phase calibrator and flux calibrator, '
+    'looking for outlier visibility points by statistically examining the scalar difference of corrected amplitudes '
+    'minus model amplitudes, and flagging those outliers.'
+)
+class Gfluxscaleflag(sessionutils.ParallelTemplate):
+    Inputs = GfluxscaleflagInputs
+    Task = SerialGfluxscaleflag
+
+
 def create_plots(inputs, context, intents, suffix=''):
     """
     Return amplitude vs time and amplitude vs UV distance plots for the given
@@ -578,5 +592,5 @@ class AmpVsXChart(applycal_displays.PlotmsFieldSpwComposite):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent=intent,
-                                          **plot_args)
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent=intent,
+                         **plot_args)

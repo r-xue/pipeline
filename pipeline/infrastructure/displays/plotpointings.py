@@ -1,6 +1,7 @@
 # Do not evaluate type annotations at definition time.
 from __future__ import annotations
 
+import contextlib
 import copy
 import os
 from typing import TYPE_CHECKING, Any, TypedDict
@@ -18,6 +19,7 @@ from pipeline.infrastructure import casa_tools, utils
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
     from matplotlib.figure import Figure
+
     from pipeline.domain import Field, MeasurementSet, Source
     from pipeline.domain.measures import Distance, EquatorialArc
 
@@ -576,7 +578,7 @@ def tsys_scans_radec(
         mean_direction: MDirection,
         tsys_field: Field,
         observatory: str = 'ALMA',
-        ) -> dict[str, dict[int, dict[str, tuple[float, float] | bool]]]:
+) -> dict[str, dict[int, dict[str, tuple[float, float] | bool]]]:
     """
     Computes the offset RA/Dec values based on pointing and ASDM_POINTING tables.
     Adapted from Todd Hunter's AU tool tsysOffSourceRADec
@@ -629,119 +631,112 @@ def tsys_scans_radec(
             else:
                 LOG.attention("Cycle number could not be determined. Result may be inaccurate, especially if it's (0,0).")
 
-    # create needed CASA tools
-    myme = casa_tools.measures
-    myms = casa_tools.ms
-    mymsmd = casa_tools.msmd
-    myms.open(vis)
-    mymsmd.open(vis)
+    with (
+        casa_tools.MSReader(vis) as myms,
+        casa_tools.MSMDReader(vis) as mymsmd,
+        contextlib.closing(casa_tools.measures) as myme,
+    ):
+        # Compute values that are not scan-dependent
+        base_dict = {'radec': (0.0, 0.0),
+                     'azel offset': False}
+        tsys_field_scans = mymsmd.scansforfield(field=tsys_field.id)
+        off_intent = 'CALIBRATE_ATMOSPHERE#OFF_SOURCE'
+        off_intent_scans = mymsmd.scansforintent(off_intent)
+        off_tsys_scans = np.intersect1d(tsys_field_scans, off_intent_scans)
+        scans_dict = {'OFF': {scan: copy.deepcopy(base_dict) for scan in off_tsys_scans}}
 
-    # # Compute values that are not scan-dependent
-    base_dict = {'radec': (0.0, 0.0),
-                 'azel offset': False}
-    tsys_field_scans = mymsmd.scansforfield(field=tsys_field.id)
-    off_intent = 'CALIBRATE_ATMOSPHERE#OFF_SOURCE'
-    off_intent_scans = mymsmd.scansforintent(off_intent)
-    off_tsys_scans = np.intersect1d(tsys_field_scans, off_intent_scans)
-    scans_dict = {'OFF': {scan: copy.deepcopy(base_dict) for scan in off_tsys_scans}}
+        # Check if there are any ON_SOURCE intents to plot
+        intents = ms.get_original_intent('ATMOSPHERE')
+        on_source_intents = ['CALIBRATE_ATMOSPHERE#ON_SOURCE', 'CALIBRATE_ATMOSPHERE#TEST']
+        if any(item in on_source_intents for item in intents):
+            on_intent = 'CALIBRATE_ATMOSPHERE#ON_SOURCE'
+            on_intent = on_intent if on_intent in intents else 'CALIBRATE_ATMOSPHERE#TEST'
+            on_intent_scans = mymsmd.scansforintent(on_intent)
+            on_tsys_scans = np.intersect1d(tsys_field_scans, on_intent_scans)
+            if on_tsys_scans.size > 0:
+                scans_dict['ON'] = {scan: copy.deepcopy(base_dict) for scan in on_tsys_scans}
 
-    # Check if there are any ON_SOURCE intents to plot
-    intents = ms.get_original_intent('ATMOSPHERE')
-    on_source_intents = ['CALIBRATE_ATMOSPHERE#ON_SOURCE','CALIBRATE_ATMOSPHERE#TEST']
-    if any(item in on_source_intents for item in intents):
-        on_intent = 'CALIBRATE_ATMOSPHERE#ON_SOURCE'
-        on_intent = on_intent if on_intent in intents else 'CALIBRATE_ATMOSPHERE#TEST'
-        on_intent_scans = mymsmd.scansforintent(on_intent)
-        on_tsys_scans = np.intersect1d(tsys_field_scans, on_intent_scans)
-        if on_tsys_scans.size > 0:
-            scans_dict['ON'] = {scan: copy.deepcopy(base_dict) for scan in on_tsys_scans}
+        for key, scan_dict in scans_dict.items():
+            intent = on_intent if key == 'ON' else off_intent
+            LOG.info("Calculating offset(s) for intent %s", intent)
+            intent_times = mymsmd.timesforintent(intent)
+            for scan_id in list(scan_dict.keys()):
+                field_id = mymsmd.fieldsforscan(scan_id)[0]
+                field_name = mymsmd.namesforfields(field_id)[0]
+                field_direction = myms.getfielddirmeas(fieldid=field_id)
 
-    for key, scan_dict in scans_dict.items():
-        intent = on_intent if key == 'ON' else off_intent
-        LOG.info("Calculating offset(s) for intent %s", intent)
-        intent_times = mymsmd.timesforintent(intent)
-        for scan_id in list(scan_dict.keys()):
-            field_id = mymsmd.fieldsforscan(scan_id)[0]
-            field_name = mymsmd.namesforfields(field_id)[0]
-            field_direction = myms.getfielddirmeas(fieldid=field_id)
+                scan_times = mymsmd.timesforscan(scan_id)
+                mytimes = np.intersect1d(scan_times, intent_times)
 
-            scan_times = mymsmd.timesforscan(scan_id)
-            mytimes = np.intersect1d(scan_times, intent_times)
+                if mytimes.size == 0:
+                    LOG.warning("No common times for scan %s and intent %s.", scan_id, intent)
+                    continue
 
-            if mytimes.size == 0:
-                LOG.warning("No common times for scan %s and intent %s.", scan_id, intent)
-                continue
+                # Find relevant pointing timestamps
+                LOG.info("Calculating offset for scan %s", scan_id)
+                first_time, last_time = np.min(mytimes), np.max(mytimes)
+                mjdsec = np.nanmedian(mytimes)
+                mjdtime = utils.mjd_seconds_to_datetime([mjdsec])[0]
+                idx = np.where((pointing_times < last_time) & (pointing_times >= first_time))[0]
+                LOG.info("Found %s pointing timestamps within the subscan time frame centered at %s",
+                         idx.size, utils.format_datetime(mjdtime))
 
-            # # Find relevant pointing timestamps
-            LOG.info("Calculating offset for scan %s", scan_id)
-            first_time, last_time = np.min(mytimes), np.max(mytimes)
-            mjdsec = np.nanmedian(mytimes)
-            mjdtime = utils.mjd_seconds_to_datetime([mjdsec])[0]
-            idx = np.where((pointing_times < last_time) & (pointing_times >= first_time))[0]
-            LOG.info("Found %s pointing timestamps within the subscan time frame centered at %s",
-                    idx.size, utils.format_datetime(mjdtime))
+                # Set reference frame
+                myme.doframe(myme.epoch('mjd', f"{mjdsec}s"))
+                myme.doframe(myme.observatory(observatory))
+                myazel = myme.measure(field_direction, 'AZEL')
 
-            # Set reference frame
-            myme.doframe(myme.epoch('mjd', f"{mjdsec}s"))
-            myme.doframe(myme.observatory(observatory))
-            myazel = myme.measure(field_direction, 'AZEL')
+                # Compute median cross-elevation offsets
+                cross_elevation_offset = np.nanmedian(pointing_offsets[0, idx])
+                el_pointing_offset = np.nanmedian(pointing_offsets[1, idx])
+                elevation = myazel['m1']['value']  # radians
+                az_pointing_offset = cross_elevation_offset / np.cos(elevation)
 
-            # Compute median cross-elevation offsets
-            cross_elevation_offset = np.nanmedian(pointing_offsets[0, idx])
-            el_pointing_offset = np.nanmedian(pointing_offsets[1, idx])
-            elevation = myazel['m1']['value']  # radians
-            az_pointing_offset = cross_elevation_offset / np.cos(elevation)
+                LOG.info("Median offset = %+.2f in cross-elevation (%+.2f in azimuth), %+.2f in elevation (arcsec)",
+                         3600 * np.degrees(cross_elevation_offset),
+                         3600 * np.degrees(az_pointing_offset),
+                         3600 * np.degrees(el_pointing_offset))
 
-            LOG.info("Median offset = %+.2f in cross-elevation (%+.2f in azimuth), %+.2f in elevation (arcsec)",
-                    3600 * np.degrees(cross_elevation_offset),
-                    3600 * np.degrees(az_pointing_offset),
-                    3600 * np.degrees(el_pointing_offset))
+                LOG.info("Tsys Scan %s (%s) az, el = %s, %s", scan_id, field_name,
+                         np.degrees(myazel['m0']['value']), np.degrees(myazel['m1']['value']))
 
-            LOG.info("Tsys Scan %s (%s) az, el = %s, %s", scan_id, field_name,
-                    np.degrees(myazel['m0']['value']), np.degrees(myazel['m1']['value']))
-
-            # Apply cross-elevation offsets
-            if az_pointing_offset or el_pointing_offset:
-                scan_dict[scan_id]['azel offset'] = True
-                myazel['m0']['value'] += az_pointing_offset
-                myazel['m1']['value'] += el_pointing_offset
-                myicrs = myme.measure(myazel, 'ICRS')
-            else:
-                # Converting between frames can cause small variations which show up downstream
-                # Revert to using field direction if no offsets are found.
-                myicrs = field_direction
-
-            # Compute RA/Dec offset values
-            radec_offsets = 0, 0
-            if os.path.exists(ap_path):
-                # Compute amount of offset to apply to RA/Dec
-                if len(pointing_times) != len(time_origins):
-                    LOG.warning("WARNING: POINTING table entries (%s) ≠ ASDM_POINTING table entries (%s)",
-                                len(pointing_times), len(time_origins))
-                    LOG.warning("No RA/Dec offset will be applied.")
+                # Apply cross-elevation offsets
+                if az_pointing_offset or el_pointing_offset:
+                    scan_dict[scan_id]['azel offset'] = True
+                    myazel['m0']['value'] += az_pointing_offset
+                    myazel['m1']['value'] += el_pointing_offset
+                    myicrs = myme.measure(myazel, 'ICRS')
                 else:
-                    radec_offsets = np.nanmedian(source_offsets[idx, 0]), np.nanmedian(source_offsets[idx, 1])
-                    LOG.info("Median offset = %+.2f in RA and %+.2f in Dec (arcsec)",
-                            3600 * np.degrees(radec_offsets[0]), 3600 * np.degrees(radec_offsets[1]))
+                    # Converting between frames can cause small variations which show up downstream
+                    # Revert to using field direction if no offsets are found.
+                    myicrs = field_direction
 
-            # Apply offset to RA/Dec and compare with field RA/Dec
-            field_ra, field_dec = direction_to_radec(field_direction)
-            offset_ra, offset_dec = apply_offset_to_radec(myicrs, offsets=radec_offsets)
-            source_ra, source_dec = direction_to_radec(mean_direction)
-            diff_ra, diff_dec = diff_directions(mean_direction, radec_to_direction(offset_ra, offset_dec))
-            ang_sep = angular_separation(source_ra, source_dec, offset_ra, offset_dec, in_arcsecs=False)
-            LOG.info("Calculating the total offset")
-            LOG.info("Tsys Field radec = %s", radec_to_sexagesimal(field_ra, field_dec))
-            LOG.info("Scan Offset radec = %s", radec_to_sexagesimal(offset_ra, offset_dec))
-            LOG.info("Mean Source radec = %s", radec_to_sexagesimal(source_ra, source_dec))
-            LOG.info("Angular separation between source and offset Tsys = %s arcsecs",
-                     round(ang_sep * RADIANS_TO_ARCSEC, 3))
-            scan_dict[scan_id]['radec'] = diff_ra, diff_dec
+                # Compute RA/Dec offset values
+                radec_offsets = 0, 0
+                if os.path.exists(ap_path):
+                    # Compute amount of offset to apply to RA/Dec
+                    if len(pointing_times) != len(time_origins):
+                        LOG.warning("POINTING table entries (%s) ≠ ASDM_POINTING table entries (%s)",
+                                    len(pointing_times), len(time_origins))
+                        LOG.warning("No RA/Dec offset will be applied.")
+                    else:
+                        radec_offsets = np.nanmedian(source_offsets[idx, 0]), np.nanmedian(source_offsets[idx, 1])
+                        LOG.info("Median offset = %+.2f in RA and %+.2f in Dec (arcsec)",
+                                 3600 * np.degrees(radec_offsets[0]), 3600 * np.degrees(radec_offsets[1]))
 
-    # cleanup measures tool
-    myme.done()
-    myms.close()
-    mymsmd.close()
+                # Apply offset to RA/Dec and compare with field RA/Dec
+                field_ra, field_dec = direction_to_radec(field_direction)
+                offset_ra, offset_dec = apply_offset_to_radec(myicrs, offsets=radec_offsets)
+                source_ra, source_dec = direction_to_radec(mean_direction)
+                diff_ra, diff_dec = diff_directions(mean_direction, radec_to_direction(offset_ra, offset_dec))
+                ang_sep = angular_separation(source_ra, source_dec, offset_ra, offset_dec, in_arcsecs=False)
+                LOG.info("Calculating the total offset")
+                LOG.info("Tsys Field radec = %s", radec_to_sexagesimal(field_ra, field_dec))
+                LOG.info("Scan Offset radec = %s", radec_to_sexagesimal(offset_ra, offset_dec))
+                LOG.info("Mean Source radec = %s", radec_to_sexagesimal(source_ra, source_dec))
+                LOG.info("Angular separation between source and offset Tsys = %s arcsecs",
+                         round(ang_sep * RADIANS_TO_ARCSEC, 3))
+                scan_dict[scan_id]['radec'] = diff_ra, diff_dec
 
     return scans_dict
 
