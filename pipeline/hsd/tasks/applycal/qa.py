@@ -57,7 +57,7 @@ class SDApplycalListQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(collated)
 
 
-aqua_exporter_ampvstime = aqua.xml_generator_for_metric('%AmpVsTimePlotQuality', '{:0.3%}')
+aqua_exporter_ampvstime = aqua.xml_generator_for_metric('AmpVsTimePlotQuality', '{:0.3f}')
 aqua_exporter_xxyydev = aqua.xml_generator_for_metric('XX-YY.deviation', '{:d}')
 aqua.register_aqua_metric(aqua_exporter_ampvstime)
 aqua.register_aqua_metric(aqua_exporter_xxyydev)
