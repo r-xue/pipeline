@@ -1647,10 +1647,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result = r.read()
                         if isinstance(result, MakeImagesResult):
                             for tclean_result in result.results:
-                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
-                                        tclean_result.specmode == 'cont' and \
-                                        tclean_result.sourcename == field and \
-                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                if (
+                                    tclean_result.datatype_info is not None
+                                    and tclean_result.datatype_info.startswith('REGCAL_CONTLINE')
+                                    and tclean_result.specmode == 'cont'
+                                    and tclean_result.sourcename == field
+                                    and im_spw.intersection(set(tclean_result.spw.split(',')))
+                                ):
                                     maxthreshold = tclean_result.threshold
                     if maxthreshold is not None:
                         LOG.info(
