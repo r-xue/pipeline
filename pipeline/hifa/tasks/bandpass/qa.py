@@ -14,7 +14,7 @@ from pipeline.hifa.tasks.bandpass.almaphcorbandpass import LowSNRPhaseupSolintOr
 from pipeline.infrastructure.pipelineqa import QAOrigin
 from pipeline.infrastructure.utils import commafy
 from pipeline.qa.scorecalculator import linear_score
-from .almaphcorbandpass import ALMAPhcorBandpass
+from .almaphcorbandpass import SerialALMAPhcorBandpass
 
 LOG = logging.get_logger(__name__)
 
@@ -24,7 +24,7 @@ class AlmaBandpassQAHandler(pqa.QAPlugin):
 
     result_cls = BandpassResults
     child_cls = None
-    generating_task = ALMAPhcorBandpass
+    generating_task = SerialALMAPhcorBandpass
 
     def handle(self, context, result):
         """Invoke QA handler for base BandpassResults."""

@@ -8,7 +8,7 @@ import pipeline.h.cli.utils as utils
 def hifa_flagdata(vis=None, autocorr=None, shadow=None, tolerance=None, scan=None, scannumber=None, intents=None,
                   edgespw=None, fracspw=None, fracspwfps=None, online=None, partialpol=None, lowtrans=None,
                   mintransrepspw=None, mintransnonrepspws=None, fileonline=None, template=None, filetemplate=None,
-                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, flagbackup=None):
+                  hm_tbuff=None, tbuff=None, qa0=None, qa2=None, flagbackup=None, parallel=None):
     """Do metadata based flagging of a list of MeasurementSets.
 
     The hifa_flagdata data performs basic flagging operations on a list of
