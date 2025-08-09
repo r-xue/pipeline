@@ -2910,28 +2910,32 @@ class SelfcalHeuristics(object):
                             LOG.info('FIELD: '+str(fid)+', REASON: Failed earlier solint')
                     LOG.info('****************Reapplying previous solint solutions where available*************')
 
-                    # if the final successful solint was inf_EB but inf_EB had a S/N decrease, don't count it as a success and revert to no selfcal
-                    if slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']:
-                        slib['SC_success'] = False
-                        slib['final_solint'] = 'None'
-                        for vis in vislist:
-                            slib[vis]['inf_EB']['Pass'] = False  # remove the success from inf_EB
-                            # remove the success from inf_EB
-                            slib[vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
-
-                    # Only set the inf_EB Pass flag to False if the mosaic as a whole failed or if this is the last phase-only solint (either because it is int or
-                    # because the solint failed, because for mosaics we can keep trying the field as we clean deeper. If we set to False now, that wont happen.
-                    for fid in np.intersect1d(slib['sub-fields'], list(slib['sub-fields-fid_map'][vis].keys())):
-                        if (slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']) or \
-                                ((not slib[vislist[0]][solint]['Pass'] or solint == 'int') and
-                                 (slib[fid]['final_solint'] == 'inf_EB' and slib[fid]['inf_EB_SNR_decrease'])):
-                            slib[fid]['SC_success'] = False
-                            slib[fid]['final_solint'] = 'None'
+                    # Because a mosaic can have sub-fields fail outright when the mosaic as a whole and/or sub-fields fail with inf_EB_SNR_decrease
+                    # we need to make sure this part is only entered if we are not in the inf_EB solint, so the inf_EB_SNR_decrease flag doesn't cause
+                    # all of those fields to fail before the next solint can be tried.
+                    if solint != 'inf_EB':
+                        # if the final successful solint was inf_EB but inf_EB had a S/N decrease, don't count it as a success and revert to no selfcal
+                        if slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']:
+                            slib['SC_success'] = False
+                            slib['final_solint'] = 'None'
                             for vis in vislist:
+                                slib[vis]['inf_EB']['Pass'] = False  # remove the success from inf_EB
                                 # remove the success from inf_EB
-                                slib[fid][vis]['inf_EB']['Pass'] = False
-                                # remove the success from inf_EB
-                                slib[fid][vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
+                                slib[vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
+
+                        # Only set the inf_EB Pass flag to False if the mosaic as a whole failed or if this is the last phase-only solint (either because it is int or
+                        # because the solint failed, because for mosaics we can keep trying the field as we clean deeper. If we set to False now, that wont happen.
+                        for fid in np.intersect1d(slib['sub-fields'], list(slib['sub-fields-fid_map'][vis].keys())):
+                            if (slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']) or \
+                                    ((not slib[vislist[0]][solint]['Pass'] or solint == 'int') and
+                                     (slib[fid]['final_solint'] == 'inf_EB' and slib[fid]['inf_EB_SNR_decrease'])):
+                                slib[fid]['SC_success'] = False
+                                slib[fid]['final_solint'] = 'None'
+                                for vis in vislist:
+                                    # remove the success from inf_EB
+                                    slib[fid][vis]['inf_EB']['Pass'] = False
+                                    # remove the success from inf_EB
+                                    slib[fid][vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
 
                     for vis in vislist:
                         self.cts.flagmanager(vis=vis, mode='restore', versionname='selfcal_starting_flags_'+sani_target)
