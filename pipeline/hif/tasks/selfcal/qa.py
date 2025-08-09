@@ -79,10 +79,10 @@ class SelfcalQAHandler(pqa.QAPlugin):
         if targets_mosaic:
             score = 0.90
             targets_desc = utils.commafy([name+f' ({band})' for name, band in targets_mosaic], quotes=False)
-            longmsg = f'A new mode is used during self-calibration for {targets_desc}.'
+            longmsg = f'A new mode (mosaic) is used during self-calibration for {targets_desc}.'
             n_field = len(targets_mosaic)
             s_field = 'target field' if n_field == 1 else 'target fields'
-            shortmsg = f'A new mode is used during self-calibration for {n_field} {s_field}.'
+            shortmsg = f'A new mode (mosaic) is used during self-calibration for {n_field} {s_field}.'
             scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg))
 
         if targets and not targets_exception and not targets_attempt:
