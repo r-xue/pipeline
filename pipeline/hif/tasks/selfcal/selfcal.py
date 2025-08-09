@@ -596,35 +596,56 @@ class Selfcal(basetask.StandardTaskTemplate):
                     scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
         if self.inputs.apply:
-
             if mses_regcal_contline:
-                if not mses_selfcal_contline:
-                    LOG.info('No DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE found.')
-                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es):')
-                    for ms in mses_regcal_contline:
-                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
-                else:
-                    LOG.warning('Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE.')
+                if mses_selfcal_contline:
+                    LOG.warning(
+                        'Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE before attempting to apply selfcal solutions.'
+                    )
                     for ms in mses_selfcal_contline:
-                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.warning('Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
+                        LOG.debug('  %s: %s', ms.basename, ms.data_column)
+                else:
+                    LOG.info(
+                        'No DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE found before attempting to apply selfcal solutions.'
+                    )
+
+                if mses_selfcal_contline and not self.inputs.recal:
+                    LOG.warning(
+                        'Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es) due to '
+                        'the presence of DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE and recal=False.'
+                    )
+                else:
+                    LOG.info('Applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
+                    applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
+                    LOG.info(
+                        'DataType info for he REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es) after applying selfcal solutions:'
+                    )
+                    for ms in mses_regcal_contline:
+                        LOG.debug('  %s: %s', ms.basename, ms.data_column)
 
             if mses_regcal_line:
-                if not mses_selfcal_line:
-                    LOG.info('No DataType:SELFCAL_LINE_SCIENCE found.')
-                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
-                    for ms in mses_regcal_line:
-                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    applycal_result_line = self._apply_scal(scal_targets,  mses_regcal_line)
-                else:
-                    LOG.warning('Found DataType:SELFCAL_LINE_SCIENCE.')
+                if mses_selfcal_line:
+                    LOG.warning('Found DataType:SELFCAL_LINE_SCIENCE before attempting to apply selfcal solutions.')
                     for ms in mses_selfcal_line:
-                        LOG.debug(f'  {ms.basename}: {ms.data_column}')
-                    LOG.warning('Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es).')
+                        LOG.debug('  %s: %s', ms.basename, ms.data_column)
+                else:
+                    LOG.info('No DataType:SELFCAL_LINE_SCIENCE found before attempting to apply selfcal solutions.')
+
+                if mses_selfcal_line and not self.inputs.recal:
+                    LOG.warning(
+                        'Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es). due to '
+                        'the presence of DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE and recal=False.'
+                    )
+                else:
+                    LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es)')
+
+                    applycal_result_line = self._apply_scal(scal_targets, mses_regcal_line)
+                    LOG.info('DataType info for the REGCAL_LINE_SCIENCE MS(es) after applying selfcal solutions:')
+                    for ms in mses_regcal_line:
+                        LOG.debug('  %s: %s', ms.basename, ms.data_column)
 
         return SelfcalResults(
-            scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
+            scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore
+        )
 
     def _solve_selfcal(self):
 
