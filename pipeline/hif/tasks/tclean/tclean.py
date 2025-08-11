@@ -23,6 +23,7 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
@@ -704,6 +705,11 @@ class Tclean(cleanbase.CleanBase):
             sequence_manager = ManualMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                            gridder=inputs.gridder, threshold=threshold,
                                                            sensitivity=sensitivity, niter=inputs.niter)
+        # Re-used Stokes I mask
+        elif inputs.hm_masking == 're-use':
+            sequence_manager = ReuseMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+                                                           gridder=inputs.gridder, threshold=threshold,
+                                                           sensitivity=sensitivity, niter=inputs.niter)
         # No mask
         elif inputs.hm_masking == 'none':
             sequence_manager = NoMaskThresholdSequence(multiterm=multiterm,
@@ -1159,8 +1165,12 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('    Residual min: %s', residual_min)
         LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
 
-        # All continuum
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Determine if we keep iterating past the dirty image. This is currently the case for
+        # 1) All continuum case
+        # 2) TARGET IQUV imaging without previous auto-mask from a stokes I imaging stage
+        if (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or \
+           (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
+
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
             ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
                          +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
@@ -1190,28 +1200,34 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
-            result.cube_all_cont = True
+
+            if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+                result.cube_all_cont = True
+
             keep_iterating = False
         else:
             keep_iterating = True
 
-        # Adjust threshold based on the dirty image statistics
-        dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
-        tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
-        new_threshold, DR_correction_factor, maxEDR_used = \
-            self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
+        if inputs.hm_cleaning in ('manual', 'rms'):
+            # Adjust threshold based on the dirty image statistics
+            dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
+            tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+            new_threshold, DR_correction_factor, maxEDR_used = \
+                self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, tlimit, inputs.drcorrect)
-        sequence_manager.threshold = new_threshold
-        sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
+            if inputs.hm_cleaning == 'manual':
+                sequence_manager.threshold = sequence_manager.threshold
+            else:
+                sequence_manager.threshold = new_threshold
+            sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
                                                            residual_max, new_threshold, residual_robust_rms, intent=inputs.intent)
         sequence_manager.niter = new_niter
 
-        # Save corrected sensitivity in iter0 result object for 'cube' and
-        # 'all continuum' since there is no further iteration.
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Save corrected sensitivity in iter0 result object if there is no further iteration.
+        if not keep_iterating:
             result.set_dirty_dynamic_range(dirty_dynamic_range)
             result.set_DR_correction_factor(DR_correction_factor)
             result.set_maxEDR_used(maxEDR_used)
@@ -1231,7 +1247,15 @@ class Tclean(cleanbase.CleanBase):
             if inputs.hm_masking == 'auto':
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
             elif inputs.hm_masking == 'manual':
+                # Note that this will only work if the name of the manual
+                # mask does not happen to be '%s.iter%s.mask' % (rootname, iteration)
+                # which will usually be the case.
                 new_cleanmask = inputs.mask
+            elif inputs.hm_masking == 're-use':
+                # Note the same issue reported in the VLA image iteration above about
+                # tclean not accepting a user mask of the same name as it would create
+                # itself. Hence ".cleanmask" instead of ".mask".
+                new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
             elif inputs.hm_masking == 'none':
                 new_cleanmask = ''
             else:
@@ -1526,8 +1550,8 @@ class Tclean(cleanbase.CleanBase):
         if "_fc" in outfile:
             mom_type += "_fc"
 
-        # Execute job to create the MOM8_FC image.
-        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans)
+        # Execute job to create the MOM0/8/10_FC image.
+        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans, stokes='I')
         self._executor.execute(job)
         assert os.path.exists(outfile)
 
