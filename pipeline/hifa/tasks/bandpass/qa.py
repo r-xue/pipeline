@@ -1,23 +1,28 @@
-"""
-QA handlers for hifa_bandpass task.
-"""
+"""QA handlers for hifa_bandpass task."""
+
+from __future__ import annotations
 
 import os
+from typing import TYPE_CHECKING
 
-from pipeline.extern import subband_qa
-from pipeline.domain import MeasurementSet
-from pipeline.infrastructure.launcher import Context
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.renderer.rendererutils as rutils
 import pipeline.infrastructure.utils as utils
+from pipeline.extern import subband_qa
 from pipeline.hif.tasks.bandpass.common import BandpassResults
 from pipeline.hif.tasks.bandpass.qa import BandpassQAHandler
 from pipeline.hifa.tasks.bandpass.almaphcorbandpass import LowSNRPhaseupSolintOrigin
 from pipeline.infrastructure.pipelineqa import QAOrigin
 from pipeline.infrastructure.utils import commafy
 from pipeline.qa.scorecalculator import linear_score
+
 from .almaphcorbandpass import SerialALMAPhcorBandpass
+
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
+
 
 LOG = logging.get_logger(__name__)
 
@@ -358,8 +363,7 @@ def _adjusted_phaseup_solint_handler(result: BandpassResults) -> list[pqa.QAScor
 def _score_bandpass_phaseup_solint(
     solint: str | float, int_time: float
 ) -> tuple[float, QAOrigin]:
-    """
-    Score the expected phase-up solint for bandpass calibrator.
+    """Score the expected phase-up solint for bandpass calibrator.
 
     Scales the score between 0.66 and 0.9 based on the integration time.
 
@@ -378,7 +382,13 @@ def _score_bandpass_phaseup_solint(
         case _:
             float_solint = float((solint).split("s")[0])
             # limit score to blue INFO range
-            score = linear_score(float_solint, 2 * int_time, 60.0, rutils.SCORE_THRESHOLD_SUBOPTIMAL, rutils.SCORE_THRESHOLD_WARNING + 0.01)
+            score = linear_score(
+                float_solint,
+                2 * int_time,
+                60.0,
+                rutils.SCORE_THRESHOLD_SUBOPTIMAL,
+                rutils.SCORE_THRESHOLD_WARNING + 0.01,
+            )
 
     return score, origin
 
