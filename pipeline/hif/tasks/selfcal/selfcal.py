@@ -860,19 +860,28 @@ class Selfcal(basetask.StandardTaskTemplate):
             else:
                 telescope = 'ALMA'
 
-        makeimlist_inputs = MakeImList.Inputs(self.inputs.context,
-                                              vis=None,
-                                              intent='TARGET',
-                                              specmode='cont',
-                                              clearlist=True,
-                                              scal=scal, contfile=self.inputs.contfile,
-                                              field=self.inputs.field,
-                                              spw=self.inputs.spw,
-                                              hm_imsize=self.inputs.hm_imsize,
-                                              hm_cell=self.inputs.hm_cell,
-                                              allow_wproject=self.inputs.allow_wproject,
-                                              datatype='regcal',
-                                              parallel=self.inputs.parallel)
+        makeimlist_inputs = MakeImList.Inputs(
+            self.inputs.context,
+            vis=None,
+            intent='TARGET',
+            specmode='cont',
+            clearlist=True,
+            scal=scal,
+            contfile=self.inputs.contfile,
+            field=self.inputs.field,
+            spw=self.inputs.spw,
+            hm_imsize=self.inputs.hm_imsize,
+            hm_cell=self.inputs.hm_cell,
+            allow_wproject=self.inputs.allow_wproject,
+            datatype='regcal',
+            parallel=self.inputs.parallel,
+            # PIPE-2449: prevent applying imageprecheck customizations during planning
+            # During imaging planning for self-calibration targets, customizations
+            # from the imageprecheck step should not be applied. Here we removes those
+            # customizations from the local context.
+            uvtaper=[''],  # disable possible uvtaper specification from context/imageprecheck
+            robust=0.5,  # disable potential robust specification from context/imageprecheck
+        )
         makeimlist_task = MakeImList(makeimlist_inputs)
         makeimlist_results = makeimlist_task.execute()
 
