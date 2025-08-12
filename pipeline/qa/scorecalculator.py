@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import collections
 import datetime
-import enum
 import functools
 import math
 import operator
@@ -26,12 +25,7 @@ import pipeline.infrastructure.pipelineqa as pqa
 
 from pipeline import infrastructure
 from pipeline.domain import measures
-from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
-from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
-from pipeline.infrastructure import basetask, casa_tools, utils
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -43,6 +37,7 @@ if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
     from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
     from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
@@ -4647,6 +4642,95 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 
 @log_qa
+def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
+    """
+    Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+
+    Calculate score according to the existence of plot file for each EB, spw and antenna
+    and the quality of it.
+    Requirement of PIPE-2168:
+      When the plot is created successfully, score = 1.
+      When the plot is generated but contains no data of target, score = 0.8.
+      When the plot generation failed, score = 0.65.
+    To give such score values, check the following:
+      1. Check whether the file of plot exists or not.
+      2. Check whether the number of flagged data is equal to that of total data or not.
+
+    Args:
+        context: Pipeline context.
+        result: SDApplycalResults instance.
+
+    Returns:
+        list[pqa.QAScore]: List which contains QAScore objects.
+    """
+
+    vis = os.path.basename(result.inputs['vis'])
+    ms = context.observing_run.get_ms(vis)
+    spwids = [spw.id for spw in ms.get_spectral_windows()]
+    ants = ['all']
+    ants_foreach = [ant.name for ant in ms.get_antenna()]
+    ants.extend(ants_foreach)
+
+    stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+
+    flagdata = {}
+    flagkwargs = [f"spw='{spwid}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spwid}'" for spwid in spwids]
+    flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
+    flagdata = flagdata_task.execute()
+    flagdata_summary = list(flagdata.values())
+    scores = []
+    for spwid in spwids:
+        shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
+        longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
+        shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
+        longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}'
+        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+        longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}'
+        sumflagged = 0
+        sumtotal = 0
+        key = f'spw{spwid}'
+        target_summary = [x for x in flagdata_summary if x['name'] == key]
+        assert len(target_summary) == 1
+        target_summary_for_spw = target_summary[0]
+
+        for ant in ants:
+            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
+            figfile = os.path.join(stage_dir, filename)
+
+            if not os.path.exists(figfile):
+                shortmsg = shortmsg_failed
+                longmsg = f'{longmsg_failed}, Antenna {ant}.'
+                score = 0.65
+            else:
+                target_for_spw_ant = target_summary_for_spw['antenna']
+                if ant == 'all':
+                    for value in target_for_spw_ant.values():
+                        sumflagged += value['flagged']
+                        sumtotal += value['total']
+                    all_flagged = sumflagged == sumtotal
+                else:
+                    all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
+                if all_flagged:
+                    shortmsg = shortmsg_empty
+                    longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                    score = 0.8
+                else:
+                    shortmsg = shortmsg_success
+                    longmsg = f'{longmsg_success}, Antenna {ant}.'
+                    score = 1.0
+
+            origin = pqa.QAOrigin(metric_name='AmpVsTimePlotQuality',
+                                  metric_score=score,
+                                  metric_units='Score based on quality of calibrated amp vs time plots')
+            applies_to = pqa.TargetDataSelection(vis={vis},
+                                                 spw={spwid},
+                                                 intent={'OBSERVE_TARGET#ON_SOURCE'},
+                                                 ant={ant})
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+
+    return scores
+
+
 def score_parallactic_angle_range(
         mses: list[MeasurementSet],
         intents: set[str],

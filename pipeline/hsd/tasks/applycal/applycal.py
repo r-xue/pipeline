@@ -1,26 +1,28 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, List, Optional, Union
-
+from typing import TYPE_CHECKING
 import numpy
 
 import pipeline.extern.sd_applycal_qa.sd_applycal_qa as sd_applycal_qa
 import pipeline.extern.sd_applycal_qa.sd_qa_reports as sd_qa_reports
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.vdp as vdp
 import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.domain.datatable import DataTableImpl as DataTable
 from pipeline.domain import DataType
 from pipeline.h.tasks.applycal.applycal import SerialApplycal, ApplycalInputs, ApplycalResults
+from pipeline.hsd.tasks.applycal.display import ApplyCalSingleDishPlotmsSpwComposite, ApplyCalSingleDishPlotmsAntSpwComposite
+import pipeline.hsd.tasks.applycal.display as display
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 
 if TYPE_CHECKING:
     from pipeline.domain import MeasurementSet
-    from pipeline.infrastructure import Context
     from pipeline.infrastructure import CalApplication
+    from pipeline.infrastructure.launcher import Context
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -38,18 +40,18 @@ class SDApplycalInputs(ApplycalInputs):
     # docstring and type hints: supplements hsd_applycal
     def __init__(self,
                  context: Context,
-                 output_dir: Optional[str] = None,
-                 vis: Optional[Union[str, List[str]]] = None,
-                 field: Optional[Union[str, List[str]]] = None,
-                 spw: Optional[Union[str, List[str]]] = None,
-                 antenna: Optional[Union[str, List[str]]] = None,
-                 intent: Optional[Union[str, List[str]]] = None,
-                 parang: Optional[bool] = None,
-                 applymode: Optional[str] = None,
-                 flagbackup: Optional[bool] = None,
-                 flagsum: Optional[bool] = None,
-                 flagdetailedsum: Optional[bool] = None,
-                 parallel: Optional[Union[bool, str]] = None):
+                 output_dir: str | None = None,
+                 vis: str | list[str] | None = None,
+                 field: str | list[str] | None = None,
+                 spw: str | list[str] | None = None,
+                 antenna: str | list[str] | None = None,
+                 intent: str | list[str] | None = None,
+                 parang: bool | None = None,
+                 applymode: str | None = None,
+                 flagbackup: bool | None = None,
+                 flagsum: bool | None = None,
+                 flagdetailedsum: bool | None = None,
+                 parallel: bool | str | None = None):
         """Inputs for SDApplycal task.
 
         Args:
@@ -126,8 +128,8 @@ class SDApplycalResults(ApplycalResults):
     Please see parent task's docstring for detail.
     """
     def __init__(self,
-                 applied: Optional[List[CalApplication]] = None,
-                 data_type: Optional[DataType] = None):
+                 applied: list[CalApplication] | None = None,
+                 data_type: DataType | None = None):
         """Construct SDApplycalResults instance.
         Please see parent task's docstring for detail.
 
@@ -183,7 +185,7 @@ class SerialSDApplycal(SerialApplycal):
         task_args['intent'] = 'OBSERVE_TARGET#ON_SOURCE'
         return task_args
 
-    def _tweak_flagkwargs(self, template: List[str]) -> List[str]:
+    def _tweak_flagkwargs(self, template: list[str]) -> list[str]:
         """Override flagging commands.
 
         According to the requirement in CAS-8813, flag fraction should be
@@ -204,6 +206,7 @@ class SerialSDApplycal(SerialApplycal):
 
         # Update Tsys in datatable
         context = self.inputs.context
+
         # this task uses _handle_multiple_vis framework
         msobj = self.inputs.ms
         origin_basename = os.path.basename(msobj.origin_ms)
@@ -232,7 +235,6 @@ class SerialSDApplycal(SerialApplycal):
 
         # set unit according to applied calibration
         set_unit(msobj, results.applied)
-
         return sdresults
 
     def analyse(self, results: SDApplycalResults) -> SDApplycalResults:
@@ -240,12 +242,15 @@ class SerialSDApplycal(SerialApplycal):
 
         This method assesses the quality of the calibration applied in
         this stage. The analysis focuses on the deviation of calibrated
-        data between XX and YY polarizations.
+        data between XX and YY polarizations, and also the generation of
+        calibrated amplitude vs time plots.
 
         Returns:
             SDApplycalResults: The results of the task.
         """
         results = super().analyse(results)
+        context = self.inputs.context
+        msobj = self.inputs.ms
 
         # perform XX-YY deviation QA
         ms_name = self.inputs.ms.name
@@ -286,10 +291,55 @@ class SerialSDApplycal(SerialApplycal):
             results.xy_deviation_score.extend(qascore_list)
             results.xy_deviation_plots.extend(valid_plots_fnames)
 
+        # Generating calibrated amplitude vs time plots
+        results.amp_vs_time_summary_plots = None
+        results.amp_vs_time_detail_plots = None
+        if not basetask.DISABLE_WEBLOG:
+            # mkdir stage_dir if it doesn't exist
+            stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+            os.makedirs(stage_dir, exist_ok=True)
+
+            fields = [x.name for x in msobj.get_fields(intent='TARGET')]
+            if len(fields) > 0:
+                # For summary plots
+                amp_vs_time_summary_plots = self.sd_plots_for_result(
+                    context,
+                    results,
+                    display.ApplyCalSingleDishPlotmsSpwComposite
+                )
+
+                # For detail plots
+                amp_vs_time_detail_plots = self.sd_plots_for_result(
+                    context,
+                    results,
+                    display.ApplyCalSingleDishPlotmsAntSpwComposite
+                )
+                results.amp_vs_time_summary_plots = amp_vs_time_summary_plots
+                results.amp_vs_time_detail_plots = amp_vs_time_detail_plots
+
         return results
 
+    def sd_plots_for_result(self, context: Context, results: SDApplycalResults, plotter_cls: ApplyCalSingleDishPlotmsSpwComposite | ApplyCalSingleDishPlotmsAntSpwComposite, **kwargs) -> list[logger.Plot]:
+        """Generate amplitude vs. time plots from results instance.
 
-def set_unit(ms: MeasurementSet, calapp: List[CalApplication]):
+        Args:
+            context: Pipeline context.
+            results: Results instance.
+            plotter_cls: Plotter class to generate plot objects of amplitude vs. time.
+
+        Returns:
+            plots: List of plot objects of amplitude vs. time.
+        """
+        xaxis = 'time'
+        yaxis = 'real'
+        msobj = context.observing_run.get_ms(self.inputs.vis)
+        plotter = plotter_cls(context, results, msobj, xaxis, yaxis, **kwargs)
+        plots = plotter.plot()
+
+        return plots
+
+
+def set_unit(ms: MeasurementSet, calapp: list[CalApplication]):
     """Set unit to MS data column according to applied calibrations.
 
     Args:
