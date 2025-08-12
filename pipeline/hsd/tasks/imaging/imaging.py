@@ -1101,7 +1101,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                                    bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
                                    sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
                                    effective_bw=_effective_bw, imagename=rgp.imagename,
-                                   datatype=self.inputs.datatype.name, theoretical_rms=_theoretical_rms_aqua)
+                                   datatype=self.inputs.datatype.name, theoretical_sensitivity=_theoretical_rms_aqua,
+                                   observed_sensitivity=None)
         _theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                          spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
