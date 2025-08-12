@@ -65,7 +65,9 @@ class FindContInputs(vdp.StandardInputs):
 
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
-            parallel: Use MPI cluster where possible.
+            parallel: Use CASA/tclean built-in parallel imaging when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'            
 
         """
         super(FindContInputs, self).__init__()

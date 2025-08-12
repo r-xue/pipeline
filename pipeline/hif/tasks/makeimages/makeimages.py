@@ -27,7 +27,7 @@ class MakeImagesInputs(vdp.StandardInputs):
 
     calcsb = vdp.VisDependentProperty(default=False)
     cleancontranges = vdp.VisDependentProperty(default=False)
-    hm_cleaning = vdp.VisDependentProperty(default='rms')
+    hm_cleaning = vdp.VisDependentProperty(default='')
     hm_cyclefactor = vdp.VisDependentProperty(default=-999.0)
     hm_nmajor = vdp.VisDependentProperty(default=None)
     hm_dogrowprune = vdp.VisDependentProperty(default=None)
@@ -183,7 +183,11 @@ class MakeImagesInputs(vdp.StandardInputs):
                 - beamdev_thresh: default: 0.2
                   Threshold for the fractional beam deviation from the expected value required for the plane rejection.
 
-            parallel: Clean images using MPI cluster
+            parallel: Use CASA/tclean built-in parallel imaging for individual scientific targets, or, perform continuum imaging 
+                of multiple target (calibrators) concurrently without the CASA/tclean built-in parallelization.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' - Optimizes the parallelization mode based on the imaging target type
+                    (scientific targets vs. calibrators) and the specific operation.
 
         """
         self.context = context
@@ -287,14 +291,14 @@ class MakeImages(basetask.StandardTaskTemplate):
 
         description = {
             # map specmode to description for every clean target
-            _get_description_map(target['intent']).get(target['specmode'], 'Calculate clean products')
+            _get_description_map(target['intent'], target['stokes']).get(target['specmode'], 'Calculate clean products')
             for target in target_list
         }
         result.metadata['long description'] = ' / '.join(sorted(description))
 
         sidebar = {
             # map specmode to description for every clean target
-            _get_sidebar_map(target['intent']).get(target['specmode'], '')
+            _get_sidebar_map(target['intent'], target['stokes']).get(target['specmode'], '')
             for target in target_list
         }
         result.metadata['sidebar suffix'] = '/'.join(sidebar)
@@ -643,13 +647,26 @@ class CleanTaskFactory(object):
 
         if inputs.hm_masking in (None, ''):
             if 'TARGET' in task_args['intent']:
-                task_args['hm_masking'] = 'auto'
+                if task_args['stokes'] == 'IQUV':
+                    if task_args['mask'] not in (None, ''):
+                        # "re-use" is a hidden mode just for the special use case
+                        # of re-using a previously computed Stokes I mask.
+                        task_args['hm_masking'] = 're-use'
+                    else:
+                        task_args['hm_masking'] = 'none'
+                elif task_args['mask'] not in (None, ''):
+                    task_args['hm_masking'] = 'manual'
+                else:
+                    task_args['hm_masking'] = 'auto'
             elif task_args['intent'] == 'POLARIZATION' and task_args['stokes'] == 'IQUV':
                 task_args['hm_masking'] = 'centralregion'
             else:
                 task_args['hm_masking'] = 'auto'
         else:
-            task_args['hm_masking'] = inputs.hm_masking
+            if inputs.hm_masking.lower() in ('auto', 'centralregion', 'manual', 'none'):
+                task_args['hm_masking'] = inputs.hm_masking.lower()
+            else:
+                raise Exception(f'Masking mode {inputs.hm_masking} unknown.')
 
         if inputs.hm_masking == 'auto':
             task_args['hm_sidelobethreshold'] = inputs.hm_sidelobethreshold
@@ -663,7 +680,10 @@ class CleanTaskFactory(object):
             task_args['hm_fastnoise'] = inputs.hm_fastnoise
 
         if inputs.hm_cleaning == '':
-            task_args['hm_cleaning'] = 'rms'
+            if task_args['threshold'] not in (None, ''):
+                task_args['hm_cleaning'] = 'manual'
+            else:
+                task_args['hm_cleaning'] = 'rms'
         else:
             task_args['hm_cleaning'] = inputs.hm_cleaning
 
@@ -689,7 +709,7 @@ class CleanTaskFactory(object):
             task_args['cyclefactor'] = inputs.hm_cyclefactor
 
         if inputs.hm_nmajor not in (None, -999.0):
-            task_args['nmajor'] = inputs.hm_nmajor        
+            task_args['nmajor'] = inputs.hm_nmajor
 
         if inputs.hm_minpsffraction not in (None, -999.0):
             task_args['hm_minpsffraction'] = inputs.hm_minpsffraction
@@ -700,7 +720,7 @@ class CleanTaskFactory(object):
         return task_args
 
 
-def _get_description_map(intent):
+def _get_description_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE'):
         return {
             'mfs': 'Make calibrator images',
@@ -722,18 +742,28 @@ def _get_description_map(intent):
             'cont': 'Make check source images'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'Make target per-spw continuum images',
-            'cont': 'Make target aggregate continuum images',
-            'cube': 'Make target cubes',
-            'repBW': 'Make representative bandwidth target cube'
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'Make target per-spw continuum images',
+                'cont': 'Make target aggregate continuum images',
+                'cube': 'Make target cubes',
+                'repBW': 'Make representative bandwidth target cube'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'Make target fullpol per-spw continuum images',
+                'cont': 'Make target fullpol aggregate continuum images',
+                'cube': 'Make target fullpol cubes',
+                'repBW': 'Make fullpol representative bandwidth target cube'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
 
-        }
     else:
         return {}
 
 
-def _get_sidebar_map(intent):
+def _get_sidebar_map(intent, stokes):
     if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
         return {
             'mfs': 'cals',
@@ -750,11 +780,21 @@ def _get_sidebar_map(intent):
             'cont': 'checksrc'
         }
     elif intent == 'TARGET':
-        return {
-            'mfs': 'mfs',
-            'cont': 'cont',
-            'cube': 'cube',
-            'repBW': 'cube_repBW'
-        }
+        if stokes.upper() in ('', 'I'):
+            return {
+                'mfs': 'mfs',
+                'cont': 'cont',
+                'cube': 'cube',
+                'repBW': 'cube_repBW'
+            }
+        elif stokes.upper() == 'IQUV':
+            return {
+                'mfs': 'mfs_fullpol',
+                'cont': 'cont_fullpol',
+                'cube': 'cube_fullpol',
+                'repBW': 'cube_repBW_fullpol'
+            }
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
     else:
         return {}

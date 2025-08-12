@@ -1035,7 +1035,7 @@ def compute_gaincalsnr(ms, spwlist, spw_dict, intent, edge_fraction):
         # Compute the various generic SNR factors
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.info('Spw %d Tsys <= 0K in MS; %s assuming nominal Tsys for SNR calculation', spwid, ms.basename)
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1
@@ -1198,7 +1198,7 @@ def compute_bpsolint(ms, spwlist, spw_dict, reqPhaseupSnr, minBpNintervals, reqB
         #    the bandpass frequency solint
         if spw_dict[spwid]['median_tsys'] <= 0.0:
             relativeTsys = 1.0
-            LOG.warning('Spw %d <= 0K in MS %s assuming nominal Tsys' % (spwid, ms.basename))
+            LOG.info('Spw %d Tsys <= 0K in MS; %s assuming nominal Tsys for SNR calculation', spwid, ms.basename)
         else:
             relativeTsys = spw_dict[spwid]['median_tsys'] / ALMA_TSYS[bandidx]
         nbaselines = spw_dict[spwid]['num_7mantenna'] + spw_dict[spwid]['num_12mantenna'] - 1

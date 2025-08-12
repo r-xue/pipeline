@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import collections
 import datetime
-import enum
 import functools
 import math
 import operator
@@ -26,12 +25,7 @@ import pipeline.infrastructure.pipelineqa as pqa
 
 from pipeline import infrastructure
 from pipeline.domain import measures
-from pipeline.domain.datatable import OnlineFlagIndex
-from pipeline.domain.measurementset import MeasurementSet
-from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
-from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResultItem
-from pipeline.hsd.tasks.importdata.importdata import SDImportDataResults
-from pipeline.infrastructure import basetask, casa_tools, utils
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, utils
 from pipeline.infrastructure.renderer import rendererutils
 from pipeline.infrastructure.utils import ous_parallactic_range
 from pipeline.hsd.tasks.common import utils as sdutils
@@ -43,6 +37,7 @@ if TYPE_CHECKING:
     from pipeline.domain.singledish import MSReductionGroupMember
     from pipeline.hif.tasks.gaincal.common import GaincalResults
     from pipeline.hif.tasks.polcal.polcalworker import PolcalWorkerResults
+    from pipeline.hsd.tasks.applycal.applycal import SDApplycalResults
     from pipeline.hifa.tasks.importdata.almaimportdata import ALMAImportDataResults
     from pipeline.hsd.heuristics.rasterscan import RasterScanHeuristicsResult
     from pipeline.hsd.tasks.baseline.baseline import SDBaselineResults
@@ -2920,6 +2915,10 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             rgm = reduction_group[bl['group_id']][mid]
             ms = rgm.ms.origin_ms
             if ms not in atm_masks:
+                if rgm.ms.antenna_array.name == 'NRO':
+                    atm_masks.setdefault(ms, {})
+                    continue
+
                 spwsetup = sdatm.getSpecSetup(rgm.ms.basename)
                 spws = list(map(int, spwsetup['spwlist']))
                 tau = sdatm.getCalAtmData(rgm.ms.basename, spws, spwsetup)[-2]
@@ -2943,7 +2942,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         sideband = int(spw.sideband)
         nchan = reduction_group_desc.nchan
         lines = get_line_ranges(bl['lines'])
-        
+
         LOG.debug('Processing reduction group %s, field %s, spw %s', reduction_group_id, field_name, spw.id)
 
         # spectral-line scoring
@@ -2952,7 +2951,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             lines.sort(key=operator.itemgetter(0))
             is_edge_line = examine_sd_edge_lines(lines, nchan, edge)
             is_wide_line = examine_sd_wide_lines(lines, nchan, edge)
-            
+
             if is_edge_line and is_wide_line:
                 score = 0.55  # min(0.55, 0.6)
                 msg = 'Edge and wide lines were detected'
@@ -2968,7 +2967,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                 msg = 'Line ranges were detected'
             lines_image = channel_ranges_for_image(edge, nchan, sideband, lines)
             metric_value = ';'.join([f'{left}~{right}' for left, right in lines_image])
-            line_detection_scores.append(make_score(score, msg, metric_value, 
+            line_detection_scores.append(make_score(score, msg, metric_value,
                                           'Channel range(s) of detected lines',
                                           reduction_group_desc[member_list[0]].ms.origin_ms, field_name,
                                           {reduction_group_desc[m].spw_id for m in member_list},
@@ -2990,19 +2989,19 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             for l, r in lines:
                 line_mask[l:r+1] = True
             atm_mask = atm_masks[ms].get(spw, np.zeros(nchan, bool))
-            
+
             # DM scoring
             for dm_mask in dm_masks:
                 ranges = mask_to_ranges(dm_mask)
                 unit = 'Channel range(s) of deviation mask'
                 dm_atm = dm_mask & atm_mask
                 if np.any(line_mask & dm_mask):
-                    score = 0.88 
+                    score = 0.88
                     msg = 'Deviation mask overlapped with spectral lines'
                     LOG.debug(
                         'Deviation masks overlap with lines. '
                         'Set deviation mask QA score to %s', score
-                    ) 
+                    )
                 # ATM-DM overlap
                 elif np.any(dm_atm):
                     score = 0.88
@@ -3013,20 +3012,20 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
                         'Set atm overlap QA score to %s', score
                     )
                 else:
-                    score = 0.65 
+                    score = 0.65
                     msg = 'Deviation mask was triggered'
                     LOG.debug(
                         'Found deviation mask with no overlap'
                         'Set deviation mask QA score to %s', score
                     )
-                metric = ','.join(f'{l}~{r}' for l, r in ranges) 
+                metric = ','.join(f'{l}~{r}' for l, r in ranges)
                 dm_scores.append(make_score(score, msg, metric, unit,
-                                        ms, field_name, {spw}, {rgm.antenna_name}))                           
-        
+                                        ms, field_name, {spw}, {rgm.antenna_name}))
+
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.', 
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.',
                                     'N/A', 'Channel range(s) of detected lines',
                                     next(iter(atm_masks))))
 
@@ -4643,6 +4642,95 @@ def score_iersstate(mses: list[MeasurementSet]) -> list[pqa.QAScore]:
 
 
 @log_qa
+def score_amp_vs_time_plots(context: Context, result: SDApplycalResults) -> list[pqa.QAScore]:
+    """
+    Calculate score about calibrated amplitude vs. time plot of Single Dish Applycal.
+
+    Calculate score according to the existence of plot file for each EB, spw and antenna
+    and the quality of it.
+    Requirement of PIPE-2168:
+      When the plot is created successfully, score = 1.
+      When the plot is generated but contains no data of target, score = 0.8.
+      When the plot generation failed, score = 0.65.
+    To give such score values, check the following:
+      1. Check whether the file of plot exists or not.
+      2. Check whether the number of flagged data is equal to that of total data or not.
+
+    Args:
+        context: Pipeline context.
+        result: SDApplycalResults instance.
+
+    Returns:
+        list[pqa.QAScore]: List which contains QAScore objects.
+    """
+
+    vis = os.path.basename(result.inputs['vis'])
+    ms = context.observing_run.get_ms(vis)
+    spwids = [spw.id for spw in ms.get_spectral_windows()]
+    ants = ['all']
+    ants_foreach = [ant.name for ant in ms.get_antenna()]
+    ants.extend(ants_foreach)
+
+    stage_dir = os.path.join(context.report_dir, 'stage%s' % context.task_counter)
+
+    flagdata = {}
+    flagkwargs = [f"spw='{spwid}' fieldcnt=False antenna='*&&&' intent='OBSERVE_TARGET#ON_SOURCE' mode='summary' name='spw{spwid}'" for spwid in spwids]
+    flagdata_task = casa_tasks.flagdata(vis=vis, mode='list', inpfile=flagkwargs, flagbackup=False)
+    flagdata = flagdata_task.execute()
+    flagdata_summary = list(flagdata.values())
+    scores = []
+    for spwid in spwids:
+        shortmsg_success = 'Calibrated amplitude vs time plot is successfully created'
+        longmsg_success = f'{shortmsg_success} for EB {vis}, SPW {spwid}'
+        shortmsg_failed = 'Failed to create calibrated amplitude vs time plot'
+        longmsg_failed = f'{shortmsg_failed} for EB {vis}, SPW {spwid}'
+        shortmsg_empty = 'No target data about calibrated amplitude vs time plot'
+        longmsg_empty = f'{shortmsg_empty} for EB {vis}, SPW {spwid}'
+        sumflagged = 0
+        sumtotal = 0
+        key = f'spw{spwid}'
+        target_summary = [x for x in flagdata_summary if x['name'] == key]
+        assert len(target_summary) == 1
+        target_summary_for_spw = target_summary[0]
+
+        for ant in ants:
+            filename = f'{vis}-real_vs_time-{ant}-{key}.png'
+            figfile = os.path.join(stage_dir, filename)
+
+            if not os.path.exists(figfile):
+                shortmsg = shortmsg_failed
+                longmsg = f'{longmsg_failed}, Antenna {ant}.'
+                score = 0.65
+            else:
+                target_for_spw_ant = target_summary_for_spw['antenna']
+                if ant == 'all':
+                    for value in target_for_spw_ant.values():
+                        sumflagged += value['flagged']
+                        sumtotal += value['total']
+                    all_flagged = sumflagged == sumtotal
+                else:
+                    all_flagged = ant in target_for_spw_ant and target_for_spw_ant[ant]['flagged'] == target_for_spw_ant[ant]['total']
+                if all_flagged:
+                    shortmsg = shortmsg_empty
+                    longmsg = f'{longmsg_empty}, Antenna {ant}.'
+                    score = 0.8
+                else:
+                    shortmsg = shortmsg_success
+                    longmsg = f'{longmsg_success}, Antenna {ant}.'
+                    score = 1.0
+
+            origin = pqa.QAOrigin(metric_name='AmpVsTimePlotQuality',
+                                  metric_score=score,
+                                  metric_units='Score based on quality of calibrated amp vs time plots')
+            applies_to = pqa.TargetDataSelection(vis={vis},
+                                                 spw={spwid},
+                                                 intent={'OBSERVE_TARGET#ON_SOURCE'},
+                                                 ant={ant})
+            scores.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=applies_to))
+
+    return scores
+
+
 def score_parallactic_angle_range(
         mses: list[MeasurementSet],
         intents: set[str],
@@ -4722,15 +4810,27 @@ def score_pointing_outlier(
         List of QAScore objects.
     """
     # If no pointing outliers are detected, return QAScore with score of 1.0
+    metric_name = "NumberOfPointingOutliers"
+    metric_units = "number of pointing outliers"
     if len(pointing_outlier_stats) == 0:
         score = 1.0
         longmsg = f'No pointing outliers detected in "{ms.basename}".'
         shortmsg = "No pointing outliers detected"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=0,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename}
+        )
+        score = pqa.QAScore(
+            score,
+            longmsg=longmsg,
+            shortmsg=shortmsg,
+            vis=ms.basename,
+            origin=origin,
+            applies_to=applies_to
+        )
         return [score]
 
     # score is 0.83 when pointing outlier is detected (PIPEREQ-358/PIPE-2533)
@@ -4754,12 +4854,23 @@ def score_pointing_outlier(
             longmsg += " However, poinging flag was not applied."
             shortmsg += " (but not flagged)"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=num_outliers,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename},
+            field={field_id},
+            ant={antenna_id}
+        )
         qa_scores.append(
-            pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+            pqa.QAScore(
+                score,
+                longmsg=longmsg,
+                shortmsg=shortmsg,
+                vis=ms.basename,
+                origin=origin,
+                applies_to=applies_to
+            )
         )
 
     return qa_scores

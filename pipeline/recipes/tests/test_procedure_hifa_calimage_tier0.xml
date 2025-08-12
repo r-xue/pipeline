@@ -1,16 +1,16 @@
 <ProcessingProcedure>
 
-    <ProcedureTitle>hifa_polcalimage</ProcedureTitle>
+    <ProcedureTitle>test_hifa_calimage_tier0</ProcedureTitle>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_importdata</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">minparang</Keyword>
-                <Value xmlns="">60.0</Value>
+                <Keyword xmlns="">dbservice</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">dbservice</Keyword>
+                <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
@@ -19,6 +19,10 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_flagdata</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -31,6 +35,10 @@
     <ProcessingCommand>
         <Command xmlns="">hif_rawflagchans</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>              
         </ParameterSet>
     </ProcessingCommand>
 
@@ -43,24 +51,50 @@
     <ProcessingCommand>
         <Command xmlns="">h_tsyscal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_tsysflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>  
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hifa_tsysflagcontamination</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_antpos</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">search</Keyword>
+                <Value xmlns="">both_latest</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_wvrgcalflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -73,18 +107,30 @@
     <ProcessingCommand>
         <Command xmlns="">hif_setmodels</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_bandpassflag</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_bandpass</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -97,42 +143,8 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscaleflag</Command>
         <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_polcalflag</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_session_refant</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_lock_refant</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_bandpass</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">unregister_existing</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_spwphaseup</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">unregister_existing</Keyword>
+                <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
@@ -141,12 +153,20 @@
     <ProcessingCommand>
         <Command xmlns="">hifa_gfluxscale</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_timegaincal</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -161,18 +181,20 @@
                 <Keyword xmlns="">atm_auto_exclude</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_targetflag</Command>
         <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifa_polcal</Command>
-        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -180,7 +202,7 @@
         <Command xmlns="">hif_applycal</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">parang</Keyword>
+                <Keyword xmlns="">parallel</Keyword>
                 <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
@@ -191,31 +213,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">intent</Keyword>
-                <Value xmlns="">POLARIZATION</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">per_session</Keyword>
-                <Value xmlns="">True</Value>
+                <Value xmlns="">PHASE,BANDPASS,AMPLITUDE</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -285,12 +283,20 @@
     <ProcessingCommand>
         <Command xmlns="">hif_mstransform</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hifa_flagtargets</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
@@ -313,11 +319,53 @@
     <ProcessingCommand>
         <Command xmlns="">hif_uvcontsub</Command>
         <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">parallel</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>
         </ParameterSet>
     </ProcessingCommand>
 
     <ProcessingCommand>
         <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">cont</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimlist</Command>
+        <ParameterSet>
+            <Parameter>
+                <Keyword xmlns="">specmode</Keyword>
+                <Value xmlns="">repBW</Value>
+            </Parameter>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_makeimages</Command>
+        <ParameterSet>
+        </ParameterSet>
+    </ProcessingCommand>
+
+    <ProcessingCommand>
+        <Command xmlns="">hif_selfcal</Command>
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
@@ -330,8 +378,8 @@
                 <Value xmlns="">mfs</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">stokes</Keyword>
-                <Value xmlns="">IQUV</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -349,41 +397,9 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">cont</Value>
             </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cont</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">stokes</Keyword>
-                <Value xmlns="">IQUV</Value>
-            </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
-            <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">cube</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -402,8 +418,8 @@
                 <Value xmlns="">cube</Value>
             </Parameter>
             <Parameter>
-                <Keyword xmlns="">stokes</Keyword>
-                <Value xmlns="">IQUV</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">best</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>
@@ -421,25 +437,9 @@
                 <Keyword xmlns="">specmode</Keyword>
                 <Value xmlns="">repBW</Value>
             </Parameter>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimlist</Command>
-        <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">specmode</Keyword>
-                <Value xmlns="">repBW</Value>
-            </Parameter>
-            <Parameter>
-                <Keyword xmlns="">stokes</Keyword>
-                <Value xmlns="">IQUV</Value>
+                <Keyword xmlns="">datatype</Keyword>
+                <Value xmlns="">selfcal</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>

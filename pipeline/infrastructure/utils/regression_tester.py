@@ -689,7 +689,7 @@ def test_uid___mg2_20170525142607_180419__procedure_hsdn_calimage__regression():
         recipe='procedure_hsdn_calimage.xml',
         input_dir='pl-regressiontest/mg2-20170525142607-180419',
         expectedoutput_file=('pl-regressiontest/mg2-20170525142607-180419/' +
-                             'mg2-20170525142607-180419.casa-6.6.6-16-pipeline-2025.0.1.18.results.txt'))
+                             'mg2-20170525142607-180419.casa-6.6.6-16-pipeline-2025.0.2.7.results.txt'))
     pr.run()
 
 

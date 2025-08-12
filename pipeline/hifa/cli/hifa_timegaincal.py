@@ -7,7 +7,8 @@ import pipeline.h.cli.utils as utils
 @utils.cli_wrapper
 def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstable=None, targetphasetable=None,
                      amptable=None, field=None, spw=None, antenna=None, calsolint=None, targetsolint=None, refant=None,
-                     refantmode=None, solnorm=None, minblperant=None, calminsnr=None, targetminsnr=None, smodel=None):
+                     refantmode=None, solnorm=None, minblperant=None, calminsnr=None, targetminsnr=None, smodel=None,
+                     parallel=None):
     """Determine temporal gains from calibrator observations
 
     The time-dependent complex gains for each antenna/spwid are determined from

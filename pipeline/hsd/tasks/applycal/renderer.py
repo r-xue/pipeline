@@ -26,7 +26,7 @@ from pipeline.infrastructure.renderer.logger import Plot
 
 if TYPE_CHECKING:
     from pipeline.domain.source import Source
-    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.domain import MeasurementSet
     from pipeline.h.tasks.applycal.applycal import ApplycalResults
     from pipeline.infrastructure.basetask import ResultsList
     from pipeline.infrastructure.launcher import Context
@@ -116,6 +116,27 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_max': uv_max,
         })
 
+        # PIPE-2168: calibrated amplitude vs time plots
+        amp_vs_time_summary_plots = collections.defaultdict(dict)
+        amp_vs_time_summary_plots['__hsd_applycal__'] = []
+        amp_vs_time_detail_plots = {}
+        amp_vs_time_subpages = {}
+        for r in result:
+            vis = r.inputs['vis']
+            amp_vs_time_summary_plots[vis] = []
+            amp_vs_time_detail_plots[vis] = []
+
+            if r.amp_vs_time_summary_plots:
+                summary_plots = r.amp_vs_time_summary_plots
+                amp_vs_time_summary_plots[vis].append(["", summary_plots])
+
+            if r.amp_vs_time_detail_plots:
+                detail_plots = r.amp_vs_time_detail_plots
+                amp_vs_time_detail_plots[vis].extend(detail_plots)
+
+        if len(amp_vs_time_detail_plots) > 0:
+            amp_vs_time_subpages = self.create_amp_vs_time_href(context, result, amp_vs_time_detail_plots)
+
         # PIPE-2450: XY-deviation plots
         xy_deviation_plots, xy_deviation_subpages = self.create_xy_deviation_plots(context, result)
         if len(xy_deviation_plots) > 0:
@@ -132,7 +153,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
         ctx.update({
             'amp_vs_freq_plots': [],
             'phase_vs_freq_plots': [],
-            'amp_vs_time_plots': [],
+            'sd_amp_vs_time_plots': amp_vs_time_summary_plots,
             'amp_vs_uv_plots': [],
             'phase_vs_time_plots': [],
             'corrected_to_antenna1_plots': [],
@@ -141,7 +162,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             'uv_plots': [],
             'amp_vs_freq_subpages': [],
             'phase_vs_freq_subpages': [],
-            'amp_vs_time_subpages': [],
+            'amp_vs_time_subpages': amp_vs_time_subpages,
             'amp_vs_uv_subpages': [],
             'phase_vs_time_subpages': [],
             'outliers_path_link': ''
@@ -186,9 +207,6 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
 
             if pipeline.infrastructure.generate_detail_plots(result):
                 fields = set()
-                # scans = ms.get_scans(scan_intent='TARGET')
-                # for scan in scans:
-                #     fields.update([field.id for field in scan.fields])
                 with casa_tools.MSMDReader(result.inputs['vis']) as msmd:
                     fields.update(list(msmd.fieldsforintent("OBSERVE_TARGET#ON_SOURCE")))
 
@@ -226,7 +244,7 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
             source : target source
 
         Returns:
-            List of Plot object
+            List of Plot objects
         """
         brightest_field = super_renderer.get_brightest_field(ms, source)
         plots = self.science_plots_for_result(context,
@@ -236,7 +254,30 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                                               preserve_coloraxis=True)
         for plot in plots:
             plot.parameters['source'] = source
+
         return plots
+
+    def create_amp_vs_time_href(self, context: Context, result: ResultsList, plots: dict[str, list[Plot]]) -> dict[str, str]:
+        """Create detail page.
+
+        Args:
+            context : Pipeline context
+            result : List of applycal result objects
+            plots : Dictionary which contains 'vis' and list of Plot objects
+
+        Returns:
+            amp_vs_time_subpages: Dictionary which contains 'vis' and filepath of detail page
+        """
+        amp_vs_time_subpage = None
+        if plots:
+            all_plots = list(utils.flatten([v for v in plots.values()]))
+            renderer = super_renderer.ApplycalAmpVsTimePlotRenderer(context, result, all_plots)
+            with renderer.get_file() as fileobj:
+                fileobj.write(renderer.render())
+            amp_vs_time_subpage = renderer.path
+        amp_vs_time_subpages = dict((vis, amp_vs_time_subpage) for vis in plots.keys())
+
+        return amp_vs_time_subpages
 
     def create_xy_deviation_plots(
             self,
