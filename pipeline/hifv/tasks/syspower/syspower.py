@@ -205,7 +205,7 @@ class Syspower(basetask.StandardTaskTemplate):
             objresult = result.read()
             if objresult.taskname == "hifv_priorcals":
                 priorcals_results = objresult[0]
-                break
+
         if priorcals_results is not None:
             try:
                 rq_table = priorcals_results.rq_result[0].final[0].gaintable
