@@ -614,6 +614,20 @@ def score_parallactic_range(
                             applies_to=pqa.TargetDataSelection(session={session_name}))
         return [score]
 
+    if coverage is None:
+        longmsg = (f'Cannot determine parallactic angle for '
+                   f'polarisation calibrator {field_name} in session {session_name}')
+        shortmsg = 'Parallactic angle'
+        origin = pqa.QAOrigin(
+            metric_name='ScoreParallacticAngle',
+            metric_score=0,
+        )
+        score = pqa.QAScore(0.0, longmsg=longmsg, shortmsg=shortmsg, origin=origin,
+                            weblog_location=pqa.WebLogLocation.ACCORDION,
+                            applies_to=pqa.TargetDataSelection(session={session_name}))
+        scores.append(score)
+        return scores
+
     # accordion message if coverage is adequate
     if coverage >= threshold:
         longmsg = (f'Sufficient parallactic angle coverage ({coverage:.2f}\u00B0 > {threshold:.2f}\u00B0) for '
@@ -4687,9 +4701,10 @@ def score_parallactic_angle_range(
                 all_metrics['intents_found'] = True
             for cal_name in cal_names:
                 parallactic_range = ous_parallactic_range(session_mses, cal_name, intent)
-                all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
-                all_metrics['sessions'][session_name]['min_parang_range'] = min(
-                    all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
+                if parallactic_range is not None:
+                    all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
+                    all_metrics['sessions'][session_name]['min_parang_range'] = min(
+                        all_metrics['sessions'][session_name]['min_parang_range'], parallactic_range)
                 LOG.info(f'Parallactic angle range for {cal_name} ({intent}) in session {session_name}: '
                          f'{parallactic_range}')
                 session_scores = score_parallactic_range(
