@@ -9,6 +9,7 @@ import itertools
 import operator
 import os
 import re
+import traceback
 import xml
 from typing import TYPE_CHECKING
 
@@ -614,8 +615,10 @@ class MeasurementSetReader:
             with casa_tools.TableReader(history_table) as ht:
                 msgs = ht.getcol('MESSAGE')
             return msgs
-        except Exception:  # More specific than bare except
+        except Exception:
             LOG.info("Unable to read HISTORY table for MS %s", os.path.basename(ms_name))
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
             return None
 
 

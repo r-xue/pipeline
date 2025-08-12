@@ -392,9 +392,9 @@ class ImportData(basetask.StandardTaskTemplate):
 
                 self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
-                # Log a warning if the user defined datatype information differs from the MS HISTORY information (if available)
-                if ms.data_column != data_type_per_column_from_ms and data_type_per_column_from_ms:
-                    # Create dictionaries beforehand for clarity.
+                # Log a warning if the user defined datatype information differs from the MS HISTORY
+                # information (when available)
+                if data_type_per_column_from_ms and ms.data_column != data_type_per_column_from_ms:
                     user_datatypes = {v: k.name for k, v in ms.data_column.items()}
                     ms_datatypes = {v: k.name for k, v in data_type_per_column_from_ms.items()}
                     LOG.warning(
