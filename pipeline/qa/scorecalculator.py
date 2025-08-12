@@ -4726,15 +4726,27 @@ def score_pointing_outlier(
         List of QAScore objects.
     """
     # If no pointing outliers are detected, return QAScore with score of 1.0
+    metric_name = "NumberOfPointingOutliers"
+    metric_units = "number of pointing outliers"
     if len(pointing_outlier_stats) == 0:
         score = 1.0
         longmsg = f'No pointing outliers detected in "{ms.basename}".'
         shortmsg = "No pointing outliers detected"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-        score = pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=0,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename}
+        )
+        score = pqa.QAScore(
+            score,
+            longmsg=longmsg,
+            shortmsg=shortmsg,
+            vis=ms.basename,
+            origin=origin,
+            applies_to=applies_to
+        )
         return [score]
 
     # score is 0.83 when pointing outlier is detected (PIPEREQ-358/PIPE-2533)
@@ -4758,12 +4770,23 @@ def score_pointing_outlier(
             longmsg += " However, poinging flag was not applied."
             shortmsg += " (but not flagged)"
 
-        origin = pqa.QAOrigin(metric_name='NumberOfPointingOutliers',
-                              metric_score=score,
-                              metric_units='number of pointing outliers')
-
+        origin = pqa.QAOrigin(metric_name=metric_name,
+                              metric_score=num_outliers,
+                              metric_units=metric_units)
+        applies_to = pqa.TargetDataSelection(
+            vis={ms.basename},
+            field={field_id},
+            ant={antenna_id}
+        )
         qa_scores.append(
-            pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=ms.basename, origin=origin)
+            pqa.QAScore(
+                score,
+                longmsg=longmsg,
+                shortmsg=shortmsg,
+                vis=ms.basename,
+                origin=origin,
+                applies_to=applies_to
+            )
         )
 
     return qa_scores
