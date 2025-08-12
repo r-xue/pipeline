@@ -158,6 +158,27 @@ class SelfcalInputs(vdp.StandardInputs):
     inf_EB_gaincal_combine = vdp.VisDependentProperty(default=False)
     refantignore = vdp.VisDependentProperty(default='')
 
+    @refantignore.postprocess
+    def refantignore(self, unprocessed):
+        if not isinstance(unprocessed, (str, dict)):
+            LOG.error('refantignore must be string or dictionary')
+            raise ValueError('refantignore must be string or dictionary')
+        refantignore_per_ms = {}
+        if isinstance(unprocessed, dict):
+            vis_not_selected = set(unprocessed) - set(self.vis)
+            if vis_not_selected:
+                LOG.warning(
+                    '%s specified in refantignore not in task input MS list, will be ignored.',
+                    utils.commafy(sorted(vis_not_selected), quotes=False),
+                )
+        for vis in self.vis:
+            if isinstance(unprocessed, str):
+                refantignore_per_ms[vis] = unprocessed
+            if isinstance(unprocessed, dict):
+                refantignore_per_ms[vis] = unprocessed.get(vis, '')
+
+        return refantignore_per_ms
+
     usermask = vdp.VisDependentProperty(default=None)
     # input as dictionary for individual clean targets, e.g.
     #   usermask={'IRAS32':'IRAS32.rgn', 'IRS5N':'IRS5N.rgn'}
@@ -216,7 +237,10 @@ class SelfcalInputs(vdp.StandardInputs):
 
             gaincal_minsnr: Minimum S/N for a solution to not be flagged by gaincal. default = 2.0
 
-            refantignore: string list to be ignored as reference antennas. example:  refantignore='ea02,ea03'
+            refantignore: string list of antennas to be ignored as reference antennas. example:  refantignore='ea02,ea03'
+                One could also specifiy at the per-ms level, e.g. refantignore={'ms1.ms':'ea02,ea03','ms2.ms': 'ea03'}.
+
+                default = ''
 
             minsnr_to_proceed: Minimum estimated S/N on a per antenna basis to attempt self-calibration of a source.
 
@@ -667,6 +691,7 @@ class Selfcal(basetask.StandardTaskTemplate):
 
         parallel = mpihelpers.parse_mpi_input_parameter(self.inputs.parallel)
         taskqueue_parallel_request = len(scal_targets) > 1 and parallel
+        self.inputs.refantignore
         with TaskQueue(parallel=taskqueue_parallel_request) as tq:
             for target in scal_targets:
                 target['sc_parallel'] = (parallel and not tq.is_async())

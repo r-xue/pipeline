@@ -36,19 +36,22 @@ LOG = infrastructure.get_logger(__name__)
 class SelfcalHeuristics(object):
     """Class to hold the heuristics for selfcal."""
 
-    def __init__(self, scal_target,
-                 gaincal_minsnr=2.0,
-                 minsnr_to_proceed=3.0,
-                 delta_beam_thresh=0.05,
-                 apply_cal_mode_default='calflag',
-                 rel_thresh_scaling='log10',
-                 dividing_factor=None,
-                 check_all_spws=False,
-                 n_solints=4.0,
-                 do_amp_selfcal=False,
-                 inf_EB_gaincal_combine='scan',
-                 refantignore='',
-                 executor=None):
+    def __init__(
+        self,
+        scal_target,
+        gaincal_minsnr=2.0,
+        minsnr_to_proceed=3.0,
+        delta_beam_thresh=0.05,
+        apply_cal_mode_default='calflag',
+        rel_thresh_scaling='log10',
+        dividing_factor=None,
+        check_all_spws=False,
+        n_solints=4.0,
+        do_amp_selfcal=False,
+        inf_EB_gaincal_combine='scan',
+        refantignore=None,
+        executor=None,
+    ):
         """Initialize the class."""
         self.executor = executor
         self.cts = CasaTasks(executor=self.executor)
@@ -86,7 +89,10 @@ class SelfcalHeuristics(object):
         self.rel_thresh_scaling = rel_thresh_scaling
         self.dividing_factor = dividing_factor
         self.check_all_spws = check_all_spws
-        self.refantignore = refantignore
+        if refantignore is None:
+            self.refantignore = {}
+        else:
+            self.refantignore = refantignore
         self.inf_EB_gaincal_combine = inf_EB_gaincal_combine    # Options: 'spw,scan' or 'scan' or 'spw' or 'none'
         self.inf_EB_gaintype = 'G'                              # Options: 'G' or 'T' or 'G,T'
 
@@ -1450,16 +1456,20 @@ class SelfcalHeuristics(object):
                     selfcal_library[target][band][vis]['TOS'] = np.sum(scantimesdict[band][vis][target])
                     selfcal_library[target][band][vis]['Median_scan_time'] = np.median(scantimesdict[band][vis][target])
                     selfcal_library[target][band][vis]['Median_fields_per_scan'] = np.median(
-                        scannfieldsdict[band][vis][target])
+                        scannfieldsdict[band][vis][target]
+                    )
                     allscantimes = np.append(allscantimes, scantimesdict[band][vis][target])
                     allscannfields = np.append(allscannfields, scannfieldsdict[band][vis][target])
-                    selfcal_library[target][band][vis]['refant'] = rank_refants(vis, refantignore=self.refantignore)
+                    selfcal_library[target][band][vis]['refant'] = rank_refants(
+                        vis, refantignore=self.refantignore.get(vis, '')
+                    )
                     selfcal_library[target][band][vis]['spws'] = band_properties[vis][band]['spwstring']
                     selfcal_library[target][band][vis]['spwsarray'] = band_properties[vis][band]['spwarray']
                     selfcal_library[target][band][vis]['spwlist'] = band_properties[vis][band]['spwarray'].tolist()
                     selfcal_library[target][band][vis]['n_spws'] = len(selfcal_library[target][band][vis]['spwsarray'])
                     selfcal_library[target][band][vis]['minspw'] = int(
-                        np.min(selfcal_library[target][band][vis]['spwsarray']))
+                        np.min(selfcal_library[target][band][vis]['spwsarray'])
+                    )
 
                     if band_properties[vis][band]['ncorrs'] == 1:
                         selfcal_library[target][band][vis]['pol_type'] = 'single-pol'
