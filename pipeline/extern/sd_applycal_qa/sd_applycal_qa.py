@@ -6,7 +6,7 @@ import pickle
 from itertools import product
 import matplotlib.dates as mdates
 import casatools
-from scipy import stats
+from scipy.stats import mstats
 
 import pipeline.infrastructure.pipelineqa as pqa
 from . import mswrapper_sd
@@ -97,7 +97,7 @@ def data_stats_perchan(msw: mswrapper_sd.MSWrapperSD, filter_order: int = 5,
         chdata = Fmsw.data[:,ch,:]
         #Calculate X-Y pols Pearson correlation
         if npol == 2:
-            XYcorr.append(stats.pearsonr(chdata[0], chdata[1])[0])
+            XYcorr.append(mstats.pearsonr(chdata[0], chdata[1])[0])
         else:
             XYcorr.append(0.0)
         #Calculate fft_results
@@ -410,8 +410,8 @@ def outlier_detection(msw: mswrapper_sd.MSWrapperSD, thresholds: dict = default_
         any_detection = any([has_data_outliers, has_trecX_outliers, has_trecY_outliers])
 
         #Figure out if data outliers are due to XX or YY polarization, if applicable
-        pr_x = stats.pearsonr(dataX, datadiff)
-        pr_y = stats.pearsonr(-dataY, datadiff)
+        pr_x = mstats.pearsonr(dataX, datadiff)
+        pr_y = mstats.pearsonr(-dataY, datadiff)
         #Texts for message
         if any_detection and ((pr_x[0] > pr_y[0]) or (has_trecX_outliers and not has_trecY_outliers)):
             badpol = 'XX'
