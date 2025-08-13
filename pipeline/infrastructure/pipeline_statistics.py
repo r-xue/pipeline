@@ -269,7 +269,6 @@ def n_eb(context) -> str:
 
 
 def stage_duration(context) -> list:
-    LOG.info("stage_duration")
     #TODO: copied from htmlrenderer.py. Should be pulled out into a common function.
 
     ## Obtain time duration of tasks by the difference of start times successive tasks.
@@ -283,17 +282,17 @@ def stage_duration(context) -> list:
         # task execution duration
         dt = timestamps[i+1] - timestamps[i]
         # remove unnecessary precision for execution duration
-        task_duration.append(datetime.timedelta(days=dt.days, seconds=dt.seconds))
+        task_duration.append(dt.total_seconds() / 3600.0)
     return task_duration
 
 
-def execution_duration(context) -> str:
+def execution_duration(context) -> float:
     # Processing time
     exec_start = context.results[0].read().timestamps.start
     exec_end = context.results[-1].read().timestamps.end
     # remove unnecessary precision for execution duration
     dt = exec_end - exec_start
-    exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
+    exec_duration = dt.total_seconds() / 3600.0
     return exec_duration
 
 
@@ -301,6 +300,7 @@ def stage_info(context) -> dict:
     info = {}
     for i in range(len(context.results)):
         info[context.results[i].read().stage_number] = htmlrenderer.get_task_description(context.results[i].read(), context)
+    return info
 
 
 def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
@@ -418,6 +418,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
             name='total_time',
             value=execution_duration(context),
             longdesc="total processing time",
+            units="hours",
             origin=import_program,
             level=PipelineStatisticLevel.MOUS,
         )
@@ -435,11 +436,12 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
 
     stats_collection_list.append(
         PipelineStatistic(
-            name='time spent in each stage',
+            name='stage_duration',
             value=stage_duration(context),
-            longdesc="number of spectral windows",
+            longdesc="time spent in each stage",
+            units="hours",
             origin=import_program,
-            level=PipelineStatisticLevel.MOUS
+            level=PipelineStatisticLevel.MOUS,
         )
     )
 
@@ -882,7 +884,7 @@ def generate_stats(context: Context) -> Dict:
     # Gather stats from results objects
     LOG.info("Getting pipeline stats from results")
     # # FIXME: still returns List[PipelineStatistic]
-    get_stats_from_results(context, stats_collection)
+    # get_stats_from_results(context, stats_collection)
     LOG.info("Adding stats from results to stats collection")
 
     # Construct dictionary representation of all pipeline stats
