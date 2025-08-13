@@ -409,8 +409,8 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     nx_beam_minor = ElementTree.SubElement(nx_beam, "minor", Units=str(sensitivity['beam']["minor"]["unit"]))
                     nx_beam_minor.text = str(sensitivity['beam']["minor"]["value"])
 
-                    nx_sensitivity = ElementTree.SubElement(nx, "sensitivity", Units=str(sensitivity['sensitivity']["unit"]))
-                    nx_sensitivity.text = str(sensitivity['sensitivity']["value"])
+                    nx_sensitivity = ElementTree.SubElement(nx, "observed_sensitivity", Units=str(sensitivity['observed_sensitivity']["unit"]))
+                    nx_sensitivity.text = str(sensitivity['observed_sensitivity']["value"])
 
                     nx_effective_bw = ElementTree.SubElement(nx, "effective_bw", Units=str(sensitivity['effective_bw']["unit"]))
                     nx_effective_bw.text = str(sensitivity['effective_bw']["value"])
@@ -425,7 +425,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     datatype.text = str(sensitivity['datatype'])
 
                     if index < len(topic.results):
-                        ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['sensitivity']["unit"])).text = str(topic.results[index].sensitivity)
+                        ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['observed_sensitivity']["unit"])).text = str(topic.results[index].sensitivity)
                     root.append(nx)
 
         return root
