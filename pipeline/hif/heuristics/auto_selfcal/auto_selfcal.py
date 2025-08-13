@@ -2946,7 +2946,7 @@ class SelfcalHeuristics(object):
                             ):
                                 slib[fid]['SC_success'] = False
                                 slib[fid]['final_solint'] = 'None'
-                                for vis in vislist:
+                                for vis in slib[fid]['vislist']:
                                     # remove the success from inf_EB
                                     # TODO: to be evaluted after the release of PL2025.
                                     # if slib[fid][vis]['inf_EB']['Pass'] is 'None':

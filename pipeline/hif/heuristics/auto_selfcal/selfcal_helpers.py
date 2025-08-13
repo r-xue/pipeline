@@ -954,7 +954,7 @@ def get_SNR_self_individual(
             )
             solint_snr[solint] = selfcal_library['per_scan_SNR']
             for spw in selfcal_library['spw_map']:
-                vis = list(selfcal_library['spw_map'][spw].keys())[0]
+                vis = selfcal_library['vislist'][0]
                 true_spw = selfcal_library['spw_map'][spw][vis]
                 solint_snr_per_spw[solint][str(spw)] = (
                     SNR
@@ -976,7 +976,7 @@ def get_SNR_self_individual(
             )
             solint_snr[solint] = selfcal_library['per_scan_SNR']
             for spw in selfcal_library['spw_map']:
-                vis = list(selfcal_library['spw_map'][spw].keys())[0]
+                vis = selfcal_library['vislist'][0]
                 true_spw = selfcal_library['spw_map'][spw][vis]
                 solint_snr_per_spw[solint][str(spw)] = (
                     SNR
@@ -997,7 +997,7 @@ def get_SNR_self_individual(
         elif solint == 'int':
             solint_snr[solint] = SNR / ((n_ant - 3) ** 0.5 * (selfcal_library['Total_TOS'] / integration_time) ** 0.5)
             for spw in selfcal_library['spw_map']:
-                vis = list(selfcal_library['spw_map'][spw].keys())[0]
+                vis = selfcal_library['vislist'][0]
                 true_spw = selfcal_library['spw_map'][spw][vis]
                 solint_snr_per_spw[solint][str(spw)] = (
                     SNR
@@ -1012,7 +1012,7 @@ def get_SNR_self_individual(
             solint_float = float(solint.replace('s', '').replace('_ap', ''))
             solint_snr[solint] = SNR / ((n_ant - 3) ** 0.5 * (selfcal_library['Total_TOS'] / solint_float) ** 0.5)
             for spw in selfcal_library['spw_map']:
-                vis = list(selfcal_library['spw_map'][spw].keys())[0]
+                vis = selfcal_library['vislist'][0]
                 true_spw = selfcal_library['spw_map'][spw][vis]
                 solint_snr_per_spw[solint][str(spw)] = (
                     SNR
