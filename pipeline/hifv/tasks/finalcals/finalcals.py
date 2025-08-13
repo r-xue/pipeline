@@ -308,19 +308,24 @@ class Finalcals(basetask.StandardTaskTemplate):
         finalphasegaincaltable = tableprefix + str(stage_number) + '_8.' + 'finalphasegaincal.tbl'
 
         for band, spwlist in band2spw.items():
-            new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
-            phaseshortgaincal_results = self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
-                                                                   new_gain_solint1, 3.0, 'p', [''], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+            try:
+                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
+                self._do_calibratorgaincal(calMs, phaseshortgaincaltable,
+                                           new_gain_solint1, 3.0, 'p', [''], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
-            gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-            finalampgaincal_results = self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
-                                                                 'ap', [phaseshortgaincaltable], refAnt,
-                                                                 refantmode=refantmode, spw=','.join(spwlist))
+                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                self._do_calibratorgaincal(calMs, finalampgaincaltable, gain_solint2, 5.0,
+                                           'ap', [phaseshortgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
 
-            finalphasegaincal_results = self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
-                                                                   3.0, 'p', [finalampgaincaltable], refAnt,
-                                                                   refantmode=refantmode, spw=','.join(spwlist))
+                self._do_calibratorgaincal(calMs, finalphasegaincaltable, gain_solint2,
+                                           3.0, 'p', [finalampgaincaltable], refAnt,
+                                           refantmode=refantmode, spw=','.join(spwlist))
+            except KeyError as ex:
+                LOG.warning("No data found for {!s} band".format(ex))
+            except Exception as ex:
+                LOG.warning(str(ex))
 
         tablesToAdd = [(ktypecaltable, '', ''), (bpcaltable, 'linear,linearflag', ''),
                        (avgpgain, '', ''), (finalampgaincaltable, '', ''),
@@ -329,6 +334,8 @@ class Finalcals(basetask.StandardTaskTemplate):
 
         callist = []
         for addcaltable, interp, gainfield in tablesToAdd:
+            if not os.path.exists(addcaltable):
+                continue
             LOG.info("Finalcals stage:  Adding " + addcaltable + " to callibrary.")
             calto = callibrary.CalTo(self.inputs.vis)
             calfrom = callibrary.CalFrom(gaintable=addcaltable, interp=interp, calwt=False,
@@ -337,12 +344,15 @@ class Finalcals(basetask.StandardTaskTemplate):
             callist.append(calapp)
             self.pool.append(calapp)
             self.final.append(calapp)
+        flaggedSolnApplycaldelay = None
+        flaggedSolnApplycalbandpass = None
+        if os.path.exists(bpdgain_touse):
+            flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
+        if os.path.exists(ktypecaltable):
+            flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
 
-        flaggedSolnApplycalbandpass = getCalFlaggedSoln(bpdgain_touse)
-        flaggedSolnApplycaldelay = getCalFlaggedSoln(ktypecaltable)
-
-        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable,\
-               finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
+        return bpdgain_touse, gtypecaltable, ktypecaltable, bpcaltable, phaseshortgaincaltable, \
+            finalampgaincaltable, finalphasegaincaltable, flaggedSolnApplycalbandpass, flaggedSolnApplycaldelay
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -463,6 +473,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         delaycal_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -539,6 +556,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         GainTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         GainTables.append(addcaltable)
 
+        GainTables_present = []
+        for gt in GainTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        GainTables = GainTables_present
         bpdgains_task_args = {'vis': self.inputs.vis,
                               'caltable': caltable,
                               'field': '',
@@ -615,6 +639,14 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables = sorted(self.inputs.context.callibrary.active.get_caltable())
         AllCalTables.append(ktypecaltable)
         AllCalTables.append(bpcaltable)
+
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
 
         avgphasegaincal_task_args = {'vis': self.inputs.vis,
                                      'caltable': caltable,
@@ -713,6 +745,13 @@ class Finalcals(basetask.StandardTaskTemplate):
         AllCalTables.append(bpcaltable)
         AllCalTables.append(avgphasegaincaltable)
 
+        GainTables_present = []
+        for gt in AllCalTables:
+            if os.path.exists(gt):
+                GainTables_present.append(gt)
+            else:
+                LOG.warning(f"{gt} not found, removing it from list of gain tables")
+        AllCalTables = GainTables_present
         ntables = len(AllCalTables)
 
         applycal_task_args = {'vis': self.inputs.vis,
@@ -850,7 +889,13 @@ class Finalcals(basetask.StandardTaskTemplate):
             Job to execute
 
         """
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        fluxcalfieldlist = str.split(self.inputs.context.evla['msinfo'][m.name].flux_field_select_string)
+        # PIPE-1729, setting fluxdensity to 1 for calibrators failed in hifv_fluxboot.
+        fluxdensity, setjy_standard = [-1, standard.Standard()(field)] if os.path.isdir(
+            'fluxgaincalFcal_{!s}.g'.format(field)) or field in fluxcalfieldlist else [1, 'manual']
+        if fluxdensity == 1:
+            LOG.warning(f'Running setjy for field {field} with 1.0 Jy fluxdensity.')
         try:
             task_args = {'vis': calMs,
                          'field': field,
@@ -859,8 +904,8 @@ class Finalcals(basetask.StandardTaskTemplate):
                          'model': model_image,
                          'listmodels': False,
                          'scalebychan': True,
-                         'fluxdensity': -1,
-                         'standard': standard.Standard()(field),
+                         'fluxdensity': fluxdensity,
+                         'standard': setjy_standard,
                          'usescratch': True}
 
             job = casa_tasks.setjy(**task_args)
@@ -1002,20 +1047,19 @@ class Finalcals(basetask.StandardTaskTemplate):
             fieldobj, = scanobj.fields
             if str(fieldobj.id) not in fieldidlist:
                 fieldidlist.append(str(fieldobj.id))
-
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            task_args['selectdata'] = True
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
+                fieldid = int(fieldidstring)
+                uvrangestring = uvrange(self.setjy_results, fieldid)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                task_args['selectdata'] = True
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True
-
-

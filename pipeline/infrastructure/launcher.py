@@ -16,7 +16,7 @@ from .eventbus import ContextCreatedEvent, ContextResumedEvent
 LOG = logging.get_logger(__name__)
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 6, 6, 1]
+MIN_CASA_REVISION = [6, 6, 6, 16]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -64,6 +64,10 @@ class Context(object):
         clean_list_pending: List of hif.tasks.makeimlist.cleantarget.CleanTarget
             objects representing what target images are to be cleaned; typically
             populated by hif_makeimlist, or edited by hif_editimlist.
+        clean_masks: Dictionary to store the names of clean masks to be re-used
+            for TARGET IQUV imaging.
+        clean_thresholds: Dictionary to store thresholds to be re-used for
+            TARGET IQUV imaging.
         contfile: Name of file with frequency ranges to use for continuum
             images; typically populated by hif_makeimlist.
         imaging_mode: Imaging mode string; may be used to switch between imaging
@@ -152,6 +156,8 @@ class Context(object):
         self.callibrary = callibrary.CalLibrary(self)
         self.clean_list_info = {}  # CAS-9456
         self.clean_list_pending = []  # CAS-10146
+        self.clean_masks = {} # PIPE-2464
+        self.clean_thresholds = {} # PIPE-2464
         self.contfile: str | None = None
         self.imaging_mode: str | None = None  # PIPE-592
         self.imaging_parameters = {}  # CAS-10146

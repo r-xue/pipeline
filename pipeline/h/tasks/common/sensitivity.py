@@ -20,5 +20,6 @@ class Sensitivity(dict):
         self['pbcor_image_max'] = None   # quanta
         self['imagename'] = None         # string
         self['datatype'] = None          # string
+        self['theoretical_rms'] = None   # quanta
 
         dict.__init__(self, *args, **kwargs)

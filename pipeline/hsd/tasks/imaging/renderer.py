@@ -100,6 +100,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
                                    'plot_title': 'Moment Map'},
                      'integratedmap': {'type': 'sd_integrated_map',
                                        'plot_title': 'Integrated Intensity Map'},
+                     'missedlines': {'type': 'sd_missedlines_plot',
+                                     'plot_title': 'Diagnostic plots for possible missed line channels'},
                      'contaminationmap': {'type': 'sd_contamination_map',
                                           'plot_title': 'Contamination Plots'}}
 
@@ -125,8 +127,8 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
             else:
                 summary = self._summary_plots(plot_list)
 
-            # contamination plots
-            if key == 'contaminationmap':
+            # contamination plots and missed-lines plots
+            if key == 'contaminationmap' or key == 'missedlines':
                 ctx.update({f'{key}_subpage': None,
                             f'{key}_plots': summary})
                 continue
@@ -299,4 +301,3 @@ class T2_4MDetailsSingleDishImagingRenderer(basetemplates.T2_4MDetailsDefaultRen
         except StopIteration:
             field_key = None
         return field_key
-

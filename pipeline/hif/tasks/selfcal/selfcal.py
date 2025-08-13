@@ -260,11 +260,10 @@ class SelfcalInputs(vdp.StandardInputs):
 
             apply: Apply final selfcal solutions back to the input MeasurementSets. default = True
 
-            parallel: Use MPI cluster where possible.
-
-                default='automatic'
-
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework, and use CASA/tclean
+                parallel imaging, when possible.
                 options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to 'automatic')
 
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
 
