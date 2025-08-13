@@ -269,11 +269,12 @@ def n_eb(context) -> str:
 
 
 def stage_duration(context) -> list:
-    #TODO: copied from htmlrenderer.py. Should be pulled out into a common function. 
+    LOG.info("stage_duration")
+    #TODO: copied from htmlrenderer.py. Should be pulled out into a common function.
 
     ## Obtain time duration of tasks by the difference of start times successive tasks.
     ## The end time of the last task is tentatively defined as the time of current time.
-    timestamps = [ r.timestamps.start for r in context.results ]
+    timestamps = [r.read().timestamps.start for r in context.results]
     
     # tentative task end time stamp for the last stage
     timestamps.append(datetime.datetime.utcnow())
@@ -286,7 +287,7 @@ def stage_duration(context) -> list:
     return task_duration
 
 
-def execution_duration(context) -> str: 
+def execution_duration(context) -> str:
     # Processing time
     exec_start = context.results[0].read().timestamps.start
     exec_end = context.results[-1].read().timestamps.end
@@ -296,10 +297,10 @@ def execution_duration(context) -> str:
     return exec_duration
 
 
-def stage_info(context) -> dict: 
+def stage_info(context) -> dict:
     info = {}
     for i in range(len(context.results)):
-        info[result.stage_number] = htmlrenderer.get_task_description(context.results[i].read(), context)
+        info[context.results[i].read().stage_number] = htmlrenderer.get_task_description(context.results[i].read(), context)
 
 
 def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
@@ -314,7 +315,7 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
     LOG.info(f"First ms: {first_ms}")
     import_program = determine_import_program(context=context, ms=first_ms)
 
-    p1 = PipelineStatistics(
+    p1 = PipelineStatistic(
         name='project_id',
         value=project_id(context),
         longdesc='Proposal id number',
@@ -418,18 +419,19 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
             value=execution_duration(context),
             longdesc="total processing time",
             origin=import_program,
-            level=PipelineStatisticLevel.MOUS
+            level=PipelineStatisticLevel.MOUS,
         )
     )
 
     stats_collection_list.append(
         PipelineStatistic(
-        name='stage_info',
-        value=stage_info(context),
-        longdesc="stage number and name",
-        origin=import_program,
-        level=PipelineStatisticLevel.MOUS))
-
+            name='stage_info',
+            value=stage_info(context),
+            longdesc="stage number and name",
+            origin=import_program,
+            level=PipelineStatisticLevel.MOUS,
+        )
+    )
 
     stats_collection_list.append(
         PipelineStatistic(
@@ -437,7 +439,8 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
             value=stage_duration(context),
             longdesc="number of spectral windows",
             origin=import_program,
-            level=PipelineStatisticLevel.MOUS)
+            level=PipelineStatisticLevel.MOUS
+        )
     )
 
     stats_collection.add_stats(stats_collection_list, level=PipelineStatisticLevel.MOUS, mous=mous)
@@ -783,7 +786,7 @@ class StatsExtractorRegistry(object):
                                                                            result.__class__.__name__))
                 d = handler.handle(result, context)
                 print(f"group-level d: {d}")
-               extracted = union(extracted, d)
+                extracted = union(extracted, d)
 
         return extracted
 
@@ -825,8 +828,9 @@ class FlagDeterALMAResultsExtractor(ResultsStatsExtractor):
                             output_dict[ms][reason] = percentage
         return output_dict
 
-    def create_stat(self, value_dict: dict) -> Dict: 
-        longdescription = "dictionary giving percentage of data newly flagged by the following intents: online, shadow, qa0, qa2 before and template flagging agents" stats = {}
+    def create_stat(self, value_dict: dict) -> Dict:
+        longdescription = "dictionary giving percentage of data newly flagged by the following intents: online, shadow, qa0, qa2 before and template flagging agents"
+        stats = {}
         for ms in value_dict:
             ps = PipelineStatistic(name="flagdata_percentage",
                                    value=value_dict[ms],
@@ -836,7 +840,7 @@ class FlagDeterALMAResultsExtractor(ResultsStatsExtractor):
             stats[ms] = ps
 
 
-def union(dict: List, new: Union[PipelineStatistic, List[PipelineStatistic]]) -> List[PipelineStatistic]:
+def union(lst: List, new: Union[PipelineStatistic, List[PipelineStatistic]]) -> List[PipelineStatistic]:
     """
     Combines lst which is always a list, with new,
     which could be a list of PipelineStatistic objects
