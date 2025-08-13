@@ -1796,6 +1796,7 @@ class SelfcalHeuristics(object):
                                 for vis in slib[fid]['vislist']:
                                     # slib[fid][vis][solint]['interpolated_gains'] = True
                                     # slib[fid]['Stop_Reason'] = "Gaincal solutions would be interpolated"
+                                    slib[fid]['Stop_Reason'] = skip_reason
                                     slib[fid][vis][solint]['Pass'] = "None"
                                     slib[fid][vis][solint]['Fail_Reason'] = skip_reason
 
@@ -2919,6 +2920,7 @@ class SelfcalHeuristics(object):
                             LOG.info('FIELD: '+str(fid)+', REASON: Failed earlier solint')
                     LOG.info('****************Reapplying previous solint solutions where available*************')
 
+                    # PIPE-2534: reset inf_EB outcome after an unsuccessful follow-up solint trial.
                     # Because a mosaic can have sub-fields fail outright when the mosaic as a whole and/or sub-fields fail with inf_EB_SNR_decrease
                     # we need to make sure this part is only entered if we are not in the inf_EB solint, so the inf_EB_SNR_decrease flag doesn't cause
                     # all of those fields to fail before the next solint can be tried.
@@ -2928,22 +2930,28 @@ class SelfcalHeuristics(object):
                             slib['SC_success'] = False
                             slib['final_solint'] = 'None'
                             for vis in vislist:
-                                slib[vis]['inf_EB']['Pass'] = False  # remove the success from inf_EB
                                 # remove the success from inf_EB
+                                # TODO: to be evaluted after the release of PL2025.
+                                # if slib[vis]['inf_EB'].get('Pass') is True:
+                                #     slib[vis]['inf_EB']['Pass'] = False
+                                slib[vis]['inf_EB']['Pass'] = False
                                 slib[vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
 
                         # Only set the inf_EB Pass flag to False if the mosaic as a whole failed or if this is the last phase-only solint (either because it is int or
                         # because the solint failed, because for mosaics we can keep trying the field as we clean deeper. If we set to False now, that wont happen.
                         for fid in np.intersect1d(slib['sub-fields'], list(slib['sub-fields-fid_map'][vis].keys())):
-                            if (slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']) or \
-                                    ((not slib[vislist[0]][solint]['Pass'] or solint == 'int') and
-                                     (slib[fid]['final_solint'] == 'inf_EB' and slib[fid]['inf_EB_SNR_decrease'])):
+                            if (slib['final_solint'] == 'inf_EB' and slib['inf_EB_SNR_decrease']) or (
+                                (not slib[vislist[0]][solint]['Pass'] or solint == 'int')
+                                and (slib[fid]['final_solint'] == 'inf_EB' and slib[fid]['inf_EB_SNR_decrease'])
+                            ):
                                 slib[fid]['SC_success'] = False
                                 slib[fid]['final_solint'] = 'None'
                                 for vis in vislist:
                                     # remove the success from inf_EB
+                                    # TODO: to be evaluted after the release of PL2025.
+                                    # if slib[fid][vis]['inf_EB']['Pass'] is 'None':
+                                    #     slib[fid][vis]['inf_EB']['Pass'] = False
                                     slib[fid][vis]['inf_EB']['Pass'] = False
-                                    # remove the success from inf_EB
                                     slib[fid][vis]['inf_EB']['Fail_Reason'] += ' with no successful solints later'
 
                     for vis in vislist:

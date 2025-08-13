@@ -3,6 +3,7 @@ import contextlib
 import copy
 import os
 import string
+import traceback
 
 import numpy as np
 
@@ -417,23 +418,39 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             for solint in solints:
                 slib_solint = slib[vislist[-1]].get(solint, {})
-                if 'Pass' in slib_solint and isinstance(slib_solint['Pass'], bool):
+                if 'Pass' in slib_solint and not (row_name != 'Pass' and slib_solint.get('Pass') == 'None'):
                     check_solint = True
                     vis_solint_keys = slib_solint.keys()
                     if row_name == 'Pass':
                         result_desc = '-'
                         if not slib_solint['Pass']:
                             result_desc = '<font color="red">{}</font> {}'.format(
-                                'Fail', slib_solint.get('Fail_Reason', None))
+                                'Fail', slib_solint.get('Fail_Reason')
+                            )
+                        elif slib_solint['Pass'] == 'None':
+                            result_desc = '<font color="green">{}</font> {}'.format(
+                                'Not attempted', slib_solint.get('Fail_Reason')
+                            )
                         else:
                             result_desc = '<font color="blue">{}</font>'.format('Pass')
-
-                        qa_renderer = SelfCalQARenderer(context, results, cleantarget, solint)
-                        qa_extra_data[solint] = qa_renderer.extra_data
-                        with qa_renderer.get_file() as fileobj:
-                            fileobj.write(qa_renderer.render())
-                        result_desc = f'{result_desc}<br><a class="replace" href="{qa_renderer.rel_path}">QA Plots</a>'
-
+                        if slib_solint['Pass'] != 'None':
+                            try:
+                                qa_renderer = SelfCalQARenderer(context, results, cleantarget, solint)
+                                qa_extra_data[solint] = qa_renderer.extra_data
+                                with qa_renderer.get_file() as fileobj:
+                                    fileobj.write(qa_renderer.render())
+                                result_desc = (
+                                    f'{result_desc}<br><a class="replace" href="{qa_renderer.rel_path}">QA Plots</a>'
+                                )
+                            except Exception:
+                                LOG.warning(
+                                    'Failed to render per-target/solint QA weblog: target=%s - band=%s - solint=%s',
+                                    cleantarget['field_name'],
+                                    cleantarget['sc_band'],
+                                    solint,
+                                )
+                                traceback_msg = traceback.format_exc()
+                                LOG.debug(traceback_msg)
                         row.append(result_desc)
                     if row_name == 'intflux_final':
                         row.append(
@@ -529,7 +546,7 @@ class T2_4MDetailsSelfcalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 row = [row_name]
                 for solint in solints:
                     slib_solint = slib[vislist[-1]].get(solint, {})
-                    if 'Pass' in slib_solint and isinstance(slib_solint['Pass'], bool):
+                    if 'Pass' in slib_solint and slib_solint.get('Pass') != 'None' and solint in qa_extra_data:
                         nsol_stats = qa_extra_data[solint]['antpos_plots'][vis].parameters
                         if slib['obstype'] == 'mosaic':
                             nsol_stats_predrop = qa_extra_data[solint]['antpos_predrop_plots'][vis].parameters
