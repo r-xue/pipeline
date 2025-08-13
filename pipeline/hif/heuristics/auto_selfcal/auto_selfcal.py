@@ -2305,8 +2305,10 @@ class SelfcalHeuristics(object):
                                             else:
                                                 cals_for_scan.append(0)
                                             total_cals_for_scan.append(len(msmd.antennanames()))
-
-                                    if sum(cals_for_scan) / sum(total_cals_for_scan) < 0.75:
+                                    if (
+                                        sum(total_cals_for_scan) == 0
+                                        or sum(cals_for_scan) / sum(total_cals_for_scan) < 0.75
+                                    ):
                                         new_fields_to_selfcal.remove(fid)
 
                                     msmd.close()
