@@ -1913,32 +1913,39 @@ class SelfcalHeuristics(object):
                                     scans = scans[is_gaincalibrator]
 
                                     msmd.open(vis)
+                                    scan_ids_for_target = msmd.scansforfield(target)
                                     include_scans = []
-                                    for iscan in range(scans.size-1):
-                                        scan_group = np.intersect1d(msmd.scansforfield(target), np.array(
-                                            list(range(scans[iscan]+1, scans[iscan+1])))).astype(str)
+                                    for iscan in range(scans.size - 1):
+                                        scan_group = np.intersect1d(
+                                            scan_ids_for_target,
+                                            np.array(list(range(scans[iscan] + 1, scans[iscan + 1]))),
+                                        ).astype(str)
                                         if scan_group.size > 0:
-                                            include_scans.append(",".join(scan_group))
+                                            include_scans.append(','.join(scan_group))
+                                    # PIPE-2471: find all target scan IDs that are greater than the maximum scan id for phasecal,
+                                    # collect them as extra scan groups. This is used to deal with the situation where some target
+                                    # scans are not bracketed by phasecal.
+                                    extra_scans = scan_ids_for_target[scan_ids_for_target > max(scans)]
+                                    if extra_scans.size > 0:
+                                        # convert id to strings and join them into a single comma-separated string.
+                                        include_scans.append(','.join(extra_scans.astype(str)))
                                     msmd.close()
                                 elif guess_scan_combine:
                                     msmd.open(vis)
-
-                                    scans = msmd.scansforfield(target)
-
+                                    scan_ids_for_target = msmd.scansforfield(target)
                                     include_scans = []
-                                    for iscan in range(scans.size):
+                                    for iscan in range(scan_ids_for_target.size):
                                         if len(include_scans) > 0:
-                                            if str(scans[iscan]) in include_scans[-1]:
+                                            if str(scan_ids_for_target[iscan]) in include_scans[-1]:
                                                 continue
-
-                                        scan_group = str(scans[iscan])
-
-                                        if iscan < scans.size-1:
-                                            if msmd.fieldsforscan(scans[iscan+1]).size < msmd.fieldsforscan(scans[iscan]).size/3:
-                                                scan_group += ","+str(scans[iscan+1])
-
+                                        scan_group = str(scan_ids_for_target[iscan])
+                                        if iscan < scan_ids_for_target.size - 1:
+                                            if (
+                                                msmd.fieldsforscan(scan_ids_for_target[iscan + 1]).size
+                                                < msmd.fieldsforscan(scan_ids_for_target[iscan]).size / 3
+                                            ):
+                                                scan_group += ',' + str(scan_ids_for_target[iscan + 1])
                                         include_scans.append(scan_group)
-
                                     msmd.close()
                                 else:
                                     msmd.open(vis)
