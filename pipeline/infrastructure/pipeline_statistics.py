@@ -366,7 +366,8 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         longdesc="number of execution blocks",
         origin=import_program,
         level=level,
-        )
+    )
+
     stats_collection_list.append(p6)
 
     all_bands = sorted({spw.band for spw in ms_list[0].get_all_spectral_windows()})
@@ -380,13 +381,15 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
     stats_collection_list.append(p7)
 
     science_source_names = sorted({source.name for source in ms_list[0].sources if 'TARGET' in source.intents})
+
     p8 = PipelineStatistic(
         name='n_target',
         value=len(science_source_names),
         longdesc="total number of science targets in the MOUS",
         origin=import_program,
         level=level,
-        )
+    )
+
     stats_collection_list.append(p8)
 
     p9 = PipelineStatistic(
@@ -840,15 +843,17 @@ class FlagDeterALMAResultsExtractor(ResultsStatsExtractor):
                                    units='%',
                                    level=PipelineStatisticLevel.EB)
             stats[ms] = ps
+        return stats
 
 
-def union(lst: List, new: Union[PipelineStatistic, List[PipelineStatistic]]) -> List[PipelineStatistic]:
+def union(input: List, new: Union[Dict, List[Dict]]) -> List[Dict]:
     """
     Combines lst which is always a list, with new,
     which could be a list of PipelineStatistic objects
     or an individual PipelineStatistic object.
     """
-    union = copy.deepcopy(lst)
+    union = copy.deepcopy(input)
+
     if isinstance(new, list):
         for elt in new:
             union.append(elt)
@@ -865,9 +870,9 @@ def get_stats_from_results(context: Context, stats_collection: PipelineStatsColl
         results = results_proxy.read()
         handle_results = registry.handle(results, context)
         LOG.debug("Got stats from results: %s", handle_results)
-        # instead just add the results to the stats_collection
-        for eb, stat in handle_results.items():
-            stats_collection.add_stat(stat, eb=eb, level=PipelineStatisticLevel.EB, mous=context.get_oussid())
+        for elt in handle_results:
+            for eb, stat in elt.items():
+                stats_collection.add_stat(stat, eb=eb, level=PipelineStatisticLevel.EB, mous=context.get_oussid())
         LOG.debug("stats collection results so far: %s", stats_collection)
 
 
@@ -883,8 +888,7 @@ def generate_stats(context: Context) -> Dict:
 
     # Gather stats from results objects
     LOG.info("Getting pipeline stats from results")
-    # # FIXME: still returns List[PipelineStatistic]
-    # get_stats_from_results(context, stats_collection)
+    get_stats_from_results(context, stats_collection)
     LOG.info("Adding stats from results to stats collection")
 
     # Construct dictionary representation of all pipeline stats
