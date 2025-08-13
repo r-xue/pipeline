@@ -7,12 +7,12 @@ import enum
 from typing import Dict, List, Set, Union
 
 import numpy as np
-
 from pipeline import environment
 from pipeline.domain import measures
 from pipeline.hifa.tasks.flagging.flagdeteralma import FlagDeterALMAResults
 from pipeline.infrastructure.basetask import Results, ResultsList
 from pipeline.infrastructure.launcher import Context
+import pipeline.infrastructure.renderer.htmlrenderer as htmlrenderer
 from pipeline.domain.datatype import DataType
 from pipeline.infrastructure.launcher import Context
 from pipeline.domain.measurementset import MeasurementSet
@@ -268,6 +268,40 @@ def n_eb(context) -> str:
     return len(context.observing_run.execblock_ids)
 
 
+def stage_duration(context) -> list:
+    #TODO: copied from htmlrenderer.py. Should be pulled out into a common function. 
+
+    ## Obtain time duration of tasks by the difference of start times successive tasks.
+    ## The end time of the last task is tentatively defined as the time of current time.
+    timestamps = [ r.timestamps.start for r in context.results ]
+    
+    # tentative task end time stamp for the last stage
+    timestamps.append(datetime.datetime.utcnow())
+    task_duration = []
+    for i in range(len(context.results)):
+        # task execution duration
+        dt = timestamps[i+1] - timestamps[i]
+        # remove unnecessary precision for execution duration
+        task_duration.append(datetime.timedelta(days=dt.days, seconds=dt.seconds))
+    return task_duration
+
+
+def execution_duration(context) -> str: 
+    # Processing time
+    exec_start = context.results[0].read().timestamps.start
+    exec_end = context.results[-1].read().timestamps.end
+    # remove unnecessary precision for execution duration
+    dt = exec_end - exec_start
+    exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
+    return exec_duration
+
+
+def stage_info(context) -> dict: 
+    info = {}
+    for i in range(len(context.results)):
+        info[result.stage_number] = htmlrenderer.get_task_description(context.results[i].read(), context)
+
+
 def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
                      stats_collection: PipelineStatsCollection):
     """
@@ -377,6 +411,34 @@ def _get_mous_values(context, mous: str, ms_list: List[MeasurementSet],
         origin=import_program,
         level=PipelineStatisticLevel.MOUS)
     stats_collection_list.append(p11)
+
+    stats_collection_list.append(
+        PipelineStatistic(
+            name='total_time',
+            value=execution_duration(context),
+            longdesc="total processing time",
+            origin=import_program,
+            level=PipelineStatisticLevel.MOUS
+        )
+    )
+
+    stats_collection_list.append(
+        PipelineStatistic(
+        name='stage_info',
+        value=stage_info(context),
+        longdesc="stage number and name",
+        origin=import_program,
+        level=PipelineStatisticLevel.MOUS))
+
+
+    stats_collection_list.append(
+        PipelineStatistic(
+            name='time spent in each stage',
+            value=stage_duration(context),
+            longdesc="number of spectral windows",
+            origin=import_program,
+            level=PipelineStatisticLevel.MOUS)
+    )
 
     stats_collection.add_stats(stats_collection_list, level=PipelineStatisticLevel.MOUS, mous=mous)
 
@@ -585,8 +647,8 @@ def get_stats_from_context(context) -> PipelineStatsCollection:
     ms_list = context.observing_run.get_measurement_sets_of_type(datatypes)
 
     stats_collection = PipelineStatsCollection()
-    # FIXME: If I'm going to keep this pattern, update all names to _add_mous_values, etc...
-    # I don't *want* to pass stats_collection around, but leave it for now.
+    # TODO: If keeping this pattern, update all names to _add_mous_values, etc...
+    # Don't *want* to pass stats_collection around, but leave it for now.
 
     # Add MOUS-level information
     _get_mous_values(context, mous, ms_list, stats_collection)

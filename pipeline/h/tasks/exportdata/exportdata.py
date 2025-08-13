@@ -1523,7 +1523,6 @@ finally:
           The filename of the outputfile.
         """
         from pipeline.infrastructure import pipeline_statistics as pstats
-        #FIXME: avoid circular import
 
         statsfile_name = "pipeline_stats_{}.json".format(oussid)
         stats_file = os.path.join(context.output_dir, statsfile_name)
