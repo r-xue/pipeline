@@ -11,7 +11,7 @@ import re
 import shutil
 import uuid
 from typing import TYPE_CHECKING, List, Optional, Union
-
+import traceback
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord
@@ -2331,12 +2331,12 @@ class ImageParamsHeuristics(object):
             return self.majority_antenna_ids(local_vislist)
 
     def check_psf(self, psf_name, field, spw):
-
         """Check for bad psf fits."""
-
         cqa = casa_tools.quanta
-
         bad_psf_fit = False
+
+        LOG.info('checking psf: %s from field=%s / spw=%s', psf_name, field, spw)
+
         with casa_tools.ImageReader(psf_name) as image:
             try:
                 beams = image.restoringbeam()['beams']
@@ -2344,16 +2344,33 @@ class ImageParamsHeuristics(object):
 
                 # Filter empty psf planes
                 bmaj = bmaj[np.where(bmaj > 1e-6)]
-
                 bmaj_median = np.median(bmaj)
-                cond1 = np.logical_and(0.0 < bmaj, bmaj < 0.5 * bmaj_median)
-                cond2 = bmaj > 2.0 * bmaj_median
+
+                # theshold (in relative scaling) to detect outliers and trigger the .find_good_common heuristic method
+                outlier_threshold = 2.0
+
+                cond1 = np.logical_and(0.0 < bmaj, bmaj < bmaj_median / outlier_threshold)
+                cond2 = bmaj > outlier_threshold * bmaj_median
+                LOG.info(
+                    'Per-plane beams bmajor - min/max/medium - %s/%s/%s',
+                    np.min(bmaj),
+                    np.max(bmaj),
+                    np.median(bmaj),
+                )
                 if np.logical_or(cond1, cond2).any():
                     bad_psf_fit = True
-                    LOG.warning('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
-                                ' results for this cube carefully, there are likely data issues.' % (field, spw))
-            except:
-                pass
+                    LOG.warning(
+                        'The PSF fit has one or more outlier channels for field %s SPW %s, please check the '
+                        'results for this cube carefully, there are likely data issues.',
+                        field,
+                        spw,
+                    )
+                else:
+                    LOG.info('No outlier per-plane beams with bmaj < 0.5*median(bmaj) or bmaj > 2*median(bmaj)')
+            except Exception as ex:
+                traceback_msg = traceback.format_exc()
+                LOG.debug(traceback_msg)
+                LOG.info(ex)
 
         return bad_psf_fit
 
@@ -2447,9 +2464,9 @@ class ImageParamsHeuristics(object):
                 axratio[ii] = axmajor/axminor
                 weight[ii] = np.isfinite( axratio[ii] )
 
-            ## Detect outliers based on axis ratio
-            ## The iterative loop is to get robust autoflagging
-            ## Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
+            # Detect outliers based on axis ratio
+            # The iterative loop is to get robust autoflagging
+            # Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
             for steps in range(0, 2):  ### Heuristic : how many iterations here ?
                 local_axratio[ weight==False ] = np.nan
@@ -2467,25 +2484,33 @@ class ImageParamsHeuristics(object):
                 LOG.error('No valid beams in {!s}'.format(psf_filename))
                 return None, np.arange(nchan)
 
-            ## Fill all flagged channels with the largest/first valid beam
+            # Fill all flagged channels with the largest/first valid beam
             dummybeam = allbeams['beams']['*'+str(chanid)]['*0']
             for ii in range(0, nchan):
                 if weight[ii]==False:
                     image.setrestoringbeam( major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii)
 
-        ## Need to close and reopen for commonbeam() to see the new chan beams !
+        # Need to close and reopen for commonbeam() to see the new chan beams !
         with casa_tools.ImageReader(psf_filename) as image:
             ## Recalculate common beam
             newcommonbeam = image.commonbeam()
 
-        ## Reinstate the old beam to get back to the original iter0 product
+        # Reinstate the old beam to get back to the original iter0 product
         with casa_tools.ImageReader(psf_filename) as image:
             for ii in range(0, nchan):
-                if weight[ii]==False:
-                    beam = allbeams['beams']['*'+str(ii)]['*0']
-                    image.setrestoringbeam( major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii )
+                if weight[ii] == False:
+                    beam = allbeams['beams']['*' + str(ii)]['*0']
+                    image.setrestoringbeam(
+                        major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
+                    )
 
-        return newcommonbeam, np.where(np.logical_not(weight))[0]
+        # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
+        # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). So here the returned recommended beam is
+        # explictly set to None as below.
+        newcommonbeam = None
+        bad_psf_channels = np.where(np.logical_not(weight))[0]
+
+        return newcommonbeam, bad_psf_channels
 
     def get_cfcaches(self, cfcache: str):
         """Parses comma separated cfcache string
