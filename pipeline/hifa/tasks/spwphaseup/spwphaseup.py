@@ -1309,7 +1309,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             # No scaling for the other calibrators (BANDPASS, DIFFGAIN, ...).
             snr_threshold_used = inputs.intphasesnr
 
-        # Restrict the input SpWs, SNRs, and times to the SpWs to use.
+        # Restrict the input SpWs, SNRs, and times to the SpWs-to-use.
         #
         # Bright AMPLITUDE or BANDPASS calibrators in Band-to-Band datasets will
         # have scans in both the (high-freq) diffgain source SpWs and the
@@ -1321,9 +1321,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             dgsrc_spwids = [spw.id for spw in inputs.ms.get_spectral_windows(intent='DIFFGAINSRC')]
             to_keep = [idx for idx, spwid in enumerate(spwids) if spwid in dgsrc_spwids]
         # For all other data, loop over the spectral specs and identify the
-        # SpectralSpec with the highest SNR SpW in it; this SpectralSpec and its
-        # SpWs (and corresponding SNR values) will be used in the subsequent
-        # evaluation of best solint / gaintype.
+        # SpectralSpec with the lowest-usable-SNR SpW in it; this SpectralSpec
+        # and its SpWs (and corresponding SNR values) will be used in the
+        # subsequent evaluation of best solint / gaintype.
         # Standard datasets will typically contain a single spectral spec, but
         # spectral scans or multi-tuning datasets will contain multiple spectral
         # specs.
@@ -1355,6 +1355,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 if to_keep:
                     break
 
+        # Filter SNRs and times for SpWs to keep.
         # PIPE-2499: for reference and integration time, it is assumed this is
         # the same across all SpWs, so pick the first element as representative,
         # and convert these times from minutes to seconds.
@@ -1602,7 +1603,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 Intent identifier to use for the gaincal calculation.
             low_snr_threshold: float, optional
                 Threshold below which SPWs are considered low SNR and gaincal is not attempted.
-                Default is 6 (corresponds to 'X' in PIPE-2505).
+                Default is -1 (corresponds to 'X' in PIPE-2505), forcing gaincal
+                for all SPWs.
             catalogue_snr_multiplier: float, optional
                 Scaling factor applied to SNR values derived from the flux catalogue.
                 Default is 0.75 (corresponds to 'Y' in PIPE-2505).
