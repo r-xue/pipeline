@@ -10,6 +10,7 @@ as appropriate).
 """
 from importlib import import_module
 
+from .caltable_tools import *
 from .casa_data import *
 from .conversion import *
 from .diagnostics import *
@@ -24,8 +25,10 @@ from .parallactic_range import *
 from .positioncorrection import *
 from .subprocess import *
 
+
 # IMPORTANT! If you import from a new submodule, please add it to the list below
 _all_modules = [
+    'caltable_tools',
     'casa_data',
     'conversion',
     'diagnostics',

@@ -28,6 +28,7 @@ from .jobrequest import JobRequest
 # global variable for toggling MPI usage
 USE_MPI = True
 ENABLE_TIER0_PLOTMS = True
+BUFFER_LIMIT = 100*1024*1024  # 100 MiB
 
 LOG = logging.get_logger(__name__)
 
@@ -73,7 +74,14 @@ class AsyncTask(object):
         response = response[0]
         if response['successful']:
             self._merge_casa_commands(response)
-            return response['ret']
+            ret, ret_file = response['ret']
+            if ret_file is not None:
+                LOG.debug('Retrieve the execution return of %s from %s',
+                          response['parameters']['tier0_executable'], ret_file)
+                with open(ret_file, 'rb') as pickle_file:
+                    ret = pickle.load(pickle_file)
+                os.unlink(ret_file)
+            return ret
         else:
             err_msg = "Failure executing job on MPI server {}, " \
                       "with traceback\n {}".format(response['server'], response['traceback'])
@@ -373,10 +381,22 @@ def mpiexec(tier0_executable):
     LOG.info('Executing %s on rank%s@%s', tier0_executable,
              MPIEnvironment.mpi_processor_rank, MPIEnvironment.hostname)
 
-    ret = executable()
-    LOG.debug('Buffering the execution return (%s) of %s', file_size.format(get_obj_size(ret)), tier0_executable)
+    ret, ret_file = executable(), None
+    ret_size = get_obj_size(ret)  # in Bytes
+    if ret_size > BUFFER_LIMIT:
+        tmpfile = tempfile.NamedTemporaryFile(suffix='.context',
+                                              dir='',
+                                              delete=True)
+        tmpfile.close()
+        LOG.debug('Saving the execution return from %s to %s due to its size of %s execeeding the MPI Buffer limit %s restricted by Pipeline',
+                  tier0_executable, tmpfile.name, file_size.format(ret_size), file_size.format(BUFFER_LIMIT))
+        with open(tmpfile.name, 'wb') as pickle_file:
+            pickle.dump(ret, pickle_file, protocol=-1)
+        ret, ret_file = None, os.path.abspath(tmpfile.name)
+    else:
+        LOG.debug('Buffering the execution return (%s) from %s', file_size.format(ret_size), tier0_executable)
 
-    return ret
+    return ret, ret_file
 
 
 def is_mpi_ready():

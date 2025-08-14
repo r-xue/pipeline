@@ -788,7 +788,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             fileobj.write(tab_renderer.render())
                         values['tab_url'] = tab_renderer.path
 
-                    if stokes_parameters != ['I']:
+                    if row.intent == 'POLARIZATION' and stokes_parameters != ['I']:
                         # Save POLI/POLA paths which is known only after plot() has been called
                         values['poli_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
@@ -880,12 +880,14 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
             if 'VLA' in result.imaging_mode:
-                # PIPE-1462 / PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
                 # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
                 # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
                 # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
                 # vs. specmode='mvc') but with a different warning.
-                # For consistency and clarity in VLA continuum imaging plots, we continue to use non-pbcor images here.
+                # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
+                # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
+                # the primary beam (PB) mask limit.
                 colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
@@ -1013,7 +1015,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
+        # because hif_tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:

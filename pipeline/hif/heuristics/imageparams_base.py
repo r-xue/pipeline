@@ -1377,12 +1377,10 @@ class ImageParamsHeuristics(object):
         return pblimit_image, pblimit_cleanmask
 
     def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
-        if intent == 'POLARIZATION' and stokes == 'IQUV':
-            return 'clarkstokes'
 
-        if (specmode == 'cont'):
+        if specmode == 'cont':
             fr_bandwidth = self.get_fractional_bandwidth(spwspec)
-            if (fr_bandwidth > 0.1):
+            if fr_bandwidth > 0.1:
                 return 'mtmfs'
             else:
                 return 'hogbom'

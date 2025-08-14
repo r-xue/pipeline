@@ -1,0 +1,15 @@
+<!-- The <ProcessingIntents> section defines key/value pairs to tell the
+     the pipeline what the PPR's intent is. Some heuristics decisions
+     depend on that. The section is inserted into the PPR by
+     pipelineMakeRequest. -->
+
+<ProcessingIntents>
+    <Intents>
+        <Keyword xmlns="">INTERFEROMETRY_STANDARD_OBSERVING_MODE</Keyword>
+        <Value xmlns="">Undefined</Value>
+    </Intents>
+    <Intents>
+        <Keyword xmlns="">INTERFEROMETRY_FULL_POL_CUBE_IMAGING</Keyword>
+        <Value xmlns="">True</Value>
+    </Intents>
+</ProcessingIntents>

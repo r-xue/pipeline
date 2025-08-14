@@ -2,6 +2,7 @@ import os
 import math
 import ast
 import collections
+import traceback
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
@@ -135,7 +136,11 @@ class Circfeedpolcal(polarization.Polarization):
         self.caldictionary = {}
 
         if [intent for intent in intents if 'POL' in intent]:
-            self.do_prepare()
+            try:
+                self.do_prepare()
+            except Exception as ex:
+                LOG.warning(ex)
+                LOG.debug(traceback.format_exc())
 
         return CircfeedpolcalResults(vis=self.inputs.vis, pool=self.callist, final=self.callist,
                                      refant=self.RefAntOutput[0].lower(), calstrategy=self.calstrategy,
@@ -382,9 +387,10 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args['uvrange'] = uvrange(self.setjy_results, fieldid)
 
         job = casa_tasks.gaincal(**casa_task_args)
-
-        self._executor.execute(job)
-
+        try:
+            self._executor.execute(job)
+        except Exception as ex:
+            LOG.warning(ex)
 
         # return result
         return True
