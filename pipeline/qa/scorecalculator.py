@@ -1035,14 +1035,17 @@ def score_vla_agents(ms, summaries):
 
     # PIPE-2576: Part-4: if total flagging >30%, score < 0.5
     if summaries:
-        flag_fraction = summaries[0]["flagged"]/summaries[0]["total"]
+        flag_fraction = summaries[-1]["flagged"]/summaries[-1]["total"]
         if flag_fraction > 0.30:
-            score_val = max([(1 - flag_fraction/.60), 0.0])
+            score_val = 0.3
             msg = "Total flag fraction > 30%"
-            origin = pqa.QAOrigin(metric_name='score_flagdata',
-                                  metric_score=score_val,
-                                  metric_units='Total Fraction of data that is flagged')
-            qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
+        else:
+            score_val = max([(1 - flag_fraction/.60), 0.0])
+            msg = f"Total flag fraction is {flag_fraction}"
+        origin = pqa.QAOrigin(metric_name='score_flagdata',
+                                metric_score=score_val,
+                                metric_units='Total Fraction of data that is flagged')
+        qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
     else:
         score_val = 0.0
         msg = "No flag summaries found"
