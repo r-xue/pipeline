@@ -1922,13 +1922,17 @@ class SelfcalHeuristics(object):
                                         ).astype(str)
                                         if scan_group.size > 0:
                                             include_scans.append(','.join(scan_group))
-                                    # PIPE-2471: find all target scan IDs that are greater than the maximum scan id for phasecal,
-                                    # collect them as extra scan groups. This is used to deal with the situation where some target
-                                    # scans are not bracketed by phasecal.
-                                    extra_scans = scan_ids_for_target[scan_ids_for_target > max(scans)]
-                                    if extra_scans.size > 0:
-                                        # convert id to strings and join them into a single comma-separated string.
-                                        include_scans.append(','.join(extra_scans.astype(str)))
+                                    # PIPE-2471: find all target scan IDs that are out of for the phasecal scan id range,
+                                    # collect them as extra scan groups. This is used to deal with the situation where
+                                    # some target scans are not bracketed by phase calibrator scans.
+                                    if scans.size > 0:
+                                        extra_scans = scan_ids_for_target[scan_ids_for_target > max(scans)]
+                                        if extra_scans.size > 0:
+                                            # convert id to strings and join them into a single comma-separated string.
+                                            include_scans.append(','.join(extra_scans.astype(str)))
+                                        extra_scans = scan_ids_for_target[scan_ids_for_target < min(scans)]
+                                        if extra_scans.size > 0:
+                                            include_scans.insert(0, ','.join(extra_scans.astype(str)))
                                     msmd.close()
                                 elif guess_scan_combine:
                                     msmd.open(vis)

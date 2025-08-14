@@ -1760,12 +1760,16 @@ def importdata(vislist, all_targets, telescope):
         gaincalibrator_dict[viskey] = {}
         if parent_vis is not None:
             gaincalibrator_dict[viskey] = get_calinfo_from_ms(parent_vis)
+            LOG.info('retrieved phase calibrator scan information from the parent MS of %s: %s', vis, parent_vis)
         else:
             gaincalibrator_dict_vis = get_calinfo_from_ms_history(vis)
             if gaincalibrator_dict_vis:
                 gaincalibrator_dict[viskey] = gaincalibrator_dict_vis
+                LOG.info('retrieved phase calibrator scan information from the history table of %s.', vis)
         if not gaincalibrator_dict[viskey]:
-            LOG.warning('Unable to retrieve phase calibrator scan information from history table of %s or its parent MS', vis)
+            LOG.warning('Unable to retrieve phase calibrator scan information from %s or its parent MS', vis)
+        else:
+            LOG.debug('phase calibrator scan information: %s', gaincalibrator_dict[viskey])
 
     return bands, band_properties, scantimesdict, scanfieldsdict, scannfieldsdict, scanstartsdict, scanendsdict, integrationtimesdict, \
         spwslist_dict, spwstring_dict, spwsarray_dict, mosaic_field_dict, gaincalibrator_dict, spectral_scan, spws_set_dict
