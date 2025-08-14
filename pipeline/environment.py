@@ -188,12 +188,18 @@ class LinuxEnvironment(CommonEnvironment):
     """
 
     def __init__(self):
-        super(LinuxEnvironment, self).__init__()
+        super().__init__()
 
         lscpu_json = json.loads(safe_run('lscpu -J', on_error='{"lscpu": {}}'))
         self.cpu_type = self._from_lscpu(lscpu_json, 'Model name:')
         self.logical_cpu_cores = self._from_lscpu(lscpu_json, 'CPU(s):')
-        self.physical_cpu_cores = self._from_lscpu(lscpu_json, "Core(s) per socket:")
+
+        core_per_socket_str = self._from_lscpu(lscpu_json, 'Core(s) per socket:')
+        num_of_sockets_str = self._from_lscpu(lscpu_json, 'Socket(s):')
+        try:
+            self.physical_cpu_cores = str(int(core_per_socket_str) * int(num_of_sockets_str))
+        except ValueError:
+            self.physical_cpu_cores = 'unknown'
 
         self.ram = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
         self.swap = safe_run('swapon --show=SIZE --bytes --noheadings')
@@ -235,7 +241,7 @@ class LinuxEnvironment(CommonEnvironment):
                     val = ast.literal_eval(val)
                 yield name, val
             else:
-                LOG.warn(f'{filename}:{line_number}: bad line {line!r}')
+                LOG.warning(f'{filename}:{line_number}: bad line {line!r}')
 
     @staticmethod
     def _from_lscpu(lscpu_json: dict, key: str) -> str:
@@ -437,6 +443,8 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'cpu' not in controllers:
+                return 'N/A'
             controller = controllers['cpu']
             str_limits = controller.get_limits([], ['cpu.weight'])
             limits = [CGroupLimit.CPUWeight(val) for val in str_limits]
@@ -478,8 +486,10 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
-            controller = controllers['cpu']
+            if 'cpu' not in controllers:
+                return 'N/A'
 
+            controller = controllers['cpu']
             if controller.enabled and controller.hierarchy_id == 0:
                 str_limits = controller.get_limits([], ['cpu.max'])
             else:
@@ -526,7 +536,10 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]) -> CGroupLimit.CPUAllocation:
-            controller = controllers['cpuset']
+            if 'cpuset' not in controllers:
+                return 'N/A'
+
+            controller = controllers.get('cpuset')
             str_limits = controller.get_limits(
                 ['cpuset.cpus'],
                 ['cpuset.cpus', 'cpuset.cpus.effective']
@@ -556,6 +569,9 @@ class CGroupLimit:
 
         @staticmethod
         def get_limit(controllers: typing.Dict[str, CGroupController]):
+            if 'memory' not in controllers:
+                return 'N/A'
+
             controller = controllers['memory']
             str_limits = controller.get_limits(
                 ["memory.limit_in_bytes", "memory.memsw.limit_in_bytes", "memory.soft_limit_in_bytes"],
@@ -637,9 +653,17 @@ def _get_dependency_details(package_list=None):
     See https://docs.python.org/3.8/library/importlib.metadata.html#metadata
     """
     if package_list is None:
-        package_list = ['numpy', 'scipy', 'matplotlib', 'astropy', 'bdsf',
-                        'casatools', 'casatasks', 'almatasks', 'casadata',
-                        'casampi', 'casaplotms']
+        package_list = [
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'astropy',
+            'bdsf',
+            'casatools',
+            'casatasks',
+            'casampi',
+            'casaplotms',
+        ]
 
     package_details = dict.fromkeys(package_list)
     for package in package_list:

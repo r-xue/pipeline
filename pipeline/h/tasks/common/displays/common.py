@@ -13,6 +13,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 from pipeline.domain import MeasurementSet
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
@@ -145,7 +146,7 @@ class PlotmsCalLeaf(object):
     will be overplotted on the same plot.
     """
 
-    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
+    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
                  xaxis, yaxis, spw='', ant='', pol='', correlation='', plotrange=[], coloraxis=''):
         self._context = context
         self._result = result
@@ -256,7 +257,7 @@ class PlotmsCalLeaf(object):
         return wrapper
 
     def _create_tasks(self):
-        symbol_array = ['autoscaling', 'diamond', 'square'] # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points.
+        symbol_array = ['autoscaling', 'diamond', 'square']  # Note: autoscaling can be 'pixel (cross)' or 'circle' depending on number of points.
         task_list = []
 
         # Create a plotms task for each caltable. See PIPE-1377 and PIPE-1409.
@@ -419,7 +420,7 @@ class LeafComposite(object):
             plots.extend(child.plot())
         return [p for p in plots if p is not None]
 
-    def _create_calapp_contents_dict(self, calapps : List[callibrary.CalApplication], column_name: str) -> Dict[int, List[callibrary.CalApplication]]:
+    def _create_calapp_contents_dict(self, calapps: List[callibrary.CalApplication], column_name: str) -> Dict[int, List[callibrary.CalApplication]]:
         """
         Creates and returns a dictionary mapping some element (e.g. spw, ant) specified by the input
         column_name to lists of the input calapps that have that element present in their caltables.
@@ -458,7 +459,7 @@ class PolComposite(LeafComposite):
             num_pols = dd.num_polarizations
 
         else:
-            num_pols = utils.get_num_caltable_polarizations(calapp.gaintable)
+            num_pols = caltable_tools.get_num_caltable_polarizations(calapp.gaintable)
 
         children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
                                     spw=spw, ant=ant, pol=pol, **kwargs)
@@ -474,7 +475,7 @@ class SpwComposite(LeafComposite):
     leaf_class = None
 
     def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
-                xaxis, yaxis, ant='', pol='', **kwargs):
+                 xaxis, yaxis, ant='', pol='', **kwargs):
 
         if isinstance(calapp, list):
             # Create a dictionary to keep track of which caltables have which spws.
@@ -491,8 +492,8 @@ class SpwComposite(LeafComposite):
                 table_spws = sorted(set(tb.getcol('SPECTRAL_WINDOW_ID')))
 
             children = [self.leaf_class(context, result, calapp, xaxis, yaxis,
-                                spw=int(spw), ant=ant, pol=pol, **kwargs)
-                                for spw in table_spws]
+                        spw=int(spw), ant=ant, pol=pol, **kwargs)
+                        for spw in table_spws]
 
         super().__init__(children)
 
@@ -504,8 +505,8 @@ class SpwAntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
-                xaxis, yaxis, pol='', ysamescale=False, **kwargs):
+    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+                 xaxis, yaxis, pol='', ysamescale=False, **kwargs):
         # Support for lists of calapps was added for PIPE-1409 and PIPE-1377.
         if isinstance(calapp, list):
             # Create a dictionary to keep track of which caltables have which spws.
@@ -523,7 +524,7 @@ class SpwAntComposite(LeafComposite):
             children = []
             for spw in table_spws:
                 if update_yscale:
-                # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw.
+                    # If a list of calapps is input, get the ymin and ymax for all the caltables with this spw.
                     ymins = []
                     ymaxes = []
                     for cal in dict_calapp_spws[spw]:
@@ -587,8 +588,8 @@ class AntComposite(LeafComposite):
     # reference to the PlotLeaf class to call
     leaf_class = None
 
-    def __init__(self, context, result, calapp : Union[List[callibrary.CalApplication], callibrary.CalApplication],
-                xaxis, yaxis, spw='', pol='', **kwargs):
+    def __init__(self, context, result, calapp: Union[List[callibrary.CalApplication], callibrary.CalApplication],
+                 xaxis, yaxis, spw='', pol='', **kwargs):
         if isinstance(calapp, list):
             # Create a dictionary to keep track of which caltables have which ants.
             dict_calapp_ants = self._create_calapp_contents_dict(calapp, 'ANTENNA1')
@@ -1071,4 +1072,3 @@ class DataRatio(object):
 class NullScoreFinder(object):
     def get_score(self, *args, **kwargs):
         return None
-

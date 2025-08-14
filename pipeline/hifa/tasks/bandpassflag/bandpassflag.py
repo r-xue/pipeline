@@ -11,6 +11,7 @@ from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
 from pipeline.hifa.tasks import bandpass
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
 from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagcmds, \
@@ -79,13 +80,16 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
     # Solutions below this SNR are rejected
     minsnr = vdp.VisDependentProperty(default=2.0)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hifa_bandpassflag
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
-                 antenna=None, hm_phaseup=None, phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None,
-                 hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
-                 combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
+                 antenna=None,  mode='channel', hm_phaseup=None, phaseupbw=None, phaseupmaxsolint=None,
+                 phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_phaseup_combine=None, hm_bandpass=None,
+                 solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, combine=None,
+                 refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
                  tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None,
-                 niter=None, mode='channel', hm_auto_fillgaps=None):
+                 niter=None, hm_auto_fillgaps=None, parallel=None, **parameters):
         """Initialize Inputs.
 
         Args:
@@ -124,18 +128,19 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
 
             antenna: Set of data selection antenna IDs
 
-            hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The options are:
-                'snr': compute solution required to achieve the specified SNR
-                'manual': use manual solution parameters
-                '': skip phaseup
+            mode: Type of bandpass solution. Currently only supports the
+                default value of 'channel' (corresponding to bandtype='B' in
+                CASA bandpass) to perform a channel-by-channel solution for each
+                spw.
+
+            hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The
+                options are:
+
+                - 'snr': compute solution required to achieve the specified SNR
+                - 'manual': use manual solution parameters
+                - '': skip phaseup
 
                 Example: hm_phaseup='manual'
-
-            phaseupsolint: The phase correction solution interval in CASA syntax.
-                Used when ``hm_phaseup`` = 'manual' or as a default if the
-                ``hm_phaseup`` = 'snr' heuristic computation fails.
-
-                Example: phaseupsolint='300s'
 
             phaseupbw: Bandwidth to be used for phaseup. Used when
                 ``hm_phaseup`` = 'manual'.
@@ -145,8 +150,20 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
                 - phaseupbw='' to use entire bandpass
                 - phaseupbw='500MHz' to use central 500MHz
 
-            phaseupsnr: The required SNR for the phaseup solution. Used only if
-                hm_phaseup='snr'.
+            phaseupmaxsolint: Maximum phase correction solution interval (in
+                seconds) allowed in very low-SNR cases. Used only when
+                ``hm_phaseup`` = 'snr'.
+
+                Example: phaseupmaxsolint=60.0
+
+            phaseupsolint: The phase correction solution interval in CASA syntax.
+                Used when ``hm_phaseup`` = 'manual' or as a default if the
+                ``hm_phaseup`` = 'snr' heuristic computation fails.
+
+                Example: phaseupsolint='300s'
+
+            phaseupsnr: The required SNR for the phaseup solution. Used to calculate
+                the phaseup time solint, and only if ``hm_phaseup`` = 'snr'.
 
                 Example: phaseupsnr=10.0
 
@@ -154,6 +171,18 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
                 hm_phaseup='snr'.
 
                 Example: phaseupnsols=4
+
+            hm_phaseup_combine: The spw combination heuristic for the phase-up
+                solution. Accepts one of following 3 options:
+
+                - 'snr', default: heuristics will use combine='spw' in phase-up
+                  gaincal when SpWs have SNR <20.
+                - 'always': heuristic will force combine='spw' in the phase-up
+                  gaincal.
+                - 'never': heuristic will not use spw combination; this was the
+                  default logic for Pipeline release 2024 and prior.
+
+                Example: hm_phaseup_combine='always'
 
             hm_bandpass: The bandpass solution heuristics. The options are:
                 'snr': compute the solution required to achieve the specified SNR
@@ -267,8 +296,6 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
 
                 Example: niter=2
 
-            mode:
-
             hm_auto_fillgaps: If True, then the ``hm_bandpass`` = 'snr' or 'smoothed'
                 modes, that solve bandpass per SpW, are performed with
                 CASA bandpass task parameter 'fillgaps' set to a quarter
@@ -277,15 +304,20 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
                 fillgaps=0.
                 The ``hm_bandpass`` = 'fixed' mode is unaffected by
                 ``hm_auto_fillgaps`` and always uses fillgaps=0.
-
+            
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+            
         """
         super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, intent=intent, field=field, spw=spw,
-            antenna=antenna, hm_phaseup=hm_phaseup, phaseupsolint=phaseupsolint, phaseupbw=phaseupbw,
-            phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols, hm_bandpass=hm_bandpass, solint=solint,
-            maxchannels=maxchannels, evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols,
-            combine=combine, refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode,
-            hm_auto_fillgaps=hm_auto_fillgaps
+            antenna=antenna, hm_phaseup=hm_phaseup, phaseupbw=phaseupbw, phaseupmaxsolint=phaseupmaxsolint,
+            phaseupsolint=phaseupsolint, phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols,
+            hm_phaseup_combine=hm_phaseup_combine, hm_bandpass=hm_bandpass, solint=solint, maxchannels=maxchannels,
+            evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols, combine=combine, refant=refant,
+            minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode, hm_auto_fillgaps=hm_auto_fillgaps,
+            **parameters
         )
 
         # flagging parameters
@@ -298,24 +330,17 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
         self.antblpossig = antblpossig
         self.relaxed_factor = relaxed_factor
         self.niter = niter
+        self.parallel = parallel
 
     def as_dict(self):
         # temporary workaround to hide uvrange from Input Parameters accordion
-        d = super(BandpassflagInputs, self).as_dict()
+        d = super().as_dict()
         if 'uvrange' in d:
             del d['uvrange']
         return d
 
 
-@task_registry.set_equivalent_casa_task('hifa_bandpassflag')
-@task_registry.set_casa_commands_comment(
-    'This task performs a preliminary bandpass solution and temporarily applies it, then calls hif_correctedampflag to'
-    ' evaluate the flagging heuristics, looking for outlier visibility points by statistically examining the scalar'
-    ' difference of the corrected amplitudes minus model amplitudes, and then flagging those outliers. The philosophy'
-    ' is that only outlier data points that have remained outliers after calibration will be flagged. Note that the'
-    ' phase of the data is not assessed.'
-)
-class Bandpassflag(basetask.StandardTaskTemplate):
+class SerialBandpassflag(basetask.StandardTaskTemplate):
     Inputs = BandpassflagInputs
 
     def prepare(self):
@@ -336,7 +361,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # Run a preliminary standard phaseup and bandpass calibration:
         # Create inputs for bandpass task.
         LOG.info('Creating preliminary phased-up bandpass calibration.')
-        bpinputs = bandpass.ALMAPhcorBandpass.Inputs(
+        bpinputs = bandpass.SerialALMAPhcorBandpass.Inputs(
             context=inputs.context, vis=inputs.vis, caltable=inputs.caltable,
             field=inputs.field, intent=inputs.intent, spw=inputs.spw,
             antenna=inputs.antenna, hm_phaseup=inputs.hm_phaseup,
@@ -349,7 +374,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             refant=inputs.refant, solnorm=inputs.solnorm,
             minblperant=inputs.minblperant, minsnr=inputs.minsnr, hm_auto_fillgaps=inputs.hm_auto_fillgaps)
         # Create and execute bandpass task.
-        bptask = bandpass.ALMAPhcorBandpass(bpinputs)
+        bptask = bandpass.SerialALMAPhcorBandpass(bpinputs)
         bpresult = self._executor.execute(bptask)
 
         # Add the phase-up table produced by the bandpass task to the
@@ -526,6 +551,20 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                                   calwt=old_calfrom.calwt)
 
 
+@task_registry.set_equivalent_casa_task('hifa_bandpassflag')
+@task_registry.set_casa_commands_comment(
+    'This task performs a preliminary bandpass solution and temporarily applies it, then calls hif_correctedampflag to'
+    ' evaluate the flagging heuristics, looking for outlier visibility points by statistically examining the scalar'
+    ' difference of the corrected amplitudes minus model amplitudes, and then flagging those outliers. The philosophy'
+    ' is that only outlier data points that have remained outliers after calibration will be flagged. Note that the'
+    ' phase of the data is not assessed.'
+)
+class Bandpassflag(sessionutils.ParallelTemplate):
+    
+    Inputs = BandpassflagInputs
+    Task = SerialBandpassflag
+
+
 def create_plots(inputs, context, suffix=''):
     """
     Return amplitude vs time and amplitude vs UV distance plots for the given
@@ -567,5 +606,5 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='BANDPASS',
-                                          **plot_args)
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='BANDPASS',
+                         **plot_args)

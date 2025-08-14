@@ -1,7 +1,7 @@
 import math
 import os
 import collections
-from typing import Union, List, Dict, Sequence, Optional
+from typing import List
 
 import numpy as np
 
@@ -19,6 +19,7 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from pipeline.domain.measures import FrequencyUnits
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -43,7 +44,7 @@ class FluxbootInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hifv_importdata task.
+            vis(str or list): The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
 
             caltable(str): fluxgaincal table from user input.  If None, task uses default name.
                 If a caltable is specified, then the fluxgains stage from the scripted pipeline is skipped
@@ -149,6 +150,8 @@ class FluxbootResults(basetask.Results):
         context.evla['msinfo'][m.name].fluxscale_spws = self.spws
         context.evla['msinfo'][m.name].fluxscale_result = self.fluxscale_result
         context.evla['msinfo'][m.name].fbversion = self.fbversion
+        # PIPE-730: adding spindex_results for AQUA report
+        context.evla['msinfo'][m.name].spindex_results = self.spindex_results
 
 
 @task_registry.set_equivalent_casa_task('hifv_fluxboot')
@@ -165,13 +168,23 @@ class Fluxboot(basetask.StandardTaskTemplate):
         for spw, band in spw2band.items():
             if spw in listspws:  # Science intents only
                 band2spw[band].append(str(spw))
-
-        sources, flux_densities, spws, weblog_results,\
-        spindex_results, caltable, fluxscale_result = self._do_fluxboot(band2spw)
+        sources = []
+        flux_densities = []
+        spws = []
+        weblog_results = []
+        spindex_results = []
+        caltable = []
+        fluxscale_result = []
+        vis = self.inputs.vis
+        try:
+            sources, flux_densities, spws, weblog_results, spindex_results, caltable, fluxscale_result = self._do_fluxboot(
+                band2spw)
+        except Exception as ex:
+            LOG.warning(ex)
 
         return FluxbootResults(sources=sources, flux_densities=flux_densities, spws=spws,
                                weblog_results=weblog_results,
-                               spindex_results=spindex_results, vis=self.inputs.vis, caltable=caltable,
+                               spindex_results=spindex_results, vis=vis, caltable=caltable,
                                fluxscale_result=fluxscale_result)
 
     def analyse(self, results):
@@ -194,10 +207,9 @@ class Fluxboot(basetask.StandardTaskTemplate):
                     vlassmode = True
             except:
                 continue
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
 
         if self.inputs.caltable is None:
             # Original Fluxgain stage from the scripted pipeline
@@ -208,7 +220,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             standard_source_names, standard_source_fields = standard_sources(calMs)
 
-            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
             field_spws = m.get_vla_field_spws()
             spw2band = m.get_vla_spw2band()
 
@@ -230,12 +241,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
                         for spw in spws:
                             reference_frequency = center_frequencies[spw.id]
-                            try:
-                                EVLA_band = spw2band[spw.id]
-                            except Exception as e:
-                                LOG.info('Unable to get band from spw id - using reference frequency instead')
-                                EVLA_band = find_EVLA_band(reference_frequency)
-
+                            EVLA_band = spw2band[spw.id]
+ 
                             LOG.info("Center freq for spw " + str(spw.id) + " = " + str(reference_frequency)
                                      + ", observing band = " + EVLA_band)
 
@@ -287,21 +294,25 @@ class Fluxboot(basetask.StandardTaskTemplate):
             fluxphase = 'fluxphaseshortgaincal.g'
 
             for band, spwlist in band2spw.items():
-                append = False
-                isdir = os.path.isdir(fluxphase)
-                if isdir:
-                    append = True
-                    LOG.info("Appending to existing table: {!s}".format(fluxphase))
+                try:
+                    append = False
+                    isdir = os.path.isdir(fluxphase)
+                    if isdir:
+                        append = True
+                        LOG.info("Appending to existing table: {!s}".format(fluxphase))
+                    if band in self.inputs.context.evla['msinfo'][m.name].new_gain_solint1.keys():
+                        new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
 
-                new_gain_solint1 = self.inputs.context.evla['msinfo'][m.name].new_gain_solint1[band]
+                        LOG.info("Making gain tables for flux density bootstrapping")
+                        LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
 
-                LOG.info("Making gain tables for flux density bootstrapping")
-                LOG.info("Short solint = " + new_gain_solint1 + " for band {!s}".format(band))
-
-                self._do_gaincal(calMs, fluxphase, 'p', [''],
-                                 solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
-                                 spw=','.join(spwlist), append=append)
-
+                        self._do_gaincal(calMs, fluxphase, 'p', [''],
+                                         solint=new_gain_solint1, minsnr=3.0, refAnt=refAnt,
+                                         spw=','.join(spwlist), append=append)
+                except KeyError as ex:
+                    LOG.warning("No data found for {!s} band".format(ex))
+                except Exception as ex:
+                    LOG.warning(ex)
             # ----------------------------------------------------------------------------
             # New Heuristics, CAS-9186
             field_objects = m.get_fields(intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
@@ -314,49 +325,56 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             for i, field in enumerate(field_objects):
                 for band, spwlist in band2spw.items():
-                    calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
+                    try:
+                        calibrator_scan_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_scan_select_string
 
-                    scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
-                    scanids_perband = ','.join([str(scan.id) for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
+                        scanlist = [int(scan) for scan in calibrator_scan_select_string.split(',')]
+                        scanids_perband = ','.join([str(scan.id)
+                                                   for scan in m.get_scans(scan_id=scanlist, spw=','.join(spwlist))])
 
-                    calscanslist = list(map(int, scanids_perband.split(',')))
-                    scanobjlist = m.get_scans(scan_id=calscanslist,
-                                              scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
-                    fieldidlist = []
-                    for scanobj in scanobjlist:
-                        fieldobj, = scanobj.fields
-                        if str(fieldobj.id) not in fieldidlist:
-                            fieldidlist.append(str(fieldobj.id))
+                        calscanslist = list(map(int, scanids_perband.split(',')))
+                        scanobjlist = m.get_scans(scan_id=calscanslist,
+                                                  scan_intent=['AMPLITUDE', 'BANDPASS', 'PHASE'])
+                        fieldidlist = []
+                        for scanobj in scanobjlist:
+                            fieldobj, = scanobj.fields
+                            if str(fieldobj.id) not in fieldidlist:
+                                fieldidlist.append(str(fieldobj.id))
 
-                    if str(field.id) in fieldidlist:
-                        append = False
-                        isdir = os.path.isdir(fluxflagtable)
-                        if isdir:
-                            append = True
-                            LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                        if str(field.id) in fieldidlist:
+                            append = False
+                            isdir = os.path.isdir(fluxflagtable)
+                            if isdir:
+                                append = True
+                                LOG.info("Appending to existing table: {!s}".format(fluxflagtable))
+                            if band in self.inputs.context.evla['msinfo'][m.name].gain_solint2.keys():
+                                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                                LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
 
-                        gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-                        LOG.info("Long solint = " + gain_solint2 + " for band {!s}".format(band))
+                                self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
+                                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
+                                                 solnorm=True, append=append, fluxflag=True,
+                                                 vlassmode=vlassmode, spw=','.join(spwlist))
+                    except KeyError as ex:
+                        LOG.warning("No data found for {!s} band".format(ex))
+                    except Exception as ex:
+                        LOG.warning(ex)
+            if os.path.isdir(fluxflagtable):
+                # use flagdata to clip fluxflag.g outside the range 0.9-1.1
+                flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
+                                              datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
+                                              action='apply', flagbackup=False, savepars=False)
+                self._executor.execute(flagjob)
 
-                        self._do_gaincal(calMs, fluxflagtable, 'ap', [fluxphase],
-                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, field=field.name,
-                                         solnorm=True, append=append, fluxflag=True,
-                                         vlassmode=vlassmode, spw=','.join(spwlist))
+                # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
+                applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
+                                                  selectdata=False, docallib=False, gaintable=[fluxflagtable],
+                                                  gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
+                                                  applymode='flagonlystrict', flagbackup=True)
 
-            # use flagdata to clip fluxflag.g outside the range 0.9-1.1
-            flagjob = casa_tasks.flagdata(vis=fluxflagtable, mode='clip', correlation='ABS_ALL',
-                                          datacolumn='CPARAM', clipminmax=[0.9, 1.1], clipoutside=True,
-                                          action='apply', flagbackup=False, savepars=False)
-            self._executor.execute(flagjob)
-
-            # use applycal to apply fluxflag.g to calibrators_band.ms, applymode='flagonlystrict'
-            applycaljob = casa_tasks.applycal(vis=calMs, field="", spw="", intent="",
-                                              selectdata=False, docallib=False, gaintable=[fluxflagtable],
-                                              gainfield=[''], interp=[''], spwmap=[], calwt=[False], parang=False,
-                                              applymode='flagonlystrict', flagbackup=True)
-
-            self._executor.execute(applycaljob)
-
+                self._executor.execute(applycaljob)
+            else:
+                LOG.warning("{!s} not present".format(fluxflagtable))
             # -------------------------------------------------------------------------------
 
             for band, spwlist in band2spw.items():
@@ -365,12 +383,15 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 if isdir:
                     append = True
                     LOG.info("Appending to existing table: {!s}".format(caltable))
-
-                gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
-
-                self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
-                                 solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
-
+                if band in self.inputs.context.evla['msinfo'][m.name].gain_solint2.keys():
+                    gain_solint2 = self.inputs.context.evla['msinfo'][m.name].gain_solint2[band]
+                    try:
+                        self._do_gaincal(calMs, caltable, 'ap', [fluxphase],
+                                         solint=gain_solint2, minsnr=5.0, refAnt=refAnt, append=append, spw=','.join(spwlist))
+                    except Exception as ex:
+                        LOG.warning(str(ex))
+                else:
+                    LOG.warning("No data found for {!s} band".format(band))
             LOG.info("Gain table " + caltable + " is ready for flagging.")
         else:
             caltable = self.inputs.caltable
@@ -386,7 +407,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
             weblog_results = []
             spindex_results = []
             fluxscale_result = []
-            fluxscale_result_list = self._do_fluxscale(calMs, caltable)
+            if os.path.isdir(caltable):
+                fluxscale_result_list = self._do_fluxscale(calMs, caltable)
+            else:
+                fluxscale_result_list = []
             LOG.info("Using fit from fluxscale.")
             for single_fs_result in fluxscale_result_list:
                 powerfit_results_single, weblog_results_single, spindex_results_single, single_fs_result = self._do_powerfit(single_fs_result)
@@ -433,6 +457,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         calibrator_field_select_string = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
         calfieldliststrings = str.split(calibrator_field_select_string, ',')
         calfieldlist = []
+
         for field in calfieldliststrings:
             fieldobj = m.get_fields(field_id=int(field))
             nfldobj = len(fieldobj[0].intents)
@@ -443,7 +468,8 @@ class Fluxboot(basetask.StandardTaskTemplate):
                (nfldobj == 2 and 'POINTING' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 2 and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
                (nfldobj == 3 and 'POINTING' in fieldobj[0].intents and 'SYSTEM_CONFIGURATION' in fieldobj[0].intents and 'UNSPECIFIED#UNSPECIFIED' in fieldobj[0].intents) or \
-               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents):
+               (nfldobj > 1 and 'POINTING' in fieldobj[0].intents and 'TARGET' in fieldobj[0].intents and
+                    not any(intent in ['PHASE', 'BANDPASS'] for intent in fieldobj[0].intents)):
 
                 LOG.warning("Field {!s}: {!s}, "
                             "has intents {!s}. Due to POINTING/SYS_CONFIG intents, "
@@ -458,6 +484,10 @@ class Fluxboot(basetask.StandardTaskTemplate):
         scispws = [spw.id for spw in m.get_spectral_windows(science_windows_only=True)]
 
         for field in calfieldlist:
+            taql = (f"FIELD_ID == {field}")
+            if utils.get_row_count(calMs, str(taql)) == 0:
+                LOG.warning("No data found for field {!s}, skipping fluxscale for field {!s}".format(field, field))
+                continue
             fitorder = self.inputs.fitorder
             spwlist = []
 
@@ -468,7 +498,6 @@ class Fluxboot(basetask.StandardTaskTemplate):
             spwlist = list(np.unique(spwlist))
             spwlist.sort()
             spwlist = [str(spwid) for spwid in spwlist if spwid in scispws]
-
             if self.inputs.fitorder == -1 and field not in fluxcalfieldlist:
                 fitorder = self.find_fitorder(spwlist)
             elif self.inputs.fitorder > -1:
@@ -485,11 +514,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                              'append': False,
                              'refspwmap': [-1],
                              'fitorder': fitorder}
-
-                job = casa_tasks.fluxscale(**task_args)
-                fs_result = self._executor.execute(job)
-                fluxscale_result.append(fs_result)
-
+                try:
+                    job = casa_tasks.fluxscale(**task_args)
+                    fs_result = self._executor.execute(job)
+                    fluxscale_result.append(fs_result)
+                except Exception as e:
+                    LOG.warning(f"Fluxscale failed for field {field}")
         return fluxscale_result
 
     def find_fitorder(self, spwlist: List[str] = []) -> int:
@@ -543,7 +573,7 @@ class Fluxboot(basetask.StandardTaskTemplate):
         elif len(unique_bands) == 2 and 'A' in unique_bands and 'Q' in unique_bands:
             fitorder = 1
         elif ((len(unique_bands) > 2) or
-              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands))):
+              (len(unique_bands) == 2 and (unique_bands[0] in lower_bands or unique_bands[1] in lower_bands or unique_bands[0] in 'KAQ' or unique_bands[1] in 'KAQ'))):
             # PIPE-1758: lower dnu/nu = 1.5 for 4th order fit
             if fractional_bandwidth >= 1.5:
                 fitorder = 4
@@ -1080,16 +1110,18 @@ class Fluxboot(basetask.StandardTaskTemplate):
 
             for fieldidstring in fieldidlist:
                 fieldid = int(fieldidstring)
-                uvrangestring = uvrange(self.setjy_results, fieldid)
+                uvrangestring = uvrange(self.setjy_results, fieldidstring)
                 task_args['field'] = fieldidstring
                 task_args['uvrange'] = uvrangestring
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-
-                job = casa_tasks.gaincal(**task_args)
-                self._executor.execute(job)
-
+                taql = (f"FIELD_ID == {fieldidstring}")
+                if utils.get_row_count(calMs, taql) != 0:
+                    job = casa_tasks.gaincal(**task_args)
+                    self._executor.execute(job)
+                else:
+                    LOG.warning("No data found for field id {!s} in {!s}".format(fieldidstring, calMs))
             return True
         elif fluxflag and vlassmode:
             fieldobjlist = m.get_fields(name=field)
@@ -1106,11 +1138,12 @@ class Fluxboot(basetask.StandardTaskTemplate):
                 task_args['selectdata'] = True
                 if os.path.exists(caltable):
                     task_args['append'] = True
-
-                job = casa_tasks.gaincal(**task_args)
-
-                self._executor.execute(job)
-
+                taql = (f"FIELD_ID == {fieldidstring}")
+                if utils.get_row_count(calMs, taql) != 0:
+                    job = casa_tasks.gaincal(**task_args)
+                    self._executor.execute(job)
+                else:
+                    LOG.warning("No data found for field id {!s} in {!s}".format(fieldidstring, calMs))
             return True
         else:
             job = casa_tasks.gaincal(**task_args)

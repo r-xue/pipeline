@@ -184,7 +184,7 @@ class SelfcalInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
 
                 default = "": use all MeasurementSets in the context
 
@@ -260,11 +260,10 @@ class SelfcalInputs(vdp.StandardInputs):
 
             apply: Apply final selfcal solutions back to the input MeasurementSets. default = True
 
-            parallel: Use MPI cluster where possible.
-
-                default='automatic'
-
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework, and use CASA/tclean
+                parallel imaging, when possible.
                 options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to 'automatic')
 
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
 

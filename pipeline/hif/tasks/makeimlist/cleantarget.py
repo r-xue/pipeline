@@ -1,3 +1,5 @@
+import collections
+
 class CleanTarget(dict):
     """Clean target template definition."""
 
@@ -44,6 +46,7 @@ class CleanTarget(dict):
         self['nmajor'] = None               # int
         self['sensitivity'] = None          # string
         self['threshold'] = None            # string
+        self['mask'] = None                 # string
         self['reffreq'] = None              # string
         self['restfreq'] = None             # string
         self['heuristics'] = None           # object
@@ -52,10 +55,12 @@ class CleanTarget(dict):
         self['usepointing'] = None          # boolean
         self['mosweight'] = None            # boolean
         self['drcorrect'] = None            # float
-        self['flagpct'] = None              # float
+        self['misc_vlass'] = None           # dictionary
 
         dict.__init__(self, *args, **kwargs)
 
+# Class to be used in lookup dictionaries like clean_masks and clean_thresholds
+CleanTargetInfo = collections.namedtuple('CleanTargetInfo', 'datatype field intent virtspw stokes specmode')
 
 class ScalTarget(CleanTarget):
     """Selfcal target template definition."""

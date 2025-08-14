@@ -24,6 +24,7 @@ After migration
 
     2025-03-11  update the module docstring; no changes were made to the code
                 itself from the original casarecipes/almahelpers.py.
+    2025-07-19  PIPE-2687: ensures proper closure of table tool instances.
 
 Functions:
     tsysspwmap - Generate an "applycal-ready" spwmap for TDM to FDM
@@ -213,7 +214,8 @@ def tsysspwmap(vis,tsystable,trim=True,relax=False, tsysChanTol=0):
         if useSpw == None :
             useSpw = i
             spwWithoutMatch.append(i)
-        applyCalSpwMap.append(int(useSpw))        
+        applyCalSpwMap.append(int(useSpw))
+    localTb.close()
     if len(spwWithoutMatch) != 0:
         casalog.post('Found no match for following spw ids: '+str(spwWithoutMatch))
     if trim :
@@ -652,6 +654,7 @@ def editIntents(msName='', field='', scan='', newintents='',
             s.putcol('STATE_ID', state_ids)
     if (foundField == False):
         print("Field not found")
+        mytb.close()
         return
     mytb.close()
 

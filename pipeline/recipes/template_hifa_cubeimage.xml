@@ -99,12 +99,6 @@
     <!-- end of the continuum subtraction section -->
     {{/cube_image}}
 
-    <ProcessingCommand>
-        <Command xmlns="">hif_makeimages</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>
-
     {{#cont_image}}
     <!-- create aggregate continuum image if cont_image=true -->
 
@@ -200,6 +194,10 @@
             <Parameter>
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
+            </Parameter>
+            <Parameter>
+                <Keyword xmlns="">recal</Keyword>
+                <Value xmlns="">True</Value>
             </Parameter>
         </ParameterSet>
     </ProcessingCommand>

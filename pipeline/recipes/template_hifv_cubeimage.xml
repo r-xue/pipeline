@@ -217,13 +217,13 @@
         <Command xmlns="">hif_selfcal</Command>
         <ParameterSet>
             <Parameter>
-                <Keyword xmlns="">recal</Keyword>
-                <Value xmlns="">True</Value>
-            </Parameter>
-            <Parameter>
                 <Keyword xmlns="">field</Keyword>
                 <Value xmlns="">{{{field_list}}}</Value>
             </Parameter>
+            <Parameter>
+                <Keyword xmlns="">recal</Keyword>
+                <Value xmlns="">True</Value>
+            </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
 
@@ -278,7 +278,7 @@
                 <Value xmlns="">100.0</Value>
             </Parameter>
         </ParameterSet>
-    </ProcessingCommand>   
+    </ProcessingCommand>
     <!-- loop over list of cubes and create images -->
     {{#cube_list}}
 
@@ -347,14 +347,6 @@
     {{/cube_image}}
     <!-- end of the selfcal section -->
     {{/selfcal}}
-
-    {{#cont_image}}
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command>
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
-    {{/cont_image}}
 
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

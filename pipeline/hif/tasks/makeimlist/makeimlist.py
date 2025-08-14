@@ -13,7 +13,7 @@ from pipeline.hif.heuristics import imageparams_factory
 from pipeline.hif.tasks.makeimages.resultobjects import MakeImagesResult
 from pipeline.infrastructure import casa_tools, task_registry
 
-from .cleantarget import CleanTarget
+from .cleantarget import CleanTarget, CleanTargetInfo
 from .resultobjects import MakeImListResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -45,6 +45,7 @@ class MakeImListInputs(vdp.StandardInputs):
     robust = vdp.VisDependentProperty(default=None)
     uvtaper = vdp.VisDependentProperty(default=None)
     allow_wproject = vdp.VisDependentProperty(default=False)
+    stokes = vdp.VisDependentProperty(default='')
 
     # properties requiring some processing or MS-dependent logic -------------------------------------------------------
 
@@ -187,7 +188,7 @@ class MakeImListInputs(vdp.StandardInputs):
             return mitigated_hm_imsize
 
     # docstring and type hints: supplements hif_makeimlist
-    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None,
+    def __init__(self, context, output_dir=None, vis=None, imagename=None, intent=None, field=None, spw=None, stokes= None,
                  contfile=None, linesfile=None, uvrange=None, specmode=None, outframe=None, hm_imsize=None,
                  hm_cell=None, calmaxpix=None, phasecenter=None, psf_phasecenter=None, nchan=None, start=None, width=None, nbins=None,
                  robust=None, uvtaper=None, clearlist=None, per_eb=None, per_session=None, calcsb=None, datatype=None,
@@ -200,7 +201,7 @@ class MakeImListInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 "": use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -219,6 +220,9 @@ class MakeImListInputs(vdp.StandardInputs):
                 "" Fields matching intent, one image per target source.
 
             spw: Select spectral windows to image. "": Images will be computed for all science spectral windows.
+
+            stokes: Select the Stokes parameters to image. "": Stokes I will be computed except for polarization calibrators, where the
+                automatic heuristics selects IQUV. Setting a value here will override the heuristics. Allowed values are 'I' and 'IQUV'.
 
             contfile: Name of file with frequency ranges to use for continuum images.
 
@@ -318,7 +322,9 @@ class MakeImListInputs(vdp.StandardInputs):
 
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallel processing when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'
 
             known_synthesized_beams:
 
@@ -335,6 +341,7 @@ class MakeImListInputs(vdp.StandardInputs):
         self.intent = intent
         self.field = field
         self.spw = spw
+        self.stokes = stokes
         self.contfile = contfile
         self.linesfile = linesfile
         self.uvrange = uvrange
@@ -395,17 +402,18 @@ class MakeImList(basetask.StandardTaskTemplate):
 
         # describe the function of this task by interpreting the inputs
         # parameters to give an execution context
-        long_descriptions = [_DESCRIPTIONS.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')]
+        long_descriptions = [_get_description(intent.strip(), inputs.specmode, inputs.stokes) for intent in inputs.intent.split(',')]
         result.metadata['long description'] = 'Set-up parameters for %s imaging' % ' & '.join(utils.deduplicate(long_descriptions))
 
-        sidebar_suffixes = {_SIDEBAR_SUFFIX.get((intent.strip(), inputs.specmode), inputs.specmode) for intent in inputs.intent.split(',')}
+        sidebar_suffixes = {_get_sidebar_suffix(intent.strip(), inputs.specmode, inputs.stokes) for intent in inputs.intent.split(',')}
         result.metadata['sidebar suffix'] = '/'.join(sidebar_suffixes)
 
         # Check if this stage has been disabled for vla (never set for ALMA)
         if inputs.context.vla_skip_mfs_and_cube_imaging and inputs.specmode in ('mfs', 'cube'):
             result.set_info({'msg': 'Line imaging stages have been disabled for VLA due to no MS being produced for line imaging.',
                                  'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+                                 'specmode': inputs.specmode,
+                                 'stokes': inputs.stokes})
             result.contfile = None
             result.linesfile = None
             return result
@@ -416,7 +424,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.mitigation_error = True
                 result.set_info({'msg': 'Size mitigation had failed. No imaging targets were created.',
                                  'intent': inputs.intent,
-                                 'specmode': inputs.specmode})
+                                 'specmode': inputs.specmode,
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -448,6 +457,14 @@ class MakeImList(basetask.StandardTaskTemplate):
         # validate datacolumn
         if inputs.datacolumn.upper() not in (None, '', 'DATA', 'CORRECTED'):
             msg = '"datacolumn" must be "data" or "corrected"'
+            LOG.error(msg)
+            result.error = True
+            result.error_msg = msg
+            return result
+
+        # validate stokes
+        if inputs.stokes.upper() not in ('', 'I', 'IQUV'):
+            msg = '"stokes" must be "I" or "IQUV"'
             LOG.error(msg)
             result.error = True
             result.error_msg = msg
@@ -519,7 +536,8 @@ class MakeImList(basetask.StandardTaskTemplate):
         if not ms_objects_and_columns:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
             result.contfile = None
             result.linesfile = None
             return result
@@ -552,10 +570,11 @@ class MakeImList(basetask.StandardTaskTemplate):
             LOG.info(f'Using data type {selected_datatype.name} for imaging.')
 
             if selected_datatype == DataType.RAW:
-                LOG.warn('Falling back to raw data for imaging.')
+                LOG.warning('Falling back to raw data for imaging.')
 
             if not all(global_column == global_columns[0] for global_column in global_columns):
-                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+                details_string = ','.join(f'{k.basename}: {v}' for k, v in ms_objects_and_columns.items())
+                LOG.warning(f'Data type based column selection changes among MSes: {details_string}.')
 
         if inputs.datacolumn not in (None, ''):
             ms_datacolumn = inputs.datacolumn.upper()
@@ -576,14 +595,20 @@ class MakeImList(basetask.StandardTaskTemplate):
             selected_datatypes_str = [global_datatype_str]
             selected_datatypes_info = [global_datatype_info]
             automatic_datatype_choice = False
-            LOG.info(f'Manual override of datacolumn to {global_datacolumn}. Automatic data type ({selected_datatype.name}) based datacolumn would have been "{"DATA" if global_columns[0] == "DATA" else "CORRECTED"}". Data type of {global_datacolumn} column is {global_datatype_str}.')
+            automatic_datacolumn_guess = 'DATA' if global_columns[0] == 'DATA' else 'CORRECTED'
+            LOG.info(
+                f'Manual override of datacolumn to {global_datacolumn}. '
+                f'Automatic data type ({selected_datatype.name}) based datacolumn '
+                f'would have been "{automatic_datacolumn_guess}". '
+                f'Data type of {global_datacolumn} column is {global_datatype_str}.'
+            )
         else:
             if global_columns[0] == 'DATA':
                 global_datacolumn = 'data'
             elif global_columns[0] == 'CORRECTED_DATA':
                 global_datacolumn = 'corrected'
             else:
-                LOG.warn(f'Unknown column name {global_columns[0]}')
+                LOG.warning(f'Unknown column name {global_columns[0]}')
                 global_datacolumn = ''
 
         datacolumn = global_datacolumn
@@ -693,7 +718,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 LOG.info('No representative target found. No PI cube will be made.')
                 result.set_info({'msg': 'No representative target found. No PI cube will be made.',
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -704,7 +730,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies aggregate continuum. No PI cube will"
                                         " be made since specmode='cont' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -714,7 +741,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                 result.set_info({'msg': "Representative target bandwidth specifies per spw continuum. No PI cube will"
                                         " be made since specmode='mfs' already covers this case.",
                                  'intent': 'TARGET',
-                                 'specmode': 'repBW'})
+                                 'specmode': 'repBW',
+                                 'stokes': inputs.stokes})
                 result.contfile = None
                 result.linesfile = None
                 return result
@@ -750,7 +778,8 @@ class MakeImList(basetask.StandardTaskTemplate):
                                             ' averaged default cube channel width. No PI cube will be made since the'
                                             ' default cube already covers this case.',
                                      'intent': 'TARGET',
-                                     'specmode': 'repBW'})
+                                     'specmode': 'repBW',
+                                     'stokes': inputs.stokes})
                     result.contfile = None
                     result.linesfile = None
                     return result
@@ -1004,7 +1033,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 max_freq = spwid_centre_freq
                                 max_freq_spwid = spwid
                         except Exception as e:
-                            LOG.warn(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
 
                     if min_freq_spwid == -1 or max_freq_spwid == -1:
                         LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
@@ -1253,7 +1282,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype is None:
                                     expected_num_targets -= 1
-                                    LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                    LOG.warning(
+                                        f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                     continue
 
                                 local_selected_datatype_str = local_selected_datatype.name
@@ -1262,17 +1292,20 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 if local_selected_datatype_str != selected_datatype_str:
                                     if automatic_datatype_choice:
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec}. Falling back to data type {local_selected_datatype_str}.')
                                         local_selected_datatype_info = f'{local_selected_datatype_str} instead of {selected_datatype_str} due to source/spw selection'
                                     else:
                                         # Manually selected data type unavailable -> skip making an imaging target
                                         expected_num_targets -= 1
-                                        LOG.warn(f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Data type {selected_datatype_str} is not available for field {field_intent[0]} SPW {adjusted_spwspec} in the chosen vis list. Skipping imaging target.')
                                         continue
 
                                 if local_columns != []:
                                     if not all(local_column == local_columns[0] for local_column in local_columns):
-                                        LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in local_ms_objects_and_columns.items())}.')
+                                        LOG.warning(
+                                            f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in local_ms_objects_and_columns.items())}.')
 
                                 if local_columns != []:
                                     if local_columns[0] == 'DATA':
@@ -1280,10 +1313,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     elif local_columns[0] == 'CORRECTED_DATA':
                                         local_datacolumn = 'corrected'
                                     else:
-                                        LOG.warn(f'Unknown column name {local_columns[0]}')
+                                        LOG.warning(f'Unknown column name {local_columns[0]}')
                                         local_datacolumn = ''
                                 else:
-                                    LOG.warn(f'Empty list of columns')
+                                    LOG.warning(f'Empty list of columns')
                                     local_datacolumn = ''
 
                                 datacolumn = local_datacolumn
@@ -1291,12 +1324,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 if not inputs.per_eb and original_vislist_field_intent_spw_combinations[field_intent]['vislist'] != [k.basename for k in local_ms_objects_and_columns.keys()]:
                                     vislist_field_intent_spw_combinations[field_intent]['vislist'] = [k.basename for k in local_ms_objects_and_columns.keys()]
                                     if automatic_datatype_choice and local_selected_datatype_str != selected_datatype_str:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for fallback data type {local_selected_datatype_str}.''')
                                     else:
-                                        LOG.warn(f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
+                                        LOG.warning(
+                                            f'''Modifying vis list from {original_vislist_field_intent_spw_combinations[field_intent]['vislist']} to {vislist_field_intent_spw_combinations[field_intent]['vislist']} for data type {local_selected_datatype_str}.''')
 
                                     if vislist_field_intent_spw_combinations[field_intent]['vislist'] == []:
-                                        LOG.warn(f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
+                                        LOG.warning(
+                                            f'Empty vis list for field {field_intent[0]} specmode {specmode} data type {local_selected_datatype_str}. Skipping imaging target.')
                                         continue
                             else:
                                 datacolumn = global_datacolumn
@@ -1401,7 +1437,10 @@ class MakeImList(basetask.StandardTaskTemplate):
                             # (inputs.intent) is used to decide whether to do IQUV
                             # for ALMA as PIPE-1829 asked for Stokes I only if other
                             # calibration intents are done together with POLARIZATION.
-                            stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
+                            if inputs.stokes not in ('', None):
+                                stokes = inputs.stokes.upper()
+                            else:
+                                stokes = self.heuristics.stokes(field_intent[1], inputs.intent)
 
                             if spwspec_ok and (field_intent[0], spwspec) in imsizes and ('invalid' not in cells[spwspec]):
                                 LOG.debug(
@@ -1423,7 +1462,8 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                                 # Save the filtered vislist
                                 if target_heuristics.vislist != filtered_vislist:
-                                    LOG.warn(f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
+                                    LOG.warning(
+                                        f'''Modifying vis list from {target_heuristics.vislist} to {filtered_vislist}''')
                                     target_heuristics.vislist = filtered_vislist
 
                                 # Get list of antenna IDs
@@ -1440,7 +1480,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 target_heuristics.imaging_params['maxthreshold'] = maxthreshold
                                 nfrms_multiplier = self._get_nfrms_multiplier(
                                     field_intent[0], actual_spwspec, local_selected_datatype_str)
-                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier                                
+                                target_heuristics.imaging_params['nfrms_multiplier'] = nfrms_multiplier
 
                                 deconvolver, nterms = self._get_deconvolver_nterms(field_intent[0], field_intent[1],
                                                                                    actual_spwspec, stokes, inputs.specmode,
@@ -1461,6 +1501,15 @@ class MakeImList(basetask.StandardTaskTemplate):
                                         # Nevertheless, we retain this exception handler as an extra precaution.
                                         LOG.warning("Error calculating the heuristics uvrange value for field %s spw %s : %s",
                                                     field_intent[0], actual_spwspec, ex)
+
+                                # Check for pre-existing Stokes I masks to be re-used for TARGET IQUV imaging
+                                if field_intent[1] == 'TARGET' and stokes == 'IQUV':
+                                    cleanTargetKey = CleanTargetInfo(datatype=local_selected_datatype_str, field=field_intent[0], intent=field_intent[1], virtspw=actual_spwspec, stokes='I', specmode=inputs.specmode)
+                                    mask = inputs.context.clean_masks.get(cleanTargetKey, None)
+                                    threshold = inputs.context.clean_thresholds.get(cleanTargetKey, None)
+                                else:
+                                    mask = None
+                                    threshold = None
 
                                 target = CleanTarget(
                                     antenna=antenna,
@@ -1501,26 +1550,29 @@ class MakeImList(basetask.StandardTaskTemplate):
                                     drcorrect=drcorrect,
                                     deconvolver=deconvolver,
                                     nterms=nterms,
-                                    reffreq=reffreq)
+                                    reffreq=reffreq,
+                                    mask=mask,
+                                    threshold=threshold)
 
                                 result.add_target(target)
 
         if inputs.intent == 'TARGET' and result.num_targets == 0 and not result.clean_list_info:
             result.set_info({'msg': 'No data found. No imaging targets were created.',
                              'intent': inputs.intent,
-                             'specmode': inputs.specmode})
+                             'specmode': inputs.specmode,
+                             'stokes': inputs.stokes})
 
         if inputs.intent == 'CHECK':
             if not any(have_targets.values()):
                 info_msg = 'No check source found.'
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
             elif inputs.per_eb and (not all(have_targets.values())):
                 info_msg = 'No check source data found in EBs %s.' % (','.join([os.path.basename(k)
                                                                                 for k, v in have_targets.items()
                                                                                 if not v]))
                 LOG.info(info_msg)
-                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode})
+                result.set_info({'msg': info_msg, 'intent': 'CHECK', 'specmode': inputs.specmode, 'stokes': inputs.stokes})
 
         # Record total number of expected clean targets
         result.set_expected_num_targets(expected_num_targets)
@@ -1647,53 +1699,62 @@ class MakeImList(basetask.StandardTaskTemplate):
         return drcorrect, maxthreshold
 
 
-# maps intent and specmode Inputs parameters to textual description of execution context.
-_DESCRIPTIONS = {
-    ('PHASE', 'mfs'): 'phase calibrator',
-    ('PHASE', 'cont'): 'phase calibrator',
-    ('BANDPASS', 'mfs'): 'bandpass calibrator',
-    ('BANDPASS', 'cont'): 'bandpass calibrator',
-    ('AMPLITUDE', 'mfs'): 'flux calibrator',
-    ('AMPLITUDE', 'cont'): 'flux calibrator',
-    ('POLARIZATION', 'mfs'): 'polarization calibrator',
-    ('POLARIZATION', 'cont'): 'polarization calibrator',
-    ('POLANGLE', 'mfs'): 'polarization calibrator',
-    ('POLANGLE', 'cont'): 'polarization calibrator',
-    ('POLLEAKAGE', 'mfs'): 'polarization calibrator',
-    ('POLLEAKAGE', 'cont'): 'polarization calibrator',
-    ('DIFFGAINREF', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINREF', 'cont'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'mfs'): 'diffgain calibrator',
-    ('DIFFGAINSRC', 'cont'): 'diffgain calibrator',
-    ('CHECK', 'mfs'): 'check source',
-    ('CHECK', 'cont'): 'check source',
-    ('TARGET', 'mfs'): 'target per-spw continuum',
-    ('TARGET', 'cont'): 'target aggregate continuum',
-    ('TARGET', 'cube'): 'target cube',
-    ('TARGET', 'repBW'): 'representative bandwidth target cube'
-}
+# maps intent, specmode and stokes inputs parameters to textual description of execution context.
 
-_SIDEBAR_SUFFIX = {
-    ('PHASE', 'mfs'): 'cals',
-    ('PHASE', 'cont'): 'cals',
-    ('BANDPASS', 'mfs'): 'cals',
-    ('BANDPASS', 'cont'): 'cals',
-    ('AMPLITUDE', 'mfs'): 'cals',
-    ('AMPLITUDE', 'cont'): 'cals',
-    ('DIFFGAINREF', 'mfs'): 'cals',
-    ('DIFFGAINREF', 'cont'): 'cals',
-    ('DIFFGAINSRC', 'mfs'): 'cals',
-    ('DIFFGAINSRC', 'cont'): 'cals',
-    ('POLARIZATION', 'mfs'): 'pol',
-    ('POLARIZATION', 'cont'): 'pol',
-    ('POLANGLE', 'mfs'): 'pol',
-    ('POLANGLE', 'cont'): 'pol',
-    ('POLLEAKAGE', 'mfs'): 'pol',
-    ('POLLEAKAGE', 'cont'): 'pol',
-    ('CHECK', 'mfs'): 'checksrc',
-    ('CHECK', 'cont'): 'checksrc',
-    ('TARGET', 'mfs'): 'mfs',
-    ('TARGET', 'cont'): 'cont',
-    ('TARGET', 'cube'): 'cube',
-    ('TARGET', 'repBW'): 'cube_repBW'
-}
+def _get_description(intent, specmode, stokes):
+    if intent == 'PHASE':
+        return 'phase calibrator'
+    elif intent == 'BANDPASS':
+        return 'bandpass calibrator'
+    elif intent == 'AMPLITUDE':
+        return 'flux calibrator'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'polarization calibrator'
+    elif intent in ('DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'diffgain calibrator'
+    elif intent == 'CHECK':
+        return 'check source'
+    elif intent == 'TARGET':
+        if stokes.upper() in ('', 'I'):
+            pol_str = ''
+        elif stokes.upper() =='IQUV':
+            pol_str = 'fullpol '
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'target per-spw {pol_str}continuum'
+        elif specmode == 'cont':
+            return f'target {pol_str}aggregate continuum'
+        elif specmode == 'cube':
+            return f'target {pol_str}cube'
+        elif specmode == 'repBW':
+            return f'representative bandwidth target {pol_str}cube'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')
+
+def _get_sidebar_suffix(intent, specmode, stokes):
+    if intent in ('PHASE', 'BANDPASS', 'AMPLITUDE', 'DIFFGAINREF', 'DIFFGAINSRC'):
+        return 'cals'
+    elif intent in ('POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
+        return 'pol'
+    elif intent == 'CHECK':
+        return 'checksrc'
+    elif intent == 'TARGET':
+        if stokes.upper() in ('', 'I'):
+            pol_str = ''
+        elif stokes.upper() =='IQUV':
+            pol_str = '_fullpol'
+        else:
+            raise Exception(f'Unknown Stokes value "{stokes}"')
+
+        if specmode == 'mfs':
+            return f'mfs{pol_str}'
+        elif specmode == 'cont':
+            return f'cont{pol_str}'
+        elif specmode == 'cube':
+            return f'cube{pol_str}'
+        elif specmode == 'repBW':
+            return f'repBW{pol_str}'
+        else:
+            raise Exception(f'Unknown specmode value "{specmode}"')

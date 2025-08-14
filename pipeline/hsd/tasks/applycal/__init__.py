@@ -1,5 +1,6 @@
 import pipeline.infrastructure.renderer.qaadapter as qaadapter
 import pipeline.infrastructure.renderer.weblog as weblog
+from . import qa
 from . import renderer
 from .applycal import SDApplycal, SerialSDApplycal, SDApplycalResults
 

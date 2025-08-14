@@ -117,7 +117,7 @@ class ImagePreCheckInputs(vdp.StandardInputs):
         Args:
             context: Pipeline context.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifa_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -129,7 +129,9 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
             calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallel processing when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' 
 
         """
         self.context = context
@@ -255,7 +257,7 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
         # Approximate reprBW with nbin
         if reprBW_mode in ['nbin', 'repr_spw']:
             physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
-            nbin = int(cqa.getvalue(cqa.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+            nbin = int(cqa.getvalue(cqa.convert(repr_target[2], 'Hz'))[0]/physicalBW_of_1chan + 0.5)
             cont_sens_bw_modes = ['aggBW']
             scale_aggBW_to_repBW = False
         elif reprBW_mode == 'multi_spw':

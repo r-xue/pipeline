@@ -39,7 +39,7 @@ class UVcontSubInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -63,7 +63,9 @@ class UVcontSubInputs(vdp.StandardInputs):
 
                 Example: {'3C279': {'15': 1, '17': 2}, 'M82': {'13': 2}}
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         self.context = context

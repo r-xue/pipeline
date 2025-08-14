@@ -2,6 +2,7 @@ import os
 import math
 import ast
 import collections
+import traceback
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
@@ -12,8 +13,12 @@ from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
 from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
+from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -120,12 +125,10 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
-
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
+
         intents = list(m.intents)
 
         self.RefAntOutput = ['']
@@ -133,7 +136,11 @@ class Circfeedpolcal(polarization.Polarization):
         self.caldictionary = {}
 
         if [intent for intent in intents if 'POL' in intent]:
-            self.do_prepare()
+            try:
+                self.do_prepare()
+            except Exception as ex:
+                LOG.warning(ex)
+                LOG.debug(traceback.format_exc())
 
         return CircfeedpolcalResults(vis=self.inputs.vis, pool=self.callist, final=self.callist,
                                      refant=self.RefAntOutput[0].lower(), calstrategy=self.calstrategy,
@@ -182,7 +189,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         tablesToAdd[0][2] = []  # Default for KCROSS table
         if self.inputs.mbdkcross:
-            _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
             baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
             addcallib = False
@@ -299,17 +306,16 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: replaces the finalphasegaincal name with the phaseshortgaincal table from hifv_finalcals
 
         '''
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         idx = -1  # Should be last element
         newtable = ''
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
                 try:
-                    finalcals_result = self.inputs.context.results[-1].read()[0]
-                except Exception as e:
-                    finalcals_result = self.inputs.context.results[-1].read()
-                newtable = finalcals_result.phaseshortgaincaltable
+                    newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
+                except AttributeError:
+                    LOG.warning("Exception: 'phaseshortgaincaltable' is not present.")
         GainTables[idx] = newtable
 
         return GainTables
@@ -381,9 +387,10 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args['uvrange'] = uvrange(self.setjy_results, fieldid)
 
         job = casa_tasks.gaincal(**casa_task_args)
-
-        self._executor.execute(job)
-
+        try:
+            self._executor.execute(job)
+        except Exception as ex:
+            LOG.warning(ex)
 
         # return result
         return True
@@ -573,7 +580,7 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: spwmap for use with gaintable in callibrary (polcal and applycal)
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
+        baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
         baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
         spwmap = []
