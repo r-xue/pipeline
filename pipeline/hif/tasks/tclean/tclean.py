@@ -1220,7 +1220,7 @@ class Tclean(cleanbase.CleanBase):
             keep_iterating = True
 
         if inputs.hm_cleaning in ('manual', 'rms'):
-            # Adjust threshold based on the dirty image statistics
+            # Adjust threshold based on the dirty image Stokes I residual maximum.
             dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
             tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
             new_threshold, DR_correction_factor, maxEDR_used = \
