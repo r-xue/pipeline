@@ -155,7 +155,7 @@ class SpwPhaseupInputs(gtypegaincal.GTypeGaincalInputs):
     # Maximum narrow bandwidth.
     maxnarrowbw = vdp.VisDependentProperty(default='300MHz')
 
-    # Width of spw must be larger than minfracmaxbw * maximum bandwith for
+    # Width of spw must be larger than minfracmaxbw * maximum bandwidth for
     # a spw to be a match.
     minfracmaxbw = vdp.VisDependentProperty(default=0.8)
 
@@ -1821,7 +1821,6 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 snr_corrections[spw] = 0
             else:
                 snr_corrections[spw] = float(median_snr * multiplier)
-                # Based on a temporary gain table, Spw  19  scan = 1.008 minutes;  calculated sensitivity = xxxx mJy, calculated SNR = 18.6 \n Setting SNR for combine heuristics to 13.9 = 0.75 * 18.6
                 LOG.info(f'Based on a temporary gain table, calculated SNR for {self.inputs.vis} '
                          f'spw {spw} = {median_snr:.3f}. Setting SNR for combine heuristics to '
                          f'{snr_corrections[spw]:.3f} = {multiplier} * {median_snr:.3f}')
