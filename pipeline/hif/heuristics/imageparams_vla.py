@@ -779,6 +779,13 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             sensitivityGoal,
         )
 
+    def check_psf(self, psf_name, field, spw):
+        """Check for bad psf fits.
+
+        PIPE-2603: always enable the "medium" beam evaluation.
+        """
+        return True
+
     def find_good_commonbeam(self, psf_filename: str):
         """Find and replace outlier beams and calculate a good "median" restoring beam recommendation.
         
