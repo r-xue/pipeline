@@ -1384,8 +1384,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
                 raise ValueError(f"Invalid mappingmode: {mappingmode}")
 
         # Set SNR for integration time and required SNR based on the intent.
-        if intent in {"CHECK", "PHASE"}:
-            # For the CHECK and PHASE intents, scale the SNR thresholds.
+        if intent in WEAK_CALIBRATOR_INTENTS:
+            # For the potentially weaker calibrators, scale the SNR thresholds.
             int_snr = numpy.sqrt(int_time/ref_time) * snr_to_use
             req_snr = numpy.sqrt(int_time/ref_time) * inputs.phasesnr
         else:
@@ -1430,7 +1430,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # gaintype='T' then proceed to compute the optimal solint above 'int',
         # using different approaches for the weaker "CHECK" and "PHASE"
         # calibrators vs. all other (assumed bright) calibrators.
-        if intent in {"CHECK", "PHASE"}:
+        if intent in WEAK_CALIBRATOR_INTENTS:
             # For CHECK and PHASE calibrators, the required SNR will have been
             # based on scan times (passed along as the reference time).
             scan_time = ref_time
