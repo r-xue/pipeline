@@ -2439,56 +2439,63 @@ class ImageParamsHeuristics(object):
         return None
 
     def find_good_commonbeam(self, psf_filename):
-        """
-        Find and replace outlier beams to calculate a good common beam.
+        """Find and replace outlier beams to calculate a good common beam.
+
         Method from Urvashi Rao.
 
         Returns new common beam and array of channel numbers with invalid beams.
         Leaves old beams in the PSF as is.
         """
-
         cqa = casa_tools.quanta
 
         with casa_tools.ImageReader(psf_filename) as image:
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
+            # note that the beam measure dictionaries return by .restoringbeam() and .commonbeam() have slightly
+            # different keys:
+            #   from .restoringbeam:    major/minor/positionangle
+            #   fro .commonbeam:        major/minior/pa
+            # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.image.html#casatools.image.image.commonbeam
+            # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.image.html#casatools.image.image.restoringbeam
             nchan = allbeams['nChannels']
             areas = np.zeros(nchan, 'float')
             axratio = np.zeros(nchan, 'float')
             weight = np.zeros(nchan, 'bool')
 
             for ii in range(0, nchan):
-                axmajor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['major']), 'arcsec')['value']
-                axminor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['minor']), 'arcsec')['value']
+                axmajor = cqa.convert(cqa.quantity(allbeams['beams']['*' + str(ii)]['*0']['major']), 'arcsec')['value']
+                axminor = cqa.convert(cqa.quantity(allbeams['beams']['*' + str(ii)]['*0']['minor']), 'arcsec')['value']
                 areas[ii] = axmajor * axminor
-                axratio[ii] = axmajor/axminor
-                weight[ii] = np.isfinite( axratio[ii] )
+                axratio[ii] = axmajor / axminor
+                weight[ii] = np.isfinite(axratio[ii])
 
             # Detect outliers based on axis ratio
             # The iterative loop is to get robust autoflagging
             # Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
             for steps in range(0, 2):  ### Heuristic : how many iterations here ?
-                local_axratio[ weight==False ] = np.nan
+                local_axratio[weight == False] = np.nan
                 mean_axrat = np.nanmean(local_axratio)
                 std_axrat = np.nanstd(local_axratio)
                 ## Flag all points deviating from the mean by 3 times stdev
-                weight[ np.fabs(local_axratio-mean_axrat) > 3 * std_axrat ] = False
+                weight[np.fabs(local_axratio - mean_axrat) > 3 * std_axrat] = False
 
             ## Find the first channel with a valid beam
             validbeamchans = np.where(weight)
-            chanid=0
-            if len(validbeamchans)>0:
-                chanid=validbeamchans[0][0]
+            chanid = 0
+            if len(validbeamchans) > 0:
+                chanid = validbeamchans[0][0]
             else:
                 LOG.error('No valid beams in {!s}'.format(psf_filename))
                 return None, np.arange(nchan)
 
             # Fill all flagged channels with the largest/first valid beam
-            dummybeam = allbeams['beams']['*'+str(chanid)]['*0']
+            dummybeam = allbeams['beams']['*' + str(chanid)]['*0']
             for ii in range(0, nchan):
-                if weight[ii]==False:
-                    image.setrestoringbeam( major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii)
+                if not weight[ii]:
+                    image.setrestoringbeam(
+                        major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii
+                    )
 
         # Need to close and reopen for commonbeam() to see the new chan beams !
         with casa_tools.ImageReader(psf_filename) as image:
@@ -2498,11 +2505,14 @@ class ImageParamsHeuristics(object):
         # Reinstate the old beam to get back to the original iter0 product
         with casa_tools.ImageReader(psf_filename) as image:
             for ii in range(0, nchan):
-                if weight[ii] == False:
+                if not weight[ii]:
                     beam = allbeams['beams']['*' + str(ii)]['*0']
                     image.setrestoringbeam(
                         major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
                     )
+
+        LOG.info('the commonbeam of %s, as determined by ia.commonbeam():          %s', psf_filename, commonbeam)
+        LOG.info('the commonbeam of %s, as determined by find_good_commonbeam():   %s', psf_filename, newcommonbeam)
 
         # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
         # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). So here the returned recommended beam is

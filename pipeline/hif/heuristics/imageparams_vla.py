@@ -810,7 +810,6 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         with casa_tools.ImageReader(psf_filename) as image:
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
-            LOG.info('restoring beam recommmened from ia.commombeam(): %s', commonbeam)
 
             nchan = allbeams['nChannels']
 
@@ -848,10 +847,15 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             median_beam_key = f'*{closest_to_median_idx}'
             median_beam = allbeams['beams'][median_beam_key]['*0']
             LOG.info(
-                'restoring beam recommmened from from the VLA "medium" PSF heuristics: %s from channel=%s',
+                'restoring beam recommmened from from the VLA "medium" PSF heuristics in find_good_commonbeam(): %s from channel=%s',
                 median_beam,
                 closest_to_median_idx,
             )
+            # modify the pa key name due to the different convention in returns of ia.commonbeam() and ia.restoringbeam()
+            median_beam['pa'] = median_beam.pop('positionangle', {'unit': 'deg', 'value': 0.0})
+
+            LOG.info('commonbeam of %s, as determined by ia.commonbeam():          %s', psf_filename, commonbeam)
+            LOG.info('commonbeam of %s, as determined by find_good_commonbeam():   %s', psf_filename, median_beam)
 
             # Placeholder for bad channel detection (not implemented)
             bad_psf_channels = np.array([], dtype=np.int64)
