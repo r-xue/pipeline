@@ -888,6 +888,8 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_robust_rms_and_spectra,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_min_iquv,
+             nonpbcor_image_non_cleanmask_rms_max_iquv,
              nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
@@ -992,6 +994,8 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_robust_rms_and_spectra,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_min_iquv,
+             nonpbcor_image_non_cleanmask_rms_max_iquv,
              nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
@@ -1023,7 +1027,9 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
+            result.set_image_rms_min_iquv(nonpbcor_image_non_cleanmask_rms_min_iquv)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
+            result.set_image_rms_max_iquv(nonpbcor_image_non_cleanmask_rms_max_iquv)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
 
             # Determine fractional flux outside of mask for final image (only VLASS-SE-CONT imaging stage 1)
@@ -1162,6 +1168,8 @@ class Tclean(cleanbase.CleanBase):
          nonpbcor_image_robust_rms_and_spectra,
          pbcor_image_min_iquv,
          pbcor_image_max_iquv,
+         nonpbcor_image_non_cleanmask_rms_min_iquv,
+         nonpbcor_image_non_cleanmask_rms_max_iquv,
          nonpbcor_image_non_cleanmask_rms_iquv) = \
             sequence_manager.iteration_result(model=result.model,
                                               restored=result.image, residual=result.residual,
@@ -1209,7 +1217,9 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
+            result.set_image_rms_min_iquv(nonpbcor_image_non_cleanmask_rms_min_iquv)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
+            result.set_image_rms_max_iquv(nonpbcor_image_non_cleanmask_rms_max_iquv)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
 
             if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
@@ -1324,6 +1334,8 @@ class Tclean(cleanbase.CleanBase):
              nonpbcor_image_robust_rms_and_spectra,
              pbcor_image_min_iquv,
              pbcor_image_max_iquv,
+             nonpbcor_image_non_cleanmask_rms_min_iquv,
+             nonpbcor_image_non_cleanmask_rms_max_iquv,
              nonpbcor_image_non_cleanmask_rms_iquv) = \
                 sequence_manager.iteration_result(model=result.model,
                                                   restored=result.image, residual=result.residual,
@@ -1369,7 +1381,9 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms(nonpbcor_image_non_cleanmask_rms)
             result.set_image_rms_iquv(nonpbcor_image_non_cleanmask_rms_iquv)
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
+            result.set_image_rms_min_iquv(nonpbcor_image_non_cleanmask_rms_min_iquv)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
+            result.set_image_rms_max_iquv(nonpbcor_image_non_cleanmask_rms_max_iquv)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
 
             # Keep dirty DR, correction factor and information about maxEDR heuristic for weblog
