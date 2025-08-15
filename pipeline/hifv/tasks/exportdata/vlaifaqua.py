@@ -425,7 +425,7 @@ class VLAAquaXmlGenerator(aqua.AquaXmlGenerator):
                     datatype.text = str(sensitivity['datatype'])
 
                     if index < len(topic.results):
-                        ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['theoretical_sensitivity']["unit"])).text = str(topic.results[index].sensitivity)
+                        ElementTree.SubElement(nx, "TheoreticalSensitivity", Units=str(sensitivity['theoretical_sensitivity']["unit"])).text = str(sensitivity['theoretical_sensitivity']["value"])
                     root.append(nx)
 
         return root
