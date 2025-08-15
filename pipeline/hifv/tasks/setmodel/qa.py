@@ -22,24 +22,25 @@ class VLASetjyQAHandler(pqa.QAPlugin):
         if sum(standard_source_fields, []):
             scorevalue = 0.0
             msg = 'No VLA standard calibrator present.'
-            flagdata_task = casa_tasks.flagdata(vis=result.inputs['vis'], mode="summary")
+            field_ids = [str(fieldid) for sublist in standard_source_fields for fieldid in sublist]
+            calfields = ",".join(field_ids)
+            flagdata_task = casa_tasks.flagdata(vis=result.inputs['vis'], mode="summary", field=calfields)
             flagdata_result = flagdata_task.execute()
-            for i, fields in enumerate(standard_source_fields):
+            for fields in standard_source_fields:
                 for myfield in fields:
                     domainfield = m.get_fields(myfield)[0]
                     total_flagged = flagdata_result['field'][domainfield.name.strip('"')]['flagged']
                     total = flagdata_result['field'][domainfield.name.strip('"')]['total']
-                    if 'CALIBRATE_FLUX' in domainfield.intents and (total_flagged/total) < 0.995:
+                    if 'AMPLITUDE' in domainfield.intents and (total_flagged/total) < 0.995:
                         scorevalue = 1.0
                         msg = 'Standard calibrator present.'
                     else:
                         scorevalue = 0.0
-                        msg = 'CALIBRATE_FLUX intent not found or calibrator is fully flagged'
+                        msg = 'No flux calibration intent found or calibrator is fully flagged'
             score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
         else:
             score = pqa.QAScore(0.0,
                                 longmsg='No VLA standard calibrator present', shortmsg='No standard calibrator present.')
-
 
         scores = [score]
 
