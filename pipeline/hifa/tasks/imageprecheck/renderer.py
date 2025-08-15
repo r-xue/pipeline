@@ -73,8 +73,8 @@ class T2_4MDetailsCheckProductSizeRenderer(basetemplates.T2_4MDetailsDefaultRend
             else:
                 bandwidth = 'N/A'
             bwmode = item['bwmode']
-            if cqa.getvalue(item['sensitivity'])[0] != 0.0:
-                sensitivity = '%.3g Jy/beam' % (cqa.getvalue(cqa.convert(item['sensitivity'], 'Jy/beam'))[0])
+            if cqa.getvalue(item['theoretical_sensitivity'])[0] != 0.0:
+                sensitivity = '%.3g Jy/beam' % (cqa.getvalue(cqa.convert(item['theoretical_sensitivity'], 'Jy/beam'))[0])
             else:
                 sensitivity = 'N/A'
 
