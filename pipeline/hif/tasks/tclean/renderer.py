@@ -24,6 +24,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
@@ -741,7 +742,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # PIPE-2668: "prefix" is the top-level key in `plots_dict`, derived from plot wrapper objects
                 # created in display.CleanSummary. Historically, it's the first component of image basename
                 # separated by '.'.
-                
                 prefix = row.image_file.split('.')[0]
                 try:
                     final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
@@ -874,8 +874,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
         outfile = f'{image_basename}.{pol}-cleanplots.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
@@ -920,8 +919,7 @@ class TCleanTablesRenderer(basetemplates.CommonRenderer):
         outfile = f'{image_basename}-cleantables.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = '_.-%s%s' % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         self.extra_data = {
             'table_dict': table_dict,

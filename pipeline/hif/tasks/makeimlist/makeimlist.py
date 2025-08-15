@@ -1595,10 +1595,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         if (
-            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
-            and hasattr(context, "selfcal_targets")
-            and datatype_str.startswith("SELFCAL_")
-            and self.inputs.specmode == "cont"
+            context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA')
+            and datatype_str.startswith('SELFCAL_')
+            and self.inputs.specmode == 'cont'
         ):
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target["spw"].split(","))
@@ -1640,7 +1639,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
@@ -1668,7 +1667,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect, maxthreshold
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
 
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
@@ -1685,10 +1684,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result = r.read()
                         if isinstance(result, MakeImagesResult):
                             for tclean_result in result.results:
-                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
-                                        tclean_result.specmode == 'cont' and \
-                                        tclean_result.sourcename == field and \
-                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                if (
+                                    tclean_result.datatype_info is not None
+                                    and tclean_result.datatype_info.startswith('REGCAL_CONTLINE')
+                                    and tclean_result.specmode == 'cont'
+                                    and tclean_result.sourcename == field
+                                    and im_spw.intersection(set(tclean_result.spw.split(',')))
+                                ):
                                     maxthreshold = tclean_result.threshold
                     if maxthreshold is not None:
                         LOG.info(
