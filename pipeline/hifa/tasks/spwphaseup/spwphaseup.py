@@ -1646,8 +1646,7 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         snr_limit = self._snr_limit_for_intent(intent)
         self._update_snr_result(snr_result, snr_corrections, snr_limit)
 
-
-    def _snr_limit_for_intent(self, intent: str):
+    def _snr_limit_for_intent(self, intent: str) -> float:
         """
         Determines the appropriate signal-to-noise ratio (SNR) limit based on the given intent.
 
@@ -1662,8 +1661,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         """
         return self.inputs.phasesnr if intent in WEAK_CALIBRATOR_INTENTS else self.inputs.intphasesnr
 
-
-    def _classify_spws_by_snr(self, snr_corrections: dict[int, float], threshold: float) -> tuple[set[int], set[int]]:
+    @staticmethod
+    def _classify_spws_by_snr(snr_corrections: dict[int, float], threshold: float) -> tuple[set[int], set[int]]:
         """
         Classifies spectral windows (SPWs) into two sets based on their Signal-to-Noise
         Ratio (SNR) compared to a provided threshold. This method identifies and
