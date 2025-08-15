@@ -786,8 +786,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         """
         return True
 
-    def find_good_commonbeam(self, psf_filename: str):
-        """Find and replace outlier beams and calculate a good "median" restoring beam recommendation.
+    @staticmethod
+    def find_good_commonbeam(psf_filename: str):
+        """Find outlier beams and calculate a good "median" restoring beam recommendation.
         
         Analyzes per-channel restoring beams in the PSF image to identify the beam closest to the median
         major axis size. This approach helps find a representative beam while avoiding outliers that
@@ -811,53 +812,86 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
 
-            nchan = allbeams['nChannels']
+        nchan = allbeams['nChannels']
 
-            # Pre-allocate arrays for beam parameters
-            bmajor = np.zeros(nchan, dtype=np.float64)
-            bminor = np.zeros(nchan, dtype=np.float64)
-            bpa = np.zeros(nchan, dtype=np.float64)
+        # Pre-allocate arrays for beam parameters
+        bmajor = np.zeros(nchan, dtype=np.float64)
+        bminor = np.zeros(nchan, dtype=np.float64)
+        bpa = np.zeros(nchan, dtype=np.float64)
 
-            LOG.info('Per-plane restoring beam analysis for %s (channels: %d)', psf_filename, nchan)
+        LOG.info('Per-plane restoring beam analysis for %s (channels: %d)', psf_filename, nchan)
 
-            # Extract beam parameters for each channel
-            for chan_idx in range(nchan):
-                beam_key = f'*{chan_idx}'
-                beam_data = allbeams['beams'][beam_key]['*0']
+        # Extract beam parameters for each channel
+        for chan_idx in range(nchan):
+            beam_key = f'*{chan_idx}'
+            beam_data = allbeams['beams'][beam_key]['*0']
 
-                # Convert beam parameters to consistent units
-                major_arcsec = cqa.convert(cqa.quantity(beam_data['major']), 'arcsec')['value']
-                minor_arcsec = cqa.convert(cqa.quantity(beam_data['minor']), 'arcsec')['value']
-                pa_deg = cqa.convert(cqa.quantity(beam_data['positionangle']), 'deg')['value']
+            # Convert beam parameters to consistent units
+            major_arcsec = cqa.convert(cqa.quantity(beam_data['major']), 'arcsec')['value']
+            minor_arcsec = cqa.convert(cqa.quantity(beam_data['minor']), 'arcsec')['value']
+            pa_deg = cqa.convert(cqa.quantity(beam_data['positionangle']), 'deg')['value']
 
-                # Store converted values
-                bmajor[chan_idx] = major_arcsec
-                bminor[chan_idx] = minor_arcsec
-                bpa[chan_idx] = pa_deg
+            # Store converted values
+            bmajor[chan_idx] = major_arcsec
+            bminor[chan_idx] = minor_arcsec
+            bpa[chan_idx] = pa_deg
 
-                LOG.info('Channel %8d: major %.3f arcsec, minor %.3f arcsec, pa %.3f deg',
-                         chan_idx, bmajor[chan_idx], bminor[chan_idx], bpa[chan_idx])
+            LOG.info('Channel %8d: major %.3f arcsec, minor %.3f arcsec, pa %.3f deg',
+                     chan_idx, bmajor[chan_idx], bminor[chan_idx], bpa[chan_idx])
 
-            # Find channel with beam major axis closest to median
-            bmajor_median = np.median(bmajor)
-            bmajor_deviations = np.abs(bmajor - bmajor_median)
-            closest_to_median_idx = np.argmin(bmajor_deviations)
+        # Find channel with beam major axis closest to median
+        bmajor_median = np.median(bmajor)
+        bmajor_deviations = np.abs(bmajor - bmajor_median)
+        closest_to_median_idx = np.argmin(bmajor_deviations)
 
-            # Extract the "median" beam parameters
-            median_beam_key = f'*{closest_to_median_idx}'
-            median_beam = allbeams['beams'][median_beam_key]['*0']
-            LOG.info(
-                'restoring beam recommmened from from the VLA "medium" PSF heuristics in find_good_commonbeam(): %s from channel=%s',
-                median_beam,
-                closest_to_median_idx,
+        # Extract the "median" beam parameters
+        median_beam_key = f'*{closest_to_median_idx}'
+        median_beam = allbeams['beams'][median_beam_key]['*0']
+        LOG.info(
+            'The beam selected from the median-based find_good_commonbeam() heuristics: %s from channel=%s',
+            median_beam,
+            closest_to_median_idx,
+        )
+        # modify the pa key name due to the different convention in returns of ia.commonbeam() and ia.restoringbeam()
+        median_beam['pa'] = median_beam.pop('positionangle', {'unit': 'deg', 'value': 0.0})
+
+        LOG.info('commonbeam of %s, by ia.commonbeam():        %s', psf_filename, commonbeam)
+        LOG.info('commonbeam of %s, by find_good_commonbeam(): %s', psf_filename, median_beam)
+
+        BEAM_RATIO_THRESHOLD = 1.5
+
+        # Extract beam major axis dimensions in arcsec
+        commonbeam_major_arcsec = cqa.convert(cqa.quantity(commonbeam['major']), 'arcsec')['value']
+        # commonbeam_minor_arcsec = cqa.convert(cqa.quantity(commonbeam['minor']), 'arcsec')['value']
+        # commonbeam_pa_deg = cqa.convert(cqa.quantity(commonbeam['pa']), 'deg')['value']
+        median_beam_major_arcsec = cqa.convert(cqa.quantity(median_beam['major']), 'arcsec')['value']
+        # median_beam_minor_arcsec = cqa.convert(cqa.quantity(median_beam['minor']), 'arcsec')['value']
+        # median_beam_pa_deg = cqa.convert(cqa.quantity(median_beam['pa']), 'deg')['value']
+
+        # Compare common beam recommendations
+        beam_ratio = commonbeam_major_arcsec / median_beam_major_arcsec
+
+        if beam_ratio > BEAM_RATIO_THRESHOLD or beam_ratio < 1 / BEAM_RATIO_THRESHOLD:
+            LOG.warning(
+                'Common beam recommendations differ between ia.commonbeam() and find_good_commonbeam() '
+                'methods by factor of %.2f in major axis: %s',
+                beam_ratio, psf_filename)
+
+        # Identify channels with significant beam differences
+        beam_ratio_per_channel = bmajor / median_beam_major_arcsec
+        exceeds_upper_threshold = beam_ratio_per_channel > BEAM_RATIO_THRESHOLD
+        exceeds_lower_threshold = beam_ratio_per_channel < 1 / BEAM_RATIO_THRESHOLD
+        bad_psf_channels = np.where(exceeds_upper_threshold | exceeds_lower_threshold)[0]
+
+        if bad_psf_channels.size:
+            channel_ranges = utils.find_ranges(bad_psf_channels.astype(str))
+            LOG.warning(
+                'Per-plane beam(s) differ from the find_good_commonbeam() recommendation by factor > %.1f '
+                'in %d channel(s) of %s: %s',
+                BEAM_RATIO_THRESHOLD,
+                bad_psf_channels.size,
+                psf_filename,
+                channel_ranges
             )
-            # modify the pa key name due to the different convention in returns of ia.commonbeam() and ia.restoringbeam()
-            median_beam['pa'] = median_beam.pop('positionangle', {'unit': 'deg', 'value': 0.0})
-
-            LOG.info('commonbeam of %s, as determined by ia.commonbeam():          %s', psf_filename, commonbeam)
-            LOG.info('commonbeam of %s, as determined by find_good_commonbeam():   %s', psf_filename, median_beam)
-
-            # Placeholder for bad channel detection (not implemented)
-            bad_psf_channels = np.array([], dtype=np.int64)
 
         return median_beam, bad_psf_channels

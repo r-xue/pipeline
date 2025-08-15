@@ -2438,7 +2438,8 @@ class ImageParamsHeuristics(object):
     def rotatepastep(self):
         return None
 
-    def find_good_commonbeam(self, psf_filename):
+    @staticmethod
+    def find_good_commonbeam(psf_filename: str):
         """Find and replace outlier beams to calculate a good common beam.
 
         Method from Urvashi Rao.
@@ -2511,14 +2512,19 @@ class ImageParamsHeuristics(object):
                         major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
                     )
 
-        LOG.info('the commonbeam of %s, as determined by ia.commonbeam():          %s', psf_filename, commonbeam)
-        LOG.info('the commonbeam of %s, as determined by find_good_commonbeam():   %s', psf_filename, newcommonbeam)
+        LOG.info('the commonbeam of %s, by ia.commonbeam():          %s', psf_filename, commonbeam)
+        LOG.info('the commonbeam of %s, by find_good_commonbeam():   %s', psf_filename, newcommonbeam)
 
         # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
         # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). So here the returned recommended beam is
         # explictly set to None as below.
         newcommonbeam = None
         bad_psf_channels = np.where(np.logical_not(weight))[0]
+
+        if bad_psf_channels.size:
+            LOG.warning(
+                'Found bad PSF fits for %s in channel(s): %s', psf_filename, utils.find_ranges(map(str, bad_psf_channels))
+            )
 
         return newcommonbeam, bad_psf_channels
 

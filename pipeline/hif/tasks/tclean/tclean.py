@@ -1117,17 +1117,13 @@ class Tclean(cleanbase.CleanBase):
             bad_psf_fit = self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
             if bad_psf_fit:
                 newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(result.psf)
-                if bad_psf_channels.size:
-                    LOG.warning(
-                        'Found bad PSF fits for SPW %s in channels %s', inputs.spw, ','.join(map(str, bad_psf_channels))
-                    )
                 if newcommonbeam is not None:
                     cqa = casa_tools.quanta
                     newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
                     newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
                     newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
                     LOG.info(
-                        'Adopting the restoring beam recommneded by find_good_commonbeam() for Field %s SPW %s with %#.3g x %#.3g arcsec @ %.1f deg',
+                        'Adopting the restoring beam recommended by find_good_commonbeam() for Field %s SPW %s with %#.3g x %#.3g arcsec @ %.1f deg',
                         inputs.field,
                         inputs.spw,
                         newcommonbeam_major_arcsec,
