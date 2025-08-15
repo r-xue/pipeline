@@ -545,9 +545,13 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         # combination is necessary; needed for SNR info shown in task weblog.
         combined_snrs = []
         calc_combined_snrs = []
-        # The SNR threshold used is initially unknown, and only updated if an
-        # SNR-based optimal solint gets computed; needed in task weblog.
-        snr_thr_used = None
+        # By default, set the SNR-threshold-used based on intent. Within this
+        # task, this threshold is only used (and can be further tweaked) if an
+        # SNR-based optimal solint gets computed. But even if the latter does
+        # not happen (for example because the SNR test returns no results, so no
+        # SNR-based solint can be computed), this default threshold is still
+        # used in QA scoring and reported in the task weblog.
+        snr_thr_used = self._snr_limit_for_intent(intent)
 
         # PIPE-1436: if there is only one SpW, then no SpW re-mapping can be
         # done. In this case, just run the SNR test, and compute an optimal

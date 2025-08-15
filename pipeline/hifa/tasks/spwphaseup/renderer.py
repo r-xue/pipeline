@@ -160,20 +160,10 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
             # Generate entries for each SpW mapping in the result.
             for (intent, field), spwmapping in result.spwmaps.items():
                 # Present in the table which phase SNR threshold was used.
-                # If this info is populated in the SpW mapping, then the SNR
-                # threshold was used to compute optimal solint based on
-                # estimated SNR, so report this used value.
-                if spwmapping.snr_threshold_used is not None:
-                    threshold = spwmapping.snr_threshold_used
-                # Otherwise, the SNR threshold was never used, so instead
-                # report what the appropriate value would have been based on
-                # intent.
-                else:
-                    threshold = result.inputs['phasesnr'] if intent in {'CHECK', 'PHASE'} else results.inputs['intphasesnr']
-                # Create string representation of threshold, and indicated based
-                # on intent whether it would have been scan or integration time
+                # Create string representation of threshold, and indicate based
+                # on intent whether it would have been scan- or integration-time
                 # based.
-                thr_str = f"{threshold}"
+                thr_str = f"{spwmapping.snr_threshold_used}"
                 thr_str += " (scan)" if intent in {'CHECK', 'PHASE'} else " (int)"
 
                 # If hm_spwmapmode input parameter was not "auto", then no need
