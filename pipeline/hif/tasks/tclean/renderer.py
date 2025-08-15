@@ -403,8 +403,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -1349,8 +1349,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
