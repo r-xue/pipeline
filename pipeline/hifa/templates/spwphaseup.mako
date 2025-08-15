@@ -82,8 +82,13 @@ and the caltable containing per spw phase offsets.</p>
 
 % if snr_table_rows:
 <table class="table table-bordered table-striped" summary="Estimated phase signal to noise ratios">
-	<caption>Estimated calibrator signal to noise ratios per intent. For
-	    spectral windows where the estimated SNR is below the specified
+	<caption>
+	    Estimated calibrator signal-to-noise ratios (SNR) per intent. The
+	    'SNR Calculated from Source Catalogue' values are derived from the source
+	    catalogue, T<sub>sys</sub>, and integration time. The 'SNR Used for
+	    Calibration Heuristics' values are measured using a temporary gain table
+	    when available; otherwise, the source catalogue-based SNR is used.<br>
+	    For spectral windows where the estimated SNR is below the specified
 	    threshold ('phasesnr' parameter for per-Scan PHASE/CHECK intents, or
 	    'intphasesnr' parameter for intents AMPLITUDE, BANDPASS, DIFFGAINREF,
 	    and DIFFGAINSRC), the SNR value is indicated in bold. If a measurement
@@ -95,11 +100,12 @@ and the caltable containing per spw phase offsets.</p>
     <thead>
 	    <tr>
 	        <th>Measurement Set</th>
-            <th>Phase SNR threshold</th>
+            <th>Phase SNR Threshold</th>
             <th>Field</th>
             <th>Intent</th>
             <th>Spectral Window</th>
-            <th>Estimated SNR</th>
+            <th>SNR Calculated from Source Catalogue</th>
+            <th>SNR Used for Calibration Heuristics</th>
         </tr>
 	</thead>
 	<tbody>

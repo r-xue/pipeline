@@ -870,9 +870,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, plots_dict, image_basename, field, spw, pol, datatype, urls, cube_all_cont):
         super().__init__('tcleanplots.mako', context, makeimages_results)
-
-        # PIPE-2668: expect image basename to be unique and URI stays under 255-char filesystem limit
-        outfile = f'{image_basename}-cleanplots.html'
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        outfile = f'{image_basename}.{pol}-cleanplots.html'
 
         # HTML encoded filenames, so can't have plus sign
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
@@ -915,9 +914,9 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 class TCleanTablesRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, table_dict, image_basename, field, spw, pol, urls):
         super().__init__('tcleantables.mako', context, makeimages_results)
-        
-        # PIPE-2668: expect image basename to be unique and URI stays under 255-char filesystem limit
-        outfile = f'{image_basename}-cleanplots.html'
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        # use `-cleantables.html` to stay different from tcleanplots URLs.
+        outfile = f'{image_basename}-cleantables.html'
 
         # HTML encoded filenames, so can't have plus sign
         self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
