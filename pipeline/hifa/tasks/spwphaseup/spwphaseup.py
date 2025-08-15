@@ -599,10 +599,8 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
             self._compute_snr_from_gaincal(snr_test_result, field, intent)
 
             # PIPE-2499: set SNR limit to use in the derivation of any
-            # subsequent SNR-based narrow-to-wide SpW mapping. For the CHECK and
-            # PHASE intents, use the scan-based SNR limit; for all other
-            # calibrator intents, use the integration-based SNR limit.
-            snrlimit = inputs.phasesnr if intent in WEAK_CALIBRATOR_INTENTS else inputs.intphasesnr
+            # subsequent SNR-based narrow-to-wide SpW mapping.
+            snrlimit = self._snr_limit_for_intent(intent)
 
             # No SNR estimates available, default to simple narrow-to-wide SpW
             # mapping and stick to default values.
@@ -1306,12 +1304,9 @@ class SpwPhaseup(gtypegaincal.GTypeGaincal):
         inputs = self.inputs
         quanta = casa_tools.quanta
 
-        # Set SNR limits first
-        if intent in {"CHECK", "PHASE"}:
-            snr_threshold_used = inputs.phasesnr
-        else:
-            # No scaling for the other calibrators (BANDPASS, DIFFGAIN, ...).
-            snr_threshold_used = inputs.intphasesnr
+        # Set default SNR limit based on intent. This may get overridden further
+        # below, e.g. case of optimal solint for bright calibrators.
+        snr_threshold_used = self._snr_limit_for_intent(intent)
 
         # Restrict the input SpWs, SNRs, and times to the SpWs-to-use.
         #
