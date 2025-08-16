@@ -10,6 +10,7 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.filenamer as filenamer
 from pipeline.infrastructure import casa_tasks, casa_tools
 from pipeline.infrastructure.tablereader import find_EVLA_band
+import pipeline.infrastructure.utils as utils
 
 from .auto_selfcal.selfcal_helpers import estimate_near_field_SNR, estimate_SNR
 from .imageparams_base import ImageParamsHeuristics
@@ -684,3 +685,213 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
                 )
 
         return nfrms_multiplier
+
+    def representative_target(self) -> tuple[tuple[str | None, any, any], str, int, any, str, bool, str, str, str, str]:
+        """Determine representative target source and observing performance parameters.
+
+        Selects a representative source from TARGET intents, falling back to calibration
+        intents if necessary. Computes the least flagged spectral window and derives
+        frequency/bandwidth parameters for image heuristics.
+
+        Returns:
+            Tuple containing representative target info, source name, virtual SPW ID,
+            frequency, bandwidth mode, real target flag, and angular resolution parameters.
+
+        Raises:
+            Exception: If no suitable representative target can be found from any intent.
+        """
+        cqa = casa_tools.quanta
+
+        repr_ms = self.observing_run.get_ms(self.vislist[0])
+
+        # PIPE-2625: VLA lacks real representative source/frequency/bandwidth info
+        # ALMA provides repr_ms.representative_target tuple, but VLA returns (None, None, None)
+        repr_target = (None, None, None)
+        reprBW_mode = 'nbin'
+        real_repr_target = False
+
+        # Select representative source from TARGET intents
+        target_sources = [s.name for s in repr_ms.sources if 'TARGET' in s.intents]
+
+        if not target_sources:
+            if repr_target[0] == 'none':
+                LOG.warning('No TARGET intent found. Selecting from calibration intents.')
+                # Try calibration intents in priority order
+                for repr_intent in ['PHASE', 'CHECK', 'AMPLITUDE', 'FLUX', 'BANDPASS']:
+                    target_sources = [s.name for s in repr_ms.sources if repr_intent in s.intents]
+                    if target_sources:
+                        break
+
+                if not target_sources:
+                    raise Exception('Cannot select representative target from any calibration intent.')
+            else:
+                raise Exception('Cannot select representative target from TARGET intent.')
+
+        repr_source = target_sources[0]
+
+        # Determine least flagged spectral window
+        job = casa_tasks.flagdata(vis=repr_ms.name, field=utils.fieldname_for_casa(repr_source), mode='summary')
+        flag_stats = job.execute()
+        flag_stats_spw = flag_stats['spw']
+
+        spw_flagfrac = {
+            spw: flag_stats_spw[str(spw.id)]['flagged'] / flag_stats_spw[str(spw.id)]['total']
+            for spw in repr_ms.get_spectral_windows()
+        }
+
+        # Select SPW with minimum flagging fraction
+        repr_spw_obj = min(spw_flagfrac, key=spw_flagfrac.get)
+        repr_spw = repr_spw_obj.id
+
+        # Get central channel for frequency/bandwidth calculation
+        repr_chan_obj = repr_spw_obj.channels[repr_spw_obj.num_channels // 2]
+        repr_freq = cqa.quantity(
+            float(repr_chan_obj.getCentreFrequency().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz'
+        )
+        repr_bw = cqa.quantity(float(repr_chan_obj.getWidth().convert_to(measures.FrequencyUnits.HERTZ).value), 'Hz')
+        repr_target = (repr_source, repr_freq, repr_bw)
+
+        # Default imaging parameters for VLA
+        minAcceptableAngResolution = '0.0arcsec'
+        maxAcceptableAngResolution = '0.0arcsec'
+        maxAllowedBeamAxialRatio = '0.0'
+        sensitivityGoal = '0.0mJy'
+
+        LOG.info(
+            'No representative target for VLA. Choosing %s as representative source '
+            'and SPW=%s as representative spwid, based on the imaging heuristics.',
+            repr_source,
+            repr_spw,
+        )
+
+        virtual_repr_spw = self.observing_run.real2virtual_spw_id(repr_spw, repr_ms)
+
+        return (
+            repr_target,
+            repr_source,
+            virtual_repr_spw,
+            repr_freq,
+            reprBW_mode,
+            real_repr_target,
+            minAcceptableAngResolution,
+            maxAcceptableAngResolution,
+            maxAllowedBeamAxialRatio,
+            sensitivityGoal,
+        )
+
+    def check_psf(self, psf_name, field, spw):
+        """Check for bad psf fits.
+
+        PIPE-2603: always enable the "medium" beam evaluation.
+        """
+        return True
+
+    @staticmethod
+    def find_good_commonbeam(psf_filename: str):
+        """Find outlier beams and calculate a good "median" restoring beam recommendation.
+        
+        Analyzes per-channel restoring beams in the PSF image to identify the beam closest to the median
+        major axis size. This approach helps find a representative beam while avoiding outliers that
+        could skew the common beam calculation.
+        
+        Args:
+            psf_filename: Path to the PSF image file containing per-channel beam information.
+            
+        Returns:
+            A tuple containing:
+            - The median beam dictionary with beam parameters (major, minor, positionangle)
+            - Array of channel numbers with invalid beams (currently returns empty array)
+            
+        Note:
+            The current implementation returns an empty list for bad channels. This may be enhanced
+            in future versions to actually identify and return problematic beam channels.
+        """
+        cqa = casa_tools.quanta
+
+        with casa_tools.ImageReader(psf_filename) as image:
+            allbeams = image.restoringbeam()
+            commonbeam = image.commonbeam()
+
+        nchan = allbeams['nChannels']
+
+        # Pre-allocate arrays for beam parameters
+        bmajor = np.zeros(nchan, dtype=np.float64)
+        bminor = np.zeros(nchan, dtype=np.float64)
+        bpa = np.zeros(nchan, dtype=np.float64)
+
+        LOG.info('Per-plane restoring beam analysis for %s (channels: %d)', psf_filename, nchan)
+
+        # Extract beam parameters for each channel
+        for chan_idx in range(nchan):
+            beam_key = f'*{chan_idx}'
+            beam_data = allbeams['beams'][beam_key]['*0']
+
+            # Convert beam parameters to consistent units
+            major_arcsec = cqa.convert(cqa.quantity(beam_data['major']), 'arcsec')['value']
+            minor_arcsec = cqa.convert(cqa.quantity(beam_data['minor']), 'arcsec')['value']
+            pa_deg = cqa.convert(cqa.quantity(beam_data['positionangle']), 'deg')['value']
+
+            # Store converted values
+            bmajor[chan_idx] = major_arcsec
+            bminor[chan_idx] = minor_arcsec
+            bpa[chan_idx] = pa_deg
+
+            LOG.info('Channel %8d: major %.3f arcsec, minor %.3f arcsec, pa %.3f deg',
+                     chan_idx, bmajor[chan_idx], bminor[chan_idx], bpa[chan_idx])
+
+        # Find channel with beam major axis closest to median
+        bmajor_median = np.median(bmajor)
+        bmajor_deviations = np.abs(bmajor - bmajor_median)
+        closest_to_median_idx = np.argmin(bmajor_deviations)
+
+        # Extract the "median" beam parameters
+        median_beam_key = f'*{closest_to_median_idx}'
+        median_beam = allbeams['beams'][median_beam_key]['*0']
+        LOG.info(
+            'The beam selected from the median-based find_good_commonbeam() heuristics: %s from channel=%s',
+            median_beam,
+            closest_to_median_idx,
+        )
+        # modify the pa key name due to the different convention in returns of ia.commonbeam() and ia.restoringbeam()
+        median_beam['pa'] = median_beam.pop('positionangle', {'unit': 'deg', 'value': 0.0})
+
+        LOG.info('commonbeam of %s, by ia.commonbeam():        %s', psf_filename, commonbeam)
+        LOG.info('commonbeam of %s, by find_good_commonbeam(): %s', psf_filename, median_beam)
+
+        BEAM_RATIO_THRESHOLD = 1.5
+
+        # Extract beam major axis dimensions in arcsec
+        commonbeam_major_arcsec = cqa.convert(cqa.quantity(commonbeam['major']), 'arcsec')['value']
+        # commonbeam_minor_arcsec = cqa.convert(cqa.quantity(commonbeam['minor']), 'arcsec')['value']
+        # commonbeam_pa_deg = cqa.convert(cqa.quantity(commonbeam['pa']), 'deg')['value']
+        median_beam_major_arcsec = cqa.convert(cqa.quantity(median_beam['major']), 'arcsec')['value']
+        # median_beam_minor_arcsec = cqa.convert(cqa.quantity(median_beam['minor']), 'arcsec')['value']
+        # median_beam_pa_deg = cqa.convert(cqa.quantity(median_beam['pa']), 'deg')['value']
+
+        # Compare common beam recommendations
+        beam_ratio = commonbeam_major_arcsec / median_beam_major_arcsec
+
+        if beam_ratio > BEAM_RATIO_THRESHOLD or beam_ratio < 1 / BEAM_RATIO_THRESHOLD:
+            LOG.warning(
+                'Common beam recommendations differ between ia.commonbeam() and find_good_commonbeam() '
+                'methods by factor of %.2f in major axis: %s',
+                beam_ratio, psf_filename)
+
+        # Identify channels with significant beam differences
+        beam_ratio_per_channel = bmajor / median_beam_major_arcsec
+        exceeds_upper_threshold = beam_ratio_per_channel > BEAM_RATIO_THRESHOLD
+        exceeds_lower_threshold = beam_ratio_per_channel < 1 / BEAM_RATIO_THRESHOLD
+        bad_psf_channels = np.where(exceeds_upper_threshold | exceeds_lower_threshold)[0]
+
+        if bad_psf_channels.size:
+            channel_ranges = utils.find_ranges(bad_psf_channels.astype(str))
+            LOG.warning(
+                'Per-plane beam(s) differ from the find_good_commonbeam() recommendation by factor > %.1f '
+                'in %d channel(s) of %s: %s',
+                BEAM_RATIO_THRESHOLD,
+                bad_psf_channels.size,
+                psf_filename,
+                channel_ranges
+            )
+
+        return median_beam, bad_psf_channels
