@@ -1225,9 +1225,7 @@ class Tclean(cleanbase.CleanBase):
             new_threshold, DR_correction_factor, maxEDR_used = \
                 self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, tlimit, inputs.drcorrect)
-            if inputs.hm_cleaning == 'manual':
-                sequence_manager.threshold = sequence_manager.threshold
-            else:
+            if inputs.hm_cleaning != 'manual':
                 sequence_manager.threshold = new_threshold
             sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
