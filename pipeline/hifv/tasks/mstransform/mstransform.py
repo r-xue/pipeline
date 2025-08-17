@@ -2,13 +2,12 @@ import os
 import traceback
 
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.callibrary as callibrary
 import pipeline.infrastructure.tablereader as tablereader
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-import pipeline.infrastructure.callibrary as callibrary
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import task_registry
 from pipeline.hif.tasks.mstransform import mstransform as mst
+from pipeline.infrastructure import casa_tasks, task_registry
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -121,6 +120,9 @@ class VlaMstransform(mst.SerialMstransform):
         # Copy across requisite XML files.
         mst.SerialMstransform._copy_xml_files(inputs.vis, inputs.outputvis)
 
+        # Update ms history.
+        mst.SerialMstransform._update_history(inputs.vis, inputs.outputvis)
+
         if not self.inputs.omit_contline_ms:
             # Create output MS for line data (_target.ms)
             self._create_targets_ms(inputs, mstransform_args)
@@ -217,6 +219,9 @@ class VlaMstransform(mst.SerialMstransform):
 
             # Copy across requisite XML files.
             mst.SerialMstransform._copy_xml_files(inputs.vis, inputs.outputvis_for_line)
+
+            # Update ms history
+            mst.SerialMstransform._update_history(inputs.vis, inputs.outputvis_for_line)
 
         # Restore RFI flags to main MS
         task = casa_tasks.flagmanager(vis=inputs.vis, mode='restore', versionname='rfi_flagged_statwt')

@@ -21,7 +21,8 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation, scores_with_locat
 </head>
 
 <%def name="plot_group(plot_dict, url_fn, data_spw=False, data_field=False, data_baseband=False, data_tsysspw=False,
-                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
+                       data_vis=False, data_ant=False, title_id=None, rel_fn=None, thumbnail_check=True,
+                       break_rows_by='', sort_row_by='', separate_rows_by='', show_row_break_value=False)">
 % if plot_dict:
     % if title_id:
         <h3 id="${title_id}" class="jumptarget">${caller.title()}</h3>
@@ -90,7 +91,7 @@ from pipeline.infrastructure.pipelineqa import WebLogLocation, scores_with_locat
                 intent = intent.upper()
             %>
             <div class="col-md-3">
-                % if os.path.exists(plot.thumbnail):
+                % if not thumbnail_check or os.path.exists(plot.thumbnail):
                 <%
                     fullsize_relpath = os.path.relpath(plot.abspath, pcontext.report_dir)
                     thumbnail_relpath = os.path.relpath(plot.thumbnail, pcontext.report_dir)

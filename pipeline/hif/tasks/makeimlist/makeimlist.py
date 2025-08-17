@@ -2,6 +2,8 @@ import copy
 import operator
 import os
 
+import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -706,8 +708,15 @@ class MakeImList(basetask.StandardTaskTemplate):
         )
 
         # Get representative target information
-        repr_target, repr_source, repr_spw, repr_freq, reprBW_mode, real_repr_target, minAcceptableAngResolution, maxAcceptableAngResolution, maxAllowedBeamAxialRatio, sensitivityGoal = self.heuristics.representative_target()
-
+        # PIPE-2625: The following logic is executed only when inputs.specmode is 'repBW'
+        # or 'TARGET' is present in inputs.intent. This is a performance optimization
+        # (per PIPE-2625) to prevent costly I/O operations from representative_target()
+        # when not strictly required.
+        if inputs.specmode == 'repBW' or 'TARGET' in inputs.intent:
+            repr_target, repr_source, repr_spw, _, reprBW_mode, real_repr_target, _, _, _, _ = (
+                self.heuristics.representative_target()
+            )
+        
         # representative target case
         if inputs.specmode == 'repBW':
             repr_target_mode = True
@@ -1016,31 +1025,29 @@ class MakeImList(basetask.StandardTaskTemplate):
 
                     # Select only the lowest / highest frequency spw to get the smallest (for cell size)
                     # and largest beam (for imsize)
-                    min_freq = 1e15
-                    max_freq = 0.0
-                    min_freq_spwid = -1
-                    max_freq_spwid = -1
+
+                    filtered_spwlist_center_freq = []
                     for spwid in filtered_spwlist:
                         try:
                             ref_msname = self.heuristics.get_ref_msname(spwid)
                             ref_ms = inputs.context.observing_run.get_ms(ref_msname)
                             real_spwid = inputs.context.observing_run.virtual2real_spw_id(spwid, ref_ms)
-                            spwid_centre_freq = ref_ms.get_spectral_window(real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ)
-                            if spwid_centre_freq < min_freq:
-                                min_freq = spwid_centre_freq
-                                min_freq_spwid = spwid
-                            if spwid_centre_freq > max_freq:
-                                max_freq = spwid_centre_freq
-                                max_freq_spwid = spwid
+                            spwid_centre_freq = float(ref_ms.get_spectral_window(
+                                real_spwid).centre_frequency.to_units(measures.FrequencyUnits.HERTZ))
+                            filtered_spwlist_center_freq.append(spwid_centre_freq)
                         except Exception as e:
-                            LOG.warning(f'Could not determine min/max frequency for spw {spwid}. Exception: {str(e)}')
+                            LOG.warning(f'Could not determine center frequency for spw {spwid}. Exception: {str(e)}')
+                            filtered_spwlist_center_freq.append(np.nan)
 
-                    if min_freq_spwid == -1 or max_freq_spwid == -1:
-                        LOG.error('Could not determine min/max frequency spw IDs for %s.' % (str(filtered_spwlist_local)))
+                    if np.nan in filtered_spwlist_center_freq:
+                        LOG.error('Could not determine min/max frequency spw IDs for %s.' %
+                                  (str(filtered_spwlist_local)))
                         continue
 
-                    min_freq_spwlist = [str(min_freq_spwid)]
-                    max_freq_spwlist = [str(max_freq_spwid)]
+                    # get a spw list ranked from highest freq to the lowest freq
+                    filtered_spwlist_by_freq = [filtered_spwlist[i]
+                                                for i in np.argsort(filtered_spwlist_center_freq)][::-1]
+                    min_freq_spwlist = [filtered_spwlist_by_freq[-1]]
 
                     # Get robust and uvtaper values
                     if inputs.robust not in (None, -999.0):
@@ -1064,7 +1071,7 @@ class MakeImList(basetask.StandardTaskTemplate):
                     if cell == []:
                         synthesized_beams = {}
                         min_cell = ['3600arcsec']
-                        for spwspec in max_freq_spwlist:
+                        for spwspec in filtered_spwlist_by_freq:
                             # Use only fields that were observed in spwspec
                             actual_field_intent_list = []
                             for field_intent in field_intent_list:
@@ -1079,20 +1086,31 @@ class MakeImList(basetask.StandardTaskTemplate):
                                 parallel=parallel, shift=True)
 
                             if synthesized_beams[spwspec] == 'invalid':
-                                LOG.error('Beam for virtual spw %s and robust value of %.1f is invalid. Cannot continue.'
-                                          '' % (spwspec, robust))
-                                result.error = True
-                                result.error_msg = 'Invalid beam'
-                                return result
+                                LOG.warning(
+                                    'Beam for virtual spw %s and robust value of %.1f is invalid likely due to heavy flagging.', spwspec, robust)
+                                continue
 
                             # Avoid recalculating every time since the dictionary will be cleared with the first recalculation request.
                             calcsb = False
                             # the heuristic cell is always the same for x and y as
                             # the value derives from the single value returned by
                             # imager.advise
-                            cells[spwspec] = self.heuristics.cell(beam=synthesized_beams[spwspec], pixperbeam=pixperbeam)
+                            cells[spwspec] = self.heuristics.cell(
+                                beam=synthesized_beams[spwspec], pixperbeam=pixperbeam)
                             if ('invalid' not in cells[spwspec]):
-                                min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')['value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
+                                min_cell = cells[spwspec] if (qaTool.convert(cells[spwspec][0], 'arcsec')[
+                                                              'value'] < qaTool.convert(min_cell[0], 'arcsec')['value']) else min_cell
+
+                            if '3600arcsec' not in min_cell:
+                                break
+
+                        if '3600arcsec' in min_cell:
+                            LOG.error(
+                                'Beams for all virtual spw list %s with robust value of %.1f is invalid. Cannot continue.', filtered_spwlist_by_freq, robust)
+                            result.error = True
+                            result.error_msg = 'Invalid beam'
+                            return result
+
                         # Rounding to two significant figures
                         min_cell = ['%.2g%s' % (qaTool.getvalue(min_cell[0]), qaTool.getunit(min_cell[0]))]
                         # Need to populate all spw keys because the imsize heuristic picks
@@ -1595,10 +1613,9 @@ class MakeImList(basetask.StandardTaskTemplate):
         context = self.inputs.context
 
         if (
-            context.project_summary.telescope in ("VLA", "JVLA", "EVLA")
-            and hasattr(context, "selfcal_targets")
-            and datatype_str.startswith("SELFCAL_")
-            and self.inputs.specmode == "cont"
+            context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA')
+            and datatype_str.startswith('SELFCAL_')
+            and self.inputs.specmode == 'cont'
         ):
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target["spw"].split(","))
@@ -1640,7 +1657,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         deconvolver, nterms = None, None
         context = self.inputs.context
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and specmode == 'cont':
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
                 im_spw = set(spw.split(','))
@@ -1668,7 +1685,7 @@ class MakeImList(basetask.StandardTaskTemplate):
         if context.project_summary.telescope in ('VLA', 'JVLA', 'EVLA'):
             return drcorrect, maxthreshold
 
-        if hasattr(context, 'selfcal_targets') and datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
+        if datatype_str.startswith('SELFCAL_') and self.inputs.specmode == 'cont':
 
             for sc_target in context.selfcal_targets:
                 sc_spw = set(sc_target['spw'].split(','))
@@ -1685,10 +1702,13 @@ class MakeImList(basetask.StandardTaskTemplate):
                         result = r.read()
                         if isinstance(result, MakeImagesResult):
                             for tclean_result in result.results:
-                                if tclean_result.datatype_info.startswith('REGCAL_CONTLINE') and \
-                                        tclean_result.specmode == 'cont' and \
-                                        tclean_result.sourcename == field and \
-                                        im_spw.intersection(set(tclean_result.spw.split(','))):
+                                if (
+                                    tclean_result.datatype_info is not None
+                                    and tclean_result.datatype_info.startswith('REGCAL_CONTLINE')
+                                    and tclean_result.specmode == 'cont'
+                                    and tclean_result.sourcename == field
+                                    and im_spw.intersection(set(tclean_result.spw.split(',')))
+                                ):
                                     maxthreshold = tclean_result.threshold
                     if maxthreshold is not None:
                         LOG.info(
