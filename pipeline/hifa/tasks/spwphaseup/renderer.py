@@ -200,7 +200,7 @@ def get_snr_table_rows(context: Context, results: ResultsList) -> List[str]:
                             calc_snr = 'N/A'
                     else:
                         snr = f'{gaintable_snr:.1f}'
-                        if gaintable_snr < threshold:
+                        if gaintable_snr < spwmapping.snr_threshold_used:
                             snr = f'<strong class="alert-danger">{snr}</strong>'
                         calc_snr = calc_snr_dict.get(spwid, 'N/A')
 
