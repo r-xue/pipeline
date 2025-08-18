@@ -15,7 +15,6 @@ import typing
 from importlib.metadata import version, PackageNotFoundError
 from importlib.util import find_spec
 from pathlib import Path
-import platform
 
 import casatasks
 import pkg_resources
