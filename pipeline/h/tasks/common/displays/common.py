@@ -25,12 +25,16 @@ COLSHAPE_FORMAT = re.compile(r'\[(?P<num_pols>\d+), (?P<num_rows>\d+)\]')
 
 class PlotbandpassDetailBase(object):
     def __init__(self, context, result, xaxis, yaxis, **kwargs):
-        # identify the bandpass solution for the target
-        calapps = [c for c in result.final
-                   if (c.intent == '' or 'TARGET' in c.intent)]
+        
+        
+        # PIPE-2752: identify the bandpass solution for the target, falling back to AMPLITUDE/BANDPASS
+        for intent_attempt in ['TARGET', 'AMPLITUDE', 'BANDPASS']:
+            calapps = [c for c in result.final if (c.intent == '' or intent_attempt in c.intent)]
+            if len({c.gaintable for c in calapps}) > 1:
+                raise ValueError('Target solutions != 1')
+            if len(calapps) > 0:
+                break
 
-        if len({c.gaintable for c in calapps}) > 1:
-            raise ValueError('Target solutions != 1')
         calapp = calapps[0]
 
         self._vis = calapp.vis
