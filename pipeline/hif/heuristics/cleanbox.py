@@ -342,6 +342,12 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_rms_max = \
                 nonpbcor_image_non_cleanmask_rms = \
                     -999.0
+                nonpbcor_image_non_cleanmask_rms_median_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_mean_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_min_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_max_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_iquv = np.array([-999.0]*4)
+
                 LOG.warning('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
             # Get the flux density spectrum in the clean mask area if available
