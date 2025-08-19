@@ -787,21 +787,21 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return True
 
     @staticmethod
-    def find_good_commonbeam(psf_filename: str):
+    def find_good_commonbeam(psf_filename: str, field: str, spw: str):
         """Find outlier beams and calculate a good "median" restoring beam recommendation.
-        
+
         Analyzes per-channel restoring beams in the PSF image to identify the beam closest to the median
         major axis size. This approach helps find a representative beam while avoiding outliers that
         could skew the common beam calculation.
-        
+
         Args:
             psf_filename: Path to the PSF image file containing per-channel beam information.
-            
+
         Returns:
             A tuple containing:
             - The median beam dictionary with beam parameters (major, minor, positionangle)
             - Array of channel numbers with invalid beams (currently returns empty array)
-            
+
         Note:
             The current implementation returns an empty list for bad channels. This may be enhanced
             in future versions to actually identify and return problematic beam channels.
@@ -871,11 +871,11 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         # Compare common beam recommendations
         beam_ratio = commonbeam_major_arcsec / median_beam_major_arcsec
 
-        if beam_ratio > BEAM_RATIO_THRESHOLD or beam_ratio < 1 / BEAM_RATIO_THRESHOLD:
-            LOG.warning(
-                'Common beam recommendations differ between ia.commonbeam() and find_good_commonbeam() '
-                'methods by factor of %.2f in major axis: %s',
-                beam_ratio, psf_filename)
+        # if beam_ratio > BEAM_RATIO_THRESHOLD or beam_ratio < 1 / BEAM_RATIO_THRESHOLD:
+        #     LOG.warning(
+        #         'Common beam recommendations differ between ia.commonbeam() and find_good_commonbeam() '
+        #         'methods by factor of %.2f in major axis: %s',
+        #         beam_ratio, psf_filename)
 
         # Identify channels with significant beam differences
         beam_ratio_per_channel = bmajor / median_beam_major_arcsec
@@ -883,15 +883,27 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         exceeds_lower_threshold = beam_ratio_per_channel < 1 / BEAM_RATIO_THRESHOLD
         bad_psf_channels = np.where(exceeds_upper_threshold | exceeds_lower_threshold)[0]
 
+        def beam_to_string(beam):
+            beam_major_arcsec = cqa.getvalue(cqa.convert(beam['major'], 'arcsec'))[0]
+            beam_minor_arcsec = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0]
+
+            # beam_pa_deg = cqa.getvalue(cqa.convert(beam['pa'], 'deg'))[0]
+            # return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"@{beam_pa_deg:.1f}deg'
+            return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"'
+
         if bad_psf_channels.size:
             channel_ranges = utils.find_ranges(bad_psf_channels.astype(str))
             LOG.warning(
-                'Per-plane beam(s) differ from the find_good_commonbeam() recommendation by factor > %.1f '
-                'in %d channel(s) of %s: %s',
+                'Common beam (%s) major axis is %.3gx larger than the median of per-plane beams (%s) '
+                'for field %s, spw %s. Channels with per-plane beams deviating from the median by a '
+                'factor >%.2gx: %s. Adopting the median beam for all channels.',
+                beam_to_string(commonbeam),
+                beam_ratio,
+                beam_to_string(median_beam),
+                field,
+                spw,
                 BEAM_RATIO_THRESHOLD,
-                bad_psf_channels.size,
-                psf_filename,
-                channel_ranges
+                channel_ranges,
             )
 
         return median_beam, bad_psf_channels
