@@ -4694,13 +4694,13 @@ def score_parallactic_angle_range(
                                                  'vis': [ms_do.name for ms_do in session_mses]}
         for intent in intents:
             all_metrics['sessions'][session_name][intent] = {}
-            cal_info = {(cal.name,cal.id)
+            cal_names = {cal.name
                          for ms in session_mses
                          for cal in ms.get_fields(intent=intent)}
-            if len(cal_info) > 0:
+            if len(cal_names) > 0:
                 all_metrics['intents_found'] = True
-            for cal_name, cal_id in cal_info:
-                parallactic_range = ous_parallactic_range(session_mses, cal_id, intent)
+            for cal_name in cal_names:
+                parallactic_range = ous_parallactic_range(session_mses, cal_name, intent)
                 if parallactic_range is not None:
                     all_metrics['sessions'][session_name][intent][cal_name] = parallactic_range
                     all_metrics['sessions'][session_name]['min_parang_range'] = min(
