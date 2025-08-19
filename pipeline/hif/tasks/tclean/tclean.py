@@ -1116,7 +1116,9 @@ class Tclean(cleanbase.CleanBase):
         if inputs.specmode == 'cube':
             bad_psf_fit = self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
             if bad_psf_fit:
-                newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(result.psf)
+                newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(
+                    result.psf, inputs.field, inputs.spw
+                )
                 if newcommonbeam is not None:
                     cqa = casa_tools.quanta
                     newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]

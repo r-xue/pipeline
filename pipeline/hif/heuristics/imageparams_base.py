@@ -2439,7 +2439,7 @@ class ImageParamsHeuristics(object):
         return None
 
     @staticmethod
-    def find_good_commonbeam(psf_filename: str):
+    def find_good_commonbeam(psf_filename: str, field: str, spw: str):
         """Find and replace outlier beams to calculate a good common beam.
 
         Method from Urvashi Rao.
