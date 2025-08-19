@@ -94,7 +94,7 @@ def flux_nosourcexml(ms: MeasurementSet) -> DefaultDict[Source, list[tuple[FluxM
             url, version, status_code, data_conditions, clarification, catalogue_measurement = query_online_catalogue(
                 flux_url, ms, spw, source
                 )
-            result[source].append((url, version, status_code, data_conditions, clarification, catalogue_measurement))
+            result[source].append(catalogue_measurement)
             if catalogue_measurement:
                 # set text for logging statements
                 catalogue_I = catalogue_measurement.I
