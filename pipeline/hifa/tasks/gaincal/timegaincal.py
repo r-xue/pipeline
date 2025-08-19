@@ -921,6 +921,12 @@ class SerialTimeGaincal(gtypegaincal.GTypeGaincal):
         # the MS (PIPE-2268).
         calapp_overrides = {'intent': utils.filter_intents_for_ms(inputs.ms, "CHECK,TARGET"),
                             'gainfield': ''}
+        if not calapp_overrides['intent']:
+            LOG.debug(
+                'No CHECK or TARGET intent found in %s and we will skip the creation of CalApp for them.',
+                inputs.ms.name,
+            )
+            return [cal_calapp]
 
         # PIPE-2087: for BandToBand, register the solutions to be applied to the
         # diffgain on-source SpWs, and use the amplitude solutions from the
