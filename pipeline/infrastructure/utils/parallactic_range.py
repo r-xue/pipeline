@@ -38,7 +38,8 @@ def ous_parallactic_range(
     """
     angles = []
     for ms in mses:
-        fields = ms.get_fields(task_arg=field_name)
+        field_name = utils.dequote(field_name)
+        fields = ms.get_fields(task_arg=field_name, intent=intent)
         if len(fields) != 1:
             LOG.error('Cannot determine parallactic angle for %s field: %s', ms.basename, field_name)
             continue
