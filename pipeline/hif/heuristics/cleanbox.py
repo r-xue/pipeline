@@ -326,7 +326,13 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     nonpbcor_image_non_cleanmask_rms_mean_iquv = np.mean(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
                     nonpbcor_image_non_cleanmask_rms_min_iquv = np.min(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
                     nonpbcor_image_non_cleanmask_rms_max_iquv = np.max(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
-                    nonpbcor_image_non_cleanmask_rms_iquv = nonpbcor_image_non_cleanmask_rms_median_iquv
+                else:
+                    nonpbcor_image_non_cleanmask_rms_median_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_mean_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_min_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_max_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+
+                nonpbcor_image_non_cleanmask_rms_iquv = nonpbcor_image_non_cleanmask_rms_median_iquv
 
                 if have_mask:
                     area_text = 'annulus'
