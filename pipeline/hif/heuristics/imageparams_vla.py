@@ -736,7 +736,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         spw_flagfrac = {
             spw: flag_stats_spw[str(spw.id)]['flagged'] / flag_stats_spw[str(spw.id)]['total']
-            for spw in repr_ms.get_spectral_windows()
+            for spw in repr_ms.get_spectral_windows() if str(spw.id) in flag_stats_spw
         }
 
         # Select SPW with minimum flagging fraction
