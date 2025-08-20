@@ -18,7 +18,7 @@ class VLASetjyQAHandler(pqa.QAPlugin):
     def handle(self, context, result):
         standard_source_names, standard_source_fields = vlasetjy.standard_sources(result.inputs['vis'])
         m = context.observing_run.get_ms(result.inputs['vis'])
-
+        scores = []
         if sum(standard_source_fields, []):
             scorevalue = 0.0
             msg = 'No VLA standard calibrator present.'
@@ -37,12 +37,13 @@ class VLASetjyQAHandler(pqa.QAPlugin):
                     else:
                         scorevalue = 0.0
                         msg = 'No flux calibration intent found or calibrator is fully flagged'
-            score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
+                    score = pqa.QAScore(scorevalue, longmsg=msg, shortmsg=msg)
+                    scores.append(score)
         else:
             score = pqa.QAScore(0.0,
                                 longmsg='No VLA standard calibrator present', shortmsg='No standard calibrator present.')
 
-        scores = [score]
+            scores.append(score)
 
         result.qa.pool.extend(scores)
 
