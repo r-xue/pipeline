@@ -1145,16 +1145,23 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
 
                     # Spectral channel segment for spike estimate
                     ishift_spk = np.max([int(subb_nchan*0.3),3])
-
                     left = np.nanmean(bp_amp[isubb*subb_nchan-2*ishift_spk:isubb*subb_nchan-ishift_spk])
                     right = np.nanmean(bp_amp[isubb*subb_nchan+ishift_spk:isubb*subb_nchan+2*ishift_spk])
-                    subb_spk = np.abs(np.nanmean([left,right]) - bp_amp[isubb*subb_nchan-ishift_spk:isubb*subb_nchan+ishift_spk])
+
+                    lower_index = isubb * subb_nchan - ishift_spk
+                    upper_index = isubb * subb_nchan + ishift_spk
+
+                    if (lower_index < 0) or (lower_index >= upper_index):
+                        LOG.warning(f"Invalid slice bounds for MS: {vis} ant: {j} spw: {k} pol: {ipol} subband: {isubb}, skipping anomolous spike detection for correlator subband qa.")
+                        continue
+
+                    subb_spk = np.abs(np.nanmean([left,right]) - bp_amp[lower_index:upper_index])
                     subb_spkmax_id = np.argmax(subb_spk)
                     spk_step = subb_spk[subb_spkmax_id]
 
                     if subb_spike < abs(spk_step):
                         subb_spike = abs(spk_step)
-                        subb_base = abs(np.nanmean([left,right]))
+                        subb_base = abs(np.nanmean([left, right]))
                     
                     ##########################
                     # if the spike channel is within atmospheric absorption band,
