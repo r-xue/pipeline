@@ -425,6 +425,10 @@ class Selfcal(basetask.StandardTaskTemplate):
         Args:
             scal_targets: List of target dictionaries containing calibration data.
             filename: Output JSON filename or path. Defaults to 'selfcal.json'.
+
+        PIPE-2769: This function is not currently in use. It was originally intended to generate a "lite" selfcal.json 
+        file as described in PIPE-2646. Howeever, we decide to export a full selfcal diagnostic instead as of PL2025.
+        This private method is kept for future reference.       
         """
         current_version = 1.0
         current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -683,12 +687,8 @@ class Selfcal(basetask.StandardTaskTemplate):
             scal_targets = self._solve_selfcal()
             is_restore = False
 
-            if LOG.isEnabledFor(logging.DEBUG):
-                selfcal_json_debug = self.inputs.context.name+'.selfcal.debug.json'
-                self._scal_targets_to_json(scal_targets, filename=selfcal_json_debug)
-
             selfcal_json = self.inputs.context.name+'.selfcal.json'
-            self._scal_targets_to_json_lite(scal_targets, filename=selfcal_json)
+            self._scal_targets_to_json(scal_targets, filename=selfcal_json)
 
             scal_caltable, _ = self._apply_scal_check_caltable(scal_targets, mses_regcal_contline+mses_regcal_line)
             selfcal_resources = [selfcal_json] + scal_caltable
