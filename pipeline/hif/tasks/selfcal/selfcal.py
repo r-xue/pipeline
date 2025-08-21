@@ -101,18 +101,21 @@ class SelfcalResults(basetask.Results):
             # Find the corresponding selfcal type
             dtype_applied = data_type_mapping.get(data_dtype, None)
             if dtype_applied is None:
-                LOG.warning(f"No selfcal data type found corresponding to the data type: {data_dtype} "
-                            f"associated with field={field_name!r}, spw={spw_sel!r} in vis={vis}. Skipping registration.")
+                LOG.warning('No selfcal data type found corresponding to the data type: %s '
+                            'associated with field=%r, spw=%r in vis=%s. Skipping registration.',
+                            data_dtype, field_name, spw_sel, vis)
                 continue
 
             with casa_tools.TableReader(vis) as tb:
                 # check for the existance of CORRECTED_DATA first
                 if 'CORRECTED_DATA' not in tb.colnames():
-                    LOG.warning(f'No CORRECTED_DATA column in {vis}, skip {dtype_applied} registration')
+                    LOG.warning('No CORRECTED_DATA column in %s, skip %s registration', vis, dtype_applied)
                     continue
-                LOG.info(
-                    f'Register the CORRECTED_DATA column as {dtype_applied} for {vis}: field={field_name!r} spw={spw_sel!r}')
-                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_name, spw=spw_sel, overwrite=False)
+                LOG.debug('DataType registeration: overwrite=%s', self.inputs['overwrite'])
+                LOG.info('Registering the CORRECTED_DATA column as %s for %s: field=%r spw=%r',
+                         dtype_applied, vis, field_name, spw_sel)
+                ms.set_data_column(dtype_applied, 'CORRECTED_DATA', source=field_name,
+                                   spw=spw_sel, overwrite=self.inputs['overwrite'])
 
     def __repr__(self):
         return 'SelfcalResults:'
@@ -145,6 +148,7 @@ class SelfcalInputs(vdp.StandardInputs):
     parallel = vdp.VisDependentProperty(default='automatic')
     recal = vdp.VisDependentProperty(default=False)
     restore_only = vdp.VisDependentProperty(default=False)
+    overwrite = vdp.VisDependentProperty(default=False)
 
     n_solints = vdp.VisDependentProperty(default=4.0)
     amplitude_selfcal = vdp.VisDependentProperty(default=False)
@@ -200,7 +204,8 @@ class SelfcalInputs(vdp.StandardInputs):
                  minsnr_to_proceed=None, delta_beam_thresh=None, apply_cal_mode_default=None,
                  rel_thresh_scaling=None, dividing_factor=None, check_all_spws=None, inf_EB_gaincal_combine=None,
                  usermask=None, usermodel=None, allow_wproject=None,
-                 apply=None, parallel=None, recal=None, restore_only=None, restore_resources=None):
+                 apply=None, parallel=None, recal=None, restore_only=None, overwrite=None,
+                 restore_resources=None):
         """Initialize Inputs.
 
         Args:
@@ -293,13 +298,20 @@ class SelfcalInputs(vdp.StandardInputs):
             recal: Always re-do self-calibration even solutions/caltables are found in the Pipeline context or json restore file.
 
                 default = False
+                Note that the selfcal solutions might not be applied if self-calibrated data labeled by the pipeline Datatypes already exists.
+                see `overwrite` below.
 
             restore_only:   Only attempt to apply pre-existing selfcal calibration tables and would not run 
                             the self-calibration sequence if their records (.selfcal.json, gaintables) are not present.
                             default = False
-                            note: restore_only will take precedence over recal=True/False                
+                            note: restore_only will take precedence over recal=True/False
 
-            restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically do an exhaustive search to lookup/extract/verify
+            overwrite: Allow overwriting pre-existing self-calibrated data of applicable field/spw labeled by DataType.
+            
+                default = False        
+
+            restore_resources: Path to the restore resources from a standard run of hif_selfcal. hif_selfcal will automatically 
+                do an exhaustive search to lookup/extract/verify
                 the selfcal restore resources, i.e., selfcal.json and all selfcal-caltable referred
                 in selfcal.json, starting from working/, to products/ and rawdata/.
                 If restore_resources is specified, this file path will be evaluated first
@@ -319,6 +331,7 @@ class SelfcalInputs(vdp.StandardInputs):
         self.parallel = parallel
         self.recal = recal
         self.restore_only = restore_only
+        self.overwrite = overwrite
         self.refantignore = refantignore
 
         self.n_solints = n_solints
@@ -370,54 +383,110 @@ class Selfcal(basetask.StandardTaskTemplate):
             'scal_targets': scal_targets_copy,
             'version': current_version,
             'datetime': current_datetime,
-            'pipeline_version': environment.pipeline_revision
+            'pipeline_version': environment.pipeline_revision,
         }
 
-        with open(filename, 'w', encoding='utf-8') as fp:
-            # Keys may include mixed strings and integers (e.g., field IDs), so sorting is disabled
-            json.dump(scal_targets_json, fp, sort_keys=False, indent=2, cls=JsonCustomEncoder,
-                      separators=(',', ': '))
+        output_path = Path(filename)
+
+        # Write JSON with custom formatting (keys may include mixed strings/integers, so no sorting)
+        with output_path.open('w', encoding='utf-8') as fp:
+            json.dump(
+                scal_targets_json,
+                fp,
+                sort_keys=False,
+                indent=2,
+                cls=JsonCustomEncoder,
+                separators=(',', ': '),
+            )
+
+    @staticmethod
+    def _json_debug_to_json_lite(filename='selfcal.debug.json'):
+        """Convert a debug JSON file to a lightweight JSON file.
+
+        This function reads a debug selfcal JSON file containing full self-calibration targets/library data and
+        generates a lightweight version of with essential calibration data fields suitable for archival and selfcal solution 
+        restoration.
+
+        Args:
+            filename: Path to the debug JSON file. Defaults to 'selfcal.debug.json'.
+        """
+        json_path = Path(filename)
+        scal_targets = json.loads(json_path.read_text(encoding='utf-8'))
+        Selfcal._scal_targets_to_json_lite(scal_targets['scal_targets'], filename=filename.replace('.debug.json', '.json'))
 
     @staticmethod
     def _scal_targets_to_json_lite(scal_targets: list[dict[str, Any]], filename: str | Path = 'selfcal.json') -> None:
         """Serialize scal_targets to a lightweight JSON file.
-        
-        Creates a JSON file with only essential calibration data fields. This reduces
-        file size by including only critical information like field, spw_real, exceptions,
-        and selected calibration library data.
-        
+
+        Creates a JSON file with only essential calibration data fields. This reduces file size by
+        including only critical information like field, spw_real, exceptions, and selected calibration
+        library data.
+
         Args:
-            scal_targets: List of target dictionaries containing calibration data
-            filename: Output JSON filename or path
+            scal_targets: List of target dictionaries containing calibration data.
+            filename: Output JSON filename or path. Defaults to 'selfcal.json'.
         """
         current_version = 1.0
         current_datetime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        scal_targets_copy = []
+        scal_targets_copy: list[dict[str, Any]] = []
 
         for target in scal_targets:
             target_lite = {
                 'field': target['field'],
+                'phasecenter': target['phasecenter'],
+                'cell': target['cell'],
+                'imsize': target['imsize'],
+                'field_name': target['field_name'],
+                'is_repr_target': target['is_repr_target'],
+                'is_mosaic': target['is_mosaic'],
+                'spw': target['spw'],
                 'spw_real': target['spw_real'],
                 'sc_exception': target['sc_exception'],
-                'sc_workdir': target['sc_workdir']
+                'sc_workdir': target['sc_workdir'],
             }
 
             # Extract essential calibration library data if present
             if not target_lite['sc_exception'] and isinstance(target.get('sc_lib'), dict):
                 target_lite['sc_lib'] = {}
-                # Copy success status and visibility list
-                if 'SC_success' in target['sc_lib']:
-                    target_lite['sc_lib']['SC_success'] = target['sc_lib']['SC_success']
-                if 'vislist' in target['sc_lib']:
-                    target_lite['sc_lib']['vislist'] = target['sc_lib']['vislist']
+                sc_lib = target['sc_lib']
+
+                # Copy success status and RMS values; required for QA and weblog rendering
+                for key in ('SC_success', 'RMS_orig', 'RMS_final'):
+                    if key in sc_lib:
+                        target_lite['sc_lib'][key] = sc_lib[key]
+
+                # Copy solution intervals and band information; required for QA and weblog rendering
+                for key in ('sc_solints', 'sc_band'):
+                    if key in target:
+                        target_lite[key] = target[key]
+
+                # Copy final solution intervals; required for QA and weblog rendering
+                for key in ('final_solints', 'final_phase_solints'):
+                    if key in sc_lib:
+                        target_lite['sc_lib'][key] = sc_lib[key]
+
+                # Copy visibility list and essential calibration parameters
+                if 'vislist' in sc_lib:
+                    target_lite['sc_lib']['vislist'] = sc_lib['vislist']
 
                     # Copy essential calibration parameters for each visibility
                     for vis in target_lite['sc_lib']['vislist']:
                         target_lite['sc_lib'][vis] = {}
-                        essential_keys = ['gaintable_final', 'applycal_interpolate_final', 'spwmap_final']
+                        essential_keys = [
+                            'gaintable_final',
+                            'applycal_interpolate_final',
+                            'spwmap_final',
+                        ]
+
+                        # Copy essential keys if they exist; required for QA and weblog rendering
                         for key in essential_keys:
-                            if key in target['sc_lib'][vis]:
-                                target_lite['sc_lib'][vis][key] = target['sc_lib'][vis][key]
+                            if key in sc_lib.get(vis, {}):
+                                target_lite['sc_lib'][vis][key] = sc_lib[vis][key]
+
+                        # Copy solution interval data
+                        for solint in target_lite.get('sc_solints', []):
+                            if solint in sc_lib.get(vis, {}):
+                                target_lite['sc_lib'][vis][solint] = {}
 
             scal_targets_copy.append(target_lite)
 
@@ -425,13 +494,21 @@ class Selfcal(basetask.StandardTaskTemplate):
             'scal_targets': scal_targets_copy,
             'version': current_version,
             'datetime': current_datetime,
-            'pipeline_version': environment.pipeline_revision
+            'pipeline_version': environment.pipeline_revision,
         }
 
-        with open(filename, 'w', encoding='utf-8') as fp:
-            # Keys may include mixed strings and integers (e.g., field IDs), so sorting is disabled
-            json.dump(scal_targets_json, fp, sort_keys=False, indent=2, cls=JsonCustomEncoder,
-                      separators=(',', ': '))
+        output_path = Path(filename)
+
+        # Write JSON with custom formatting (keys may include mixed strings/integers, so no sorting)
+        with output_path.open('w', encoding='utf-8') as fp:
+            json.dump(
+                scal_targets_json,
+                fp,
+                sort_keys=False,
+                indent=2,
+                cls=JsonCustomEncoder,
+                separators=(',', ': '),
+            )
 
     @staticmethod
     def _scal_targets_from_json(filename='selfcal.json'):
@@ -529,8 +606,10 @@ class Selfcal(basetask.StandardTaskTemplate):
         scal_targets = None
         if self.inputs.context.selfcal_targets:
             scal_targets_last = self.inputs.context.selfcal_targets
-            LOG.info('Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.')
-            caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets)
+            LOG.info(
+                'Found selfcal results in the context. Looking for the required caltables for applying the selfcal solutions.'
+            )
+            caltable_list, caltable_ready = self._apply_scal_check_caltable(scal_targets_last)
             if len(caltable_ready) < len(caltable_list):
                 LOG.warning('The required selfcal caltable(s) is missing if we use scal_targets from the context.')
             else:
@@ -579,8 +658,10 @@ class Selfcal(basetask.StandardTaskTemplate):
             # only sideload the selfcal restore information from the context or json if recal=False
             if scal_targets_last is not None:
                 scal_targets = scal_targets_last
+                LOG.info('Staging the previous selfcal solutions from the pipeline context.')
             if scal_targets_json is not None:
                 scal_targets = scal_targets_json
+                LOG.info('Staging the previous selfcal solutions from selfcal.json.')
 
         # if applycal_result_contline is None, then contline applycal is not triggered.
         # if applycal_result_line is None, then line applycal is not triggered.
@@ -619,28 +700,29 @@ class Selfcal(basetask.StandardTaskTemplate):
                     scal_targets, applycal_result_contline, applycal_result_line, selfcal_resources, is_restore)
 
         if self.inputs.apply:
+
             if mses_regcal_contline:
                 if mses_selfcal_contline:
                     LOG.warning(
-                        'Found DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE before attempting to apply selfcal solutions.'
+                        'Found DataType:SELFCAL_CONT*_SCIENCE before attempting to apply selfcal solutions.'
                     )
                     for ms in mses_selfcal_contline:
                         LOG.debug('  %s: %s', ms.basename, ms.data_column)
                 else:
                     LOG.info(
-                        'No DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE found before attempting to apply selfcal solutions.'
+                        'No DataType:SELFCAL_CONT*_SCIENCE found before attempting to apply selfcal solutions.'
                     )
 
-                if mses_selfcal_contline and not self.inputs.recal:
+                if mses_selfcal_contline and not self.inputs.overwrite:
                     LOG.warning(
-                        'Skip applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es) due to '
-                        'the presence of DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE and recal=False.'
+                        'Skip applying selfcal solutions to the REGCAL_CONT*_SCIENCE MS(es) due to '
+                        'the presence of DataType:SELFCAL_CONT*_SCIENCE and recal/overwrite=False.'
                     )
                 else:
-                    LOG.info('Applying selfcal solutions to the REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es).')
+                    LOG.info('Applying selfcal solutions to the REGCAL_CONT*_SCIENCE data.')
                     applycal_result_contline = self._apply_scal(scal_targets, mses_regcal_contline)
                     LOG.info(
-                        'DataType info for he REGCAL_CONT_SCIENCE/REGCAL_CONTLINE_SCIENCE MS(es) after applying selfcal solutions:'
+                        'DataType info for he REGCAL_CONT*_SCIENCE MS(es) after applying selfcal solutions:'
                     )
                     for ms in mses_regcal_contline:
                         LOG.debug('  %s: %s', ms.basename, ms.data_column)
@@ -653,10 +735,10 @@ class Selfcal(basetask.StandardTaskTemplate):
                 else:
                     LOG.info('No DataType:SELFCAL_LINE_SCIENCE found before attempting to apply selfcal solutions.')
 
-                if mses_selfcal_line and not self.inputs.recal:
+                if mses_selfcal_line and not self.inputs.overwrite:
                     LOG.warning(
                         'Skip applying selfcal solutions to the REGCAL_LINE_SCIENCE MS(es). due to '
-                        'the presence of DataType:SELFCAL_CONT_SCIENCE/SELFCAL_CONTLINE_SCIENCE and recal=False.'
+                        'the presence of DataType:SELFCAL_CONT*_SCIENCE and recal=False.'
                     )
                 else:
                     LOG.info('Attempt to apply any selfcal solutions to the REGCAL_LINE_SCIENCE MS(es)')
