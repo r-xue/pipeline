@@ -6,7 +6,8 @@ import pipeline.h.cli.utils as utils
 # docstring and type hints: inherits from hif.tasks.selfcal.selfcal.SelfcalInputs.__init__
 @utils.cli_wrapper
 def hif_selfcal(vis=None, field=None, spw=None, contfile=None, hm_imsize=None, hm_cell=None,
-                apply=None, recal=None, restore_only=None, refantignore=None, restore_resources=None,
+                apply=None, recal=None, restore_only=None, overwrite=None,
+                refantignore=None, restore_resources=None,
                 n_solints=None, amplitude_selfcal=None, gaincal_minsnr=None,
                 minsnr_to_proceed=None, delta_beam_thresh=None,
                 apply_cal_mode_default=None, rel_thresh_scaling=None,
