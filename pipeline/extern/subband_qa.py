@@ -1152,7 +1152,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     upper_index = isubb * subb_nchan + ishift_spk
 
                     if (lower_index < 0) or (lower_index >= upper_index):
-                        LOG.warning(f"Skipping correlator subband qa for MS: {vis} ant: {j} spw: {k} pol: {ipol} due to invalid slice bounds.")
+                        LOG.warning(f"Skipping correlator subband qa for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol} due to invalid slice bounds.")
                         break
 
                     subb_spk = np.abs(np.nanmean([left,right]) - bp_amp[lower_index:upper_index])
