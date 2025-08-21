@@ -400,6 +400,7 @@ def getCalAtmData(ms: str, spws: list, spwsetup: dict, antenna: str = ''):
         auxtau = subtb.getcell('tauSpectrum', 0)[0]
         taufit = CubicSpline(freq[order], auxtau[startchan:endchan][order], bc_type='not-a-knot')
         tau[spwid] = taufit(spwsetup[spwid]['chanfreqs'])
+        subtb.close()
     tb.close()
 
     return (tground_all, pground_all, hground_all, tmatm_all, tsys, trec, tatm, tau, antatm)
