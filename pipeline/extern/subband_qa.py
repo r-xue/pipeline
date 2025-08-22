@@ -1144,16 +1144,15 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     ###########################
 
                     # Spectral channel segment for spike estimate
-                    ishift_spk = np.max([int(subb_nchan*0.3),3])
-
-                    left = np.nanmean(bp_amp[isubb*subb_nchan-2*ishift_spk:isubb*subb_nchan-ishift_spk])
-                    right = np.nanmean(bp_amp[isubb*subb_nchan+ishift_spk:isubb*subb_nchan+2*ishift_spk])
+                    ishift_spk = np.max([int(subb_nchan * 0.3), 3])
+                    left = np.nanmean(bp_amp[isubb * subb_nchan - 2 * ishift_spk:isubb * subb_nchan - ishift_spk])
+                    right = np.nanmean(bp_amp[isubb * subb_nchan + ishift_spk:isubb * subb_nchan + 2 * ishift_spk])
 
                     lower_index = isubb * subb_nchan - ishift_spk
                     upper_index = isubb * subb_nchan + ishift_spk
 
                     if (lower_index < 0) or (lower_index >= upper_index):
-                        LOG.warning(f"Skipping correlator subband qa for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol} due to invalid slice bounds.")
+                        LOG.warning(f"Not evaluating remaining correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol} due to invalid slice bounds.")
                         break
 
                     subb_spk = np.abs(np.nanmean([left,right]) - bp_amp[lower_index:upper_index])
