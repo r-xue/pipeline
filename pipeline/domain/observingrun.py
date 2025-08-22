@@ -120,6 +120,12 @@ class ObservingRun(object):
                         f'an existing virtual-ID-to-name mapping: {self.virtual_science_spw_names[matched_name]} - {matched_name}.'
                     )
                     LOG.info(msg)
+                else:
+                    msg = (
+                        f'Virtual SPW mapping: Identified the science SPW name {s.name} (ID {s.id}) from EB {eb_name} to '
+                        f'a unique existing virtual-ID-to-name mapping: {self.virtual_science_spw_names[matched_name]} - {matched_name}.'
+                    )
+                    LOG.info(msg)
             elif match_count > 1:
                 # Multiple matches found - unlikely situation - log error
                 msg = (
