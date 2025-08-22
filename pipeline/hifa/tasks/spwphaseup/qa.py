@@ -40,6 +40,19 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # Get SpW mapping info for current intent and field.
             spwmapping = result.spwmaps.get((intent, field), None)
 
+            # If no SpW mapping info exists for the current intent and field,
+            # then skip QA with a warning. Based on the current (PIPE-2499,
+            # PIPE-2713, 2025) spwphaseup workflow, this should not happen,
+            # since SNR info is computed for intent/field combinations that
+            # appear in result.spwmaps, i.e. any intent/field for which we have
+            # SNR info should have an originating spwmapping. This is here to
+            # defensively handle potential future changes to the workflow.
+            if spwmapping is None:
+                LOG.warning(f"{ms.basename}: encountered intent/field combination '{intent}, {field}' in SNR info"
+                            f" result but unexpectedly unable to retrieve SpW mapping for this intent/field, cannot"
+                            f" assign a QA score.")
+                continue
+
             # If SpW mapping info exists for the current intent and field and
             # the current SpW is not mapped to itself, then skip the QA score
             # calculation. Note: if the SpW map is empty, that means by default
@@ -47,13 +60,6 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             # current SpW.
             if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
                 continue
-
-            # TODO: understand whether spwmapping=None could happen
-            # If spwmapping is None, then no mapping was computed or stored for
-            # that intent/field (e.g., phaseup skipped due to missing data,
-            # failures).
-            # if spwmapping is None:
-            #     continue
 
             # Check which QA score heuristic to use, based on intent.
             if intent == 'CHECK':
