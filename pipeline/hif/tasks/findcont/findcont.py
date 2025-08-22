@@ -1,6 +1,7 @@
+import collections
 import copy
 import os
-import collections
+
 import numpy as np
 
 import pipeline.domain.measures as measures
@@ -12,9 +13,8 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
 from pipeline.hif.heuristics import findcont
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+
 from .resultobjects import FindContResult
 
 LOG = infrastructure.get_logger(__name__)
@@ -93,8 +93,9 @@ class FindCont(basetask.StandardTaskTemplate):
         inputs = self.inputs
         context = self.inputs.context
 
-        # Check if this stage has been disabled for VLA (never set for ALMA)
-        if inputs.context.vla_skip_mfs_and_cube_imaging:
+        # Check if this stage should be skipped
+        if self._skip_findcont():
+            # only triggered for VLA-PI pieplein (not for ALMA)
             result = FindContResult({}, {}, '', 0, 0, [], {})
             return result
 
@@ -468,3 +469,16 @@ class FindCont(basetask.StandardTaskTemplate):
 
     def analyse(self, result):
         return result
+
+    def _skip_findcont(self):
+        """Check if we can proceed with the continuum finding heuristics.
+
+        Note: this is only relevant for VLA to detect if we should proceed with VLA cube imaging sequence
+        """
+        findcont_datatypes = [
+            DataType.SELFCAL_CONTLINE_SCIENCE,
+            DataType.REGCAL_CONTLINE_SCIENCE,
+        ]
+        ms_list = self.inputs.context.observing_run.get_measurement_sets_of_type(findcont_datatypes, msonly=True)
+        telescope = self.inputs.context.project_summary.telescope
+        return 'VLA' in telescope.upper() and not ms_list
