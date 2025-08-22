@@ -787,7 +787,7 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         return True
 
     @staticmethod
-    def find_good_commonbeam(psf_filename: str, field: str, spw: str):
+    def find_good_medianbeam(psf_filename: str, field: str, spw: str):
         """Find outlier beams and calculate a good "median" restoring beam recommendation.
 
         Analyzes per-channel restoring beams in the PSF image to identify the beam closest to the median
@@ -804,7 +804,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         Note:
             The current implementation returns an empty list for bad channels. This may be enhanced
-            in future versions to actually identify and return problematic beam channels.
+            in future versions to identify and return problematic beam channels.
+            PIPE-2758: Decided not to use the median beam algorithm for restoring beam as the absence 
+            of convolution of residual map in planes with per-plane beam > median beam could 
+            potentially cause flux scaling issues in those planes.
         """
         cqa = casa_tools.quanta
 
@@ -862,20 +865,10 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
 
         # Extract beam major axis dimensions in arcsec
         commonbeam_major_arcsec = cqa.convert(cqa.quantity(commonbeam['major']), 'arcsec')['value']
-        # commonbeam_minor_arcsec = cqa.convert(cqa.quantity(commonbeam['minor']), 'arcsec')['value']
-        # commonbeam_pa_deg = cqa.convert(cqa.quantity(commonbeam['pa']), 'deg')['value']
         median_beam_major_arcsec = cqa.convert(cqa.quantity(median_beam['major']), 'arcsec')['value']
-        # median_beam_minor_arcsec = cqa.convert(cqa.quantity(median_beam['minor']), 'arcsec')['value']
-        # median_beam_pa_deg = cqa.convert(cqa.quantity(median_beam['pa']), 'deg')['value']
 
         # Compare common beam recommendations
         beam_ratio = commonbeam_major_arcsec / median_beam_major_arcsec
-
-        # if beam_ratio > BEAM_RATIO_THRESHOLD or beam_ratio < 1 / BEAM_RATIO_THRESHOLD:
-        #     LOG.warning(
-        #         'Common beam recommendations differ between ia.commonbeam() and find_good_commonbeam() '
-        #         'methods by factor of %.2f in major axis: %s',
-        #         beam_ratio, psf_filename)
 
         # Identify channels with significant beam differences
         beam_ratio_per_channel = bmajor / median_beam_major_arcsec
@@ -887,9 +880,8 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             beam_major_arcsec = cqa.getvalue(cqa.convert(beam['major'], 'arcsec'))[0]
             beam_minor_arcsec = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0]
 
-            # beam_pa_deg = cqa.getvalue(cqa.convert(beam['pa'], 'deg'))[0]
-            # return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"@{beam_pa_deg:.1f}deg'
-            return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"'
+            beam_pa_deg = cqa.getvalue(cqa.convert(beam['pa'], 'deg'))[0]
+            return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"@{beam_pa_deg:.1f}deg'
 
         if bad_psf_channels.size:
             channel_ranges = utils.find_ranges(bad_psf_channels.astype(str))
@@ -907,3 +899,83 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             )
 
         return median_beam, bad_psf_channels
+
+    @staticmethod
+    def restoringbeam_from_psf(psf_filename: str, field: str, spw: str):
+        """Provide a restoringbeam recommendaton based on .psf images."""
+        cqa = casa_tools.quanta
+
+        with casa_tools.ImageReader(psf_filename) as image:
+            allbeams = image.restoringbeam()
+            commonbeam = image.commonbeam()
+
+        nchan = allbeams['nChannels']
+
+        BEAM_RATIO_THRESHOLD = 1.1
+
+        good_restoringbeam = None
+        bad_psf_channels = np.array([], dtype=np.int64)
+
+        # Pre-allocate arrays for beam parameters
+        bmajor = np.zeros(nchan, dtype=np.float64)
+        bminor = np.zeros(nchan, dtype=np.float64)
+        bpa = np.zeros(nchan, dtype=np.float64)
+
+        LOG.info('Per-plane restoring beam analysis for %s (channels: %d)', psf_filename, nchan)
+
+        # Extract beam parameters for each channel
+        for chan_idx in range(nchan):
+            beam_key = f'*{chan_idx}'
+            beam_data = allbeams['beams'][beam_key]['*0']
+
+            # Convert beam parameters to consistent units
+            major_arcsec = cqa.convert(cqa.quantity(beam_data['major']), 'arcsec')['value']
+            minor_arcsec = cqa.convert(cqa.quantity(beam_data['minor']), 'arcsec')['value']
+            pa_deg = cqa.convert(cqa.quantity(beam_data['positionangle']), 'deg')['value']
+
+            # Store converted values
+            bmajor[chan_idx] = major_arcsec
+            bminor[chan_idx] = minor_arcsec
+            bpa[chan_idx] = pa_deg
+
+            LOG.info(
+                'Channel %8d: major %.3f arcsec, minor %.3f arcsec, pa %.3f deg',
+                chan_idx,
+                bmajor[chan_idx],
+                bminor[chan_idx],
+                bpa[chan_idx],
+            )
+
+        try:
+            good_commonbeam, bad_psf_channels = ImageParamsHeuristics.find_good_commonbeam(psf_filename)
+
+            commonbeam_major_arcsec = cqa.convert(cqa.quantity(commonbeam['major']), 'arcsec')['value']
+            good_commonbeam_major_arcsec = cqa.convert(cqa.quantity(good_commonbeam['major']), 'arcsec')['value']
+
+            if commonbeam_major_arcsec > BEAM_RATIO_THRESHOLD * good_commonbeam_major_arcsec:
+                beam_ratio = commonbeam_major_arcsec / good_commonbeam_major_arcsec
+                beam_ratio_per_channel = bmajor / good_commonbeam_major_arcsec
+                exceeds_upper_threshold = beam_ratio_per_channel > BEAM_RATIO_THRESHOLD
+                exceeds_lower_threshold = beam_ratio_per_channel < 1 / BEAM_RATIO_THRESHOLD
+                outlier_channels = np.where(exceeds_upper_threshold | exceeds_lower_threshold)[0]
+                channel_ranges = utils.find_ranges(outlier_channels.astype(str))
+
+                good_restoringbeam = good_commonbeam
+                LOG.warning(
+                    'Common beam (%s) major axis is %.3gx larger than the robust common beam with outlier removal (%s) '
+                    'for field %s, spw %s. Adopting the robust beam for restoration of all channels. '
+                    'Channels with per-plane beams >%.2gx robust beam: %s',
+                    ImageParamsHeuristics._commonbeam_to_string(commonbeam, include_pa=False),
+                    beam_ratio,
+                    ImageParamsHeuristics._commonbeam_to_string(good_commonbeam, include_pa=False),
+                    field,
+                    spw,
+                    BEAM_RATIO_THRESHOLD,
+                    channel_ranges,
+                )
+        except Exception as ex:
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
+            LOG.info(ex)
+
+        return good_restoringbeam, bad_psf_channels
