@@ -674,7 +674,11 @@ class ImageParamsHeuristics(object):
                                field_intent[0] in [fld.name for fld in scan.fields]]
                     if scanids != []:
                         scanids = ','.join(scanids)
-                        real_spwspec = ','.join([str(self.observing_run.virtual2real_spw_id(spwid, ms)) for spwid in spwspec.split(',')])
+                        # PIPE-2770: correctly handle virtual-to-real spwspec translation in edge cases with
+                        # spws missing from a subset of EBs.
+                        real_spwspec = self.observing_run.get_real_spwsel([spwspec], [vis])[0]
+                        if not real_spwspec:
+                            continue
                         try:
                             antenna_ids = self.antenna_ids(field_intent[1], [os.path.basename(vis)])
                             taql = f"{'||'.join(['ANTENNA1==%d' % i for i in antenna_ids[os.path.basename(vis)]])}&&" \
@@ -694,8 +698,7 @@ class ImageParamsHeuristics(object):
                             pass
 
                 if not valid_data[field_intent]:
-                    LOG.debug('No data for SpW %s field %s' %
-                              (spwspec, field_intent[0]))
+                    LOG.debug('No data for SpW(virtual) %s field %s from %s', spwspec, field_intent[0], vislist)
 
         finally:
             casa_tools.imager.done()
