@@ -886,9 +886,9 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
         if bad_psf_channels.size:
             channel_ranges = utils.find_ranges(bad_psf_channels.astype(str))
             LOG.warning(
-                'Common beam (%s) major axis is %.3gx larger than the median of per-plane beams (%s) '
+                'Common beam (%s) major axis is %#.3gx larger than the median of per-plane beams (%s) '
                 'for field %s, spw %s. Channels with per-plane beams deviating from the median by a '
-                'factor >%.2gx: %s. Adopting the median beam for all channels.',
+                'factor >%#.2gx: %s. Adopting the median beam for all channels.',
                 beam_to_string(commonbeam),
                 beam_ratio,
                 beam_to_string(median_beam),
@@ -955,16 +955,14 @@ class ImageParamsHeuristicsVLA(ImageParamsHeuristics):
             if commonbeam_major_arcsec > BEAM_RATIO_THRESHOLD * good_commonbeam_major_arcsec:
                 beam_ratio = commonbeam_major_arcsec / good_commonbeam_major_arcsec
                 beam_ratio_per_channel = bmajor / good_commonbeam_major_arcsec
-                exceeds_upper_threshold = beam_ratio_per_channel > BEAM_RATIO_THRESHOLD
-                exceeds_lower_threshold = beam_ratio_per_channel < 1 / BEAM_RATIO_THRESHOLD
-                outlier_channels = np.where(exceeds_upper_threshold | exceeds_lower_threshold)[0]
+                outlier_channels = np.where(beam_ratio_per_channel > BEAM_RATIO_THRESHOLD)[0]
                 channel_ranges = utils.find_ranges(outlier_channels.astype(str))
 
                 good_restoringbeam = good_commonbeam
                 LOG.warning(
-                    'Common beam (%s) major axis is %.3gx larger than the robust common beam with outlier removal (%s) '
+                    'Common beam (%s) major axis is %#.3gx larger than the robust common beam with outlier-plane removal (%s) '
                     'for field %s, spw %s. Adopting the robust beam for restoration of all channels. '
-                    'Channels with per-plane beams >%.2gx robust beam: %s',
+                    'Channels with per-plane beams > %#.2gx robust beam: %s.',
                     ImageParamsHeuristics._commonbeam_to_string(commonbeam, include_pa=False),
                     beam_ratio,
                     ImageParamsHeuristics._commonbeam_to_string(good_commonbeam, include_pa=False),
