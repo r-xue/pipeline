@@ -2524,10 +2524,16 @@ class ImageParamsHeuristics(object):
                         major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
                     )
 
-        LOG.info('Commonbeam of %s, from ia.commonbeam():         %s',
-                 psf_filename, ImageParamsHeuristics._commonbeam_to_string(commonbeam))
-        LOG.info('Commonbeam of %s, from find_good_commonbeam():  %s',
-                 psf_filename, ImageParamsHeuristics._commonbeam_to_string(newcommonbeam))
+        LOG.info(
+            'Commonbeam of %s, from ia.commonbeam():         %s',
+            os.path.basename(psf_filename),
+            ImageParamsHeuristics._commonbeam_to_string(commonbeam),
+        )
+        LOG.info(
+            'Commonbeam of %s, from find_good_commonbeam():  %s',
+            os.path.basename(psf_filename),
+            ImageParamsHeuristics._commonbeam_to_string(newcommonbeam),
+        )
 
         bad_psf_channels = np.where(np.logical_not(weight))[0]
 
