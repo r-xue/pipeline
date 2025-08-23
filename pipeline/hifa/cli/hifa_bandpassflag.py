@@ -10,8 +10,9 @@ def hifa_bandpassflag(vis=None, caltable=None, intent=None, field=None, spw=None
                       hm_phaseup_combine=None, hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None,
                       bpsnr=None, minbpsnr=None, bpnsols=None, combine=None, refant=None, minblperant=None,
                       minsnr=None, solnorm=None, antnegsig=None, antpossig=None, tmantint=None, tmint=None, tmbl=None,
-                      antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None, hm_auto_fillgaps=None):
-    """Bandpass calibration flagging
+                      antblnegsig=None, antblpossig=None, relaxed_factor=None, niter=None, hm_auto_fillgaps=None, 
+                      parallel=None):
+    """Bandpass calibration flagging.
 
     This task performs a preliminary phased-up bandpass solution and temporarily
     applies it, then computes the flagging heuristics by calling

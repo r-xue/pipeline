@@ -129,7 +129,9 @@ class ImagePreCheckInputs(vdp.StandardInputs):
 
             calcsb: Force (re-)calculation of sensitivities and beams; defaults to False
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallel processing when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' 
 
         """
         self.context = context
@@ -327,7 +329,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                               cqa.convert(cells[(robust, str(default_uvtaper), 'repBW')][0], 'arcsec')],
                         robust=robust,
                         uvtaper=default_uvtaper,
-                        sensitivity=cqa.quantity(sensitivity, 'Jy/beam')))
+                        theoretical_sensitivity=cqa.quantity(sensitivity, 'Jy/beam'),
+                        observed_sensitiviy=None))
                 except:
                     sensitivities.append(Sensitivity(
                         array=array,
@@ -341,7 +344,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         cell=['0.0 arcsec', '0.0 arcsec'],
                         robust=robust,
                         uvtaper=default_uvtaper,
-                        sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+                        theoretical_sensitivity=None,
+                        observed_sensitivity=None))
                     sens_bw = 0.0
 
                 sensitivity_bandwidth = cqa.quantity(sens_bw, 'Hz')
@@ -387,7 +391,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                               cqa.convert(cells[(robust, str(default_uvtaper), 'aggBW')][0], 'arcsec')],
                         robust=robust,
                         uvtaper=default_uvtaper,
-                        sensitivity=_sensitivity))
+                        theoretical_sensitivity=_sensitivity,
+                        observed_sensitivity=None))
             except Exception as e:
                 for _ in cont_sens_bw_modes:
                     sensitivities.append(Sensitivity(
@@ -402,7 +407,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                         cell=['0.0 arcsec', '0.0 arcsec'],
                         robust=robust,
                         uvtaper=default_uvtaper,
-                        sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+                        theoretical_sensitivity=None,
+                        observed_sensitivity=None))
                 sens_bw = 0.0
 
             if sensitivity_bandwidth is None:
@@ -504,7 +510,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                                       cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'repBW')][0], 'arcsec')],
                                 robust=hm_robust,
                                 uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(sensitivity, 'Jy/beam')))
+                                theoretical_sensitivity=cqa.quantity(sensitivity, 'Jy/beam'),
+                                observed_sensitiviy=None))
                         except Exception as e:
                             sensitivities.append(Sensitivity(
                                 array=array,
@@ -518,7 +525,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                                 cell=['0.0 arcsec', '0.0 arcsec'],
                                 robust=robust,
                                 uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+                                theoretical_sensitivity=None,
+                                observed_sensitivity=None))
 
                     beams[(hm_robust, str(hm_uvtaper), 'aggBW')], known_synthesized_beams = image_heuristics.synthesized_beam(
                         [(repr_field, 'TARGET')], cont_spw, robust=hm_robust, uvtaper=hm_uvtaper,
@@ -563,7 +571,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                                       cqa.convert(cells[(hm_robust, str(hm_uvtaper), 'aggBW')][0], 'arcsec')],
                                 robust=hm_robust,
                                 uvtaper=hm_uvtaper,
-                                sensitivity=_sensitivity))
+                                theoretical_sensitivity=_sensitivity,
+                                observed_sensitivity=None))
                     except:
                         for _ in cont_sens_bw_modes:
                             sensitivities.append(Sensitivity(
@@ -578,7 +587,8 @@ class ImagePreCheck(basetask.StandardTaskTemplate):
                                 cell=['0.0 arcsec', '0.0 arcsec'],
                                 robust=robust,
                                 uvtaper=hm_uvtaper,
-                                sensitivity=cqa.quantity(0.0, 'Jy/beam')))
+                                theoretical_sensitivity=None,
+                                observed_sensitivity=None))
                     # Update beamRatios
                     if reprBW_mode in ['nbin', 'repr_spw']:
                         beamRatios[(hm_robust, str(hm_uvtaper))] = cqa.tos(cqa.div(beams[(hm_robust, str(hm_uvtaper),

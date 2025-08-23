@@ -3,11 +3,13 @@ import os
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.heuristics import fieldnames as fieldnames
 from pipeline.h.tasks.common import commonfluxresults
 from pipeline.infrastructure import task_registry
+
 from . import setjy
 
 LOG = infrastructure.get_logger(__name__)
@@ -52,10 +54,12 @@ class SetModelsInputs(vdp.StandardInputs):
         else:
             return ','.join(transfer_names)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
     # docstring and type hints: supplements hif_setmodels
     def __init__(self, context, output_dir=None, vis=None, reference=None,
                  refintent=None, transfer=None, transintent=None,
-                 reffile=None, normfluxes=None, scalebychan=None):
+                 reffile=None, normfluxes=None, scalebychan=None, parallel=None):
         """Initialize Inputs.
 
         Args:
@@ -96,8 +100,11 @@ class SetModelsInputs(vdp.StandardInputs):
 
             scalebychan: Scale the flux density on a per channel basis or else on a per spw basis
 
-        """
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
+        """
         super(SetModelsInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -109,10 +116,10 @@ class SetModelsInputs(vdp.StandardInputs):
         self.reffile = reffile
         self.normfluxes = normfluxes
         self.scalebychan = scalebychan
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hif_setmodels')
-class SetModels(basetask.StandardTaskTemplate):
+class SerialSetModels(basetask.StandardTaskTemplate):
     Inputs = SetModelsInputs
 
     def prepare(self, **parameters):
@@ -171,3 +178,9 @@ class SetModels(basetask.StandardTaskTemplate):
         task = setjy.Setjy(task_inputs)
         results_list = self._executor.execute(task, merge=False)
         return results_list[0]
+
+
+@task_registry.set_equivalent_casa_task('hif_setmodels')
+class SetModels(sessionutils.ParallelTemplate):
+    Inputs = SetModelsInputs
+    Task = SerialSetModels

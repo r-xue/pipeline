@@ -24,6 +24,7 @@ from . import display
 
 LOG = logging.get_logger(__name__)
 
+_VALID_CHARS = f'_.-{string.ascii_letters}{string.digits}'
 
 ImageRow = collections.namedtuple('ImageInfo', (
     'vis field fieldname intent spw spwnames pol stokes_label frequency_label frequency beam beam_pa sensitivity '
@@ -741,7 +742,6 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 # PIPE-2668: "prefix" is the top-level key in `plots_dict`, derived from plot wrapper objects
                 # created in display.CleanSummary. Historically, it's the first component of image basename
                 # separated by '.'.
-                
                 prefix = row.image_file.split('.')[0]
                 try:
                     final_iter = sorted(plots_dict[prefix][row.datatype][row.field][str(row.spw)][row.pol].keys())[-1]
@@ -788,7 +788,7 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                             fileobj.write(tab_renderer.render())
                         values['tab_url'] = tab_renderer.path
 
-                    if stokes_parameters != ['I']:
+                    if row.intent == 'POLARIZATION' and stokes_parameters != ['I']:
                         # Save POLI/POLA paths which is known only after plot() has been called
                         values['poli_abspath'] = get_plot(
                             plots_dict, prefix, row.datatype, row.field, str(row.spw),
@@ -870,22 +870,23 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 class TCleanPlotsRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, plots_dict, image_basename, field, spw, pol, datatype, urls, cube_all_cont):
         super().__init__('tcleanplots.mako', context, makeimages_results)
-        # PIPE-2668: expect image basename to be unique and URI stays under 255-char filesystem limit
-        outfile = f'{image_basename}-cleanplots.html'
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        outfile = f'{image_basename}.{pol}-cleanplots.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = "_.-%s%s" % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         if result.specmode in ('mfs', 'cont'):
             colorders = [[('pbcorimage', None), ('residual', None), ('cleanmask', None)]]
             if 'VLA' in result.imaging_mode:
-                # PIPE-1462 / PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
+                # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
                 # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
                 # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
                 # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
                 # vs. specmode='mvc') but with a different warning.
-                # For consistency and clarity in VLA continuum imaging plots, we continue to use non-pbcor images here.
+                # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
+                # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
+                # the primary beam (PB) mask limit.
                 colorders = [[('image', None), ('residual', None), ('cleanmask', None)]]
         else:
             colorders = [[('pbcorimage', 'mom8'), ('residual', 'mom8'), ('mom8_fc', None), ('spectra', None)],
@@ -913,12 +914,12 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
 class TCleanTablesRenderer(basetemplates.CommonRenderer):
     def __init__(self, context, makeimages_results, result, table_dict, image_basename, field, spw, pol, urls):
         super().__init__('tcleantables.mako', context, makeimages_results)
-        # PIPE-2668: expect image basename to be unique and URI stays under 255-char filesystem limit
-        outfile = f'{image_basename}-cleanplots.html'
+        # PIPE-2668/PIPE-2743: expect image basename to be unique and URI stays under 255-char filesystem limit
+        # use `-cleantables.html` to stay different from tcleanplots URLs.
+        outfile = f'{image_basename}-cleantables.html'
 
         # HTML encoded filenames, so can't have plus sign
-        valid_chars = '_.-%s%s' % (string.ascii_letters, string.digits)
-        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, valid_chars))
+        self.path = os.path.join(self.dirname, filenamer.sanitize(outfile, _VALID_CHARS))
 
         self.extra_data = {
             'table_dict': table_dict,
@@ -1013,7 +1014,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
     def update_mako_context(self, ctx, context, results):
 
-        # because hif.tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
+        # because hif_tclean is a multi-vis task (is_multi_vis_task = True) which operates over multiple MSs,
         # we will only get one CleanListResult in the ResultsList returned by the task.
         makeimages_result = results[0]
         if not makeimages_result:

@@ -6,6 +6,7 @@ import tempfile
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.pipelineqa as pqa
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 import pipeline.qa.bpcal as bpcal
 from . import common
 
@@ -27,7 +28,7 @@ class BandpassQAPool(pqa.QAScorePool):
         super(BandpassQAPool, self).__init__()
         # rawdata will hold the dictionary output by the CA QA task
         self.rawdata = rawdata
-        self._num_pols = utils.get_num_caltable_polarizations(caltable)
+        self._num_pols = caltable_tools.get_num_caltable_polarizations(caltable)
 
     def update_scores(self, ms):
         """

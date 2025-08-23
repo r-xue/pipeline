@@ -10,7 +10,7 @@ from pipeline.infrastructure import casa_tools
 LOG = infrastructure.get_logger(__name__)
 
 IntentField = collections.namedtuple('IntentField', 'intent field')
-SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype')
+SpwMapping = collections.namedtuple('SpwMapping', 'combine spwmap snr_info snr_threshold_used solint gaintype calc_snr_info')
 
 
 def combine_spwmap(scispws: list[SpectralWindow]) -> list:

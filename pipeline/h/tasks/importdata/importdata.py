@@ -333,8 +333,10 @@ class ImportData(basetask.StandardTaskTemplate):
             correcteddatacolumn_name = get_correcteddatacolumn_name(ms.name)
 
             # Try getting any saved data type information from the MS HISTORY table
-            ms_history = tablereader.MeasurementSetReader.get_history(ms)
-            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            ms_history = tablereader.MeasurementSetReader.get_history(ms.name)
+            data_type_per_column_from_ms, data_types_per_source_and_spw_from_ms = (
+                importdata_heuristics.get_ms_data_types_from_history(ms_history)
+            )
 
             if inputs.datacolumns not in (None, {}):
                 # Parse user defined datatype information via task parameter
@@ -390,10 +392,16 @@ class ImportData(basetask.StandardTaskTemplate):
 
                 self._set_column_data_types(ms, data_types, datacolumn_name, correcteddatacolumn_name)
 
-                # Log a warning if the user defined datatype information differs from the MS HISTORY information (if available)
-                if ms.data_column != data_type_per_column_from_ms:
-                    LOG.warning(f'User supplied datatypes {dict((v, k.name) for k, v in ms.data_column.items())} differ from information found in the MS ({dict((v, k.name) for k, v in data_type_per_column_from_ms.items())}).')
-
+                # Log a warning if the user defined datatype information differs from the MS HISTORY
+                # information (when available)
+                if data_type_per_column_from_ms and ms.data_column != data_type_per_column_from_ms:
+                    user_datatypes = {v: k.name for k, v in ms.data_column.items()}
+                    ms_datatypes = {v: k.name for k, v in data_type_per_column_from_ms.items()}
+                    LOG.warning(
+                        'User supplied datatypes %s differ from information found in the MS (%s).',
+                        user_datatypes,
+                        ms_datatypes,
+                    )
             else:
                 if data_type_per_column_from_ms and data_types_per_source_and_spw_from_ms:
                     # Set the lookup dictionaries

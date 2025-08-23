@@ -1095,16 +1095,17 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
+        _theoretical_rms_aqua = pp.theoretical_rms if pp.brightnessunit == 'Jy/beam' else None  # for some telescopes, the unit might be different from 'Jy/beam'
         _sensitivity = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                    spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                    bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                   sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
+                                   observed_sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
                                    effective_bw=_effective_bw, imagename=rgp.imagename,
-                                   datatype=self.inputs.datatype.name)
+                                   datatype=self.inputs.datatype.name, theoretical_sensitivity=_theoretical_rms_aqua)
         _theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                          spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                         sensitivity=pp.theoretical_rms)
+                                         theoretical_sensitivity=pp.theoretical_rms, observed_sensitivity=None)
         _sensitivity_info = SensitivityInfo(_sensitivity, pp.stat_freqs, (cp.is_not_nro()))
         effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,

@@ -70,15 +70,14 @@ class OrderedDefaultdict(collections.OrderedDict):
 
 
 def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
-    """
-    Merge HTML TD columns with identical values using rowspan.
+    """Merge HTML TD columns with identical values using rowspan.
 
     Arguments:
     rows -- a list of tuples, one tuple per row, containing n elements for the
             n columns.
     num_to_merge -- the number of columns to merge, starting from the left
                     hand column. Leave as None to merge all columns.
-    vertical_align -- Set to True to vertically centre any merged cells.
+    vertical_align -- Set to True to vertically centre any merged/unmerged cells.
 
     Output:
     A list of strings, one string per row, containing TD elements.
@@ -103,13 +102,11 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
             start += rowspan
 
             if rowspan > 1:
-                new_td = ['<td rowspan="%s"%s>%s</td>' % (rowspan,
-                                                          valign,
-                                                          same_vals[0])]
+                new_td = [f'<td rowspan="{rowspan}"{valign}>{same_vals[0]}</td>']
                 blanks = [''] * (rowspan - 1)
                 merged.extend(new_td + blanks)
             else:
-                td = '<td>%s</td>' % (same_vals[0])
+                td = f'<td{valign}>{same_vals[0]}</td>'
                 merged.append(td)
 
         new_cols.append(merged)
