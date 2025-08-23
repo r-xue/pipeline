@@ -487,11 +487,14 @@ class MakeImages(basetask.StandardTaskTemplate):
         array = ('%dm' % min(diameters))
 
         # Check if this sensitivity is for the representative source and SpW
-        _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
-        if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
-            is_representative = True
-        else:
+        if heuristics.imaging_mode == 'VLA':
             is_representative = False
+        else:
+            _, repr_source, repr_spw, _, _, _, _, _, _, _ = heuristics.representative_target()
+            if str(repr_spw) in result.spw.split(',') and repr_source == utils.dequote(result.sourcename):
+                is_representative = True
+            else:
+                is_representative = False
 
         return Sensitivity(array=array,
                            intent=target['intent'],

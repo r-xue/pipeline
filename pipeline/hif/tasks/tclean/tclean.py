@@ -1116,24 +1116,27 @@ class Tclean(cleanbase.CleanBase):
         if inputs.specmode == 'cube':
             bad_psf_fit = self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
             if bad_psf_fit:
-                newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(result.psf)
-                if newcommonbeam is not None:
-                    cqa = casa_tools.quanta
-                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
-                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
-                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
+                restoringbeam_sugguested, bad_psf_channels = self.image_heuristics.restoringbeam_from_psf(
+                    result.psf, inputs.field, inputs.spw
+                )
+                if restoringbeam_sugguested is not None:
+                    restoringbeam_major_arcsec = qaTool.getvalue(
+                        qaTool.convert(restoringbeam_sugguested['major'], 'arcsec'))[0]
+                    restoringbeam_minor_arcsec = qaTool.getvalue(
+                        qaTool.convert(restoringbeam_sugguested['minor'], 'arcsec'))[0]
+                    restoringbeam_pa_deg = qaTool.getvalue(qaTool.convert(restoringbeam_sugguested['pa'], 'deg'))[0]
                     LOG.info(
-                        'Adopting the restoring beam recommended by find_good_commonbeam() for Field %s SPW %s with %#.3g x %#.3g arcsec @ %.1f deg',
+                        'Adopting the restoring beam recommended by restoringbeam_from_psf() for Field %s SPW %s with %#.3g x %#.3g arcsec @ %.1f deg',
                         inputs.field,
                         inputs.spw,
-                        newcommonbeam_major_arcsec,
-                        newcommonbeam_minor_arcsec,
-                        newcommonbeam_pa_deg,
+                        restoringbeam_major_arcsec,
+                        restoringbeam_minor_arcsec,
+                        restoringbeam_pa_deg,
                     )
                     inputs.restoringbeam = [
-                        f'{newcommonbeam_major_arcsec:#.3g}arcsec',
-                        f'{newcommonbeam_minor_arcsec:#.3g}arcsec',
-                        f'{newcommonbeam_pa_deg:.1f}deg',
+                        f'{restoringbeam_major_arcsec:#.3g}arcsec',
+                        f'{restoringbeam_minor_arcsec:#.3g}arcsec',
+                        f'{restoringbeam_pa_deg:.1f}deg',
                     ]
 
         # Determine masking limits depending on PB

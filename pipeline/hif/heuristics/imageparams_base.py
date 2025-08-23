@@ -2330,50 +2330,6 @@ class ImageParamsHeuristics(object):
             # For science targets use majority antennas only
             return self.majority_antenna_ids(local_vislist)
 
-    def check_psf(self, psf_name, field, spw):
-        """Check for bad psf fits."""
-        cqa = casa_tools.quanta
-        bad_psf_fit = False
-
-        LOG.info('checking psf: %s from field=%s / spw=%s', psf_name, field, spw)
-
-        with casa_tools.ImageReader(psf_name) as image:
-            try:
-                beams = image.restoringbeam()['beams']
-                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.values()])
-
-                # Filter empty psf planes
-                bmaj = bmaj[np.where(bmaj > 1e-6)]
-                bmaj_median = np.median(bmaj)
-
-                # theshold (in relative scaling) to detect outliers and trigger the .find_good_common heuristic method
-                outlier_threshold = 2.0
-
-                cond1 = np.logical_and(0.0 < bmaj, bmaj < bmaj_median / outlier_threshold)
-                cond2 = bmaj > outlier_threshold * bmaj_median
-                LOG.info(
-                    'Per-plane beams bmajor - min/max/medium - %s/%s/%s',
-                    np.min(bmaj),
-                    np.max(bmaj),
-                    np.median(bmaj),
-                )
-                if np.logical_or(cond1, cond2).any():
-                    bad_psf_fit = True
-                    LOG.warning(
-                        'The PSF fit has one or more outlier channels for field %s SPW %s, please check the '
-                        'results for this cube carefully, there are likely data issues.',
-                        field,
-                        spw,
-                    )
-                else:
-                    LOG.info('No outlier per-plane beams with bmaj < 0.5*median(bmaj) or bmaj > 2*median(bmaj)')
-            except Exception as ex:
-                traceback_msg = traceback.format_exc()
-                LOG.debug(traceback_msg)
-                LOG.info(ex)
-
-        return bad_psf_fit
-
     def usepointing(self):
 
         """tclean flag to use pointing table."""
@@ -2438,6 +2394,62 @@ class ImageParamsHeuristics(object):
     def rotatepastep(self):
         return None
 
+    def check_psf(self, psf_name, field, spw):
+        """Check for problematic PSF based on per-plane beam results from .psf image.
+
+        This method primarily catches issues with CASA's internal FitGaussianPSF algorithm and was
+        initially developed for ALMA cube imaging cases as a trigger for calling .find_good_commonbeam().
+        
+        Note that CASA's internal FitGaussianPSF algorithm (CAS-13022) performs channel-wise
+        interpolation/extrapolation, so header values may not exactly reflect the actual per-channel
+        beam size in edge cases. For example, a blank channel might still report a beam fit value
+        derived from interpolation.
+        
+        Reference:
+            https://open-bitbucket.nrao.edu/projects/CASA/repos/casa6/browse/casatools/src/code/synthesis/TransformMachines/StokesImageUtil.cc#481
+        """        
+        cqa = casa_tools.quanta
+        bad_psf_fit = False
+
+        LOG.info('checking psf: %s from field=%s / spw=%s', psf_name, field, spw)
+
+        with casa_tools.ImageReader(psf_name) as image:
+            try:
+                beams = image.restoringbeam()['beams']
+                bmaj = np.array([cqa.getvalue(cqa.convert(b['*0']['major'], 'arcsec')) for b in beams.values()])
+
+                # Filter empty psf planes
+                bmaj = bmaj[np.where(bmaj > 1e-6)]
+                bmaj_median = np.median(bmaj)
+
+                # theshold (in relative scaling) to detect outliers and trigger the .find_good_common heuristic method
+                outlier_threshold = 2.0
+
+                cond1 = np.logical_and(0.0 < bmaj, bmaj < bmaj_median / outlier_threshold)
+                cond2 = bmaj > outlier_threshold * bmaj_median
+                LOG.info(
+                    'Per-plane beams bmajor - min/max/medium - %s/%s/%s',
+                    np.min(bmaj),
+                    np.max(bmaj),
+                    np.median(bmaj),
+                )
+                if np.logical_or(cond1, cond2).any():
+                    bad_psf_fit = True
+                    LOG.warning(
+                        'The PSF fit has one or more outlier channels for field %s SPW %s, please check the '
+                        'results for this cube carefully, there are likely data issues.',
+                        field,
+                        spw,
+                    )
+                else:
+                    LOG.info('No outlier per-plane beams with bmaj < 0.5*median(bmaj) or bmaj > 2*median(bmaj)')
+            except Exception as ex:
+                traceback_msg = traceback.format_exc()
+                LOG.debug(traceback_msg)
+                LOG.info(ex)
+
+        return bad_psf_fit
+
     @staticmethod
     def find_good_commonbeam(psf_filename: str):
         """Find and replace outlier beams to calculate a good common beam.
@@ -2475,7 +2487,7 @@ class ImageParamsHeuristics(object):
             # Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
             for steps in range(0, 2):  ### Heuristic : how many iterations here ?
-                local_axratio[weight == False] = np.nan
+                local_axratio[~weight] = np.nan
                 mean_axrat = np.nanmean(local_axratio)
                 std_axrat = np.nanstd(local_axratio)
                 ## Flag all points deviating from the mean by 3 times stdev
@@ -2512,21 +2524,57 @@ class ImageParamsHeuristics(object):
                         major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
                     )
 
-        LOG.info('the commonbeam of %s, by ia.commonbeam():          %s', psf_filename, commonbeam)
-        LOG.info('the commonbeam of %s, by find_good_commonbeam():   %s', psf_filename, newcommonbeam)
+        LOG.info(
+            'Commonbeam of %s, from ia.commonbeam():         %s',
+            os.path.basename(psf_filename),
+            ImageParamsHeuristics._commonbeam_to_string(commonbeam),
+        )
+        LOG.info(
+            'Commonbeam of %s, from find_good_commonbeam():  %s',
+            os.path.basename(psf_filename),
+            ImageParamsHeuristics._commonbeam_to_string(newcommonbeam),
+        )
 
-        # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
-        # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). So here the returned recommended beam is
-        # explictly set to None as below.
-        newcommonbeam = None
         bad_psf_channels = np.where(np.logical_not(weight))[0]
 
+        return newcommonbeam, bad_psf_channels
+
+    @staticmethod
+    def _commonbeam_to_string(beam, include_pa=True):
+
+        cqa = casa_tools.quanta
+        beam_major_arcsec = cqa.getvalue(cqa.convert(beam['major'], 'arcsec'))[0]
+        beam_minor_arcsec = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0]
+        beam_pa_deg = cqa.getvalue(cqa.convert(beam['pa'], 'deg'))[0]
+        if include_pa:
+            return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"@{beam_pa_deg:.1f}deg'
+        else:
+            return f'{beam_major_arcsec:#.3g}"x{beam_minor_arcsec:#.3g}"'
+
+    @staticmethod
+    def restoringbeam_from_psf(psf_filename: str, field: str, spw: str):
+        """Provide a restoringbeam recommendaton based on .psf images."""
+        bad_psf_channels = np.array([], dtype=np.int64)
+        try:
+            _, bad_psf_channels = ImageParamsHeuristics.find_good_commonbeam(psf_filename)
+        except Exception as ex:
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
+            LOG.info(ex)
+
+        # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
+        # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). However, a warning is issued (as below)
+        # if "bad PSF fits" were found in any channel. The returned recommended beam is explictly set to None as below.
+        good_restoringbeam = None
         if bad_psf_channels.size:
             LOG.warning(
-                'Found bad PSF fits for %s in channel(s): %s', psf_filename, utils.find_ranges(map(str, bad_psf_channels))
+                'Found bad PSF fits for field %s, spw %s in channel(s): %s',
+                field,
+                spw,
+                utils.find_ranges(bad_psf_channels.astype(str)),
             )
 
-        return newcommonbeam, bad_psf_channels
+        return good_restoringbeam, bad_psf_channels
 
     def get_cfcaches(self, cfcache: str):
         """Parses comma separated cfcache string
