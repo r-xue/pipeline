@@ -23,6 +23,7 @@ from .automaskthresholdsequence import AutoMaskThresholdSequence
 from .autoscalthresholdsequence import AutoScalThresholdSequence
 from .imagecentrethresholdsequence import ImageCentreThresholdSequence
 from .manualmaskthresholdsequence import ManualMaskThresholdSequence
+from .reusemaskthresholdsequence import ReuseMaskThresholdSequence
 from .nomaskthresholdsequence import NoMaskThresholdSequence
 from .resultobjects import TcleanResult
 from .vlaautomaskthresholdsequence import VlaAutoMaskThresholdSequence
@@ -505,7 +506,7 @@ class Tclean(cleanbase.CleanBase):
                 channel_width_freq_TOPO = float(real_spw_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                 freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                 freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                 # Skip 1 km/s
                 extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
             else:
@@ -702,6 +703,11 @@ class Tclean(cleanbase.CleanBase):
         # Manually supplied mask
         elif inputs.hm_masking == 'manual':
             sequence_manager = ManualMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
+                                                           gridder=inputs.gridder, threshold=threshold,
+                                                           sensitivity=sensitivity, niter=inputs.niter)
+        # Re-used Stokes I mask
+        elif inputs.hm_masking == 're-use':
+            sequence_manager = ReuseMaskThresholdSequence(multiterm=multiterm, mask=inputs.mask,
                                                            gridder=inputs.gridder, threshold=threshold,
                                                            sensitivity=sensitivity, niter=inputs.niter)
         # No mask
@@ -995,10 +1001,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1111,16 +1117,24 @@ class Tclean(cleanbase.CleanBase):
             bad_psf_fit = self.image_heuristics.check_psf(result.psf, inputs.field, inputs.spw)
             if bad_psf_fit:
                 newcommonbeam, bad_psf_channels = self.image_heuristics.find_good_commonbeam(result.psf)
-                if newcommonbeam is None:
-                    result.error = '%s/%s/spw%s clean error: no valid beams' % (inputs.field, inputs.intent, inputs.spw)
-                    return result
-                elif bad_psf_channels.shape != (0,):
-                    LOG.warning('Found bad PSF fits for SPW %s in channels %s' %
-                                (inputs.spw, ','.join(map(str, bad_psf_channels))))
-                    # For Cycle 7 the new common beam shall not yet be used (PIPE-375).
-                    # In the future, we might use the PIPE-375 method to calculate unskewed
-                    # common beam in case of PSF fit problems.  For implementation details see
-                    # https://open-bitbucket.nrao.edu/projects/PIPE/repos/pipeline/browse/pipeline/hif/tasks/tclean/tclean.py?at=9b8902e66bf44e644e612b1980e5aee5361e8ddd#607
+                if newcommonbeam is not None:
+                    cqa = casa_tools.quanta
+                    newcommonbeam_major_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['major'], 'arcsec'))[0]
+                    newcommonbeam_minor_arcsec = cqa.getvalue(cqa.convert(newcommonbeam['minor'], 'arcsec'))[0]
+                    newcommonbeam_pa_deg = cqa.getvalue(cqa.convert(newcommonbeam['pa'], 'deg'))[0]
+                    LOG.info(
+                        'Adopting the restoring beam recommended by find_good_commonbeam() for Field %s SPW %s with %#.3g x %#.3g arcsec @ %.1f deg',
+                        inputs.field,
+                        inputs.spw,
+                        newcommonbeam_major_arcsec,
+                        newcommonbeam_minor_arcsec,
+                        newcommonbeam_pa_deg,
+                    )
+                    inputs.restoringbeam = [
+                        f'{newcommonbeam_major_arcsec:#.3g}arcsec',
+                        f'{newcommonbeam_minor_arcsec:#.3g}arcsec',
+                        f'{newcommonbeam_pa_deg:.1f}deg',
+                    ]
 
         # Determine masking limits depending on PB
         extension = '.tt0' if result.multiterm else ''
@@ -1159,13 +1173,17 @@ class Tclean(cleanbase.CleanBase):
         LOG.info('    Residual min: %s', residual_min)
         LOG.info('    Residual scaled MAD: %s', residual_robust_rms)
 
-        # All continuum
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Determine if we keep iterating past the dirty image. This is currently the case for
+        # 1) All continuum case
+        # 2) TARGET IQUV imaging without previous auto-mask from a stokes I imaging stage
+        if (inputs.specmode == 'cube' and inputs.spwsel_all_cont) or \
+           (inputs.intent == 'TARGET' and inputs.stokes == 'IQUV' and inputs.mask in (None, '')):
+
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1190,28 +1208,34 @@ class Tclean(cleanbase.CleanBase):
             result.set_image_rms_min(nonpbcor_image_non_cleanmask_rms_min)
             result.set_image_rms_max(nonpbcor_image_non_cleanmask_rms_max)
             result.set_image_robust_rms_and_spectra(nonpbcor_image_robust_rms_and_spectra)
-            result.cube_all_cont = True
+
+            if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+                result.cube_all_cont = True
+
             keep_iterating = False
         else:
             keep_iterating = True
 
-        # Adjust threshold based on the dirty image statistics
-        dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
-        tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
-        new_threshold, DR_correction_factor, maxEDR_used = \
-            self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
+        if inputs.hm_cleaning in ('manual', 'rms'):
+            # Adjust threshold based on the dirty image statistics
+            dirty_dynamic_range = None if sequence_manager.sensitivity == 0.0 else residual_max / sequence_manager.sensitivity
+            tlimit = self.image_heuristics.tlimit(1, inputs.field, inputs.intent, inputs.specmode, dirty_dynamic_range)
+            new_threshold, DR_correction_factor, maxEDR_used = \
+                self.image_heuristics.dr_correction(sequence_manager.threshold, dirty_dynamic_range, residual_max,
                                                 inputs.intent, tlimit, inputs.drcorrect)
-        sequence_manager.threshold = new_threshold
-        sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
+            if inputs.hm_cleaning == 'manual':
+                sequence_manager.threshold = sequence_manager.threshold
+            else:
+                sequence_manager.threshold = new_threshold
+            sequence_manager.dr_corrected_sensitivity = sequence_manager.sensitivity * DR_correction_factor
 
         # Adjust niter based on the dirty image statistics
         new_niter = self.image_heuristics.niter_correction(sequence_manager.niter, inputs.cell, inputs.imsize,
                                                            residual_max, new_threshold, residual_robust_rms, intent=inputs.intent)
         sequence_manager.niter = new_niter
 
-        # Save corrected sensitivity in iter0 result object for 'cube' and
-        # 'all continuum' since there is no further iteration.
-        if inputs.specmode == 'cube' and inputs.spwsel_all_cont:
+        # Save corrected sensitivity in iter0 result object if there is no further iteration.
+        if not keep_iterating:
             result.set_dirty_dynamic_range(dirty_dynamic_range)
             result.set_DR_correction_factor(DR_correction_factor)
             result.set_maxEDR_used(maxEDR_used)
@@ -1231,7 +1255,15 @@ class Tclean(cleanbase.CleanBase):
             if inputs.hm_masking == 'auto':
                 new_cleanmask = '%s.iter%s.mask' % (rootname, iteration)
             elif inputs.hm_masking == 'manual':
+                # Note that this will only work if the name of the manual
+                # mask does not happen to be '%s.iter%s.mask' % (rootname, iteration)
+                # which will usually be the case.
                 new_cleanmask = inputs.mask
+            elif inputs.hm_masking == 're-use':
+                # Note the same issue reported in the VLA image iteration above about
+                # tclean not accepting a user mask of the same name as it would create
+                # itself. Hence ".cleanmask" instead of ".mask".
+                new_cleanmask = '%s.iter%s.cleanmask' % (rootname, iteration)
             elif inputs.hm_masking == 'none':
                 new_cleanmask = ''
             else:
@@ -1298,10 +1330,10 @@ class Tclean(cleanbase.CleanBase):
                                                   cont_freq_ranges=self.cont_freq_ranges)
 
             # Center frequency and effective bandwidth in Hz for the image header (and thus the manifest).
-            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz')))
-                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))))
+            ctrfrq = 0.5 * (float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0])
+                         +  float(qaTool.getvalue(qaTool.convert(nonpbcor_image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]))
             if inputs.specmode in ('mfs', 'cont'):
-                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz')))
+                effbw = float(qaTool.getvalue(qaTool.convert(self.aggregate_lsrk_bw, 'Hz'))[0])
             else:
                 msobj = self.inputs.context.observing_run.get_ms(name=inputs.vis[0])
                 nbin = inputs.nbin if inputs.nbin is not None and inputs.nbin > 0 else 1
@@ -1526,8 +1558,8 @@ class Tclean(cleanbase.CleanBase):
         if "_fc" in outfile:
             mom_type += "_fc"
 
-        # Execute job to create the MOM8_FC image.
-        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans)
+        # Execute job to create the MOM0/8/10_FC image.
+        job = casa_tasks.immoments(imagename=imagename, moments=moments, outfile=outfile, chans=chans, stokes='I')
         self._executor.execute(job)
         assert os.path.exists(outfile)
 
@@ -1694,10 +1726,10 @@ class Tclean(cleanbase.CleanBase):
             mom8fc_masked_image = np.ma.array(mom8fc_image, mask=np.where(flattened_pb_image > result.pblimit_image * pblimit_factor, False, True))
 
             # Get number of pixels per beam
-            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad')) / 2
-            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad')) / 2
-            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad')))
-            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad')))
+            major_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['major'], 'rad'))[0] / 2
+            minor_radius = casa_tools.quanta.getvalue(casa_tools.quanta.convert(mom8fc_image_summary['restoringbeam']['minor'], 'rad'))[0] / 2
+            cellx = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][0], mom8fc_image_summary['axisunits'][0]), 'rad'))[0])
+            celly = abs(casa_tools.quanta.getvalue(casa_tools.quanta.convert(casa_tools.quanta.quantity(mom8fc_image_summary['incr'][1], mom8fc_image_summary['axisunits'][1]), 'rad'))[0])
             num_pixels_in_beam = float(major_radius * minor_radius * np.pi / np.log(2) / cellx / celly)
             # Get threshold for maximum segment calculation
             cut1 = mom8_image_median_annulus + 3.0 * cube_scaledMAD_fc_chans

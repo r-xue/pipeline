@@ -155,8 +155,9 @@ using the CASA task <b>gencal</b>.</p>
         %for single_result in result:
 	        <p><b>${os.path.basename(single_result.sw_result.inputs['caltable'])}</b></p>
         %endfor
-        This table is NOT applied or added to the pipeline context callibrary.
-
+        % if not result.inputs["apply_swpowcal"]:
+            This table is NOT applied or added to the pipeline context callibrary.
+        %endif
         <h4>Per antenna plots:<br>
         <ul>
         %for band in swpowspgain_subpages.keys():

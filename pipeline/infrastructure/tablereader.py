@@ -9,6 +9,7 @@ import itertools
 import operator
 import os
 import re
+import traceback
 import xml
 from typing import TYPE_CHECKING
 
@@ -61,6 +62,59 @@ def find_EVLA_band(frequency: float, bandlimits: list[float] | None = None, BBAN
         return 'unknown'
     else:
         return BBAND[i]
+
+
+def _get_groupingid_spectralspec_from_alma_spw_name(spw_name: str) -> tuple[str | None, str | None]:
+    """
+    Parse an ALMA spectral window name to pick out the Grouping ID and the
+    SpectralSpec ID, if present.
+
+    PIPE-1132: introduced support for retrieving SpectralSpec.
+    PIPE-2384: added support for retrieving the Grouping ID.
+    PIPE-2697: refactored to handle older datasets that do not define
+      Grouping ID and/or SpectralSpec.
+
+    Example of full SpW name: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where Grouping ID: X100001; Spectral Spec: X900000004
+
+    Example of SpW names from Cycle 3 - 11: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where SpectralSpec: X1398968310; no Grouping ID set.
+
+    Example of SpW names from ALMA data before Cycle 3: ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where no Grouping ID or SpectralSpec is set.
+
+    Args:
+        spw_name: Spectral window name string to parse.
+
+    Returns:
+        2-tuple containing Grouping ID and Spectral Spec ID, where each can be
+        None if not found in SpW name.
+    """
+    parts = spw_name.split('#')
+    try:
+        alma_index = next(i for i, part in enumerate(parts) if part.startswith("ALMA"))
+    except StopIteration:
+        # If "ALMA" is not found, consider spw name malformed and return without
+        # Grouping ID or SpectralSpec.
+        return None, None
+
+    # Select the parts preceding "ALMA", and set defaults.
+    metadata_parts = parts[:alma_index]
+    groupingid, spectralspec = None, None
+
+    # If there is only 1 element preceding, this is assumed to be the SpectralSpec.
+    if len(metadata_parts) == 1:
+        spectralspec = metadata_parts[0]
+    # If there are 2 elements preceding, these are assumed to be Grouping ID
+    # followed by SpectralSpec.
+    elif len(metadata_parts) == 2:
+        groupingid, spectralspec = metadata_parts
+    # If there are zero elements preceding, then no Grouping ID or SpectralSpec
+    # were found, so return with defaults of None.
+    # If there are more than 2 elements preceding, then consider the spw name
+    # malformed and return with defaults of None.
+
+    return groupingid, spectralspec
 
 
 def _get_ms_name(ms: MeasurementSet | str) -> str:
@@ -261,21 +315,11 @@ class MeasurementSetReader:
         ms.spectralspec_spwmap = utils.get_spectralspec_to_spwid_map(ms.spectral_windows)
 
     @staticmethod
-    def add_spectralspec_to_spws(ms):
-        # For ALMA, extract spectral spec from spw name.
+    def add_spectralspec_and_groupingid_to_spws(ms):
+        """Add SpectralSpec and Grouping ID to each SpW for ALMA measurement sets"""
         for spw in ms.spectral_windows:
             if 'ALMA' in spw.name:
-                # PIPE-2384: new spw names will include grouping ID as first 'token'
-                # if present, the spectralspec will then be the second 'token'
-                # New SPW Example: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
-                # Grouping ID: X100001; Spectral Spec: X900000004
-                # Old SPW Example: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
-                # Spectral Spec: X1398968310
-                spw_split = spw.name.split('#')
-                alma_ind = [spw_split.index(x) for x in spw_split if x.startswith('ALMA')][0]
-                spw.spectralspec = spw_split[alma_ind - 1]
-                if alma_ind == 2:
-                    spw.grouping_id = spw_split[0]
+                spw.grouping_id, spw.spectralspec = _get_groupingid_spectralspec_from_alma_spw_name(spw.name)
 
     @staticmethod
     def link_intents_to_spws(msmd, ms):
@@ -475,7 +519,7 @@ class MeasurementSetReader:
 
         # Update spectral windows in ms with band and spectralspec.
         MeasurementSetReader.add_band_to_spws(ms)
-        MeasurementSetReader.add_spectralspec_to_spws(ms)
+        MeasurementSetReader.add_spectralspec_and_groupingid_to_spws(ms)
 
         # Populate mapping of spectralspecs to spws.
         MeasurementSetReader.add_spectralspec_spwmap(ms)
@@ -557,20 +601,24 @@ class MeasurementSetReader:
         return (acs_software_version, acs_software_build_version)
 
     @staticmethod
-    def get_history(ms: domain.MeasurementSet) -> numpy.ndarray:
-        """
-        Retrieve the MS history.
+    def get_history(ms_name: str) -> np.ndarray | None:
+        """Retrieve the MS history from the HISTORY table.
+
+        Args:
+            ms_name: Path to the measurement set directory.
 
         Returns:
-            A numpy array with the history messages.
+            Numpy array containing history messages, or None if table cannot be read.
         """
         try:
-            history_table = os.path.join(ms.name, 'HISTORY')
+            history_table = os.path.join(ms_name, 'HISTORY')
             with casa_tools.TableReader(history_table) as ht:
                 msgs = ht.getcol('MESSAGE')
             return msgs
-        except:
-            LOG.info(f"Unable to read HISTORY table for MS {_get_ms_basename(ms)}")
+        except Exception:
+            LOG.info("Unable to read HISTORY table for MS %s", os.path.basename(ms_name))
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
             return None
 
 

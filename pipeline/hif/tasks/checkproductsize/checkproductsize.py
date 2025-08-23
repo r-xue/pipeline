@@ -59,7 +59,9 @@ class CheckProductSizeInputs(vdp.StandardInputs):
 
             calcsb: Force (re-)calculation of sensitivities and beams
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallelization when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' 
 
             maximsize: Maximum allowed image count size (mitigation goal and hard maximum).
                 Parameter ``maximsize`` must be even and divisible by 2,3,5,7 only.

@@ -5,8 +5,8 @@ import pipeline.h.cli.utils as utils
 
 # docstring and type hints: inherits from hifa.tasks.flagging.flagtargetsalma.FlagTargetsALMAInputs.__init__
 @utils.cli_wrapper
-def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None):
-    """Do science target flagging
+def hifa_flagtargets(vis=None, template=None, filetemplate=None, flagbackup=None, parallel=None):
+    """Do science target flagging.
 
     The hifa_flagtargets task performs basic flagging operations on a list of
     science target MeasurementSets, including:

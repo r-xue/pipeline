@@ -26,7 +26,8 @@ from pipeline.hsd.tasks import common
 from pipeline.hsd.tasks.baseline import baseline
 from pipeline.hsd.tasks.common import compress, direction_utils, observatory_policy, rasterutil, sdtyping
 from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.hsd.tasks.imaging import (detectcontamination, gridding,
+from pipeline.hsd.tasks.imaging import (detect_missed_lines,
+                                        detectcontamination, gridding,
                                         imaging_params, resultobjects,
                                         sdcombine, weighting, worker)
 from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
@@ -274,6 +275,8 @@ class SDImaging(basetask.StandardTaskTemplate):
                     self._calculate_sensitivity(cp, rgp, pp)
                 finally:
                     pp.done()
+
+                self._detect_missed_lines( cp, rgp, pp )
 
                 self._detect_contamination(rgp)
 
@@ -638,7 +641,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         rgp.imagename_nro = None
         if cp.is_nro:
             rgp.imagename_nro = self.get_imagename(rgp.source_name, _v_spwids_unique, rgp.ant_name, rgp.asdm,
-                                                    stokes=rgp.correlations, specmode=rgp.specmode)
+                                                   stokes=rgp.correlations, specmode=rgp.specmode)
             LOG.info("Output image name for NRO: {}".format(rgp.imagename_nro))
 
     def _set_image_group_item_into_reduction_group_patameters(self, cp: imaging_params.CommonParameters,
@@ -689,7 +692,7 @@ class SDImaging(basetask.StandardTaskTemplate):
 
         # virtual spw ids
         rgp.v_spwids = [self.inputs.context.observing_run.real2virtual_spw_id(s, m)
-                         for s, m in zip(rgp.spwids, rgp.msobjs)]
+                        for s, m in zip(rgp.spwids, rgp.msobjs)]
 
         # image name
         self._set_image_name_based_on_virtual_spwid(cp, rgp)
@@ -865,7 +868,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.v_spwids, antenna=rgp.ant_name, specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=self.stokes,
@@ -895,7 +898,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result_nro, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.v_spwids, antenna=rgp.ant_name, specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=rgp.stokes_list[1],
@@ -1092,18 +1095,19 @@ class SDImaging(basetask.StandardTaskTemplate):
         _spwid = str(rgp.combined.v_spws[REF_MS_ID])
         _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
         _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
+        _theoretical_rms_aqua = pp.theoretical_rms if pp.brightnessunit == 'Jy/beam' else None  # for some telescopes, the unit might be different from 'Jy/beam'
         _sensitivity = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                    spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                    bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                   sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
+                                   observed_sensitivity=_cqa.quantity(pp.image_rms, pp.brightnessunit),
                                    effective_bw=_effective_bw, imagename=rgp.imagename,
-                                   datatype=self.inputs.datatype.name)
+                                   datatype=self.inputs.datatype.name, theoretical_sensitivity=_theoretical_rms_aqua)
         _theoretical_noise = Sensitivity(array='TP', intent='TARGET', field=rgp.source_name,
                                          spw=_spwid, is_representative=pp.is_representative_source_and_spw,
                                          bandwidth=_bw, bwmode='cube', beam=pp.beam, cell=pp.qcell,
-                                         sensitivity=pp.theoretical_rms)
+                                         theoretical_sensitivity=pp.theoretical_rms, observed_sensitivity=None)
         _sensitivity_info = SensitivityInfo(_sensitivity, pp.stat_freqs, (cp.is_not_nro()))
-        effbw = float(_cqa.getvalue(_effective_bw))
+        effbw = float(_cqa.getvalue(_effective_bw)[0])
         self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                      spwlist=rgp.combined.v_spws, antenna='COMBINED', specmode=rgp.specmode,
                                      imagemode=cp.imagemode, stokes=self.stokes,
@@ -1134,7 +1138,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         # image name
         # image name should be based on virtual spw id
         pp.imagename = self.get_imagename(rgp.source_name, rgp.combined.v_spws_unique,
-                                           stokes=rgp.correlations, specmode=rgp.specmode)
+                                          stokes=rgp.correlations, specmode=rgp.specmode)
 
         # Imaging of all antennas
         LOG.info('Combine images of Source {} Spw {:d}'.format(rgp.source_name, rgp.combined.v_spws[REF_MS_ID]))
@@ -1150,7 +1154,7 @@ class SDImaging(basetask.StandardTaskTemplate):
             _spwid = str(rgp.combined.v_spws[REF_MS_ID])
             _spwobj = rgp.ref_ms.get_spectral_window(_spwid)
             _effective_bw = _cqa.quantity(_spwobj.channels.chan_effbws[0], 'Hz')
-            effbw = float(_cqa.getvalue(_effective_bw))
+            effbw = float(_cqa.getvalue(_effective_bw)[0])
             self._finalize_worker_result(self.inputs.context, rgp.imager_result, session=','.join(cp.session_names), sourcename=rgp.source_name,
                                          spwlist=rgp.combined.v_spws, antenna='COMBINED', specmode=rgp.specmode,
                                          imagemode=cp.imagemode, stokes=rgp.stokes_list[1],
@@ -1242,6 +1246,47 @@ class SDImaging(basetask.StandardTaskTemplate):
             True if imager_result_nro.outcome has some value.
         """
         return rgp.imager_result_nro is not None and rgp.imager_result_nro.outcome is not None
+
+    def _detect_missed_lines(self,
+                             cp: imaging_params.CommonParameters,
+                             rgp: imaging_params.ReductionGroupParameters,
+                             pp: imaging_params.PostProcessParameters ):
+        """
+        Detect lines that are possibly missed to be identified
+
+        Args:
+            cp  : Common parameter object of prepare()
+            rgp : Reduction group parameter object of prepare()
+            pp  : Imaging post process parameters of prepare()
+        Raises:
+            ValueError if unknown mask mode is returned DetectMissedLines.analyze()
+        """
+        do_plot = not basetask.DISABLE_WEBLOG
+
+        # pick valid_lines
+        valid_lines = [ ll[0:2] for ll in rgp.channelmap_range_list[0] if ll[2] is True ]
+
+        # get linefree ranges from pp
+        linefree_ranges = convert_range_list_to_ranges( pp.include_channel_range )
+
+        # initialize
+        missed_lines = detect_missed_lines.DetectMissedLines(
+            self.inputs.context,
+            rgp.msobjs,
+            rgp.spwid_list,
+            rgp.fieldid_list,
+            rgp.imager_result.outcome['image'],
+            rgp.imager_result.frequency_channel_reversed,
+            cp.edge,
+            do_plot
+        )
+
+        # analyze
+        detections = missed_lines.analyze( valid_lines, linefree_ranges )
+
+        # register the results
+        rgp.imager_result.outcome['line_emission_off_range_at_peak'] = detections['single_beam']
+        rgp.imager_result.outcome['line_emission_off_range_extended'] = detections['moment_mask']
 
     def _detect_contamination(self, rgp: imaging_params.ReductionGroupParameters):
         """Detect contamination of image.
@@ -1493,7 +1538,7 @@ class SDImaging(basetask.StandardTaskTemplate):
         cqa = casa_tools.quanta
         beam_unit = cqa.getunit(pp.beam['major'])
         assert cqa.getunit(pp.beam['minor']) == beam_unit
-        beam_size = numpy.sqrt(cqa.getvalue(pp.beam['major']) * cqa.getvalue(pp.beam['minor']))[0]
+        beam_size = numpy.sqrt(cqa.getvalue(pp.beam['major'])[0] * cqa.getvalue(pp.beam['minor'])[0])
         center_unit = 'deg'
         angle_unit = None
         for r in pp.raster_infos:
@@ -1735,7 +1780,7 @@ class SDImaging(basetask.StandardTaskTemplate):
                 return False
             with casa_tools.TableReader(_k2jytab) as tb:
                 _t = tb.query('SPECTRAL_WINDOW_ID=={}&&ANTENNA1=={}'.format(tirp.spwid, tirp.antid),
-                               columns='CPARAM')
+                              columns='CPARAM')
                 if _t.nrows == 0:
                     LOG.warning('No Jy/K caltable row found for spw {}, antenna {} in {}. {}'.format(tirp.spwid,
                                 tirp.antid, os.path.basename(_k2jytab), tirp.error_msg))
@@ -1784,23 +1829,23 @@ class SDImaging(basetask.StandardTaskTemplate):
             tirp : Parameter object of calculate_theoretical_image_rms()
         """
         unit = tirp.dt.getcolkeyword('EXPOSURE', 'UNIT')
+        # Total time on source of data not online flagged for all polarizations.
         t_on_tot = tirp.cqa.getvalue(tirp.cqa.convert(tirp.cqa.quantity(
             tirp.dt.getcol('EXPOSURE').take(tirp.index_list, axis=-1).sum(), unit), tirp.time_unit))[0]
-        # flagged fraction
-        full_intent = utils.to_CASA_intent(tirp.msobj, 'TARGET')
-        flagdata_summary_job = casa_tasks.flagdata(vis=tirp.infile, mode='summary',
-                                                   antenna='{}&&&'.format(tirp.antid),
-                                                   field=str(tirp.fieldid),
-                                                   spw=str(tirp.spwid), intent=full_intent,
-                                                   spwcorr=False, fieldcnt=False,
-                                                   name='summary')
-        flag_stats = self._executor.execute(flagdata_summary_job)
-        frac_flagged = flag_stats['spw'][str(tirp.spwid)]['flagged'] / flag_stats['spw'][str(tirp.spwid)]['total']
+        # Additional flag fraction
+        flag_summary = tirp.dt.getcol('FLAG_SUMMARY').take(tirp.index_list, axis=-1)
+        (num_pol, num_data) = flag_summary.shape
+        # PIPE-2508: fraction of data where any of polarization is flagged. (FLAG_SUMMARY is 0 for flagged data)
+        # TODO: This logic should be improved in future when full polarization is supported.
+        num_flagged = numpy.count_nonzero(flag_summary.sum(axis=0) < num_pol)
+        frac_flagged = num_flagged / num_data
+        LOG.debug('Per polarization flag summary (# of integrations): total=%d, flagged per pol=%s, any pol flagged=%d',
+                  num_data, num_data - flag_summary.sum(axis=1), num_flagged)
         # the actual time on source
         tirp.t_on_act = t_on_tot * (1.0 - frac_flagged)
         LOG.info('The actual on source time = {} {}'.format(tirp.t_on_act, tirp.time_unit))
-        LOG.info('- total time on source = {} {}'.format(t_on_tot, tirp.time_unit))
-        LOG.info('- flagged Fraction = {} %'.format(100 * frac_flagged))
+        LOG.info('- total time on source (excl. online flagged integrations) = {} {}'.format(t_on_tot, tirp.time_unit))
+        LOG.info('- addtional flag fraction = {} %'.format(100 * frac_flagged))
 
     def _obtain_calibration_tables_applied(self, tirp: imaging_params.TheoreticalImageRmsParameters):
         """Obtain calibration tables applied. A sub method of calculate_theoretical_image_rms().
@@ -1877,14 +1922,15 @@ class SDImaging(basetask.StandardTaskTemplate):
         if tirp.raster_info is None:
             _rsres = RasterScanHeuristicsResult(tirp.msobj)
             rgp.imager_result.rasterscan_heuristics_results_incomp \
-                              .setdefault(tirp.msobj.origin_ms, []) \
-                              .append(_rsres)
+                             .setdefault(tirp.msobj.origin_ms, []) \
+                             .append(_rsres)
             _rsres.set_result_fail(tirp.antid, tirp.spwid, tirp.fieldid)
             LOG.debug(f'Raster scan analysis incomplete. Skipping calculation of theoretical image RMS : EB:{tirp.msobj.execblock_id}:{tirp.msobj.antennas[tirp.antid].name}')
             return SKIP
         tirp.dt = cp.dt_dict[tirp.msobj.basename]
+        # Note: index_list is a list of DataTable row IDs for selected data EXCLUDING rows where all pols are flagged online.
         tirp.index_list = common.get_index_list_for_ms(tirp.dt, [tirp.msobj.origin_ms],
-                                                        [tirp.antid], [tirp.fieldid], [tirp.spwid])
+                                                       [tirp.antid], [tirp.fieldid], [tirp.spwid])
         if len(tirp.index_list) == 0:  # this happens when permanent flag is set to all selection.
             LOG.info('No unflagged row in DataTable. Skipping further calculation.')
             return SKIP
@@ -2116,6 +2162,25 @@ def convert_range_list_to_string(range_list: List[int]) -> str:
     stat_chans = str(';').join(['{:d}~{:d}'.format(range_list[iseg], range_list[iseg + 1])
                                for iseg in range(0, len(range_list), 2)])
     return stat_chans
+
+
+def convert_range_list_to_ranges(range_list: List[int]) -> List[List[int]]:
+    """
+    Convert a list of index ranges to list of signle ranges
+
+    Args:
+        range_list : A list of ranges, e.g., [imin0, imax0, imin1, imax1, ...]
+
+    Returns:
+        A list of single ranges, e.g. '[ [imin0, imax0], [imin1, imax1], ...]
+
+    Example:
+        >>> convert_range_list_to_string( [5, 10, 15, 20] )
+        '[[5, 10], [15, 20]]'
+    """
+    ranges = [ [range_list[i], range_list[i+1]] for i in range(0, len(range_list), 2) ]
+
+    return ranges
 
 
 def merge_ranges(range_list: List[Tuple[Number, Number]]) -> List[Tuple[Number, Number]]:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import copy
 import fnmatch
@@ -8,14 +10,13 @@ import os.path
 import re
 import shutil
 import uuid
-from typing import List, Optional, Union
-
+from typing import TYPE_CHECKING, List, Optional, Union
+import traceback
 import astropy.units as u
 import numpy as np
 from astropy.coordinates import SkyCoord
 from casatasks.private.imagerhelpers.imager_base import PySynthesisImager
-from casatasks.private.imagerhelpers.imager_parallel_continuum import \
-    PyParallelContSynthesisImager
+from casatasks.private.imagerhelpers.imager_parallel_continuum import PyParallelContSynthesisImager
 from casatasks.private.imagerhelpers.input_parameters import ImagerParameters
 
 import pipeline.domain.measures as measures
@@ -26,8 +27,12 @@ import pipeline.infrastructure.mpihelpers as mpihelpers
 import pipeline.infrastructure.utils as utils
 from pipeline.hif.heuristics import mosaicoverlap
 from pipeline.infrastructure import casa_tools, logging
-from pipeline.infrastructure.utils.conversion import (phasecenter_to_skycoord,
-                                                      refcode_to_skyframe)
+from pipeline.infrastructure.utils.conversion import phasecenter_to_skycoord, refcode_to_skyframe
+
+if TYPE_CHECKING:
+    from pipeline.hif.tasks.makeimlist import CleanTarget
+    from pipeline.infrastructure.vdp import StandardInputs
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -538,6 +543,15 @@ class ImageParamsHeuristics(object):
                                                      dopbcorr=False,
                                                      parallel=do_parallel
                                                      )
+                        LOG.debug('Imaging parameters for synthesized beam evaluation:')
+                        LOG.debug('    field:     %s', field)
+                        LOG.debug('    intent:    %s', intent)
+                        LOG.debug('    spw        %s', valid_real_spwid_list)
+                        LOG.debug('    imsize:    %s', imsize)
+                        LOG.debug('    cell:      %.2g%s', cellv, cellu)
+                        LOG.debug('    uvtaper:   %s', uvtaper)
+                        LOG.debug('    robust:    %s', gridder)
+                        LOG.debug('    mosweight: %s', mosweight)
                         if do_parallel:
                             makepsf_imager = PyParallelContSynthesisImager(params=paramList)
                         else:
@@ -554,8 +568,8 @@ class ImageParamsHeuristics(object):
                                 restoringbeam = image.restoringbeam()
                                 # CAS-11193: Round to 3 digits to avoid confusion when comparing
                                 # heuristics against the beam weblog display (also using 3 digits)
-                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))))
-                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))))
+                                restoringbeam_major_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['major'], 'arcsec'))[0]))
+                                restoringbeam_minor_rounded = float('%.3g' % (qaTool.getvalue(qaTool.convert(restoringbeam['minor'], 'arcsec'))[0]))
                                 restoringbeam_rounded = {'major': {'value': restoringbeam_major_rounded, 'unit': 'arcsec'},
                                                          'minor': {'value': restoringbeam_minor_rounded, 'unit': 'arcsec'},
                                                          'positionangle': restoringbeam['positionangle']}
@@ -578,8 +592,8 @@ class ImageParamsHeuristics(object):
             # beam that's good for all field/intents
             smallest_beam = {'minor': '1e9arcsec', 'major': '1e9arcsec', 'positionangle': '0.0deg'}
             for beam in makepsf_beams:
-                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))
-                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec')):
+                bmin_v = qaTool.getvalue(qaTool.convert(beam['minor'], 'arcsec'))[0]
+                if bmin_v < qaTool.getvalue(qaTool.convert(smallest_beam['minor'], 'arcsec'))[0]:
                     smallest_beam = beam
         else:
             smallest_beam = 'invalid'
@@ -592,7 +606,7 @@ class ImageParamsHeuristics(object):
 
         cqa = casa_tools.quanta
         try:
-            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec')) / pixperbeam
+            cell_size = cqa.getvalue(cqa.convert(beam['minor'], 'arcsec'))[0] / pixperbeam
             return ['%.2garcsec' % (cell_size)]
         except:
             return ['invalid']
@@ -1097,9 +1111,9 @@ class ImageParamsHeuristics(object):
             # Check if there is a non-zero min/max angular resolution
             minAcceptableAngResolution = cqa.convert(self.proj_params.min_angular_resolution, 'arcsec')
             maxAcceptableAngResolution = cqa.convert(self.proj_params.max_angular_resolution, 'arcsec')
-            if cqa.getvalue(minAcceptableAngResolution) == 0.0 or cqa.getvalue(maxAcceptableAngResolution) == 0.0:
+            if cqa.getvalue(minAcceptableAngResolution)[0] == 0.0 or cqa.getvalue(maxAcceptableAngResolution)[0] == 0.0:
                 desired_angular_resolution = cqa.convert(self.proj_params.desired_angular_resolution, 'arcsec')
-                if cqa.getvalue(desired_angular_resolution) != 0.0:
+                if cqa.getvalue(desired_angular_resolution)[0] != 0.0:
                     minAcceptableAngResolution = cqa.mul(desired_angular_resolution, 0.8)
                     maxAcceptableAngResolution = cqa.mul(desired_angular_resolution, 1.2)
                 else:
@@ -1110,7 +1124,7 @@ class ImageParamsHeuristics(object):
 
             # Check if there is a non-zero sensitivity goal
             sensitivityGoal = cqa.convert(self.proj_params.desired_sensitivity, 'mJy')
-            if cqa.getvalue(sensitivityGoal) == 0.0:
+            if cqa.getvalue(sensitivityGoal)[0] == 0.0:
                 sensitivityGoal = cqa.convert(science_goals['sensitivity'], 'mJy')
 
         else:
@@ -1199,8 +1213,8 @@ class ImageParamsHeuristics(object):
             return [0, 0]
 
         # get cell and beam sizes in arcsec
-        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))
-        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))
+        cellx_v = cqa.getvalue(cqa.convert(cellx, 'arcsec'))[0]
+        celly_v = cqa.getvalue(cqa.convert(celly, 'arcsec'))[0]
         beam_radius_v = primary_beam
 
         # set size of image to spread of field centres plus a
@@ -1363,12 +1377,10 @@ class ImageParamsHeuristics(object):
         return pblimit_image, pblimit_cleanmask
 
     def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
-        if intent == 'POLARIZATION' and stokes == 'IQUV':
-            return 'clarkstokes'
 
-        if (specmode == 'cont'):
+        if specmode == 'cont':
             fr_bandwidth = self.get_fractional_bandwidth(spwspec)
-            if (fr_bandwidth > 0.1):
+            if fr_bandwidth > 0.1:
                 return 'mtmfs'
             else:
                 return 'hogbom'
@@ -1703,8 +1715,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s:%d~%d' % (real_spw, nfi[0], nfi[-1]), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_flagged = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_flagged = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_flagged_freq_ranges.append((f0_flagged, f1_flagged))
                     # The frequency range from advisechansel is from channel edge
@@ -1720,8 +1732,8 @@ class ImageParamsHeuristics(object):
                         result = csu.advisechansel(msname=msname, fieldid=int(field_id), spwselection='%s' % (real_spw), getfreqrange=True, freqframe=frame)
                     csu.done()
 
-                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz')))
-                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz')))
+                    f0_full = float(cqa.getvalue(cqa.convert(result['freqstart'], 'Hz'))[0])
+                    f1_full = float(cqa.getvalue(cqa.convert(result['freqend'], 'Hz'))[0])
 
                     per_field_full_freq_ranges.append((f0_full, f1_full))
 
@@ -2319,12 +2331,12 @@ class ImageParamsHeuristics(object):
             return self.majority_antenna_ids(local_vislist)
 
     def check_psf(self, psf_name, field, spw):
-
         """Check for bad psf fits."""
-
         cqa = casa_tools.quanta
-
         bad_psf_fit = False
+
+        LOG.info('checking psf: %s from field=%s / spw=%s', psf_name, field, spw)
+
         with casa_tools.ImageReader(psf_name) as image:
             try:
                 beams = image.restoringbeam()['beams']
@@ -2332,16 +2344,33 @@ class ImageParamsHeuristics(object):
 
                 # Filter empty psf planes
                 bmaj = bmaj[np.where(bmaj > 1e-6)]
-
                 bmaj_median = np.median(bmaj)
-                cond1 = np.logical_and(0.0 < bmaj, bmaj < 0.5 * bmaj_median)
-                cond2 = bmaj > 2.0 * bmaj_median
+
+                # theshold (in relative scaling) to detect outliers and trigger the .find_good_common heuristic method
+                outlier_threshold = 2.0
+
+                cond1 = np.logical_and(0.0 < bmaj, bmaj < bmaj_median / outlier_threshold)
+                cond2 = bmaj > outlier_threshold * bmaj_median
+                LOG.info(
+                    'Per-plane beams bmajor - min/max/medium - %s/%s/%s',
+                    np.min(bmaj),
+                    np.max(bmaj),
+                    np.median(bmaj),
+                )
                 if np.logical_or(cond1, cond2).any():
                     bad_psf_fit = True
-                    LOG.warning('The PSF fit for one or more channels for field %s SPW %s failed, please check the'
-                                ' results for this cube carefully, there are likely data issues.' % (field, spw))
-            except:
-                pass
+                    LOG.warning(
+                        'The PSF fit has one or more outlier channels for field %s SPW %s, please check the '
+                        'results for this cube carefully, there are likely data issues.',
+                        field,
+                        spw,
+                    )
+                else:
+                    LOG.info('No outlier per-plane beams with bmaj < 0.5*median(bmaj) or bmaj > 2*median(bmaj)')
+            except Exception as ex:
+                traceback_msg = traceback.format_exc()
+                LOG.debug(traceback_msg)
+                LOG.info(ex)
 
         return bad_psf_fit
 
@@ -2409,71 +2438,95 @@ class ImageParamsHeuristics(object):
     def rotatepastep(self):
         return None
 
-    def find_good_commonbeam(self, psf_filename):
-        """
-        Find and replace outlier beams to calculate a good common beam.
+    @staticmethod
+    def find_good_commonbeam(psf_filename: str):
+        """Find and replace outlier beams to calculate a good common beam.
+
         Method from Urvashi Rao.
 
         Returns new common beam and array of channel numbers with invalid beams.
         Leaves old beams in the PSF as is.
         """
-
         cqa = casa_tools.quanta
 
         with casa_tools.ImageReader(psf_filename) as image:
             allbeams = image.restoringbeam()
             commonbeam = image.commonbeam()
+            # note that the beam measure dictionaries return by .restoringbeam() and .commonbeam() have slightly
+            # different keys:
+            #   from .restoringbeam:    major/minor/positionangle
+            #   fro .commonbeam:        major/minior/pa
+            # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.image.html#casatools.image.image.commonbeam
+            # https://casadocs.readthedocs.io/en/latest/api/tt/casatools.image.html#casatools.image.image.restoringbeam
             nchan = allbeams['nChannels']
             areas = np.zeros(nchan, 'float')
             axratio = np.zeros(nchan, 'float')
             weight = np.zeros(nchan, 'bool')
 
             for ii in range(0, nchan):
-                axmajor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['major']), 'arcsec')['value']
-                axminor = cqa.convert(cqa.quantity(allbeams['beams']['*'+str(ii)]['*0']['minor']), 'arcsec')['value']
+                axmajor = cqa.convert(cqa.quantity(allbeams['beams']['*' + str(ii)]['*0']['major']), 'arcsec')['value']
+                axminor = cqa.convert(cqa.quantity(allbeams['beams']['*' + str(ii)]['*0']['minor']), 'arcsec')['value']
                 areas[ii] = axmajor * axminor
-                axratio[ii] = axmajor/axminor
-                weight[ii] = np.isfinite( axratio[ii] )
+                axratio[ii] = axmajor / axminor
+                weight[ii] = np.isfinite(axratio[ii])
 
-            ## Detect outliers based on axis ratio
-            ## The iterative loop is to get robust autoflagging
-            ## Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
+            # Detect outliers based on axis ratio
+            # The iterative loop is to get robust autoflagging
+            # Add a linear fit instead of just a 'mean' to account for slopes (useful for flagging on beam_area)
             local_axratio = axratio.copy()
             for steps in range(0, 2):  ### Heuristic : how many iterations here ?
-                local_axratio[ weight==False ] = np.nan
+                local_axratio[weight == False] = np.nan
                 mean_axrat = np.nanmean(local_axratio)
                 std_axrat = np.nanstd(local_axratio)
                 ## Flag all points deviating from the mean by 3 times stdev
-                weight[ np.fabs(local_axratio-mean_axrat) > 3 * std_axrat ] = False
+                weight[np.fabs(local_axratio - mean_axrat) > 3 * std_axrat] = False
 
             ## Find the first channel with a valid beam
             validbeamchans = np.where(weight)
-            chanid=0
-            if len(validbeamchans)>0:
-                chanid=validbeamchans[0][0]
+            chanid = 0
+            if len(validbeamchans) > 0:
+                chanid = validbeamchans[0][0]
             else:
                 LOG.error('No valid beams in {!s}'.format(psf_filename))
                 return None, np.arange(nchan)
 
-            ## Fill all flagged channels with the largest/first valid beam
-            dummybeam = allbeams['beams']['*'+str(chanid)]['*0']
+            # Fill all flagged channels with the largest/first valid beam
+            dummybeam = allbeams['beams']['*' + str(chanid)]['*0']
             for ii in range(0, nchan):
-                if weight[ii]==False:
-                    image.setrestoringbeam( major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii)
+                if not weight[ii]:
+                    image.setrestoringbeam(
+                        major=dummybeam['major'], minor=dummybeam['minor'], pa=dummybeam['positionangle'], channel=ii
+                    )
 
-        ## Need to close and reopen for commonbeam() to see the new chan beams !
+        # Need to close and reopen for commonbeam() to see the new chan beams !
         with casa_tools.ImageReader(psf_filename) as image:
             ## Recalculate common beam
             newcommonbeam = image.commonbeam()
 
-        ## Reinstate the old beam to get back to the original iter0 product
+        # Reinstate the old beam to get back to the original iter0 product
         with casa_tools.ImageReader(psf_filename) as image:
             for ii in range(0, nchan):
-                if weight[ii]==False:
-                    beam = allbeams['beams']['*'+str(ii)]['*0']
-                    image.setrestoringbeam( major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii )
+                if not weight[ii]:
+                    beam = allbeams['beams']['*' + str(ii)]['*0']
+                    image.setrestoringbeam(
+                        major=beam['major'], minor=beam['minor'], pa=beam['positionangle'], channel=ii
+                    )
 
-        return newcommonbeam, np.where(np.logical_not(weight))[0]
+        LOG.info('the commonbeam of %s, by ia.commonbeam():          %s', psf_filename, commonbeam)
+        LOG.info('the commonbeam of %s, by find_good_commonbeam():   %s', psf_filename, newcommonbeam)
+
+        # The restoring beam recommendaton returned by the find_good_commonbeam() heuristics is not used by default for imaging
+        # based on the decision made in the ALMA Cycle-7 developemnt cycle (PIPE-375). So here the returned recommended beam is
+        # explictly set to None as below.
+        newcommonbeam = None
+        bad_psf_channels = np.where(np.logical_not(weight))[0]
+
+        if bad_psf_channels.size:
+            LOG.warning(
+                'Found bad PSF fits for %s in channel(s): %s', psf_filename, utils.find_ranges(map(str, bad_psf_channels))
+            )
+
+        return newcommonbeam, bad_psf_channels
 
     def get_cfcaches(self, cfcache: str):
         """Parses comma separated cfcache string
@@ -2534,5 +2587,20 @@ class ImageParamsHeuristics(object):
         Returns:
             float: The multiplier for the nfrms-based threshold.
 
+        """
+        return None
+
+    def get_subtargets(self, cleantarget: CleanTarget, inputs: StandardInputs) -> list[CleanTarget] | None:
+        """Derive sub-targets from the original clean target.
+
+        Processes the original CleanTarget specification to generate sub-targets, e.g. for individual fine-grained selected
+        frequency ranges or pointings from the original CleanTarget planning.
+
+        Args:
+            cleantarget: The original clean target object to process.
+            inputs: Pipeline Task Input object.
+
+        Returns:
+            List containing sub-targets or None values if none found.
         """
         return None

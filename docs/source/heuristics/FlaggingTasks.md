@@ -139,7 +139,7 @@ In the current standard pipeline, all six metrics are active, and evaluated in t
    **View generation**
 
    A separate view is generated for each polarisation and each spw. Each view is a matrix with axes "time" vs. "antenna". Each point in the matrix is calculated as follows:
-   - calculate "valid_data" as the channel-to-channel difference in Tsys for that antenna/timestamp (for unflagged channels)
+   - calculate "valid_data" as the channel-to-channel difference in the normalized Tsys (by median over frequency) for that antenna/timestamp (for unflagged channels)
    - calculate ```median( abs( valid_data - median(valid_data) ) ) * 100.0```
    
    **View flagging**

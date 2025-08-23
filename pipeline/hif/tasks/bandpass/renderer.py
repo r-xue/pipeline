@@ -10,6 +10,7 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.renderer.basetemplates as basetemplates
 import pipeline.infrastructure.utils as utils
+from pipeline.infrastructure.utils import caltable_tools
 from pipeline.h.tasks.common.displays import bandpass as bandpass
 
 LOG = logging.get_logger(__name__)
@@ -258,7 +259,7 @@ class BaseBandpassPlotRenderer(basetemplates.JsonPlotRenderer):
             vis = os.path.basename(r.inputs['vis'])
             self._ms[vis] = context.observing_run.get_ms(vis)
             caltable = r.final[0].gaintable
-            self._num_pols[vis] = utils.get_num_caltable_polarizations(caltable)
+            self._num_pols[vis] = caltable_tools.get_num_caltable_polarizations(caltable)
             self._qa_data[vis] = r.qa.rawdata
 
         self._score_types = score_types

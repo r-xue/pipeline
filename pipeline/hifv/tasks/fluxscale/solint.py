@@ -12,6 +12,7 @@ from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import utils
 
 
 LOG = infrastructure.get_logger(__name__)
@@ -165,20 +166,23 @@ class Solint(basetask.StandardTaskTemplate):
         short_solint = {}
         new_gain_solint1 = {}
         bpdgain_touse = {}
-
+        vis = self.inputs.vis
         calMs = 'calibrators.ms'
         split_result = self._do_split(calMs)
 
         for band, spwlist in band2spw.items():
-            longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
-            new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
+            try:
+                longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
+                new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
 
-            longsolint[band] = longsolint_band
-            gain_solint2[band] = gain_solint2_band
-            shortsol2[band] = shortsol2_band
-            short_solint[band] = short_solint_band
-            new_gain_solint1[band] = new_gain_solint1_band
-            bpdgain_touse[band] = bpdgain_touse_band
+                longsolint[band] = longsolint_band
+                gain_solint2[band] = gain_solint2_band
+                shortsol2[band] = shortsol2_band
+                short_solint[band] = short_solint_band
+                new_gain_solint1[band] = new_gain_solint1_band
+                bpdgain_touse[band] = bpdgain_touse_band
+            except Exception as ex:
+                    LOG.warning(str(ex))
 
         return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
                              short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=vis,
@@ -264,9 +268,11 @@ class Solint(basetask.StandardTaskTemplate):
         refAnt = ','.join(RefAntOutput)
 
         bpdgain_touse = tablebase + table_suffix[0]
+
         testgains_result = self._do_gtype_testgains(calMs, bpdgain_touse, solint=solint,
                                                     context=self.inputs.context, combtime=combtime,
                                                     refAnt=refAnt, spw=','.join(spwlist))
+
 
         flaggedSolnResult1 = getCalFlaggedSoln(bpdgain_touse)
         LOG.info("For solint = " + solint + " fraction of flagged solutions = " +
@@ -523,7 +529,7 @@ class Solint(basetask.StandardTaskTemplate):
                         old_field = new_field
 
                     except KeyError:
-                        LOG.warning("WARNING: scan "+str(ii)+" is completely flagged and missing from " + calMs)
+                        LOG.warning("Scan "+str(ii)+" is completely flagged and missing from " + calMs)
 
         orig_durations = np.array(durations)
 
@@ -536,23 +542,32 @@ class Solint(basetask.StandardTaskTemplate):
         if not durations.tolist():
             LOG.info("No statistical outliers in list of determined durations.")
             durations = orig_durations
-
         nsearch = 5
         integration_time = m.get_integration_time_stats(stat_type="max", band=band)
         integration_time = np.around(integration_time, decimals=2)
         search_results = np.zeros(nsearch)
-        longest_scan = np.round(np.max(orig_durations))
-        zscore_solint = np.max(durations)
-        solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
-        if solint_integer_integrations:
+        if len(orig_durations) != 0:
+            longest_scan = np.round(np.max(orig_durations))
+        else:
+            longest_scan = None
+        if len(durations) != 0:
+            zscore_solint = np.max(durations)
+            solint_integer_integrations = solint_rounded_to_integer_integrations(zscore_solint * 1.01, integration_time)
+        else:
+            zscore_solint = None
+            solint_integer_integrations = None
+        if solint_integer_integrations and longest_scan is not None:
             for i in range(nsearch):
                 # print('testing solint', solint_integer_integrations + i * integration_time)
                 search_results[i] = longest_scan / (solint_integer_integrations + i * integration_time) - int(longest_scan / (solint_integer_integrations + i * integration_time))
             longsolint = solint_integer_integrations + np.argmax(search_results) * integration_time
         else:
-            longsolint = (np.max(durations)) * 1.01
-            LOG.warning("Using alternate long solint calculation.")
-
+            if durations:
+                longsolint = (np.max(durations)) * 1.01
+                LOG.warning("Using alternate long solint calculation.")
+            else:
+                longsolint = integration_time
+                LOG.warning("No determined durations found; setting 'longsolint' to integration time.")
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
@@ -620,15 +635,18 @@ class Solint(basetask.StandardTaskTemplate):
                 fieldidlist.append(str(fieldobj.id))
 
         for fieldidstring in fieldidlist:
-            fieldid = int(fieldidstring)
-            uvrangestring = uvrange(self.setjy_results, fieldid)
-            task_args['field'] = fieldidstring
-            task_args['uvrange'] = uvrangestring
-            if os.path.exists(caltable):
-                task_args['append'] = True
+            # PIPE-1729: passing fieldidstring instead of field id to avoid
+            # warning while concatenating string and int
+            taql = (f"FIELD_ID == {fieldidstring}")
+            if utils.get_row_count(calMs, taql) != 0:
+                uvrangestring = uvrange(self.setjy_results, fieldidstring)
+                task_args['field'] = fieldidstring
+                task_args['uvrange'] = uvrangestring
+                if os.path.exists(caltable):
+                    task_args['append'] = True
 
-            job = casa_tasks.gaincal(**task_args)
+                job = casa_tasks.gaincal(**task_args)
 
-            self._executor.execute(job)
+                self._executor.execute(job)
 
         return True

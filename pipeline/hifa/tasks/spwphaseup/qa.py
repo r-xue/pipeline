@@ -48,16 +48,22 @@ class SpwPhaseupQAHandler(pqa.QAPlugin):
             if spwmapping and spwmapping.spwmap and spwmapping.spwmap[spw] != spw:
                 continue
 
+            # TODO: understand whether spwmapping=None could happen
+            # If spwmapping is None, then no mapping was computed or stored for
+            # that intent/field (e.g., phaseup skipped due to missing data,
+            # failures).
+            # if spwmapping is None:
+            #     continue
+
             # Check which QA score heuristic to use, based on intent.
             if intent == 'CHECK':
                 score = qacalc.score_phaseup_spw_median_snr_for_check(
-                    ms, field, spw, median_snr, result.inputs['phasesnr'])
-            elif intent == 'PHASE':
-                score = qacalc.score_phaseup_spw_median_snr_for_cal(
-                    ms, field, spw, intent, median_snr, result.inputs['phasesnr'])
+                    ms, field, spw, median_snr, spwmapping.snr_threshold_used
+                )
             else:
                 score = qacalc.score_phaseup_spw_median_snr_for_cal(
-                    ms, field, spw, intent, median_snr, result.inputs['intphasesnr'])
+                    ms, field, spw, intent, median_snr, spwmapping.snr_threshold_used
+                )
 
             # If SpW mapping info exists for the current intent and field, and
             # there is a non-empty SpW map in which other SpWs are mapped to

@@ -51,7 +51,7 @@ class FlagDeterALMASingleDishListQAHandler(pqa.QAPlugin):
     def handle(self, context: Context, result: ResultsList):
         """Attach QA scores to ResultsList object.
 
-        Collect QA scores from child results and attach
+        Collate QA scores from child results and attach
         them to ResultsList object.
 
         Args:
@@ -64,5 +64,5 @@ class FlagDeterALMASingleDishListQAHandler(pqa.QAPlugin):
         result.qa.pool.extend(collated)
 
 
-aqua_exporter = aqua.xml_generator_for_metric('NumberOfPointingOutlier', '{:d}')
+aqua_exporter = aqua.xml_generator_for_metric('NumberOfPointingOutliers', '{:d}')
 aqua.register_aqua_metric(aqua_exporter)
