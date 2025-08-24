@@ -357,7 +357,7 @@ def getCalAtmData(ms: str, spws: list, spwsetup: dict, antenna: str = ''):
             tbselstr = 'basebandName=="{0:s}" && syscalType=="TEMPERATURE_SCALE"'.format(str(spwsetup[spwid]['BBname']))
 
         subtb = tb.query(tbselstr)
-        tmatm_all[spwid] = np.unique(tb.getcol('startValidTime'))
+        tmatm_all[spwid] = np.unique(subtb.getcol('startValidTime'))
         #Get frequency vector and find section belonging to this SPW
         fullfreq = subtb.getcell('frequencySpectrum', 0)
         sectionmid = []
@@ -400,6 +400,7 @@ def getCalAtmData(ms: str, spws: list, spwsetup: dict, antenna: str = ''):
         auxtau = subtb.getcell('tauSpectrum', 0)[0]
         taufit = CubicSpline(freq[order], auxtau[startchan:endchan][order], bc_type='not-a-knot')
         tau[spwid] = taufit(spwsetup[spwid]['chanfreqs'])
+        subtb.close()
     tb.close()
 
     return (tground_all, pground_all, hground_all, tmatm_all, tsys, trec, tatm, tau, antatm)
