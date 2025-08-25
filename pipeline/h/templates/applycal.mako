@@ -789,7 +789,7 @@ def format_spwmap(spwmap, scispws):
 		Science target: amplitude difference (XX-YY) vs frequency
 	</%def>
 
-	<%def name="ms_preamble(ms)">
+	<%def name="preamble()">
         <p>Diagnosis of amplitude difference between the two polarizations
            for each measurement set. Heuristic plots can be found below.</p>
 	</%def>
