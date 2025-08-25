@@ -1137,7 +1137,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     if maxvalue_ch < np.max([ch_step,ch_step1]):
                         maxvalue_ch=np.max([ch_step,ch_step1])
                     ###########################
-                    
+
                     ###########################
                     # measure a spike for the given subband
                     # and count it if the spike is significant
@@ -1148,10 +1148,13 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     left = np.nanmean(bp_amp[isubb * subb_nchan - 2 * ishift_spk:isubb * subb_nchan - ishift_spk])
                     right = np.nanmean(bp_amp[isubb * subb_nchan + ishift_spk:isubb * subb_nchan + 2 * ishift_spk])
 
-                    lower_index = isubb * subb_nchan - ishift_spk
+                    if (isubb * subb_nchan) - ishift_spk < 0:
+                        LOG.info(f"Falling back to 0 for lower index in spike detection array in correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol}")
+
+                    lower_index = max(0, isubb * subb_nchan - ishift_spk)
                     upper_index = isubb * subb_nchan + ishift_spk
 
-                    if (lower_index < 0) or (lower_index >= upper_index):
+                    if lower_index >= upper_index:
                         LOG.warning(f"Not evaluating remaining correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol} due to invalid slice bounds.")
                         break
 
@@ -1378,22 +1381,16 @@ def setup_bandpass_dict(ms: MeasurementSet, caltable: str) -> dict:
         tmp = tb.getcol('ANTENNA2')
         _ = scipy.stats.mode(tmp)
         refAnt = antennaNames[np.bincount(tb.getcol('ANTENNA2')).argmax()]
-        LOG.debug(f"FieldNames {fieldNames}")
-        LOG.debug(f"RefAnt: {refAnt}")
         bandpass_library['RefAnt'] = refAnt
 
         # Check bandwidth and nchan
         spw_bandwidth = science_spw_bandwidths(ms)
-        LOG.debug(f"Spw bandwidths: {spw_bandwidth}")
 
         for j, myfield in enumerate(fieldNames):
-            LOG.debug(f"Processing field: {myfield}")
             myfieldid = fieldIds[j]
             bandpass_library[myfield] = {}
 
             for m, myspw in enumerate(spwIds):
-                LOG.debug(f"Processing spw: {myspw}")
-
                 bandpass_library[myfield][myspw] = {}
                 spw_nchan = caltable_tools.nchan_from_caltable(caltable, myspw)
                 spw_freq = caltable_tools.chan_freq_from_caltable(caltable, myspw)  # GHz
