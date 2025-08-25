@@ -3039,7 +3039,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.',
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs',
                                     'N/A', 'Channel range(s) of detected lines',
                                     next(iter(atm_masks))))
 
