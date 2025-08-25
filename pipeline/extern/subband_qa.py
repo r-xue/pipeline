@@ -1144,7 +1144,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     ###########################
 
                     # Spectral channel segment for spike estimate
-                    ishift_spk = np.max([int(subb_nchan * 0.3), 3])
+                    ishift_spk = np.max([int(subb_nchan * 0.3), 1])
                     left = np.nanmean(bp_amp[isubb * subb_nchan - 2 * ishift_spk:isubb * subb_nchan - ishift_spk])
                     right = np.nanmean(bp_amp[isubb * subb_nchan + ishift_spk:isubb * subb_nchan + 2 * ishift_spk])
 
