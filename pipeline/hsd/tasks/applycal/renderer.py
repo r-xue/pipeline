@@ -339,14 +339,21 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                         # take the plot corresponding to worst QA score
                         # as a summary plot
                         spw_id = spw.id
+                        xy_deviation_qa_exclude_flagged_cases = filter(
+                            lambda x: "All data flagged" not in x.longmsg and "Data flagged for one polarization" not in x.longmsg,
+                            xy_deviation_qa
+                        )
                         qa_for_field_spw = sorted(
                             filter(
                                 lambda x: spw_id in x.applies_to.spw and field_name in x.applies_to.field,
-                                xy_deviation_qa
+                                xy_deviation_qa_exclude_flagged_cases
                             ),
                             key=lambda x: x.score
                         )
-                        assert len(qa_for_field_spw) > 0
+                        if len(qa_for_field_spw) == 0:
+                            # no useful QA/plots for this field and spw
+                            continue
+
                         worst_score = qa_for_field_spw[0]
                         antenna = worst_score.applies_to.ant.pop()
                         LOG.debug(
