@@ -1152,7 +1152,11 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                         LOG.info(f"Falling back to 0 for lower index in spike detection array in correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol}")
 
                     lower_index = max(0, isubb * subb_nchan - ishift_spk)
-                    upper_index = isubb * subb_nchan + ishift_spk
+
+                    if (isubb * subb_nchan) - ishift_spk < 0:
+                        LOG.info(f"Falling back to (length - 1) for upper index in spike detection array in correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol}")
+    
+                    upper_index = min(isubb * subb_nchan + ishift_spk, len(bp_amp) - 1)
 
                     if lower_index >= upper_index:
                         LOG.warning(f"Not evaluating remaining correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol} due to invalid slice bounds.")
