@@ -316,6 +316,15 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                 if x.origin.metric_name == 'XX-YY.deviation'
             ]
 
+            # exclude QA scores for heavily flagged data,
+            # i.e., all data are flagged or data for either
+            # of the polarizations are fully flagged
+            xy_deviation_qa_exclude_flagged_cases = [
+                x for x in xy_deviation_qa
+                if "All data flagged" not in x.longmsg
+                   and "Data flagged for one polarization" not in x.longmsg
+            ]
+
             # get the xy-deviation plots
             xy_deviation_plots = [
                 generate_plot_object_from_name(ctx, plot_name)
@@ -339,10 +348,6 @@ class T2_4MDetailsSDApplycalRenderer(super_renderer.T2_4MDetailsApplycalRenderer
                         # take the plot corresponding to worst QA score
                         # as a summary plot
                         spw_id = spw.id
-                        xy_deviation_qa_exclude_flagged_cases = filter(
-                            lambda x: "All data flagged" not in x.longmsg and "Data flagged for one polarization" not in x.longmsg,
-                            xy_deviation_qa
-                        )
                         qa_for_field_spw = sorted(
                             filter(
                                 lambda x: spw_id in x.applies_to.spw and field_name in x.applies_to.field,
