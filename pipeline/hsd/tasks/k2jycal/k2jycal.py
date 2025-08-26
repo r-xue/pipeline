@@ -325,7 +325,7 @@ class SDK2JyCal(basetask.StandardTaskTemplate):
                     valid_range = calibration_policy.get_jyperk_valid_range( ms, spw, ant_name, pol_name )
                     if factor < valid_range[0] or factor > valid_range[1]:
                         LOG.warning(
-                            "Invalid Jy/K factor %f for %s, %s, spw%s, pol %s. (should be within %f and %f}.",
+                            "Invalid Jy/K factor %f for %s, %s, spw%s, pol %s. (should be within %f and %f).",
                             factor, vis, ant_name, spw, pol_name, valid_range[0], valid_range[1] )
 
         # write jyperk data to file if fetched from DB
