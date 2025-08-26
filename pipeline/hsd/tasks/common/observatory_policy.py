@@ -1,4 +1,4 @@
-"""Observatory policy for single-dish imaging."""
+"""Observatory policy for single-dish imaging and calibration."""
 from __future__ import annotations
 
 import abc
