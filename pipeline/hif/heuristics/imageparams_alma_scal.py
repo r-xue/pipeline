@@ -27,6 +27,7 @@ class ImageParamsHeuristicsALMAScal(ImageParamsHeuristicsALMA):
             contfile (str, optional): Continuum file. Defaults to None.
             linesfile (str, optional): Lines file. Defaults to None.
             imaging_params (dict, optional): Imaging parameters. Defaults to {}.
+            processing_intents (dict, optional): Processing intents. Defaults to {}.
         """
         super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'ALMA-SCAL'
