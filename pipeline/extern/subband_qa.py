@@ -1153,7 +1153,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
 
                     lower_index = max(0, isubb * subb_nchan - ishift_spk)
 
-                    if (isubb * subb_nchan) - ishift_spk < 0:
+                    if (isubb * subb_nchan) + ishift_spk > len(bp_amp) - 1:
                         LOG.info(f"Falling back to (length - 1) for upper index in spike detection array in correlator subband QA metrics for MS: {vis} ant: {iant} spw: {ispw} pol: {ipol}")
     
                     upper_index = min(isubb * subb_nchan + ishift_spk, len(bp_amp) - 1)
