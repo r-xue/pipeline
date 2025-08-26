@@ -496,6 +496,20 @@ class MakeImages(basetask.StandardTaskTemplate):
             else:
                 is_representative = False
 
+        # Sensitivities are currently reported for Stokes I only. For IQUV imaging the
+        # correct values have to be fetched from the new parameters since the previous
+        # ones will contain mixtures of I, Q, U and V due to the "axes" parameter in
+        # the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just
+        # one set of statistical parameters.
+        if result.stokes == 'IQUV':
+            image_rms = result.image_rms_iquv[0]
+            image_min = result.image_min_iquv[0]
+            image_max = result.image_max_iquv[0]
+        else:
+            image_rms = result.image_rms
+            image_min = result.image_min
+            image_max = result.image_max
+
         return Sensitivity(array=array,
                            intent=target['intent'],
                            field=target['field'],
@@ -509,9 +523,9 @@ class MakeImages(basetask.StandardTaskTemplate):
                            robust=target['robust'],
                            uvtaper=target['uvtaper'],
                            theoretical_sensitivity=cqa.quantity(result.sensitivity, 'Jy/beam'),
-                           observed_sensitivity=cqa.quantity(result.image_rms, 'Jy/beam'),
-                           pbcor_image_min=cqa.quantity(result.image_min, 'Jy/beam'),
-                           pbcor_image_max=cqa.quantity(result.image_max, 'Jy/beam'),
+                           observed_sensitivity=cqa.quantity(image_rms, 'Jy/beam'),
+                           pbcor_image_min=cqa.quantity(image_min, 'Jy/beam'),
+                           pbcor_image_max=cqa.quantity(image_max, 'Jy/beam'),
                            imagename=result.image.replace('.pbcor', ''),
                            datatype=result.datatype)
 
