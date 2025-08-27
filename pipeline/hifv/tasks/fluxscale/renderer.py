@@ -148,10 +148,16 @@ class T2_4MDetailsSolintRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             # String type formatting of solution intervals
             new_gain_solint1_string = ''
             for band, value in result.new_gain_solint1.items():
-                new_gain_solint1_string += '{!s} band: {!s}    '.format(band, value)
+                if isinstance(value, str):
+                    if 'int' in value:
+                        new_gain_solint1_string += f'{band!s} band: int ({result.integration_time[band]:6.2f}s)    '
+                    else:
+                        new_gain_solint1_string += f'{band!s} band: {value!s}    '
+                else:
+                    new_gain_solint1_string += f'{band!s} band: {float(value):6.2f}s    '
             longsolint_string = ''
             for band, value in result.longsolint.items():
-                longsolint_string += '{!s} band: {:6.2f}s    '.format(band, float(value))
+                longsolint_string += f'{band!s} band: {float(value):6.2f}s    '
 
             # String type
             new_gain_solint1[ms] = new_gain_solint1_string
