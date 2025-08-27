@@ -418,12 +418,45 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet
     if total_fdm_spws == 0:
         return 0.0
 
-    spws_impacted = len(spw_dict)
+    # Only include spws that didn't go through the heuristic because the spectral smoothing was
+    # larger than the subband width
+    heuristics_spws = [spw for spw in spw_dict if spw_dict[spw]['failure'] != "binning"]
+    spws_impacted = len(heuristics_spws)
 
     return spws_impacted/total_fdm_spws
 
 
-def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.QAScore:
+def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str) -> pqa.QAScore | None:
+    """
+    Handle spw-wide failures.
+    """
+    overall_failing_spws = []
+    for spwid in spw_dict:
+        if spw_dict[spwid]['failure'] == "binning":
+            overall_failing_spws.append(str(spwid))
+
+    if overall_failing_spws:
+        failing_spws = ",".join(overall_failing_spws)
+        longmsg = f"{ms.name}: spw {failing_spws}: spectral smoothing larger than subband width; subband QA not evaluated."
+        shortmsg = "Large spectral smoothing; subband QA not evaluated"
+        qascore = pqa.QAScore(
+            0.70,
+            longmsg=longmsg,
+            shortmsg=shortmsg,
+            vis=ms.name,
+            weblog_location=pqa.WebLogLocation.ACCORDION,
+            origin=pqa.QAOrigin(
+                metric_name='bandpass.subband.spw_binning',
+                metric_score=0.70,
+            ),
+            applies_to=pqa.TargetDataSelection(vis={ms.name}),
+        )
+        return qascore
+
+    return None
+
+
+def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) -> pqa.QAScore:
     """
     Calculate the QA score for subband issues.
 
@@ -463,7 +496,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable) -> pqa.
 
         spw_messages = [
             f"Spw {spw} ({data['failure']}): {', '.join(data['antennas'])}"
-            for spw, data in sorted(spw_dict.items())
+            for spw, data in sorted(spw_dict.items()) if data['failure'] != "binning"
         ]
         longmsg += "; ".join(spw_messages)
 
@@ -525,9 +558,18 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
         try:
             LOG.debug(f"Fetching platforming QA info for MS {vis} and caltable {caltable}")
             spw_dict = subband_qa.bandpass_platforming(ms, caltable)
+            print(spw_dict)
             LOG.debug(f"Spws affected by platforming {spw_dict}")
-            qascore = _calc_subband_qa_score(spw_dict, ms, caltable)
-            scores.append(qascore)
+
+            # First check for spw-wide failures:
+            total_spw_failure_qa_score = _calc_subband_spw_failures(spw_dict, ms, caltable)
+
+            if total_spw_failure_qa_score:
+                scores.append(total_spw_failure_qa_score)
+
+            # Then calculate the subband qa score for everything else:
+            subband_qascore = _calc_subband_qa_score(spw_dict, ms, caltable)
+            scores.append(subband_qascore)
 
         except Exception as e:
             LOG.warning(f"Failed to process bandpass QA for {vis}, caltable {caltable}: {e}", exc_info=True)
@@ -545,5 +587,4 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
             )
             scores.append(failing_qascore)
             continue
-
     return scores

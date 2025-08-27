@@ -26,6 +26,7 @@ class FailureType(Enum):
     PHASE = "phase"
     AMP = "amp"
     AMP_AND_PHASE = "amp and phase"
+    SPW_BINNING = "binning"
 
 
 @dataclass
@@ -40,6 +41,11 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
     Adds failure information for a single antenna and associated failure type
     to the dict of failing spws.
     """
+    if failure_type == FailureType.SPW_BINNING:
+        # This fails for the entire spw so we don't need per-antenna information
+        failing_spws[spw_id] = SpwFailure({}, failure_type)
+        return
+
     if spw_id in failing_spws:
         failing_spws[spw_id].ant_set.add(ant_id)
         if failure_type != failing_spws[spw_id].failure_type:
@@ -304,6 +310,24 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
             LOG.info(f"Subband qa heuristic not evaluated for spw {ispw} as it is not a FDM spw.")
             continue
 
+        ################################
+        # Read ancillary information
+        ################################
+        spw_bandwidth = data[fieldname][ispw]['bw']
+        spw_nchan = data[fieldname][ispw]['nchan']
+        spw_freq = data[fieldname][ispw]['freq']
+        subb_bw = 62.5e6 * 15.0/16.0  # for edge channels
+        subb_num = abs(int(round(spw_bandwidth / subb_bw)))  # Number of subband chunks
+        subb_nchan = int(spw_nchan / subb_num)  # Number of channels per subband
+
+        # This heuristic is not evaluated if the spw binning is high enough that the channel width
+        # is larger than the subband width
+        chanwidth = spw_bandwidth/spw_nchan
+
+        if chanwidth > subb_bw:
+            add_spw_failure(spws_affected, ispw, None, FailureType.SPW_BINNING)
+            continue
+
         #################################
         # naming plot files
         # bandpass amp   pol0 pol1
@@ -314,15 +338,6 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(18, 15))
         fig.suptitle(pldir + ' ' + vis + ' ' + 'ant ' + iant + ' spw ' + str(ispw), fontsize=20)
 
-        ################################
-        # Read ancillary information
-        ################################
-        spw_bandwidth = data[fieldname][ispw]['bw']
-        spw_nchan = data[fieldname][ispw]['nchan']
-        spw_freq = data[fieldname][ispw]['freq']
-        subb_bw = 62.5e6 * 15.0/16.0  # for edge channels
-        subb_num = abs(int(round(spw_bandwidth / subb_bw)))  # Number of subband chunks
-        subb_nchan = int(spw_nchan / subb_num)  # Number of channels per subband
 
         ################################
         # Generating or using the pre-computed atmospheric transmission model using median pwv value
@@ -452,10 +467,10 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq<bound[1] and subb_center_freq>bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency<subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid]<0.3):
                         transimpact = True
-                    ############################    
+                    ############################
 
                     ###################################
                     # Pre-check:
@@ -572,7 +587,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact=True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact=True
 
@@ -697,7 +712,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency<subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact=True
 
@@ -766,7 +781,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact=True
                     ###########################
@@ -840,7 +855,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact = True
 
@@ -955,7 +970,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact = True
 
@@ -1029,7 +1044,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact = True
                     ###########################
@@ -1103,7 +1118,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                     for b, bound in enumerate(bounds):
                         if (subb_center_freq < bound[1] and subb_center_freq > bound[0]):
                             atmimpact = True
-                    tid = np.argmax(frequency[np.where(frequency < subb_center_freq)[0]])            
+                    tid = np.argmin(np.abs(frequency-subb_center_freq))
                     if (transmission[tid] < 0.3):
                         transimpact = True
                     
