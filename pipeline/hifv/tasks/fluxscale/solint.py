@@ -84,7 +84,8 @@ class SolintResults(basetask.Results):
                  short_solint: dict | None = None,
                  new_gain_solint1: dict | None = None,
                  vis: str | None = None,
-                 bpdgain_touse: dict | None = None):
+                 bpdgain_touse: dict | None = None,
+                 integration_time: dict | None = None):
         """Initializes the object with various calibration and visibility parameters.
 
         Args:
@@ -98,6 +99,7 @@ class SolintResults(basetask.Results):
             new_gain_solint1: String representation of short_solint with 's' seconds units.
             vis: String name of the measurement set.
             bpdgain_touse: Dictionary of tables per band.
+            integration_time: Dictionary of maximum integration times per band.
         """
         if final is None:
             final = []
@@ -106,7 +108,7 @@ class SolintResults(basetask.Results):
         if preceding is None:
             preceding = []
 
-        super(SolintResults, self).__init__()
+        super().__init__()
 
         self.vis = vis
         self.pool = pool[:]
@@ -166,14 +168,15 @@ class Solint(basetask.StandardTaskTemplate):
         short_solint = {}
         new_gain_solint1 = {}
         bpdgain_touse = {}
+        integration_time = {}
         vis = self.inputs.vis
         calMs = 'calibrators.ms'
-        split_result = self._do_split(calMs)
+        self._do_split(calMs)
 
         for band, spwlist in band2spw.items():
             try:
                 longsolint_band, gain_solint2_band, shortsol2_band, short_solint_band, \
-                new_gain_solint1_band, vis, bpdgain_touse_band = self._do_solint(band, spwlist, calMs)
+                new_gain_solint1_band, vis, bpdgain_touse_band, integration_time_band = self._do_solint(band, spwlist, calMs)
 
                 longsolint[band] = longsolint_band
                 gain_solint2[band] = gain_solint2_band
@@ -181,12 +184,13 @@ class Solint(basetask.StandardTaskTemplate):
                 short_solint[band] = short_solint_band
                 new_gain_solint1[band] = new_gain_solint1_band
                 bpdgain_touse[band] = bpdgain_touse_band
+                integration_time[band] = integration_time_band
             except Exception as ex:
                     LOG.warning(str(ex))
 
         return SolintResults(longsolint=longsolint, gain_solint2=gain_solint2, shortsol2=shortsol2,
                              short_solint=short_solint, new_gain_solint1=new_gain_solint1, vis=vis,
-                             bpdgain_touse=bpdgain_touse)
+                             bpdgain_touse=bpdgain_touse, integration_time=integration_time)
 
     def analyse(self, results):
         """Determine the best parameters by analysing the given jobs before returning any final jobs to execute.
@@ -385,7 +389,7 @@ class Solint(basetask.StandardTaskTemplate):
                 new_gain_solint1 = 'int'
             elif limit_short_solint == 'inf':
                 combtime = ''
-                short_solint = limit_short_solint
+                short_solint = 'inf'
                 new_gain_solint1 = longsolint
                 LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to longsolint in gaincal.")
             elif limit_short_solint < integration_time:
@@ -421,7 +425,7 @@ class Solint(basetask.StandardTaskTemplate):
         if short_solint not in ('int', 'inf') and abs(longsolint - short_solint) <= soltime:
             LOG.warning('Short solint = long solint +/- integration time of {}s'.format(integration_time))
 
-        return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse
+        return longsolint, gain_solint2, shortsol2, short_solint, new_gain_solint1, self.inputs.vis, bpdgain_touse,integration_time
 
     def _do_split(self, calMs: str):
         """Execute CASA task split on the calibrator scan select string
