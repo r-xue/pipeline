@@ -4,19 +4,19 @@ from .imageparams_vla import ImageParamsHeuristicsVLA
 class ImageParamsHeuristicsVLAScal(ImageParamsHeuristicsVLA):
     """Class for determining image parameters heuristics for VLA-SCAL.
 
-    Inherits from ImageParamsHeuristicsVLA and offers specialized heuristics 
-    for the VLA-SCAL imaging mode. This class facilitates the initialization 
-    of Self-calibration CleanTarget objects used by the hif_selfcal(). 
+    Inherits from ImageParamsHeuristicsVLA and offers specialized heuristics
+    for the VLA-SCAL imaging mode. This class facilitates the initialization
+    of Self-calibration CleanTarget objects used by the hif_selfcal().
     It cannot be used directly with the hif_makeimages or hif_tclean.
 
     Attributes:
         image_mode (str): The imaging mode, set to 'VLA-SCAL'.
         selfcal (bool): A flag indicating if self-calibration is enabled.
-    
+
     """
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         """Initializes the class with the provided parameters.
 
         Args:
@@ -29,7 +29,7 @@ class ImageParamsHeuristicsVLAScal(ImageParamsHeuristicsVLA):
             linesfile (str, optional): Lines file. Defaults to None.
             imaging_params (dict, optional): Imaging parameters. Defaults to {}.
         """
-        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+        super().__init__(vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params, processing_intents)
         self.image_mode = 'VLA-SCAL'
         self.selfcal = True
 
