@@ -48,9 +48,10 @@ def hifa_timegaincal(vis=None, calamptable=None, calphasetable=None, offsetstabl
       phase-up (typically 'int' except for low SNR cases). These solutions are
       plotted but not applied.
 
-    - Phase offsets solutions are produced with solint='inf' for the BANDPASS and
-      PHASE intent after an initial pre-apply of the spw-spw phase offset table
-      calculated in hifa_spwphaseup (to ``zero`` the phases).
+    - Diagnostic phase offsets solutions are produced with solint='inf' for
+      the BANDPASS and PHASE intent, first solving and preapplying the phase
+      as a function of time with combine='spw' (to ``zero`` the phases),
+      and then then solving phase(time) per spw.
       Note: by definition the BANDPASS phase will be exactly zero. The phase
       solutions for the PHASE intent are used by QA heuristics to identify jumps
       and drifts of the spw-spw offsets as a function of time, but if the SNR
