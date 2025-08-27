@@ -33,14 +33,15 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
 
     - Estimate the per-spectral-window (spw) signal-to-noise ratio based on
       catalog flux densities, Tsys, number of antennas, and integration scan time.
-      If Tsys is not available, then subsequent heuristics are skipped, warnings
-      printed, and ``hm_spwmapmode`` = 'simple'.
-
+      These estimates are shown in the weblog.
+    
     - Compute the per-spw signal-to-noise for each above mentioned intent based
       on an temporary phaseup gain calibration using solint ``inf`` for the PHASE
       and CHECK intents, and ``int`` otherwise. These computed signal-to-noise
       values override the use of the estimated values unless none are found.
-      If this fails, then ``hm_spwmapmode`` = 'combine'.
+
+    - If SNR calculation fails, then subsequent heuristics are skipped, warnings
+      printed, and ``hm_spwmapmode`` = 'simple'.
     
     - If the signal-to-noise of all spws is greater than ``phasesnr`` for a 
       PHASE or CHECK intent, or greater than ``intphasesnr'' for the other 
@@ -64,6 +65,9 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
       from G to T (combine polarization) and thereafter solint is increased
       from 'int' up to the limits of 1/2 scan for the phase or check intent, or
       to the input ``maxphaseupsolint`` for the other intents
+
+    - If ``hm_spwmapmode'' is combine and no SNRs are found, the PHASE and CHECK
+      intents will default to a solint of 1/4 scan.
 
     - If the intent is AMPLITUDE, and gaintype was changed from 'G' to 'T',
       the signal-to-noise required to be met before increasing solint > 'int' 

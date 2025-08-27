@@ -12,7 +12,7 @@ def hifa_diffgaincal(vis=None, flagging_frac_limit=None, hm_spwmapmode=None, mis
     calibrating the "on-source" spectral setup with phase gains from a
     "reference" spectral setup. Currently this setup with two different
     SpectralSpecs is used by the band-to-band mode, for a high and low 
-    frequency bands. 
+    frequency band. 
   
     A bright point source quasar, called the Differential Gain Calibrator 
     (DIFFGAIN) source, is used for this purpose. This DIFFGAIN source is typically 
