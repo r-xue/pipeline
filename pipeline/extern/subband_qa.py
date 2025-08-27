@@ -27,6 +27,7 @@ class FailureType(Enum):
     AMP = "amp"
     AMP_AND_PHASE = "amp and phase"
     SPW_BINNING = "binning"
+    SPW_SMALL_BANDWIDTH = "bandwidth"
 
 
 @dataclass
@@ -41,7 +42,7 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
     Adds failure information for a single antenna and associated failure type
     to the dict of failing spws.
     """
-    if failure_type == FailureType.SPW_BINNING:
+    if (failure_type == FailureType.SPW_BINNING) or (failure_type == FailureType.SPW_SMALL_BANDWIDTH):
         # This fails for the entire spw so we don't need per-antenna information
         failing_spws[spw_id] = SpwFailure({}, failure_type)
         return
@@ -326,6 +327,10 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
 
         if chanwidth > subb_bw:
             add_spw_failure(spws_affected, ispw, None, FailureType.SPW_BINNING)
+            continue
+
+        if spw_bandwidth <= 2 * subb_bw:
+            add_spw_failure(spws_affected, ispw, None, FailureType.SPW_SMALL_BANDWIDTH)
             continue
 
         #################################
