@@ -4955,8 +4955,8 @@ def score_solint(short_solint:dict, long_solint:dict) -> list[pqa.QAScore]:
 
     if bandlist:
         score = 0.3
-        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint, or short/long solint is 'int' or 'inf'."
-        shortmsg = "short solint >= long solint or short/long solint is 'int' or 'inf'"
+        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint, or short solint is 'inf'."
+        shortmsg = "short solint >= long solint or short solint is 'inf'"
     else:
         score = 1
         longmsg = 'short solint < long solint'
