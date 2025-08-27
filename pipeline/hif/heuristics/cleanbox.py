@@ -118,6 +118,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_non_cleanmask_rms_min = None
     nonpbcor_image_non_cleanmask_rms_max = None
     nonpbcor_image_non_cleanmask_robust_rms = None
+    nonpbcor_image_non_cleanmask_robust_rms_iquv = None
     nonpbcor_image_non_cleanmask_freq_ch1 = None
     nonpbcor_image_non_cleanmask_freq_chN = None
     nonpbcor_image_non_cleanmask_freq_frame = None
@@ -297,7 +298,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
                 # Filter continuum frequency ranges if given
                 # TODO: The second condition checks if this is an IQUV cube. This
-                # should be done more directly via # extra method parameters.
+                # should be done more directly via extra method parameters.
                 if cont_freq_ranges not in (None, '', 'NONE', 'ALL', 'ALLCONT') and len(image_stats_iquv['rms'].shape) == 2:
                     # TODO: utils.freq_selection_to_channels uses casa_tools.image to get the frequency axis
                     #       and closes the global pipeline image tool. The context manager wrapped tool
@@ -312,8 +313,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms']
 
                 nonpbcor_image_non_cleanmask_robust_rms = image_stats['medabsdevmed'] * 1.4826
-                # TODO: The IQUV version would be needed for plot_spectra of QUV -> probably PL2026
-                #nonpbcor_image_non_cleanmask_robust_rms_iquv = image_stats_iquv['medabsdevmed'] * 1.4826
+                nonpbcor_image_non_cleanmask_robust_rms_iquv = image_stats_iquv['medabsdevmed'] * 1.4826
 
                 nonpbcor_image_non_cleanmask_rms_median = np.median(nonpbcor_image_non_cleanmask_rms_vs_chan)
                 nonpbcor_image_non_cleanmask_rms_mean = np.mean(nonpbcor_image_non_cleanmask_rms_vs_chan)
@@ -394,6 +394,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
              'nonpbcor_image_non_cleanmask_freq_chN': nonpbcor_image_non_cleanmask_freq_chN,
              'nonpbcor_image_non_cleanmask_freq_frame': nonpbcor_image_non_cleanmask_freq_frame,
              'nonpbcor_image_non_cleanmask_robust_rms': nonpbcor_image_non_cleanmask_robust_rms,
+             'nonpbcor_image_non_cleanmask_robust_rms_iquv': nonpbcor_image_non_cleanmask_robust_rms_iquv,
              'nonpbcor_image_cleanmask_spectrum': nonpbcor_image_cleanmask_spectrum,
              'nonpbcor_image_cleanmask_spectrum_pblimit': nonpbcor_image_cleanmask_spectrum_pblimit,
              'nonpbcor_image_cleanmask_npoints': nonpbcor_image_cleanmask_npoints,
