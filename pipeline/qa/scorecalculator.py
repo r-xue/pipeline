@@ -2894,7 +2894,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
         return [(grp[0], grp[-1]) for grp in groups]
 
-    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str, ms_name: str = '', field: str = '', spws: set[int] = set(), ants: set[str] = set()):
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str,
+                   ms_name: str | None = None, field: str | None = None, spws: set[int] = set(), ants: set[str] = set()):
         """
         Build a QAScore object for score_sd_line_detection.
 
