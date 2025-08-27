@@ -122,6 +122,7 @@ class SolintResults(basetask.Results):
         self.short_solint = short_solint
         self.new_gain_solint1 = new_gain_solint1
         self.bpdgain_touse = bpdgain_touse
+        self.integration_time = integration_time
 
     def merge_with_context(self, context):
         m = context.observing_run.get_ms(self.vis)
@@ -374,7 +375,7 @@ class Solint(basetask.StandardTaskTemplate):
             new_gain_solint1 = str(short_solint) + 's'
 
         if self.inputs.limit_short_solint != '':
-            LOG.warning('Short Solint limited by task input to %s', self.inputs.limit_short_solint)
+            LOG.warning('Short Solint limited by the task input to %r', self.inputs.limit_short_solint)
             limit_short_solint = self.inputs.limit_short_solint
             if limit_short_solint not in ("int", "inf"):
                 try:
@@ -385,23 +386,25 @@ class Solint(basetask.StandardTaskTemplate):
 
             if limit_short_solint == 'int':
                 combtime = 'scan'
-                short_solint = 'int'
+                # PIPE-2686: short_solint is being compared with longslit for QA scoring downstream;
+                # try to use float when possible.
+                short_solint = integration_time
                 new_gain_solint1 = 'int'
             elif limit_short_solint == 'inf':
                 combtime = ''
                 short_solint = 'inf'
                 new_gain_solint1 = longsolint
-                LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to longsolint in gaincal.")
+                LOG.warning("limit_short_solint is 'inf', so combine is set to '' and solint to long solint (%.2fs) in gaincal.", longsolint)
             elif limit_short_solint < integration_time:
                 combtime = 'scan'
-                short_solint = 'int'
+                short_solint = integration_time
                 new_gain_solint1 = 'int'
-                LOG.warning("limit_short_solint is shorter than a single integration time. Setting solint='int'.")
+                LOG.warning("limit_short_solint is shorter than a single integration time (%.2fs). Setting solint='int'.", integration_time)
             elif limit_short_solint > longsolint:
                 combtime = 'scan'
                 short_solint = longsolint
                 new_gain_solint1 = longsolint
-                LOG.warning("limit_short_solint larger than long solint, setting short solint equal to long solint.")
+                LOG.warning("limit_short_solint larger than long solint (%.2fs), setting short solint equal to long solint.", longsolint)
             else:
                 short_solint = limit_short_solint
                 if short_solint == integration_time:
@@ -415,7 +418,7 @@ class Solint(basetask.StandardTaskTemplate):
             if short_solint == float(f"{integration_time:.6f}"):
                 new_gain_solint1 = "int"
                 LOG.info(
-                    'The short solution interval used is: %s %ss.', new_gain_solint1, short_solint)
+                    'The short solution interval used is: %r %.2fs.', new_gain_solint1, short_solint)
             self._do_gtype_testgains(calMs, tablebase + table_suffix[4], solint=new_gain_solint1,
                                      context=self.inputs.context, combtime=combtime,
                                      refAnt=refAnt, spw=','.join(spwlist))
@@ -565,6 +568,8 @@ class Solint(basetask.StandardTaskTemplate):
             else:
                 longsolint = integration_time
                 LOG.warning("No determined durations found; setting 'longsolint' to integration time.")
+        # PIPE-2686: convert np.float64 to native float
+        longsolint = float(longsolint)
         gain_solint2 = str(longsolint) + 's'
 
         return longsolint, gain_solint2
