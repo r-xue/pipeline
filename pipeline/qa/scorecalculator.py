@@ -4941,17 +4941,26 @@ def score_solint(short_solint:dict, long_solint:dict) -> list[pqa.QAScore]:
     """
     bandlist = []
     for band in short_solint:
-        if short_solint[band] >= long_solint[band]:
+        if isinstance(short_solint[band], str) or isinstance(long_solint[band], str):
+            # PIPE-2686: short-term workaround for the issue from the initial PIPE-2583 implementation.
+            LOG.warning(
+                f'Skip scoring solint band {band} due to string solint value: short_solint=%r, long_solint=%r',
+                short_solint[band],
+                long_solint[band],
+            )
             bandlist.append(band)
+        else:
+            if short_solint[band] >= long_solint[band]:
+                bandlist.append(band)
 
     if bandlist:
         score = 0.3
-        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint"
-        shortmsg = "short solint >= long solint"
+        longmsg = f"band {', '.join(bandlist)} has short solint >= long solint, or short/long solint is 'int' or 'inf'."
+        shortmsg = "short solint >= long solint or short/long solint is 'int' or 'inf'"
     else:
         score = 1
-        longmsg = "short solint < long solint"
-        shortmsg = "short solint < long solint"
+        longmsg = 'short solint < long solint'
+        shortmsg = 'short solint < long solint'
 
     origin = pqa.QAOrigin(metric_name='score_solint',
                           metric_score=score,
