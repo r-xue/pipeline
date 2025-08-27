@@ -510,6 +510,20 @@ class MakeImages(basetask.StandardTaskTemplate):
             image_min = result.image_min
             image_max = result.image_max
 
+        # Sensitivities are currently reported for Stokes I only. For IQUV imaging the
+        # correct values have to be fetched from the new parameters since the previous
+        # ones will contain mixtures of I, Q, U and V due to the "axes" parameter in
+        # the ia.statistics() calls (PIPE-2464). TODO: Refactor the code to have just
+        # one set of statistical parameters.
+        if result.stokes == 'IQUV':
+            image_rms = result.image_rms_iquv[0]
+            image_min = result.image_min_iquv[0]
+            image_max = result.image_max_iquv[0]
+        else:
+            image_rms = result.image_rms
+            image_min = result.image_min
+            image_max = result.image_max
+
         return Sensitivity(array=array,
                            intent=target['intent'],
                            field=target['field'],
