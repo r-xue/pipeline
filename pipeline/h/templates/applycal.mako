@@ -651,8 +651,15 @@ def format_spwmap(spwmap, scispws):
 		Science target: calibrated amplitude vs frequency
 	</%def>
 
-	<%def name="ms_preamble(ms)">
-	% if uv_max[ms].value > 0.0:
+	<%def name="preamble()">
+	% if utils.contains_single_dish(pcontext): #Single dish (source = field, so far)
+		<p>Calibrated amplitude vs frequency plots of each source in each
+		measurement set. The atmospheric transmission for each spectral window is
+        overlayed on each plot in pink.</p>
+
+		<p>Data are plotted for all antennas and correlations, with different
+                antennas shown in different colours.</p>
+    % else: #Interferometry
         <p>Calibrated amplitude vs frequency plots for each measurement
             set's representative source. For mosaics, the representative field is
             identified as the field with the highest median channel-averaged amplitude,
@@ -661,13 +668,6 @@ def format_spwmap(spwmap, scispws):
 
         <p>Data are plotted for all antennas and correlations, with different
             spectral windows shown in different colours.</p>
-    % else: #Single dish (source = field, so far)
-		<p>Calibrated amplitude vs frequency plots of each source in each
-		measurement set. The atmospheric transmission for each spectral window is
-        overlayed on each plot in pink.</p>
-
-		<p>Data are plotted for all antennas and correlations, with different
-                antennas shown in different colours.</p>
 	% endif
 	</%def>
 
@@ -789,7 +789,7 @@ def format_spwmap(spwmap, scispws):
 		Science target: amplitude difference (XX-YY) vs frequency
 	</%def>
 
-	<%def name="ms_preamble(ms)">
+	<%def name="preamble()">
         <p>Diagnosis of amplitude difference between the two polarizations
            for each measurement set. Heuristic plots can be found below.</p>
 	</%def>

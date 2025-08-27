@@ -670,15 +670,15 @@ def format_spwmap(spwmap, scispws):
 	</%def>
 
 	<%def name="preamble()">
-	% if uv_max[ms].value > 0.0:
+	% if utils.contains_single_dish(pcontext): #Single dish (source = field, so far)
+		<p>Calibrated amplitude vs frequency plots of each source in each
+		measurement set. The atmospheric transmission for each spectral window is
+        overlayed on each plot in pink.</p>
+    % else: 
 		<p>Calibrated amplitude vs frequency plots for a representative
 		science field in each measurement set. The science field displayed
 		here is the first field for the source. The atmospheric transmission
         for each spectral window is overlayed on each plot in pink.</p>
-    % else: #Single dish (source = field, so far)
-		<p>Calibrated amplitude vs frequency plots of each source in each
-		measurement set. The atmospheric transmission for each spectral window is
-        overlayed on each plot in pink.</p>
 	% endif
 
 		<p>Data are plotted for all antennas and correlations, with different
