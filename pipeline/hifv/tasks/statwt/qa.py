@@ -29,44 +29,10 @@ class StatwtQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         vis = result.inputs['vis']
-        ms = context.observing_run.get_ms(vis)
-
-        # Score based on incremental flag fraction
-        score0 = qacalc.score_data_flagged_by_agents(ms, result.summaries, 0.05, 0.6, agents=['statwt'])
-        # TODO: this is a little odd -- why do we create a new origin and then just use the values from score0?
-        new_origin = pqa.QAOrigin(metric_name='%StatwtFlagging',
-                                  metric_score=score0.origin.metric_score,
-                                  metric_units=score0.origin.metric_units)
-        score0.origin = new_origin
-        scores = [score0]
-        result.qa.pool.extend(scores)
-
-        # Score based on overall mean and variance for VLA PI Pipeline
-        if result.inputs['statwtmode'] == 'VLA':
-            mean = result.jobs[0]['mean']
-            variance = result.jobs[0]['variance']
-            stats_origin = pqa.QAOrigin(metric_name='%StatwtStats',
-                                    metric_score=(mean, variance),
-                                    metric_units='')
-
-            if mean > 1000000 and variance > 5000000:
-                score = 0.0
-                shortmsg = 'Very high mean and variance of weights'
-                longmsg = 'Very High mean and variance of weights; bad weights are very likely to be present and require flagging'
-                result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=stats_origin))
-            elif mean > 10000 and variance > 500000:
-                score = 0.1
-                shortmsg = 'High mean and variance of weights'
-                longmsg = 'High mean and variance of weights; possibly erroneous weights present that may require flagging'
-                result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=stats_origin))
-            elif mean > 1000 and variance > 50000:
-                score=0.75
-                shortmsg = 'Moderately high mean and variance for weights.'
-                longmsg = 'Moderately high mean and variance for weight; possibly erroneous weights present that may require flagging.'
-                result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=stats_origin))
-            # TODO: Missing an else or maybe we just didn't want a score at all if no issue here? Do we do that?
-
-        # Newly-added QA scores:
+        
+        mean = result.jobs[0]['mean']
+        variance = result.jobs[0]['variance']
+      
         # (1) Gigantic weights
         mean_origin = pqa.QAOrigin(metric_name='%StatwtMean',
                                    metric_score=mean,
@@ -98,7 +64,7 @@ class StatwtQAHandler(pqa.QAPlugin):
         if max_plot_weight > 150:
             score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
             shortmsg = "Very high weights"
-            longmsg = "Very High weights."
+            longmsg = "Very high weights."
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=plot_weights_origin))
         else:
             score = 1.0
