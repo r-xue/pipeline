@@ -450,8 +450,6 @@ def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str
     bandwidth_spws_str = ",".join(map(str, sorted(bandwidth_spws))) if bandwidth_spws else ""
 
     if all_spws_skipped:
-        binning_spws_str = ",".join(map(str, sorted(binning_spws)))
-        bandwidth_spws_str = ",".join(map(str, sorted(bandwidth_spws)))
         longmsg = f"{ms.name}: spw {binning_spws_str} spectral smoothing larger than subband width; spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; subband QA not evaluated."
         shortmsg = "Large spectral smoothing; subband QA not evaluated"
         qascore = pqa.QAScore(
@@ -579,13 +577,12 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
         try:
             LOG.debug(f"Fetching platforming QA info for MS {vis} and caltable {caltable}")
             spw_dict = subband_qa.bandpass_platforming(ms, caltable)
-            print(spw_dict)
             LOG.debug(f"Spws affected by platforming {spw_dict}")
 
             # First check for spw-wide failures:
             total_spw_failure_qa_score = _calc_subband_spw_failures(spw_dict, ms, caltable)
 
-            if total_spw_failure_qa_score:
+            if total_spw_failure_qa_score is not None:
                 scores.append(total_spw_failure_qa_score)
 
             # Then calculate the subband qa score for everything else:
