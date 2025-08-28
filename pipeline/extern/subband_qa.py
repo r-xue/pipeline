@@ -42,9 +42,9 @@ def add_spw_failure(failing_spws: dict[int, SpwFailure], spw_id: int,
     Adds failure information for a single antenna and associated failure type
     to the dict of failing spws.
     """
-    if (failure_type == FailureType.SPW_BINNING) or (failure_type == FailureType.SPW_SMALL_BANDWIDTH):
+    if failure_type in (FailureType.SPW_BINNING, FailureType.SPW_SMALL_BANDWIDTH):
         # This fails for the entire spw so we don't need per-antenna information
-        failing_spws[spw_id] = SpwFailure({}, failure_type)
+        failing_spws[spw_id] = SpwFailure(set(), failure_type)
         return
 
     if spw_id in failing_spws:
@@ -326,11 +326,11 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         chanwidth = spw_bandwidth/spw_nchan
 
         if chanwidth > subb_bw:
-            add_spw_failure(spws_affected, ispw, None, FailureType.SPW_BINNING)
+            add_spw_failure(spws_affected, ispw, "", FailureType.SPW_BINNING)
             continue
 
         if spw_bandwidth <= 2 * subb_bw:
-            add_spw_failure(spws_affected, ispw, None, FailureType.SPW_SMALL_BANDWIDTH)
+            add_spw_failure(spws_affected, ispw, "", FailureType.SPW_SMALL_BANDWIDTH)
             continue
 
         #################################
@@ -528,31 +528,31 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
                             flagchan_range_phs.append(this_flagchan_range)
                             #########################
                     
-                    #############################
-                    # check, the subband is either the first or the last subband
-                    #############################
-                    elif (isubb == 0 or isubb == subb_num - 1):
-                        ############################
-                        # check if the standard deviation of the Sobel filtered value is 10 x larger than
-                        # the median value of the subbands with the Sobel filtered phase value
-                        ############################
-                        if (np.nanstd(sobel_phs[(isubb * subb_nchan):((isubb + 1) * subb_nchan)]) > 10.0 * subb_phs_sobel_rms_med):
-                            yesorno = 'YES'
-                            ###########################
-                            # this verbose message, which can be skipped for PL
-                            ###########################
-                            this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
-                            note_platform += (this_note_platform+'\n')
-                            add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
-                            #########################
+                        #############################
+                        # check, the subband is either the first or the last subband
+                        #############################
+                        elif (isubb == 0 or isubb == subb_num - 1):
+                            ############################
+                            # check if the standard deviation of the Sobel filtered value is 10 x larger than
+                            # the median value of the subbands with the Sobel filtered phase value
+                            ############################
+                            if (np.nanstd(sobel_phs[(isubb * subb_nchan):((isubb + 1) * subb_nchan)]) > 10.0 * subb_phs_sobel_rms_med):
+                                yesorno = 'YES'
+                                ###########################
+                                # this verbose message, which can be skipped for PL
+                                ###########################
+                                this_note_platform = ' QA0_High_phase_spectral_rms subband: '+str(isubb)+' Spw '+str(ispw)+' Ant '+iant+'  P:'+str(ipol)+' BB:'+' TBD'+'  '+ "%.2f"%(subb_phs_rms[isubb]) + 'deg ('+"%.2f" %(subb_phs_rms[isubb]/subb_phs_rms_med)+'sigma)'
+                                note_platform += (this_note_platform+'\n')
+                                add_spw_failure(spws_affected, ispw, iant, FailureType.PHASE)
+                                #########################
 
-                            #########################
-                            # this list contains the frequency range of the affected subband
-                            # it is necessary for plotting
-                            #########################
-                            this_flagchan_range = [spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
-                            flagchan_range_phs.append(this_flagchan_range)
-                            ###########################
+                                #########################
+                                # this list contains the frequency range of the affected subband
+                                # it is necessary for plotting
+                                #########################
+                                this_flagchan_range = [spw_freq[(isubb)*subb_nchan], spw_freq[(isubb+1)*subb_nchan-1]]
+                                flagchan_range_phs.append(this_flagchan_range)
+                                ###########################
 
                 #######################
                 # this string is important and appends the heuristics values for each heuristics
