@@ -419,7 +419,7 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet
         return 0.0
 
     # Exclude spws that didn't go through the heuristic due to high spectral smoothing
-    heuristics_spws = [spw for spw in spw_dict if not (spw_dict[spw]['failure'] == "binning" or spw_dict[spw]['failure'] == "bandwidth")] 
+    heuristics_spws = [spw for spw in spw_dict if spw_dict[spw]['failure'] not in ("binning", "bandwidth")] 
     spws_impacted = len(heuristics_spws)
 
     return spws_impacted/total_fdm_spws
@@ -470,7 +470,7 @@ def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str
         LOG.info(f"{ms.name} : spw {binning_spws_str} spectral smoothing larger than subband width; subband QA not evaluated.")
 
     if bandwidth_spws:
-        LOG.info(f"{ms.name} : spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2 x subband width; subband QA not evaluated.")
+        LOG.info(f"{ms.name} : spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; subband QA not evaluated.")
 
     return None
 
@@ -515,7 +515,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
 
         spw_messages = [
             f"Spw {spw} ({data['failure']}): {', '.join(data['antennas'])}"
-            for spw, data in sorted(spw_dict.items()) if not (data['failure'] == "bandwidth" or data['failure'] == "binning")
+            for spw, data in sorted(spw_dict.items()) if data['failure'] not in ("bandwidth", "binning")
         ]
         longmsg += "; ".join(spw_messages)
 
