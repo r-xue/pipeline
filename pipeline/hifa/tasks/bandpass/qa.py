@@ -467,9 +467,9 @@ def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str
     if all_spws_skipped:
         longmsg = f"{ms.name}: "
         if binning_spws_str:
-            longmsg += "spw {binning_spws_str} spectral smoothing larger than subband width; "
+            longmsg += f"spw {binning_spws_str} spectral smoothing larger than subband width; "
         if bandwidth_spws_str:
-            longmsg += "spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; "
+            longmsg += f"spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; "
         longmsg += "subband QA not evaluated."
         shortmsg = "Large spectral smoothing; subband QA not evaluated"
         qascore = pqa.QAScore(
