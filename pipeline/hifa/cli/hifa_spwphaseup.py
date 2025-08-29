@@ -41,12 +41,14 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
       values override the use of the estimated values unless none are found.
 
     - If SNR calculation fails, then subsequent heuristics are skipped, warnings
-      printed, and ``hm_spwmapmode`` = 'simple'.
+      printed, and mapping falls back to narrow-to-wide.
     
     - If the signal-to-noise of all spws is greater than ``phasesnr`` for a 
       PHASE or CHECK intent, or greater than ``intphasesnr'' for the other 
-      intents, then ``hm_spwmapmode`` = 'default' mapping is used in which 
-      each spw is used to calibrate itself.      
+      intents, then if SNR is high enough to keep solint='int', then
+      no mapping is used (each spw is used to calibrate itself).  If the calculated
+      solint is >'int' then mapping and combine are attempted, to favor a
+      short solint over keeping the spws independent.
 
     - If the signal-to-noise of only some spws are greater than the value of
       ``phasesnr`` for the PHASE or CHECK intent, or ``intphasesnr`` for the 
@@ -54,7 +56,7 @@ def hifa_spwphaseup(vis=None, caltable=None, field=None, intent=None, spw=None, 
       in the same SpectralSpec.
     
     - If all spws have low SNR (or all spws in a given SpectraSpec for
-      multi-SpectralSpec observations), then ``hm_spwmapmode`` = 'combine'.
+      multi-SpectralSpec observations), then spws are combined.
 
     - The time solint is calculated and stored for phaseup in subsequent stages. 
       If ``hm_spwmapmode`` is not 'combine' then there is at least one high
