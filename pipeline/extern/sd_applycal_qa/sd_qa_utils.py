@@ -678,7 +678,10 @@ def getAtmDataForSPW(fname: str, spw_setup: dict, spw: int, antenna: str, smooth
     smtrec = np.zeros_like(trec)
     for pol in range(npol):
         for i, scan in enumerate(tsys_scanlist):
-            smtrec[pol,:,i] = smooth(trec[pol,:,i], int(smooth_trec_factor*spw_setup[spw]['nchan']))
+            # Kernel size can be 0 when nchan is too small.
+            # To avoid invalid kernel size, set minimum kernel size to 1 here.
+            kernel_size = max(1, int(smooth_trec_factor*spw_setup[spw]['nchan']))
+            smtrec[pol,:,i] = smooth(trec[pol,:,i], kernel_size)
     #Get indices for Tsys scan before and after each science scan
     idx_tsys_scan_low = {}
     idx_tsys_scan_high = {}
