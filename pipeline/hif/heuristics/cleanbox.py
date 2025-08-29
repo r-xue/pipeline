@@ -299,7 +299,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 # Filter continuum frequency ranges if given
                 # TODO: The second condition checks if this is an IQUV cube. This
                 # should be done more directly via extra method parameters.
-                if cont_freq_ranges not in (None, '', 'NONE', 'ALL', 'ALLCONT') and len(image_stats_iquv['rms'].shape) == 2:
+                if cont_freq_ranges not in (None, '', 'NONE', 'ALL', 'ALLCONT'):
                     # TODO: utils.freq_selection_to_channels uses casa_tools.image to get the frequency axis
                     #       and closes the global pipeline image tool. The context manager wrapped tool
                     #       used in this "with" statement is a different instance, so this is OK, but stacked
@@ -307,7 +307,10 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     cont_chan_ranges = utils.freq_selection_to_channels(nonpbcor_imagename, cont_freq_ranges)
                     cont_chan_indices = np.hstack([np.arange(start, stop+1) for start, stop in cont_chan_ranges])
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms'][cont_chan_indices]
-                    nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms'][:,cont_chan_indices]
+                    if len(image_stats_iquv['rms'].shape) == 2:
+                        nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms'][:,cont_chan_indices]
+                    else:
+                        nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms']
                 else:
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms']
                     nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms']
