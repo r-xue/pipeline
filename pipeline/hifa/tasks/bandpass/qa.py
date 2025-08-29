@@ -427,7 +427,22 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet
 
 def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str) -> pqa.QAScore | None:
     """
-    Handle spw-wide failures
+    Handle spw-wide failures for subband QA.
+
+    Check for spws that were skipped from subband QA due to either:
+      - Spectral smoothing (binning) being larger than the subband width.
+      - The spw bandwidth being equal to or smaller than twice the subband width.
+
+    If all spws are skipped, a QA score is generated indicating that
+    subband QA was not evaluated. 
+
+    Args:
+        spw_dict (dict): Dictionary mapping spw IDs to failure information.
+        ms (MeasurementSet): The measurement set object.
+        caltable (str): Path to the calibration table.
+
+    Returns:
+        pqa.QAScore | None: A QA score if all spws are skipped, otherwise None.
     """
     binning_spws = []
     bandwidth_spws = []
@@ -450,7 +465,12 @@ def _calc_subband_spw_failures(spw_dict: dict, ms: MeasurementSet, caltable: str
     bandwidth_spws_str = ",".join(map(str, sorted(bandwidth_spws))) if bandwidth_spws else ""
 
     if all_spws_skipped:
-        longmsg = f"{ms.name}: spw {binning_spws_str} spectral smoothing larger than subband width; spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; subband QA not evaluated."
+        longmsg = f"{ms.name}: "
+        if binning_spws_str:
+            longmsg += "spw {binning_spws_str} spectral smoothing larger than subband width; "
+        if bandwidth_spws_str:
+            longmsg += "spw {bandwidth_spws_str} spw bandwidth equal or smaller than 2xsubband width; "
+        longmsg += "subband QA not evaluated."
         shortmsg = "Large spectral smoothing; subband QA not evaluated"
         qascore = pqa.QAScore(
             0.70,

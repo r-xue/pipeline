@@ -329,6 +329,8 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
             add_spw_failure(spws_affected, ispw, "", FailureType.SPW_BINNING)
             continue
 
+        # This heuristic is not evaluated if the bandwidth of the spw is equal
+        # or smaller than twice the subband width
         if spw_bandwidth <= 2 * subb_bw:
             add_spw_failure(spws_affected, ispw, "", FailureType.SPW_SMALL_BANDWIDTH)
             continue
