@@ -325,7 +325,7 @@ def evalPerAntBP_Platform(data, output_dir, ms, caltable) -> dict:
         # is larger than the subband width
         chanwidth = spw_bandwidth/spw_nchan
 
-        if chanwidth > subb_bw:
+        if chanwidth >= subb_bw:
             add_spw_failure(spws_affected, ispw, "", FailureType.SPW_BINNING)
             continue
 
