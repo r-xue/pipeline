@@ -511,6 +511,8 @@ def smooth(y: np.ma.core.MaskedArray, box_pts: int):
     mask = ymasked.mask
     data = ymasked.filled(0)
 
+    # kernel size must be > 0
+    box_pts = max(1, box_pts)
     kernel = np.ones(box_pts) / box_pts
     smoothed_data = convolve1d(data, kernel, mode = 'reflect')
     if np.sum(mask) > 0:
