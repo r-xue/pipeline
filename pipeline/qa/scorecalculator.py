@@ -2894,7 +2894,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
         groups = np.split(idx, np.where(np.diff(idx) != 1)[0] + 1)
         return [(grp[0], grp[-1]) for grp in groups]
 
-    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str, ms_name: str, field: str = '', spws: set[int] = set(), ants: set[str] = set()):
+    def make_score(score_val: float, msg: str, metric_val: str, metric_units: str,
+                   ms_name: str | None = None, field: str | None = None, spws: set[int] = set(), ants: set[str] = set()):
         """
         Build a QAScore object for score_sd_line_detection.
 
@@ -2903,7 +2904,7 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             msg (str): Description of the QA result.
             metric_val (str): The metric value of score.
             metric_units (str): Units for the metric_value.
-            ms_name (str): Name of the Measurement Set (EB).
+            ms_name (str): Name of the Measurement Set (EB). (optional)
             field (str): Field name (optional).
             spws (set[int]): Set of spectral window IDs (optional).
             ants (set[str]): Set of antenna names (optional).
@@ -2912,14 +2913,22 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             pqa.QAScore: A fully populated QAScore with long and short messages,
                         origin (metric name/score/units), and target selection.
         """
-        spw_str = ', '.join(map(str, sorted(spws)))
-        ant_str = ', '.join(sorted(ants))
-        longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
+        ms_str = f'EB {ms_name}' if ms_name else ""
+        field_str = f', Field {field}' if field else ""
+        spw_str = ', Spw ' + ', '.join(map(str, sorted(spws))) if spws else ""
+        ant_str = ', Antenna ' + ', '.join(sorted(ants)) if ants else ""
         shortmsg = f'{msg}.'
+        longmsg = f'{msg} in {ms_str}{field_str}{spw_str}{ant_str}.' if ms_name or field or spws or ants else shortmsg
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score=metric_val,
                               metric_units=metric_units)
-        selection = pqa.TargetDataSelection(vis={ms_name}, spw=spws, field={field}, ant=ants, intent={'TARGET'})
+        #selection = pqa.TargetDataSelection(vis={ms_name}, spw=spws, field={field}, ant=ants, intent={'TARGET'})
+        selection = pqa.TargetDataSelection(
+            vis={ms_name} if ms_name else None,
+            spw=spws,
+            field={field} if field else None,
+            ant=ants,
+            intent={'TARGET'})
         return pqa.QAScore(score_val, longmsg=longmsg, shortmsg=shortmsg, origin=origin, applies_to=selection)
 
     # Precompute ATM masks per MS/SPW
@@ -3039,9 +3048,8 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
     if len(line_detection_scores) == 0:
         # add new entry with score of 0.8 if no spectral lines
         # were detected in any spws/fields
-        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs.',
-                                    'N/A', 'Channel range(s) of detected lines',
-                                    next(iter(atm_masks))))
+        line_detection_scores.append(make_score(0.8,  'No line ranges were detected in all SPWs',
+                                    'N/A', 'Channel range(s) of detected lines'))
 
     return line_detection_scores + dm_scores
 
