@@ -926,8 +926,8 @@ class T2_1DetailsRenderer(object):
         data = compute_zd_telmjd_for_ms(ms)
         zd = list(itertools.chain.from_iterable([data[s]['zd'] for s in data]))
         telmjd = list(itertools.chain.from_iterable([data[s]['telmjd'] for s in data]))
-        zd_min, zd_max = round(min(zd), 2), round(max(zd), 2)
-        telmjd_min, telmjd_max = min(telmjd), max(telmjd)
+        zd_min, zd_max, zd_avg = round(min(zd), 2), round(max(zd), 2), round(np.average(zd), 2)
+        telmjd_min, telmjd_max, telmjd_avg = min(telmjd), max(telmjd), np.average(telmjd)
 
         # Create zenith angle vs time plot
         task = summary.ZDTELMJDChart(context, ms, data)
@@ -1008,8 +1008,10 @@ class T2_1DetailsRenderer(object):
             'el_max'          : el_max,
             'zd_min'          : zd_min,
             'zd_max'          : zd_max,
+            'zd_avg'          : zd_avg,
             'telmjd_min'      : utils.format_datetime(telmjd_min),
             'telmjd_max'      : utils.format_datetime(telmjd_max),
+            'telmjd_avg'      : utils.format_datetime(telmjd_avg),
             'vla_basebands'   : vla_basebands
         }
 

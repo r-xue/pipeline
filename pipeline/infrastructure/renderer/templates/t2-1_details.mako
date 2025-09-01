@@ -192,15 +192,15 @@ import os
 				</tr>
 				<tr>
 					<th>Min Zenith Angle (TARGET)</th>
-					<td>${zd_min} degrees</td>
+					<td>${zd_min} degrees at ${telmjd_min}</td>
 				</tr>
 				<tr>
 					<th>Max Zenith Angle (TARGET)</th>
-					<td>${zd_max} degrees</td>
+					<td>${zd_max} degrees at ${telmjd_max}</td>
 				</tr>
 				<tr>
-					<th>Telescope MJD (TARGET)</th>
-					<td>${telmjd_min} - ${telmjd_max}</td>
+					<th>Average Zenith Angle (TARGET)</th>
+					<td>${zd_avg} degrees at ${telmjd_avg}</td>
 				</tr>
 			</tbody>
 		</table>
