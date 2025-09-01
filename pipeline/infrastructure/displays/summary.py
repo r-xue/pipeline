@@ -5,6 +5,7 @@ import datetime
 import math
 import operator
 import os
+import shutil
 from typing import TYPE_CHECKING, Generator
 
 import matplotlib
@@ -16,7 +17,7 @@ from pipeline import infrastructure
 from pipeline.domain import measures
 from pipeline.h.tasks.common import atmutil
 from pipeline.infrastructure import casa_tasks, casa_tools, utils, vdp
-from pipeline.infrastructure.displays import plotmosaic, plotpwv, plotstyle, plotsuntrack, plotweather
+from pipeline.infrastructure.displays import plotpointings, plotpwv, plotstyle, plotsuntrack, plotweather
 from pipeline.infrastructure.renderer import logger
 
 if TYPE_CHECKING:
@@ -631,27 +632,27 @@ class PWVChart:
                            parameters={'vis': self.ms.basename})
 
 
-class MosaicChart(object):
-    """Base class for generating mosaic charts.
+class PointingsChart(object):
+    """Base class for generating a pointings chart.
 
-    This class provides a framework for creating and managing mosaic plots for a 
+    This class provides a framework for creating and managing pointings plots for a
     given measurement set and source.
 
     Attributes:
         context: The context of the processing session.
         ms: The measurement set to be analyzed.
-        source: The source for which the mosaic plot is generated.
+        source: The source for which the pointings plot is generated.
         figfile: The file path where the plot will be saved.
     """
 
     def __init__(self, context: Context, ms: MeasurementSet, source: Source):
         """
-        Initializes the MosaicChart with the given context, measurement set, and source.
+        Initializes the PointingsChart with the given context, measurement set, and source.
 
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the mosaic is created.
+            source: The source for which the pointings is created.
         """
         self.context = context
         self.ms = ms
@@ -660,7 +661,7 @@ class MosaicChart(object):
 
     def plot(self) -> logger.Plot | None:
         """
-        Abstract method to generate the mosaic plot.
+        Abstract method to generate the pointings plot.
 
         Raises:
             NotImplementedError: If the subclass does not implement this method.
@@ -684,7 +685,7 @@ class MosaicChart(object):
         Creates a Plot object with metadata.
 
         Returns:
-            A plot object containing metadata about the generated mosaic.
+            A plot object containing metadata about the generated pointings.
         """
         return logger.Plot(
             self.figfile,
@@ -694,7 +695,7 @@ class MosaicChart(object):
             )
 
 
-class MosaicPointingsChart(MosaicChart):
+class MosaicPointingsChart(PointingsChart):
     """Generates a mosaic plot of pointings for a given source in a measurement set."""
 
     def __init__(self, context: Context, ms: MeasurementSet, source: Source):
@@ -704,7 +705,7 @@ class MosaicPointingsChart(MosaicChart):
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the mosaic is created.
+            source: The source for which the mosaic pointings plot is created.
         """
         super().__init__(context, ms, source)
 
@@ -720,9 +721,9 @@ class MosaicPointingsChart(MosaicChart):
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic_source(self.ms, self.source, self.figfile)
+            plotpointings.plot_mosaic_source(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warning('Could not create mosaic plot: %s', e)
+            LOG.warning('Could not create mosaic pointings plot: %s', e)
             return None
 
         return self._get_plot_object()
@@ -738,27 +739,32 @@ class MosaicPointingsChart(MosaicChart):
             self.context.report_dir,
             f"session{self.ms.session}",
             self.ms.basename,
-            f"mosaic_source{self.source.id}.png"
+            f"source{self.source.id}_mosaic_pointings.png"
         )
 
 
-class MosaicTsysChart(MosaicChart):
-    """Generates a mosaic plot of system temperature (Tsys) scans for a given source."""
+class TsysScansChart(PointingsChart):
+    """Generates a plot of system temperature (Tsys) scan(s) for a given source."""
 
-    def __init__(self, context: Context, ms: MeasurementSet, source: Source):
+    def __init__(
+            self,
+            context: Context,
+            ms: MeasurementSet,
+            source: Source,
+            ):
         """
-        Initializes the MosaicTsysChart with the given parameters.
+        Initializes the TsysScansChart with the given parameters.
 
         Args:
             context: The processing session context.
             ms: The measurement set to analyze.
-            source: The source for which the Tsys mosaic is created.
+            source: The source for which the Tsys scan(s) plot is created.
         """
         super().__init__(context, ms, source)
 
     def plot(self) -> logger.Plot | None:
         """
-        Generates and saves the mosaic Tsys plot.
+        Generates and saves the Tsys scan(s) plot.
 
         Returns:
             The plot object if successful, otherwise None.
@@ -768,25 +774,25 @@ class MosaicTsysChart(MosaicChart):
             return self._get_plot_object()
 
         try:
-            plotmosaic.plot_mosaic_tsys_scans(self.ms, self.source, self.figfile)
+            plotpointings.plot_tsys_scans(self.ms, self.source, self.figfile)
         except Exception as e:
-            LOG.warning('Could not create mosaic plot: %s', e)
+            LOG.warning('Could not create Tsys scan(s) plot: %s', e)
             return None
 
         return self._get_plot_object()
 
     def _get_figfile(self) -> str:
         """
-        Determines the file path for the mosaic Tsys plot.
+        Determines the file path for the Tsys scan(s) plot.
 
         Returns:
-            The file path for storing the Tsys mosaic plot.
+            The file path for storing the Tsys scan(s) plot.
         """
         return os.path.join(
             self.context.report_dir,
             f"session{self.ms.session}",
             self.ms.basename,
-            f"mosaic_source{self.source.id}_tsys_scans.png"
+            f"source{self.source.id}_tsys_scans.png"
         )
 
 
@@ -1330,14 +1336,24 @@ class SpwIdVsFreqChart:
     def plot(self) -> logger.Plot | None:
         """Create the plot.
 
+        If the plot file already exists, Plot object is generated from
+        the existing file. If input MS is the one generated by the
+        pipeline (e.g., in mstransform or baseline stages), this method
+        will copy the plot file from the origin MS if it exists.
+
         Returns:
             Plot object
             Note that it returns None if no TARGET scans found in MS
         """
         filename = self.inputs.output
+        ms = self.inputs.ms
+        origin_filename = filename.replace(ms.basename, ms.origin_ms)
         if os.path.exists(filename):
             return self._get_plot_object()
-        ms = self.inputs.ms
+        elif os.path.exists(origin_filename):
+            LOG.info("Copying frequency coverage plot for origin_ms.")
+            shutil.copyfile(origin_filename, filename)
+            return self._get_plot_object()
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent='TARGET')
         if len(targeted_scans) == 0:
@@ -1385,7 +1401,7 @@ class SpwIdVsFreqChart:
                     ax_spw.annotate(str(spwid), (fmin + bw/2, idx - bar_height/2), fontsize=14, ha='center', va='bottom')
                 idx += 1
                 rmin = min(rmin, abs(atmutil.get_spw_spec(vis=ms.name, spw_id=spwid)[2]))
-        
+
         # 3. Frequency vs. ATM transmission
         center_freq = (xmin + xmax) / 2.0
         # Determining the resolution value so that generates fine ATM transmission curve: it is set

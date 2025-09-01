@@ -44,7 +44,7 @@ class CheckProductSizeInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -59,7 +59,9 @@ class CheckProductSizeInputs(vdp.StandardInputs):
 
             calcsb: Force (re-)calculation of sensitivities and beams
 
-            parallel: Use MPI cluster where possible
+            parallel: Use the CASA imager parallelization when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic' 
 
             maximsize: Maximum allowed image count size (mitigation goal and hard maximum).
                 Parameter ``maximsize`` must be even and divisible by 2,3,5,7 only.

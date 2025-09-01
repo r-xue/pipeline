@@ -48,7 +48,7 @@ class FindContInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -65,7 +65,9 @@ class FindContInputs(vdp.StandardInputs):
 
             datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
 
-            parallel: Use MPI cluster where possible.
+            parallel: Use CASA/tclean built-in parallel imaging when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'            
 
         """
         super(FindContInputs, self).__init__()
@@ -93,13 +95,13 @@ class FindCont(basetask.StandardTaskTemplate):
 
         # Check if this stage has been disabled for VLA (never set for ALMA)
         if inputs.context.vla_skip_mfs_and_cube_imaging:
-            result = FindContResult({}, {}, '', 0, 0, [])
+            result = FindContResult({}, {}, '', 0, 0, [], {})
             return result
 
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, {}, '', 0, 0, [])
+            result = FindContResult({}, {}, '', 0, 0, [], {})
             result.mitigation_error = True
             return result
 
@@ -123,7 +125,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if ms_objects_and_columns == collections.OrderedDict():
                 LOG.error('No data found for continuum finding.')
-                result = FindContResult({}, {}, '', 0, 0, [])
+                result = FindContResult({}, {}, '', 0, 0, [], {})
                 return result
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
@@ -155,8 +157,8 @@ class FindCont(basetask.StandardTaskTemplate):
         cont_ranges = contfile_handler.read()
 
         result_cont_ranges = {}
-
         joint_mask_names = {}
+        momDiffSNRs = {}
 
         num_found = 0
         num_total = 0
@@ -295,7 +297,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         channel_width_freq_TOPO = float(real_spwid_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                         # Skip 1 km/s
                         extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
                     else:
@@ -401,7 +403,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     if reprBW_mode in ['nbin', 'repr_spw']:
                         # Approximate reprBW with nbin
                         physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
-                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))[0]/physicalBW_of_1chan + 0.5)
                     else:
                         reprBW_nbin = 1
 
@@ -413,7 +415,7 @@ class FindCont(basetask.StandardTaskTemplate):
                     if dynrange_bw is not None:  # None means that a value was not provided, and it should remain None
                         dynrange_bw = qaTool.tos(dynrange_bw)
 
-                    (cont_ranges_and_flags, png, single_range_channel_fraction, warning_strings, joint_mask_name) = \
+                    (cont_ranges_and_flags, png, single_range_channel_fraction, warning_strings, joint_mask_name, momDiffSNR) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
@@ -424,6 +426,7 @@ class FindCont(basetask.StandardTaskTemplate):
                                                            dynrange_bw=dynrange_bw)
 
                     joint_mask_names[(source_name, spwid)] = joint_mask_name
+                    momDiffSNRs[(source_name, spwid)] = momDiffSNR
 
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
@@ -459,7 +462,7 @@ class FindCont(basetask.StandardTaskTemplate):
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions)
+        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions, momDiffSNRs)
 
         return result
 

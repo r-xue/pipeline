@@ -120,33 +120,44 @@ class T2_4MDetailsSolintRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
 
             # generate testdelay plots and JSON file
             plotter = testgainsdisplay.testgainsPerAntennaChart(context, result, 'amp')
-            plots = plotter.plot() 
+            plots = plotter.plot()
             json_path = plotter.json_filename
-
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testgains_plots.mako', 'amp', bandlist)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                testgainsamp_subpages[ms] = renderer.filename
+            if len(plots) != 0:
+                # write the html for each MS to disk
+                renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testgains_plots.mako', 'amp', bandlist)
+                with renderer.get_file() as fileobj:
+                    fileobj.write(renderer.render())
+                    testgainsamp_subpages[ms] = renderer.filename
+            else:
+                testgainsamp_subpages[ms] = ''
 
             # generate amp Gain plots and JSON file
             plotter = testgainsdisplay.testgainsPerAntennaChart(context, result, 'phase')
-            plots = plotter.plot() 
+            plots = plotter.plot()
             json_path = plotter.json_filename
 
-            # write the html for each MS to disk
-            renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testgains_plots.mako', 'phase', bandlist)
-            with renderer.get_file() as fileobj:
-                fileobj.write(renderer.render())
-                testgainsphase_subpages[ms] = renderer.filename
+            if len(plots) != 0:
+                # write the html for each MS to disk
+                renderer = VLASubPlotRenderer(context, result, plots, json_path, 'testgains_plots.mako', 'phase', bandlist)
+                with renderer.get_file() as fileobj:
+                    fileobj.write(renderer.render())
+                    testgainsphase_subpages[ms] = renderer.filename
+            else:
+                testgainsphase_subpages[ms] = ''
 
             # String type formatting of solution intervals
             new_gain_solint1_string = ''
             for band, value in result.new_gain_solint1.items():
-                new_gain_solint1_string += '{!s} band: {!s}    '.format(band, value)
+                if isinstance(value, str):
+                    if 'int' in value:
+                        new_gain_solint1_string += f'{band!s} band: int ({result.integration_time[band]:.2f}s)    '
+                    else:
+                        new_gain_solint1_string += f'{band!s} band: {value!s}    '
+                else:
+                    new_gain_solint1_string += f'{band!s} band: {float(value):.2f}s    '
             longsolint_string = ''
             for band, value in result.longsolint.items():
-                longsolint_string += '{!s} band: {:6.2f}s    '.format(band, float(value))
+                longsolint_string += f'{band!s} band: {float(value):.2f}s    '
 
             # String type
             new_gain_solint1[ms] = new_gain_solint1_string
@@ -179,14 +190,19 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         spindex_results = {}
 
         webdicts = {}
-
+        plots = {}
         for result in results:
+            try:
+                if os.path.exists(result.caltable):
+                    plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, result.caltable)
+                    plots = plotter.plot()
+                else:
+                    LOG.warning("{!s} not found.".format(result.caltable))
 
-            plotter = fluxbootdisplay.fluxgaincalSummaryChart(context, result, result.caltable)
-            plots = plotter.plot()
-
-            plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
-            plots.extend(plotter.plot())
+                plotter = fluxbootdisplay.fluxbootSummaryChart(context, result)
+                plots.extend(plotter.plot())
+            except Exception as ex:
+                LOG.warning(str(ex))
 
             ms = os.path.basename(result.inputs['vis'])
 
@@ -243,12 +259,14 @@ class T2_4MDetailsfluxbootRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 webdicts[ms][row['source']].append({'freq': row['freq'], 'data': row['data'], 'error': row['error'],
                                                     'fitteddata': row['fitteddata']})
 
-            plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
-            plots.extend(plotter.plot())
+            try:
+                plotter = fluxbootdisplay.residualsSummaryChart(context, result, webdicts[ms])
+                plots.extend(plotter.plot())
 
-            plotter = fluxbootdisplay.modelfitSummaryChart(context, result, webdicts[ms])
-            plots.extend(plotter.plot())
-
+                plotter = fluxbootdisplay.modelfitSummaryChart(context, result, webdicts[ms])
+                plots.extend(plotter.plot())
+            except Exception as ex:
+                LOG.warning(str(ex))
             summary_plots[ms] = plots
 
             weblog_results[ms] = webdicts[ms]

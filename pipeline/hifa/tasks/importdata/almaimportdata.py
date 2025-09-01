@@ -142,7 +142,9 @@ class ALMAImportDataInputs(importdata.ImportDataInputs):
                 calibrator, in degrees. The default of 0.0 is used for
                 non-polarisation processing.
 
-            parallel: Execute using CASA HPC functionality, if available.
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
 
         """
         super().__init__(context, vis=vis, output_dir=output_dir, asis=asis,
@@ -162,7 +164,6 @@ class ALMAImportDataResults(importdata.ImportDataResults):
             setjy_results: list[FluxCalibrationResults] | None = None
             ):
         super().__init__(mses=mses, setjy_results=setjy_results)
-        self.parang_ranges = {}
 
     def __repr__(self) -> str:
         return 'ALMAImportDataResults:\n\t{0}'.format(

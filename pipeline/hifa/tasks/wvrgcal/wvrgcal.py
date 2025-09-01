@@ -651,8 +651,8 @@ class Wvrgcal(basetask.StandardTaskTemplate):
                 'hm_bandpass': 'fixed',
                 'solint': 'inf,7.8125MHz'}
 
-        inputs = bandpass.ALMAPhcorBandpass.Inputs(inputs.context, **args)
-        task = bandpass.ALMAPhcorBandpass(inputs)
+        inputs = bandpass.SerialALMAPhcorBandpass.Inputs(inputs.context, **args)
+        task = bandpass.SerialALMAPhcorBandpass(inputs)
         result = self._executor.execute(task, merge=False)
         if not result.final:
             pass

@@ -16,7 +16,7 @@ from .eventbus import ContextCreatedEvent, ContextResumedEvent
 LOG = logging.get_logger(__name__)
 
 # minimum allowed CASA revision. Set to 0 or None to disable
-MIN_CASA_REVISION = [6, 6, 6, 1]
+MIN_CASA_REVISION = [6, 6, 6, 16]
 # maximum allowed CASA revision. Set to 0 or None to disable
 MAX_CASA_REVISION = None
 
@@ -64,6 +64,10 @@ class Context(object):
         clean_list_pending: List of hif.tasks.makeimlist.cleantarget.CleanTarget
             objects representing what target images are to be cleaned; typically
             populated by hif_makeimlist, or edited by hif_editimlist.
+        clean_masks: Dictionary to store the names of clean masks to be re-used
+            for TARGET IQUV imaging.
+        clean_thresholds: Dictionary to store thresholds to be re-used for
+            TARGET IQUV imaging.
         contfile: Name of file with frequency ranges to use for continuum
             images; typically populated by hif_makeimlist.
         imaging_mode: Imaging mode string; may be used to switch between imaging
@@ -78,6 +82,13 @@ class Context(object):
             parameters as well as sensitivity information; typically populated
             by hifa_imageprecheck, and potentially updated by hif_makeimages or
             hif_tclean.
+        processing_intents: Dictionary of processing intents for the current
+            pipeline run. Currently, the following options are known:
+            - {'INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+            - {'VLA_INTERFEROMETRY_STANDARD_OBSERVING_MODE': 'Undefined'}
+            - {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': True}
+            - {'INTERFEROMETRY_HETEROGENEOUS_IMAGING': True}
+            - {'SINGLEDISH_STANDARD_OBSERVING_MODE': 'Undefined'}
         rmsimlist: The ImageLibrary object holding RMS uncertainty images of the
             science targets.
         sciimlist: The ImageLibrary object holding final images of science targets.
@@ -130,6 +141,9 @@ class Context(object):
         self.subtask_counter = 0
         LOG.trace('Pipeline stage counter set to {0}'.format(self.stage))
 
+        # Define list of processing intents.
+        self.processing_intents = dict()
+
         # Define observing run.
         self.observing_run = domain.ObservingRun()
 
@@ -143,6 +157,8 @@ class Context(object):
         self.callibrary = callibrary.CalLibrary(self)
         self.clean_list_info = {}  # CAS-9456
         self.clean_list_pending = []  # CAS-10146
+        self.clean_masks = {} # PIPE-2464
+        self.clean_thresholds = {} # PIPE-2464
         self.contfile: str | None = None
         self.imaging_mode: str | None = None  # PIPE-592
         self.imaging_parameters = {}  # CAS-10146
@@ -285,7 +301,8 @@ class Pipeline(object):
         context: Context object containing the Pipeline state information.
     """
     def __init__(self, context: str | None = None, loglevel: str = 'info', casa_version_check: bool = True,
-                 name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None):
+                 name: str | None = None, plotlevel: str = 'default', path_overrides: dict | None = None,
+                 processing_intents: dict = None):
         """
         Initialise the pipeline, creating a new Context or loading a saved
         Context from disk.
@@ -302,6 +319,8 @@ class Pipeline(object):
             plotlevel: Pipeline plots level.
             path_overrides: Optional dictionary containing context properties to
                 be redefined when loading existing context (e.g. "name").
+            processing_intents: Dictionary of processing intents for the current
+                pipeline run.
         """
         # configure logging with the preferred log level
         logging.set_logging_level(level=loglevel)
@@ -343,6 +362,9 @@ class Pipeline(object):
             if path_overrides is not None:
                 for k, v in path_overrides.items():
                     setattr(self.context, k, v)
+
+        if processing_intents is not None:
+            self.context.processing_intents = processing_intents
 
         self._link_casa_log(self.context)
 

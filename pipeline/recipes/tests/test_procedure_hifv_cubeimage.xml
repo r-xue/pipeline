@@ -7,7 +7,7 @@
         <ParameterSet>
             <Parameter>
                 <Keyword xmlns="">datacolumns</Keyword>
-                <Value xmlns="">{'data':'regcal_line_science'}</Value>
+                <Value xmlns="">{'data':'regcal_contline_science'}</Value>
             </Parameter>            
         </ParameterSet>
     </ProcessingCommand>
@@ -46,13 +46,6 @@
         <ParameterSet>
         </ParameterSet>
     </ProcessingCommand>
-
-    <ProcessingCommand>
-        <Command xmlns="">hifv_pbcor</Command> 
-        <!-- delibrately excluded ?-->
-        <ParameterSet>
-        </ParameterSet>
-    </ProcessingCommand>    
     
     <ProcessingCommand>
         <Command xmlns="">hifv_exportdata</Command>

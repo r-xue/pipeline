@@ -485,7 +485,7 @@ class CorrectedampflagInputs(vdp.StandardInputs):
             output_dir: Output directory.
                 Defaults to None, which corresponds to the current working directory.
 
-            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the h_init or hif_importdata task.
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
                 '': use all MeasurementSets in the context
 
                 Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
@@ -960,6 +960,12 @@ class Correctedampflag(basetask.StandardTaskTemplate):
             id_nonbad = np.where(np.logical_and(
                 np.logical_not(flag),
                 np.isfinite(cmetric)))
+
+            # PIPE-1879: skip assessment of current polarization if there are no
+            # good data for at least 2 baselines.
+            if len(id_nonbad[0]) < 2:
+                continue
+
             cmetric_sel = cmetric[id_nonbad]
             time_sel = time[id_nonbad]
             ant1_sel = ant1[id_nonbad]
@@ -1095,12 +1101,16 @@ class Correctedampflag(basetask.StandardTaskTemplate):
 
             # Based on the "ultra low/high" sigma outlier thresholds, identify
             # both negative and positive outliers.
+            #
+            # PIPE-655: for science target intent, use assessment based on
+            # interquartile means and difference in uvrange bins.
             if intent == 'TARGET':
-                # Identify UV bins.
-                uvdist = uvdist_all[id_nonac]
-                uvdist_sel = uvdist[id_nonbad]
-                if uvdist_sel.shape == (0,):
-                    continue  # go on to the next polarization
+                # Select for assessment the UV distances for baselines that are
+                # not auto-correlations and that are not flagged/NaN for current
+                # polarization.
+                uvdist_sel = uvdist_all[id_nonac][id_nonbad]
+
+                # Group UV distances together into bins.
                 uvmin = np.min(uvdist_sel)
                 uvmax = np.max(uvdist_sel)
                 uvbins = []
@@ -1224,6 +1234,8 @@ class Correctedampflag(basetask.StandardTaskTemplate):
                          ' half of the first bin' % (spwid, len(id_ultrahighsig), len(firsthalf_firstbin_flags)))
                 id_ultrahighsig = np.union1d(id_ultrahighsig, firsthalf_firstbin_flags)
                 id_ultrahighsig = np.array(id_ultrahighsig, dtype=int)
+            # PIPE-655: for all other intents, use assessment based on a single
+            # median and MAD computed over all data.
             else:
                 id_ultrahighsig = np.where(
                     np.logical_or(

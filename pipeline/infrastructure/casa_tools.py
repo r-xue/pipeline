@@ -81,6 +81,10 @@ def create_logging_class(cls, level=logging.TRACE, to_log=None):
     bound_methods = {name: method
                      for (name, method) in inspect.getmembers(cls, inspect.isfunction)}
 
+    if 'done' in bound_methods and 'close' not in bound_methods:
+        # `close`` as an alias of `done` in case the `close` method is absent (e.g., casatools.measures)
+        bound_methods['close'] = bound_methods['done']
+
     if to_log:
         bound_methods = {name: method for name, method in bound_methods.items() if name in to_log}
 
@@ -100,6 +104,7 @@ def create_logging_class(cls, level=logging.TRACE, to_log=None):
 # loglevel=INFO. The default log level is TRACE.
 #
 # Example:
+_logging_agentflagger_cls = create_logging_class(casatools.agentflagger)
 _logging_atmosphere_cls = create_logging_class(casatools.atmosphere)
 _logging_calanalysis_cls = create_logging_class(casatools.calanalysis)
 _logging_calibrater_cls = create_logging_class(casatools.calibrater)
@@ -117,6 +122,7 @@ _logging_synthesisutils_cls = create_logging_class(casatools.synthesisutils)
 _logging_table_cls = create_logging_class(casatools.table)
 _logging_utils_cls = create_logging_class(casatools.utils.utils)
 
+agentflagger = _logging_agentflagger_cls()
 atmosphere = _logging_atmosphere_cls()
 calanalysis = _logging_calanalysis_cls()
 calibrater = _logging_calibrater_cls()
@@ -134,7 +140,6 @@ table = _logging_table_cls()
 utils = _logging_utils_cls()
 
 log = casalog
-
 
 def post_to_log(comment='', echo_to_screen=True):
     log.post(comment)
@@ -223,6 +228,7 @@ ImagepolReader = context_manager_factory(_logging_imagepol_cls)
 # C extensions cannot be pickled, so ignore the CASA logger on pickle and
 # replace with it with the current CASA logger on unpickle
 __tools = [
+    'agentflagger',
     'atmosphere',
     'calibrater',
     'image',
