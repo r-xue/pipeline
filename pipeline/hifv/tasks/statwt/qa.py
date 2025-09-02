@@ -38,7 +38,7 @@ class StatwtQAHandler(pqa.QAPlugin):
                                    metric_score=mean,
                                    metric_units='')
 
-        score = np.nanmax([1 - (np.log10(mean)/6.0)**3.5, 0.0])
+        score = np.max([1 - (abs(np.log10(mean))/6.0)**3.5, 0.0])
 
         if score <= 0.9:
             shortmsg = "Elevated weights"
