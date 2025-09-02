@@ -35,7 +35,7 @@ class ZDTELMJDChart:
             self,
             context: Context,
             ms: MeasurementSet,
-            data: dict[int, dict[str, list[float | datetime.datetime]]],
+            data: dict[int, dict[str, float | datetime.datetime]],
             ):
         self.context = context
         self.ms = ms
@@ -58,10 +58,9 @@ class ZDTELMJDChart:
 
         for i, field_data in enumerate(self.data.values()):
             color = plot_colors[i % len(plot_colors)]
-            telmjd = field_data.get('telmjd', [])
-            zd = field_data.get('zd', [])
-            if telmjd:
-                plt.scatter(telmjd, zd, color=f'#{color}')
+            telmjd = field_data.get('telmjd')
+            zd = field_data.get('zd')
+            plt.scatter(telmjd, zd, color=f'#{color}')
 
         plt.xlabel(f'Time (UT on {first_time.strftime("%Y-%m-%d")})')
         plt.gca().xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
