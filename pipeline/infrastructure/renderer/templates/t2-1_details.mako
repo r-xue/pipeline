@@ -195,12 +195,12 @@ import os
 					<td>${zd_min} degrees at ${telmjd_min}</td>
 				</tr>
 				<tr>
-					<th>Max Zenith Angle</th>
-					<td>${zd_max} degrees at ${telmjd_max}</td>
+					<th>Avg Zenith Angle</th>
+					<td>${zd_avg} degrees at ${telmjd_avg}</td>
 				</tr>
 				<tr>
-					<th>Average Zenith Angle</th>
-					<td>${zd_avg} degrees at ${telmjd_avg}</td>
+					<th>Max Zenith Angle</th>
+					<td>${zd_max} degrees at ${telmjd_max}</td>
 				</tr>
 			</tbody>
 		</table>

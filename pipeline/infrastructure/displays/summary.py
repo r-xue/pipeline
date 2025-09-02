@@ -54,7 +54,7 @@ class ZDTELMJDChart:
         plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
                        'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
                        '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
-        first_time = min(min(field['telmjd']) for field in self.data.values())
+        first_time = min(field['telmjd'] for field in self.data.values())
 
         for i, field_data in enumerate(self.data.values()):
             color = plot_colors[i % len(plot_colors)]
