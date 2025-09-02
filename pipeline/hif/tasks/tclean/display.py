@@ -92,7 +92,7 @@ class CleanSummary(object):
                         if image_path not in self.image_stats:
                             LOG.trace('No cached image statistics found for {!s}'.format(image_path))
                             with casa_tools.ImageReader(image_path) as image:
-                                stats = image.statistics(robust=False)
+                                stats = image.statistics(axes=[0, 1, 3], robust=False)
                                 image_rms = stats.get('rms')[0]
                                 image_max = stats.get('max')[0]
                                 self.image_stats[image_path] = ImageStats(rms=image_rms, max=image_max)
