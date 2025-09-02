@@ -925,10 +925,10 @@ class T2_1DetailsRenderer(object):
         el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
         data = compute_zd_telmjd_for_ms(ms)
         zd = list(itertools.chain.from_iterable([data[s]['zd'] for s in data]))
-        telmjd = list(itertools.chain.from_iterable([data[s]['telmjd'] for s in data]))
-        # retrieve min, median, and max zenith angle measurements and its telmjd
-        zd_min, zd_med, zd_max = np.min(zd), np.median(zd), np.max(zd)
-        telmjd_min, telmjd_med, telmjd_max = telmjd[zd.index(zd_min)], telmjd[zd.index(zd_med)], telmjd[zd.index(zd_max)]
+        telmjd = list(itertools.chain.from_iterable([data[s]['telmjd'].timestamp() for s in data]))
+        # retrieve min, average, and max zenith angle measurements and its telmjd
+        zd_min, zd_avg, zd_max = np.min(zd), np.average(zd), np.max(zd)
+        telmjd_min, telmjd_med, telmjd_max = telmjd[zd.index(zd_min)], np.average(telmjd), telmjd[zd.index(zd_max)]
 
         # Create zenith angle vs time plot
         task = summary.ZDTELMJDChart(context, ms, data)
@@ -1008,11 +1008,11 @@ class T2_1DetailsRenderer(object):
             'el_min'          : el_min,
             'el_max'          : el_max,
             'zd_min'          : zd_min,
-            'zd_med'          : zd_med,
+            'zd_avg'          : zd_avg,
             'zd_max'          : zd_max,
-            'telmjd_min'      : utils.format_datetime(telmjd_min),
-            'telmjd_med'      : utils.format_datetime(telmjd_med),
-            'telmjd_max'      : utils.format_datetime(telmjd_max),
+            'telmjd_min'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_min)),
+            'telmjd_avg'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_med)),
+            'telmjd_max'      : utils.format_datetime(datetime.datetime.fromtimestamp(telmjd_max)),
             'vla_basebands'   : vla_basebands
         }
 
