@@ -191,16 +191,16 @@ import os
 					<td>${el_max} degrees</td>
 				</tr>
 				<tr>
-					<th>Min Zenith Angle (TARGET)</th>
+					<th>Min Zenith Angle</th>
 					<td>${zd_min} degrees at ${telmjd_min}</td>
 				</tr>
 				<tr>
-					<th>Max Zenith Angle (TARGET)</th>
-					<td>${zd_max} degrees at ${telmjd_max}</td>
+					<th>Median Zenith Angle</th>
+					<td>${zd_med} degrees at ${telmjd_med}</td>
 				</tr>
 				<tr>
-					<th>Average Zenith Angle (TARGET)</th>
-					<td>${zd_avg} degrees at ${telmjd_avg}</td>
+					<th>Max Zenith Angle</th>
+					<td>${zd_max} degrees at ${telmjd_max}</td>
 				</tr>
 			</tbody>
 		</table>
