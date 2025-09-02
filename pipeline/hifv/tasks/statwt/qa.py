@@ -29,16 +29,16 @@ class StatwtQAHandler(pqa.QAPlugin):
 
     def handle(self, context, result):
         vis = result.inputs['vis']
-        
+
         mean = result.jobs[0]['mean']
         variance = result.jobs[0]['variance']
-      
+
         # (1) Gigantic weights
         mean_origin = pqa.QAOrigin(metric_name='%StatwtMean',
                                    metric_score=mean,
                                    metric_units='')
 
-        score = np.max([1 - (np.log10(mean)/6.0)**3.5, 0.0])
+        score = np.nanmax([1 - (np.log10(mean)/6.0)**3.5, 0.0])
 
         if score <= 0.9:
             shortmsg = "Elevated weights"
