@@ -18,14 +18,14 @@ class StatwtQAHandler(pqa.QAPlugin):
     child_cls = None
     generating_task = statwt.Statwt
 
-    def get_max_plot_weight(self, tbl: str) -> float:
+    def plot_weight_above_threshold(self, tbl: str, threshold: float) -> bool:
         query_str = "ntrue(FLAG)==0"
         with casa_tools.TableReader(tbl) as tb:
             stb = tb.query(query_str)
             weights = stb.getcol('CPARAM').ravel()
             stb.done()
-        max_value = np.max(weights.real)
-        return max_value
+        above_threshold = np.any(weights > threshold)
+        return above_threshold
 
     def handle(self, context, result):
         vis = result.inputs['vis']
@@ -40,31 +40,31 @@ class StatwtQAHandler(pqa.QAPlugin):
 
         score = np.max([1 - (abs(np.log10(mean))/6.0)**3.5, 0.0])
 
-        if score <= 0.9:
-            shortmsg = "Elevated weights"
-            longmsg = "Elevated weights."
+        if score < 0.5:
+            shortmsg = "Very high weights"
+            longmsg = "Very high weights."
         elif score < 0.75:
             shortmsg = "High weights"
             longmsg = "High weights."
-        elif score < 0.5:
-            shortmsg = "Very high weights"
-            longmsg = "Very high weights."
+        if score <= 0.9:
+            shortmsg = "Elevated weights"
+            longmsg = "Elevated weights."
         else:
-            shortmsg = "Mean wight OK"
+            shortmsg = "Mean weight OK"
             longmsg = "Mean weight is within normal range."
 
         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=mean_origin))
 
         # (2) High weights
         # Condition: weights in stats plots > 150
-        max_plot_weight = self.get_max_plot_weight(result.wtables['after'])
+
         plot_weights_origin = pqa.QAOrigin(metric_name='%StatwtPlotWeight',
-                                           metric_score=max_plot_weight,
                                            metric_units='')
-        if max_plot_weight > 150:
+
+        if self.plot_weight_above_threshold(result.wtables['after'], 150):
             score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
-            shortmsg = "Very high weights"
-            longmsg = "Very high weights."
+            shortmsg = "High weights in stats plots"
+            longmsg = "High weights in stats plots."
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=plot_weights_origin))
         else:
             score = 1.0
