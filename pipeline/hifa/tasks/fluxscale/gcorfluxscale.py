@@ -245,9 +245,18 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
             LOG.error('%s has no data with reference intent %s' % (inputs.ms.basename, inputs.refintent))
             return result
 
-        # Run setjy for sources in the reference list which have transfer intents.
+        # Run setjy for sources in the reference list which have transfer intents
+        # and filter those intents from transintent
         if inputs.ms.get_fields(inputs.reference, intent=inputs.transintent):
             self._do_setjy(reffile=inputs.reffile, field=inputs.reference)
+            filtered_trans = ""
+            for test_trans in inputs.transintent.split(','):
+                if any(test_trans in fld.intents for fld in inputs.ms.get_fields(inputs.reference)):
+                    LOG.info(f'Removing {test_trans} from the AMP solve list as its the same as the FLUX calibrator')
+                else:
+                    filtered_trans += ',' + test_trans  # adds the others that are not the flux field
+            inputs.transintent = filtered_trans
+
         else:
             LOG.info('Flux calibrator field(s) {!r} in {!s} have no data with '
                      'intent {!s}'.format(inputs.reference, inputs.ms.basename, inputs.transintent))
