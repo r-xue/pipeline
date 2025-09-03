@@ -404,8 +404,8 @@ class T2_4MDetailsTcleanRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -882,7 +882,7 @@ class TCleanPlotsRenderer(basetemplates.CommonRenderer):
                 # PIPE-1462/PIPE-2569: Use non-pbcor images for VLA continuum imaging on the tclean details page.
                 # Prior to the fix in CAS-13814, tclean with deconvolver='mtmfs' and pbcor=True did not produce
                 # primary-beam-corrected images for VLA — it would instead silently pass with only a warning.
-                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate 
+                # After CAS-13814, tclean does generate pb-corrected images (though scientifically less accurate
                 # vs. specmode='mvc') but with a different warning.
                 # PIPE-2710: We're using the flatnoise image for VLA continuum plots in the hif_makeimage weblog. This is a
                 # deliberate choice for consistency and clarity, as these images are often better at revealing sources beyond
@@ -1348,8 +1348,8 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
                 else:
                     if stokes_parameters != ['I']:
                         r_image_rms = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_max = r.image_rms_iquv[stokes_indices[pol]]
-                        r_image_rms_min = r.image_rms_iquv[stokes_indices[pol]]
+                        r_image_rms_max = r.image_rms_max_iquv[stokes_indices[pol]]
+                        r_image_rms_min = r.image_rms_min_iquv[stokes_indices[pol]]
                     else:
                         r_image_rms = r.image_rms
                         r_image_rms_max = r.image_rms_max
@@ -1749,7 +1749,7 @@ class T2_4MDetailsTcleanVlassCubeRenderer(basetemplates.T2_4MDetailsDefaultRende
 
                     # PIPE-991: render tclean major cycle table, but only if tab_dict exists (currently VLASS-SE-CONT)
                     if any(tab_url):
-                        tab_renderer = TCleanTablesRenderer(context, results, row.result, row.tab_dict, 
+                        tab_renderer = TCleanTablesRenderer(context, results, row.result, row.tab_dict,
                                                             row.image_file, row.field, str(row.spw), row.pol, tab_url)
                         with tab_renderer.get_file() as fileobj:
                             fileobj.write(tab_renderer.render())

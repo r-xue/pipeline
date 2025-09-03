@@ -27,7 +27,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     model_sum = None
     if model is not None:
         with casa_tools.ImageReader(model + extension) as image:
-            model_stats = image.statistics(robust=False)
+            model_stats = image.statistics(robust=False, axes=[0, 1, 3])
             model_sum = model_stats['sum'][0]
             LOG.debug('Sum of model: %s' % model_sum)
 
@@ -51,7 +51,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             # Area inside clean mask
             statsmask = '"%s" > 0.1' % (os.path.basename(cleanmask))
 
-            resid_clean_stats = image.statistics(mask=statsmask, robust=False, stretch=True)
+            resid_clean_stats = image.statistics(mask=statsmask, axes=[0, 1, 3], robust=False, stretch=True)
 
             try:
                 residual_cleanmask_rms = resid_clean_stats['rms'][0]
@@ -74,7 +74,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
             have_mask = False
             statsmask = ''
 
-        residual_stats = image.statistics(mask=statsmask, robust=False, stretch=True)
+        residual_stats = image.statistics(mask=statsmask, axes=[0, 1, 3], robust=False, stretch=True)
 
         try:
             residual_non_cleanmask_rms = residual_stats['rms'][0]
@@ -89,11 +89,14 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
         # where spikes can occur)
         if pb is not None and os.path.exists(pb+extension):
             residual_stats = image.statistics(
-              mask='"%s" > %f' % (os.path.basename(pb)+extension, pblimit_image), robust=False, stretch=True)
+              mask='"%s" > %f' % (os.path.basename(pb)+extension, pblimit_image), axes=[0, 1, 3], robust=False, stretch=True)
         else:
-            residual_stats = image.statistics(robust=False)
+            residual_stats = image.statistics(axes=[0, 1, 3], robust=False)
 
         try:
+            # This filters just Stokes I. For the time being (PIPE-2464)
+            # this seems sufficient. If other Stokes results are needed
+            # later, the downstream code in tclean.py needs to be adjusted.
             residual_max = residual_stats['max'][0]
             residual_min = residual_stats['min'][0]
         except:
@@ -102,7 +105,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
         LOG.info('Residual max: %s min: %s' % (residual_max, residual_min))
 
-        residual_stats = image.statistics(robust=True, excludepix=0.0)
+        residual_stats = image.statistics(axes=[0, 1, 3], robust=True, excludepix=0.0)
         residual_robust_rms = residual_stats['medabsdevmed'][0] * 1.4826  # see CAS-9631
         LOG.debug('residual scaled MAD: %s' % residual_robust_rms)
 
@@ -115,10 +118,13 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
     nonpbcor_image_non_cleanmask_rms_min = None
     nonpbcor_image_non_cleanmask_rms_max = None
     nonpbcor_image_non_cleanmask_robust_rms = None
+    nonpbcor_image_non_cleanmask_robust_rms_iquv = None
     nonpbcor_image_non_cleanmask_freq_ch1 = None
     nonpbcor_image_non_cleanmask_freq_chN = None
     nonpbcor_image_non_cleanmask_freq_frame = None
     nonpbcor_image_non_cleanmask_rms_iquv = None
+    nonpbcor_image_non_cleanmask_rms_min_iquv = None
+    nonpbcor_image_non_cleanmask_rms_max_iquv = None
     nonpbcor_image_cleanmask_spectrum = None
     nonpbcor_image_cleanmask_spectrum_pblimit = None
     nonpbcor_image_cleanmask_npoints = None
@@ -193,7 +199,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     flattened_mask_image = image.collapse(
                         function='max', axes=[2, 3], outfile=flattened_mask, overwrite=True)
                 try:
-                    npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), robust=False, stretch=True)['npts']
+                    npoints_mask = flattened_mask_image.statistics(mask='"%s" > 0.1' % (os.path.basename(flattened_mask)), axes=[0, 1, 3], robust=False, stretch=True)['npts'][0]
                     if npoints_mask.shape != (0,):
                         nonpbcor_image_cleanmask_npoints = int(npoints_mask)
                     else:
@@ -237,6 +243,7 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
 
             # define mask outside the cleaned area
             image_stats = None
+            image_stats_iquv = None
             if pb is not None and os.path.exists(pb+extension) and cleanmask is not None and os.path.exists(cleanmask):
                 pb_name = os.path.basename(pb)+extension
                 have_mask = True
@@ -248,6 +255,8 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 # Check for number of points per channel (PIPE-541):
                 try:
                     image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5, stretch=True)
+                    # For IQUV images we need the individual values along the Stokes axis
+                    image_stats_iquv = image.statistics(mask=statsmask, robust=True, axes=[0, 1], algorithm='chauvenet', maxiter=5, stretch=True)
                     if image_stats['npts'].shape == (0,) or np.median(image_stats['npts']) < 10.0:
                         # Switch to full annulus to avoid zero noise spectrum due to voluminous mask
                         LOG.warning('Using full annulus for noise spectrum due to voluminous mask "%s".' %
@@ -255,12 +264,14 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                         statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
                                                                     pb_name, pblimit_cleanmask)
                         image_stats = None
+                        image_stats_iquv = None
                 except Exception as e:
                     # Try full annulus as a fallback
                     LOG.exception('Using full annulus for noise spectrum due to voluminous mask "%s".' % (os.path.basename(cleanmask)), exc_info=e)
                     statsmask = '("%s" > %f) && ("%s" < %f)' % (pb_name, pblimit_image,
                                                                 pb_name, pblimit_cleanmask)
                     image_stats = None
+                    image_stats_iquv = None
             elif pb is not None and os.path.exists(pb+extension):
                 pb_name = os.path.basename(pb)+extension
                 have_mask = True
@@ -281,13 +292,13 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 # Avoid repeat if the check for npts was done and is OK.
                 if image_stats is None:
                     image_stats = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 2], algorithm='chauvenet', maxiter=5, stretch=True)
-
-                # For IQUV images we need the individual values along the Stokes axis
-                image_stats_iquv = image.statistics(mask=statsmask, robust=True, axes=[0, 1, 3], algorithm='chauvenet', maxiter=5, stretch=True)
+                    image_stats_iquv = image.statistics(mask=statsmask, robust=True, axes=[0, 1], algorithm='chauvenet', maxiter=5, stretch=True)
 
                 nonpbcor_image_statsmask = statsmask
 
                 # Filter continuum frequency ranges if given
+                # TODO: The second condition checks if this is an IQUV cube. This
+                # should be done more directly via extra method parameters.
                 if cont_freq_ranges not in (None, '', 'NONE', 'ALL', 'ALLCONT'):
                     # TODO: utils.freq_selection_to_channels uses casa_tools.image to get the frequency axis
                     #       and closes the global pipeline image tool. The context manager wrapped tool
@@ -296,10 +307,16 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                     cont_chan_ranges = utils.freq_selection_to_channels(nonpbcor_imagename, cont_freq_ranges)
                     cont_chan_indices = np.hstack([np.arange(start, stop+1) for start, stop in cont_chan_ranges])
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms'][cont_chan_indices]
+                    if len(image_stats_iquv['rms'].shape) == 2:
+                        nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms'][:,cont_chan_indices]
+                    else:
+                        nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms']
                 else:
                     nonpbcor_image_non_cleanmask_rms_vs_chan = image_stats['rms']
+                    nonpbcor_image_non_cleanmask_rms_vs_chan_iquv = image_stats_iquv['rms']
 
                 nonpbcor_image_non_cleanmask_robust_rms = image_stats['medabsdevmed'] * 1.4826
+                nonpbcor_image_non_cleanmask_robust_rms_iquv = image_stats_iquv['medabsdevmed'] * 1.4826
 
                 nonpbcor_image_non_cleanmask_rms_median = np.median(nonpbcor_image_non_cleanmask_rms_vs_chan)
                 nonpbcor_image_non_cleanmask_rms_mean = np.mean(nonpbcor_image_non_cleanmask_rms_vs_chan)
@@ -307,7 +324,18 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_rms_max = np.max(nonpbcor_image_non_cleanmask_rms_vs_chan)
                 nonpbcor_image_non_cleanmask_rms = nonpbcor_image_non_cleanmask_rms_median
 
-                nonpbcor_image_non_cleanmask_rms_iquv = image_stats_iquv['rms']
+                if len(image_stats_iquv['rms'].shape) == 2:
+                    nonpbcor_image_non_cleanmask_rms_median_iquv = np.median(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
+                    nonpbcor_image_non_cleanmask_rms_mean_iquv = np.mean(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
+                    nonpbcor_image_non_cleanmask_rms_min_iquv = np.min(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
+                    nonpbcor_image_non_cleanmask_rms_max_iquv = np.max(nonpbcor_image_non_cleanmask_rms_vs_chan_iquv, axis=(1,))
+                else:
+                    nonpbcor_image_non_cleanmask_rms_median_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_mean_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_min_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+                    nonpbcor_image_non_cleanmask_rms_max_iquv = nonpbcor_image_non_cleanmask_rms_vs_chan_iquv
+
+                nonpbcor_image_non_cleanmask_rms_iquv = nonpbcor_image_non_cleanmask_rms_median_iquv
 
                 if have_mask:
                     area_text = 'annulus'
@@ -327,6 +355,12 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
                 nonpbcor_image_non_cleanmask_rms_max = \
                 nonpbcor_image_non_cleanmask_rms = \
                     -999.0
+                nonpbcor_image_non_cleanmask_rms_median_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_mean_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_min_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_max_iquv = np.array([-999.0]*4)
+                nonpbcor_image_non_cleanmask_rms_iquv = np.array([-999.0]*4)
+
                 LOG.warning('Exception while determining image RMS for %s: %s' % (nonpbcor_imagename, e))
 
             # Get the flux density spectrum in the clean mask area if available
@@ -363,9 +397,11 @@ def analyse_clean_result(multiterm, model, restored, residual, pb, cleanmask, pb
              'nonpbcor_image_non_cleanmask_freq_chN': nonpbcor_image_non_cleanmask_freq_chN,
              'nonpbcor_image_non_cleanmask_freq_frame': nonpbcor_image_non_cleanmask_freq_frame,
              'nonpbcor_image_non_cleanmask_robust_rms': nonpbcor_image_non_cleanmask_robust_rms,
+             'nonpbcor_image_non_cleanmask_robust_rms_iquv': nonpbcor_image_non_cleanmask_robust_rms_iquv,
              'nonpbcor_image_cleanmask_spectrum': nonpbcor_image_cleanmask_spectrum,
              'nonpbcor_image_cleanmask_spectrum_pblimit': nonpbcor_image_cleanmask_spectrum_pblimit,
              'nonpbcor_image_cleanmask_npoints': nonpbcor_image_cleanmask_npoints,
              'cont_freq_ranges': cont_freq_ranges,
              'nonpbcor_image_statsmask': nonpbcor_image_statsmask},
-            pbcor_image_min_iquv, pbcor_image_max_iquv, nonpbcor_image_non_cleanmask_rms_iquv)
+            pbcor_image_min_iquv, pbcor_image_max_iquv, nonpbcor_image_non_cleanmask_rms_min_iquv,
+            nonpbcor_image_non_cleanmask_rms_max_iquv, nonpbcor_image_non_cleanmask_rms_iquv)
