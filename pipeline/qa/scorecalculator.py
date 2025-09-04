@@ -999,7 +999,7 @@ def score_vla_agents(ms, summaries):
     for flag_stat in summaries:
         if flag_stat['name'] == 'template':
             score_val = 0.3
-            msg = 'Flag template is used for flagging'
+            msg = 'Flag template is used for flagging.'
             origin = pqa.QAOrigin(metric_name='score_flagdata', metric_score=score_val, metric_units='')
             qascore_list.append(pqa.QAScore(score_val, longmsg=msg, shortmsg=msg, origin=origin))
 
@@ -1041,7 +1041,7 @@ def score_vla_agents(ms, summaries):
     if summaries:
         flag_fraction = summaries[-1]['flagged'] / summaries[-1]['total']
         score_val = max([(1 - flag_fraction / 0.60), 0.0])
-        msg = f'Total flag fraction is {flag_fraction}'
+        msg = f'Total flag fraction is {flag_fraction:.2%}.'
         origin = pqa.QAOrigin(
             metric_name='score_flagdata', metric_score=score_val, metric_units='Total Fraction of data that is flagged'
         )
