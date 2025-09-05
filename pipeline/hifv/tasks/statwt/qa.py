@@ -73,20 +73,26 @@ class StatwtQAHandler(pqa.QAPlugin):
             result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=plot_weights_origin))
 
         # (3) High variance
+
         variance_origin = pqa.QAOrigin(metric_name='%StatwtVariance',
                                        metric_score=variance,
                                        metric_units='')
 
+        logvar = np.log10(variance)
+        score = 1 - (logvar/5.9)**4
+
         if variance > mean**2:
-            score = rendererutils.SCORE_THRESHOLD_SUBOPTIMAL
+            score = min(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score)
+
+        if score <= rendererutils.SCORE_THRESHOLD_SUBOPTIMAL:
             shortmsg = "Very high variance"
             longmsg = "Very high variance."
-            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
         else:
-            score = 1.0
             shortmsg = "Variance OK"
             longmsg = "Variance of the weights is within normal range."
-            result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
+
+        result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
+        print(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
 
         # (4) Flagging increase
         # Condition: flagging increase in statwt > 2% QA score < 0.5
