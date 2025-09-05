@@ -260,8 +260,8 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
             transintent_to_keep = []
             for intent in inputs.transintent.split(','):
                 if inputs.ms.get_fields(inputs.reference, intent=intent):
-                    LOG.info(f"Removing {intent} from the amplitude solve list as this intent is already covered by the"
-                             f" amplitude calibrator field(s) (inputs.reference).")
+                    LOG.info(f"{inputs.ms.basename}: removing {intent} from the amplitude solve list as this intent is"
+                             f" already covered by the amplitude calibrator field(s) {inputs.reference}.")
                 else:
                     transintent_to_keep.append(intent)
             inputs.transintent = ','.join(transintent_to_keep)
