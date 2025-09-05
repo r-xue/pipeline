@@ -257,13 +257,13 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
             # PIPE-2822: after the setjy step, update the list of transfer
             # intents to only keep those intents that are not already covered by
             # the reference field.
-            filtered_trans = ""
-            for test_trans in inputs.transintent.split(','):
-                if any(test_trans in fld.intents for fld in inputs.ms.get_fields(inputs.reference)):
-                    LOG.info(f'Removing {test_trans} from the AMP solve list as its the same as the FLUX calibrator')
+            transintent_to_keep = []
+            for intent in inputs.transintent.split(','):
+                if inputs.ms.get_fields(inputs.reference, intent=intent):
+                    LOG.info(f'Removing {intent} from the AMP solve list as its the same as the FLUX calibrator')
                 else:
-                    filtered_trans += ',' + test_trans  # adds the others that are not the flux field
-            inputs.transintent = filtered_trans
+                    transintent_to_keep.append(intent)
+            inputs.transintent = ','.join(transintent_to_keep)
         else:
             LOG.info('Flux calibrator field(s) {!r} in {!s} have no data with '
                      'intent {!s}'.format(inputs.reference, inputs.ms.basename, inputs.transintent))
