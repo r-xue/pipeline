@@ -11,7 +11,8 @@ import os
 import re
 import traceback
 import xml
-from typing import TYPE_CHECKING, Any, Callable, Generic, Iterator, TypedDict, TypeVar
+from collections.abc import Callable, Iterator
+from typing import TYPE_CHECKING, Any, Generic, TypedDict, TypeVar
 
 import cachetools
 import numpy as np
@@ -414,7 +415,7 @@ class MeasurementSetReader:
                 LOG.debug("Field "+str(field.id) + " not in spwsforfields dictionary.")
 
     @staticmethod
-    def link_obs_to_fields(ms: MeasurementSet) -> None:
+    def set_field_zd_telmjd(ms: MeasurementSet) -> None:
         observatory = ms.antenna_array.name.upper()
         for field in ms.fields:
             field.set_zd_telmjd(observatory)
@@ -528,8 +529,8 @@ class MeasurementSetReader:
             MeasurementSetReader.link_intents_to_spws(msmd, ms)
             LOG.info('Linking spectral windows to fields...')
             MeasurementSetReader.link_spws_to_fields(msmd, ms)
-            LOG.info('Linking observation to fields...')
-            MeasurementSetReader.link_obs_to_fields(ms)
+            LOG.info('Setting zenith angle and telmjd to fields...')
+            MeasurementSetReader.set_field_zd_telmjd(ms)
             LOG.info('Populating ms.scans...')
             ms.scans = MeasurementSetReader.get_scans(msmd, ms)
 

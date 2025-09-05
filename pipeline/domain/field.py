@@ -1,10 +1,16 @@
 """Provide a class to store logical representation of field."""
+from __future__ import annotations
+
 import datetime
 import pprint
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from pipeline.infrastructure import casa_tools, utils
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.utils.utils import DirectionDict, EpochDict, QuantityDict
 
 _pprinter = pprint.PrettyPrinter(width=1e99)
 
@@ -25,7 +31,14 @@ class Field(object):
             this field.
         flux_densities: A list of unique flux measurements from setjy.
     """
-    def __init__(self, field_id: int, name: str, source_id: int, time: np.ndarray, direction: dict) -> None:
+    def __init__(
+            self,
+            field_id: int,
+            name: str,
+            source_id: int,
+            time: np.ndarray,
+            direction: DirectionDict,
+            ) -> None:
         """
         Initialize a Field object.
 
@@ -60,7 +73,7 @@ class Field(object):
 
         # PIPE-2472: calculate zenith distance and telescope MJD of observation (TELMJD)
         # These are set to None until the import of the measurement set (see 
-        # MeasurementSetReader.link_obs_to_fields)
+        # MeasurementSetReader.set_field_zd_telmjd)
         self._zd = None
         self._telmjd = None
 
@@ -105,17 +118,17 @@ class Field(object):
         return self.name if self.name else '#{0}'.format(self.id)
 
     @property
-    def latitude(self) -> dict:
+    def latitude(self) -> EpochDict:
         """Return latitude for the phasecenter of the field."""
         return self._mdirection['m1']
 
     @property
-    def longitude(self) -> dict:
+    def longitude(self) -> EpochDict:
         """Return longitude for the phasecenter of the field."""
         return self._mdirection['m0']
 
     @property
-    def mdirection(self) -> dict:
+    def mdirection(self) -> DirectionDict:
         """Return direction measure dictionary for phasecenter of the field."""
         return self._mdirection
 
@@ -150,12 +163,12 @@ class Field(object):
         return self.dec
 
     @property
-    def zd(self) -> dict:
+    def zd(self) -> QuantityDict:
         """Return the zenith distance in a CASA `quantity` quanta dictionary."""
         return self._zd
 
     @property
-    def telmjd(self) -> dict:
+    def telmjd(self) -> QuantityDict:
         """Return the Modified Julian Date in a CASA `epoch` measure dictionary"""
         return self._telmjd
 

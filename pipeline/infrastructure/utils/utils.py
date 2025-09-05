@@ -24,12 +24,11 @@ import shutil
 import string
 import tarfile
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Collection, Iterable, Iterator, Sequence
 from datetime import datetime
 from functools import wraps
 from numbers import Number
-from typing import (TYPE_CHECKING, Any, Callable, Collection, DefaultDict, Iterator,
-                    OrderedDict, Sequence, TextIO, TypedDict)
+from typing import TYPE_CHECKING, Any, DefaultDict, OrderedDict, TextIO, TypedDict
 from urllib.parse import urlparse
 
 import casaplotms
@@ -59,7 +58,6 @@ __all__ = [
     'fieldname_for_casa',
     'filter_intents_for_ms',
     'find_ranges',
-    'find_sky_center',
     'flagged_intervals',
     'get_casa_quantity',
     'get_casa_session_details',
@@ -1271,42 +1269,6 @@ def obs_midtime(start_time: datetime, end_time: datetime) -> EpochDict:
     """Returns the mid time in a CASA measures dictionary."""
     mid_time = start_time + (end_time - start_time) / 2
     return casa_tools.measures.epoch('utc', mid_time.isoformat())
-
-
-def find_sky_center(fields: list[Field]) -> tuple[float, float]:
-    """
-    Compute the center point on the celestial sphere from a list of RA/Dec positions.
-
-    Args:
-        fields: A list of Field objects.
-
-    Returns:
-        A tuple (ra_center_deg, dec_center_deg) representing the central RA/Dec in degrees.
-    """
-    ra_list = np.array([casa_tools.quanta.convert(f.mdirection['m0']['value'], 'rad')['value'] for f in fields])
-    dec_list = np.array([casa_tools.quanta.convert(f.mdirection['m0']['value'], 'rad')['value'] for f in fields])
-
-    # Convert spherical to Cartesian coordinates
-    x = np.cos(dec_list) * np.cos(ra_list)
-    y = np.cos(dec_list) * np.sin(ra_list)
-    z = np.sin(dec_list)
-
-    # Average Cartesian components
-    x_mean = np.mean(x)
-    y_mean = np.mean(y)
-    z_mean = np.mean(z)
-
-    # Normalize the resulting vector
-    norm = np.sqrt(x_mean**2 + y_mean**2 + z_mean**2)
-    x_mean /= norm
-    y_mean /= norm
-    z_mean /= norm
-
-    # Convert back to spherical coordinates
-    ra_center = np.arctan2(y_mean, x_mean)
-    dec_center = np.arcsin(z_mean)
-
-    return ra_center, dec_center
 
 
 def get_row_count(table_name: str, taql: str) -> int:
