@@ -79,7 +79,7 @@ class StatwtQAHandler(pqa.QAPlugin):
                                        metric_units='')
 
         logvar = np.log10(variance)
-        score = 1 - (logvar/5.9)**4
+        score = max(1 - (logvar/5.9)**4, 0.0)
 
         if variance > mean**2:
             score = min(rendererutils.SCORE_THRESHOLD_SUBOPTIMAL, score)
@@ -92,7 +92,6 @@ class StatwtQAHandler(pqa.QAPlugin):
             longmsg = "Variance of the weights is within normal range."
 
         result.qa.pool.append(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
-        print(pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=vis, origin=variance_origin))
 
         # (4) Flagging increase
         # Condition: flagging increase in statwt > 2% QA score < 0.5
