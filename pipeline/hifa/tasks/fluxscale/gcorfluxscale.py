@@ -135,14 +135,14 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
                 Example: reffile='', reffile='working/flux.csv'
 
             reference: A string containing a comma delimited list of field names
-                defining the reference calibrators. Defaults to field names with
-                intent '`*AMP*`'.
+                defining the reference calibrators. Defaults to names of fields
+                with intents in ``refintent``.
 
                 Example: reference='M82,3C273'
 
             transfer: A string containing a comma delimited list of field names
-                defining the transfer calibrators. Defaults to field names with
-                intent '`*PHASE*`'.
+                defining the transfer calibrators. Defaults to names of fields
+                with intents in ``transintent``.
 
                 Example: transfer='J1328+041,J1206+30'
 
@@ -159,7 +159,7 @@ class GcorFluxscaleInputs(fluxscale.FluxscaleInputs):
 
             transintent: A string containing a comma delimited list of intents
                 defining the transfer calibrators. Defaults to
-                'PHASE,BANDPASS,CHECK,POLARIZATION,POLANGLE,POLLEAKAGE'.
+                'PHASE,BANDPASS,CHECK,DIFFGAINREF,DIFFGAINSRC,POLARIZATION,POLANGLE,POLLEAKAGE'.
 
                 Example: transintent='', transintent='PHASE,BANDPASS'
 
