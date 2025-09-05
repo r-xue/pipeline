@@ -245,10 +245,18 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
             LOG.error('%s has no data with reference intent %s' % (inputs.ms.basename, inputs.refintent))
             return result
 
-        # Run setjy for sources in the reference list which have transfer intents
-        # and filter those intents from transintent
+        # If the reference intent field(s) (amplitude calibrator) also covered
+        # one or more of the transfer intents, then:
         if inputs.ms.get_fields(inputs.reference, intent=inputs.transintent):
+            # First run setjy on the reference field(s), where the setjy always
+            # acts on the transfer intent scans. This is essential to ensure
+            # that the transfer intent scans on this reference field (typically
+            # amplitude calibrator) get their model flux set.
             self._do_setjy(reffile=inputs.reffile, field=inputs.reference)
+
+            # PIPE-2822: after the setjy step, update the list of transfer
+            # intents to only keep those intents that are not already covered by
+            # the reference field.
             filtered_trans = ""
             for test_trans in inputs.transintent.split(','):
                 if any(test_trans in fld.intents for fld in inputs.ms.get_fields(inputs.reference)):
@@ -256,7 +264,6 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
                 else:
                     filtered_trans += ',' + test_trans  # adds the others that are not the flux field
             inputs.transintent = filtered_trans
-
         else:
             LOG.info('Flux calibrator field(s) {!r} in {!s} have no data with '
                      'intent {!s}'.format(inputs.reference, inputs.ms.basename, inputs.transintent))
@@ -743,11 +750,14 @@ class SerialGcorFluxscale(basetask.StandardTaskTemplate):
 
         # PIPE-1831: update the CalApplication to add the other non-phase/check
         # calibrator intents as valid intents that this phase caltable can be
-        # applied to. This is necessary for datasets where a field that covers
-        # both the amplitude calibrator and other (non-phase/check)
-        # calibrators. Without this, any subsequent gaincal on this field would
-        # split the call for this field into separate ones for AMP and other
-        # intents, leading to undesired duplicate solutions.
+        # applied to. This is necessary for datasets where the amplitude
+        # calibrator field(s) also cover one or more of the "other" (non-phase/
+        # non-check) calibrator intents. Without this, any subsequent gaincal on
+        # this field would split the call for this field into separate ones for
+        # AMP and other intents, leading to undesired duplicate solutions.
+        # This does assume that the AMPLITUDE *scans* on the amplitude
+        # calibrator field(s) also covered those "other" calibrator intents;
+        # this is not always the case, see discussion on PIPE-2822.
         if phase_result.pool:
             original_calapp = phase_result.pool[0]
             intents_str = ",".join({original_calapp.intent} | non_pc_intents)
