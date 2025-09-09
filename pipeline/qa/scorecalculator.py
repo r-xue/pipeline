@@ -2982,9 +2982,11 @@ def score_sd_line_detection(reduction_group: dict, result: 'SDBaselineResults') 
             pqa.QAScore: A fully populated QAScore with long and short messages,
                         origin (metric name/score/units), and target selection.
         """
-        spw_str = ', '.join(map(str, sorted(spws)))
-        ant_str = ', '.join(sorted(ants))
-        longmsg = f'{msg} in EB {ms_name}, Field {field}, Spw {spw_str}, Antenna {ant_str}.'
+        ms_str = f'EB {ms_name}'
+        field_str = f', Field {field}' if field else ""
+        spw_str = ', Spw ' + ', '.join(map(str, sorted(spws))) if spws else ""
+        ant_str = ', Antenna ' + ', '.join(sorted(ants)) if ants else ""
+        longmsg = f'{msg} in {ms_str}{field_str}{spw_str}{ant_str}.'
         shortmsg = f'{msg}.'
         origin = pqa.QAOrigin(metric_name='score_sd_line_detection',
                               metric_score=metric_val,
