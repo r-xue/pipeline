@@ -520,7 +520,7 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
         qa_min = 0.5
 
         # Check if reference spw is impacted
-        ref_spw_impacted = ms.get_representative_source_spw() in spw_dict
+        ref_spw_impacted = ms.get_representative_source_spw()[1] in spw_dict
 
         if ref_spw_impacted:
             qa_ref = 0.15
