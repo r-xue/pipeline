@@ -517,8 +517,8 @@ def _calc_subband_qa_score(spw_dict: dict, ms: MeasurementSet, caltable: str) ->
 
     if f_spw <= 0.0:
         score = 1.0
-        shortmsg = "{ms.basename}: No correlator subband issues detected"
-        longmsg = "{ms.basename}: No correlator subband issues detected"
+        shortmsg = "No correlator subband issues detected"
+        longmsg = f"{ms.basename}: No correlator subband issues detected"
     else:
         # See PIPE-2103 for more information
         qa_max = 0.65
