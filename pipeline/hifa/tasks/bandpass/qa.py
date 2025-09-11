@@ -414,7 +414,7 @@ def _fraction_of_impacted_spws(spw_dict: dict, caltable: str, ms: MeasurementSet
     fdm_spws = [spw for spw in spws_in_caltable if 'FDM' in ms.get_spectral_window(spw).type]
 
     # Do not include any spws that weren't evaluated as part of the heuristic
-    # spw_dict contains FDM spws from the caltable that either had subband issues detected 
+    # spw_dict contains FDM spws from the caltable that either had subband issues detected
     # or were unevaluated (binning/bandwidth)
     unevaluated_spws = [spw for spw in spw_dict if spw_dict[spw]['failure'] in ("binning", "bandwidth")]
     relevant_spws = list(set(fdm_spws) - set(unevaluated_spws))
@@ -581,7 +581,7 @@ def _subband_handler(context: Context, result: BandpassResults) -> list[pqa.QASc
     if "ALMA_BASELINE" not in ms.correlator_name or not result.final:
         not_blc_qa_score = pqa.QAScore(
             1.0,
-            longmsg="No BLC FDM bandpass tables. Bandpass subband QA is not evaluated.",
+            longmsg=f"{ms.basename}: No BLC FDM bandpass tables. Bandpass subband QA is not evaluated.",
             shortmsg="Bandpass subband QA not evaluated",
             vis=vis,
             origin=pqa.QAOrigin(
