@@ -219,18 +219,17 @@ class VDPTaskFactory(object):
         # task, and hence and hence have a different signature. For
         # instance, the session-aware Inputs classes accept a
         # 'parallel' argument, which the non-session tasks do not.
-        #
-        # To make things complicated, ModeInputs are a special case.
-        # Here we shouldn't inspect the constructor signature of the
-        # task as it doesn't reflect that of the active task, which is
-        # the one that we would want to filter on. So, if the task's
-        # Inputs are ModeInputs, dereference the task's Inputs class.
+        task_inputs_cls = self.__task.Inputs
+        valid_args = validate_args(task_inputs_cls, task_args)
         if issubclass(self.__task.Inputs, vdp.ModeInputs):
+            # PIPE-2841: add arguments from the underlying activate task referenced via ModInputs,
+            # which might be absent from the constructor task input class signature.
             active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
             task_inputs_cls = active_mode_task.Inputs
-        else:
-            task_inputs_cls = self.__task.Inputs
-        valid_args = validate_args(task_inputs_cls, task_args)
+            valid_args_modeinputs = validate_args(task_inputs_cls, task_args)
+            valid_args = valid_args | valid_args_modeinputs
+        LOG.debug('valid input arguments for constructing a vdp task from %s: ', self.__task)
+        LOG.debug('  %s', valid_args)
 
         is_mpi_ready = mpihelpers.is_mpi_ready()
         is_tier0_job = is_mpi_ready
