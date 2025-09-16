@@ -322,10 +322,9 @@ def get_calibration_policy(context: Context) -> Type[ObservatoryCalibrationPolic
     Returns:
         One of the subclass of ObservatoryCalibrationPolicy.
     Raises:
-        NotImplementedError for NRO cases
+        NotImplementedError for non-ALMA cases
     """
-    is_nro = sdutils.is_nro(context)
-    if is_nro:
-        raise NotImplementedError
-    else:
+    if context.project_summary.telescope == "ALMA":
         return ALMACalibrationPolicy
+    else:
+        raise NotImplementedError
