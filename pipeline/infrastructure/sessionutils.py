@@ -222,7 +222,7 @@ class VDPTaskFactory(object):
         task_inputs_cls = self.__task.Inputs
         valid_args = validate_args(task_inputs_cls, task_args)
         if issubclass(self.__task.Inputs, vdp.ModeInputs):
-            # PIPE-2841: add arguments from the underlying activate task referenced via ModInputs,
+            # PIPE-2841: add arguments from the underlying active task referenced via ModeInputs,
             # which might be absent from the constructor task input class signature.
             active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
             task_inputs_cls = active_mode_task.Inputs
