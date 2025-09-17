@@ -9,7 +9,7 @@ def percent_flagged(flagsummary):
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * flagged / total)
@@ -64,8 +64,8 @@ def plot_type(plot):
 
 <p>For the measurement set(s) listed below, the reference antenna
     list was updated due to significant flagging (antennas moved to
-    end and/or removed). See warnings in task notifications
-    for details. Shown below are the updated reference antenna lists,
+    end and/or removed). See QA messages for details.
+    Shown below are the updated reference antenna lists,
     only for those measurement sets where it was modified.</p>
 
 <table class="table table-bordered table-striped"

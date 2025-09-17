@@ -25,22 +25,19 @@ class RflagDevHeuristic(api.Heuristic):
     """
 
     def __init__(self, ms, ignore_sefd=False):
-        self.vla_sefd = self._get_vla_sefd()
+        self.vla_sefd = self.get_vla_sefd()
         self.ms = ms
         self.spw_rms_scale = self._get_spw_rms_scale(ignore_sefd=ignore_sefd)
 
     def calculate(self, rflag_report):
-
-        _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
-
         if 'rflag' in rflag_report['type'] == 'rflag':
             return self._correct_rflag_ftdev(rflag_report)
         else:
-            LOG.error("Invalid input rflag report")
+            LOG.error('Invalid input rflag report')
             return None
 
     @staticmethod
-    def _get_vla_sefd():
+    def get_vla_sefd():
         """Load the VLA SEFD profile.
 
         PIPE-987: See the ticket attachement for the description of SEFD data files
@@ -122,7 +119,7 @@ class RflagDevHeuristic(api.Heuristic):
             devs_med = new_report[ftdev][:, 2].copy()
             bbs = np.full_like(spws, -1)
 
-            _, baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spws_list = self.ms.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
             for bb_idx, bb_spws in enumerate(baseband_spws_list):
                 bb_mask = np.isin(spws, bb_spws)
                 bbs[bb_mask] = bb_idx
@@ -195,8 +192,9 @@ class RflagDevHeuristic(api.Heuristic):
 
         spw_rms_scale = dict()
 
-        baseband_spws, baseband_spws_list = self.ms.get_vla_baseband_spws(
-            science_windows_only=science_windows_only, return_select_list=True)
+        baseband_spws = self.ms.get_vla_baseband_spws(
+            science_windows_only=science_windows_only, return_select_list=False
+        )
         for band in baseband_spws:
             for baseband in baseband_spws[band]:
                 for spwitem in baseband_spws[band][baseband]:
@@ -275,7 +273,7 @@ def get_amp_range(vis, field='', spw='', scan='', intent='', datacolumn='correct
                                          datacolumn=datacolumn, correlation=correlation, uvrange=uvrange,
                                          timeaverage=timeaverage, timebin=timebin, timespan=timespan,
                                          keepflags=False, reindex=False)
-            job.execute(dry_run=False)
+            job.execute()
             amp_range = _get_amp_range2(vis_tmp, datacolumn='data', useflags=useflags)
             if vis_averaged is None:
                 shutil.rmtree(vis_tmp, ignore_errors=True)

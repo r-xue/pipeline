@@ -12,6 +12,7 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
 from .resultobjects import RawflagchansResults, RawflagchansDataResults, RawflagchansViewResults
+import pipeline.infrastructure.sessionutils as sessionutils
 
 __all__ = [
     'Rawflagchans',
@@ -75,10 +76,63 @@ class RawflagchansInputs(vdp.StandardInputs):
         science_spws = self.ms.get_spectral_windows(with_channels=True)
         return ','.join([str(spw.id) for spw in science_spws])
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
+    # docstring and type hints: supplements hif_rawflagchans
     def __init__(self, context, output_dir=None, vis=None, spw=None, intent=None, flag_hilo=None,
                  fhl_limit=None, fhl_minsample=None, flag_bad_quadrant=None, fbq_hilo_limit=None,
-                 fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None, niter=None):
-        super(RawflagchansInputs, self).__init__()
+                 fbq_antenna_frac_limit=None, fbq_baseline_frac_limit=None, niter=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input MeasurementSets. default: [] - Use the MeasurementSets currently known to the pipeline
+                context.
+
+            spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
+                context.
+
+                Example: spw='17', spw='11, 15'
+
+            intent: A string containing the list of intents to be checked for antennas with deviant gains. The default is blank, which causes the task to select
+                the 'BANDPASS' intent.
+
+                Example: intent='`*BANDPASS*`'
+
+            flag_hilo: True to flag channel/baseline data further from the view median than fhl_limit * MAD.
+
+            fhl_limit: If flag_hilo is True then flag channel/baseline data further from the view median than fhl_limit * MAD.
+
+            fhl_minsample: Do no flagging if the view median and MAD are derived from fewer than fhl_minsample view pixels.
+
+            flag_bad_quadrant: True to search for and flag bad antenna quadrants and baseline quadrants. Here a /'quadrant/' is one
+                quarter of the channel axis.
+
+            fbq_hilo_limit: If flag_bad_quadrant is True then channel/baselines further from the view median than fbq_hilo_limit * MAD will be noted as
+                'suspect'. If there are enough of them to indicate that an antenna or
+                baseline quadrant is bad then all channel/baselines in that quadrant will
+                be flagged.
+
+            fbq_antenna_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular antenna/quadrant exceeds
+                fbq_antenna_frac_limit then all data for that antenna/quadrant will
+                be flagged.
+
+            fbq_baseline_frac_limit: If flag_bad_quadrant is True and the fraction of suspect channel/baselines in a particular baseline/quadrant exceeds
+                fbq_baseline_frac_limit then all data for that baseline/quadrant will
+                be flagged.
+
+            niter:
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -99,10 +153,10 @@ class RawflagchansInputs(vdp.StandardInputs):
         self.fbq_antenna_frac_limit = fbq_antenna_frac_limit
         self.fbq_baseline_frac_limit = fbq_baseline_frac_limit
         self.niter = niter
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hif_rawflagchans')
-class Rawflagchans(basetask.StandardTaskTemplate):
+class SerialRawflagchans(basetask.StandardTaskTemplate):
     Inputs = RawflagchansInputs
 
     def prepare(self):
@@ -143,7 +197,7 @@ class Rawflagchans(basetask.StandardTaskTemplate):
             fbq_baseline_frac_limit=inputs.fbq_baseline_frac_limit)
 
         # Construct the flagger task around the data view task and the
-        # flagger task. 
+        # flagger task.
         flaggerinputs = flagger.Inputs(
             context=inputs.context, output_dir=inputs.output_dir,
             vis=inputs.vis, datatask=datatask, viewtask=viewtask,
@@ -170,6 +224,12 @@ class Rawflagchans(basetask.StandardTaskTemplate):
         return result
 
 
+@task_registry.set_equivalent_casa_task('hif_rawflagchans')
+class Rawflagchans(sessionutils.ParallelTemplate):
+    Inputs = RawflagchansInputs
+    Task = SerialRawflagchans
+
+
 class RawflagchansDataInputs(vdp.StandardInputs):
 
     def __init__(self, context, vis=None, spw=None, intent=None):
@@ -180,7 +240,7 @@ class RawflagchansDataInputs(vdp.StandardInputs):
         spw    -- views are created for these spws.
         intent -- views are created for this intent.
         """
-        super(RawflagchansDataInputs, self).__init__()
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -222,7 +282,7 @@ class RawflagchansData(basetask.StandardTaskTemplate):
         # Create a list of antenna baselines.
         baselines = []
         for ant1 in ants:
-            for ant2 in ants: 
+            for ant2 in ants:
                 baselines.append('%s&%s' % (ant1, ant2))
         nbaselines = len(baselines)
 
@@ -241,10 +301,10 @@ class RawflagchansData(basetask.StandardTaskTemplate):
 
             # Initialize the data, and number of data points
             # used, for the flagging view.
-            data = np.zeros([len(corrs), nchans, nbaselines], np.complex)
-            ndata = np.zeros([len(corrs), nchans, nbaselines], np.int)
+            data = np.zeros([len(corrs), nchans, nbaselines], complex)
+            ndata = np.zeros([len(corrs), nchans, nbaselines], int)
 
-            # Open MS and read in required data.       
+            # Open MS and read in required data.
             with casa_tools.MSReader(ms.name) as openms:
                 try:
                     openms.msselect({'scanintent': '*%s*' % self.inputs.intent, 'spw': str(spwid)})
@@ -330,7 +390,7 @@ class RawflagchansView(object):
         # Initialize result structure. By initializing here,
         # it is ensured that repeated calls to this instance will
         # have access to all previously generated results,
-        # which is used to "refine" the data view in case the 
+        # which is used to "refine" the data view in case the
         # incoming data task result is not new.
         self.result = RawflagchansViewResults()
 
@@ -351,11 +411,11 @@ class RawflagchansView(object):
         LOG.info('Computing flagging metrics for vis {0}'.format(
             self.result.vis))
 
-        # Check if dataresult is new for current iteration, or created during 
+        # Check if dataresult is new for current iteration, or created during
         # a previous iteration.
 
         if dataresult.new:
-            # If the dataresult is from a newly run datatask, then 
+            # If the dataresult is from a newly run datatask, then
             # create the flagging view.
 
             # Get intent from dataresult
@@ -394,16 +454,16 @@ class RawflagchansView(object):
                     self.result.addview(viewresult.description, viewresult)
         else:
             # If the dataresult is from a previously run datatask, then
-            # the datatask is not being iterated, and instead the 
-            # flagging view will be created as a refinement from an 
+            # the datatask is not being iterated, and instead the
+            # flagging view will be created as a refinement from an
             # earlier flagging view.
 
             # Check in the result structure stored in this instance of RawflagchansView
             # for the presence of previous result descriptions.
             prev_descriptions = self.result.descriptions()
             if prev_descriptions:
-                # If result descriptions are present, then this instance was called 
-                # before, and views were already calculated previously. 
+                # If result descriptions are present, then this instance was called
+                # before, and views were already calculated previously.
                 # Since the current view will be very similar to the last, it is
                 # approximated to be identical, which saves having to recalculate.
                 for description in prev_descriptions:

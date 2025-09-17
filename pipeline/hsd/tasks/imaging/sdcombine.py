@@ -1,3 +1,7 @@
+"""SDImageCombine classes"""
+
+from typing import TYPE_CHECKING, Dict, List, NewType, Optional
+
 import os
 import shutil
 
@@ -9,16 +13,22 @@ from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
 from .resultobjects import SDImagingResultItem
 
+if TYPE_CHECKING:
+    from pipeline.infrastructure.launcher import Context
+    Direction = NewType( 'Direction', Dict )
+
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDImageCombineInputs(vdp.StandardInputs):
     """
-    Inputs for image plane combination
+    Inputs for image plane combination.
     """
+
     inimages = vdp.VisDependentProperty(default='')
     outfile = vdp.VisDependentProperty(default='')
     org_directions = vdp.VisDependentProperty(default='')
+    specmodes = vdp.VisDependentProperty(default='')
 
     @inimages.convert
     def inimages(self, value):
@@ -29,13 +39,29 @@ class SDImageCombineInputs(vdp.StandardInputs):
                 _check_image(v)
         return value
 
-    def __init__(self, context, inimages, outfile, org_directions):
+    def __init__(self,
+                 context:        'Context',
+                 inimages:       List[str],
+                 outfile:        str,
+                 org_directions: List[Optional['Direction']],
+                 specmodes:      List[str]):
+        """
+        Construct SDImageCombineInputs instance.
+
+        Args:
+            context        : Pipeline context
+            inimages       : Imagenames to combine
+            outfile        : Output image name
+            org_directions : List of direction of origin for ephemeris objects
+            specmodes      : List of specmodes
+        """
         super(SDImageCombineInputs, self).__init__()
 
         self.context = context
         self.inimages = inimages
         self.outfile = outfile
         self.org_directions = org_directions
+        self.specmodes = specmodes
 
 
 class SDImageCombine(basetask.StandardTaskTemplate):
@@ -47,6 +73,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
         infiles = self.inputs.inimages
         outfile = self.inputs.outfile
         org_directions = self.inputs.org_directions
+        specmodes = self.inputs.specmodes
         inweights = [name+".weight" for name in infiles]
         outweight = outfile + ".weight"
         num_in = len(infiles)
@@ -80,6 +107,11 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                         raise RuntimeError( "inconsistent org_directions (separation={} deg) {}".format(separation, org_directions) )
         org_direction = org_directions[0]
 
+        # check uniformity of specmodes
+        if len(set(specmodes)) > 1:
+            raise RuntimeError( "inconsistent specmodes ({})".format(specmodes) )
+        specmode = specmodes[0]
+
         # combine weight images
         LOG.info("Generating combined weight image.")
         expr = [("IM%d" % idx) for idx in range(num_in)]
@@ -112,11 +144,15 @@ class SDImageCombine(basetask.StandardTaskTemplate):
                 ia.maskhandler('set', default_mask)
                 ia.maskhandler('delete', nan_mask)
 
+                miscinfo = ia.miscinfo()
+                stokes = miscinfo.get('stokes', 'N/A')
+                datatype = miscinfo.get('datatype', 'N/A')
+
             # PIPE-313 re-evaluate image mask based on the combined weight image
-            # according to sdimaging code, image pixels will be masked if
+            # according to tsdimaging code, image pixels will be masked if
             # weight is less than (minweight * median(weight image)) where
             # minweight is task parameter whose default is 0.1. Here, we use
-            # dedault value to align with the parameter setting for sdimaging
+            # default value to align with the parameter setting for tsdimaging
             # (see worker.py).
             minweight = 0.1
             with casa_tools.ImageReader(outweight) as ia:
@@ -147,7 +183,9 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             image_item = imagelibrary.ImageItem(imagename=outfile,
                                                 sourcename='',  # will be filled in later
                                                 spwlist=[],  # will be filled in later
-                                                specmode='cube',
+                                                specmode=specmode,
+                                                stokes=stokes,
+                                                datatype=datatype,
                                                 sourcetype='TARGET',
                                                 org_direction=org_direction)
             outcome = {'image': image_item}
@@ -170,7 +208,7 @@ class SDImageCombine(basetask.StandardTaskTemplate):
             shutil.rmtree(imagename)
         combine_args = dict(imagename=infiles, outfile=imagename,
                             mode='evalexpr', expr=expr)
-        LOG.debug('Executing immath task: args=%s'%(combine_args))
+        LOG.debug('Executing immath task: args=%s' % (combine_args))
         combine_job = casa_tasks.immath(**combine_args)
 
         # execute job

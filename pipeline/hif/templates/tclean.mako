@@ -6,6 +6,7 @@ import numpy as np
 import pipeline.hif.tasks.tclean.renderer as clean_renderer
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.renderer.rendererutils as rendererutils
+from pipeline.domain import DataType
 
 columns = {
     'cleanmask' : 'Clean Mask',
@@ -15,8 +16,6 @@ columns = {
     'model' : 'Final Model',
     'psf' : 'PSF'
 }
-
-colorder = ['image', 'residual', 'cleanmask']
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -28,7 +27,28 @@ try:
     long_description = '<br><small>{!s}'.format(result.metadata['long description'])
 except:
     long_description = ''
-%>Tclean/MakeImages${long_description}</%block>
+%>MakeImages${long_description}</%block>
+
+%if imaging_mode == 'ALMA':
+    <p>In this stage, images with significant emission are cleaned to a threshold of
+    2 x (predicted rms noise) x (dynamic range correction factor) using automasking.
+    If a clean mask is not found automatically, then this threshold is doubled and
+    the bulk of the whole image is used (PB&gt;0.3). The dynamic range correction factor
+    (abbreviated as "DR correction") accounts for the fact that sources with a high
+    dynamic range will typically exhibit larger imaging artifacts, resulting in a
+    noise level greater than an equivalent blank field. The artifacts are worse for
+    poorer UV coverage, so different dynamic range (DR) correction factors are
+    adopted for different antenna configurations (12m Array vs. 7m Array multi-EB vs.
+    7m Array single-EB), and for different targets (science targets vs. calibrators).
+    See the Pipeline User's Guide for details.<br>
+    The DR correction adopted is a function of the dirty dynamic range (abbreviated
+    as "Dirty DR"), which is defined as the peak intensity divided by the theoretical
+    rms sensitivity delivered by the visibilities.</p>
+%elif imaging_mode == 'VLA':
+    <p>In this stage, images with significant emission are cleaned to a threshold
+    of 4 x (the RMS noise measured by tclean) using automasking.
+    If a clean mask is not found automatically, then no further cleaning is performed.</p>
+%endif
 
 %if len(result[0].targets) != 0:
     %if len(image_info) != 0:
@@ -71,6 +91,66 @@ except:
                 </h4>
                 <br>
         %endif
+        %if have_polcal_fit:
+            <h2>Polarization Calibrator Fit Results</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Session</th>
+                            <th>EBs</th>
+                            <th>Field</th>
+                            <th>Virtual SPW</th>
+                            <th>Polarization Fraction</th>
+                            <th>Polarization Angle</th>
+                            <th>Polarization Intensity Plot</th>
+                            <th>Polarization Angle Plot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        %for row, plots in zip(pol_fit_info, pol_fit_plots):
+                            <tr>
+                            %for td in row:
+                                ${td}
+                            %endfor
+                                <td>
+                                    <%
+                                    fullsize_relpath = os.path.relpath(plots.poli_abspath, pcontext.report_dir)
+                                    thumbnail_relpath = os.path.relpath(plots.poli_thumbnail, pcontext.report_dir)
+                                    %>
+                                    <a href="${fullsize_relpath}"
+                                       data-fancybox="clean-summary-images"
+                                       data-tcleanCommandTarget="N/A"
+                                       data-caption="POLI image"
+                                       title='<div class="pull-left">POLI image'>
+                                      <img class="lazyload"
+                                           data-src="${thumbnail_relpath}"
+                                           title="POLI image"
+                                           alt="POLI image"
+                                           class="img-thumbnail img-responsive">
+                                    </a>
+                                </td>
+                                <td>
+                                    <%
+                                    fullsize_relpath = os.path.relpath(plots.pola_abspath, pcontext.report_dir)
+                                    thumbnail_relpath = os.path.relpath(plots.pola_thumbnail, pcontext.report_dir)
+                                    %>
+                                    <a href="${fullsize_relpath}"
+                                       data-fancybox="clean-summary-images"
+                                       data-tcleanCommandTarget="N/A"
+                                       data-caption="POLA image"
+                                       title='<div class="pull-left">POLA image'>
+                                      <img class="lazyload"
+                                           data-src="${thumbnail_relpath}"
+                                           title="POLA image"
+                                           alt="POLA image"
+                                           class="img-thumbnail img-responsive">
+                                    </a>
+                                </td>
+                            </tr>
+                        %endfor
+                    </tbody>
+                </table>
+        %endif
     %endif
 %endif
 
@@ -110,10 +190,12 @@ except:
         <ul>
             %for i in field_block_indices[:-1]:
                 <li>
-                <a href="#field_block_${i}">${image_info[i].field}
-                %if image_info[i].result.is_per_eb:
-                    (${image_info[i].vis})
-                %endif
+                <a href="#field_block_${i}">
+                    ${image_info[i].field}
+                    (${DataType.get_short_datatype_desc(image_info[i].datatype)})
+                    %if image_info[i].result.is_per_eb:
+                        (${image_info[i].vis})
+                    %endif
                 </a>
                 </li>
             %endfor
@@ -137,7 +219,10 @@ except:
             %endif
             %for j in range(field_block_indices[i], field_block_indices[i+1], 4):
                 <tr>
-                    <td rowspan="2" style="width:150px;">${image_info[j].field}</td>
+                    <td rowspan="2" style="width:150px;">
+                        ${image_info[j].field}
+                        (${DataType.get_short_datatype_desc(image_info[j].datatype)})
+                    </td>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;height:50px;">
                             <div style="word-wrap:break-word;overflow-y:scroll;width:250px;height:50px;">
@@ -197,6 +282,22 @@ except:
                     %endfor
                 </tr>
                 <tr>
+                    <th>data type</th>
+                    %for k in range(j, min(j+4, field_block_indices[i+1])):
+                        <td style="width:250px;">
+                            <div style="word-wrap:break-word;width:250px;">
+                                ${image_info[k].datatype_info}
+                            </div>
+                        </td>
+                    %endfor
+                </tr>
+                <tr>
+                    <th>${image_info[j].stokes_label}</th>
+                    %for k in range(j, min(j+4, field_block_indices[i+1])):
+                        <td style="width:250px;">${image_info[k].pol}</td>
+                    %endfor
+                </tr>
+                <tr>
                     <th>${image_info[j].frequency_label}</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):
                         <td style="width:250px;">${image_info[k].frequency}</td>
@@ -235,6 +336,14 @@ except:
                     %endfor
                 </tr>
                 %endif
+                % if row.nmajordone_total is not None:
+                <tr>
+                    <th>total number of major cycles done</th>
+                    %for k in range(j, min(j+4, field_block_indices[i+1])):
+                        <td>${image_info[k].nmajordone_total}</td>
+                    %endfor
+                </tr>
+                % endif
                 <tr>
                     <th>clean residual peak / scaled MAD</th>
                     %for k in range(j, min(j+4, field_block_indices[i+1])):

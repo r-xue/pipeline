@@ -1,18 +1,25 @@
+from __future__ import annotations
+
 import os
 import re
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-import pipeline as pipeline
-import pipeline.infrastructure as infrastructure
-from pipeline import environment
+import pipeline
+from pipeline import environment, infrastructure
 from pipeline.infrastructure import casa_tools
+from textwrap import wrap
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain import DataType
+    from pipeline.infrastructure.launcher import Context
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 # utility to make miscinfo clean
-def clean_extendable_keys(data, key, num_keys=None):
+def clean_extendable_keys(data: dict, key: str, num_keys: int | None = None) -> dict:
     """
     Remove extra entries in data. Logic is as follows:
 
@@ -49,30 +56,91 @@ def clean_extendable_keys(data, key, num_keys=None):
     return data
 
 
+def wrap_key(data: dict, key: str, value: str) -> dict:
+    """
+    FITS string header keyword content is limited to 68 characters.
+    Longer content needs to be written to multiple keywords.
+    The "long string" convention is not supported by CASA's
+    exportfits.
+
+    Arguments:
+        data {dict} -- Dictionary to be processed
+        key {str}   -- Key for the dictionary
+        value {str} -- Value for the dictionary
+
+    Returns:
+        dict -- Reference to the data
+
+    """
+    key_len = len(key)
+    if key_len > 6:
+        raise ValueError('Wrapped keyword basename must be <=6 characters')
+
+    value_components = wrap(value, 68)
+    vc_len = len(value_components)
+    if vc_len > 99:
+        raise ValueError(f'Too many wrap elements for {key}XX keywords')
+    data[f'n{key}'] = vc_len
+    for i, value_component in enumerate(value_components):
+        data[f'{key}{(i+1):02d}'] = value_component
+
+    return data
+
+
 # Add information to image header
-def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, type=None, iter=None, intent=None, specmode=None,
-                 robust=None, weighting=None, is_per_eb=None, context=None):
-    """Define miscellaneous image information."""
+def set_miscinfo(
+        name,
+        spw: str | None = None,
+        virtspw: bool = True,
+        field: str | None = None,
+        nfield: int | None = None,
+        datatype: DataType | None = None,
+        type: str | None = None,
+        iter: int | None = None,
+        intent: str | None = None,
+        specmode: str | None = None,
+        robust: float | None = None,
+        weighting: str | None = None,
+        is_per_eb: bool | None = None,
+        context: Context | None = None,
+        ) -> None:
+    """
+    Defines miscellaneous image information and updates the image header using the built-in CASA function setmiscinfo.
+
+    Args:
+        name: Name of the image to be modified.
+        spw: A comma-delimited string containing the relevant spw IDs.
+        virtspw: Signifies whether the spw IDs should be mapped to real or virtual spws
+        field: The field name associated with the image.
+        nfield: The number of fields present in the image.
+        datatype: A DataType object that signifies the type of data used to create the image.
+        type: The image type, typically appended to the end of the image name (i.e. 'model', 'residual', etc.).
+        iter: The current clean iteration of the image.
+        intent: The intent of the data used to create the image (i.e. 'TARGET').
+        specmode: The spectral definition mode of the image (i.e. 'mfs', 'cube', etc.).
+        robust: The robust weighting of the image.
+        weighting: The weighting scheme used to create the image (i.e. 'briggs').
+        is_per_eb: Signifies whether the data used to create the image was from a single EB or from multiple EBs.
+        context: The Context object that contains information about the current pipeline run.
+    """
     if name == '':
         return
 
     with casa_tools.ImageReader(name) as image:
         info = image.miscinfo()
         if name is not None:
-            filename_components = os.path.basename(name).split('.')
-            info['nfilnam'] = len(filename_components)
-            for i, filename_component in enumerate(filename_components):
-                info['filnam{:02d}'.format(i+1)] = filename_component
+            # PIPE-533, limiting 'filnamXX' keyword length to 68 characters
+            # due to FITS header keyword string length limit.
+            info = wrap_key(info, 'filnam', os.path.basename(name))
 
             # clean up extra "filnamX" entries
             info = clean_extendable_keys(info, 'filnam')
 
         if spw is not None:
-            unique_spws = ','.join(np.unique(spw.split(',')))
+            unique_spws = ','.join(map(str, sorted({int(s) for s in spw.split(',') if s})))
             if context is not None and context.observing_run is not None:
                 spw_names = [
-                    context.observing_run.virtual_science_spw_shortnames.get(
-                        context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A'), 'N/A')
+                    context.observing_run.virtual_science_spw_ids.get(int(spw_id), 'N/A')
                     for spw_id in unique_spws.split(',')
                 ]
             else:
@@ -111,6 +179,9 @@ def set_miscinfo(name, spw=None, virtspw=True, field=None, nfield=None, type=Non
                 info['npol'] = len(context.observing_run.measurement_sets[0].get_vla_corrstring().split(','))
             else:
                 info['npol'] = -999
+
+        if datatype is not None:
+            info['datatype'] = datatype
 
         if type is not None:
             info['type'] = type

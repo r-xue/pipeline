@@ -2,13 +2,15 @@
 Utilities used for correcting image center coordinates.
 """
 import os
-from typing import Union, Dict, Tuple
+from typing import Dict, Union
 
-import numpy as np
 import astropy.io.fits as apfits
+import astropy.units as u
+import numpy as np
+from astropy.coordinates import offset_by
 
-from .. import casa_tools
-from .. import logging
+from .. import casa_tools, logging
+from . import record_to_quantity as rtq
 
 LOG = logging.get_logger(__name__)
 
@@ -29,7 +31,8 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
     be executed outside of the pipeline.
 
     CRVAL1, CUNIT1, CRVAL2, CUNIT2 and HISTORY keywords are updated *in place*
-    in the input FITS image header.
+    in the input FITS image header. ZD and TELMJD keywords describe the zenith
+    distance value and time of zenith distance, respectively.
 
     Args:
         fitsname: name (and path) of FITS file to be processed.
@@ -67,16 +70,13 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
 
             # Check whether position correction was already applied
             if 'Position correction ' in str(header['history']):
-                message = "Positions are already corrected in  {}".format(fitsname)
-                try:
-                    LOG.warning(message)
-                except NameError:
-                    print(message)
-                return None
+                LOG.warning('Positions are already corrected in %s', fitsname)
+                return
 
             # Get original coordinates
             ra_head = {'unit': header['cunit1'], 'value': header['crval1']}
             dec_head = {'unit': header['cunit2'], 'value': header['crval2']}
+            freq_head = {'unit': header['cunit3'], 'value': header['crval3']}
 
             # Mean observing time
             if date_time is None:
@@ -85,48 +85,55 @@ def do_wide_field_pos_cor(fitsname: str, date_time: Union[Dict, None] = None,
                 date_time = casa_tools.measures.epoch(timesys, date_obs)
 
             # Compute correction
-            offset = calc_wide_field_pos_cor(ra=ra_head, dec=dec_head, obs_long=obs_long,
-                                             obs_lat=obs_lat, date_time=date_time)
+            zd, pa = calc_zd_pa(ra_head, dec_head, obs_long, obs_lat, date_time)
+            # The amplitude of 0.25 arcsec is defined in VLASS Memo #14 at 3GHz.
+            amp = np.deg2rad(0.25 / 3600.0)
+            deltatot = amp * np.tan(zd)
+            offset_pa = rtq([{'value': deltatot, 'unit': 'rad'}, {'value': pa, 'unit': 'rad'}])
+
+            # PIPE-1356: perform additional freqency-dependent scaling from the 3GHz prediction.
+            freq_scale = (3.e9/freq_head['value'])**2
+            offset_pa[0] = offset_pa[0]*freq_scale
+
+            pa_rad = offset_pa[1].to_value(u.rad)
+            offset_arcsec = offset_pa[0].to_value(u.arcsec)
 
             # Apply corrections
-            ra_rad_fixed = casa_tools.quanta.sub(
-                ra_head, casa_tools.quanta.div(offset[0], casa_tools.quanta.cos(dec_head)))
-            dec_rad_fixed = casa_tools.quanta.sub(dec_head, offset[1])
+            ra_fixed, dec_fixed = offset_by(header['crval1']*u.deg, header['crval2']*u.deg,
+                                            offset_pa[1]+180*u.deg, offset_pa[0].to_value(u.rad))
 
             # Update FITS image header, use degrees
-            header['crval1'] = casa_tools.quanta.convert(ra_rad_fixed, 'deg')['value']
+            header['crval1'] = ra_fixed.to_value(u.deg)
             header['cunit1'] = 'deg'
-            header['crval2'] = casa_tools.quanta.convert(dec_rad_fixed, 'deg')['value']
+            header['crval2'] = dec_fixed.to_value(u.deg)
             header['cunit2'] = 'deg'
+
+            # PIPE-1527: added new header variables per NOAO guidelines; more information can be found here:
+            # https://nom-tam-fits.github.io/nom-tam-fits/apidocs/nom/tam/fits/header/extra/NOAOExt.html#ZD
+            # zd for zenith distance and telmjd for time
+            zd_deg = casa_tools.quanta.convert(zd, 'deg')['value']
+            header['zd'] = zd_deg
+            header['telmjd'] = date_time["m0"]["value"]
 
             # Update history, "Position correction..." message should remain the last record in list.
             messages = ['Uncorrected CRVAL1 = {:.12E} deg'.format(casa_tools.quanta.convert(ra_head, 'deg')['value']),
                         'Uncorrected CRVAL2 = {:.12E} deg'.format(casa_tools.quanta.convert(dec_head, 'deg')['value']),
                         'Position correction ({:.3E}/cos(CRVAL2), {:.3E}) arcsec applied'.format(
-                            casa_tools.quanta.convert(offset[0], 'arcsec')['value'] * -1.0,
-                            casa_tools.quanta.convert(offset[1], 'arcsec')['value'] * -1.0)]
+                            -offset_arcsec*np.sin(pa_rad), -offset_arcsec*np.cos(pa_rad))]
             for m in messages:
                 header.add_history(m)
 
             # Save changes and inform log
             hdulist.flush()
-            try:
-                LOG.info("{} to {}".format(messages[-1], fitsname))
-            except NameError:
-                print("{} to {}".format(messages[-1], fitsname))
+            LOG.info(f'{messages[-1]} to {fitsname}')
     else:
-        message = 'Image {} does not exist. No position correction was done.'.format(fitsname)
-        try:
-            LOG.warning(message)
-        except NameError:
-            print(message)
+        LOG.warning(f'Image {fitsname} does not exist. No position correction was done.')
 
-    return None
+    return
 
 
-def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
-                            date_time: Dict) -> Tuple[Dict, Dict]:
-    """Computes the wide field position correction.
+def calc_zd_pa(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict, date_time: Dict):
+    """Computes the zenith distance and parallactic angle chi.
 
     Args:
         ra: Uncorrected Right Ascension.
@@ -140,16 +147,18 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     computation. The arguments may have any convertible units.
 
     Returns:
-        A tuple containing RA and Dec offsets with units (in radians).
+        zd: zenith distance in radians
+        chi: parallactic angle in radians
 
     Examples:
     >>> ra, dec = {'unit': 'deg', 'value': 239.9618166667}, {'unit': 'deg', 'value': 33.5}
     >>> obslong, obslat =  {'unit': 'deg', 'value': -107.61833}, {'unit': 'deg', 'value': 33.90049},
     >>> datetime = {'m0': {'unit': 'd', 'value': 58089.82306510417}, 'refer': 'UTC', 'type': 'epoch'}
-    >>> offset = calc_wide_field_pos_cor(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
-    >>> '{}{}'.format(offset[0]['value'], offset[0]['unit']), '{}{}'.format(offset[1]['value'], offset[1]['unit'])
-    ('3.696987011896662e-07rad', '4.588161874447812e-08rad')
+    >>> zd, chi = calc_zd_pa(ra=ra, dec=dec, obs_long=obslong, obs_lat=obslat, date_time=datetime)
+    >>> '{}rad,{}rad'.format(zd, chi)
+    0.2981984027696312rad, 1.4473222298324353rad
     """
+
     # Get original coordinates in radians
     ra_rad = casa_tools.quanta.convert(ra, 'rad')['value']
     dec_rad = casa_tools.quanta.convert(dec, 'rad')['value']
@@ -172,14 +181,10 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     if ha_rad < 0.0:
         ha_rad = ha_rad + 2.0 * np.pi
 
-    # Compute correction
-    amp = np.deg2rad(0.25 / 3600.0)
-    offset = np.zeros(2)
-    zd = np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad)
+    zd = np.arccos(np.sin(obs_lat_rad) * np.sin(dec_rad) + np.cos(obs_lat_rad) 
                    * np.cos(dec_rad) * np.cos(ha_rad))
     chi = np.arctan(np.sin(ha_rad) / (np.cos(dec_rad) * np.tan(obs_lat_rad) -
-                                      np.sin(dec_rad) * np.cos(ha_rad)))
-    deltatot = amp * np.tan(zd)
+                                     np.sin(dec_rad) * np.cos(ha_rad)))
 
     # Restrict ha_rad to the -np.pi to +np.pi range in order to deal with
     # denominator of parallactic angle term going to zero at declination of
@@ -193,9 +198,4 @@ def calc_wide_field_pos_cor(ra: Dict, dec: Dict, obs_long: Dict, obs_lat: Dict,
     elif (ha_rad > 0.0) and (chi < 0.0):
         chi = chi + np.pi
 
-    # Offset values
-    offset[0] = deltatot * np.sin(chi)
-    offset[1] = deltatot * np.cos(chi)
-
-    return ({'value': offset[0], 'unit': 'rad'},
-            {'value': offset[1], 'unit': 'rad'})
+    return zd, chi

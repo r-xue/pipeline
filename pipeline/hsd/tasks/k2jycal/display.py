@@ -1,103 +1,232 @@
+"""Plotting class for k2jycal stage."""
 import collections
+import decimal
 import os
 
-import numpy
-import matplotlib.pyplot as plt
+from typing import Any, Dict, Generator, List, Sequence, Tuple, Union
+
+import numpy as np
+import itertools
+     
+from matplotlib.figure import Figure
+import matplotlib.cm as cm
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 import pipeline.infrastructure.renderer.logger as logger
+import pipeline.infrastructure.logging as logging
+
 from ..common.display import DPISummary
+from pipeline.domain.spectralwindow import SpectralWindow
+from pipeline.domain.measures import FrequencyUnits
 
+LOG = logging.get_logger(__name__)
 
-class K2JyHistDisplay(object):
-    """
-    A display class to generate histogram of Jy/K factors
-    """
+class K2JyBoxScatterDisplay(object):
+    """A display class to generate a mixed box and scatter plot of Jy/K factors across all SPWs."""
+    
+    def __init__(
+        self,
+        stage_dir: str, 
+        valid_factors: Dict[Any, Any], 
+        ms_labels: List[str], 
+        spws: Dict[Any, Any] = None
+    ) -> None:
+        """Initialize K2JyBoxScatterDisplay instance.
 
-    def __init__(self, stage, spw, valid_factors, bandname=''):
+        Args:
+            stage_dir: Stage directory to which plots are exported
+            valid_factors:  A dictionary where each key is an SPW ID and each value is another dictionary 
+                            containing:
+                                - "spw_obj": The spectral window object.
+                                - "all_factors": Jy/K factors for all MS associated with this SPW (for boxplots).
+                                - "ms_dict": Mapping of MS labels to Jy/K factors.
+                                - "outliers": List of (MS label, factor) tuples for outliers.
+            ms_labels: A list of MS labels corresponding to the valid_factors dataset.
+            spws: A dictionary mapping SPW IDs to their metadata. 
+                  If not provided, it is inferred from `valid_factors`.
         """
-        stage: stage number
-        spw: spw ID of valid_factors
-        valid_factors: a dictionary or an array of Jy/K valid_factors to generate histogram
-        """
-        self.stage_dir = stage
-        self.spw = spw
-        self.band = bandname
-        if isinstance(valid_factors, dict) or numpy.iterable(valid_factors) == 1:
-            self.factors = valid_factors
+        self.stage_dir = stage_dir
+        self.valid_factors = valid_factors
+        self.ms_labels = ms_labels
+        if spws is not None:   
+            self.spws = spws
         else:
-            raise ValueError("valid_factors should be dictionary or an iterable")
+            # Infer spw objects from valid_factors
+            self.spws = {spw_id: valid_factors[spw_id]["spw_obj"] for spw_id in valid_factors}
+        
+    def plot(self) -> List[logger.Plot]:
+        """Generate plot.
 
-    def plot(self):
-        plt.ioff()
-        plt.clf()
-
+        Returns:
+            List of plots.
+        """
         return list(self._plot())
+    
+    def _create_plot(self, plotfile: str, x_axis: str, y_axis: str) -> logger.Plot:
+        """Create Plot instance from plotfile.
 
-    def _create_plot(self, plotfile, x_axis, y_axis):
+        Args:
+            plotfile: Name of the plot file
+            x_axis: X-axis label
+            y_axis: Y-axis label
+
+        Returns:
+            Plot instance
+        """
         parameters = {}
-        parameters['spw'] = self.spw
-        parameters['receiver'] = self.band
+        # Collect SPW IDs and Receiver bands
+        parameters['spws'] = list(self.spws.keys())
+        parameters['receivers'] = list(set([spw.band for spw in self.spws.values()]))
         plot_obj = logger.Plot(plotfile,
-                               x_axis=x_axis,
-                               y_axis=y_axis,
-                               parameters=parameters)
+                            x_axis=x_axis,
+                            y_axis=y_axis,
+                            parameters=parameters)
         return plot_obj
+    
+    def _plot(self) -> Generator[logger.Plot, None, None]:
+        """
+        Create a plot with:
+            - Primary x-axis: Centre Frequency (GHz)
+            - Secondary x-axis: SPW IDs
+            
+        Yields:
+            Plot instance
 
-    def _plot(self):
-        if type(self.factors) in [dict, collections.defaultdict]:
-            labels = []
-            factors = []
-            for lab, spw_factors in self.factors.items():
-                dummy, f = collect_dict_values(spw_factors)
-                factors.append(f)
-                labels.append(lab)
-        elif numpy.iterable(self.factors):
-            labels = 'all data'
-            factors = list(self.factors)
-        # define binning
-        factors1d = []
-        for f in factors:
-            factors1d += f
-        data = numpy.array(factors1d)
-        medval = numpy.median(data)
-        bin_width = medval*0.05
-        maxval = max(data.max(), medval*1.3)
-        minval = min(data.min(), medval*0.7)
-        num_bin = int(numpy.ceil(max((maxval-minval)/bin_width, 1)))
+        Plot style depends on the number of measurement sets (MS):
+            - If MS count is below a threshold, a scatter plot is used (each MS’s data from ms_dict).
+            - Otherwise, a boxplot is drawn (using all_factors) with manually overlaid outlier points.
+        """
+        MS_THRESHOLD = 5       # Use scatter plot if MS count is less than this threshold
+        ALPHA = 1.0            # Weight for blending uniform spacing with normalized frequency differences
+        LEGEND_LIMIT = 3         # If number of MS > LEGEND_LIMIT, shorten labels and add extra right-space.
 
-        plt.hist(factors, range=[minval, maxval], bins=num_bin,
-                histtype='barstacked', align='mid', label=labels)
-        #plt.hist(factors, bins='auto', histtype='barstacked', align='mid', label=labels)
-        plt.xlabel('Jy/K factor', fontsize=11)
-        plt.ylabel('Numbers', fontsize=11)
-        plt.title('Jy/K factors (SPW %d)' % self.spw, fontsize=11)
-        plt.legend(loc=1)
+        # helper: shorten label if needed
+        # e.g. process_label("uid___A002_X1234_X56.ms") will return "X56"
+        def process_label(labels_list, label) -> str:
+            return label.split('_')[-1].split('.')[0] if len(labels_list) > LEGEND_LIMIT else label
 
-        plotfile = os.path.join(self.stage_dir, 'jyperk_spw%s.png' % self.spw)
-        plt.savefig(plotfile, format='png', dpi=DPISummary)
-        plot = self._create_plot(plotfile, 'Jy/K factor', 'Number of MS, ant, and pol combinations')
+        # Extract and sort SPWs by centre frequency
+        spw_freq_pairs = []
+        for spw_id in list(self.valid_factors.keys()):
+            spw_obj = self.valid_factors[spw_id]["spw_obj"]
+            f = float(spw_obj.centre_frequency.to_units(FrequencyUnits.GIGAHERTZ))
+            spw_freq_pairs.append((spw_id, round(f, 1)))
+        spw_freq_pairs.sort(key=lambda pair: pair[1])
+        if spw_freq_pairs:
+            spw_ids, frequencies = zip(*spw_freq_pairs)
+            spw_ids = list(spw_ids)
+            frequencies = list(frequencies)
+        else:
+            spw_ids, frequencies = [], []
+        positions = self.__compute_x_positions(frequencies, ALPHA)
+        
+        xlabel_bottom = 'Frequency (GHz)'
+        ylabel = 'Jy/K factor'
+        
+        fig = Figure(figsize=(8, 6))
+        canvas = FigureCanvas(fig)
+        ax = fig.add_subplot(111)
+        ax.set_xlabel(xlabel_bottom, fontsize=11)
+        ax.set_ylabel(ylabel, fontsize=11)
+        ax.set_title('Jy/K Factors across Frequencies', fontsize=11, fontweight='bold')
+
+        ms_count = len(self.ms_labels)
+        ms_styles = {
+            ms: (marker, color)
+            for ms, marker, color in zip(self.ms_labels, itertools.cycle('osDv^<>'),
+                                        itertools.cycle(cm.get_cmap('tab10').colors))
+        }
+
+        # CASE 1: Scatter Plot for MS count < MS_THRESHOLD
+        if ms_count < MS_THRESHOLD:
+            for ms in self.ms_labels:
+                marker, color = ms_styles[ms]
+                for i, spw_id in enumerate(spw_ids):
+                    ms_data = self.valid_factors[spw_id]["ms_dict"].get(ms, [])
+                    if ms_data:
+                        y_vals = [d[0] for d in ms_data]
+                        x_vals = [positions[i]] * len(y_vals)
+                        ax.scatter(x_vals, y_vals, marker=marker, color=color, alpha=1.0,
+                                label=process_label(self.ms_labels, ms) if i == 0 else "")
+            if ms_count <= 20:
+                # Expand x-axis to add space for legend if needed.
+                lims = ax.get_xlim()
+                extra = (max(positions) - min(positions)) / (len(spw_ids)/2) if spw_ids else 0
+                if ms_count > LEGEND_LIMIT:
+                    ax.set_xlim((lims[0], lims[1] + extra))
+                ax.legend(title='MS', loc='best')
+
+     # CASE 2: Boxplot for MS count >= MS_THRESHOLD
+        else:
+            # Build boxplot data from all_factors for each SPW.
+            box_data = [self.valid_factors[spw_id]["all_factors"] for spw_id in spw_ids]
+            bp = ax.boxplot(box_data, positions=positions, patch_artist=True, showfliers=False)
+            for box in bp['boxes']:
+                box.set_facecolor('orange')
+                box.set_alpha(0.7)
+                
+            # Scatter outliers manually
+            handles = {}
+            for i, spw_id in enumerate(spw_ids):
+                outliers = self.valid_factors[spw_id]["outliers"]
+                for ms, factor in outliers:
+                    marker, color = ms_styles[ms]
+                    scatter = ax.scatter(positions[i], factor, marker=marker, color=color,
+                                            edgecolor="black", zorder=3, label=ms)
+                    if ms not in handles:
+                        handles[ms] = scatter
+
+                if handles and len(handles) <= 20:
+                    # Expand x-axis if needed.
+                    if (len(handles) > LEGEND_LIMIT):
+                        lims = ax.get_xlim()
+                        extra = (max(positions) - min(positions)) / (len(spw_ids)/2) if spw_ids else 0
+                        keys = [process_label(handles.keys(), key) for key in handles.keys()]
+                        ax.set_xlim((lims[0], lims[1] + extra))
+                    else:
+                        keys = handles.keys()
+
+                    ax.legend(list(handles.values()), keys,
+                            title="MS with outliers", loc="best")
+
+        # Adjust y-limits if needed.
+        y_min, y_max = ax.get_ylim()
+        if (y_max - y_min) < 0.5:
+            ax.set_ylim(y_min - 0.25, y_max + 0.25)
+
+        ax_top = ax.twiny()
+        ax_top.set_xlim(ax.get_xlim())
+        ax_top.set_xticks(positions)
+        ax_top.set_xticklabels(spw_ids)
+        ax_top.set_xlabel('SPW ID', fontsize=11)
+        ax.set_xticks(positions)
+        ax.set_xticklabels(frequencies) # for the main x-axis, display the original frequency values.
+        ax.grid(True)
+
+        plotfile = os.path.join(self.stage_dir, 'k2jy_factors_across_frequencies.png')
+        canvas.print_figure(plotfile, format='png', dpi=DPISummary)
+        plot = self._create_plot(plotfile, xlabel_bottom, ylabel)
         yield plot
+        
+    @staticmethod    
+    def __compute_x_positions(frequencies: List[float], alpha: float) -> np.ndarray:
+        """
+        The x-positions for SPWs plotting are computed as a blend between uniform spacing (by index) and
+        normalized frequency differences:
+            x = i + alpha * ((f - f_min) / (f_max - f_min))
+        ensuring that SPWs very close in frequency are evenly spaced while distant ones remain separated.
 
+        Args:
+            frequencies: List of centre frequencies (in GHz) for the SPWs.
+            alpha: Weight for the normalized frequency term.
 
-def collect_dict_values(in_value):
-    """
-    Returns a list of values in in_value. When
-    in_value = dict(a=1, b=dict(c=2, d=4))
-    the method collects all values in tips of branches and returns,
-    [1, 2, 4]
-    When in_value is a simple number or an array, it returns a list
-    of the number or the array
-
-    in_value: a dictionary, number or array to collect values and construct a list
-    """
-    if type(in_value) not in [dict, collections.defaultdict]:
-        if numpy.iterable(in_value) == 0:
-            in_value = [in_value]
-        return True, list(in_value)
-    out_factor = []
-    for value in in_value.values():
-        done = False
-        while not done:
-            done, value = collect_dict_values(value)
-        out_factor += value
-    return done, out_factor
+        Returns:
+            Numpy array of x-positions.
+        """
+        N = len(frequencies)
+        if N == 0:
+            return np.array([])
+        f_min, f_max = min(frequencies), max(frequencies)
+        if f_max - f_min > 0:
+            return np.array([i + alpha * ((f - f_min) / (f_max - f_min)) for i, f in enumerate(frequencies)])
+        return np.arange(N, dtype=float)

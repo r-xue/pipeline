@@ -1,7 +1,9 @@
+"""Spectral baseline subtraction stage."""
 import collections
 import os
 
 import numpy
+from typing import TYPE_CHECKING, Any, Callable, List, Optional, Tuple, Type, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -19,14 +21,19 @@ from ..common import compress
 from pipeline.hsd.tasks.common.inspection_util import generate_ms, inspect_reduction_group, merge_reduction_group
 from ..common import utils
 
+from .typing import FitFunc, FitOrder, LineWindow
+
+if TYPE_CHECKING:
+    from pipeline.infrastructure.api import Heuristic
+    from pipeline.infrastructure.launcher import Context
+
 # import memory_profiler
 LOG = infrastructure.get_logger(__name__)
 
 
 class SDBaselineInputs(vdp.StandardInputs):
-    """
-    Inputs for baseline subtraction
-    """
+    """Inputs for baseline subtraction task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
@@ -43,15 +50,27 @@ class SDBaselineInputs(vdp.StandardInputs):
     switchpoly = vdp.VisDependentProperty(default=True)
     clusteringalgorithm = vdp.VisDependentProperty(default='hierarchy')
     deviationmask = vdp.VisDependentProperty(default=True)
+    deviationmask_sigma_threshold = vdp.VisDependentProperty(default=5.0)
 
     # Synchronization between infiles and vis is still necessary
     @vdp.VisDependentProperty
-    def vis(self):
+    def vis(self) -> str:
+        """Return input MS name."""
         return self.infiles
 
     # handle conversion from string to bool
     @switchpoly.convert
-    def switchpoly(self, value):
+    def switchpoly(self, value: Union[str, bool]) -> bool:
+        """Convert switchpoly value into bool.
+
+        Args:
+            value: any value provided by the user. It should be
+                   boolean value or its string representation
+                   such as 'True' or 'FALSE'.
+
+        Return:
+            boolean value
+        """
         converted = None
         if isinstance(value, bool):
             converted = value
@@ -67,9 +86,213 @@ class SDBaselineInputs(vdp.StandardInputs):
     # use common implementation for parallel inputs argument
     parallel = sessionutils.parallel_inputs_impl()
 
-    def __init__(self, context, infiles=None, antenna=None, spw=None, pol=None, field=None,
-                 linewindow=None, linewindowmode=None, edge=None, broadline=None, fitorder=None,
-                 fitfunc=None, switchpoly=None, clusteringalgorithm=None, deviationmask=None, parallel=None):
+    # docstring and type hints: supplements hsd_baseline
+    def __init__(self,
+                 context: 'Context',
+                 infiles: Optional[List[str]] = None,
+                 antenna: Optional[List[str]] = None,
+                 spw: Optional[List[str]] = None,
+                 pol: Optional[List[str]] = None,
+                 field: Optional[List[str]] = None,
+                 linewindow: Optional[LineWindow] = None,
+                 linewindowmode: Optional[str] = None,
+                 edge: Optional[Tuple[int, int]] = None,
+                 broadline: Optional[bool] = None,
+                 fitfunc: Optional[FitFunc] = None,
+                 fitorder: Optional[FitOrder] = None,
+                 switchpoly: Optional[bool] = None,
+                 clusteringalgorithm: Optional[str] = None,
+                 deviationmask: Optional[bool] = None,
+                 deviationmask_sigma_threshold: Optional[bool] = None,
+                 parallel: Optional[str] = None) -> None:
+        """Construct SDBaselineInputs instance.
+
+        Args:
+            context: Pipeline context
+
+            infiles: List of data files. These must be a name of MeasurementSets that are
+                registered to context via hsd_importdata or hsd_restoredata task.
+
+                Example: vis=['X227.ms', 'X228.ms']
+                Default: None (process all registered MeasurementSets)
+
+            antenna: Data selection by antenna.
+
+                Example: '1' (select by ANTENNA_ID), 'PM03' (select by antenna name), '' (all antennas)
+
+                Default: None (equivalent to '')
+
+            spw: Data selection by spw.
+
+                Example: '3,4' (process spw 3 and 4), ['0','2'] (spw 0 for first data, 2 for second), '' (all spws)
+
+                Default: None (equivalent to '')
+
+            pol: Data selection by polarizations.
+
+                Example: '0' (process pol 0), ['0~1','0'] (pol 0 and 1 for first data, only 0 for second), '' (all polarizations)
+
+                Default: None (equivalent to '')
+
+            field: Data selection by field.
+
+                Example: '1' (select by FIELD_ID), 'M100*' (select by field name), '' (all fields)
+
+                Default: None (equivalent to '')
+
+            linewindow: Pre-defined line window. If this is set, specified line windows are used as
+                a line mask for baseline subtraction instead to determine masks based on line detection and
+                validation stage. Several types of format are acceptable. One is channel-based window.
+                ::
+
+                    [min_chan, max_chan]
+
+                where min_chan and max_chan should be an integer. For multiple  windows, nested list is
+                also acceptable.
+                ::
+
+                    [[min_chan0, max_chan0], [min_chan1, max_chan1], ...]
+
+                Another way is frequency-based window.
+                ::
+
+                    [min_freq, max_freq]
+
+                where min_freq and max_freq should be either a float or a string. If float value is given,
+                it is interpreted as a frequency in Hz. String should be a quantity consisting
+                of "value" and "unit", e.g., '100GHz'. Multiple windows are also supported.
+                ::
+
+                    [[min_freq0, max_freq0], [min_freq1, max_freq1], ...]
+
+                Note that the specified frequencies are assumed to be the value in LSRK frame.
+                Note also that there is a limitation when multiple MSes are processed.
+                If native frequency frame of the data is not LSRK (e.g. TOPO), frequencies need to be
+                converted to that frame. As a result, corresponding channel range may vary
+                between MSes. However, current implementation is not able to handle such case.
+                Frequencies are converted to desired frame using representative MS (time, position,
+                direction).
+
+                In the above cases, specified line windows are applied to all science spws.
+                In case when line windows vary with spw, line windows can be specified by a dictionary whose
+                key is spw id while value is line window. For example, the following dictionary gives different
+                line windows to spws 17 and 19. Other spws, if available, will have an empty line window.
+                ::
+
+                    {17: [[100, 200], [1200, 1400]], 19: ['112115MHz', '112116MHz']}
+
+                Furthermore, linewindow accepts MS selection string. The following string gives
+                [[100,200],[1200,1400]] for spw 17 while [1000,1500] for spw 21.
+                ::
+
+                    "17:100~200;1200~1400,21:1000~1500"
+
+                The string also accepts frequency with units. Note, however, that frequency reference frame
+                in this case is not fixed to LSRK. Instead, the frame will be taken from the MS
+                (typically TOPO for ALMA). Thus, the following two frequency-based line windows
+                result different channel selections.
+                ::
+
+                    {19: ['112115MHz', '112116MHz']} # frequency frame is LSRK
+                    "19:11215MHz~11216MHz" # frequency frame is taken from the data (TOPO for ALMA)
+
+                None is allowed as a value of dictionary input to indicate that no line detection/validation
+                is required even if manually specified line window does not exist. When None is given as a value
+                and if ``linewindowmode`` is 'replace', line detection/validation is not performed
+                for the corresponding spw. For example, suppose the following parameters are given for the data
+                with four science spws, 17, 19, 21, and 23.
+                ::
+
+                    linewindow={17: [112.1e9, 112.2e9], 19: [113.1e9, 113.15e9], 21: None}
+                    linewindowmode='replace'
+
+                The task will use given line window for 17 and 19 while the task performs
+                line deteciton/validation for spw 23 because no line window is set.
+                On the other hand, line detection/validation is skipped for spw 21 due to the effect of None.
+
+                Example: [100,200] (channel), [115e9, 115.1e9] (frequency in Hz), ['115GHz', '115.1GHz'] (see above for more examples)
+
+                Default: None
+
+            linewindowmode: Merge or replace given manual line window with line detection/validation result.
+                If 'replace' is given, line detection and validation will not be performed.
+                On the other hand, when 'merge' is specified, line detection/validation will be performed
+                and manually specified line windows are added to the result.
+                Note that this has no effect when linewindow for target spw is an empty list. In that case,
+                line detection/validation will be performed regardless of the value of linewindowmode.
+                In case if no linewindow nor line detection/validation are necessary, you should set
+                linewindowmode to 'replace' and specify None as a value of the linewindow dictionary
+                for the spw to apply. See parameter description of ``linewindow`` for detail.
+
+            edge: Number of edge channels to be dropped from baseline subtraction.
+                The value must be a list with length of 2, whose values specify left and right edge channels,
+                respectively.
+
+                Example: [10,10]
+
+                Default: None
+
+            broadline: Try to detect broad component of spectral line if True.
+
+                Default: None (equivalent to True)
+
+            fitfunc: Fitting function for baseline subtraction. You can choose either cubic spline
+                ('spline' or 'cspline'), polynomial ('poly' or 'polynomial').
+
+                Accepts:
+                - A string: Applies the same function to all spectral windows (SPWs).
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting function.
+
+                If an SPW ID is not present in the dictionary, 'cspline' will be used as the default.
+
+                Default: None (equivalent to 'cspline')
+
+            fitorder: Fitting order for polynomial. For cubic spline, it is used to determine how
+                much the spectrum is segmented into.
+
+                Accepts:
+                - An integer: Applies the same order to all SPWs. Valid values: -1 (automatic), 0, or any positive integer.
+                - A dictionary: Maps SPW IDs (int or str) to a specific fitting order.
+
+                If an SPW ID is not present in the dictionary, -1 will be used as the default, triggering automatic order selection.
+
+                Default: None (equivalent to -1)
+
+            switchpoly: Whether to fall back the fits from cubic spline to 1st or 2nd order polynomial
+                when large masks exist at the edges of the spw. Condition for switching is as follows:
+
+                - if nmask > nchan/2      => 1st order polynomial
+                - else if nmask > nchan/4 => 2nd order polynomial
+                - else                    => use fitfunc and fitorder
+
+                where nmask is a number of channels for mask at edge while
+                nchan is a number of channels of entire spectral window.
+
+                Default: None (equivalent to True)
+
+            clusteringalgorithm: Selection of the algorithm used in the clustering analysis
+                to check the validity of detected line features. The 'kmean' algorithm,
+                hierarchical clustering algorithm, 'hierarchy', and their combination ('both')
+                are so far implemented.
+
+                Default: None (equivalent to 'hierarchy')
+
+            deviationmask: Apply deviation mask in addition to masks determined by the automatic line detection.
+
+                Default: None (equivalent to True)
+
+            deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.
+                Actual threshold will be median + F * standard-deviation of the spectrum.
+
+                Default: None (equivallent to 5.0)
+
+            parallel: Execute using CASA HPC functionality, if available.
+
+                Options: 'automatic', 'true', 'false', True, False.
+
+                Default: None (equivalent to 'automatic').
+
+        """
         super(SDBaselineInputs, self).__init__()
 
         self.context = context
@@ -87,9 +310,15 @@ class SDBaselineInputs(vdp.StandardInputs):
         self.switchpoly = switchpoly
         self.clusteringalgorithm = clusteringalgorithm
         self.deviationmask = deviationmask
+        self.deviationmask_sigma_threshold = deviationmask_sigma_threshold
         self.parallel = parallel
 
-    def to_casa_args(self):
+    def to_casa_args(self) -> dict:
+        """Convert Inputs instance into task execution parameter.
+
+        Returns:
+            Task execution parameter as kwargs.
+        """
         infiles = self.infiles
         if isinstance(self.infiles, list):
             self.infiles = infiles[0]
@@ -102,12 +331,38 @@ class SDBaselineInputs(vdp.StandardInputs):
 
 
 class SDBaselineResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of baseline subtraction task."""
+
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct SDBaselineResults instance.
+
+        Args:
+            task: Task class that produced the result.
+            success: Whether task execution is successful or not.
+            outcome: Outcome of the task execution.
+        """
         super(SDBaselineResults, self).__init__(task, success, outcome)
         self.out_mses = []
 
-    #@utils.profiler
-    def merge_with_context(self, context):
+    # @utils.profiler
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+
+        Merge of the result instance of baseline subtraction task includes
+        the following updates to Pipeline context,
+
+          - register measurementset domain object for the output of sdbaseline
+            task to Pipeline context, namely measurement_sets list and
+            reduction_group
+          - register detected spectral lines to reduction group
+          - register deviation mask to each measurementset domain object
+
+        Args:
+            context: Pipeline context.
+        """
         super(SDBaselineResults, self).merge_with_context(context)
 
         # register output MS domain object and reduction_group to context
@@ -166,7 +421,12 @@ class SDBaselineResults(common.SingleDishResults):
                 out_ms = target.get_ms(name=self.outcome['vis_map'][ms.name])
                 out_ms.deviation_mask = ms.deviation_mask
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string summarizing the outcome.
+
+        Returns:
+            summary of the outcome.
+        """
         return '\n'.join(['Reduction Group {0}: member {1}'.format(b['group_id'], b['members'])
                           for b in self.outcome['baselined']])
 
@@ -178,29 +438,45 @@ class SDBaselineResults(common.SingleDishResults):
     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
 )
 class SDBaseline(basetask.StandardTaskTemplate):
+    """Baseline subtraction task."""
+
     Inputs = SDBaselineInputs
     is_multi_vis_task = True
 
 #    @memory_profiler.profile
-    def prepare(self):
+    def prepare(self) -> SDBaselineResults:
+        """Perform baseline subtraction.
+
+        The method first evaluates deviation mask for each MS if the mask
+        is not available, then perform line detection by combining all
+        spectral data, and finally perform baseline subtraction using
+        sdbaseline task.
+
+        Returns:
+            SDBaselineResults instance that holds list of output MS names
+            with the map among input MS names, necessary data for
+            weblog rendering, and the metric representing the quality of
+            the baseline subtraction.
+        """
         LOG.debug('Starting SDMDBaseline.prepare')
         inputs = self.inputs
         context = inputs.context
         reduction_group = context.observing_run.ms_reduction_group
         vis_list = inputs.vis
-        ms_list = inputs.ms
         args = inputs.to_casa_args()
+        args_spw = utils.convert_spw_virtual2real(context, inputs.spw)
 
         window = inputs.linewindow
         windowmode = inputs.linewindowmode
         LOG.info('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         edge = inputs.edge
         broadline = inputs.broadline
-        fitorder = 'automatic' if inputs.fitorder is None or inputs.fitorder < 0 else inputs.fitorder
+        fitorder = 'automatic' if inputs.fitorder is None else inputs.fitorder
         fitfunc = inputs.fitfunc
         switchpoly = inputs.switchpoly
         clusteringalgorithm = inputs.clusteringalgorithm
         deviationmask = inputs.deviationmask
+        deviationmask_sigma_threshold = inputs.deviationmask_sigma_threshold
 
         # mkdir stage_dir if it doesn't exist
         stage_number = context.task_counter
@@ -237,15 +513,15 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 # scan for org_direction and find the first one in group
                 msobj = context.observing_run.get_ms(m.ms.basename)
                 field_id = m.field_id
-                fields = msobj.get_fields( field_id = field_id )
+                fields = msobj.get_fields(field_id=field_id)
                 source_name = fields[0].source.name
                 if source_name not in org_directions_dict:
                     if fields[0].source.is_eph_obj or fields[0].source.is_known_eph_obj:
                         org_direction = fields[0].source.org_direction
                     else:
                         org_direction = None
-                    org_directions_dict.update( {source_name:org_direction} )
-                    LOG.info( "registered org_direction[{}]={}".format( source_name, org_direction ) )
+                    org_directions_dict.update({source_name: org_direction})
+                    LOG.info("registered org_direction[{}]={}".format(source_name, org_direction))
 
             # skip channel averaged spw
             nchan = group_desc.nchan
@@ -256,10 +532,10 @@ class SDBaseline(basetask.StandardTaskTemplate):
                 LOG.info('Skip channel averaged spw %s.', vspw)
                 continue
 
-            LOG.debug('spw=\'%s\'', args['spw'])
+            LOG.debug('spw=\'%s\'', args_spw)
             LOG.debug('vis_list=%s', vis_list)
             member_list = numpy.fromiter(
-                utils.get_valid_ms_members2(group_desc, ms_list, args['antenna'], args['field'], args['spw']),
+                utils.get_valid_ms_members(group_desc, vis_list, args['antenna'], args['field'], args_spw),
                 dtype=numpy.int32)
             # skip this group if valid member list is empty
             LOG.debug('member_list=%s', member_list)
@@ -277,7 +553,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             LOG.info('Members to be processed:')
             for (gms, gfield, gant, gspw) in utils.iterate_group_member(group_desc, member_list):
                 LOG.info('\tMS "%s" Field ID %s Antenna ID %s Spw ID %s',
-                          gms.basename, gfield, gant, gspw)
+                         gms.basename, gfield, gant, gspw)
 
             # Deviation Mask
             # NOTE: deviation mask is evaluated per ms per field per spw
@@ -291,8 +567,6 @@ class SDBaseline(basetask.StandardTaskTemplate):
                     if (fieldid, antennaid, spwid) not in ms.deviation_mask:
                         LOG.debug('Evaluating deviation mask for %s field %s antenna %s spw %s',
                                   ms.basename, fieldid, antennaid, spwid)
-                        #mask_list = self.evaluate_deviation_mask(ms.name, fieldid, antennaid, spwid,
-                        #                                         consider_flag=True)
                         dvparams[ms.name][0].append(fieldid)
                         dvparams[ms.name][1].append(antennaid)
                         dvparams[ms.name][2].append(spwid)
@@ -300,8 +574,13 @@ class SDBaseline(basetask.StandardTaskTemplate):
                         deviation_mask[ms.basename][(fieldid, antennaid, spwid)] = ms.deviation_mask[(fieldid, antennaid, spwid)]
                 for (vis, params) in dvparams.items():
                     field_list, antenna_list, spw_list = params
-                    dvtasks.append(deviation_mask_heuristic(vis=vis, field_list=field_list, antenna_list=antenna_list,
-                                                            spw_list=spw_list, consider_flag=True, parallel=self.inputs.parallel))
+                    dvtasks.append(deviation_mask_heuristic(vis=vis,
+                                                            field_list=field_list,
+                                                            antenna_list=antenna_list,
+                                                            spw_list=spw_list,
+                                                            deviationmask_sigma_threshold=deviationmask_sigma_threshold,
+                                                            consider_flag=True,
+                                                            parallel=self.inputs.parallel))
                 for vis, dvtask in dvtasks:
                     dvmasks = dvtask.get_result()
                     field_list, antenna_list, spw_list = dvparams[vis]
@@ -333,7 +612,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             detected_lines = maskline_result.outcome['detected_lines']
             channelmap_range = maskline_result.outcome['channelmap_range']
             cluster_info = maskline_result.outcome['cluster_info']
-            flag_digits  = maskline_result.outcome['flag_digits']
+            flag_digits = maskline_result.outcome['flag_digits']
 
             # register ids to per MS id collection
             for i in member_list:
@@ -348,15 +627,15 @@ class SDBaseline(basetask.StandardTaskTemplate):
                               'channelmap_range': channelmap_range,
                               'clusters': cluster_info,
                               'flag_digits': flag_digits,
-                              'org_direction': org_direction })
+                              'org_direction': org_direction})
 
         # - end of the loop over reduction group
 
         blparam_file = lambda ms: ms.basename.rstrip('/') \
             + '_blparam_stage{stage}.txt'.format(stage=stage_number)
-        vis_map = {} # key and value are input and output vis name, respectively
+        vis_map = {}  # key and value are input and output vis name, respectively
         plot_list = []
-        baseline_quality_stat = {}
+        baseline_quality_stat = []
 #         plot_manager = plotter.BaselineSubtractionPlotManager(self.inputs.context, datatable)
 
         # Generate and apply baseline fitting solutions
@@ -364,16 +643,16 @@ class SDBaseline(basetask.StandardTaskTemplate):
         plan = [registry[ms] for ms in registry]
         blparam = [blparam_file(ms) for ms in registry]
         deviationmask_list = [deviation_mask[ms.basename] for ms in registry]
-        # 21/05/2018 TN temporal workaround
-        # I don't know how to use vdp.ModeInputs so directly specify worker task class here
-        worker_cls = worker.HpcCubicSplineBaselineSubtractionWorker
+        edge_list = [edge for _ in registry]
+        worker_cls = worker.BaselineSubtractionWorker
         fitter_inputs = vdp.InputsContainer(worker_cls, context,
                                             vis=vislist, plan=plan,
+                                            fit_func=fitfunc,
                                             fit_order=fitorder, switchpoly=switchpoly,
-                                            edge=edge, blparam=blparam,
+                                            edge=edge_list, blparam=blparam,
                                             deviationmask=deviationmask_list,
-                                            parallel=self.inputs.parallel,
-                                            org_directions_dict=org_directions_dict)
+                                            org_directions_dict=org_directions_dict,
+                                            parallel=self.inputs.parallel)
         fitter_task = worker_cls(fitter_inputs)
         fitter_results = self._executor.execute(fitter_task, merge=False)
 
@@ -406,8 +685,7 @@ class SDBaseline(basetask.StandardTaskTemplate):
             if 'plot_list' in result.outcome:
                 plot_list.extend(result.outcome['plot_list'])
             if 'baseline_quality_stat' in result.outcome:
-                baseline_quality_stat.update(result.outcome['baseline_quality_stat'])
-                
+                baseline_quality_stat.extend(result.outcome['baseline_quality_stat'])
 
         outcome = {'baselined': baselined,
                    'vis_map': vis_map,
@@ -421,7 +699,19 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return results
 
-    def analyse(self, result):
+    def analyse(self, result: SDBaselineResults) -> SDBaselineResults:
+        """Generate measurementset domain object for output MS.
+
+        The method generates measumentsets objects from output MSes
+        of SDBaseline task. Newly created objects are registered to
+        results instance.
+
+        Args:
+            result: SDBaselineResults instance
+
+        Returns:
+            SDBaselineResults instance
+        """
         # Generate domain object of baselined MS
         for infile, outfile in result.outcome['vis_map'].items():
             in_ms = self.inputs.context.observing_run.get_ms(infile)
@@ -431,60 +721,127 @@ class SDBaseline(basetask.StandardTaskTemplate):
 
         return result
 
-    @staticmethod
-    def evaluate_deviation_mask(vis, field_id, antenna_id, spw_id, consider_flag=False):
-        """
-        Create deviation mask using MaskDeviation heuristic
-        """
-        h = MaskDeviationHeuristic()
-        mask_list = h.calculate(vis=vis, field_id=field_id, antenna_id=antenna_id, spw_id=spw_id,
-                                consider_flag=consider_flag)
-        return mask_list
-
 
 class HeuristicsTask(object):
-    def __init__(self, heuristics_cls, *args, **kwargs):
+    """Executor for heuristics class. It is an adaptor to mpihelper framework."""
+
+    def __init__(self, heuristics_cls: Type['Heuristic'], *args: Any, **kwargs: Any) -> None:
+        """Construct HeuristicsTask instance.
+
+        Args:
+            heuristics_cls: Heuristic class to run
+        """
         self.heuristics = heuristics_cls()
-        #print(args, kwargs)
+        # print(args, kwargs)
         self.args = args
         self.kwargs = kwargs
-        #print(self.args, self.kwargs)
+        # print(self.args, self.kwargs)
 
-    def execute(self, dry_run=False):
-        if dry_run:
-            return []
+    def execute(self) -> Any:
+        """Perform Heuristics and return its result.
 
+        Returns:
+            Heuristics result. Actual contents of return value
+            depends on the Heuristics class.
+        """
         return self.heuristics.calculate(*self.args, **self.kwargs)
 
-    def get_executable(self):
-        return lambda: self.execute(dry_run=False)
+    def get_executable(self) -> Callable[[], Any]:
+        """Return function that runs execute method.
+
+        Returns:
+            Function to run execute method
+        """
+        return lambda: self.execute()
 
 
 class DeviationMaskHeuristicsTask(HeuristicsTask):
-    def __init__(self, heuristics_cls, vis, field_list, antenna_list, spw_list, consider_flag=False):
+    """Executor class specialized to MaskDeviationHeuristic."""
+
+    def __init__(self,
+                 heuristics_cls: Type[MaskDeviationHeuristic],
+                 vis: str,
+                 field_list: List[int],
+                 antenna_list: List[int],
+                 spw_list: List[int],
+                 deviationmask_sigma_threshold: float,
+                 consider_flag: bool = False) -> None:
+        """Construct DeviationMaskHeuristicsTask instance.
+
+        Executes heuristics to find deviation masks for given set of
+        field id, antenna id, and spw ids. Those ids are taken from
+        field_list, antenna_list, and spw_list via zip so that their
+        length must be identical.
+
+        Args:
+            heuristics_cls: Heuristics class
+            vis: Name of the MS
+            field_list: List of field ids to process
+            antenna_list: List of antenna ids to process
+            spw_list: List of spectral window ids to process
+            deviationmask_sigma_threshold: Threshold factor to detect the deviation.
+                                     (see SDBaselineInputs for details)
+            consider_flag: Consider flag when perofrming heuristics. Defaults to False.
+        """
         super(DeviationMaskHeuristicsTask, self).__init__(heuristics_cls, vis=vis, consider_flag=consider_flag)
         self.vis = vis
         self.field_list = field_list
         self.antenna_list = antenna_list
         self.spw_list = spw_list
+        self.deviationmask_sigma_threshold = deviationmask_sigma_threshold
 
-    def execute(self, dry_run=False):
-        if dry_run:
-            return {}
+    def execute(self) -> dict:
+        """Execute heuristics.
+
+        Returns:
+            Deviation mask for each set of field id, antenna id, and spw id.
+        """
 
         result = []
+
         for field_id, antenna_id, spw_id in zip(self.field_list, self.antenna_list, self.spw_list):
-            self.kwargs.update({'field_id': field_id, 'antenna_id': antenna_id, 'spw_id': spw_id})
-            mask_list = super(DeviationMaskHeuristicsTask, self).execute(dry_run)
+            self.kwargs.update({'field_id': field_id,
+                                'antenna_id': antenna_id,
+                                'spw_id': spw_id,
+                                'detection': self.deviationmask_sigma_threshold})
+            mask_list = super(DeviationMaskHeuristicsTask, self).execute()
             result.append(mask_list)
         return result
 
 
-def deviation_mask_heuristic(vis, field_list, antenna_list, spw_list, consider_flag=False, parallel=None):
-    #parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
-    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic, vis=vis, field_list=field_list,
-                            antenna_list=antenna_list, spw_list=spw_list, consider_flag=consider_flag)
-    #if parallel_wanted:
+def deviation_mask_heuristic(
+        vis: str,
+        field_list: List[int],
+        antenna_list: List[int],
+        spw_list: List[int],
+        deviationmask_sigma_threshold: float,
+        consider_flag: bool = False,
+        parallel: Optional[bool] = None) -> Tuple[str, Union[mpihelpers.SyncTask, mpihelpers.AsyncTask]]:
+    """Prepare task instance that can be executed in mpihelpers framework.
+
+    Args:
+        vis: Name of MS
+        field_list: List of field ids to process
+        antenna_list: List of antenna ids to process
+        spw_list: List of spectral window ids to process
+        consider_flag: Consider flag when performing heuristics. Defaults to False.
+        deviationmask_sigma_threshold: Threshold factor (F) to detect the deviation.
+                                 (see SDBaselineInputs for detail)
+        parallel: Parallel execution or not. Currently disabled.
+                  Task is always executed in serial mode. Defaults to None.
+
+    Returns:
+        Name of the MS and the task instance for mpihelpers framework.
+    """
+    # parallel_wanted = mpihelpers.parse_mpi_input_parameter(parallel)
+    mytask = DeviationMaskHeuristicsTask(MaskDeviationHeuristic,
+                                         vis=vis,
+                                         field_list=field_list,
+                                         antenna_list=antenna_list,
+                                         spw_list=spw_list,
+                                         deviationmask_sigma_threshold=deviationmask_sigma_threshold,
+                                         consider_flag=consider_flag)
+    # if parallel_wanted:
     if False:
         task = mpihelpers.AsyncTask(mytask)
     else:
@@ -493,7 +850,13 @@ def deviation_mask_heuristic(vis, field_list, antenna_list, spw_list, consider_f
     return vis, task
 
 
-def test_deviation_mask_heuristic(spw=None):
+def test_deviation_mask_heuristic(spw: Optional[int] = None) -> None:
+    """Test deviation mask heuristic.
+
+    Args:
+        spw: spectral window id to process.
+             If None is given, spw is set to 17.
+    """
     import glob
     vislist = glob.glob('uid___A002_X*.ms')
     print('vislist={0}'.format(vislist))

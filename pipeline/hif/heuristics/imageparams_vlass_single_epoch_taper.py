@@ -1,5 +1,5 @@
 import re
-from typing import Union, Tuple
+from typing import Union, Tuple, Optional
 
 import numpy
 
@@ -12,8 +12,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
 
-    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}):
-        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params)
+    def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None, linesfile=None, imaging_params={}, processing_intents={}):
+        ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile, linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'VLASS-SE-TAPER'
 
     # niter
@@ -28,11 +28,11 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean niter parameter heuristics."""
         return self.niter_correction(None, None, None, None, None, None)
 
-    def deconvolver(self, specmode, spwspec) -> str:
+    def deconvolver(self, specmode, spwspec, intent: str = '', stokes: str = '') -> str:
         """Tclean deconvolver parameter heuristics."""
         return 'mtmfs'
 
-    def robust(self) -> float:
+    def robust(self, specmode=None) -> float:
         """Tclean robust parameter heuristics."""
         return 1.0
 
@@ -45,15 +45,15 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return ['1.8arcsec']
 
     def imsize(self, fields=None, cell=None, primary_beam=None, sfpblimit=None, max_pixels=None, centreonly=None,
-               vislist=None, spwspec=None) -> Union[list, int]:
+               vislist=None, spwspec=None, intent: str = '', joint_intents: str = '', specmode=None) -> Union[list, int]:
         """Tclean imsize parameter heuristics."""
         return [4050, 4050]
 
-    def reffreq(self) -> str:
+    def reffreq(self, deconvolver: Optional[str]=None, specmode: Optional[str]=None, spwsel: Optional[dict]=None) -> Optional[str]:
         """Tclean reffreq parameter heuristics."""
         return '3.0GHz'
 
-    def cyclefactor(self, iteration: int) -> float:
+    def cyclefactor(self, iteration: int, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None) -> float:
         """Tclean cyclefactor parameter heuristics."""
         return 3.0
 
@@ -65,11 +65,11 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean scales parameter heuristics."""
         return [0]
 
-    def uvtaper(self, beam_natural=None, protect_long=None) -> Union[str, list]:
+    def uvtaper(self, beam_natural=None, protect_long=None, beam_user=None, tapering_limit=None, repr_freq=None) -> Union[str, list]:
         """Tclean uvtaper parameter heuristics."""
         return ['7.0arcsec']
 
-    def uvrange(self, field=None, spwspec=None) -> tuple:
+    def uvrange(self, field=None, spwspec=None, specmode=None) -> tuple:
         """Tclean uvrange parameter heuristics."""
         return None, None
 
@@ -92,7 +92,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         """Tclean nterms parameter heuristics."""
         return 2
 
-    def stokes(self) -> str:
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
         """Tclean stokes parameter heuristics."""
         return 'I'
 
@@ -104,7 +104,7 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         return False
 
     def get_sensitivity(self, ms_do, field, intent, spw, chansel, specmode, cell, imsize, weighting, robust, uvtaper):
-        return 0.0, None, None
+        return 0.0, None, None, None
 
     def find_fields(self, distance='0deg', phase_center=None, matchregex=''):
 
@@ -129,20 +129,20 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
             qrad = qa.convert(qdist, 'rad')
             maxrad = qrad['value']
         except:
-            print('ERROR: cannot parse distance {}'.format(distance))
+            LOG.error('cannot parse distance {}'.format(distance))
             return
 
         try:
             tb.open(msfile + '/FIELD')
         except:
-            print('ERROR: could not open {}/FIELD'.format(msfile))
+            LOG.error('could not open {}/FIELD'.format(msfile))
             return
         field_dirs = tb.getcol('PHASE_DIR')
         field_names = tb.getcol('NAME')
         tb.close()
 
         (nd, ni, nf) = field_dirs.shape
-        print('Found {} fields'.format(nf))
+        LOG.info('Found {} fields'.format(nf))
 
         # compile field dictionaries
         ddirs = {}
@@ -165,10 +165,10 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
                 flookup[fn].append(i)
             else:
                 flookup[fn] = [i]
-        print('Cataloged {} fields'.format(nf))
+        LOG.info('Cataloged {} fields'.format(nf))
 
         # Construct offset separations in ra,dec
-        print('Looking for fields with maximum separation {}'.format(distance))
+        LOG.info('Looking for fields with maximum separation {}'.format(distance))
         nreject = 0
         skipmatch = matchregex == '' or matchregex == []
         for i in range(nf):
@@ -203,9 +203,9 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
                         else:
                             nreject += 1
 
-        print('Found {} fields within {}'.format(len(fieldlist), distance))
+        LOG.info('Found {} fields within {}'.format(len(fieldlist), distance))
         if not skipmatch:
-            print('Rejected {} distance matches for regex'.format(nreject))
+            LOG.info('Rejected {} distance matches for regex'.format(nreject))
 
         return fieldlist
 
@@ -232,7 +232,9 @@ class ImageParamsHeuristicsVlassSeTaper(ImageParamsHeuristics):
         else:
             return threshold
 
-    def nsigma(self, iteration: int, hm_nsigma: float, hm_masking: str) -> Union[float, None]:
+    def nsigma(
+        self, iteration: int, hm_nsigma: float, hm_masking: str, rms_multiplier: Optional[Union[int, float]] = None
+    ) -> Union[float, None]:
         """Tclean nsigma parameter heuristics."""
         if hm_nsigma:
             return hm_nsigma

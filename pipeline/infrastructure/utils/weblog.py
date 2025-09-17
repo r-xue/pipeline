@@ -1,23 +1,34 @@
 """
 The sorting module contains utility functions used by the pipeline web log.
 """
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import datetime
+import functools
+import html
 import itertools
 import operator
 import os
-from functools import reduce
+from typing import TYPE_CHECKING
 
-import numpy
+import astropy.table
+import numpy as np
 
-from .conversion import flatten, to_pipeline_intent, spw_arg_to_id
-from .. import casa_tools
-from .. import logging
+from pipeline import infrastructure
+from pipeline.infrastructure import casa_tools, utils
+from pipeline.infrastructure.utils import conversion
 
-__all__ = ['OrderedDefaultdict', 'merge_td_columns', 'get_vis_from_plots', 'total_time_on_source',
-           'total_time_on_target_on_source', 'get_logrecords', 'get_intervals']
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet
+    from pipeline.domain.measures import Distance
 
-LOG = logging.get_logger(__name__)
+__all__ = ['OrderedDefaultdict', 'merge_td_columns', 'merge_td_rows', 'get_vis_from_plots', 'total_time_on_source',
+           'total_time_on_target_on_source', 'get_logrecords', 'get_intervals', 'table_to_html', 'plots_to_html',
+           'scale_uv_range', 'split_spw', 'get_directory_size']
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 class OrderedDefaultdict(collections.OrderedDict):
@@ -59,15 +70,14 @@ class OrderedDefaultdict(collections.OrderedDict):
 
 
 def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
-    """
-    Merge HTML TD columns with identical values using rowspan.
+    """Merge HTML TD columns with identical values using rowspan.
 
     Arguments:
     rows -- a list of tuples, one tuple per row, containing n elements for the
             n columns.
     num_to_merge -- the number of columns to merge, starting from the left
                     hand column. Leave as None to merge all columns.
-    vertical_align -- Set to True to vertically centre any merged cells.
+    vertical_align -- Set to True to vertically centre any merged/unmerged cells.
 
     Output:
     A list of strings, one string per row, containing TD elements.
@@ -92,18 +102,51 @@ def merge_td_columns(rows, num_to_merge=None, vertical_align=False):
             start += rowspan
 
             if rowspan > 1:
-                new_td = ['<td rowspan="%s"%s>%s</td>' % (rowspan,
-                                                          valign,
-                                                          same_vals[0])]
+                new_td = [f'<td rowspan="{rowspan}"{valign}>{same_vals[0]}</td>']
                 blanks = [''] * (rowspan - 1)
                 merged.extend(new_td + blanks)
             else:
-                td = '<td>%s</td>' % (same_vals[0])
+                td = f'<td{valign}>{same_vals[0]}</td>'
                 merged.append(td)
 
         new_cols.append(merged)
 
     return list(zip(*new_cols))
+
+
+def merge_td_rows(table):
+    """
+    Merge HTML TD rows with identical values using colspan.
+
+    Arguments:
+    table -- a list of tuples, one tuple per row, containing n elements for the n columns.
+
+    Output:
+    A list of tuples with adjusted idential values merged with colspan.
+    """
+    new_table = []
+    for row in table:
+        row_list = list(row)
+        start = 0
+        while start < len(row):
+            start_cell = row[start]
+            merge_count = 0
+            end = start+1
+
+            while end < len(row):
+                if start_cell == row[end]:
+                    row_list[end] = ''
+                    merge_count += 1
+                    end += 1
+                else:
+                    break
+            if merge_count > 0:
+                row_list[start] = row_list[start].replace('<td', fr'<td colspan="{merge_count+1}"')
+            start += 1
+
+        new_table.append(tuple(row_list))
+
+    return new_table
 
 
 def get_vis_from_plots(plots):
@@ -136,7 +179,7 @@ def total_time_on_target_on_source(ms, autocorr_only=False):
     max_time = 0.0
     ant_ids = [a.id for a in ms.antennas]
     dds = [ms.get_data_description(spw=spw) for spw in science_spws]
-    science_dds = numpy.unique([dd.id for dd in dds])
+    science_dds = np.unique([dd.id for dd in dds])
     with casa_tools.TableReader(ms.name) as tb:
         for dd in science_dds:
             for a1 in ant_ids:
@@ -144,7 +187,7 @@ def total_time_on_target_on_source(ms, autocorr_only=False):
                     if autocorr_only and a1 != a2:
                         continue
                     seltb = tb.query('DATA_DESC_ID == %d AND ANTENNA1 == %d AND ANTENNA2 == %d AND STATE_ID IN %s' % (
-                        dd, a1, a2, state_ids))
+                        dd, a1, a2, utils.list_to_str(state_ids)))
                     try:
                         if seltb.nrows() == 0:
                             continue
@@ -168,7 +211,7 @@ def total_time_on_source(scans):
     """
     times_on_source = [scan.time_on_source for scan in scans]
     if times_on_source:
-        return reduce(operator.add, times_on_source)
+        return functools.reduce(operator.add, times_on_source)
     else:
         # could potentially be zero matching scans, such as when the
         # measurement set is missing scans with science intent
@@ -185,7 +228,7 @@ def get_logrecords(result, loglevel):
     """
     try:
         # WeakProxy is registered as an Iterable (and a Container, Hashable, etc.)
-        # so we can't check for isinstance(result, collections.Iterable)
+        # so we can't check for isinstance(result, collections.abc.Iterable)
         # see https://bugs.python.org/issue24067
         _ = iter(result)
     except TypeError:
@@ -195,7 +238,7 @@ def get_logrecords(result, loglevel):
     else:
         # note that flatten returns a generator, which empties after
         # traversal. we convert to a list to allow multiple traversals
-        g = flatten([get_logrecords(r, loglevel) for r in result])
+        g = conversion.flatten([get_logrecords(r, loglevel) for r in result])
         records = list(g)
 
     # append the message target to the LogRecord so we can link to the
@@ -243,11 +286,11 @@ def get_intervals(context, calapp, spw_ids=None):
     if not spw_ids:
         task_spw_args = {o.inputs['spw'] for o in calapp.origin}
         spw_arg = ','.join(task_spw_args)
-        spw_ids = {spw_id for (spw_id, _, _, _) in spw_arg_to_id(vis, spw_arg, ms.get_spectral_windows)}
+        spw_ids = {spw_id for (spw_id, _, _, _) in conversion.spw_arg_to_id(vis, spw_arg, ms.get_spectral_windows)}
 
     # from_intent is given in CASA intents, ie. *AMPLI*, *PHASE*
     # etc. We need this in pipeline intents.
-    pipeline_intent = to_pipeline_intent(ms, from_intent)
+    pipeline_intent = conversion.to_pipeline_intent(ms, from_intent)
     scans = ms.get_scans(scan_intent=pipeline_intent)
 
     # scan with intent may not have data for the spws used in the
@@ -283,3 +326,159 @@ def get_intervals(context, calapp, spw_ids=None):
     #     all_solints.update(set(solints))
     #
     # return all_solints
+
+
+def table_to_html(table, tableclass='table table-bordered table-striped table-condensed', rotate=False):
+    """Convert a astropy.table.Table object to an HTML table snippet."""
+    if rotate:
+        table_rows = [table.colnames]+list(table.as_array())
+        table_rotate = astropy.table.QTable(rows=list(zip(*table_rows)))
+        table_html = table_rotate.pformat(html=True, max_width=-1, tableclass=tableclass, show_name=False)
+    else:
+        table_html = table.pformat(html=True, max_width=-1, tableclass=tableclass, show_name=True)
+
+    table_html = '\n'.join([html.unescape(line) for line in table_html])
+
+    return table_html
+
+
+def plots_to_html(plots, title=None, alt=None, caption=None, group=None,
+                  align='middle', width='auto', height='auto', report_dir='./'):
+    """Convert a list of plots to HTML snippets.
+    
+    examples:
+        plots_to_html(plots, caption=None, width='400px', height='300px')
+
+    notes:
+        the generated snippet requires lazyload.
+    """
+
+    def desc_lookup(plot, key, value=None):
+        """Get a plot description value from the plot object attribute or parameters dictionary.
+        
+        The order of precedence: 
+            non-None input > 
+            matching plot parameters dict key > 
+            attribute with the same name
+        """
+        ret_value = ''
+        if hasattr(plot, key):
+            ret_value = getattr(plot, key)
+        if hasattr(plot, 'parameters') and key in plot.parameters:
+            ret_value = plot.parameters[key]
+        if value is not None:
+            ret_value = value
+        return ret_value
+
+    plots_html = []
+
+    for plot in plots:
+        fullsize_relpath = os.path.relpath(plot.abspath, report_dir)
+        thumbnail_relpath = os.path.relpath(plot.thumbnail, report_dir)
+
+        html_args = {
+            'fullsize': fullsize_relpath,
+            'thumbnail': thumbnail_relpath,
+            'title': desc_lookup(plot, 'title', title),
+            'caption': desc_lookup(plot, 'caption', caption),
+            'alt': desc_lookup(plot, 'alt', alt),
+            'group': desc_lookup(plot, 'group', group),
+            'width': width,
+            'height': height,
+            'align': align,
+        }
+        html = ('<a href="{fullsize}"'
+                '   title="{title}"'
+                '   data-fancybox="{group}"'
+                '   data-caption="{caption}">'
+                '    <img data-src="{thumbnail}"'
+                '         style="width:{width};height:{height}"'
+                '         title="{title}"'
+                '         alt="{alt}"'
+                '         align="{align}"'
+                '         class="lazyload img-responsive">'
+                '</a>'.format(**html_args))
+        plots_html.append(html)
+
+    return plots_html
+
+
+def scale_uv_range(ms: MeasurementSet) -> tuple[Distance, str]:
+    """
+    Return the UV range that captures the inner half of the data.
+
+    This function returns a 2-tuple with first value set to the UV range
+    as a domain object, and the second value set to a uvrange constraint
+    suitable for use in plotms calls.
+
+    :param ms: measurement set to analyse
+    :return: tuple of (UV range, plotms constraint)
+    """
+    # method=higher is preferred over method=nearest to ensure that the upper
+    # limit data point is included in the selection
+    uv_max = np.percentile(ms.antenna_array.baselines_m, 50, method='higher')
+    uv_range = f"<{uv_max}"
+
+    # domain.measures classes must be imported at runtime to avoid a circular
+    # dependency
+    from pipeline.domain.measures import Distance
+    from pipeline.domain.measures import DistanceUnits
+    return Distance(value=uv_max, units=DistanceUnits.METRE), uv_range
+
+
+def split_spw(spw_string: str) -> str:
+    """
+    Splits an SPW string on '#' characters while retaining them, and inserts a <br/>
+    before the 'ALMA' portion to improve readability. Returns the original string
+    if 'ALMA' is not found.
+
+    Example:
+        Input: "X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES"
+        Output: "X100001#<br/>X900000004#<br/>ALMA_RB_06#BB_1#SW-01#FULL_RES"
+
+    Args:
+        spw_string: The original SPW string containing '#' delimiters.
+
+    Returns:
+        The reformatted SPW string with <br/> inserted before 'ALMA'.
+    """
+    parts = []
+    current = ""
+
+    for segment in spw_string.split('#'):
+        if current:
+            parts.append(current + '#')
+        current = segment
+    parts.append(current)
+
+    for i, part in enumerate(parts):
+        if 'ALMA' in part:
+            return "<br/>".join(parts[:i] + ["".join(parts[i:])])
+
+    return spw_string
+
+
+def get_directory_size(directory):
+    """
+    Calculate the total size of a directory in megabytes (MB).
+
+    This includes all files in the directory and its subdirectories.
+    Symlinks are ignored to avoid counting linked files or causing errors.
+
+    Parameters:
+        directory (str): Path to the target directory.
+
+    Returns:
+        float: Total size of the directory in megabytes.
+    """
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(directory):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            if not os.path.islink(filepath):
+                try:
+                    total_size += os.path.getsize(filepath)
+                except OSError as e:
+                    # make it log.warning
+                    print(f"Error accessing {filepath}: {e}")
+    return total_size / (1024 * 1024)

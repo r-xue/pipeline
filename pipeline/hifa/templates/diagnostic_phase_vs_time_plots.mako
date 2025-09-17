@@ -4,14 +4,18 @@ import collections
 
 SELECTORS = ['vis', 'spw', 'ant']
 
-HISTOGRAM_LABELS = collections.OrderedDict([
-	('PHASE_SCORE_XY', 'X-Y phase deviation'),
-	('PHASE_SCORE_X2X1', 'X2-X1 phase deviation')
-])
-HISTOGRAM_AXES = collections.OrderedDict([
-	('PHASE_SCORE_XY', 'PLOTS.xAxisLabels["qa"]'),
-	('PHASE_SCORE_X2X1', 'PLOTS.xAxisLabels["qa"]')
-])
+## Temporarily remove histograms from the hifa_timegaincal diagnostic phase vs. time subpage.
+## The metrics plotted by the histogram are not currently being calculated.
+## See PIPE-1499 for more information.
+##
+## HISTOGRAM_LABELS = collections.OrderedDict([
+## 	('PHASE_SCORE_XY', 'X-Y phase deviation'),
+## 	('PHASE_SCORE_X2X1', 'X2-X1 phase deviation')
+## ])
+## HISTOGRAM_AXES = collections.OrderedDict([
+## 	('PHASE_SCORE_XY', 'PLOTS.xAxisLabels["qa"]'),
+## 	('PHASE_SCORE_X2X1', 'PLOTS.xAxisLabels["qa"]')
+## ])
 
 def get_score_text(plot):
 	score_map = {'PHASE_SCORE_XY'   : 'X-Y',

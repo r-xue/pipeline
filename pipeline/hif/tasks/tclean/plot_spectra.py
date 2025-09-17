@@ -539,7 +539,7 @@ def imheadlist(vis, omitBeam=False):
             'object', 'observer', 'projection', 'reffreqtype',
             'restfreq', 'shape', 'telescope']
     if not omitBeam:
-        singleBeam = imhead(vis, mode='get', hdkey='beammajor')
+        singleBeam = imhead(vis=vis, mode='get', hdkey='beammajor')
         if (singleBeam == False):
             header = imhead(vis, mode='list')
             if (header is None):
@@ -740,8 +740,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     # x axes
     nchan = len(image_robust_rms_and_spectra['nonpbcor_image_cleanmask_spectrum'])
     channels = np.arange(1, nchan + 1)
-    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))
-    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))
+    freq_ch1 = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_ch1'], 'Hz'))[0]
+    freq_chN = qaTool.getvalue(qaTool.convert(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_freq_chN'], 'Hz'))[0]
     freqs = np.linspace(freq_ch1, freq_chN, nchan)
 
     # Flux density spectrum
@@ -758,7 +758,15 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
                  transform=desc.transAxes, ha='left', fontsize=fontsize+1, color='b')
 
     # Noise spectrum
-    noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
+    #
+    # For PL2025 there was no time to properly pass the Stokes information
+    # and most of the new IQUV statistics is in new variables. The following
+    # conditional is thus only a quick and dirty "solution" that should be
+    # replaced later.
+    if len(image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms_iquv'].shape) == 2:
+        noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms_iquv'][0] * 1000.
+    else:
+        noise = image_robust_rms_and_spectra['nonpbcor_image_non_cleanmask_robust_rms'] * 1000.
     plt.text(0.025, 0.93, 'Black spectrum is per-channel scaled MAD from imstat annulus and outside clean mask',
              transform=desc.transAxes, ha='left', fontsize=fontsize+1)
     # Turn off rightside y-axis ticks to make way for second y-axis
@@ -802,8 +810,8 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     fpattern = re.compile(r'([\d.]*)(~)([\d.]*)(\D*)')
     cont_freq_ranges = fpattern.findall(image_robust_rms_and_spectra['cont_freq_ranges'].replace(';', ''))
     for cont_freq_range in cont_freq_ranges:
-        fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))
-        fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))
+        fLowGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[0]), cont_freq_range[3]), 'GHz'))[0]
+        fHighGHz = qaTool.getvalue(qaTool.convert(qaTool.quantity(float(cont_freq_range[2]), cont_freq_range[3]), 'GHz'))[0]
         fcLevel = plt.ylim()[0] + yrange * 0.025
         plt.plot([fLowGHz, fHighGHz], [fcLevel] * 2, 'c-', lw=2)
 
@@ -813,7 +821,7 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
     plt.plot(freq, rescaledY, 'm-')
 
     if rec_info['type'] == 'DSB':
-        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz')))
+        LO1 = float(qaTool.getvalue(qaTool.convert(rec_info['LO1'], 'GHz'))[0])
         # Calculate image frequencies using TOPO frequencies from signal sideband.
         imageFreq0 = (2.0 * LO1 - freq[0]) * 1e9
         imageFreq1 = (2.0 * LO1 - freq[-1]) * 1e9
@@ -822,12 +830,17 @@ def plot_spectra(image_robust_rms_and_spectra, rec_info, plotfile, msname, spw, 
         results = RescaleTrans(imageTransmission, plt.ylim())
         rescaledImage = results[0]
         # You need to keep the signal sideband frequency range so that the overlay works!
+        # PIPE-2649: For some re-binning cases like specmode='repBW' it can
+        # happen that the opposite sideband result has a different vector length
+        # which would lead to plotting exceptions.
+        if len(freq) != len(rescaledImage):
+            rescaledImage = np.interp(list(range(len(freq))), list(range(len(rescaledImage))), rescaledImage)
         plt.plot(freq, rescaledImage, 'm--')
 
     plt.draw()
     fig = plt.gcf()
     fig.set_size_inches(8,6)
     fig.canvas.flush_events()
-    plt.savefig(plotfile)
+    plt.savefig(plotfile, bbox_inches='tight')
     plt.clf()
     plt.close()

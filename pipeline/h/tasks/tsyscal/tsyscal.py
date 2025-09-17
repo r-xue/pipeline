@@ -1,19 +1,22 @@
 import collections
-from operator import itemgetter, attrgetter
+from operator import attrgetter, itemgetter
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain import MeasurementSet
 from pipeline.h.heuristics import caltable as caltable_heuristic
+from pipeline.h.heuristics.tsysfieldmap import get_intent_to_tsysfield_map
 from pipeline.h.heuristics.tsysspwmap import tsysspwmap
-from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+
 from . import resultobjects
 
 __all__ = [
+    'SerialTsyscal',
     'Tsyscal',
     'TsyscalInputs',
 ]
@@ -39,8 +42,36 @@ class TsyscalInputs(vdp.StandardInputs):
         casa_args = self._get_task_args(ignore=('caltable',))
         return namer.calculate(output_dir=self.output_dir, stage=self.context.stage, **casa_args)
 
-    def __init__(self, context, output_dir=None, vis=None, caltable=None, chantol=None):
-        super(TsyscalInputs, self).__init__()
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
+    # docstring and type hints: supplements h_tsyscal
+    def __init__(self, context, output_dir=None, vis=None, caltable=None, chantol=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input visibility files.
+
+                Example: vis=['ngc5921.ms']
+
+            caltable: Name of output gain calibration tables.
+
+                Example: caltable='ngc5921.gcal'
+
+            chantol: The tolerance in channels for mapping atmospheric calibration windows (TDM) to science windows (FDM or TDM).
+
+                Example: chantol=5
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -53,6 +84,7 @@ class TsyscalInputs(vdp.StandardInputs):
 
         # solution parameters
         self.chantol = chantol
+        self.parallel = parallel
 
     # Convert to CASA gencal task arguments.
     def to_casa_args(self):
@@ -62,12 +94,10 @@ class TsyscalInputs(vdp.StandardInputs):
         }
 
 
-@task_registry.set_equivalent_casa_task('h_tsyscal')
-@task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
-class Tsyscal(basetask.StandardTaskTemplate):
+class SerialTsyscal(basetask.StandardTaskTemplate):
     Inputs = TsyscalInputs
 
-    def prepare(self):
+    def prepare(self) -> resultobjects.TsyscalResults:
         inputs = self.inputs
 
         # make a note of the current inputs state before we start fiddling
@@ -83,7 +113,7 @@ class Tsyscal(basetask.StandardTaskTemplate):
 
         LOG.todo('tsysspwmap heuristic re-reads measurement set!')
         LOG.todo('tsysspwmap heuristic won\'t handle missing file')
-        nospwmap, spwmap = tsysspwmap(ms=inputs.ms, tsystable=tsys_table, tsysChanTol=inputs.chantol)
+        nospwmap, spwmap = tsysspwmap(ms=inputs.ms, tsystable=tsys_table, channel_tolerance=inputs.chantol)
 
         calfrom_defaults = dict(caltype='tsys', spwmap=spwmap, interp='linear,linear')
 
@@ -92,158 +122,27 @@ class Tsyscal(basetask.StandardTaskTemplate):
 
         return resultobjects.TsyscalResults(pool=calapps, unmappedspws=nospwmap)
 
-    def analyse(self, result):
-        # With no best caltable to find, our task is simply to set the one
-        # caltable as the best result
-
+    def analyse(self, result: resultobjects.TsyscalResults) -> resultobjects.TsyscalResults:
         # double-check that the caltable was actually generated
-        on_disk = [ca for ca in result.pool if ca.exists() or self._executor._dry_run]
+        on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
 
-        missing = [ca for ca in result.pool if ca not in on_disk and not self._executor._dry_run]
+        missing = [ca for ca in result.pool if ca not in on_disk]
         result.error.clear()
         result.error.update(missing)
 
         return result
 
 
-# Holds an observing intent and the preferred/fallback gainfield args to be used for that intent
-GainfieldMapping = collections.namedtuple('GainfieldMapping', 'intent preferred fallback')
+@task_registry.set_equivalent_casa_task('h_tsyscal')
+@task_registry.set_casa_commands_comment('The Tsys calibration and spectral window map is computed.')
+class Tsyscal(sessionutils.ParallelTemplate):
+    Inputs = TsyscalInputs
+    Task = SerialTsyscal
 
 
-def get_solution_map(ms, is_single_dish):
-    """
-    Get gainfield solution map. Different solution maps are returned for
-    single dish and interferometric data.
-
-    :param ms: MS to analyse
-    :param is_single_dish: True if MS is single dish data
-    :return: list of GainfieldMappings
-    """
-    # define function to get Tsys fields for intent
-    def f(intent):
-        if ',' in intent:
-            head, tail = intent.split(',', 1)
-            # the 'if o' test filters out results for intents that do not have
-            # fields, e.g., PHASE for SD data
-            return ','.join(o for o in (f(head), f(tail)) if o)
-        return ','.join(str(s) for s in get_tsys_fields_for_intent(ms, intent))
-
-    # return different gainfield maps for single dish and interferometric
-    if is_single_dish:
-        return [
-            GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
-            GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
-            # non-empty magic string to differentiate between no field found and a null fallback
-            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback='___EMPTY_STRING___')
-        ]
-
-    else:
-        # Intent mapping extracted from CAS-12213 ticket:
-        #
-        # ObjectToBeCalibrated 	TsysSolutionToUse 	IfNoSolutionPresentThenUse
-        # BANDPASS cal 	        all BANDPASS cals 	fallback to 'nearest'
-        # FLUX cal 	            all FLUX cals 	    fallback to 'nearest'
-        # DIFF_GAIN_CAL         all DIFF_GAIN_CALs 	fallback to 'nearest'
-        # PHASE cal 	        all PHASE cals 	    all TARGETs
-        # TARGET 	            all TARGETs 	    all PHASE cals
-        # CHECK_SOURCE        	all TARGETs     	all PHASE cals
-        return [
-            GainfieldMapping(intent='BANDPASS', preferred=f('BANDPASS'), fallback='nearest'),
-            GainfieldMapping(intent='AMPLITUDE', preferred=f('AMPLITUDE'), fallback='nearest'),
-            # GainfieldMapping(intent='DIFF_GAIN_CAL', preferred='DIFF_GAIN_CAL', fallback='nearest'),
-            GainfieldMapping(intent='PHASE', preferred=f('PHASE'), fallback=f('TARGET')),
-            GainfieldMapping(intent='TARGET', preferred=f('TARGET'), fallback=f('PHASE')),
-            GainfieldMapping(intent='CHECK', preferred=f('TARGET'), fallback=f('PHASE')),
-        ]
-
-
-def get_gainfield_map(ms, is_single_dish):
-    """
-    Get the mapping of observing intent to gainfield parameter for a
-    measurement set.
-
-    The mapping follows the observing intent to gainfield intent defined in
-    CAS-12213.
-
-    :param ms: MS to analyse
-    :param is_single_dish: boolean for if SD data or not
-    :return: dict of {observing intent: gainfield}
-    """
-
-    soln_map = get_solution_map(ms, is_single_dish)
-    final_map = {s.intent: s.preferred if s.preferred else s.fallback for s in soln_map}
-
-    # Detect cases where there's no preferred or fallback gainfield mapping,
-    # e.g., if there are no Tsys scans on a target or phase calibrator.
-    undefined_intents = [k for k, v in final_map.items()
-                         if not v  # gainfield mapping is empty..
-                         and k in ms.intents]  # ..for a valid intent in the MS
-    if undefined_intents:
-        msg = 'Undefined Tsys gainfield mapping for {} intents: {}'.format(ms.basename, undefined_intents)
-        LOG.error(msg)
-        raise AssertionError(msg)
-
-    # convert magic string back to empty string
-    converted = {k: v.replace('___EMPTY_STRING___', '') for k, v in final_map.items()}
-
-    return converted
-
-
-def get_tsys_fields_for_intent(ms, intent):
-    """
-    Returns the identity of the Tsys field(s) for an intent.
-
-    :param ms:
-    :param intent:
-    :return:
-    """
-    # In addition to the science intent scan, a field must also have a Tsys
-    # scan observed for a Tsys solution to be considered present. The
-    # exception is science mosaics, which are handled as a special case.
-
-    # We need to know which science intent scans have Tsys scans; the ones
-    # that don't will be checked for science mosaics separately. This lets
-    # us handle single field, single pointing science targets alongside mosaic
-    # targets mixed together in the same EB. Theoretically, at least...
-    intent_fields = ms.get_fields(intent=intent)
-
-    # contains fields of this intent that also have a companion Tsys scan
-    intent_fields_with_tsys = [f for f in intent_fields if 'ATMOSPHERE' in f.intents]
-
-    # contains fields without a companion Tsys scan. These might be science
-    # mosaics.
-    intent_fields_without_tsys = [f for f in intent_fields if f not in intent_fields_with_tsys]
-
-    tsys_fields_for_mosaics = []
-    if intent == 'TARGET':
-        # In science mosaics, the fields comprising the TARGET pointings do
-        # not have Tsys scans observed on those fields. Instead, there is a
-        # Tsys-only field roughly at the centre of the mosaic that is
-        # referenced by the same parent source as the TARGET pointing fields.
-
-        # Double check that the fields without Tsys scans are indeed science
-        # mosaics with a separate Tsys field. Note that a mosaic consisting of
-        # a source with a single TARGET pointing and a single Tsys scan would
-        # also be classified as a mosaic by this logic.
-        mosaic_fields = [f for f in intent_fields_without_tsys if 'ATMOSPHERE' in f.source.intents]
-
-        # Collect the Tsys fields referenced by the parent source of the
-        # science mosaic fields missing Tsys scans.
-        tsys_fields_for_mosaics = [f
-                                   for pointing in mosaic_fields
-                                   for f in pointing.source.fields if 'ATMOSPHERE' in f.intents]
-
-    r = {field.id for field in intent_fields_with_tsys}
-    r.update({field.id for field in tsys_fields_for_mosaics})
-
-    # when field names are not unique, as is usually the case for science
-    # mosaics, then we must reference the numeric field ID instead
-    field_identifiers = utils.get_field_identifiers(ms)
-    return {field_identifiers[i] for i in r}
-
-
-def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_single_dish):
+def get_calapplications(ms: MeasurementSet, tsys_table: str, calfrom_defaults: dict, origin: callibrary.CalAppOrigin,
+                        spw_map: list, is_single_dish: bool) -> list[callibrary.CalApplication]:
     """
     Get a list of CalApplications that apply a Tsys caltable to a measurement
     set using the gainfield mapping defined in CAS-12213.
@@ -252,14 +151,19 @@ def get_calapplications(ms, tsys_table, calfrom_defaults, origin, spw_map, is_si
     constructor. Any other required CalFrom constructor arguments should be
     provided to this function via the calfrom_defaults parameter.
 
-    :param ms: MeasurementSet to apply calibrations to
-    :param tsys_table: name of Tsys table
-    :param calfrom_defaults: dict of CalFrom constructor arguments
-    :param origin: CalOrigin for the created CalApplications
-    :return: list of CalApplications
+    Args:
+        ms: MeasurementSet to apply calibrations to.
+        tsys_table: name of Tsys table.
+        calfrom_defaults: dict of CalFrom constructor arguments.
+        origin: CalOrigin for the created CalApplications.
+        spw_map: Tsys SpW map.
+        is_single_dish: boolean declaring if current MS is for Single-Dish.
+
+    Returns:
+        List of CalApplications.
     """
     # Get the map of intent:gainfield
-    soln_map = get_gainfield_map(ms, is_single_dish)
+    soln_map = get_intent_to_tsysfield_map(ms, is_single_dish)
 
     # Create the static dict of calfrom arguments. Only the 'gainfield' argument changes from calapp to calapp; the
     # other arguments remain unchanged.

@@ -12,7 +12,7 @@ In addition, a |Task| may be composed of one or more Heuristics. Within the
 pipeline, a heuristic is considered as a piece of code used to analyse data
 and/or help influence a pipeline decision, such as whether to stop processing,
 whether to run again with different parameters, etc. Where appropriate, this
-code is extracted from the main body of the pipeline code and exposed as a 
+code is extracted from the main body of the pipeline code and exposed as a
 |Heuristic|.
 
 *Something about Task parameters goes here*
@@ -21,7 +21,7 @@ If a user desires more than to simply override a Heuristic-derived value with
 a Task parameter, it is anticipated that they will edit the appropriate
 Heuristic in order to tweak the existing implementation or introduce a new
 algorithm into the pipeline. Concrete |Heuristic| implementations can be found
-in the :mod:`pipeline.heuristics` package. 
+in the :mod:`pipeline.heuristics` package.
 
 |Inputs|, in a general sense, are considered as the mandatory arguments for a
 pipeline |Task|. Tasks and Inputs are closely aligned, and just as Tasks
@@ -48,7 +48,7 @@ import abc
 class Heuristic(object, metaclass=abc.ABCMeta):
     """
     Heuristic is the superclass of all user-accessible heuristics code in the
-    pipeline. 
+    pipeline.
 
     A heuristic is a small, self-contained piece of code that calculate the
     optimal value(s) for a particular task or argument. Tasks may be composed
@@ -56,7 +56,7 @@ class Heuristic(object, metaclass=abc.ABCMeta):
     coupled, the Heuristic itself should not depend on the calling task,
     allowing it to be used in other tasks.
 
-    Examples of heuristics are functions to score caltables, allowing them to 
+    Examples of heuristics are functions to score caltables, allowing them to
     be ranked, or a function to calculate the optimal solution interval for a
     particular measurement set.
     """
@@ -91,7 +91,7 @@ class Heuristic(object, metaclass=abc.ABCMeta):
 class Inputs(object):
     """
     Inputs defines the interface used to create a constructor argument for a
-    :class:`Task`.    
+    :class:`Task`.
     """
     # __metaclass__ = abc.ABCMeta
 
@@ -110,7 +110,7 @@ class Results(object, metaclass=abc.ABCMeta):
     Results defines the interface used to hold the output of a |Task| plus
     some common parameters used by all weblog templates. This class is
     expected to be the base class of a more specialised task-specific class.
-    Refer to the sub-class for details on the structure expected by the 
+    Refer to the sub-class for details on the structure expected by the
     task-specific weblog template.
 
     .. py:attribute:: task_class
@@ -140,14 +140,16 @@ class Results(object, metaclass=abc.ABCMeta):
 
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def uuid(self):
         """
         The unique identifier for this results object.
         """
         raise NotImplementedError
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def metadata(self):
         """
         Object holding metadata describing this result and the generating task.
@@ -183,7 +185,8 @@ class ResultRenderer(object, metaclass=abc.ABCMeta):
     b ased on sort order.
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def task(self):
         """
         The result class this renderer should handle.
@@ -210,7 +213,8 @@ class Task(object, metaclass=abc.ABCMeta):
     pipeline.infrastructure.JobRequest
     """
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def Inputs(self):
         """A reference to the accompanying :class:`Inputs` partner class that
         comprises the mandatory arguments for this Task.
@@ -219,16 +223,13 @@ class Task(object, metaclass=abc.ABCMeta):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def execute(self, dry_run=False, **parameters):
+    def execute(self, **parameters):
         """
         Run this task and return the :class:`Results`.
 
         The contract of the method execute is that it may take any action
         whatsoever, providing that it returns an instance implementing Results
         that summarises those actions.
-
-        :param boolean dry_run: when set to True, runs the Task and logs any
-            operations that would be performed without executing them.
 
         """
         raise NotImplementedError

@@ -2,6 +2,7 @@
 rsc_path = ""
 import os
 import pipeline.infrastructure.renderer.htmlrenderer as hr
+import pipeline.infrastructure.utils as utils
 %>
 <%inherit file="t2-4m_details-base.mako"/>
 
@@ -88,7 +89,7 @@ def percent_flagged(flagsummary):
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * flagged / total)
@@ -98,7 +99,7 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
     flagged2 = flagsummary2.flagged
     total = flagsummary1.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * (flagged2-flagged1) / total)
@@ -116,17 +117,17 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
     <ul>
         % for key, value in dataselect[ms].items():
             % if value!='':
-                <li> ${key}: ${repr(value)}
+                <li> ${key}: ${repr(utils.find_ranges(value))}
             %endif
         % endfor
     </ul>
 %endif
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped table-hover">
 	<caption></caption>
 	<thead>
 		<tr>
-			<th rowspan="2">Antenna Selection</th>
+			<th rowspan="2">Antenna</th>
 			<!-- flags before task is always first agent -->
 			<th rowspan="2">flagged before</th>
 			<th rowspan="2">flagged after</th>
@@ -145,13 +146,13 @@ def percent_flagged_diff(flagsummary1, flagsummary2):
 	</tbody>
 </table>
 
-<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped ">
+<table style="float: left; margin:0 10px; width: auto; text-align:center" class="table table-bordered table-striped table-hover">
 	<caption>Summary of flagged data. Each cell states the amount of data
 		flagged as a fraction of the specified data selection.
 	</caption>
 	<thead>
 		<tr>
-			<th rowspan="2">Spw Selection</th>
+			<th rowspan="2">Spw</th>
 			<!-- flags before task is always first agent -->
 			<th rowspan="2">flagged before</th>
 			<th rowspan="2">flagged after</th>

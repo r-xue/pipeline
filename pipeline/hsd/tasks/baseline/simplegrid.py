@@ -1,7 +1,9 @@
+"""Task to perform simple two-dimensional gridding with "BOX" kernel."""
 import collections
 import functools
 import os
 from math import cos
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type, Union
 
 import numpy
 
@@ -14,6 +16,14 @@ from pipeline.infrastructure import casa_tools
 from .. import common
 from ..common import utils
 
+from .typing import LineWindow
+
+if TYPE_CHECKING:
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.domain.singledish import MSReductionGroupDesc, MSReductionGroupMember
+    from pipeline.infrastructure.launcher import Context
+
+
 LOG = infrastructure.get_logger(__name__)
 
 NoData = common.NoData
@@ -21,38 +31,66 @@ DO_TEST = False
 
 
 class SDSimpleGriddingInputs(vdp.StandardInputs):
+    """Inputs class for simple gridding task."""
+
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR, DataType.REGCAL_CONTLINE_ALL, DataType.RAW]
 
     nplane = vdp.VisDependentProperty(default=3)
 
     @property
-    def group_desc(self):
+    def group_desc(self) -> 'MSReductionGroupDesc':
+        """Return reduction group instance of the current group."""
         return self.context.observing_run.ms_reduction_group[self.group_id]
 
     @property
-    def member_ms(self):
+    def member_ms(self) -> List['MeasurementSet']:
         """Return a list of unitque MS domain objects of group members."""
         duplicated_ms_names = [ self.group_desc[i].ms.name for i in self.member_list ]
         return [ms for ms in self.context.observing_run.measurement_sets \
                 if ms.name in duplicated_ms_names]
 
     @property
-    def reference_member(self):
+    def reference_member(self) -> 'MSReductionGroupMember':
+        """Return the first reduction group member instance in the current group."""
         return self.group_desc[self.member_list[0]]
 
     @property
-    def windowmode(self):
+    def windowmode(self) -> str:
+        """Return windowmode value. Defaults to 'replace'."""
         return getattr(self, '_windowmode', 'replace')
 
     @windowmode.setter
-    def windowmode(self, value):
+    def windowmode(self, value: str) -> None:
+        """Set windowmode value.
+
+        Args:
+            value: Either 'replace' or 'merge'
+
+        Raises:
+            ValueError: Invalid windowmode value
+        """
         if value not in ['replace', 'merge']:
             raise ValueError("linewindowmode must be either 'replace' or 'merge'.")
         self._windowmode = value
 
-    def __init__(self, context, group_id, member_list, window,
-                 windowmode, nplane=None):
+    def __init__(self,
+                 context: 'Context',
+                 group_id: int,
+                 member_list: List[int],
+                 window: LineWindow,
+                 windowmode: str,
+                 nplane: Optional[int] = None) -> None:
+        """Construct SDSimpleGriddingInputs instance.
+
+        Args:
+            context: Pipeline context
+            group_id: Reduction group ID
+            member_list: List of reduction group member IDs
+            window: Manual line window
+            windowmode: Line window mode. Either 'replace' or 'merge'
+            nplane: Number of gridding planes. Defaults to 3 if None is given.
+        """
         super(SDSimpleGriddingInputs, self).__init__()
 
         self.context = context
@@ -64,31 +102,70 @@ class SDSimpleGriddingInputs(vdp.StandardInputs):
 
 
 class SDSimpleGriddingResults(common.SingleDishResults):
-    def __init__(self, task=None, success=None, outcome=None):
+    """Results class to hold the result of simple gridding task."""
+
+    def __init__(self,
+                 task: Optional[Type[basetask.StandardTaskTemplate]] = None,
+                 success: Optional[bool] = None,
+                 outcome: Any = None) -> None:
+        """Construct SDSimpleGriddingResults instance.
+
+        Args:
+            task: Task class that produced the result.
+            success: Whether task execution is successful or not.
+            outcome: Outcome of the task execution.
+        """
         super(SDSimpleGriddingResults, self).__init__(task, success, outcome)
 
-    def merge_with_context(self, context):
+    def merge_with_context(self, context: 'Context') -> None:
+        """Merge result instance into context.
+
+        No specific merge operation is done.
+
+        Args:
+            context: Pipeline context.
+        """
         super(SDSimpleGriddingResults, self).merge_with_context(context)
 
-    def _outcome_name(self):
+    def _outcome_name(self) -> str:
+        """Return string representing the outcome.
+
+        Returns:
+            Empty string
+        """
         return ''
 
 
 class SDSimpleGridding(basetask.StandardTaskTemplate):
+    """Task to perform simple gridding.
+
+    SDSimpleGridding task performs convolutional gridding on two-dimensional
+    celestial coordinate with "BOX" gridding kernel. Approximate declination
+    correction is applied.
+    """
+
     Inputs = SDSimpleGriddingInputs
 
-    def prepare(self, datatable_dict=None, index_list=None):
+    def prepare(self,
+                datatable_dict: dict,
+                index_list: List[int]) -> SDSimpleGriddingResults:
+        """Perform simple gridding.
 
-        assert datatable_dict is not None
-        assert index_list is not None
+        Args:
+            datatable_dict: Dictionary holding datatable instance per MS.
+            index_list: List of consecutive datatable row numbers.
 
+        Returns:
+            SDSimpleGriddingResults instance
+        """
         window = self.inputs.window
         windowmode = self.inputs.windowmode
         LOG.debug('{}: window={}, windowmode={}'.format(self.__class__.__name__, window, windowmode))
         grid_table = self.make_grid_table(datatable_dict, index_list)
         # LOG.debug('work_dir=%s'%(work_dir))
-        if len(window) != 0 and windowmode == 'replace':
+        if windowmode == 'replace' and (window is None or len(window) > 0):
             # gridding should not be necessary
+            LOG.info(f'Skip SimpleGridding: windowmode="{windowmode}", window="{window}"')
             retval = [None, None]
         else:
             import time
@@ -101,17 +178,60 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                    'meta_data': retval[1],
                    'grid_table': grid_table}
         result = SDSimpleGriddingResults(task=self.__class__, success=True, outcome=outcome)
-        result.task = self.__class__
 
         return result
 
-    def analyse(self, result):
+    def analyse(self, result: SDSimpleGriddingResults) -> SDSimpleGriddingResults:
+        """Analyse results instance generated by prepare.
+
+        Do nothing.
+
+        Returns:
+            SDSimpleGriddingResults instance
+        """
         return result
 
-    def make_grid_table(self, datatable_dict, index_list):
+    def make_grid_table(
+        self, datatable_dict: dict, index_list: List[int]
+    ) -> List[List[Union[int, float, numpy.ndarray]]]:
+        """Create grid table.
+
+        The method configures two-dimensional grid onto the celestial
+        coordinate. Grid table holds spatial coordinate of each grid position
+        as well as the meta data for gridding including list of data to be
+        accumulated onto each grid position.
+
+        Args:
+            datatable_dict: Dictionary holding datatable instance per MS.
+            index_list: List of consecutive datatable row numbers.
+
+        Returns:
+            Grid table. Format of the grid table is as follows.
+
+            [
+             [IF,POL,0,0,RAcent,DECcent,
+              [[row0,r0,RMS0,index0,ant0],
+               [row1,r1,RMS1,index1,ant1],
+               ...,
+               [rowN,rN,RMSN,indexN,antn]]],
+             [IF,POL,0,1,RAcent,DECcent,
+              [[row0,r0,RMS0,index0,ant0],
+               [row1,r1,RMS1,index1,ant1],
+               ...,
+               [rowN,rN,RMSN,indexN,antn]]],
+                        ......
+             [IF,POL,M,N,RAcent,DECcent,
+              [[row0,r0,RMS0,index0,ant0],
+               [row1,r1,RMS1,index1,ant1],
+               ...,
+               [rowN,rN,RMSN,indexN,antn]]]
+            ]
+
+            where row0,row1,...,rowN should be combined to one for better S/N spectra
+            while 'r' is a distance from grid position.
+
         """
-        Calculate Parameters for grid by RA/DEC positions
-        """
+        # Calculate Parameters for grid by RA/DEC positions
         reference_data = self.inputs.reference_member.ms
         reference_antenna = self.inputs.reference_member.antenna_id
         real_spw = self.inputs.reference_member.spw_id
@@ -154,11 +274,11 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         # Calculate Grid index for each position
         igrid_ra_corr = 1.0 / grid_ra_corr
         igrid_dec = 1.0 / grid_dec
-        index_ra = numpy.array((ras - min_ra) * igrid_ra_corr, dtype=numpy.int)
-        index_dec = numpy.array((decs - min_dec) * igrid_dec, dtype=numpy.int)
+        index_ra = numpy.array((ras - min_ra) * igrid_ra_corr, dtype=int)
+        index_dec = numpy.array((decs - min_dec) * igrid_dec, dtype=int)
 
         # Counter for distributing spectrum into several planes (nplane)
-        counter = numpy.zeros((ngrid_ra, ngrid_dec), dtype=numpy.int)
+        counter = numpy.zeros((ngrid_ra, ngrid_dec), dtype=int)
 
         # Make lists to store indexes for combine spectrum
         nplane = self.inputs.nplane
@@ -221,25 +341,32 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         LOG.info('ngrid_ra = %s  ngrid_dec = %s', ngrid_ra, ngrid_dec)
         return grid_table
 
-    def grid(self, grid_table, datatable_dict):
-        """
-        The process does re-map and combine spectrum for each position
-        grid_table format:
-          [[IF,POL,0,0,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]
-           [IF,POL,0,1,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]
-                        ......
-           [IF,POL,M,N,RAcent,DECcent,[[row0,r0,RMS0,index0,ant0],[row1,r1,RMS1,index1,ant1],..,[rowN,rN,RMSN,indexN,antn]]]]
-         where row0,row1,...,rowN should be combined to one for better S/N spectra
-               'r' is a distance from grid position
-          Number of spectra output is len(grid_table)
-        OutputTable format:
-           [[IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]
-            [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]
-                    ......
-            [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]]
+    def grid(self,
+             grid_table: List[List[Union[int, float, numpy.ndarray]]],
+             datatable_dict: dict) -> Tuple[numpy.ndarray, List[List[Union[int, float]]]]:
+        """Perform gridding operation according to grid_table.
 
-        Note that IF above is the virtual spw id that should be translated into real spw id
-        when applying to measurementset domain object.
+        The process does re-map and combine spectrum for each position.
+        Number of spectra output is len(grid_table)
+
+        Args:
+            grid_table: Grid table generated by make_grid_table
+            datatable_dict: Dictionary holding datatable instance per MS.
+
+        Returns:
+            Tuple of spectral data after gridding and the table that stores
+            number of accumulated/flagged spectra as well as resulting RMS
+            per grid position. The table structure is as follows.
+
+            [
+             [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]
+             [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]
+                     ......
+             [IF, POL, X, Y, RA, DEC, # of Combined Sp., # of flagged Sp., RMS]
+            ]
+
+            Note that IF above is the virtual spw id that should be translated
+            into real spw id when applying to measurementset domain object.
         """
         nrow = len(grid_table)
         LOG.info('SimpleGrid: Processing %s spectra...', nrow)
@@ -298,10 +425,10 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         LOG.debug('sorted bind_to_grid=%s', bind_to_grid)
 
         # create storage for output
-        StorageOut = numpy.zeros((nrow, nchan), dtype=numpy.complex)
+        StorageOut = numpy.zeros((nrow, nchan), dtype=complex)
         StorageWeight = numpy.zeros((nrow, nchan), dtype=numpy.float32)
-        StorageNumSp = numpy.zeros((nrow), dtype=numpy.int)
-        StorageNumFlag = numpy.zeros((nrow), dtype=numpy.int)
+        StorageNumSp = numpy.zeros((nrow), dtype=int)
+        StorageNumFlag = numpy.zeros((nrow), dtype=int)
         OutputTable = []
 
         # Return empty result if all the spectra are flagged out
@@ -337,8 +464,9 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
                         if SFLAG == 1:
                             if Sp is None:
                                 Sp = tb.getcell(ms_colname, mapped_row)
-                            if numpy.any(numpy.isnan(Sp[Pol])):
-                                LOG.debug('vis "%s" row %s pol %s contains NaN', os.path.basename(vis), tROW, Pol)
+                            if not numpy.all(numpy.isfinite(Sp[Pol])):
+                                LOG.debug('vis "%s" row %s pol %s contains NaN or Inf', os.path.basename(vis), tROW, Pol)
+                                Sp[Pol, :] = numpy.where(numpy.isfinite(Sp[Pol]), Sp[Pol], 0)
                             if Mask is None:
                                 Mask = numpy.asarray(numpy.logical_not(tb.getcell('FLAG', mapped_row)),
                                                      dtype=int)#vquery(tb.getcell('FLAG', mapped_row) == False)
@@ -356,7 +484,7 @@ class SDSimpleGridding(basetask.StandardTaskTemplate):
         for ROW in range(nrow):
             LOG.debug('Calculate weighed average for row %s', ROW)
             [IF, POL, X, Y, RAcent, DECcent, RowDelta] = grid_table[ROW]
-            if StorageNumSp[ROW] == 0 or all(StorageWeight[ROW] == 0.0):
+            if StorageNumSp[ROW] == 0 or numpy.all(StorageWeight[ROW] == 0.0):
                 StorageOut[ROW,:] = NoData
                 RMS = 0.0
             else:

@@ -1,10 +1,9 @@
-import collections
 import functools
+from typing import Dict
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure.vdp as vdp
 from pipeline.h.tasks.common.displays import applycal as applycal_displays
 from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
@@ -12,8 +11,11 @@ from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
 from pipeline.hifa.tasks import bandpass
+import pipeline.infrastructure.sessionutils as sessionutils
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagcmds, \
+    mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications
 from .resultobjects import BandpassflagResults
 from ..bandpass.almaphcorbandpass import ALMAPhcorBandpassInputs
 
@@ -75,18 +77,247 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
     # tooManyIntegrationsFraction
     tmint = vdp.VisDependentProperty(default=0.085)
 
+    # Solutions below this SNR are rejected
+    minsnr = vdp.VisDependentProperty(default=2.0)
+
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
+    # docstring and type hints: supplements hifa_bandpassflag
     def __init__(self, context, output_dir=None, vis=None, caltable=None, intent=None, field=None, spw=None,
-                 antenna=None, hm_phaseup=None, phaseupsolint=None, phaseupbw=None, phaseupsnr=None, phaseupnsols=None,
-                 hm_bandpass=None, solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None,
-                 combine=None, refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
+                 antenna=None,  mode='channel', hm_phaseup=None, phaseupbw=None, phaseupmaxsolint=None,
+                 phaseupsolint=None, phaseupsnr=None, phaseupnsols=None, hm_phaseup_combine=None, hm_bandpass=None,
+                 solint=None, maxchannels=None, evenbpints=None, bpsnr=None, minbpsnr=None, bpnsols=None, combine=None,
+                 refant=None, minblperant=None, minsnr=None, solnorm=None, antnegsig=None, antpossig=None,
                  tmantint=None, tmint=None, tmbl=None, antblnegsig=None, antblpossig=None, relaxed_factor=None,
-                 niter=None, mode='channel'):
-        super(BandpassflagInputs, self).__init__(
+                 niter=None, hm_auto_fillgaps=None, parallel=None, **parameters):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: List of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the pipeline context.
+
+                Example: vis=['ngc5921.ms']
+
+            caltable: List of names for the output calibration tables. Defaults
+                to the standard pipeline naming convention.
+
+                Example: caltable=['ngc5921.gcal']
+
+            intent: A string containing a comma delimited list of intents against
+                which the selected fields are matched. Set to intent='' by default, which
+                means the task will select all data with the BANDPASS intent.
+
+                Example: intent='`*PHASE*`'
+
+            field: The list of field names or field ids for which bandpasses are
+                computed. Set to field='' by default, which means the task
+                will select all fields.
+
+                Example: field='3C279', field='3C279,M82'
+
+            spw: The list of spectral windows and channels for which bandpasses are
+                computed. Set to spw='' by default, which means the task will select all
+                science spectral windows.
+
+                Example: spw='11,13,15,17'
+
+            antenna: Set of data selection antenna IDs
+
+            mode: Type of bandpass solution. Currently only supports the
+                default value of 'channel' (corresponding to bandtype='B' in
+                CASA bandpass) to perform a channel-by-channel solution for each
+                spw.
+
+            hm_phaseup: The pre-bandpass solution phaseup gain heuristics. The
+                options are:
+
+                - 'snr': compute solution required to achieve the specified SNR
+                - 'manual': use manual solution parameters
+                - '': skip phaseup
+
+                Example: hm_phaseup='manual'
+
+            phaseupbw: Bandwidth to be used for phaseup. Used when
+                ``hm_phaseup`` = 'manual'.
+
+                Example:
+
+                - phaseupbw='' to use entire bandpass
+                - phaseupbw='500MHz' to use central 500MHz
+
+            phaseupmaxsolint: Maximum phase correction solution interval (in
+                seconds) allowed in very low-SNR cases. Used only when
+                ``hm_phaseup`` = 'snr'.
+
+                Example: phaseupmaxsolint=60.0
+
+            phaseupsolint: The phase correction solution interval in CASA syntax.
+                Used when ``hm_phaseup`` = 'manual' or as a default if the
+                ``hm_phaseup`` = 'snr' heuristic computation fails.
+
+                Example: phaseupsolint='300s'
+
+            phaseupsnr: The required SNR for the phaseup solution. Used to calculate
+                the phaseup time solint, and only if ``hm_phaseup`` = 'snr'.
+
+                Example: phaseupsnr=10.0
+
+            phaseupnsols: The minimum number of phaseup gain solutions. Used only if
+                hm_phaseup='snr'.
+
+                Example: phaseupnsols=4
+
+            hm_phaseup_combine: The spw combination heuristic for the phase-up
+                solution. Accepts one of following 3 options:
+
+                - 'snr', default: heuristics will use combine='spw' in phase-up
+                  gaincal when SpWs have SNR < phaseupsnr (default = 20).
+                - 'always': heuristic will force combine='spw' in the phase-up
+                  gaincal.
+                - 'never': heuristic will not use spw combination; this was the
+                  default logic for Pipeline release 2024 and prior.
+
+                Example: hm_phaseup_combine='always'
+
+            hm_bandpass: The bandpass solution heuristics. The options are:
+                'snr': compute the solution required to achieve the specified SNR
+                'smoothed': simple 'smoothing' i.e. spectral solint>1chan
+                'fixed': use the user defined parameters for all spws
+
+            solint: Time and channel solution intervals in CASA syntax.
+                Default is solint='inf', which is used when
+                ``hm_bandpass`` = 'fixed'.
+                If ``hm_bandpass`` = 'snr', then the task will attempt to
+                compute and use an optimal SNR-based solint (and warn if this
+                solint is not good enough).
+                If ``hm_bandpass`` = 'smoothed', the task will override the
+                spectral solint with bandwidth/maxchannels.
+
+            maxchannels: The bandpass solution 'smoothing' factor in channels, i.e.
+                spectral solint will be set to bandwidth/maxchannels
+                Set to 0 for no smoothing.
+                Used if ``hm_bandpass`` = 'smoothed'.
+
+                Example: maxchannels=240
+
+            evenbpints: Force the per spw frequency solint to be evenly divisible
+                into the spw bandpass if ``hm_bandpass`` = 'snr'.
+
+                Example: evenbpints=False
+
+            bpsnr: The required SNR for the bandpass solution. Used only if
+                ``hm_bandpass`` = 'snr'.
+
+                Example: bpsnr=30.0
+
+            minbpsnr: The minimum required SNR for the bandpass solution
+                when strong atmospheric lines exist in Tsys spectra.
+                Used only if ``hm_bandpass`` = 'snr'.
+
+                Example: minbpsnr=10.0
+
+            bpnsols: The minimum number of bandpass solutions. Used only if
+                ``hm_bandpass`` = 'snr'.
+
+                Example: bpnsols=8
+
+            combine: Data axes to combine for solving. Axes are '', 'scan', 'spw',
+                'field' or any comma-separated combination.
+
+                Example: combine='scan,field'
+
+            refant: List of reference antenna names. Defaults to the value(s) stored in the
+                pipeline context. If undefined in the pipeline context defaults to
+                the CASA reference antenna naming scheme.
+
+                Example: refant='DV06,DV07'
+
+            minblperant: Minimum number of baselines required per antenna for each solve.
+                Antennas with fewer baselines are excluded from solutions.
+
+                Example: minblperant=4
+
+            minsnr: Solutions below this SNR are rejected.
+
+                Example: minsnr=3.0
+
+            solnorm: Normalise the bandpass solution; defaults to True.
+
+            antnegsig: Lower sigma threshold for identifying outliers as a result of
+                bad antennas within individual timestamps.
+
+                Example: antnegsig=4.0
+
+            antpossig: Upper sigma threshold for identifying outliers as a result of
+                bad antennas within individual timestamps.
+
+                Example: antpossig=4.6
+
+            tmantint: Threshold for maximum fraction of timestamps that are allowed
+                to contain outliers.
+
+                Example: tmantint=0.063
+
+            tmint: Initial threshold for maximum fraction of 'outlier timestamps'
+                over 'total timestamps' that a baseline may be a part of.
+
+                Example: tmint=0.085
+
+            tmbl: Initial threshold for maximum fraction of 'bad baselines' over
+                'all baselines' that an antenna may be a part of.
+
+                Example: tmbl=0.175
+
+            antblnegsig: Lower sigma threshold for identifying outliers as a result of
+                'bad baselines' and/or 'bad antennas' within baselines (across all
+                timestamps).
+
+                Example: antblnegsig=3.4
+
+            antblpossig: Upper sigma threshold for identifying outliers as a result of
+                'bad baselines' and/or 'bad antennas' within baselines (across all
+                timestamps).
+
+                Example: antblpossig=3.2
+
+            relaxed_factor: Relaxed value to set the threshold scaling factor to under
+                certain conditions (see documentation of the underlying correctedampflag task).
+
+                Example: relaxed_factor=2.0
+
+            niter: Maximum number of times to iterate on evaluation of flagging
+                heuristics. If an iteration results in no new flags, then subsequent
+                iterations are skipped.
+
+                Example: niter=2
+
+            hm_auto_fillgaps: If True, then the ``hm_bandpass`` = 'snr' or 'smoothed'
+                modes, that solve bandpass per SpW, are performed with
+                CASA bandpass task parameter 'fillgaps' set to a quarter
+                of the respective SpW bandwidth (in channels).
+                If False, then these bandpass solves will use
+                fillgaps=0.
+                The ``hm_bandpass`` = 'fixed' mode is unaffected by
+                ``hm_auto_fillgaps`` and always uses fillgaps=0.
+            
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+            
+        """
+        super().__init__(
             context, output_dir=output_dir, vis=vis, caltable=caltable, intent=intent, field=field, spw=spw,
-            antenna=antenna, hm_phaseup=hm_phaseup, phaseupsolint=phaseupsolint, phaseupbw=phaseupbw,
-            phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols, hm_bandpass=hm_bandpass, solint=solint,
-            maxchannels=maxchannels, evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols,
-            combine=combine, refant=refant, minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode
+            antenna=antenna, hm_phaseup=hm_phaseup, phaseupbw=phaseupbw, phaseupmaxsolint=phaseupmaxsolint,
+            phaseupsolint=phaseupsolint, phaseupsnr=phaseupsnr, phaseupnsols=phaseupnsols,
+            hm_phaseup_combine=hm_phaseup_combine, hm_bandpass=hm_bandpass, solint=solint, maxchannels=maxchannels,
+            evenbpints=evenbpints, bpsnr=bpsnr, minbpsnr=minbpsnr, bpnsols=bpnsols, combine=combine, refant=refant,
+            minblperant=minblperant, minsnr=minsnr, solnorm=solnorm, mode=mode, hm_auto_fillgaps=hm_auto_fillgaps,
+            **parameters
         )
 
         # flagging parameters
@@ -99,24 +330,17 @@ class BandpassflagInputs(ALMAPhcorBandpassInputs):
         self.antblpossig = antblpossig
         self.relaxed_factor = relaxed_factor
         self.niter = niter
+        self.parallel = parallel
 
     def as_dict(self):
         # temporary workaround to hide uvrange from Input Parameters accordion
-        d = super(BandpassflagInputs, self).as_dict()
+        d = super().as_dict()
         if 'uvrange' in d:
             del d['uvrange']
         return d
 
 
-@task_registry.set_equivalent_casa_task('hifa_bandpassflag')
-@task_registry.set_casa_commands_comment(
-    'This task performs a preliminary bandpass solution and temporarily applies it, then calls hif_correctedampflag to'
-    ' evaluate the flagging heuristics, looking for outlier visibility points by statistically examining the scalar'
-    ' difference of the corrected amplitudes minus model amplitudes, and then flagging those outliers. The philosophy'
-    ' is that only outlier data points that have remained outliers after calibration will be flagged. Note that the'
-    ' phase of the data is not assessed.'
-)
-class Bandpassflag(basetask.StandardTaskTemplate):
+class SerialBandpassflag(basetask.StandardTaskTemplate):
     Inputs = BandpassflagInputs
 
     def prepare(self):
@@ -137,7 +361,7 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         # Run a preliminary standard phaseup and bandpass calibration:
         # Create inputs for bandpass task.
         LOG.info('Creating preliminary phased-up bandpass calibration.')
-        bpinputs = bandpass.ALMAPhcorBandpass.Inputs(
+        bpinputs = bandpass.SerialALMAPhcorBandpass.Inputs(
             context=inputs.context, vis=inputs.vis, caltable=inputs.caltable,
             field=inputs.field, intent=inputs.intent, spw=inputs.spw,
             antenna=inputs.antenna, hm_phaseup=inputs.hm_phaseup,
@@ -148,9 +372,9 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             evenbpints=inputs.evenbpints, bpsnr=inputs.bpsnr, minbpsnr=inputs.minbpsnr,
             bpnsols=inputs.bpnsols, combine=inputs.combine,
             refant=inputs.refant, solnorm=inputs.solnorm,
-            minblperant=inputs.minblperant, minsnr=inputs.minsnr)
+            minblperant=inputs.minblperant, minsnr=inputs.minsnr, hm_auto_fillgaps=inputs.hm_auto_fillgaps)
         # Create and execute bandpass task.
-        bptask = bandpass.ALMAPhcorBandpass(bpinputs)
+        bptask = bandpass.SerialALMAPhcorBandpass(bpinputs)
         bpresult = self._executor.execute(bptask)
 
         # Add the phase-up table produced by the bandpass task to the
@@ -187,9 +411,9 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             LOG.info('Applying pre-existing caltables and preliminary phase-up, bandpass, and amplitude caltables.')
             acinputs = applycal.IFApplycalInputs(context=inputs.context, vis=inputs.vis, field=inputs.field,
                                                  intent=inputs.intent, flagsum=False, flagbackup=False)
-            actask = applycal.IFApplycal(acinputs)
+            actask = applycal.SerialIFApplycal(acinputs)
             acresult = self._executor.execute(actask)
-            # copy across the vis:callibrary dict to our result. This dict 
+            # copy across the vis:callibrary dict to our result. This dict
             # will be inspected by the renderer to know if/which callibrary
             # files should be copied across to the weblog stage directory
             result.callib_map.update(acresult.callib_map)
@@ -238,12 +462,8 @@ class Bandpassflag(basetask.StandardTaskTemplate):
             fstask.flags_to_set(cafflags)
             _ = self._executor.execute(fstask)
 
-            # Check for need to update reference antennas, and apply to local
-            # copy of the MS.
+            # Mark antennas that need to be demoted or removed from the reference antenna list.
             result = self._identify_refants_to_update(result)
-            ms = inputs.context.observing_run.get_ms(name=inputs.vis)
-            ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
-                                         ants_to_remove=result.refants_to_remove)
 
         return result
 
@@ -277,254 +497,26 @@ class Bandpassflag(basetask.StandardTaskTemplate):
         :param result: BandpassflagResults object
         :return: BandpassflagResults object
         """
-        # Identify bad antennas to demote/remove from refant list.
-        ants_to_demote, ants_to_remove = self._identify_bad_refants(result)
-
-        # Update result to mark antennas for demotion/removal as refant.
-        result = self._mark_antennas_for_refant_update(result, ants_to_demote, ants_to_remove)
-
-        return result
-
-    def _identify_bad_refants(self, result):
         # Get the MS object.
         ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
 
-        # Get translation dictionary for antenna id to name.
-        antenna_id_to_name = self._get_ant_id_to_name_dict(ms)
+        # Set of all spws affected by this flagging task.
+        all_spwids = set(map(int, result.cafresult.inputs['spw'].split(',')))
 
         # Identify antennas to demote as refant.
-        ants_to_demote, ants_fully_flagged = self._identify_ants_to_demote(result, ms, antenna_id_to_name)
+        fully_flagged_antennas = identify_fully_flagged_antennas_from_flagcmds(ms, result.cafresult.flagcmds())
 
-        # Identify antennas to remove as refant.
-        ants_to_remove = self._identify_ants_to_remove(result, ms, ants_fully_flagged, antenna_id_to_name)
+        # Update result to mark antennas for demotion/removal as refant.
+        result = mark_antennas_for_refant_update(ms, result, fully_flagged_antennas, all_spwids)
 
-        return ants_to_demote, ants_to_remove
-
-    @staticmethod
-    def _identify_ants_to_demote(result, ms, antenna_id_to_name):
-        # Retrieve flags and which intents and spws were evaluated by
-        # correctedampflag.
-        flags = result.cafresult.flagcmds()
-
-        # Initialize flagging state
-        ants_fully_flagged = collections.defaultdict(set)
-
-        # Create a summary of the flagging state by going through each flagging
-        # command.
-        for flag in flags:
-            # Only consider flagging commands with a specified antenna and
-            # without a specified timestamp.
-            if flag.antenna is not None and flag.time is None:
-                # Skip flagging commands for baselines.
-                if '&' in str(flag.antenna):
-                    continue
-                ants_fully_flagged[(flag.intent, flag.field, flag.spw)].update([flag.antenna])
-
-        # For each combination of intent, field, and spw that were found to
-        # have antennas flagged, raise a warning.
-        sorted_keys = sorted(
-            sorted(ants_fully_flagged, key=lambda keys: keys[2]),
-            key=lambda keys: keys[0])
-        for (intent, field, spwid) in sorted_keys:
-            ants_flagged = ants_fully_flagged[(intent, field, spwid)]
-
-            # Convert antenna IDs to names and create a string.
-            ants_str = ", ".join(map(str, [antenna_id_to_name[iant] for iant in ants_flagged]))
-
-            # Convert CASA intent from flagging command to pipeline intent.
-            intent_str = utils.to_pipeline_intent(ms, intent)
-
-            # Log a warning.
-            LOG.warning(
-                "{msname} - for intent {intent} (field "
-                "{fieldname}) and spw {spw}, the following antennas "
-                "are fully flagged: {ants}".format(
-                    msname=ms.basename, intent=intent_str,
-                    fieldname=field, spw=spwid,
-                    ants=ants_str))
-
-        # Store the set of antennas that were fully flagged in at least
-        # one spw, for any of the fields for any of the intents.
-        ants_to_demote_as_refant = {
-            antenna_id_to_name[iant]
-            for iants in ants_fully_flagged.values()
-            for iant in iants}
-
-        return ants_to_demote_as_refant, ants_fully_flagged
-
-    @staticmethod
-    def _identify_ants_to_remove(result, ms, ants_fully_flagged, antenna_id_to_name):
-        # Get the intents and the set of unique spw ids from the inputs.
-        intents = result.cafresult.inputs['intent'].split(',')
-        spwids = set(map(int, result.cafresult.inputs['spw'].split(',')))
-
-        # Initialize set of antennas that are fully flagged for all spws, for any intent
-        ants_fully_flagged_in_all_spws_any_intent = set()
-
-        # Check if any antennas were found to be fully flagged in all
-        # spws, for any intent.
-
-        # Identify the unique field and intent combinations for which fully flagged
-        # antennas were found.
-        intent_field_found = {key[0:2] for key in ants_fully_flagged}
-        for (intent, field) in intent_field_found:
-
-            # Identify the unique spws for which fully flagged antennas were found (for current
-            # intent and field).
-            spws_found = {key[2] for key in ants_fully_flagged if key[0:2] == (intent, field)}
-
-            # Only proceed if the set of spws for which flagged antennas were found
-            # matches the set of spws for which correctedampflag ran.
-            if spws_found == spwids:
-                # Select the fully flagged antennas for current intent and field.
-                ants_fully_flagged_for_intent_field = [
-                    ants_fully_flagged[key]
-                    for key in ants_fully_flagged
-                    if key[0:2] == (intent, field)
-                ]
-
-                # Identify which antennas are fully flagged in all spws, for
-                # current intent and field, and store these for later warning
-                # and/or updating of refant.
-                ants_fully_flagged_in_all_spws_any_intent.update(
-                    set.intersection(*ants_fully_flagged_for_intent_field))
-
-        # For the antennas that were found to be fully flagged in all
-        # spws for one or more fields belonging to one or more of the intents,
-        # raise a warning.
-        if ants_fully_flagged_in_all_spws_any_intent:
-            # Convert antenna IDs to names and create a string.
-            ants_str = ", ".join(
-                map(str, [antenna_id_to_name[iant]
-                          for iant in ants_fully_flagged_in_all_spws_any_intent]))
-
-            # Log a warning.
-            LOG.warning(
-                '{0} - the following antennas are fully flagged in all spws '
-                'for one or more fields with intents among '
-                '{1}: {2}'.format(ms.basename, ', '.join(intents), ants_str))
-
-        # The following will assess if/how the list of reference antennas
-        # needs to be updated based on antennas that were found to be
-        # fully flagged.
-
-        # Store the set of antennas that are fully flagged for all spws
-        # in any of the intents in the result as a list of antenna
-        # names.
-        ants_to_remove_as_refant = {
-            antenna_id_to_name[iant]
-            for iant in ants_fully_flagged_in_all_spws_any_intent}
-
-        return ants_to_remove_as_refant
-
-    def _mark_antennas_for_refant_update(self, result, ants_to_demote, ants_to_remove):
-        # Get the intents from the inputs.
-        intents = result.cafresult.inputs['intent'].split(',')
-
-        # Get the MS object
-        ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
-
-        # If any reference antennas were found to be candidates for
-        # removal or demotion (move to end of list), then proceed...
-        if ants_to_remove or ants_to_demote:
-
-            # If a list of reference antennas was registered with the MS..
-            if (hasattr(ms, 'reference_antenna') and
-                    isinstance(ms.reference_antenna, str)):
-
-                # Create list of current refants
-                refant = ms.reference_antenna.split(',')
-
-                # Identify intersection between refants and fully flagged
-                # and store in result.
-                result.refants_to_remove = {
-                    ant for ant in refant
-                    if ant in ants_to_remove}
-
-                # If any refants were found to be removed...
-                if result.refants_to_remove:
-
-                    # Create string for log message.
-                    ant_msg = utils.commafy(result.refants_to_remove, quotes=False)
-
-                    # Check if removal of refants would result in an empty refant list,
-                    # in which case the refant update is skipped.
-                    if result.refants_to_remove == set(refant):
-
-                        # Log warning that refant list should have been updated, but
-                        # will not be updated so as to avoid an empty refant list.
-                        LOG.warning(
-                            '{0} - the following reference antennas became fully flagged '
-                            'in all spws for one or more fields with intents among {1}, '
-                            'but are *NOT* removed from the refant list because doing so '
-                            'would result in an empty refant list: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                        # Reset the refant removal list in the result to be empty.
-                        result.refants_to_remove = set()
-                    else:
-                        # Log a warning if any antennas are to be removed from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following reference antennas are '
-                            'removed from the refant list because they became '
-                            'fully flagged in all spws for one of the intents '
-                            'among {1}: {2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                # Identify intersection between refants and candidate
-                # antennas to demote, skipping those that are to be
-                # removed entirely, and store this list in the result.
-                # These antennas should be moved to the end of the refant
-                # list (demoted) upon merging the result into the context.
-                result.refants_to_demote = {
-                    ant for ant in refant
-                    if ant in ants_to_demote
-                    and ant not in result.refants_to_remove}
-
-                # If any refants were found to be demoted...
-                if result.refants_to_demote:
-
-                    # Create string for log message.
-                    ant_msg = utils.commafy(result.refants_to_demote, quotes=False)
-
-                    # Check if the list of refants-to-demote comprises all
-                    # refants, in which case the re-ordering of refants is
-                    # skipped.
-                    if result.refants_to_demote == set(refant):
-
-                        # Log warning that refant list should have been updated, but
-                        # will not be updated so as to avoid an empty refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are fully flagged '
-                            'for one or more spws, in one or more fields '
-                            'with intents among {1}, but since these comprise all '
-                            'refants, the refant list is *NOT* updated to '
-                            're-order these to the end of the refant list: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                        # Reset the refant demotion list in the result to be empty.
-                        result.refants_to_demote = set()
-                    else:
-                        # Log a warning if any antennas are to be demoted from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are moved to the end '
-                            'of the refant list because they are fully '
-                            'flagged for one or more spws, in one or more '
-                            'fields with intents among {1}: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-            # If no list of reference antennas was registered with the MS,
-            # raise a warning.
-            else:
-                LOG.warning(
-                    '{0} - no reference antennas found in MS, cannot update '
-                    'the reference antenna list.'.format(ms.basename))
+        # Aggregate the list of fully flagged antennas by intent, field and spw for subsequent QA scoring
+        result.fully_flagged_antenna_notifications = aggregate_fully_flagged_antenna_notifications(
+            fully_flagged_antennas, all_spwids)
 
         return result
 
     @staticmethod
-    def _get_ant_id_to_name_dict(ms):
+    def _get_ant_id_to_name_dict(ms) -> Dict[int, str]:
         """
         Return dictionary with antenna ID mapped to antenna name.
         If no unique antenna name can be assigned to each antenna ID,
@@ -557,6 +549,20 @@ class Bandpassflag(basetask.StandardTaskTemplate):
                                   spwmap=old_calfrom.spwmap,
                                   caltype=old_calfrom.caltype,
                                   calwt=old_calfrom.calwt)
+
+
+@task_registry.set_equivalent_casa_task('hifa_bandpassflag')
+@task_registry.set_casa_commands_comment(
+    'This task performs a preliminary bandpass solution and temporarily applies it, then calls hif_correctedampflag to'
+    ' evaluate the flagging heuristics, looking for outlier visibility points by statistically examining the scalar'
+    ' difference of the corrected amplitudes minus model amplitudes, and then flagging those outliers. The philosophy'
+    ' is that only outlier data points that have remained outliers after calibration will be flagged. Note that the'
+    ' phase of the data is not assessed.'
+)
+class Bandpassflag(sessionutils.ParallelTemplate):
+    
+    Inputs = BandpassflagInputs
+    Task = SerialBandpassflag
 
 
 def create_plots(inputs, context, suffix=''):
@@ -600,5 +606,5 @@ class AmpVsXChart(applycal_displays.SpwSummaryChart):
         }
         plot_args.update(**overrides)
 
-        super(AmpVsXChart, self).__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='BANDPASS',
-                                          **plot_args)
+        super().__init__(context, output_dir, calto, xaxis=xaxis, yaxis='amp', intent='BANDPASS',
+                         **plot_args)

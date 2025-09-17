@@ -1,14 +1,19 @@
+from __future__ import annotations
+
 import abc
 import collections
+import datetime
 import itertools
 import os
 import tempfile
+import traceback
+from inspect import signature
+from typing import TYPE_CHECKING
 
-from pipeline.infrastructure import basetask
-from pipeline.infrastructure import exceptions
-from . import mpihelpers
-from . import utils
-from . import vdp
+from pipeline.domain.spectralwindow import match_spw_basename
+from pipeline.infrastructure import basetask, exceptions, logging
+
+from . import mpihelpers, utils, vdp
 
 __all__ = [
     'as_list',
@@ -21,12 +26,17 @@ __all__ = [
     'VisResultTuple'
 ]
 
+if TYPE_CHECKING:
+    from pipeline.domain import MeasurementSet, ObservingRun
+
+LOG = logging.get_logger(__name__)
+
 # VisResultTuple is a data structure used by VDPTaskFactor to group
 # inputs and results.
 VisResultTuple = collections.namedtuple('VisResultTuple', 'vis inputs result')
 
 
-def parallel_inputs_impl():
+def parallel_inputs_impl(default='automatic'):
     """
     Get a vis-independent property implementation for a parallel
     Inputs argument.
@@ -40,7 +50,7 @@ def parallel_inputs_impl():
 
     def fset(self, value):
         if value is None:
-            value = 'automatic'
+            value = default
         else:
             allowed = ('true', 'false', 'automatic', True, False)
             if value not in allowed:
@@ -55,22 +65,33 @@ def as_list(o):
     return o if isinstance(o, list) else [o]
 
 
-def group_into_sessions(context, all_results):
+def group_into_sessions(context, all_results, measurement_sets=None):
     """
     Return results grouped into lists by session.
+
+    Sessions and results are sorted chronologically.
+
+    In terms of the returned dictionary, it means that keys and
+    each list associated with the key are all sorted chronologically.
 
     :param context: pipeline context
     :type context: Context
     :param all_results: result to be grouped
     :type all_results: list
+    :param measurement_sets: additional measurementset list (optional)
+    :type measurement_sets: list
     :return: dict of sessions to results for that session
     :rtype: dict {session name: [result, result, ...]
     """
-    session_map = {ms.basename: ms.session
-                   for ms in context.observing_run.measurement_sets}
+    ms_set = set(context.observing_run.measurement_sets)
+
+    if measurement_sets:
+        ms_set.update(measurement_sets)
+
+    session_map = {ms.basename: ms.session for ms in ms_set}
 
     ms_start_times = {ms.basename: utils.get_epoch_as_datetime(ms.start_time)
-                      for ms in context.observing_run.measurement_sets}
+                      for ms in ms_set}
 
     def get_session(r):
         basename = os.path.basename(r[0])
@@ -78,11 +99,26 @@ def group_into_sessions(context, all_results):
 
     def get_start_time(r):
         basename = os.path.basename(r[0])
-        return ms_start_times.get(basename, None)
+        return ms_start_times.get(basename, datetime.datetime.utcfromtimestamp(0))
 
-    results_by_session = sorted(all_results, key=get_session)
-    return {session_id: sorted(results_for_session, key=get_start_time)
-            for session_id, results_for_session in itertools.groupby(results_by_session, get_session)}
+    def chrono_sort_results(arg_tuple):
+        session_id, results = arg_tuple
+        return session_id, sorted(results, key=get_start_time)
+
+    def get_session_start_time(arg_tuple):
+        # precondition: results are sorted within session in advance
+        session_id, results = arg_tuple
+        # start time of the session is start time of the first MS in the session
+        return get_start_time(results[0])
+
+    # group results by session, and sort results chronologically within session
+    results_grouped_by_session = map(
+        chrono_sort_results,
+        itertools.groupby(sorted(all_results, key=get_session), key=get_session)
+    )
+
+    # sort session chronologically and generate ordered dictionary
+    return dict(sorted(results_grouped_by_session, key=get_session_start_time))
 
 
 def group_vislist_into_sessions(context, vislist):
@@ -201,6 +237,13 @@ class VDPTaskFactory(object):
 
         parallel_wanted = mpihelpers.parse_mpi_input_parameter(self.__inputs.parallel)
 
+        # PIPE-2114: always execute per-EB "SerialTasks" from the MPI client process in a single-EB
+        # data processing session.
+        if parallel_wanted and len(as_list(self.__inputs.vis)) == 1:
+            LOG.debug('Only a single EB is detected in the input vis list; switch to parallel=False '
+                      'to execute the task on the MPIclient.')
+            parallel_wanted = False
+
         if is_tier0_job and parallel_wanted:
             executable = mpihelpers.Tier0PipelineTask(self.__task, valid_args, self.__context_path)
             return valid_args, mpihelpers.AsyncTask(executable)
@@ -227,9 +270,7 @@ class VDPTaskFactory(object):
 
 def remove_unexpected_args(fn, fn_args):
     # get the argument names for the function
-    code = fn.__code__
-    arg_count = code.co_argcount
-    arg_names = code.co_varnames[:arg_count]
+    arg_names = list(signature(fn).parameters)
 
     # identify arguments that are not expected by the function
     unexpected = [k for k in fn_args if k not in arg_names]
@@ -250,44 +291,54 @@ def validate_args(inputs_cls, task_args):
     return valid_args
 
 
-def get_spwmap(source_ms, target_ms):
+def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
+    """Generates a SPW ID mapping between two MeasurementSets.
+
+    This function creates a mapping dictionary that associates SPW IDs from the
+    source MeasurementSet to their corresponding IDs in the target MeasurementSet.
+    The mapping relies on matching SPW basenames. Only science SPWs whose basenames are
+    found in both the source and target MeasurementSets will be included in the
+    final mapping.
+
+    Args:
+        source_ms: Source MeasurementSet containing SPWs to be mapped from.
+        target_ms: Target MeasurementSet containing SPWs to be mapped to.
+
+    Returns:
+        A dictionary mapping source SPW IDs (keys) to target SPW IDs (values).
     """
-    Get a map of spectral windows IDs that map from a source spw ID in
-    the source MS to its equivalent spw in the target MS.
+    spw_id_map = {}
 
-    :param source_ms: the MS to map spws from
-    :type source_ms: domain.MeasurementSet
-    :param target_ms: the MS to map spws to
-    :type target_ms: domain.MeasurementSet
-    :param spws: the spw argument to convert
-    :return: dict of integer spw IDs
-    """
-    # spw names are not guaranteed to be unique. They seem to be unique
-    # across science intents, but they could be repeated for other
-    # scans (pointing, sideband, etc.) in non-science spectral windows.
-    # if not eliminated, these non-science window names collide with
-    # the science windows and you end up having science windows map to
-    # non-science windows and vice versa. Not what we want! This set
-    # will be used to filter for the spectral windows we want to
-    # consider.
-    science_intents = {'AMPLITUDE', 'BANDPASS', 'PHASE', 'TARGET', 'CHECK'}
+    # SPW names aren't guaranteed to be unique over the entire MS.
+    # While they tend to be unique within science intents, they can repeat
+    # in non-science spectral windows (e.g., for pointing or sideband scans).
+    # If not filtered, these non-science SPWs could lead to incorrect mappings
+    # or collisions with science windows. Therefore, we only consider
+    # relevant science spectral windows for mapping.
 
-    # map spw id to spw name for source MS - just for science intents
-    id_to_name = {spw.id: spw.name
-                  for spw in source_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
+    for spw_source in source_ms.get_spectral_windows(science_windows_only=True):
+        matched_target_spw_id = None
 
-    # map spw name to spw id for target MS - just for science intents
-    name_to_id = {spw.name: spw.id
-                  for spw in target_ms.spectral_windows
-                  if not science_intents.isdisjoint(spw.intents)}
+        for spw_target in target_ms.get_spectral_windows(science_windows_only=True):
+            # Check if the base names of the SPWs match
+            if match_spw_basename(spw_source.name, spw_target.name):
+                if matched_target_spw_id is not None:
+                    target_ms_basename = os.path.basename(target_ms.name).replace('.ms', '')
+                    source_ms_basename = os.path.basename(source_ms.name).replace('.ms', '')
+                    msg = (
+                        f'Multiple matches found for SPW name "{spw_source.name}" in MS '
+                        f'"{target_ms_basename}". The SPW ID mapping from {target_ms_basename} to '
+                        f'{source_ms_basename} might be incorrect.'
+                    )
+                    LOG.warning(msg)
+                matched_target_spw_id = spw_target.id
 
-    # note the get(v, k) here. This says that for non-science windows,
-    # which have been filtered from the maps, use the original spw ID -
-    # hence non-science spws are not remapped.
-    return {k: name_to_id.get(v, k)
-            for k, v in id_to_name.items()
-            if v in name_to_id}
+        # Only science SPWs with their basenames referenced in both target and source MSes
+        # will be present in the mapping dictionary.
+        if matched_target_spw_id is not None:
+            spw_id_map[spw_source.id] = matched_target_spw_id
+
+    return spw_id_map
 
 
 def remap_spw_int(source_ms, target_ms, spws):
@@ -328,7 +379,8 @@ def remap_spw_str(source_ms, target_ms, spws):
 class ParallelTemplate(basetask.StandardTaskTemplate):
     is_multi_vis_task = True
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def Task(self):
         """
         A reference to the :class:`Task` class containing the implementation
@@ -339,8 +391,25 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
     def __init__(self, inputs):
         super(ParallelTemplate, self).__init__(inputs)
 
-    def get_result_for_exception(self, vis, result):
-        raise NotImplementedError
+    @basetask.result_finaliser
+    def get_result_for_exception(self, vis: str, exception: Exception) -> basetask.FailedTaskResults:
+        """Generate FailedTaskResults with exception raised.
+
+        This provides default implementation of exception handling.
+
+        Args:
+            vis: List of input visibility data
+            exception: Exception occurred
+
+        Return:
+            a results object with exception raised
+        """
+        LOG.error('Error processing {!s}'.format(os.path.basename(vis)))
+        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
+        tb = traceback.format_exc()
+        if tb.startswith('None'):
+            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
+        return basetask.FailedTaskResults(self.__class__, exception, tb)
 
     def prepare(self):
         inputs = self.inputs
@@ -357,6 +426,16 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
             for (vis, (task_args, task)) in task_queue:
                 try:
                     worker_result = task.get_result()
+
+                    # for importdata/restoredata tasks, input and output vis
+                    # can be different. sessionutils seems to require vis to
+                    # be output vis
+                    if isinstance(worker_result, collections.abc.Iterable):
+                        result = worker_result[0]
+                    else:
+                        result = worker_result
+                    if hasattr(result, 'mses'):
+                        vis = result.mses[0].name
                 except exceptions.PipelineException as e:
                     assessed.append((vis, task_args, e))
                 else:
@@ -369,7 +448,18 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
         final_result = basetask.ResultsList()
 
         context = self.inputs.context
-        session_groups = group_into_sessions(context, assessed)
+
+        # if results are generated by importdata task,
+        # retrieve measurementset domain objects from the results
+        mses = []
+        for _, _, vis_result in assessed:
+            if isinstance(vis_result, collections.abc.Iterable):
+                for r in vis_result:
+                    mses.extend(getattr(r, 'mses', []))
+            else:
+                mses.extend(getattr(vis_result, 'mses', []))
+
+        session_groups = group_into_sessions(context, assessed, measurement_sets=mses)
         for session_id, session_results in session_groups.items():
             for vis, task_args, vis_result in session_results:
                 if isinstance(vis_result, Exception):
@@ -378,7 +468,7 @@ class ParallelTemplate(basetask.StandardTaskTemplate):
                     final_result.append(fake_result)
 
                 else:
-                    if isinstance(vis_result, collections.Iterable):
+                    if isinstance(vis_result, collections.abc.Iterable):
                         final_result.extend(vis_result)
                     else:
                         final_result.append(vis_result)

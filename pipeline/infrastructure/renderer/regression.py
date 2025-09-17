@@ -25,44 +25,42 @@ QAPlugin.
 """
 import abc
 import collections
+import glob
 import os.path
 import re
 from collections import OrderedDict
-from typing import List, Union
 
 from pipeline.domain.measures import FluxDensityUnits
 from pipeline.h.tasks.applycal.applycal import ApplycalResults
 from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
 from pipeline.hif.tasks.applycal.ifapplycal import IFApplycal
 from pipeline.hifa.tasks.fluxscale.gcorfluxscale import GcorFluxscale
+from pipeline.hifa.tasks.gfluxscaleflag import Gfluxscaleflag
 from pipeline.hifa.tasks.gfluxscaleflag.resultobjects import GfluxscaleflagResults
-from pipeline.hsd.tasks.applycal.applycal import HpcSDApplycal
-from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlagResults
-from pipeline.hsd.tasks.baselineflag.baselineflag import HpcSDBLFlag
+from pipeline.hifv.tasks.finalcals.applycals import Applycals
+from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
+from pipeline.hifv.tasks.flagging.checkflag import Checkflag, CheckflagResults
+from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
+from pipeline.hifv.tasks.flagging.targetflag import Targetflag, TargetflagResults
+from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
+from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDataResults
+from pipeline.hifv.tasks.priorcals import Priorcals
+from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
+from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
+from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
+from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
+from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
+from pipeline.hsd.tasks.applycal.applycal import SDApplycal
+from pipeline.hsd.tasks.baselineflag.baselineflag import SDBLFlag, SDBLFlagResults
 from pipeline.hsd.tasks.imaging.imaging import SDImaging
 from pipeline.hsd.tasks.imaging.resultobjects import SDImagingResults
+from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreData, SDRestoreDataResults
+from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreData, NRORestoreDataResults
+from pipeline.infrastructure import logging
 from pipeline.infrastructure.basetask import Results, ResultsList, StandardTaskTemplate
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.taskregistry import task_registry
-from pipeline.infrastructure import logging
-from pipeline.hsd.tasks.restoredata.restoredata import SDRestoreDataResults, SDRestoreData
-from pipeline.hsdn.tasks.restoredata.restoredata import NRORestoreDataResults, NRORestoreData
-from pipeline.hifv.tasks.fluxscale.fluxboot import Fluxboot, FluxbootResults
-from pipeline.hifv.tasks.fluxscale.solint import Solint, SolintResults
-from pipeline.hifv.tasks.priorcals import Priorcals
-from pipeline.hifv.tasks.priorcals.resultobjects import PriorcalsResults
-from pipeline.hifv.tasks.setmodel.vlasetjy import VLASetjy
-from pipeline.h.tasks.common.commonfluxresults import FluxCalibrationResults
-from pipeline.hifv.tasks.statwt.statwt import Statwt, StatwtResults
-from pipeline.hifv.tasks.importdata.importdata import VLAImportData, VLAImportDataResults
-from pipeline.hifv.tasks.flagging.flagdetervla import FlagDeterVLA, FlagDeterVLAResults
-from pipeline.hifv.tasks.testBPdcals.testBPdcals import testBPdcals, testBPdcalsResults
-from pipeline.hifv.tasks.semiFinalBPdcals.semiFinalBPdcals import semiFinalBPdcals, semiFinalBPdcalsResults
-from pipeline.hifv.tasks.finalcals.finalcals import Finalcals, FinalcalsResults
-from pipeline.hifv.tasks.finalcals.applycals import Applycals
-from pipeline.hifv.tasks.flagging.checkflag import Checkflag, CheckflagResults
-from pipeline.hifv.tasks.flagging.targetflag import Targetflag, TargetflagResults
-from pipeline.domain.measurementset import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -78,7 +76,7 @@ class RegressionExtractor(object, metaclass=abc.ABCMeta):
     # all results of this type regardless of which task generated it
     generating_task = None
 
-    def is_handler_for(self, result:Union[Results, ResultsList]) -> bool:
+    def is_handler_for(self, result: Results | ResultsList) -> bool:
         """
         Return True if this RegressionExtractor can process the Result.
 
@@ -147,7 +145,7 @@ class RegressionExtractorRegistry(object):
         child_name = ''
         if hasattr(handler.child_cls, '__name__'):
             child_name = handler.child_cls.__name__
-        elif isinstance(handler.child_cls, collections.Iterable):
+        elif isinstance(handler.child_cls, collections.abc.Iterable):
             child_name = str([x.__name__ for x in handler.child_cls])
         container = 's of %s' % child_name
         s = '{}{} results generated by {} tasks'.format(handler.result_cls.__name__, container, task)
@@ -155,7 +153,7 @@ class RegressionExtractorRegistry(object):
         self.__handlers.append(handler)
 
 
-    def handle(self, result:Union[Results, ResultsList]) -> OrderedDict:
+    def handle(self, result: Results | ResultsList) -> OrderedDict:
         """
         Extract values from corresponding Extractor object of Result object.
 
@@ -173,7 +171,7 @@ class RegressionExtractorRegistry(object):
         extracted = {}
 
         # Process leaf results first
-        if isinstance(result, collections.Iterable):
+        if isinstance(result, collections.abc.Iterable):
             for r in result:
                 d = self.handle(r)
                 extracted = union(extracted, d)
@@ -229,8 +227,7 @@ registry = RegressionExtractorRegistry()
 
 
 class FluxcalflagRegressionExtractor(RegressionExtractor):
-    """
-    Regression test result extractor for hifa_gfluxscaleflag.
+    """Regression test result extractor for hifa_gfluxscaleflag.
 
     The extracted values are:
        - the number of flagged rows before this task
@@ -240,10 +237,10 @@ class FluxcalflagRegressionExtractor(RegressionExtractor):
 
     result_cls = GfluxscaleflagResults
     child_cls = None
+    generating_task = Gfluxscaleflag
 
-    def handle(self, result:GfluxscaleflagResults) -> OrderedDict:
-        """
-        Extract values for testing.
+    def handle(self, result: GfluxscaleflagResults) -> OrderedDict:
+        """Extract values for testing.
 
         Args:
             result: GfluxscaleflagResults object
@@ -251,7 +248,7 @@ class FluxcalflagRegressionExtractor(RegressionExtractor):
         Returns:
             OrderedDict[str, float]
         """
-        prefix = get_prefix(result, result.task)
+        prefix = get_prefix(result, self.generating_task)
 
         summaries_by_name = {s['name']: s for s in result.cafresult.summaries}
 
@@ -333,26 +330,30 @@ class ApplycalRegressionExtractor(RegressionExtractor):
             OrderedDict[str, float]
         """
         prefix = get_prefix(result, self.generating_task)
-        
-        summaries_by_name = {s['name']: s for s in result.summaries}
-
-        num_flags_before = summaries_by_name['before']['flagged']
-        num_flags_after = summaries_by_name['applycal']['flagged']
-
         d = OrderedDict()
-        d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
-        d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        flag_summary_before = summaries_by_name['before']
-        for scan_id, v in flag_summary_before['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+        try:
+            summaries_by_name = {s['name']: s for s in result.summaries}
+            num_flags_before = summaries_by_name['before']['flagged']
+            num_flags_after = summaries_by_name['applycal']['flagged']
+            
+            d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
+            d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
 
-        flag_summary_after = summaries_by_name['applycal']
-        for scan_id, v in flag_summary_after['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+            flag_summary_before = summaries_by_name['before']
+            for scan_id, v in flag_summary_before['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
 
-        qa_entries = extract_qa_score_regression(prefix, result)
-        d.update(qa_entries)
+            flag_summary_after = summaries_by_name['applycal']
+            for scan_id, v in flag_summary_after['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+
+            qa_entries = extract_qa_score_regression(prefix, result)
+            d.update(qa_entries)
+
+        except: 
+            d['{}.results'.format(prefix)] = None
+            LOG.info("Some information missing from ApplycalResults. Omitting from resgression comparison.")
 
         return d
 
@@ -366,7 +367,7 @@ class SDApplycalRegressionExtractor(ApplycalRegressionExtractor):
 
     result_cls = ApplycalResults
     child_cls = None
-    generating_task = HpcSDApplycal
+    generating_task = SDApplycal
 
 
 class VLAApplycalRegressionExtractor(ApplycalRegressionExtractor):
@@ -402,24 +403,34 @@ class CheckflagRegressionExtractor(RegressionExtractor):
         Returns:
             OrderedDict[str, float]
         """
+        d = OrderedDict()
         prefix = get_prefix(result, self.generating_task)
-
         summaries_by_name = {s['name']: s for s in result.summaries}
 
-        num_flags_before = summaries_by_name['before']['flagged']
-        num_flags_after = summaries_by_name['after']['flagged']
+        try:
+            num_flags_before = summaries_by_name['before']['flagged']
+            d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
+        except: 
+            d['{}.num_rows_flagged.before'.format(prefix)] = None
 
-        d = OrderedDict()
-        d['{}.num_rows_flagged.before'.format(prefix)] = int(num_flags_before)
-        d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
+        try: 
+            num_flags_after = summaries_by_name['after']['flagged']
+            d['{}.num_rows_flagged.after'.format(prefix)] = int(num_flags_after)
+        except: 
+            d['{}.num_rows_flagged.after'.format(prefix)] = None
 
-        flag_summary_before = summaries_by_name['before']
-        for scan_id, v in flag_summary_before['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
 
-        flag_summary_after = summaries_by_name['after']
-        for scan_id, v in flag_summary_after['scan'].items():
-            d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
+        if 'before' in summaries_by_name:
+            flag_summary_before = summaries_by_name['before']
+
+            for scan_id, v in flag_summary_before['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.before'.format(prefix, scan_id)] = int(v['flagged'])
+        
+        if 'after' in summaries_by_name:
+            flag_summary_after = summaries_by_name['after']
+
+            for scan_id, v in flag_summary_after['scan'].items():
+                d['{}.scan_{}.num_rows_flagged.after'.format(prefix, scan_id)] = int(v['flagged'])
 
         return d
 
@@ -491,8 +502,11 @@ class FluxbootRegressionExtractor(RegressionExtractor):
         spindex = result.spindex_results
 
         d = OrderedDict()
-        for spw in result.spws:
-            d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[spw][0]
+
+        for i, spw in enumerate(sorted(result.spws)): 
+            # There may be spws without a solution, which aren't included here, so don't index by spw
+            d['{}.flux_densities.spw_{}'.format(prefix, spw)] = flux_densities[i][0]
+
         d['{}.spindex'.format(prefix)] = float(spindex[0]['spix'])
         d['{}.curvature'.format(prefix)] = float(spindex[0]['curvature'])
         d['{}.delta'.format(prefix)] = float(spindex[0]['delta'])
@@ -664,7 +678,7 @@ class VLAImportDataRegressionExtractor(RegressionExtractor):
         d = OrderedDict()
 
         d['{}.numantennas'.format(prefix)] = len(result.mses[0].antennas)
-        d['{}.vla_max_integration_time'.format(prefix)] = result.mses[0].get_vla_max_integration_time()
+        d['{}.vla_max_integration_time'.format(prefix)] = result.mses[0].get_integration_time_stats(stat_type="max")
 
         return d
 
@@ -817,7 +831,7 @@ class SDBLFlagRegressionExtractor(RegressionExtractor):
 
     result_cls = SDBLFlagResults
     child_cls = None
-    generating_task = HpcSDBLFlag
+    generating_task = SDBLFlag
 
     def handle(self, result:SDBLFlagResults) -> OrderedDict:
         """
@@ -980,33 +994,51 @@ def get_prefix(result:Results, task:StandardTaskTemplate) -> str:
     return prefix
 
 
-def extract_qa_score_regression(prefix:str, result:Results) -> OrderedDict:
-    """
-    Create QA strings are properties of result, and insert them to OrderedDict.
+def extract_qa_score_regression(prefix: str, result: Results) -> dict:
+    """Extract QA scores from a TaskResults object and organize them into a structured dictionary.
 
     Args:
-        prefix: Prefix string
-        result: Result object
+        prefix (str): Base string to prepend to each key in the output dictionary.
+        result (Results): TaskResults Object containing QA pool data to be processed.
 
     Returns:
-        OrderedDict
+        dict: Dictionary with formatted keys mapping to metric scores and values.
+            Keys follow the pattern: {prefix}.field_{field_id}.spw_{spw_id}.qa.{metric|score}.{metric_name}
+
+    Examples:
+        >>> result = Results(...)  # Assuming Results object with qa.pool
+        >>> scores = extract_qa_score_regression("test", result)
+        >>> # Resulting keys might look like: "test.field_data.spw_0.qa.metric.accuracy"
+    
     """
-    d = OrderedDict()
+    # Initialize a dictionary
+    d = {}
+
+    # Iterate through each QA score in the result's pool
     for qa_score in result.qa.pool:
+        # Extract and clean metric name for use in keys
         metric_name = qa_score.origin.metric_name
         # Remove all non-word characters (everything except numbers and letters)
         metric_name = re.sub(r"[^\w\s]", '', metric_name)
         # Replace all runs of whitespace with a single dash
         metric_name = re.sub(r"\s+", '-', metric_name)
 
-        metric_score = qa_score.origin.metric_score
-        score_value = qa_score.score
-        d['{}.qa.metric.{}'.format(prefix, metric_name)] = metric_score
-        d['{}.qa.score.{}'.format(prefix, metric_name)] = score_value
+        metric_score, score_value = qa_score.origin.metric_score, qa_score.score
+
+        data_select = "".join(
+            f".{key}_" + "_".join(sorted(map(str, value)))
+            for key, value in [("field", qa_score.applies_to.field), ("spw", qa_score.applies_to.spw)]
+            if value
+        )
+        # Add metric score and value to dictionary with formatted keys
+        d.update({
+            f"{prefix}{data_select}.qa.metric.{metric_name}": metric_score,
+            f"{prefix}{data_select}.qa.score.{metric_name}": score_value,
+        })
     return d
 
 
-def extract_regression_results(context: Context) -> List[str]:
+def extract_regression_results(context: Context) -> list[str]:
     """
     Extract regression result and return logs.
 
@@ -1022,10 +1054,65 @@ def extract_regression_results(context: Context) -> List[str]:
         unified = union(unified, registry.handle(results))
 
     # return unified
-    return ['{}={}'.format(k, v) for k, v in unified.items()]
+    return ['{}={}'.format(k, v)for k, v in unified.items()]
 
 
-def get_all_subclasses(cls: RegressionExtractor) -> List[RegressionExtractor]:
+def missing_directories(context: Context, include_rawdata: bool = False) -> list[str]:
+    """
+    Check whether working/ and and products/ are present, and rawdata/ if
+    applicable (see include_rawdata argument.)
+
+    Args:
+        context: Context object
+        include_rawdata: whether to include the rawdata directory in the check
+    Returns:
+        True if all directories are present, False otherwise
+    """
+    missing = []
+
+    if include_rawdata:
+        directories = ['rawdata', 'working', 'products']
+    else:
+        directories = ['working', 'products']
+
+    for directory in directories:
+        if not os.path.exists(os.path.join(context.output_dir, '..', directory)):
+            missing.append(directory)
+
+    return missing
+
+
+def manifest_present(context: Context) -> bool:
+    """
+    Check if pipeline_manifest.xml is present under products/
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if *pipeline_manifest.xml is present, False otherwise
+    """
+    manifest_path = os.path.join(context.products_dir, '*pipeline_manifest.xml')
+    manifest_files = glob.glob(manifest_path)
+    return len(manifest_files) > 0
+
+
+def errorexit_present(context: Context) -> bool:
+    """
+    Check if any errorexit-*.txt files are present in the working directory
+
+    Args:
+        context: Context object
+
+    Returns:
+        True if any errorexit-*.txt is present, False otherwise
+    """
+    errorexit_path = os.path.join(context.products_dir, 'errorexit-*.xml')
+    errorexit_files = glob.glob(errorexit_path)
+    return len(errorexit_files) > 0
+
+
+def get_all_subclasses(cls: RegressionExtractor) -> list[RegressionExtractor]:
     """
     Get all subclasses from RegressionExtractor classes tree recursively.
 

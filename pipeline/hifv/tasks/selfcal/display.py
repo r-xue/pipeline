@@ -56,11 +56,9 @@ class selfcalphaseGainPerAntennaChart(object):
             figfile = os.path.join(stage_dir, filename)
 
             # Get antenna name
-            antName = antPlot
-            if antPlot != '':
-                domain_antennas = self.ms.get_antenna(antPlot)
-                idents = [a.name if a.name else a.id for a in domain_antennas]
-                antName = ','.join(idents)
+            domain_antennas = self.ms.get_antenna(antPlot)
+            idents = [a.name if a.name else a.id for a in domain_antennas]
+            antName = ','.join(idents)
 
             if not os.path.exists(figfile):
                 try:
@@ -73,7 +71,7 @@ class selfcalphaseGainPerAntennaChart(object):
                                             showlegend=False,
                                             showgui=False, plotfile=figfile, clearplots=True, overwrite=True,
                                             titlefont=8, xaxisfont=7, yaxisfont=7, xconnector='line')
-                    job.execute(dry_run=False)
+                    job.execute()
 
                     job = casa_tasks.plotms(vis=result.caltable, xaxis='time', yaxis='snr', field='',
                                             antenna=antPlot, spw='', timerange='',
@@ -83,7 +81,7 @@ class selfcalphaseGainPerAntennaChart(object):
                                             showgui=False, plotfile=figfile, clearplots=False, overwrite=True,
                                             showlegend=False,
                                             titlefont=8, xaxisfont=7, yaxisfont=7, xconnector='line')
-                    job.execute(dry_run=False)
+                    job.execute()
 
                 except Exception as ex:
                     LOG.warning("Unable to plot " + filename + str(ex))
@@ -106,7 +104,7 @@ class selfcalphaseGainPerAntennaChart(object):
 
 
 class selfcalSolutionNumPerFieldChart(object):
-    """present the selfcal solution flag stats as a heatmap. 
+    """present the selfcal solution flag stats as a heatmap.
     likely only work for the self-cal gain table from the 'VLASS-SE' mode (see PIPE-1010), i.e.
         one solution per polarization per image-row (unique source id) for each antenna
     """

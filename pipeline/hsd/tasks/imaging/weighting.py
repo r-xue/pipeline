@@ -7,6 +7,7 @@ import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataTable, DataType
 from pipeline.infrastructure import casa_tools
+from pipeline.infrastructure.utils import list_to_str
 from .. import common
 
 LOG = infrastructure.get_logger(__name__)
@@ -14,8 +15,8 @@ LOG = infrastructure.get_logger(__name__)
 
 class WeightMSInputs(vdp.StandardInputs):
     """
-    Inputs for exporting data to MS 
-    NOTE: infile should be a complete list of MSes 
+    Inputs for exporting data to MS
+    NOTE: infile should be a complete list of MSes
     """
     # Search order of input vis
     processing_data_type = [DataType.BASELINED, DataType.ATMCORR,
@@ -39,7 +40,7 @@ class WeightMSInputs(vdp.StandardInputs):
     def vis(self):
         return self.infiles
 
-    def __init__(self, context, infiles=None, outfiles=None, 
+    def __init__(self, context, infiles=None, outfiles=None,
                  antenna=None, spwid=None, fieldid=None):
         super(WeightMSInputs, self).__init__()
 
@@ -101,7 +102,6 @@ class WeightMS(basetask.StandardTaskTemplate):
         result = WeightMSResults(task=self.__class__,
                                  success=True,
                                  outcome=outfile)
-        result.task = self.__class__
 
         return result
 
@@ -131,7 +131,7 @@ class WeightMS(basetask.StandardTaskTemplate):
             tsel = tb.query('DATA_DESC_ID==%s && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d' %
                             (data_desc_id, fieldid, antid, antid),
                             sortlist='TIME')
-            out_rows = tsel.rownumbers() 
+            out_rows = tsel.rownumbers()
             stateids = numpy.unique(tsel.getcol('STATE_ID'))
             tsel.close()
 
@@ -142,10 +142,10 @@ class WeightMS(basetask.StandardTaskTemplate):
         with casa_tools.TableReader(infile) as tb:
             # Tentative adding state id selection for sdatmcor data selection issue.
             tsel = tb.query('DATA_DESC_ID==%d && FIELD_ID==%d && ANTENNA1==%d && ANTENNA2==%d && STATE_ID IN %s' %
-                            (data_desc_id, fieldid, antid, antid, list(stateids)),
+                            (data_desc_id, fieldid, antid, antid, list_to_str(stateids)),
                             sortlist='TIME', style='python')
             if tsel.nrows() > 0:
-                in_rows = tsel.rownumbers() 
+                in_rows = tsel.rownumbers()
             tsel.close()
 
         assert len(in_rows) == len(out_rows)
@@ -179,7 +179,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         index_list = common.get_index_list_for_ms(datatable, [infile], [antid], [fieldid], [spwid])
 
         in_rows = datatable.getcol('ROW').take(index_list)
-#         # row map filtered by target scans (key: target input 
+#         # row map filtered by target scans (key: target input
 #         target_row_map = {}
 #         for idx in in_rows:
 #             target_row_map[idx] = row_map.get(idx, -1)
@@ -188,6 +188,9 @@ class WeightMS(basetask.StandardTaskTemplate):
 #         for row in in_rows:
 #             weight[row] = 1.0
 
+        # PIPE-1523
+        net_flags = datatable.getcol('FLAG_SUMMARY').take(index_list, axis=1)
+
         # set weight (key: input MS row ID, value: weight)
         # TODO: proper handling of pols
         if weight_rms:
@@ -195,17 +198,23 @@ class WeightMS(basetask.StandardTaskTemplate):
             for index in range(len(in_rows)):
                 row = in_rows[index]
                 cell_stat = stats[:, :, index]
+                flags = net_flags[:, index]
                 weight[row] = numpy.ones(cell_stat.shape[0])
                 for ipol in range(weight[row].shape[0]):
-                    stat = cell_stat[ipol, 1]  # baselined RMS
-                    if stat > 0.0:
-                        weight[row][ipol] /= (stat * stat)
-                    elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
-                        stat = cell_stat[ipol, 2]  # RMS before baseline
-                        weight[row][ipol] /= (stat * stat)
-                    elif try_fallback:
-                        weight_tintsys = True
+                    stat = cell_stat[ipol, 1]  # get post-fitting RMS
+                    if flags[ipol] == 1:
+                        # treat unflagged data
+                        if stat > 0.0:
+                            weight[row][ipol] /= (stat * stat)
+                        elif stat < 0.0 and cell_stat[ipol, 2] > 0.0:
+                            stat = cell_stat[ipol, 2]  # get pre-fitting RMS
+                            weight[row][ipol] /= (stat * stat)
+                        elif try_fallback:
+                            weight_tintsys = True
+                        else:
+                            weight[row][ipol] = 0.0
                     else:
+                        # treat flagged data
                         weight[row][ipol] = 0.0
 
         if weight_tintsys:
@@ -227,7 +236,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         with casa_tools.TableReader(outfile, nomodify=False) as tb:
             # The selection, tsel, contains all intents.
             # Need to match output element in selected table by rownumbers().
-            tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.values())), style='python')
+            tsel = tb.query('ROWNUMBER() IN %s' % (list_to_str(list(row_map.values()))), style='python')
             ms_weights = tsel.getcol('WEIGHT')
             rownumbers = tsel.rownumbers().tolist()
             for idx in range(len(in_rows)):
@@ -244,7 +253,7 @@ class WeightMS(basetask.StandardTaskTemplate):
         minmaxclip = False
         if minmaxclip:
             with casa_tools.TableReader(outfile, nomodify=False) as tb:
-                tsel = tb.query('ROWNUMBER() IN %s' % (list(row_map.values())),
+                tsel = tb.query('ROWNUMBER() IN %s' % (list_to_str(list(row_map.values()))),
                                 style='python')
                 if 'FLOAT_DATA' in tsel.colnames():
                     data_column = 'FLOAT_DATA'

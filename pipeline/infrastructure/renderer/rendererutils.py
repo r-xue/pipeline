@@ -1,19 +1,23 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import html
 import itertools
 import os
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, Any, Iterable
 
 import numpy as np
 
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.logging as logging
-import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.pipelineqa import QAScore, WebLogLocation
+from pipeline import infrastructure
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, filenamer, utils
+from pipeline.infrastructure.renderer import logger
 
-from typing import Any
+if TYPE_CHECKING:
+    from pipeline.infrastructure.basetask import Results
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.pipelineqa import QAScore
 
-LOG = infrastructure.get_logger(__name__)
+LOG = infrastructure.logging.get_logger(__name__)
 
 SCORE_THRESHOLD_ERROR = 0.33
 SCORE_THRESHOLD_WARNING = 0.66
@@ -146,6 +150,8 @@ def get_symbol_badge(result):
         symbol = '<span class="glyphicon glyphicon-remove-sign alert-danger transparent-bg" aria-hidden="true"></span>'
     elif get_warnings_badge(result):
         symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-warning transparent-bg" aria-hidden="true"></span>'
+    elif get_attentions_badge(result):
+        symbol = '<span class="glyphicon glyphicon-exclamation-sign alert-attention transparent-bg" aria-hidden="true"></span>'
     elif get_suboptimal_badge(result):
         symbol = '<span class="glyphicon glyphicon-question-sign alert-info transparent-bg" aria-hidden="true"></span>'
     else:
@@ -162,8 +168,17 @@ def get_failures_badge(result):
         return ''
 
 
+def get_attentions_badge(result):
+    attention_logrecords = utils.get_logrecords(result, infrastructure.logging.ATTENTION)
+    l = len(attention_logrecords)
+    if l > 0:
+        return '<span class="badge alert-attention pull-right">%s</span>' % l
+    else:
+        return ''
+
+
 def get_warnings_badge(result):
-    warning_logrecords = utils.get_logrecords(result, logging.WARNING)
+    warning_logrecords = utils.get_logrecords(result, infrastructure.logging.WARNING)
     warning_qascores = utils.get_qascores(result, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING)
     l = len(warning_logrecords) + len(warning_qascores)
     if l > 0:
@@ -173,7 +188,7 @@ def get_warnings_badge(result):
 
 
 def get_errors_badge(result):
-    error_logrecords = utils.get_logrecords(result, logging.ERROR)
+    error_logrecords = utils.get_logrecords(result, infrastructure.logging.ERROR)
     error_qascores = utils.get_qascores(result, -0.1, SCORE_THRESHOLD_ERROR)
     l = len(error_logrecords) + len(error_qascores)
     if l > 0:
@@ -194,10 +209,12 @@ def get_suboptimal_badge(result):
 def get_command_markup(ctx, command):
     if not command:
         return ''
-    stripped = command.replace('%s/' % ctx.report_dir, '')
-    stripped = stripped.replace('%s/' % ctx.output_dir, '')
-    escaped = html.escape(stripped, True).replace('\'', '&#39;')
-    return escaped
+    # PIPE-1839: avoid removing '/' symbols if not part of a non-empty directory path
+    if ctx.report_dir:
+        command = command.replace('%s/' % ctx.report_dir, '')
+    if ctx.output_dir:
+        command = command.replace('%s/' % ctx.output_dir, '')
+    return html.escape(command, True).replace('\'', '&#39;')
 
 
 def format_shortmsg(pqascore):
@@ -219,7 +236,7 @@ def sort_row_by(row, axes):
         return g
 
     # create a parameter getter for each axis
-    accessors = [f(axis) for axis in axes.split(',')]
+    accessors = [f(axis.strip()) for axis in axes.split(',')]
 
     # sort plots in row, using a generated tuple (p1, p2, p3, ...) for
     # secondary sort
@@ -240,11 +257,11 @@ def group_plots(data, axes):
     return _build_rows([], data, keyfuncs)
 
 
-def _build_rows(rows, data, keyfuncs):
+def _build_rows(rows, data, keyfuncs, axis: str=''):
     # if this is a leaf, i.e., we are in the lowest level grouping and there's
     # nothing further to group by, add a new row
     if not keyfuncs:
-        rows.append(data)
+        rows.append((data, axis))
         return
 
     # otherwise, this is not the final sorting axis and so proceed to group
@@ -255,7 +272,7 @@ def _build_rows(rows, data, keyfuncs):
         # convert to list so we don't exhaust the generator
         items_with_value = list(items_with_value_generator)
         # ... , creating sub-groups for each group as we go
-        _build_rows(rows, items_with_value, keyfuncs[1:])
+        _build_rows(rows, items_with_value, keyfuncs[1:], axis=group_value)
 
     return rows
 
@@ -277,7 +294,7 @@ def num_lines(path):
         return 'N/A'
 
 
-def scores_in_range(pool: List[QAScore], lo: float, hi: float) -> List[QAScore]:
+def scores_in_range(pool: list[QAScore], lo: float, hi: float) -> list[QAScore]:
     """
     Filter QA scores by range.
     """
@@ -286,51 +303,61 @@ def scores_in_range(pool: List[QAScore], lo: float, hi: float) -> List[QAScore]:
             and lo < score.score <= hi]
 
 
-def scores_with_location(pool: List[QAScore],
-                         locations: Optional[List[WebLogLocation]] = None) -> List[QAScore]:
-    """
-    Filter QA scores by web log location.
-    """
-    if not locations:
-        locations = list(WebLogLocation)
-
-    return [score for score in pool if score.weblog_location in locations]
-
-
 def get_notification_trs(result, alerts_info, alerts_success):
     # suppress scores not intended for the banner, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    all_scores: List[QAScore] = result.qa.pool
-    banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    all_scores: list[QAScore] = result.qa.pool
+    # PIPE-1481 potentially asks for the removal of banner QA notification.
+    # Thus disabling these for now.
+    #banner_scores = scores_with_location(all_scores, [WebLogLocation.BANNER, WebLogLocation.UNSET])
+    banner_scores = []
 
     notifications = []
+    most_severe_render_class = None
 
     if banner_scores:
         for qa_score in scores_in_range(banner_scores, -0.1, SCORE_THRESHOLD_ERROR):
             n = format_notification('danger alert-danger', 'QA', qa_score.longmsg, 'glyphicon glyphicon-remove-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'danger alert-danger'
         for qa_score in scores_in_range(banner_scores, SCORE_THRESHOLD_ERROR, SCORE_THRESHOLD_WARNING):
             n = format_notification('warning alert-warning', 'QA', qa_score.longmsg, 'glyphicon glyphicon-exclamation-sign')
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'warning alert-warning'
 
-    for logrecord in utils.get_logrecords(result, logging.ERROR):
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ERROR):
         n = format_notification('danger alert-danger', 'Error!', logrecord.msg)
         notifications.append(n)
-    for logrecord in utils.get_logrecords(result, logging.WARNING):
+        if most_severe_render_class is None:
+            most_severe_render_class = 'danger alert-danger'
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.WARNING):
         n = format_notification('warning alert-warning', 'Warning!', logrecord.msg)
         notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'warning alert-warning'
+    for logrecord in utils.get_logrecords(result, infrastructure.logging.ATTENTION):
+        n = format_notification('attention alert-attention', 'Attention!', logrecord.msg)
+        notifications.append(n)
+        if most_severe_render_class is None:
+            most_severe_render_class = 'attention alert-attention'
 
     if alerts_info:
         for msg in alerts_info:
             n = format_notification('info alert-info', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'info alert-info'
     if alerts_success:
         for msg in alerts_success:
             n = format_notification('success alert-success', '', msg)
             notifications.append(n)
+            if most_severe_render_class is None:
+                most_severe_render_class = 'success alert-success'
 
-    return notifications
+    return notifications, most_severe_render_class
 
 
 def format_notification(tr_class, alert, msg, icon_class=None):
@@ -342,7 +369,7 @@ def format_notification(tr_class, alert, msg, icon_class=None):
 
 
 def get_relative_url(report_dir: str, stage_dir: str, subpage_dir: str,
-                     allow_nonexistent: bool = True) -> Union[str, None]:
+                     allow_nonexistent: bool = True) -> str | None:
     """
     Return url to weblog subpage relative to the weblog root path, based on
     provided report dir, stage dir, and subpage dir. Check for and remove
@@ -388,7 +415,7 @@ def percent_flagged(flagsummary: Any) -> str:
     flagged = flagsummary.flagged
     total = flagsummary.total
 
-    if total is 0:
+    if total == 0:
         return 'N/A'
     else:
         return '%0.3f%%' % (100.0 * flagged / total)
@@ -428,3 +455,119 @@ def summarise_fields(fields: str) -> str:
 
     field_str = f'{field_list[0]}, {field_list[1]}, {field_list[2]}, ..., {field_list[-1]}'
     return field_str
+
+
+def make_parang_plots(
+        context: Context,
+        result: Results,
+        intent_lookup: dict[str, str],
+) -> dict:
+    """
+    Create parallactic angle plots for each session.
+    """
+    plot_colors = ['0000ff', '007f00', 'ff0000', '00bfbf', 'bf00bf', '3f3f3f',
+                   'bf3f3f', '3f3fbf', 'ffbfbf', '00ff00', 'c1912b', '89a038',
+                   '5691ea', 'ff1999', 'b2ffb2', '197c77', 'a856a5', 'fc683a']
+
+    parang_plots = {}
+    stage_id = f'stage{result.stage_number}'
+    ous_id = context.project_structure.ousstatus_entity_id
+    sessions = result.parang_ranges['sessions']
+
+    for session_name, session_data in sessions.items():
+        num_ms = len(sessions[session_name]['vis'])
+        intents_to_plot = [intent_lookup[key] for key in intent_lookup
+                           if key in session_data and session_data[key]]
+
+        plot_title = f'MOUS {ous_id}, session {session_name}'
+        filename_component = filenamer.sanitize(f'{ous_id}_{session_name}')
+        plot_path = os.path.join(context.report_dir, stage_id, f'{filename_component}_parallactic_angle.png')
+
+        clearplots = True
+        for i, msname in enumerate(sessions[session_name]['vis']):
+            symbolcolor = plot_colors[i % len(plot_colors)]
+
+            science_spws = context.observing_run.get_ms(msname).get_spectral_windows()
+            spwspec = ','.join(f'{s.id}:{s.num_channels // 2}' for s in science_spws)
+
+            plot_name = plot_path if i == num_ms - 1 else ''
+
+            task_args = {
+                'vis': msname,
+                'plotfile': plot_name,
+                'xaxis': 'time',
+                'yaxis': 'parang',
+                'customsymbol': True,
+                'symbolcolor': symbolcolor,
+                'title': plot_title,
+                'spw': spwspec,
+                'plotrange': [0, 0, 0, 360],
+                'plotindex': i,
+                'clearplots': clearplots,
+                'intent': ','.join(intents_to_plot),
+                'showgui': False,
+                'showlegend': True,
+                'coloraxis': 'field',
+                'legendposition': 'exteriorRight',
+            }
+
+            task = casa_tasks.plotms(**task_args)
+            basetask.Executor(context).execute(task)
+
+            clearplots = False
+
+        parang_plots[session_name] = {}
+        parang_plots[session_name]['name'] = plot_name
+
+        # create a plot object so we can access (thus generate) the thumbnail
+        plot_obj = logger.Plot(plot_name)
+
+        fullsize_relpath = get_relative_url(context.report_dir, stage_id, plot_name)
+        thumbnail_relpath = os.path.relpath(plot_obj.thumbnail, os.path.abspath(context.report_dir))
+        title = 'Parallactic angle coverage for session {}'.format(session_name)
+
+        html_args = {
+            'fullsize': fullsize_relpath,
+            'thumbnail': thumbnail_relpath,
+            'title': title,
+            'alt': title,
+            'rel': 'parallactic-angle-plots'
+        }
+
+        html = ('<a href="{fullsize}"'
+                '   title="{title}"'
+                '   data-fancybox="{rel}"'
+                '   data-caption="{title}">'
+                '    <img data-src="{thumbnail}"'
+                '         title="{title}"'
+                '         alt="{alt}"'
+                '         class="lazyload img-responsive">'
+                '</a>'.format(**html_args))
+
+        parang_plots[session_name]['html'] = html
+
+    return parang_plots
+
+
+def get_multiple_line_string(values: Iterable[Any], str_format: str = '{}', separator: str = '<br>') -> str:
+    """Formats a sequence of values into a single delimited string.
+
+    Args:
+        values: An iterable of values to be formatted and joined.
+        str_format: A format string to apply to each value. Defaults to '{}'.
+        separator: The string used to join the formatted values.
+            Defaults to '<br>'.
+
+    Returns:
+        A single string containing the formatted and joined values, or an
+        empty string if the input iterable is empty.
+
+    Example:
+        >>> items = ['apple', 'banana', 'cherry']
+        >>> get_multiple_line_string(items, str_format='- {}')
+        '- apple<br>- banana<br>- cherry'
+    """
+    if not values:
+        return ''
+
+    return separator.join(str_format.format(value) for value in values)

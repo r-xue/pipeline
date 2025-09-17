@@ -91,9 +91,12 @@ import scipy
 import scipy.stats.mstats
 
 import pipeline.infrastructure.utils as utils
+import pipeline.infrastructure.logging as logging
 import pipeline.qa.utility.logs as logs
+import pipeline.qa.utility.scorers as scorers
 from pipeline.infrastructure import casa_tools
 
+LOG = logging.get_logger(__name__)
 
 def rms(data):
     return numpy.ma.sqrt(numpy.ma.sum(data**2) / len(data))
@@ -1158,7 +1161,7 @@ def bpcal_score(bpcal_stats):
                 bpcal_score_flatness(bpcal_stats['AMPLITUDE'][s][k])
 
             bpcal_scores['AMPLITUDE_SCORE_DD'][s][k] = \
-                bpcal_score_derivative_deviation(bpcal_stats['AMPLITUDE'][s][k])
+                bpcal_score_derivative_deviation(bpcal_stats['AMPLITUDE'][s][k], 'amp', s, k)
 
             bpcal_scores['AMPLITUDE_SCORE_TOTAL'][s][k] = \
                 bpcal_scores['AMPLITUDE_SCORE_FLAG'][s][k] \
@@ -1203,10 +1206,10 @@ def bpcal_score(bpcal_stats):
                 bpcal_score_RMS(math.sqrt(phase[s][k]['resVar']), 0.05)
 
             bpcal_scores['PHASE_SCORE_FN'][s][k] = \
-                bpcal_score_flatness(bpcal_stats['PHASE'][s][k]+45./180.*math.pi)
+                bpcal_score_flatness(bpcal_stats['PHASE'][s][k])
 
             bpcal_scores['PHASE_SCORE_DD'][s][k] = \
-                bpcal_score_derivative_deviation(bpcal_stats['PHASE'][s][k])
+                bpcal_score_derivative_deviation(bpcal_stats['PHASE'][s][k], 'phase', s, k)
 
             bpcal_scores['PHASE_SCORE_DELAY'][s][k] = \
                 bpcal_score_delay(
@@ -1401,6 +1404,9 @@ def bpcal_score_SNR(SNR):
 # * A result of 1.0 means the shape is perfectly flat
 # * Determine score by evaluating the deviation of the Wiener
 #   Entropy from 1.0
+# * The Wiener Entropy can only be calculated for positive values.
+#   When encountering any negative ones, the algorithm shiftst the
+#   spectrum up to slightly positive values.
 
 # Inputs:
 # -------
@@ -1417,20 +1423,31 @@ def bpcal_score_SNR(SNR):
 # 2013 Aug 05 - Dirk Muders, MPIfR
 #               Weight Wiener entropy with error function
 #               to create sharper fall-off.
+# 2023 Dec 13 - Dirk Muders, MPIfR
+#               Avoid NaNs when part of the spectrum is negative.
 # ------------------------------------------------------------------------------
 def bpcal_score_flatness(values):
 
-    # Need to avoid zero mean
-    if numpy.ma.mean(values) == 0.0:
-        if (values == 0.0).all():
+    if numpy.ma.all(numpy.ma.getmaskarray(values)):
+        wEntropy = 1.0e10
+    elif numpy.ma.mean(values) == 0.0:
+        # Need to avoid zero mean as it would cause a division exception
+        if numpy.ma.all(values == 0.0):
             wEntropy = 1.0
         else:
             wEntropy = 1.0e10
     else:
-        # Geometrical mean can not be calculated for vectors <= 0.0 for all
+        # Geometrical mean can not be calculated for vectors <= 0.0 for any
         # elements.
-        if (values <= 0.0).all():
-            wEntropy = 1.0e10
+        if numpy.ma.all(values < 0.0):
+            # All negative -> just invert the spectrum to estimate the flatness
+            wEntropy = scipy.stats.mstats.gmean(-values)/numpy.ma.mean(-values)
+        elif numpy.ma.any(values <= 0.0):
+            # Some negative, some positive values (like in a phase spectrum)
+            # -> push to slightly positive numbers. Since gmean returns 0.0 if
+            # at least one value of the spectrum is 0.0, we offset with the
+            # minimum plus a small positive number.
+            wEntropy = scipy.stats.mstats.gmean(values-numpy.ma.min(values)+1e-10)/numpy.ma.mean(values-numpy.ma.min(values)+1e-10)
         else:
             wEntropy = scipy.stats.mstats.gmean(values)/numpy.ma.mean(values)
 
@@ -1520,6 +1537,9 @@ def nanmedian(arr, **kwargs):
 # Inputs:
 # -------
 # values    - Values
+# data_type - (optional) amp or phase
+# spw       - (optional) spw ID
+# index     - (optional) bpcal table index
 
 # Outputs:
 # --------
@@ -1529,11 +1549,15 @@ def nanmedian(arr, **kwargs):
 # ---------------------
 # 2013 Aug 06 - Dirk Muders, MPIfR
 #               Initial version.
-def bpcal_score_derivative_deviation(values):
+# 2022 Jul 22 - Dirk Muders, MPIfR
+#               Re-map scores to piecewise linear sections (PIPE-1515).
+def bpcal_score_derivative_deviation(values, data_type='UNKNOWN', spw=-1, index='UNKNONWN'):
 
     # Avoid scoring numerical inaccuracies for the reference antenna phase
     if numpy.ma.sum(numpy.abs(values)) < 1e-4:
         ddScore = 1.0
+        mappedDDScore = 1.0
+        LOG.info(f"bpcal derivative deviation scorer for data type {data_type} SPW {spw} table index {index}: low data variation, erf based score = 1.0, piecewise linear mapped score = 1.0""")
     else:
         derivative = values[:-1]-values[1:]
         derivativeMAD = MAD(derivative)
@@ -1541,6 +1565,8 @@ def bpcal_score_derivative_deviation(values):
 
         if numOutliers == 0:
             ddScore = 1.0
+            mappedDDScore = 1.0
+            LOG.info(f"bpcal derivative deviation scorer for data type {data_type} SPW {spw} table index {index}: no outliers, erf based score = 1.0, piecewise linear mapped score = 1.0""")
         else:
             outliersFraction = float(numOutliers) / float(len(values))
             toleratedFraction = 0.01
@@ -1563,7 +1589,16 @@ def bpcal_score_derivative_deviation(values):
                     msg = 'Error calling scipy.special.erf(%s/math.sqrt(2.0))' % fractionRatio
                     raise FloatingPointError(msg)
 
-    return ddScore
+            if 0.0 <= ddScore < 0.2:
+                mappedDDScore = scorers.linScorer(3.0 * toleratedFraction / math.sqrt(2.0), 0.2, 0.34, 0.66)(ddScore)
+            elif 0.2 <= ddScore < 0.3:
+                mappedDDScore = scorers.linScorer(0.2, 0.3, 0.67, 0.9)(ddScore)
+            else:
+                mappedDDScore = scorers.linScorer(0.3, 1.0, 0.91, 1.0)(ddScore)
+
+            LOG.info(f"bpcal derivative deviation scorer for data type {data_type} SPW {spw} table index {index}: fractionRatio = {fractionRatio}, erf based score = {ddScore}, piecewise linear mapped score = {mappedDDScore}""")
+
+    return mappedDDScore
 
 
 # ------------------------------------------------------------------------------

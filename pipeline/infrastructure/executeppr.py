@@ -1,40 +1,38 @@
-"""Execute the pipeline processing request.
+"""
+Execute the pipeline processing request.
 
 Code first as module and convert to class if appropriate
 Factor and document properly  when details worked out
 
-Turn some print statement into CASA log statements
-
 Raises:
     exceptions.PipelineException
-
 """
-
 import os
+import shutil
 import sys
 import traceback
+from typing import TYPE_CHECKING, Tuple, Union
 
 from ..extern import XmlObjectifier
 
-from . import Pipeline
-from . import argmapper
-from . import project
-from . import utils
-from . import vdp
 from . import casa_tools
 from . import exceptions
-from . import task_registry
+from . import filenamer
+from . import project
+from . import utils
+from .. import cli
+
+if TYPE_CHECKING:
+    from . launcher import Context
 
 
-def executeppr(pprXmlFile: str, importonly: bool = True,
-               breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
-               loglevel: str = 'info', plotlevel: str = 'default',
-               interactive: bool = True):
+def executeppr(pprXmlFile: str, importonly: bool = True, breakpoint: str = 'breakpoint', bpaction: str = 'ignore',
+               loglevel: str = 'info', plotlevel: str = 'default', interactive: bool = True) -> None:
     """
     Runs Pipeline Processing Request (PPR).
-    
+
     Executes pipeline tasks based on instructions described in pprXmlFile.
-    
+
     Args:
         pprXmlFile: A path to PPR file.
         importonly: Whether or not to indicate to stop processing after
@@ -53,38 +51,45 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         plotlevel: A plot level. Available levels are, 'all', 'default', and
             'summary'
         interactive: If True, print pipeline log to STDOUT.
-    
+
     Examples:
        Only import EBs.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml')
-       
+
        Full execution of PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False)
-       
+
        Run pipeline tasks up to the 'breakpoint' in PPR and save context.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='break')
-       
+
        Resume execution from the 'breakpoint' in PPR.
        >>> executeppr('PPR_uid___A001_X14c3_X1dd.xml', importonly=False, bpaction='resume')
-       
     """
+    # save existing context to disk
+    save_existing_context()
+
     # Useful mode parameters
     echo_to_screen = interactive
     workingDir = None
-    rawDir = None
 
     try:
-
         # Decode the processing request
         casa_tools.post_to_log("Analyzing pipeline processing request ...", echo_to_screen=echo_to_screen)
         info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList = \
             _getFirstRequest(pprXmlFile)
+        processing_intents = _getProcessingIntents(intentsDict, procedureName)
 
         # Set the directories
-        workingDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"),
-                                  relativePath, "working")
-        rawDir = os.path.join(os.path.expandvars("$SCIPIPE_ROOTDIR"),
-                              relativePath, "rawdata")
+        if 'SCIPIPE_ROOTDIR' in os.environ:
+            workingDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'working')
+            rawDir = os.path.join(os.path.expandvars('$SCIPIPE_ROOTDIR'), relativePath, 'rawdata')
+        else:
+            # PIPE-2093: if $SCIPIPE_ROOTDIR doesn't exist, we likely run in a local dev/test environment.
+            # Then we will override the typical production workingDir/rawDIR values that are traditionally
+            # constructed from $SCIPIPE_ROOTDIR and the PPR <RelativePath> field. Note that we assume that
+            # any executeppr call here happens inside the "working/" directory.
+            workingDir = os.path.abspath(os.path.join('..', 'working'))
+            rawDir = os.path.abspath(os.path.join('..', 'rawdata'))
 
         # Check for the breakpoint
         bpset = False
@@ -99,10 +104,11 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         # Get the pipeline context
         #     Resumes from the last context. Consider adding name
         if bpset and bpaction == 'resume':
-            context = Pipeline(context='last').context
+            context = cli.h_resume(filename='last')
+            context.processing_intents.update(processing_intents)
             casa_tools.post_to_log("    Resuming from last context", echo_to_screen=echo_to_screen)
         else:
-            context = Pipeline(loglevel=loglevel, plotlevel=plotlevel).context
+            context = cli.h_init(loglevel=loglevel, plotlevel=plotlevel, processing_intents=processing_intents)
             casa_tools.post_to_log("    Creating new pipeline context", echo_to_screen=echo_to_screen)
 
     except Exception:
@@ -154,12 +160,12 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         casa_tools.post_to_log("    " + item[1][0] + item[1][1], echo_to_screen=echo_to_screen)
     ds = dict(structure)
     context.project_structure = project.ProjectStructure(
-        ous_entity_id = ds['ous_entity_id'][1],
-        ous_part_id = ds['ous_part_id'][1],
-        ous_title = ds['ous_title'][1],
-        ous_type = ds['ous_type'][1],
-        ps_entity_id = ds['ps_entity_id'][1],
-        ousstatus_entity_id = ds['ousstatus_entity_id'][1],
+        ous_entity_id=ds['ous_entity_id'][1],
+        ous_part_id=ds['ous_part_id'][1],
+        ous_title=ds['ous_title'][1],
+        ous_type=ds['ous_type'][1],
+        ps_entity_id=ds['ps_entity_id'][1],
+        ousstatus_entity_id=ds['ousstatus_entity_id'][1],
         ppr_file=pprXmlFile,
         recipe_name=procedureName)
 
@@ -168,7 +174,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
 
     # Get the session info from the intents dictionary
     if len(intentsDict) > 0:
-        sessionsDict = _getSessions (intentsDict)
+        sessionsDict = _getSessions(intentsDict)
     else:
         sessionsDict = {}
 
@@ -186,7 +192,7 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
         session = defsession
 
         for key, value in sessionsDict.items():
-            if _sanitize_for_ms(asdm[1]) in value:
+            if filenamer.sanitize_for_ms(asdm[1]) in value:
                 session = key.lower()
                 break
 
@@ -201,14 +207,24 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
     casa_tools.post_to_log("\nStarting procedure execution ...\n", echo_to_screen=echo_to_screen)
     casa_tools.post_to_log("Procedure name: " + procedureName + "\n", echo_to_screen=echo_to_screen)
 
+    # Names of import tasks that need special treatment:
+    import_tasks = ('h_importdata', 'hifa_importdata', 'hifv_importdata',
+                    'hsd_importdata', 'hsdn_importdata')
+    restore_tasks = ('h_restoredata', 'hifa_restoredata', 'hifv_restoredata',
+                     'hsd_restoredata')
+    restore_tasks_no_session = ('hsdn_restoredata',)
+
     # Loop over the commands
+    errstr = ''
     foundbp = False
+    tracebacks = []
+    results = None
     for command in commandsList:
 
         # Get task name and arguments lists.
-        casa_task = command[0]
+        pipeline_task_name = command[0]
         task_args = command[1]
-        casa_tools.set_log_origin(fromwhere=casa_task)
+        casa_tools.set_log_origin(fromwhere=pipeline_task_name)
 
         # Handle break point if one is set
         if bpset:
@@ -217,79 +233,44 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
             #    Ignore it  or
             #    Break the loop or
             #    Resume execution
-            if casa_task == breakpoint:
+            if pipeline_task_name == breakpoint:
                 foundbp = True
                 if bpaction == 'ignore':
-                    casa_tools.post_to_log("Ignoring breakpoint " + casa_task, echo_to_screen=echo_to_screen)
+                    casa_tools.post_to_log("Ignoring breakpoint " + pipeline_task_name, echo_to_screen=echo_to_screen)
                     continue
                 elif bpaction == 'break':
-                    casa_tools.post_to_log("Terminating execution at breakpoint " + casa_task,
+                    casa_tools.post_to_log("Terminating execution at breakpoint " + pipeline_task_name,
                                            echo_to_screen=echo_to_screen)
                     break
                 elif bpaction == 'resume':
-                    casa_tools.post_to_log("Resuming execution after breakpoint " + casa_task,
+                    casa_tools.post_to_log("Resuming execution after breakpoint " + pipeline_task_name,
                                            echo_to_screen=echo_to_screen)
                     continue
             # Not the break point so check the resume case
             elif not foundbp and bpaction == 'resume':
-                casa_tools.post_to_log("Skipping task " + casa_task, echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("Skipping task " + pipeline_task_name, echo_to_screen=echo_to_screen)
                 continue
 
-        # Execute
-        casa_tools.post_to_log("Executing command ..." + casa_task, echo_to_screen=echo_to_screen)
-
         # Execute the command
+        casa_tools.post_to_log("Executing command ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
         try:
-            pipeline_task_class = task_registry.get_pipeline_class_for_task(casa_task)
-            pipeline_task_name = pipeline_task_class.__name__
-            casa_tools.post_to_log("    Using python class ..." + pipeline_task_name, echo_to_screen=echo_to_screen)
+            pipeline_task = cli.get_pipeline_task_with_name(pipeline_task_name)
 
             # List parameters
             for keyword, value in task_args.items():
-                casa_tools.post_to_log("    Parameter: " + keyword + " = " + str(value), echo_to_screen=echo_to_screen)
+                casa_tools.post_to_log("    Parameter: " + keyword + " = " + repr(value), echo_to_screen=echo_to_screen)
 
-            if pipeline_task_name in ('ImportData', 'RestoreData',
-                                      'ALMAImportData', 'ALMARestoreData',
-                                      'VLAImportData','VLARestoreData',
-                                      'SDImportData', 'SDRestoreData',
-                                      'NROImportData', 'NRORestoreData'):
+            # For import/restore tasks, set vis and session explicitly (not inferred from context).
+            if pipeline_task_name in import_tasks or pipeline_task_name in restore_tasks:
                 task_args['vis'] = files
                 task_args['session'] = sessions
+            elif pipeline_task_name in restore_tasks_no_session:
+                task_args['vis'] = files
 
-            remapped_args = argmapper.convert_args(pipeline_task_class, task_args, convert_nulls=False)
-            inputs = vdp.InputsContainer(pipeline_task_class, context, **remapped_args)
-            task = pipeline_task_class(inputs)
-            results = task.execute(dry_run=False)
+            results = pipeline_task(**task_args)
             casa_tools.post_to_log('Results ' + str(results), echo_to_screen=echo_to_screen)
 
-            try:
-                results.accept(context)
-            except Exception:
-                casa_tools.post_to_log("Error: Failed to update context for " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                raise
-
-            if pipeline_task_name == 'ImportData' and importonly:
-                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                break
-
-            if pipeline_task_name == 'ALMAImportData' and importonly:
-                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                break
-
-            if pipeline_task_name == 'VLAImportData' and importonly:
-                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                break
-
-            if pipeline_task_name == 'SDImportData' and importonly:
-                casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
-                                       echo_to_screen=echo_to_screen)
-                break
-
-            if pipeline_task_name == 'NROImportData' and importonly:
+            if importonly and pipeline_task_name in import_tasks:
                 casa_tools.post_to_log("Terminating execution after running " + pipeline_task_name,
                                        echo_to_screen=echo_to_screen)
                 break
@@ -301,42 +282,83 @@ def executeppr(pprXmlFile: str, importonly: bool = True,
                                    "".format(pipeline_task_name), echo_to_screen=echo_to_screen)
             errstr = traceback.format_exc()
             casa_tools.post_to_log(errstr, echo_to_screen=echo_to_screen)
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
-            break
 
-        # Stop execution if result is a failed task result or a list
-        # containing a failed task result.
-        tracebacks = utils.get_tracebacks(results)
+        # Check whether any exceptions were raised either during the task
+        # (shown as traceback in task results) or after the task during results
+        # acceptance.
+        if results:
+            tracebacks.extend(utils.get_tracebacks(results))
+        if errstr:
+            tracebacks.append(errstr)
+        # If we have a traceback from an exception, then create local error
+        # exit file, and export both error file and weblog to the products
+        # directory.
         if len(tracebacks) > 0:
-            # Save the context
-            context.save()
+            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
+            export_on_exception(context, errorfile)
 
+            # Save the context
+            cli.h_save()
+            casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
             casa_tools.set_log_origin(fromwhere='')
 
-            errorfile = utils.write_errorexit_file(workingDir, 'errorexit', 'txt')
             previous_tracebacks_as_string = "{}".format("\n".join([tb for tb in tracebacks]))
             raise exceptions.PipelineException(previous_tracebacks_as_string)
 
     # Save the context
-    context.save()
-
+    cli.h_save()
     casa_tools.post_to_log("Terminating procedure execution ...", echo_to_screen=echo_to_screen)
-
     casa_tools.set_log_origin(fromwhere='')
 
     return
 
 
+def save_existing_context() -> None:
+    """Save existing context to disk.
+
+    Save existing global pipeline context to avoid
+    being overwritten by newly created one.
+    """
+    try:
+        cli.h_save()
+    except Exception:
+        # Since h_save raises exception if no context is registered,
+        # just continue processing in this case
+        pass
+    else:
+        # Last-saved context in the current working directory should be
+        # the one saved by the h_save task above.
+        context_files = sorted(
+            (f for f in os.listdir() if f.endswith('.context')),
+            key=lambda f: os.stat(f).st_mtime
+        )
+        assert len(context_files) > 0
+        context_file = context_files[-1]
+        casa_tools.post_to_log(f'Saved existing context {context_file} to disk.')
+
+
+def export_on_exception(context: 'Context', errorfile: str) -> None:
+    # Define path for exporting output products, and ensure path exists.
+    products_dir = utils.get_products_dir(context)
+    utils.ensure_products_dir_exists(products_dir)
+
+    # Copy error file to products.
+    if os.path.exists(errorfile):
+        shutil.copyfile(errorfile, os.path.join(products_dir, os.path.basename(errorfile)))
+
+    # Attempt to export weblog.
+    try:
+         utils.export_weblog_as_tar(context, products_dir, filenamer.PipelineProductNameBuilder)
+    except:
+        casa_tools.post_to_log("Unable to export weblog to products.")
+
+
 # Return the intents list, the ASDM list, and the processing commands
 # for the first processing request. There should in general be only
 # one but the schema permits more. Generalize later if necessary.
-#
-# TDB: Turn some print statement into CASA log statements
-def _getFirstRequest(pprXmlFile):
-
+def _getFirstRequest(pprXmlFile: str) -> Union[Tuple[list, str, dict, list, list], Tuple[list, list, str, dict, list, str, list]]:
     # Initialize
     info = []
-    structure = []
     relativePath = ""
     intentsDict = {}
     commandsList = []
@@ -348,10 +370,11 @@ def _getFirstRequest(pprXmlFile):
     # Count the processing requests.
     numRequests = _getNumRequests(pprObject=pprObject)
     if numRequests <= 0:
-        print("Terminating execution: No valid processing requests")
+        casa_tools.post_to_log("Terminating execution: No valid processing requests")
         return info, relativePath, intentsDict, asdmList, commandsList
     elif numRequests > 1:
-        print("Warning: More than one processing request")
+        casa_tools.post_to_log("Warning: More than one processing request")
+    casa_tools.post_to_log('Number of processing requests: ', numRequests)
 
     # Get brief project summary
     info = _getProjectSummary(pprObject)
@@ -360,60 +383,56 @@ def _getFirstRequest(pprXmlFile):
     structure = _getProjectStructure(pprObject)
 
     # Get the intents dictionary
-    numIntents, intentsDict = _getIntents(
-        pprObject=pprObject, requestId=0, numRequests=numRequests)
+    numIntents, intentsDict = _getIntents(pprObject=pprObject, requestId=0, numRequests=numRequests)
+    casa_tools.post_to_log('Number of intents: {}'.format(numIntents))
+    casa_tools.post_to_log('Intents dictionary: {}'.format(intentsDict))
 
     # Get the commands list
-    procedureName, numCommands, commandsList = _getCommands(
-        pprObject=pprObject, requestId=0, numRequests=numRequests)
+    procedureName, numCommands, commandsList = _getCommands(pprObject=pprObject, requestId=0, numRequests=numRequests)
+    casa_tools.post_to_log('Number of commands: {}'.format(numCommands))
+    casa_tools.post_to_log('Commands list: {}'.format(commandsList))
 
     # Count the scheduling block sets. Normally there should be only
     # one although the schema allows multiple sets. Check for this
     # condition and process only the first.
-    numSbSets = _getNumSchedBlockSets(
-        pprObject=pprObject, requestId=0, numRequests=numRequests)
+    numSbSets = _getNumSchedBlockSets(pprObject=pprObject, requestId=0, numRequests=numRequests)
     if numSbSets <= 0:
-        print("Terminating execution: No valid scheduling block sets")
+        casa_tools.post_to_log("Terminating execution: No valid scheduling block sets")
         return info, relativePath, intentsDict, asdmList, commandsList
     elif numSbSets > 1:
-        print("Warning: More than one scheduling block set")
+        casa_tools.post_to_log("Warning: More than one scheduling block set")
 
     # Get the ASDM list
-    relativePath, numAsdms, asdmList = _getAsdmList(
-        pprObject=pprObject, sbsetId=0, numSbSets=numSbSets, requestId=0,
-        numRequests=numRequests)
+    relativePath, numAsdms, asdmList = _getAsdmList(pprObject=pprObject, sbsetId=0, numSbSets=numSbSets, requestId=0,
+                                                    numRequests=numRequests)
+    casa_tools.post_to_log('Relative path: {}'.format(relativePath))
+    casa_tools.post_to_log('Number of Asdms: {}'.format(numAsdms))
+    casa_tools.post_to_log('ASDM list: {}'.format(asdmList))
 
     return info, structure, relativePath, intentsDict, asdmList, procedureName, commandsList
 
 
 # Give the path to the pipeline processing request XML file return the pipeline
 # processing request object.
-def _getPprObject(pprXmlFile):
-    pprObject = XmlObjectifier.XmlObject (fileName=pprXmlFile)
+def _getPprObject(pprXmlFile: str) -> XmlObjectifier.XmlObject:
+    pprObject = XmlObjectifier.XmlObject(fileName=pprXmlFile)
     return pprObject
 
 
 # Given the pipeline processing request object print some project summary
 # information. Returns a list of tuples to preserve order (key, (prompt, value))
-def _getProjectSummary(pprObject):
-
+def _getProjectSummary(pprObject: XmlObjectifier.XmlObject) -> list:
     ppr_summary = pprObject.SciPipeRequest.ProjectSummary
     summaryList = []
     summaryList.append(('proposal_code', ('Proposal code: ', ppr_summary.ProposalCode.getValue())))
-    # Note that these are not being filled properly from the project status
-    #summaryList.append (('proposal_title', ('Proposal title: ',
-    #    ppr_summary.ProposalTitle.getValue())))
-    #summaryList.append (('piname', ('Principal investigator: ',
-    #    ppr_summary.PIName.getValue())))
     summaryList.append(('observatory', ('Observatory: ', ppr_summary.Observatory.getValue())))
     summaryList.append(('telescope', ('Telescope: ', ppr_summary.Telescope.getValue())))
-
     return summaryList
 
 
 # Given the pipeline processing request object print some project structure
-# information. Returns a
-def _getProjectStructure(pprObject):
+# information.
+def _getProjectStructure(pprObject: XmlObjectifier.XmlObject) -> list:
 
     # backwards compatibility test
     ppr_project = pprObject.SciPipeRequest.ProjectStructure
@@ -448,7 +467,7 @@ def _getProjectStructure(pprObject):
 
 # Given the pipeline processing request object return the number of processing
 # requests. This should normally be 1.
-def _getNumRequests(pprObject):
+def _getNumRequests(pprObject: XmlObjectifier.XmlObject) -> int:
 
     ppr_prequests = pprObject.SciPipeRequest.ProcessingRequests
 
@@ -500,22 +519,9 @@ def _getNumRequests(pprObject):
     return numRequests
 
 
-# Return the relative path for the request
-#def _getRelativePath (pprObject, requestId, numRequests):
-#
-#    ppr_prequests = pprObject.SciPipeRequest.ProcessingRequests
-#
-#    if numRequests == 1:
-#        relativePath = ppr_prequests.ProcessingRequest.RelativePath.getValue()
-#    else:
-#        relativePath = ppr_prequests.ProcessingRequest[requestId].RelativePath.getValue()
-#
-#    return relativePath
-
-
 # Given the pipeline processing request object return a list of processing
 # intents in the form of a keyword and value dictionary
-def _getIntents(pprObject, requestId, numRequests):
+def _getIntents(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> Tuple[int, dict]:
 
     if numRequests == 1:
         ppr_intents = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingIntents
@@ -549,38 +555,55 @@ def _getIntents(pprObject, requestId, numRequests):
     return numIntents, intentsDict
 
 
-def _getPerformanceParameters(intentsDict):
-
-    # Initalize
+def _getPerformanceParameters(intentsDict: dict) -> project.PerformanceParameters:
     performanceParams = project.PerformanceParameters()
 
     # No performance parameters
     if len(intentsDict) <= 0:
         return performanceParams
 
-    # Supported performance parameters
-    #   Don't use. Rely on class __init__ method
-    #params = ['desired_angular_resolution',
-        #'desired_largest_scale',
-        #'desired_spectral_resolution',
-        #'desired_sensitivity',
-        #'desired_dynamic_range']
-
     # Set supported attributes
     for key in intentsDict:
         # Parameter not defined in __init__ method
         if not hasattr(performanceParams, key):
             continue
-        # Parameter not supported
-        #if key not in params:
-            #continue
         setattr(performanceParams, key, intentsDict[key])
 
     return performanceParams
 
 
-def _getSessions(intentsDict):
+def _getProcessingIntents(intentsDict: dict, procedureName: str) -> dict:
+    """
+    Filter the real processing intents from the PPR ProcessingIntents section.
+    As a fallback also inspect the recipe name to derive some processing
+    information.
 
+    Args:
+        intentsDict: The dictionary with the PPR ProcessingIntents content.
+        procedureName: The PPR recipe name.
+
+    Returns:
+        processingIntents: The dictionary with the real processing intents.
+    """
+
+    # Dictionary with known processing intents and their possible recipe
+    # names. The latter is fragile, but initially necessary until the PPR
+    # contains the actual intents.
+    knownProcessingIntents = {'INTERFEROMETRY_FULL_POL_CUBE_IMAGING': ['hifa_polcalimage', 'hifa_polimage'],
+                              'INTERFEROMETRY_HETEROGENEOUS_IMAGING': []}
+
+    # Initial filtering of PPR intents
+    processingIntents = dict((k, v) for (k, v) in intentsDict.items() if k in knownProcessingIntents)
+
+    # Fallback via recipe names
+    for k, v in knownProcessingIntents.items():
+        if (k not in processingIntents) and (procedureName in v):
+            processingIntents[k] = True
+
+    return processingIntents
+
+
+def _getSessions(intentsDict: dict) -> dict:
     sessionsDict = {}
 
     searching = True
@@ -588,7 +611,6 @@ def _getSessions(intentsDict):
     while searching:
         key = 'SESSION_' + str(ptr)
         if key in intentsDict:
-            #asdmList = intentsDict[key].split(',')
             asdmList = intentsDict[key].split(' | ')
             asdmList = [asdm.translate(str.maketrans(':/', '__')) for asdm in asdmList]
             sessionsDict[key] = asdmList
@@ -603,8 +625,7 @@ def _getSessions(intentsDict):
 # Given the pipeline processing request object return a list of processing
 # commands where each element in the list is a tuple consisting of the
 # processing command name and the parameter set dictionary.
-def _getCommands(pprObject, requestId, numRequests):
-
+def _getCommands(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_cmds = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.ProcessingProcedure
     else:
@@ -640,26 +661,17 @@ def _getCommands(pprObject, requestId, numRequests):
 
 # Given the pipeline processing request object return the number of scheduling
 # block sets.
-def _getNumSchedBlockSets(pprObject, requestId, numRequests):
-
+def _getNumSchedBlockSets(pprObject: XmlObjectifier.XmlObject, requestId: int, numRequests: int) -> int:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
     else:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest[requestId].DataSet
 
-    numSchedBlockSets = 0
-
     try:
         path = ppr_dset.SchedBlockSet.SchedBlockIdentifier.RelativePath.getValue()
         numSchedBlockSets = 1
     except Exception:
-        search = 1
-        while search:
-            try:
-                path = ppr_dset.SchedBlockSet[numSchedBlocks].SchedBlockIdentifier.RelativePath.getValue()
-                numSchedBlockSets = numSchedBlockSets + 1
-            except Exception:
-                search = 0
+        numSchedBlockSets = 0
 
     return numSchedBlockSets
 
@@ -667,9 +679,7 @@ def _getNumSchedBlockSets(pprObject, requestId, numRequests):
 # Given the pipeline processing request object return a list of ASDMs
 # where each element in the list is a tuple consisting of the path
 # to the ASDM, the name of the ASDM, and the UID of the ASDM.
-def _getAsdmList(pprObject, sbsetId, numSbSets, requestId, numRequests):
-
-    relativePath = ""
+def _getAsdmList(pprObject: XmlObjectifier.XmlObject, sbsetId: int, numSbSets: int, requestId: int, numRequests: int) -> Tuple[str, int, list]:
     if numRequests == 1:
         ppr_dset = pprObject.SciPipeRequest.ProcessingRequests.ProcessingRequest.DataSet
         if numSbSets == 1:
@@ -689,20 +699,15 @@ def _getAsdmList(pprObject, sbsetId, numSbSets, requestId, numRequests):
     asdmList = []
 
     try:
-        #asdmPath = ppr_dset.AsdmSet.RelativePath.getValue()
         asdmName = ppr_dset.AsdmIdentifier.AsdmDiskName.getValue()
         asdmUid = ppr_dset.AsdmIdentifier.AsdmRef.ExecBlockId.getValue()
         asdmList.append((relativePath, asdmName, asdmUid))
         numAsdms = 1
     except Exception:
         search = 1
-        while (search):
+        while search:
             try:
-                #asdmPath = ppr_dset.AsdmSet[numAsdms].RelativePath.getValue()
-                #asdmPath = ppr_dset.AsdmSet.RelativePath.getValue()
-                #asdmName = ppr_dset.AsdmSet[numAsdms].AsdmIdentifier.AsdmDiskName.getValue()
                 asdmName = ppr_dset.AsdmIdentifier[numAsdms].AsdmDiskName.getValue()
-                #asdmUid = ppr_dset.AsdmSet[numAsdms].AsdmIdentifier.Asdmref.ExecBlockId.getValue()
                 asdmUid = ppr_dset.AsdmIdentifier[numAsdms].AsdmRef.ExecBlockId.getValue()
                 numAsdms = numAsdms + 1
                 asdmList.append((relativePath, asdmName, asdmUid))
@@ -714,8 +719,7 @@ def _getAsdmList(pprObject, sbsetId, numSbSets, requestId, numRequests):
 
 # Given a parameter set object retrieve the parameter set dictionary for
 # each command.
-def _getParameters(ppsetObject):
-
+def _getParameters(ppsetObject: XmlObjectifier.XmlObject) -> Tuple[int, dict]:
     numParams = 0
     paramsDict = {}
 
@@ -742,10 +746,3 @@ def _getParameters(ppsetObject):
                 search = 0
 
     return numParams, paramsDict
-
-# Allow _target.ms, _cont.ms or .ms endings: needed to import Measurement Sets (see PIPE-579 and PIPE-1082)
-def _sanitize_for_ms(vis_name):
-    for msend in ('_target.ms', '_cont.ms', '.ms'):
-        if vis_name.endswith(msend):
-            return _sanitize_for_ms(vis_name[:-len(msend)])
-    return vis_name

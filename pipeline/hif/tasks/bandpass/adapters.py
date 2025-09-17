@@ -50,7 +50,7 @@ class PhaseUpSolIntAdapter(adapters.Adapter):
         :param intent: the intent for which to find the integration time 
         :type intent: string
         """
-        int_time = ms.get_median_integration_time(intent)
+        int_time = ms.get_integration_time_stats(intent=intent, stat_type="median")
         return self._adaptee(int_time)
 
 
@@ -100,7 +100,7 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
                         ''.format(caltable.name))
             spw = ms.get_spectral_window(spw)
             num_antenna = len(ms.antennas)            
-            return numpy.ones([num_antenna+1, spw.num_channels], numpy.complex)
+            return numpy.ones([num_antenna+1, spw.num_channels], complex)
 
         spw = int(spw)
 
@@ -137,8 +137,8 @@ class PolynomialHeuristicAdapter(adapters.Adapter):
             # average the polarization results
             antenna_ids = [antenna.id for antenna in ms.antennas]
             num_antenna = len(antenna_ids)        
-            data = numpy.zeros([num_antenna+1, nchannels], numpy.complex)
-            flag = numpy.zeros([num_antenna+1, nchannels], numpy.bool)
+            data = numpy.zeros([num_antenna+1, nchannels], complex)
+            flag = numpy.zeros([num_antenna+1, nchannels], bool)
 
             antennas1 = [antenna1[i] for i in range(numpy.shape(gain)[2])
                          if i in antenna_ids]

@@ -12,6 +12,9 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class TecMapsInputs(vdp.StandardInputs):
+    show_tec_maps = vdp.VisDependentProperty(default=True)
+    apply_tec_correction = vdp.VisDependentProperty(default=False)
+
     @vdp.VisDependentProperty
     def caltable(self):
         namer = caltable_heuristic.TecMapstable()
@@ -22,11 +25,35 @@ class TecMapsInputs(vdp.StandardInputs):
     def parameter(self):
         return []
 
-    def __init__(self, context, output_dir=None, vis=None, caltable=None, caltype=None, parameter=None):
+    # docstring and type hints: supplements hifv_tecmaps
+    def __init__(self, context, output_dir=None, vis=None, show_tec_maps=None, apply_tec_correction=None,
+                 caltable=None, caltype=None, parameter=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            show_tec_maps:
+
+            apply_tec_correction:
+
+            caltable:
+
+            caltype:
+
+            parameter:
+        """
         super(TecMapsInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
         self.vis = vis
+        self.show_tec_maps = show_tec_maps
+        self.apply_tec_correction = apply_tec_correction
         self.parameter = parameter
         self.caltable = caltable
         self.caltype = caltype
@@ -85,32 +112,53 @@ class TecMaps(basetask.StandardTaskTemplate):
     def prepare(self):
         inputs = self.inputs
 
-        tec_image = None
-        tec_rms_image = None
-        tec_image, tec_rms_image, tec_plotfile = tec_maps.create(vis=inputs.vis, doplot=True, imname='iono')
-
-        gencal_args = inputs.to_casa_args()
-        gencal_args['infile'] = tec_image
-        gencal_job = casa_tasks.gencal(**gencal_args)
-        self._executor.execute(gencal_job)
-
+        tec_image, tec_rms_image, tec_plotfile = None, None, None
         callist = []
-        calto = callibrary.CalTo(vis=inputs.vis)
-        calfrom = callibrary.CalFrom(gencal_args['caltable'], caltype='tecim', interp='', calwt=False)
-        calapp = callibrary.CalApplication(calto, calfrom)
-        callist.append(calapp)
+        if self.inputs.show_tec_maps or self.inputs.apply_tec_correction:
+            try:
+                tec_image, tec_rms_image, tec_plotfile = tec_maps.create(vis=inputs.vis, doplot=True, imname='iono')
+            except UnboundLocalError as ex:
+                LOG.warning('    TEC map query error: %s', ex)
 
-        return TecMapsResults(pool=callist, final=callist, tec_image=tec_image, tec_rms_image=tec_rms_image,
-                              tec_plotfile=tec_plotfile)
+            # IPE-2795: the return values from tec_maps.create()
+            # could be 'none' (string) instead of None.
+            if tec_image in ('none', 'None', ''):
+                tec_image = None
+            if tec_rms_image in ('none', 'None', ''):
+                tec_rms_image = None
+            if tec_plotfile in ('none', 'None', ''):
+                tec_plotfile = None
+            if not tec_image:
+                LOG.warning('TEC information or retrieval service is unavailable')
+                return TecMapsResults(
+                    pool=callist, final=callist, tec_image=None, tec_rms_image=None, tec_plotfile=None
+                )
+
+            if self.inputs.apply_tec_correction:
+                gencal_args = inputs.to_casa_args()
+                gencal_args.pop('show_tec_maps')
+                gencal_args.pop('apply_tec_correction')
+                gencal_args['infile'] = tec_image
+                gencal_job = casa_tasks.gencal(**gencal_args)
+                self._executor.execute(gencal_job)
+
+                calto = callibrary.CalTo(vis=inputs.vis)
+                calfrom = callibrary.CalFrom(gencal_args['caltable'], caltype='tecim', interp='', calwt=False)
+                calapp = callibrary.CalApplication(calto, calfrom)
+                callist.append(calapp)
+
+            return TecMapsResults(
+                pool=callist, final=callist, tec_image=tec_image, tec_rms_image=tec_rms_image, tec_plotfile=tec_plotfile
+            )
+        else:
+            return TecMapsResults(pool=callist, final=callist, tec_image=None, tec_rms_image=None, tec_plotfile=None)
 
     def analyse(self, result):
         # double-check that the caltable was actually generated
-        on_disk = [ca for ca in result.pool
-                   if ca.exists() or self._executor._dry_run]
+        on_disk = [ca for ca in result.pool if ca.exists()]
         result.final[:] = on_disk
 
-        missing = [ca for ca in result.pool
-                   if ca not in on_disk and not self._executor._dry_run]
+        missing = [ca for ca in result.pool if ca not in on_disk]
         result.error.clear()
         result.error.update(missing)
 
@@ -119,7 +167,11 @@ class TecMaps(basetask.StandardTaskTemplate):
     def _do_tecmaps(self):
         # Private class method for reference only
         # tec_image, tec_rms_image = tec_maps.create('vlass3C48.ms')
-        tec_maps.create(vis=self.vis, doplot=True, imname='iono')
+        try:
+            tec_maps.create(vis=self.vis, doplot=True, imname='iono')
+        except UnboundLocalError as e:
+            LOG.warning("TEC Maps error returned. CASA {!s}".format(e))
+            return None
         # gencal_job = casa_tasks.gencal(**gencal_args)
         gencal_job = casa_tasks.gencal(vis=self.vis, caltable='file.tec', caltype='tecim', infile='iono.IGS_TEC.im')
         self._executor.execute(gencal_job)

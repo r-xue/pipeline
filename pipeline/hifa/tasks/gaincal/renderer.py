@@ -4,7 +4,6 @@ Created on 29 Oct 2014
 @author: sjw
 """
 import collections
-import copy
 import os
 
 import pipeline.infrastructure
@@ -16,16 +15,18 @@ from . import display as gaincal_displays
 
 LOG = logging.get_logger(__name__)
 
-GaincalApplication = collections.namedtuple('GaincalApplication', 'ms gaintable calmode solint intent spw gainfield')
+GaincalApplication = collections.namedtuple('GaincalApplication',
+                                            'ms gaintable calmode solint intent field spw gainfield')
 
 
 class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
     def __init__(self, uri='timegaincal.mako', description='Gain calibration', always_rerender=False):
-        super(T2_4MDetailsGaincalRenderer, self).__init__(
-            uri=uri, description=description, always_rerender=always_rerender)
+        super().__init__(uri=uri, description=description, always_rerender=always_rerender)
 
     def update_mako_context(self, ctx, context, results):
         applications = []
+        spw_mapping = {}
+        spw_mapping_without_check = {}
 
         amp_vs_time_summaries = collections.defaultdict(list)
         phase_vs_time_summaries = {}
@@ -50,6 +51,12 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         for result in results:
             vis = os.path.basename(result.inputs['vis'])
             ms = context.observing_run.get_ms(vis)
+
+            # Get a string summarizing the SpW mapping info for current MS.
+            spw_mapping[vis] = self.get_spw_mappings(ms)
+
+            # Get a string summarizing the Spw mapping info for the current MS, omitting any CHECK sources.
+            spw_mapping_without_check[vis] = self.get_spw_mappings(ms, omit_intent='CHECK')
 
             # Get gain cal applications for current MS.
             ms_applications = self.get_gaincal_applications(context, result, ms)
@@ -87,13 +94,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     ants = ','.join([str(antenna.id) for antenna in ms.antennas if antenna.diameter == antdiam])
 
                     # Generate the amp-vs-time plots.
-                    # Create copy of CalApplication for subset of antennas with
-                    # current antenna diameter.
-                    calapps = copy.deepcopy(result.final)
-                    for calapp in calapps:
-                        calapp.calto.antenna = ants
-                    # Create plots
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, 'TARGET')
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET', ant=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
@@ -103,11 +104,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     # Generate diagnostic amp vs time plots for bandpass solution.
                     # Create copy of CalApplication for subset of antennas with
                     # current antenna diameter.
-                    calapps = copy.deepcopy(result.calampresult.final)
-                    for calapp in calapps:
-                        calapp.calto.antenna = ants
-                    # Create plots
-                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, calapps, '')
+                    plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.calampresult.final, key=lambda cal: cal.gaintable), '', ant=ants)
                     plot_wrappers = plotter.plot()
                     # Add diameter info to plot wrappers and store wrappers.
                     for wrapper in plot_wrappers:
@@ -115,7 +112,7 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
             else:
                 # Generate the amp-vs-time plots.
-                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, result.final, 'TARGET')
+                plotter = gaincal_displays.GaincalAmpVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET')
                 plot_wrappers = plotter.plot()
                 amp_vs_time_summaries[vis].extend(plot_wrappers)
 
@@ -125,12 +122,25 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 diagnostic_amp_vs_time_summaries[vis].extend(plot_wrappers)
 
             # generate phase vs time plots
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'TARGET')
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, sorted(result.final, key=lambda cal: cal.gaintable), 'TARGET')
             phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase vs time plots for bandpass solution, i.e. 
             # with solint=int
-            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, result.final, 'BANDPASS')
+            #
+            # Retrieve the phase solutions from hifa_timegaincal that were saved off specifically to make this plot
+            # (See: PIPE-1377 for more information)             
+            diagnostic_phase_calapps = result.phasecal_for_phase_plot
+            # Add the CHECK sources from hifa_gfluxscale to this plot (see: PIPE-1377)
+            if ms.phase_calapps_for_check_sources:
+                diagnostic_phase_calapps.extend(ms.phase_calapps_for_check_sources)
+            else: 
+                LOG.info('Could not find check source solutions from hifa_gfluxscale, omitting from diagnostic phase vs. time plot for {}.'.format(ms.name))
+
+            diagnostic_phase_calapps.sort(key=lambda cal: cal.gaintable)
+
+            # There's no need to pass specific intents for this, because the list is already limited to the appropriate plots.
+            plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result, diagnostic_phase_calapps, '') 
             diagnostic_phase_vs_time_summaries[vis] = plotter.plot()
 
             # generate diagnostic phase offset vs time plots
@@ -138,6 +148,34 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                 plotter = gaincal_displays.GaincalPhaseVsTimeSummaryChart(context, result,
                                                                           result.phaseoffsetresult.final, '')
                 diagnostic_phaseoffset_vs_time_summaries[vis] = plotter.plot()
+
+                # PIPE-1762: add information about spw mapping (if any)
+                for plot in diagnostic_phaseoffset_vs_time_summaries[vis]:
+                    plotspw = plot.parameters['spw']
+                    spw_combined = []  # list of fields in which the spws are combined
+                    spw_mapped = []  # list of target spws and fields in which plotspw is mapped to a target spw
+                    num_fields_with_phase_intent = 0
+                    for ifld, spwmap in ms.spwmaps.items():
+                        if ifld.intent != 'PHASE':
+                            continue
+                        num_fields_with_phase_intent += 1
+                        if spwmap.combine:
+                            spw_combined.append(ifld.field)
+                        elif spwmap.spwmap and spwmap.spwmap[plotspw] != plotspw:
+                            # only add the message if the spw is not mapped onto itself
+                            spw_mapped.append((spwmap.spwmap[plotspw], ifld.field))
+                    # add a message to the caption of diagnostic phase offset plot in case that the spw is mapped.
+                    # in the case of more than one phase calibrator, append the field name in brackets to the spw name.
+                    captionmessage = []
+                    for targetspw, field in spw_mapped:
+                        captionmessage.append('spw {}{}'.format(
+                            targetspw, ' ({})'.format(field) if num_fields_with_phase_intent > 1 else ''))
+                    if spw_combined:
+                        captionmessage.append('all spws combined' + (' ({})'.format(', '.join(spw_combined))
+                                                                     if num_fields_with_phase_intent > 1 else ''))
+                    if captionmessage:
+                        plot.captionmessage = ('This spw is calibrated using the phase solution for {}.'.format(
+                            ', '.join(captionmessage)))
 
             # Generate detailed plots and render corresponding sub-pages.
             if pipeline.infrastructure.generate_detail_plots(result):
@@ -158,7 +196,8 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
                     amp_vs_time_subpages[vis] = renderer.path
 
                 # phase vs time for solint=int
-                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, result.final, 'BANDPASS')
+                # There's no need to pass specific intents, because the list is already limited to the appropriate plots.
+                plotter = gaincal_displays.GaincalPhaseVsTimeDetailChart(context, result, diagnostic_phase_calapps, '')
                 diagnostic_phase_vs_time_details[vis] = plotter.plot()
                 renderer = GaincalPhaseVsTimeDiagnosticPlotRenderer(context, result,
                                                                     diagnostic_phase_vs_time_details[vis])
@@ -206,6 +245,8 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
         # just created
         ctx.update({
             'applications': applications,
+            'spw_mapping': spw_mapping,
+            'spw_mapping_without_check': spw_mapping_without_check,
             'amp_vs_time_plots': amp_vs_time_summaries,
             'phase_vs_time_plots': phase_vs_time_summaries,
             'diagnostic_amp_vs_time_plots': diagnostic_amp_vs_time_summaries,
@@ -246,9 +287,11 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             gaintable = os.path.basename(calapp.gaintable)
             spw = ', '.join(calapp.spw.split(','))
 
-            to_intent = ', '.join(calapp.calto.intent.split(','))
+            to_intent = ', '.join(sorted(calapp.calto.intent.split(',')))
             if to_intent == '':
                 to_intent = 'ALL'
+
+            to_field = ', '.join(sorted(calapp.calto.field.split(',')))
 
             calmode = utils.get_origin_input_arg(calapp, 'calmode')
             calmode = calmode_map.get(calmode, calmode)
@@ -256,10 +299,37 @@ class T2_4MDetailsGaincalRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
             assert(len(calapp.calfrom) == 1)
             gainfield = calapp.calfrom[0].gainfield
 
-            a = GaincalApplication(ms.basename, gaintable, calmode, solint, to_intent, spw, gainfield)
+            a = GaincalApplication(ms.basename, gaintable, calmode, solint, to_intent, to_field, spw, gainfield)
             applications.append(a)
 
         return applications
+
+    @staticmethod
+    def get_spw_mappings(ms, omit_intent: str='') -> str:
+        combined = []
+        mapped = []
+        default_mapped = []
+        for ifld, spwmap in ms.spwmaps.items():
+            # Skip intent in omit_intent
+            if omit_intent and (ifld.intent == omit_intent):
+                continue
+
+            if spwmap.combine:
+                combined.append(f"{ifld.field} ({ifld.intent})")
+            else:
+                if spwmap.spwmap:
+                    mapped.append(f"{ifld.field} ({ifld.intent})")
+                else:
+                    # If the spwmap is an empty list, use the phrase "default mapped"
+                    default_mapped.append(f"{ifld.field} ({ifld.intent})")
+
+        # Construct string summarizing SpW mapping for MS.
+        combined_str = f"Spectral windows combined for {', '.join(combined)}." if combined else ""
+        mapped_str = f"Spectral windows mapped for {', '.join(mapped)}." if mapped else ""
+        default_mapped_str = f"Spectral windows default mapped for {', '.join(default_mapped)}." if default_mapped else ""
+        summary_str = ' '.join([combined_str, default_mapped_str, mapped_str]).strip()
+
+        return summary_str
 
 
 class GaincalPhaseVsTimePlotRenderer(basetemplates.JsonPlotRenderer):
@@ -280,14 +350,14 @@ class GaincalPhaseVsTimeDiagnosticPlotRenderer(basetemplates.JsonPlotRenderer):
         title = 'Phase vs time for %s' % vis
         outfile = filenamer.sanitize('diagnostic_phase_vs_time-%s.html' % vis)
 
-        if not isinstance(results, collections.Iterable):
+        if not isinstance(results, collections.abc.Iterable):
             results = [results]
 
         # collect QA results generated for this vis
         self._qa_data = {}
         for result in results:
             b = os.path.basename(result.inputs['vis'])
-            self._qa_data[b] = [v for k, v in result.qa.qa_results_dict.items() if b in k]
+            self._qa_data[b] = [v for k, v in result.qa.phase_qa_results_dict.items() if b in k]
 
         self._score_types = frozenset(['PHASE_SCORE_XY', 'PHASE_SCORE_X2X1'])
 

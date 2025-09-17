@@ -15,7 +15,7 @@ LOG = logging.get_logger(__name__)
 class SetModelsQAHandler(pqa.QAPlugin):
     result_cls = commonfluxresults.FluxCalibrationResults
     child_cls = None
-    generating_task = setmodel.SetModels
+    generating_task = setmodel.SerialSetModels
 
     def handle(self, context, result):
 
@@ -79,7 +79,7 @@ class SetjyListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxCalibrationResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = commonfluxresults.FluxCalibrationResults
     generating_task = setjy.Setjy
 
@@ -98,9 +98,9 @@ class SetModelsListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing FluxCalibrationResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = commonfluxresults.FluxCalibrationResults
-    generating_task = setmodel.SetModels
+    generating_task = setmodel.SerialSetModels
 
     def handle(self, context, result):
         # collate the QAScores from each child result, pulling them into our

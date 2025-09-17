@@ -7,8 +7,10 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
 from pipeline.domain import DataType
-from pipeline.hifv.heuristics import cont_file_to_CASA, set_add_model_column_parameters
-from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
+from pipeline.hifv.heuristics import set_add_model_column_parameters
+from pipeline.infrastructure import (casa_tasks, casa_tools, task_registry,
+                                     utils)
+from pipeline.infrastructure.contfilehandler import contfile_to_spwsel
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -33,7 +35,25 @@ class StatwtInputs(vdp.StandardInputs):
         else:
             return unprocessed
 
+    # docstring and type hints: supplements hifv_statwt
     def __init__(self, context, vis=None, datacolumn=None, overwrite_modelcol=None, statwtmode=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the hifv_importdata task.
+
+            datacolumn: Data column used to compute weights. Supported values are "data", "corrected", "residual", and "residual_data"
+                (case insensitive, minimum match supported).
+
+            overwrite_modelcol: Always write the model column, even if it already exists.
+
+            statwtmode: Sets the weighting parameters for general VLA ('VLA') or VLASS Single Epoch ('VLASS-SE') use case. Note that the 'VLASS-SE'
+                mode is meant to be used with datacolumn='residual_data'.
+                Default is 'VLA'.
+
+        """
         super(StatwtInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -75,12 +95,13 @@ class Statwt(basetask.StandardTaskTemplate):
                         'Continuing in \'VLA\' mode.' % self.inputs.statwtmode)
             self.inputs.statwtmode = 'VLA'
 
-        fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
-        fields = ','.join(str(x) for x in fielddict) if fielddict != {} else ''
+        fielddict = contfile_to_spwsel(self.inputs.vis, self.inputs.context)
+        fields = ','.join(utils.fieldname_for_casa(x) for x in fielddict) if fielddict != {} else ''
 
         wtables = {}
+
         if self.inputs.statwtmode == 'VLASS-SE':
-            wtables['before'] = self._make_weight_table(suffix='before', dryrun=False)
+            wtables['before'] = self._make_weight_table(suffix='before')
 
         flag_summaries = []
         # flag statistics before task
@@ -90,8 +111,11 @@ class Statwt(basetask.StandardTaskTemplate):
         # flag statistics after task
         flag_summaries.append(self._do_flagsummary('statwt', field=fields))
 
-        if self.inputs.statwtmode == 'VLASS-SE':
-            wtables['after'] = self._make_weight_table(suffix='after', dryrun=False)
+        wtables['after'] = self._make_weight_table(suffix='after')
+
+        # Backup flag version after statwt was run
+        job = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save', versionname='rfi_flagged_statwt', merge='replace', comment='flagversion after running hifv_statwt()')
+        self._executor.execute(job)
 
         return StatwtResults(jobs=[statwt_result], flag_summaries=flag_summaries, wtables=wtables)
 
@@ -136,7 +160,6 @@ class Statwt(basetask.StandardTaskTemplate):
             return statwt_result
 
     def _do_flagsummary(self, name, field=''):
-        fielddict = cont_file_to_CASA(self.inputs.vis, self.inputs.context)
         job = casa_tasks.flagdata(name=name, vis=self.inputs.vis, field=field, mode='summary')
         return self._executor.execute(job)
 
@@ -151,24 +174,26 @@ class Statwt(basetask.StandardTaskTemplate):
             else:
                 LOG.info('Using existing MODEL_DATA column found in {}'.format(ms.basename))
 
-    def _make_weight_table(self, suffix='', dryrun=False):
+    def _make_weight_table(self, suffix=''):
 
         stage_number = self.inputs.context.task_counter
         names = [os.path.basename(self.inputs.vis), 'hifv_statwt', 's'+str(stage_number), suffix, 'wts']
         outputvis = '.'.join(list(filter(None, names)))
         wtable = outputvis+'.tbl'
 
-        if dryrun == True:
-            return wtable
-
         isdir = os.path.isdir(outputvis)
         if isdir:
             shutil.rmtree(outputvis)
 
+        if self.inputs.statwtmode == 'VLASS-SE':
+            datacolumn = 'DATA'
+        else:
+            datacolumn = 'CORRECTED'
+
         task_args = {'vis': self.inputs.vis,
                      'outputvis': outputvis,
-                     'spw': '*:0',
-                     'datacolumn': 'DATA',
+                     'spw': '*:0', # Channel 0 for all spwids
+                     'datacolumn': datacolumn,
                      'keepflags': False}
         job = casa_tasks.split(**task_args)
         self._executor.execute(job)
@@ -192,8 +217,8 @@ class Statwt(basetask.StandardTaskTemplate):
                 stb.close()
 
         gaincal_spws = ','.join([str(s) for s in spws])
+
         job = casa_tasks.gaincal(vis=outputvis, caltable=wtable, solint='int',
                                  minsnr=0, calmode='ap', spw=gaincal_spws, append=False)
         self._executor.execute(job)
-
         return wtable

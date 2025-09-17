@@ -22,10 +22,12 @@ class CheckProductSizeHeuristics(object):
         ref_ms = self.context.observing_run.measurement_sets[0]
         for target in imlist:
             nx, ny = target['imsize']
+
             if target['nbin'] != -1:
                 nbin = target['nbin']
             else:
                 nbin = 1
+
             if target['specmode'] == 'cube':
                 real_spw = self.context.observing_run.virtual2real_spw_id(int(target['spw']), ref_ms)
                 nchan = ref_ms.get_spectral_window(real_spw).num_channels
@@ -34,7 +36,14 @@ class CheckProductSizeHeuristics(object):
             else:
                 nchan = 1
                 cubesize = 0.0
+
             mfssize = 4. * nx * ny / 1e9 # Should include nterms, though overall size is dominated by cube mode which is currently always nterms=1
+
+            if self.context.processing_intents is not None and 'INTERFEROMETRY_FULL_POL_CUBE_IMAGING' in self.context.processing_intents:
+                # Original I plus IQUV products
+                cubesize = 5 * cubesize
+                mfssize = 5 * mfssize
+
             cubesizes.append(cubesize)
             productsize = 2.0 * (mfssize + cubesize)
             productsizes[target['spw']] = productsize
@@ -53,7 +62,7 @@ class CheckProductSizeHeuristics(object):
         size_mitigation_parameters = {}
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cube'
         makeimlist_inputs.clearlist = True
@@ -84,8 +93,10 @@ class CheckProductSizeHeuristics(object):
             for spw, real_spw in zip(spws, real_spws)])
 
         if nfields == 0:
-            LOG.error('Cannot determine any default imaging targets')
-            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, True, {'longmsg': 'Cannot determine any default imaging targets', 'shortmsg': 'Cannot determine targets'}, known_synthesized_beams
+            LOG.warning("Cannot determine any default specmode='cube' imaging targets")
+            long_short_msg = {'longmsg': "Cannot determine any default specmode='cube' imaging targets",
+                              'shortmsg': 'Cannot determine targets'}
+            return {}, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, True, long_short_msg, known_synthesized_beams
 
         # Get representative target information
         repr_target, \
@@ -118,7 +129,7 @@ class CheckProductSizeHeuristics(object):
             nbins = []
             nbin_mitigation = False
             for spw, nchan in nchans.items():
-                if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
+                if (nchan in (7680, 3840)) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                     LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                     nbins.append('%s:2' % (spw))
                     nbin_mitigation = True
@@ -240,7 +251,7 @@ class CheckProductSizeHeuristics(object):
                 nbins = []
                 nbin_mitigation = False
                 for spw, nchan in nchans.items():
-                    if (nchan == 3840) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
+                    if (nchan in (7680, 3840)) or (nchan in (1920, 960, 480) and utils.equal_to_n_digits(ch_width_ratios[spw], 2.667, 4)):
                         LOG.info('Size mitigation: Setting nbin for SPW %s to 2.' % (spw))
                         nbins.append('%s:2' % (spw))
                         nbin_mitigation = True
@@ -352,6 +363,7 @@ class CheckProductSizeHeuristics(object):
                         break
                 size_mitigation_parameters['spw'] = ','.join(map(str, sorted(mitigated_spws)))
 
+                LOG.info('At least one cube size exceeded the large cube limit. Only one large SPW will be imaged.')
                 LOG.info('Size mitigation: Setting (cube) spw to %s' % (size_mitigation_parameters['spw']))
 
                 # Recalculate sizes
@@ -370,9 +382,6 @@ class CheckProductSizeHeuristics(object):
                 imlist = makeimlist_result.targets
                 cubesizes, maxcubesize, productsizes, total_productsize = self.calculate_sizes(imlist)
                 LOG.info('spw mitigation leads to product size of %s GB' % (total_productsize))
-
-        # Save cube mitigated product size for logs
-        cube_mitigated_productsize = total_productsize
 
         if (self.inputs.maxproductsize != -1.0) and (total_productsize > self.inputs.maxproductsize):
             LOG.error('Product size cannot be mitigated. Remaining factor: %.4f.' % (total_productsize / self.inputs.maxproductsize / nfields))
@@ -400,7 +409,7 @@ class CheckProductSizeHeuristics(object):
                    maxcubesize, total_productsize, \
                    original_imsize, mitigated_imsize, \
                    False, \
-                   {'longmsg': 'Size had to be mitigated (%s)' % (','.join(str(x) for x in size_mitigation_parameters)), \
+                   {'longmsg': 'Size had to be mitigated (%s)%s' % (','.join(str(x) for x in size_mitigation_parameters), ' - large cube limit exceeded' if 'spw' in size_mitigation_parameters else ''), \
                     'shortmsg': 'Size was mitigated'}, \
                    known_synthesized_beams
         else:
@@ -448,7 +457,7 @@ class CheckProductSizeHeuristics(object):
         total_productsize = 0.0
 
         # Create makeimlist inputs
-        makeimlist_inputs = makeimlist.MakeImListInputs(self.context, vis=self.inputs.vis)
+        makeimlist_inputs = makeimlist.MakeImListInputs(self.context)
         makeimlist_inputs.intent = 'TARGET'
         makeimlist_inputs.specmode = 'cont'
         makeimlist_inputs.clearlist = True
@@ -480,7 +489,7 @@ class CheckProductSizeHeuristics(object):
                 original_imsize.append(imsize_request)
 
             # Get original maximum cube and product sizes for compatibility
-            cubesizes, maxcubesize, productsizes, im_productsize = self.calculate_sizes([im])
+            _, _, _, im_productsize = self.calculate_sizes([im])
             original_productsize += im_productsize
 
             LOG.info('Default imaging leads to image pixel count of %s for target %s' % (imsize_request, im['field']))

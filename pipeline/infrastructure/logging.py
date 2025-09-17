@@ -3,15 +3,18 @@ import logging
 import sys
 import time
 import types
+import functools
+from contextlib import contextmanager
+from typing import Optional, Union, List
 
 from casatasks import casalog
 
-import pipeline.extern.logutils as logutils
-import pipeline.extern.logutils.colorize as colorize
+import logutils
+import logutils.colorize as colorize
 
 from logging import CRITICAL, WARNING, ERROR, INFO, DEBUG
 
-# Register two new logging levels with the standard logger
+# Register three new logging levels with the standard logger
 TRACE = 5
 logging.addLevelName(TRACE, 'TRACE')
 colorize.ColorizingStreamHandler.level_map[TRACE] = (None, 'blue', False)
@@ -20,13 +23,22 @@ TODO = 13
 logging.addLevelName(TODO, 'TODO')
 colorize.ColorizingStreamHandler.level_map[TODO] = ('black', 'yellow', True)
 
-LOGGING_LEVELS = {'critical' : CRITICAL,
-                  'error'    : ERROR,
-                  'warning'  : WARNING,
-                  'info'     : INFO,
-                  'debug'    : DEBUG,
-                  'todo'     : TODO,
-                  'trace'    : TRACE}
+ATTENTION = 25
+logging.addLevelName(ATTENTION, 'ATTENTION')
+colorize.ColorizingStreamHandler.level_map[ATTENTION] = ('white', 'blue', False)
+
+# PIPE-1699: this is to replicate the modification from d86115b to the logutils 
+# source code originally saved in pipeline/extern/logutils.
+colorize.ColorizingStreamHandler.level_map[INFO] = (None, None, False)
+
+LOGGING_LEVELS = {'critical'  : CRITICAL,
+                  'error'     : ERROR,
+                  'warning'   : WARNING,
+                  'attention' : ATTENTION,
+                  'info'      : INFO,
+                  'debug'     : DEBUG,
+                  'todo'      : TODO,
+                  'trace'     : TRACE}
 
 # Begin with a default log level of NOTSET. All loggers created at module level
 # import time will use this logging level.
@@ -37,6 +49,17 @@ logging_level = logging.NOTSET
 # time
 logging.getLogger().setLevel(INFO)
 _loggers = []
+
+
+def pipeline_origin(method):
+    """Use 'pipeline' as the CASAlog Origin by default."""
+    @functools.wraps(method)
+    def pipeline_as_origin(self, *args, **kwargs):
+        if casalog.getOrigin() != 'pipeline':
+            casalog.origin('pipeline')
+        retval = method(self, *args, **kwargs)
+        return retval
+    return pipeline_as_origin
 
 
 class CASALogHandler(logging.Handler):
@@ -63,6 +86,7 @@ class CASALogHandler(logging.Handler):
         """
         pass
 
+    @pipeline_origin
     def emit(self, record):
         """
         Emit a record.
@@ -90,6 +114,8 @@ class CASALogHandler(logging.Handler):
             return 'ERROR'
         if lvl >= WARNING:
             return 'WARN'
+        if lvl >= ATTENTION:
+            return 'INFO1'
         if lvl >= INFO:
             return 'INFO'
         if lvl >= DEBUG:
@@ -165,8 +191,21 @@ def get_logger(name,
         if self.isEnabledFor(TODO):
             self._log(TODO, msg, args, **kwargs)
 
+    def attention(self, msg, *args, **kwargs):
+        """
+        Log 'msg % args' with severity 'ATTENTION'.
+
+        To pass exception information, use the keyword argument exc_info with
+        a true value, e.g.
+
+        logger.info("Houston, we have a %s", "interesting problem", exc_info=1)
+        """
+        if self.isEnabledFor(ATTENTION):
+            self._log(ATTENTION, msg, args, **kwargs)
+
     logger.trace = types.MethodType(trace, logger)
     logger.todo = types.MethodType(todo, logger)
+    logger.attention = types.MethodType(attention, logger)
 
     logger.setLevel(logging_level)
     fmt = UTCFormatter(format, datefmt)
@@ -337,10 +376,12 @@ class Code(object):
         self.co_filename = code.co_filename
         self.co_name = code.co_name
 
+
 class Frame(object):
     def __init__(self, frame):
         self.f_globals = {"__file__": frame.f_globals["__file__"]}
         self.f_code = Code(frame.f_code)
+
 
 class Traceback(object):
     def __init__(self, tb):
@@ -350,6 +391,62 @@ class Traceback(object):
             self.tb_next = None
         else:
             self.tb_next = Traceback(tb.tb_next)
+
+
+@contextmanager
+def log_level(name, level=logging.WARNING, filter=None):
+    """Context manager to temporarily adjust the logging level of a logger.
+    
+    This context manager allows you to set a temporary logging level and 
+    optionally apply a logging filter to a logger. Once the context is 
+    exited, the logger's original logging level and filters are restored.
+
+    Parameters:
+    name (str): The name of the logger to adjust.
+    level (int, optional): The logging level to set for the logger. 
+                           Defaults to logging.WARNING (30).
+    filter (logging.Filter, optional): A logging filter to add to the logger.
+                                       Defaults to None.
+    
+    Usage example:
+    with log_level('my_logger', logging.DEBUG):
+        # The logger 'my_logger' will use DEBUG level within this block
+        pass
+
+    The default level is WARNING, which means that all messages with 
+    level <= 30 are filtered.
+
+    """
+    logger = logging.getLogger(name)
+    current_level = logger.getEffectiveLevel()
+    if level is not None:
+        logger.setLevel(level)
+    if filter is not None:
+        logger.addFilter(filter)
+    try:
+        yield
+    finally:
+        if level is not None:
+            logger.setLevel(current_level)
+        if filter is not None:
+            logger.removeFilter(filter)
+
+
+@contextmanager
+def log_filtermsg(msglist: Union[str, List[str]]):
+    """Context manager to temporarily filter out specific messages from the CASA global logger.
+    
+    Note (as of CASA ver6.6.1):
+    * The use of this function will clear the list of message filters rather than reset back to 
+      the initial state due to the limitation of casalog API.
+    * casalog.filterMsg(None) will not alter/clear the internal filter list.
+    * Each casalog.filterMsg(msg) call will add additional element(s) in the filter.
+    """
+    casalog.filterMsg(msglist)
+    try:
+        yield
+    finally:
+        casalog.clearFilterMsgList()
 
 
 LOG = get_logger(__name__)

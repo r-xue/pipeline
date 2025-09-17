@@ -6,74 +6,69 @@ LOG = infrastructure.get_logger(__name__)
 
 
 class State(object):
+    """
+    State is a logical representation of (part of) rows in the STATE table
+    relating STATE_ID (in the MAIN table) to the observing mode(s) and
+    corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     obs_mode_mapping = {}
 
     __slots__ = ('id', 'obs_mode')
 
-    def __getstate__(self):
+    def __getstate__(self) -> tuple[int, str]:
         return self.id, self.obs_mode
 
-    def __setstate__(self, state):
+    def __setstate__(self, state) -> None:
         self.id, self.obs_mode = state
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a State object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         self.id = state_id
         # work around NumPy bug with empty strings
         # http://projects.scipy.org/numpy/ticket/1239
         self.obs_mode = str(obs_mode)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '{0}({1!r}, {2!r})'.format(
             self.__class__.__name__, self.id, self.obs_mode)
 
     @property
-    def intents(self):
+    def intents(self) -> set[str]:
+        """Return all intents associated with this State."""
         # return all intents
         return {intent for mode, intent in self.obs_mode_mapping.items() if self.obs_mode.find(mode) != -1}
 
-    @property
-    def reduction_intents(self):
-        # get the raw intents from the ms
-        raw_intents = self.intents
-
-        # translate these into intents understood by the pipeline
-        red_intents = set()
-        if 'CHECK' in raw_intents:
-            red_intents.update(['CHECK'])
-        if 'POLARIZATION' in raw_intents:
-            red_intents.update(['POLARIZATION'])
-        if 'POLANGLE' in raw_intents:
-            red_intents.update(['POLANGLE'])
-        if 'POLLEAKAGE' in raw_intents:
-            red_intents.update(['POLLEAKAGE'])
-        if 'BANDPASS' in raw_intents:
-            red_intents.update(['BANDPASS'])
-        if 'AMPLITUDE' in raw_intents:
-            red_intents.update(['AMPLITUDE'])
-        if 'FLUX' in raw_intents:
-            red_intents.update(['AMPLITUDE'])
-        if 'TARGET' in raw_intents:
-            red_intents.update(['TARGET'])
-        if ('PHASE' in raw_intents) and \
-          not ('BANDPASS' in raw_intents) and \
-          not ('AMPLITUDE' in raw_intents) and \
-          not ('FLUX' in raw_intents) and \
-          not ('TARGET' in raw_intents):
-            red_intents.update(['PHASE'])
-
-        return red_intents
-
-    def get_obs_mode_for_intent(self, intent):
+    def get_obs_mode_for_intent(self, intent: str) -> list[str]:
+        """Return list of obs_mode values associated with given intent."""
         intents = {i.strip('*') for i in intent.split(',') if i is not None}
         return [mode for mode, pipeline_intent in self.obs_mode_mapping.items()
                 if pipeline_intent in intents and self.obs_mode.find(mode) != -1]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '{0}(id={1}, intents={2})'.format(self.__class__.__name__, 
                                                  self.id, self.intents)
 
 
 class StateALMA(State):
+    """
+    StateALMA is a logical representation of (part of) rows in the STATE table
+    for ALMA Observatory measurement sets, relating STATE_ID (in the MAIN table)
+    to the observing mode(s) and corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # dictionary to map from STATE table obs_mode to pipeline intent
     obs_mode_mapping = {
         'CALIBRATE_POLARIZATION#ON_SOURCE'   : 'POLARIZATION',
@@ -117,12 +112,15 @@ class StateALMA(State):
         'CALIBRATE_ATMOSPHERE#OFF_SOURCE'    : 'ATMOSPHERE',
         'CALIBRATE_ATMOSPHERE.OFF_SOURCE'    : 'ATMOSPHERE',
         'CALIBRATE_ATMOSPHERE_OFF_SOURCE'    : 'ATMOSPHERE',
+        'CALIBRATE_ATMOSPHERE#TEST'          : 'ATMOSPHERE',
         'CALIBRATE_SIDEBAND_RATIO#ON_SOURCE' : 'SIDEBAND',
         'CALIBRATE_SIDEBAND_RATIO.ON_SOURCE' : 'SIDEBAND',
         'CALIBRATE_SIDEBAND_RATIO_ON_SOURCE' : 'SIDEBAND',
         'CALIBRATE_SIDEBAND_RATIO#OFF_SOURCE': 'SIDEBAND',
         'CALIBRATE_SIDEBAND_RATIO.OFF_SOURCE': 'SIDEBAND',
         'CALIBRATE_SIDEBAND_RATIO_OFF_SOURCE': 'SIDEBAND',
+        'CALIBRATE_DIFFGAIN#REFERENCE'       : 'DIFFGAINREF',
+        'CALIBRATE_DIFFGAIN#ON_SOURCE'       : 'DIFFGAINSRC',
         'CALIBRATE_DELAY#ON_SOURCE'          : 'CHECK',
         'CALIBRATE_DELAY.ON_SOURCE'          : 'CHECK',
         'CALIBRATE_DELAY_ON_SOURCE'          : 'CHECK',
@@ -137,7 +135,14 @@ class StateALMA(State):
         'OBSERVE_TARGET_OFF_SOURCE'          : 'REFERENCE'
     }
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateALMA object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateALMA, self).__init__(state_id, obs_mode)
 
         if 'CALIBRATE_FLUX' in obs_mode:
@@ -146,10 +151,27 @@ class StateALMA(State):
 
 
 class StateALMACycle0(StateALMA):
+    """
+    StateALMACycle0 is a logical representation of (part of) rows in the STATE
+    table for ALMA Observatory Cycle 0 measurement sets, relating STATE_ID (in
+    the MAIN table) to the observing mode(s) and corresponding pipeline
+    intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # Check whether these states co-exist with PHASE
     _PHASE_BYPASS_INTENTS = frozenset(('BANDPASS', 'AMPLITUDE'))
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateALMACycle0 object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateALMACycle0, self).__init__(state_id, obs_mode)
 
         # For Cycle 0, check whether this state has PHASE and another cal
@@ -181,6 +203,15 @@ class StateALMACycle0(StateALMA):
 
 
 class StateVLA(State):
+    """
+    StateVLA is a logical representation of (part of) rows in the STATE table
+    for VLA Observatory measurement sets, relating STATE_ID (in the MAIN table)
+    to the observing mode(s) and corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # dictionary to map from STATE table obs_mode to pipeline intent
     obs_mode_mapping = {
         'CALIBRATE_POLARIZATION#ON_SOURCE'   : 'POLARIZATION',
@@ -241,31 +272,79 @@ class StateVLA(State):
         'SYSTEM_CONFIGURATION#UNSPECIFIED'   : 'SYSTEM_CONFIGURATION'
     }
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateVLA object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateVLA, self).__init__(state_id, obs_mode)
 
 
 class StateAPEX(State):
+    """
+    StateAPEX is a logical representation of (part of) rows in the STATE table
+    for APEX Observatory measurement sets, relating STATE_ID (in the MAIN table)
+    to the observing mode(s) and corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # dictionary to map from STATE table obs_mode to pipeline intent
     obs_mode_mapping = {
         'OBSERVE_TARGET#ON_SOURCE': 'TARGET'
     }
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateAPEX object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateAPEX, self).__init__(state_id, obs_mode)
 
 
 class StateSMT(State):
+    """
+    StateSMT is a logical representation of (part of) rows in the STATE table
+    for SMT Observatory measurement sets, relating STATE_ID (in the MAIN table)
+    to the observing mode(s) and corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # dictionary to map from STATE table obs_mode to pipeline intent
     obs_mode_mapping = {
         'OBSERVE_TARGET#ON_SOURCE': 'TARGET'
     }
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateSMT object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateSMT, self).__init__(state_id, obs_mode)
 
 
 class StateNAOJ(State):
+    """
+    StateNAOJ is a logical representation of (part of) rows in the STATE table
+    for Nobeyama or ASTE Observatory measurement sets, relating STATE_ID (in the
+    MAIN table) to the observing mode(s) and corresponding pipeline intent(s).
+
+    Attributes:
+        id: Numerical identifier of this State.
+        obs_mode: Unique obs_mode values associated with this State.
+    """
     # dictionary to map from STATE table obs_mode to pipeline intent
     obs_mode_mapping = {
         'OBSERVE_TARGET#ON_SOURCE'           : 'TARGET',
@@ -275,12 +354,31 @@ class StateNAOJ(State):
         'CALIBRATE_ATMOSPHERE#ZERO_SOURCE'   : 'ATMOSPHERE'
     }
 
-    def __init__(self, state_id, obs_mode):
+    def __init__(self, state_id: int, obs_mode: str) -> None:
+        """
+        Initialize a StateNAOJ object.
+
+        Args:
+            state_id: Numerical identifier of this State.
+            obs_mode: Unique obs_mode values associated with this State.
+        """
         super(StateNAOJ, self).__init__(state_id, obs_mode)
 
 
 class StateFactory(object):
-    def __init__(self, observatory, start=None):
+    """
+    Factory class to create State objects based on given observatory and
+    observation/measurement set start time.
+    """
+    def __init__(self, observatory: str, start: datetime.datetime | None = None) -> None:
+        """
+        Initialize a StateFactory object.
+
+        Args:
+            observatory: name of observatory to create State(s) for.
+            start: start time of observation / measurement set; this is used
+                to distinguish between Cycle 0 and later ALMA datasets.
+        """
         if observatory == 'ALMA':
             if start and start < datetime.datetime(2013, 1, 21):
                 self._constructor = StateALMACycle0
@@ -297,5 +395,6 @@ class StateFactory(object):
         else:
             raise KeyError('%s has no matching State class' % observatory)
 
-    def create_state(self, state_id, obs_mode):
+    def create_state(self, state_id: int, obs_mode: str) -> State:
+        """Return a State object with given ID and obs_mode."""
         return self._constructor(state_id, obs_mode)

@@ -1,4 +1,3 @@
-import collections
 import functools
 import os
 
@@ -13,6 +12,9 @@ from pipeline.h.tasks.flagging.flagdatasetter import FlagdataSetter
 from pipeline.hif.tasks import applycal
 from pipeline.hif.tasks import correctedampflag
 from pipeline.hif.tasks import gaincal
+from pipeline.infrastructure.refantflag import identify_fully_flagged_antennas_from_flagcmds, \
+    mark_antennas_for_refant_update, aggregate_fully_flagged_antenna_notifications, FullyFlaggedAntennasNotification
+from typing import List, Set
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -25,12 +27,14 @@ class PolcalflagResults(basetask.Results):
         self.cafresult = None
         self.plots = dict()
 
-        # list of antennas that should be moved to the end
-        # of the refant list
-        self.refants_to_demote = set()
+        # Set of antennas that should be moved to the end of the refant list.
+        self.refants_to_demote: Set[str] = set()
 
-        # list of entirely flagged antennas that should be removed from refants
-        self.refants_to_remove = set()
+        # Set of entirely flagged antennas that should be removed from refants.
+        self.refants_to_remove: Set[str] = set()
+
+        # further information about entirely flagged antennas used in QA scoring
+        self.fully_flagged_antenna_notifications: List[FullyFlaggedAntennasNotification] = []
 
         # records callibrary files used in applycal calls
         self.callib_map = {}
@@ -51,7 +55,7 @@ class PolcalflagResults(basetask.Results):
 
 class PolcalflagInputs(vdp.StandardInputs):
 
-    minsnr = vdp.VisDependentProperty(default=3.0)
+    minsnr = vdp.VisDependentProperty(default=2.0)
     phaseupsolint = vdp.VisDependentProperty(default='int')
     refant = vdp.VisDependentProperty(default='')
     solint = vdp.VisDependentProperty(default='inf')
@@ -62,7 +66,20 @@ class PolcalflagInputs(vdp.StandardInputs):
         # intents.
         return 'POLARIZATION,POLANGLE,POLLEAKAGE'
 
+    # docstring and type hints: supplements hifa_polcalflag
     def __init__(self, context, vis=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets specified in the hifa_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+        """
         self.context = context
         self.vis = vis
 
@@ -98,49 +115,23 @@ class Polcalflag(basetask.StandardTaskTemplate):
             vis=inputs.vis, mode='save', versionname=flag_backup_name_prepcf)
         self._executor.execute(task)
 
-        # Since this task is run before hifa_timegaincal, we need to compute local
-        # phase and amplitude cal tables for the polarization intents.
-
-        # Determine the parameters to use for the gaincal to create the
-        # phase-only caltable.
-        if inputs.ms.combine_spwmap:
-            phase_combine = 'spw'
-            phaseup_spwmap = inputs.ms.combine_spwmap
-            phase_interp = 'linearPD,linear'
-            # Note: at present, phaseupsolint is specified as a fixed
-            # value, defined in inputs. In the future, phaseupsolint may
-            # need to be set based on exposure times; if so, see discussion
-            # in CAS-10158 and logic in hifa.tasks.fluxscale.GcorFluxscale.
-        else:
-            phase_combine = ''
-            phaseup_spwmap = inputs.ms.phaseup_spwmap
-            phase_interp = None
+        # Since this task is run before hifa_timegaincal, we need to compute
+        # local phase and amplitude cal tables for the polarization intents.
 
         # Create phase caltable and merge it into the local context.
+        # PIPE-1154: always use combine='' for phase solves of polarisation
+        # calibrators, with no explicit spw mapping nor override for interp.
         LOG.info('Compute phase gaincal table.')
-        self._do_gaincal(
-            intent=inputs.intent, gaintype='G', calmode='p',
-            combine=phase_combine, solint=inputs.phaseupsolint,
-            minsnr=inputs.minsnr, refant=inputs.refant,
-            spwmap=phaseup_spwmap, interp=phase_interp,
-            merge=True)
+        self._do_gaincal(intent=inputs.intent, gaintype='G', calmode='p', combine='', solint=inputs.phaseupsolint,
+                         minsnr=inputs.minsnr, refant=inputs.refant, merge=True)
 
         # Create amplitude caltable and merge it into the local context.
         # CAS-10491: for scan-based (solint='inf') amplitude solves that
         # will be applied to the calibrator, set interp to 'nearest'.
         LOG.info('Compute amplitude gaincal table.')
-        if inputs.solint == 'inf':
-            self._do_gaincal(
-                intent=inputs.intent, gaintype='T', calmode='a',
-                combine='', solint=inputs.solint,
-                minsnr=inputs.minsnr, refant=inputs.refant,
-                interp='nearest,linear', merge=True)
-        else:
-            self._do_gaincal(
-                intent=inputs.intent, gaintype='T', calmode='a',
-                combine='', solint=inputs.solint,
-                minsnr=inputs.minsnr, refant=inputs.refant,
-                interp='linear,linear', merge=True)
+        amp_interp = 'nearest,linear' if inputs.solint == 'inf' else 'linear,linear'
+        self._do_gaincal(intent=inputs.intent, gaintype='T', calmode='a', combine='', solint=inputs.solint,
+                         minsnr=inputs.minsnr, refant=inputs.refant, interp=amp_interp, merge=True)
 
         # Ensure that any flagging applied to the MS by this applycal is
         # reverted at the end, even in the case of exceptions.
@@ -149,7 +140,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
             # corresponding flags
             LOG.info('Applying pre-existing cal tables.')
             callib_map = self._do_applycal(merge=False)
-            # copy across the vis:callibrary dict to our result. This dict 
+            # copy across the vis:callibrary dict to our result. This dict
             # will be inspected by the renderer to know if/which callibrary
             # files should be copied across to the weblog stage directory
             result.callib_map.update(callib_map)
@@ -206,18 +197,13 @@ class Polcalflag(basetask.StandardTaskTemplate):
         if cafflags:
             # Re-apply the newly found flags from correctedampflag.
             LOG.info('Re-applying flags from correctedampflag.')
-            fsinputs = FlagdataSetter.Inputs(
-                context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
+            fsinputs = FlagdataSetter.Inputs(context=inputs.context, vis=inputs.vis, table=inputs.vis, inpfile=[])
             fstask = FlagdataSetter(fsinputs)
             fstask.flags_to_set(cafflags)
             _ = self._executor.execute(fstask)
 
-            # Check for need to update reference antennas, and apply to local
-            # copy of the MS.
+            # Mark antennas that need to be demoted or removed from the reference antenna list.
             result = self._identify_refants_to_update(result)
-            ms = inputs.context.observing_run.get_ms(name=inputs.vis)
-            ms.update_reference_antennas(ants_to_demote=result.refants_to_demote,
-                                         ants_to_remove=result.refants_to_remove)
 
         return result
 
@@ -234,7 +220,7 @@ class Polcalflag(basetask.StandardTaskTemplate):
         for intent in ac_intents:
             task_inputs = applycal.IFApplycalInputs(inputs.context, vis=inputs.vis, intent=intent, flagsum=False,
                                                     flagbackup=False)
-            task = applycal.IFApplycal(task_inputs)
+            task = applycal.SerialIFApplycal(task_inputs)
             applycal_tasks.append(task)
 
         # as there's just one job
@@ -245,14 +231,13 @@ class Polcalflag(basetask.StandardTaskTemplate):
 
         return callib_map
 
-    def _do_gaincal(self, caltable=None, intent=None, gaintype='G',
-                    calmode=None, combine=None, solint=None, antenna=None,
-                    uvrange='', minsnr=None, refant=None, minblperant=None,
-                    spwmap=None, interp=None, append=None, merge=True):
+    def _do_gaincal(self, caltable=None, intent=None, gaintype='G', calmode=None, combine=None, solint=None,
+                    antenna=None, uvrange='', minsnr=None, refant=None, minblperant=None, interp=None, append=None,
+                    merge=True):
         inputs = self.inputs
         ms = inputs.ms
 
-        # Get the science spws
+        # Get the science spws and scans for specified intent.
         request_spws = ms.get_spectral_windows()
         targeted_scans = ms.get_scans(scan_intent=intent)
 
@@ -332,33 +317,21 @@ class Polcalflag(basetask.StandardTaskTemplate):
                 task = gaincal.GTypeGaincal(task_inputs)
                 result = self._executor.execute(task)
 
-                # modify the result so that this caltable is only applied to
-                # the intent from which the calibration was derived
+                # Modify the result so that this caltable is only applied to
+                # the intent from which the calibration was derived, and modify
+                # the interp if provided.
                 calapp_overrides = dict(intent=intent)
-
-                # Adjust the spw map if provided.
-                if spwmap:
-                    calapp_overrides['spwmap'] = spwmap
-
-                # https://open-jira.nrao.edu/browse/PIPE-367?focusedCommentId=141097&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-141097
-                #
-                # '... then to apply this table you need the same spw map that
-                # is printed in the spwphaseup stage'
-                if combine == 'spw':
-                    calapp_overrides['spwmap'] = ms.combine_spwmap
-
-                # Adjust the interp if provided.
                 if interp:
                     calapp_overrides['interp'] = interp
 
-                calapp = result.final[0]
-                modified = callibrary.copy_calapplication(calapp, **calapp_overrides)
+                # Create modified CalApplication and replace CalApp in result
+                # with this new one.
+                modified = callibrary.copy_calapplication(result.final[0], **calapp_overrides)
                 result.pool[0] = modified
                 result.final[0] = modified
 
-                # If requested, merge the result...
+                # If requested, merge result into the local context.
                 if merge:
-                    # Merge result to the local context
                     result.accept(inputs.context)
 
     def _identify_refants_to_update(self, result):
@@ -376,249 +349,21 @@ class Polcalflag(basetask.StandardTaskTemplate):
         :param result: PolcalflagResults object
         :return: PolcalflagResults object
         """
-        # Identify bad antennas to demote/remove from refant list.
-        ants_to_demote, ants_to_remove = self._identify_bad_refants(result)
-
-        # Update result to mark antennas for demotion/removal as refant.
-        result = self._mark_antennas_for_refant_update(result, ants_to_demote, ants_to_remove)
-
-        return result
-
-    def _identify_bad_refants(self, result):
         # Get the MS object.
         ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
 
-        # Get translation dictionary for antenna id to name.
-        antenna_id_to_name = self._get_ant_id_to_name_dict(ms)
+        # Set of all spws affected by this flagging task.
+        all_spwids = set(map(int, result.cafresult.inputs['spw'].split(',')))
 
         # Identify antennas to demote as refant.
-        ants_to_demote, ants_fully_flagged = self._identify_ants_to_demote(result, ms, antenna_id_to_name)
+        fully_flagged_antennas = identify_fully_flagged_antennas_from_flagcmds(ms, result.cafresult.flagcmds())
 
-        # Identify antennas to remove as refant.
-        ants_to_remove = self._identify_ants_to_remove(result, ms, ants_fully_flagged, antenna_id_to_name)
+        # Update result to mark antennas for demotion/removal as refant.
+        result = mark_antennas_for_refant_update(ms, result, fully_flagged_antennas, all_spwids)
 
-        return ants_to_demote, ants_to_remove
-
-    @staticmethod
-    def _identify_ants_to_demote(result, ms, antenna_id_to_name):
-        # Retrieve flags and which intents and spws were evaluated by
-        # correctedampflag.
-        flags = result.cafresult.flagcmds()
-
-        # Initialize flagging state
-        ants_fully_flagged = collections.defaultdict(set)
-
-        # Create a summary of the flagging state by going through each flagging
-        # command.
-        for flag in flags:
-            # Only consider flagging commands with a specified antenna and
-            # without a specified timestamp.
-            if flag.antenna is not None and flag.time is None:
-                # Skip flagging commands for baselines.
-                if '&' in str(flag.antenna):
-                    continue
-                ants_fully_flagged[(flag.intent, flag.field, flag.spw)].update([flag.antenna])
-
-        # For each combination of intent, field, and spw that were found to
-        # have antennas flagged, raise a warning.
-        sorted_keys = sorted(
-            sorted(ants_fully_flagged, key=lambda keys: keys[2]),
-            key=lambda keys: keys[0])
-        for (intent, field, spwid) in sorted_keys:
-            ants_flagged = ants_fully_flagged[(intent, field, spwid)]
-
-            # Convert antenna IDs to names and create a string.
-            ants_str = ", ".join(map(str, [antenna_id_to_name[iant] for iant in ants_flagged]))
-
-            # Convert CASA intent from flagging command to pipeline intent.
-            intent_str = utils.to_pipeline_intent(ms, intent)
-
-            # Log a warning.
-            LOG.warning(
-                "{msname} - for intent {intent} (field "
-                "{fieldname}) and spw {spw}, the following antennas "
-                "are fully flagged: {ants}".format(
-                    msname=ms.basename, intent=intent_str,
-                    fieldname=field, spw=spwid,
-                    ants=ants_str))
-
-        # Store the set of antennas that were fully flagged in at least
-        # one spw, for any of the fields for any of the intents.
-        ants_to_demote_as_refant = {
-            antenna_id_to_name[iant]
-            for iants in ants_fully_flagged.values()
-            for iant in iants}
-
-        return ants_to_demote_as_refant, ants_fully_flagged
-
-    @staticmethod
-    def _identify_ants_to_remove(result, ms, ants_fully_flagged, antenna_id_to_name):
-        # Get the intents and the set of unique spw ids from the inputs.
-        intents = result.cafresult.inputs['intent'].split(',')
-        spwids = set(map(int, result.cafresult.inputs['spw'].split(',')))
-
-        # Initialize set of antennas that are fully flagged for all spws, for any intent
-        ants_fully_flagged_in_all_spws_any_intent = set()
-
-        # Check if any antennas were found to be fully flagged in all
-        # spws, for any intent.
-
-        # Identify the unique field and intent combinations for which fully flagged
-        # antennas were found.
-        intent_field_found = {key[0:2] for key in ants_fully_flagged}
-        for (intent, field) in intent_field_found:
-
-            # Identify the unique spws for which fully flagged antennas were found (for current
-            # intent and field).
-            spws_found = {key[2] for key in ants_fully_flagged if key[0:2] == (intent, field)}
-
-            # Only proceed if the set of spws for which flagged antennas were found
-            # matches the set of spws for which correctedampflag ran.
-            if spws_found == spwids:
-                # Select the fully flagged antennas for current intent and field.
-                ants_fully_flagged_for_intent_field = [
-                    ants_fully_flagged[key]
-                    for key in ants_fully_flagged
-                    if key[0:2] == (intent, field)
-                ]
-
-                # Identify which antennas are fully flagged in all spws, for
-                # current intent and field, and store these for later warning
-                # and/or updating of refant.
-                ants_fully_flagged_in_all_spws_any_intent.update(
-                    set.intersection(*ants_fully_flagged_for_intent_field))
-
-        # For the antennas that were found to be fully flagged in all
-        # spws for one or more fields belonging to one or more of the intents,
-        # raise a warning.
-        if ants_fully_flagged_in_all_spws_any_intent:
-            # Convert antenna IDs to names and create a string.
-            ants_str = ", ".join(
-                map(str, [antenna_id_to_name[iant]
-                          for iant in ants_fully_flagged_in_all_spws_any_intent]))
-
-            # Log a warning.
-            LOG.warning(
-                '{0} - the following antennas are fully flagged in all spws '
-                'for one or more fields with intents among '
-                '{1}: {2}'.format(ms.basename, ', '.join(intents), ants_str))
-
-        # The following will assess if/how the list of reference antennas
-        # needs to be updated based on antennas that were found to be
-        # fully flagged.
-
-        # Store the set of antennas that are fully flagged for all spws
-        # in any of the intents in the result as a list of antenna
-        # names.
-        ants_to_remove_as_refant = {
-            antenna_id_to_name[iant]
-            for iant in ants_fully_flagged_in_all_spws_any_intent}
-
-        return ants_to_remove_as_refant
-
-    def _mark_antennas_for_refant_update(self, result, ants_to_demote, ants_to_remove):
-        # Get the intents from the inputs.
-        intents = result.cafresult.inputs['intent'].split(',')
-
-        # Get the MS object
-        ms = self.inputs.context.observing_run.get_ms(name=self.inputs.vis)
-
-        # If any reference antennas were found to be candidates for
-        # removal or demotion (move to end of list), then proceed...
-        if ants_to_remove or ants_to_demote:
-
-            # If a list of reference antennas was registered with the MS..
-            if (hasattr(ms, 'reference_antenna') and
-                    isinstance(ms.reference_antenna, str)):
-
-                # Create list of current refants
-                refant = ms.reference_antenna.split(',')
-
-                # Identify intersection between refants and fully flagged
-                # and store in result.
-                result.refants_to_remove = {
-                    ant for ant in refant
-                    if ant in ants_to_remove}
-
-                # If any refants were found to be removed...
-                if result.refants_to_remove:
-
-                    # Create string for log message.
-                    ant_msg = utils.commafy(result.refants_to_remove, quotes=False)
-
-                    # Check if removal of refants would result in an empty refant list,
-                    # in which case the refant update is skipped.
-                    if result.refants_to_remove == set(refant):
-
-                        # Log warning that refant list should have been updated, but
-                        # will not be updated so as to avoid an empty refant list.
-                        LOG.warning(
-                            '{0} - the following reference antennas became fully flagged '
-                            'in all spws for one or more fields with intents among {1}, '
-                            'but are *NOT* removed from the refant list because doing so '
-                            'would result in an empty refant list: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                        # Reset the refant removal list in the result to be empty.
-                        result.refants_to_remove = set()
-                    else:
-                        # Log a warning if any antennas are to be removed from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following reference antennas are '
-                            'removed from the refant list because they became '
-                            'fully flagged in all spws for one of the intents '
-                            'among {1}: {2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                # Identify intersection between refants and candidate
-                # antennas to demote, skipping those that are to be
-                # removed entirely, and store this list in the result.
-                # These antennas should be moved to the end of the refant
-                # list (demoted) upon merging the result into the context.
-                result.refants_to_demote = {
-                    ant for ant in refant
-                    if ant in ants_to_demote
-                    and ant not in result.refants_to_remove}
-
-                # If any refants were found to be demoted...
-                if result.refants_to_demote:
-
-                    # Create string for log message.
-                    ant_msg = utils.commafy(result.refants_to_demote, quotes=False)
-
-                    # Check if the list of refants-to-demote comprises all
-                    # refants, in which case the re-ordering of refants is
-                    # skipped.
-                    if result.refants_to_demote == set(refant):
-
-                        # Log warning that refant list should have been updated, but
-                        # will not be updated so as to avoid an empty refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are fully flagged '
-                            'for one or more spws, in one or more fields '
-                            'with intents among {1}, but since these comprise all '
-                            'refants, the refant list is *NOT* updated to '
-                            're-order these to the end of the refant list: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-                        # Reset the refant demotion list in the result to be empty.
-                        result.refants_to_demote = set()
-                    else:
-                        # Log a warning if any antennas are to be demoted from
-                        # the refant list.
-                        LOG.warning(
-                            '{0} - the following antennas are moved to the end '
-                            'of the refant list because they are fully '
-                            'flagged for one or more spws, in one or more '
-                            'fields with intents among {1}: '
-                            '{2}'.format(ms.basename, ', '.join(intents), ant_msg))
-
-            # If no list of reference antennas was registered with the MS,
-            # raise a warning.
-            else:
-                LOG.warning(
-                    '{0} - no reference antennas found in MS, cannot update '
-                    'the reference antenna list.'.format(ms.basename))
+        # Aggregate the list of fully flagged antennas by intent, field and spw for subsequent QA scoring
+        result.fully_flagged_antenna_notifications = aggregate_fully_flagged_antenna_notifications(
+            fully_flagged_antennas, all_spwids)
 
         return result
 

@@ -84,9 +84,18 @@ class WVRPhaseVsBaselineChart(object):
         return set(self.result.dataresult.inputs['qa_intent'].split(','))
 
     def _get_plot_scans(self):
+        # PIPE-851: return only scans that match the plot intents and with SpW
+        # matching the gaintable SpW.
+
+        # If no valid QA SpW was set for this data result, then no valid
+        # matching scans can be found.
+        if not self.result.dataresult.qa_wvr.qa_spw:
+            return []
+
         plot_intents = self._get_plot_intents()
-        return [scan for scan in self.ms.scans
-                if not plot_intents.isdisjoint(scan.intents)]
+        qa_spw = int(self.result.dataresult.qa_wvr.qa_spw)
+        return [scan for scan in self.ms.scans if not plot_intents.isdisjoint(scan.intents)
+                for scan_spw in scan.spws if scan_spw.id == qa_spw]
 
     def get_symbol_and_colour(self, pol, state='BEFORE'):
         """
@@ -114,7 +123,7 @@ class WVRPhaseVsBaselineChart(object):
         self._caltables_loaded = False
 
         nowvr_gaintables = {c.gaintable for c in result.dataresult.nowvr_result.pool}
-        assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
+        assert len(nowvr_gaintables) == 1, ('Unexpected number of pre-WVR phase-up'
                                             'gaintables: %s' % nowvr_gaintables)
 
         nowvr_gaintable = nowvr_gaintables.pop()
@@ -160,7 +169,7 @@ class WVRPhaseVsBaselineChart(object):
                 # expected.
                 dds = [dd for dd in scan.data_descriptions
                        if dd.spw.id == spw.id]
-                if len(dds) is not 1:
+                if len(dds) != 1:
                     LOG.info('Bypassing plot generation for %s scan %s spw '
                              '%s. Expected 1 matching data description but '
                              'got %s.',
@@ -314,7 +323,7 @@ class WVRPhaseVsBaselineChart(object):
 
             # discard WVR and other strange data descriptions
             corr_axes = {x for x in corr_axes if x not in [(), ('I',)]}
-            assert len(corr_axes) is 1, ('Data descriptions have different '
+            assert len(corr_axes) == 1, ('Data descriptions have different '
                                          'corr axes for scan %s. Got %s'
                                          '' % (scan.id, corr_axes))
             # go from set(('XX', 'YY')) to the ('XX', 'YY')
@@ -401,7 +410,7 @@ class WVRPhaseVsBaselineChart(object):
         # won't have values yet.
         fig.canvas.draw()
         # omit the last y axis tick label from the lower plot
-        ax2.set_yticklabels([t.get_text() for t in ax2.get_yticklabels()[0:-1]])
+        ax2.get_yticklabels()[-1].set_visible(False)   # PIPE-1673
 
         figfile = self.get_figfile(spw, scans, helper.antenna_filename_component)
         plt.savefig(figfile)
@@ -453,7 +462,7 @@ class WVRPhaseOffsetPlotHelper(phaseoffset.PhaseOffsetPlotHelper):
         prefix = '%s.phase_offset' % os.path.basename(calapp.vis)
 
         nowvr_gaintables = {c.gaintable for c in result.nowvr_result.pool}
-        assert len(nowvr_gaintables) is 1, ('Unexpected number of pre-WVR phase-up'
+        assert len(nowvr_gaintables) == 1, ('Unexpected number of pre-WVR phase-up'
                                             'gaintables: %s' % nowvr_gaintables)
 
         nowvr_gaintable = nowvr_gaintables.pop()
@@ -474,10 +483,11 @@ class WVRPhaseOffsetPlot(phaseoffset.PhaseOffsetPlot):
         ms = context.observing_run.get_ms(vis)
         plothelper = WVRPhaseOffsetPlotHelper(context, result.dataresult)
         scan_intent = result.dataresult.inputs['qa_intent']
+        scan_spw = result.dataresult.qa_wvr.qa_spw
         score_retriever = WVRScoreFinder(result.viewresult)
 
-        super(WVRPhaseOffsetPlot, self).__init__(
-            context, ms, plothelper, scan_intent=scan_intent, score_retriever=score_retriever)
+        super().__init__(context, ms, plothelper, scan_intent=scan_intent, scan_spw=scan_spw,
+                         score_retriever=score_retriever)
 
 
 class WVRPhaseOffsetSummaryPlotHelper(WVRPhaseOffsetPlotHelper):
@@ -491,7 +501,8 @@ class WVRPhaseOffsetSummaryPlot(phaseoffset.PhaseOffsetPlot):
         ms = context.observing_run.get_ms(vis)
         plothelper = WVRPhaseOffsetSummaryPlotHelper(context, result.dataresult)
         scan_intent = result.dataresult.inputs['qa_intent']
+        scan_spw = result.dataresult.qa_wvr.qa_spw
         score_retriever = WVRScoreFinder(result.viewresult)
 
-        super(WVRPhaseOffsetSummaryPlot, self).__init__(
-            context, ms, plothelper, scan_intent=scan_intent, score_retriever=score_retriever)
+        super().__init__(context, ms, plothelper, scan_intent=scan_intent, scan_spw=scan_spw,
+                         score_retriever=score_retriever)

@@ -2,6 +2,7 @@ import os
 import math
 import ast
 import collections
+import traceback
 
 import pipeline.hif.heuristics.findrefant as findrefant
 import pipeline.hif.tasks.gaincal as gaincal
@@ -11,8 +12,13 @@ import pipeline.infrastructure.vdp as vdp
 from pipeline.hif.tasks.polarization import polarization
 from pipeline.hifv.tasks.setmodel.vlasetjy import standard_sources
 from pipeline.hifv.heuristics import uvrange
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
+from pipeline.hifv.tasks.finalcals.finalcals import FinalcalsResults as FinalcalsResults
+from pipeline.hifv.tasks.importdata.importdata import VLAImportDataResults as VLAImportDataResults
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import task_registry
+
+
 
 LOG = infrastructure.get_logger(__name__)
 
@@ -67,13 +73,40 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
     refantignore = vdp.VisDependentProperty(default='')
     leakage_poltype = vdp.VisDependentProperty(default='')
     mbdkcross = vdp.VisDependentProperty(default=True)
+    refant = vdp.VisDependentProperty(default='')
+    run_setjy = vdp.VisDependentProperty(default=True)
 
     @vdp.VisDependentProperty
     def clipminmax(self):
         return [0.0, 0.25]
 
+    # docstring and type hints: supplements hifv_circfeedpolcal
     def __init__(self, context, vis=None, Dterm_solint=None, refantignore=None, leakage_poltype=None,
-                 mbdkcross=None, clipminmax=None):
+                 mbdkcross=None, clipminmax=None, refant=None, run_setjy=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            Dterm_solint: D-terms spectral averaging.
+
+                Example: refantignore='ea02,ea03'.
+
+            refantignore: String list of antennas to ignore.
+
+            leakage_poltype: poltype to use in first polcal execution - blank string means use default heuristics.
+
+            mbdkcross: Run gaincal KCROSS grouped by baseband.
+
+            clipminmax: Acceptable range for leakage amplitudes, values outside will be flagged.
+
+            refant: A csv string of reference antenna(s). When used, disables ``refantignore``. Example: refant = 'ea01, ea02'
+
+            run_setjy: Run setjy for amplitude/flux calibrator, default set to True.
+
+        """
         super(CircfeedpolcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -82,7 +115,8 @@ class CircfeedpolcalInputs(vdp.StandardInputs):
         self.leakage_poltype = leakage_poltype
         self.mbdkcross = mbdkcross
         self.clipminmax = clipminmax
-
+        self.refant = refant
+        self.run_setjy = run_setjy
 
 @task_registry.set_equivalent_casa_task('hifv_circfeedpolcal')
 class Circfeedpolcal(polarization.Polarization):
@@ -91,12 +125,10 @@ class Circfeedpolcal(polarization.Polarization):
     def prepare(self):
 
         self.callist = []
-        try:
-            self.setjy_results = self.inputs.context.results[0].read()[0].setjy_results
-        except Exception as e:
-            self.setjy_results = self.inputs.context.results[0].read().setjy_results
-
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+        # PIPE-2164: getting setjy result stored in context
+        self.setjy_results = self.inputs.context.evla['msinfo'][m.name].setjy_results
+
         intents = list(m.intents)
 
         self.RefAntOutput = ['']
@@ -104,7 +136,11 @@ class Circfeedpolcal(polarization.Polarization):
         self.caldictionary = {}
 
         if [intent for intent in intents if 'POL' in intent]:
-            self.do_prepare()
+            try:
+                self.do_prepare()
+            except Exception as ex:
+                LOG.warning(ex)
+                LOG.debug(traceback.format_exc())
 
         return CircfeedpolcalResults(vis=self.inputs.vis, pool=self.callist, final=self.callist,
                                      refant=self.RefAntOutput[0].lower(), calstrategy=self.calstrategy,
@@ -117,13 +153,17 @@ class Circfeedpolcal(polarization.Polarization):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         self.ignorerefant = self.inputs.context.evla['msinfo'][m.name].ignorerefant
-        refantignore = self.inputs.refantignore + ','.join(self.ignorerefant)
-
+        # PIPE-1637: adding ',' in the manual and auto refantignore parameter
+        refantignore = self.inputs.refantignore + ','.join(['', *self.ignorerefant])
         refantfield = self.inputs.context.evla['msinfo'][m.name].calibrator_field_select_string
-        refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
-                                                geometry=True, flagging=True, intent='', spw='',
-                                                refantignore=refantignore)
-        self.RefAntOutput = refantobj.calculate()
+        # PIPE-595: if refant list is not provided, compute refants else use provided refant list.
+        if len(self.inputs.refant) == 0:
+            refantobj = findrefant.RefAntHeuristics(vis=self.inputs.vis, field=refantfield,
+                                                    geometry=True, flagging=True, intent='', spw='',
+                                                    refantignore=refantignore)
+            self.RefAntOutput = refantobj.calculate()
+        else:
+            self.RefAntOutput = self.inputs.refant.split(",")
 
         # setjy for amplitude/flux calibrator (VLASS 3C286 or 3C48)
         fluxcalfieldname, fluxcalfieldid, fluxcal = self._do_setjy()
@@ -149,7 +189,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         tablesToAdd[0][2] = []  # Default for KCROSS table
         if self.inputs.mbdkcross:
-            _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
+            baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=True, return_select_list=True)
             baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
             addcallib = False
@@ -158,13 +198,23 @@ class Circfeedpolcal(polarization.Polarization):
             for spws in baseband_spwstr:
                 LOG.info("Executing gaincal on baseband with spws={!s}".format(spws))
                 self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws,
-                                combine='scan,spw', addcallib=addcallib)
+                                combine='scan,spw')
                 tablesToAdd[0][2] = self.do_spwmap()
         else:
             spwsobj = m.get_spectral_windows(science_windows_only=True)
             spwslist = [str(spw.id) for spw in spwsobj]
             spws = ','.join(spwslist)
-            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws, addcallib=True)
+            addcallib = True
+            self.do_gaincal(tablesToAdd[0][0], field=fluxcalfieldname, spw=spws)
+        if os.path.exists(tablesToAdd[0][0]):
+            addcallib = True
+
+        if addcallib:
+            LOG.info("Adding " + str(tablesToAdd[0][0]) + " to callibrary.")
+            calfrom = callibrary.CalFrom(gaintable=tablesToAdd[0][0], interp='', calwt=False, caltype='kcross')
+            calto = callibrary.CalTo(self.inputs.vis)
+            calapp = callibrary.CalApplication(calto, calfrom)
+            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
 
         # Determine number of scans with POLLEAKGE intent and use the first POLLEAKAGE FIELD
         polleakagefield = ''
@@ -256,30 +306,28 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: replaces the finalphasegaincal name with the phaseshortgaincal table from hifv_finalcals
 
         '''
-
+        m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
         idx = -1  # Should be last element
         newtable = ''
         for i, table in enumerate(GainTables):
             if 'finalphasegaincal' in table:
                 idx = i
                 try:
-                    finalcals_result = self.inputs.context.results[-1].read()[0]
-                except Exception as e:
-                    finalcals_result = self.inputs.context.results[-1].read()
-                newtable = finalcals_result.phaseshortgaincaltable
+                    newtable = self.inputs.context.evla['msinfo'][m.name].phaseshortgaincaltable
+                except AttributeError:
+                    LOG.warning("Exception: 'phaseshortgaincaltable' is not present.")
         GainTables[idx] = newtable
 
         return GainTables
 
-    def do_gaincal(self, caltable, field='', spw='', combine='scan', addcallib=False):
+    def do_gaincal(self, caltable, field='', spw='', combine='scan'):
 
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         append = False
         if os.path.exists(caltable):
             append = True
-            addcallib = True
             LOG.info("{!s} exists.  Appending to caltable.".format(caltable))
 
         GainTables = []
@@ -320,7 +368,7 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args = {'vis': self.inputs.vis,
                           'caltable': caltable,
                           'field': field,
-                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED',
+                          'intent': 'CALIBRATE_FLUX#UNSPECIFIED,CALIBRATE_AMPLI#UNSPECIFIED,CALIBRATE_PHASE#UNSPECIFIED,CALIBRATE_BANDPASS#UNSPECIFIED,CALIBRATE_POL_ANGLE#UNSPECIFIED',
                           'scan': '',
                           'spw': spw,
                           'solint': 'inf',
@@ -339,15 +387,10 @@ class Circfeedpolcal(polarization.Polarization):
         casa_task_args['uvrange'] = uvrange(self.setjy_results, fieldid)
 
         job = casa_tasks.gaincal(**casa_task_args)
-
-        self._executor.execute(job)
-
-        if addcallib:
-            LOG.info("Adding " + str(caltable) + " to callibrary.")
-            calfrom = callibrary.CalFrom(gaintable=caltable, interp='', calwt=False, caltype='kcross')
-            calto = callibrary.CalTo(self.inputs.vis)
-            calapp = callibrary.CalApplication(calto, calfrom)
-            self.inputs.context.callibrary.add(calapp.calto, calapp.calfrom)
+        try:
+            self._executor.execute(job)
+        except Exception as ex:
+            LOG.warning(ex)
 
         # return result
         return True
@@ -366,7 +409,7 @@ class Circfeedpolcal(polarization.Polarization):
 
         GainTables = GainTables[0]
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        minBL_for_cal = m.vla_minbaselineforcal()
+        minBL_for_cal = vla_minbaselineforcal()
 
         spwmap = []
         for gaintable in GainTables:
@@ -468,7 +511,6 @@ class Circfeedpolcal(polarization.Polarization):
                              'scalebychan': True,
                              'standard': 'manual',
                              'model': '',
-                             'modimage': '',
                              'listmodels': False,
                              'fluxdensity': [6.4861, -0.132, 0.0417, 0],
                              'spix': [-0.934677, -0.125579],
@@ -492,7 +534,6 @@ class Circfeedpolcal(polarization.Polarization):
                              'scalebychan': True,
                              'standard': 'manual',
                              'model': '',
-                             'modimage': '',
                              'listmodels': False,
                              'fluxdensity': [5.471, 0, 0, 0],
                              'spix': [-0.6432, -0.082],
@@ -520,9 +561,14 @@ class Circfeedpolcal(polarization.Polarization):
             else:
                 LOG.error("No known flux calibrator found - please check the data.")
 
-            job = casa_tasks.setjy(**task_args)
-
-            self._executor.execute(job)
+            # PIPE-1750, added an option to disable setjy call
+            if self.inputs.run_setjy:
+                job = casa_tasks.setjy(**task_args)
+                self._executor.execute(job)
+            else:
+                LOG.warning("Setting the polarized flux densities for the polarization angle calibrator within the task was disabled."
+                            "Polarization angle will not be properly calibrated unless the polarized flux densities were set prior to invoking this task."
+                            "Check the RL phase offset vs. Freq and RL delay vs. freq plots to ensure behavior is as expected.")
         except Exception as ex:
             LOG.warning("Exception: Problem with circfeedpolcal setjy. {!s}".format(str(ex)))
             return None
@@ -534,7 +580,7 @@ class Circfeedpolcal(polarization.Polarization):
         Returns: spwmap for use with gaintable in callibrary (polcal and applycal)
         """
         m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
-        _, baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
+        baseband_spws_list = m.get_vla_baseband_spws(science_windows_only=False, return_select_list=True)
         baseband_spwstr = [','.join(map(str, spws_list)) for spws_list in baseband_spws_list]
 
         spwmap = []

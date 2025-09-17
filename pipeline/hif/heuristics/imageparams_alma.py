@@ -1,9 +1,12 @@
+import re
+from typing import List, Optional, Union
+
 import numpy as np
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.utils as utils
-import pipeline.domain.measures as measures
 from pipeline.infrastructure import casa_tools
+
 from .imageparams_base import ImageParamsHeuristics
 
 LOG = infrastructure.get_logger(__name__)
@@ -12,12 +15,12 @@ LOG = infrastructure.get_logger(__name__)
 class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
     def __init__(self, vislist, spw, observing_run, imagename_prefix='', proj_params=None, contfile=None,
-                 linesfile=None, imaging_params={}):
+                 linesfile=None, imaging_params={}, processing_intents={}):
         ImageParamsHeuristics.__init__(self, vislist, spw, observing_run, imagename_prefix, proj_params, contfile,
-                                       linesfile, imaging_params)
+                                       linesfile, imaging_params, processing_intents)
         self.imaging_mode = 'ALMA'
 
-    def robust(self):
+    def robust(self, specmode=None):
         """robust parameter heuristic."""
         if 'robust' in self.imaging_params:
             robust = self.imaging_params['robust']
@@ -26,7 +29,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         else:
             return 0.5
 
-    def uvtaper(self, beam_natural=None, protect_long=3):
+    def uvtaper(self, beam_natural=None, protect_long=3, beam_user=None, tapering_limit=None, repr_freq=None):
         """Adjustment of uvtaper parameter based on desired resolution or representative baseline length."""
 
         # Disabled heuristic for ALMA Cycle 6
@@ -47,7 +50,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         # Protection against spurious long baselines
         if protect_long is not None:
             l80, min_diameter = self.calc_percentile_baseline_length(80.)
-            LOG.info('ALMA uvtaper heuristic: L80 baseline length is %.1f meter' % (l80)) 
+            LOG.info('ALMA uvtaper heuristic: L80 baseline length is %.1f meter' % (l80))
 
             c = cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0]
             uvtaper_value = protect_long * l80 / cqa.getvalue(cqa.convert(cqa.constants('c'), 'm/s'))[0] * cqa.getvalue(cqa.convert(repr_freq, 'Hz'))[0]
@@ -79,7 +82,7 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
         #
         # return uvtaper
 
-    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit):
+    def dr_correction(self, threshold, dirty_dynamic_range, residual_max, intent, tlimit, drcorrect):
         """Adjustment of cleaning threshold due to dynamic range limitations."""
 
         qaTool = casa_tools.quanta
@@ -88,6 +91,17 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         diameter = self.observing_run.get_measurement_sets()[0].antennas[0].diameter
         old_threshold = qaTool.convert(threshold, 'Jy')['value']
+
+        if drcorrect not in (None, -999):
+            if isinstance(drcorrect, (float, int)) and drcorrect > 0.0:
+                new_threshold = old_threshold*drcorrect
+                DR_correction_factor = drcorrect
+                LOG.info('DR correction: Modified threshold from {:.3g} Jy to {:.3g} Jy based on the user input correction factor: {}'.format(
+                    old_threshold, new_threshold, DR_correction_factor))
+                return '%.3gJy' % (new_threshold), DR_correction_factor, maxEDR_used
+            else:
+                raise Exception(f'Got an invalid input value for the DR correction factor: {drcorrect}')
+
         if intent == 'TARGET' or intent == 'CHECK':
             n_dr_max = 2.5
             if diameter == 12.0:
@@ -188,37 +202,30 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return new_niter
 
-    def calc_percentile_baseline_length(self, percentile):
-        """Calculate percentile baseline length for the vis list used in this heuristics instance."""
-
-        min_diameter = 1.e9
-        percentileBaselineLengths = []
-        for msname in self.vislist:
-            ms_do = self.observing_run.get_ms(msname)
-            min_diameter = min(min_diameter, min([antenna.diameter for antenna in ms_do.antennas]))
-            percentileBaselineLengths.append(
-                np.percentile([float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                               for baseline in ms_do.antenna_array.baselines], percentile))
-
-        return np.median(percentileBaselineLengths), min_diameter
-
     def calc_length_of_nth_baseline(self, n: int):
         """Calculate the length of the nth baseline for the vis list used in the heuristics instance."""
         baseline_lengths = []
         for msname in self.vislist:
             ms_do = self.observing_run.get_ms(msname)
-            ms_baseline_lengths = [float(baseline.length.to_units(measures.DistanceUnits.METRE))
-                                    for baseline in ms_do.antenna_array.baselines]
-            ms_baseline_lengths.sort()
-            if(len(ms_baseline_lengths) >= n):
-                baseline_lengths.append(ms_baseline_lengths[n-1])
+            baselines_m = ms_do.antenna_array.baselines_m
+            if n > len(baselines_m):
+                continue
 
-        if(len(baseline_lengths) > 0): 
+            baseline_lengths.append(np.sort(baselines_m)[n-1])
+
+        if len(baseline_lengths) > 0:
             return np.median(baseline_lengths)
-        else: 
+        else:
             return None
-            
-    def get_autobox_params(self, iteration, intent, specmode, robust):
+
+    def get_autobox_params(
+        self,
+        iteration: int,
+        intent: str,
+        specmode: str,
+        robust: float,
+        rms_multiplier: Optional[Union[int, float]] = None,
+    ) -> tuple:
         """Default auto-boxing parameters for ALMA main array and ACA."""
 
         # Start with generic defaults
@@ -350,12 +357,55 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
         return 2
 
+    def _tlimit_cyclefactor_heuristic(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        gridder = self.gridder(intent, field)
+
+        times_on_source_per_field = []
+        for vis in self.vislist:
+            ms_do = self.observing_run.get_ms(vis)
+            times_on_source_per_field.extend(ms_do.get_times_on_source_per_field_id(field, intent).values())
+
+        if not times_on_source_per_field:
+            return False
+
+        min_time_on_source_per_field = min(times_on_source_per_field)
+
+        if (gridder == 'mosaic'
+            and specmode in ('cube', 'repBW')
+            and min_time_on_source_per_field <= 60.0
+            and iter0_dirty_dynamic_range >= 30.0
+            and iteration > 0):
+            return True
+        else:
+            return False
+
+    def tlimit(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        if field is None or intent is None or specmode is None or iter0_dirty_dynamic_range is None:
+            return 2.0
+        if self._tlimit_cyclefactor_heuristic(iteration, field, intent, specmode, iter0_dirty_dynamic_range):
+            return 5.0
+        else:
+            return 2.0
+
+    def cyclefactor(self, iteration, field=None, intent=None, specmode=None, iter0_dirty_dynamic_range=None):
+        if field is None or intent is None or specmode is None or iter0_dirty_dynamic_range is None:
+            # Use CASA default
+            return None
+        if self._tlimit_cyclefactor_heuristic(iteration, field, intent, specmode, iter0_dirty_dynamic_range):
+            return 3.0
+        else:
+            return None
+
     def mosweight(self, intent, field):
 
         if self.gridder(intent, field) == 'mosaic':
             return True
         else:
             return False
+
+    def tclean_stopcode_ignore(self, iteration, hm_masking):
+        """tclean stop code(s) to be ignored for warning messages (PIPE-1319)."""
+        return [1, 5, 6]
 
     def keep_iterating(self, iteration, hm_masking, tclean_stopcode, dirty_dynamic_range, residual_max,
                        residual_robust_rms, field, intent, spw, specmode):
@@ -370,25 +420,25 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
             if (hm_masking == 'auto') and (tclean_stopcode == 7):
                 if intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'POLARIZATION', 'POLANGLE', 'POLLEAKAGE'):
                     if residual_max / residual_robust_rms > 10.0:
-                        LOG.warning('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                    'switched to pb-based mask and tlimit=4. '
-                                    'Field %s Intent %s SPW %s' % (field, intent, spw))
+                        LOG.attention('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
+                                      'switched to pb-based mask and tlimit=4. '
+                                      'Field %s Intent %s SPW %s' % (field, intent, spw))
                     else:
-                        LOG.warning('No automatic clean mask was found, switched to pb-based mask and tlimit=4. Field %s '
-                                    'Intent %s SPW %s' % (field, intent, spw))
+                        LOG.attention('No automatic clean mask was found, switched to pb-based mask and tlimit=4. Field %s '
+                                      'Intent %s SPW %s' % (field, intent, spw))
                     # If no automask is found, always try the simple circular mask for calibrators
                     hm_masking = 'centralregion'
                     keep_iterating = True
                 elif intent in ('CHECK', 'TARGET'):
                     if residual_max / residual_robust_rms > 10.0:
                         if (specmode == 'cube') or (dirty_dynamic_range <= 30.0):
-                            LOG.warning('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                        'check the results. '
-                                        'Field %s Intent %s SPW %s' % (field, intent, spw))
+                            LOG.attention('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
+                                          'check the results. '
+                                          'Field %s Intent %s SPW %s' % (field, intent, spw))
                         else:
-                            LOG.warning('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
-                                        'switched to pb-based mask and tlimit=4. '
-                                        'Field %s Intent %s SPW %s' % (field, intent, spw))
+                            LOG.attention('No automatic clean mask was found despite clean residual peak / scaled MAD > 10, '
+                                          'switched to pb-based mask and tlimit=4. '
+                                          'Field %s Intent %s SPW %s' % (field, intent, spw))
                             # If no automask is found, try the simple circular mask for high DR continuum
                             hm_masking = 'centralregion'
                             keep_iterating = True
@@ -397,31 +447,90 @@ class ImageParamsHeuristicsALMA(ImageParamsHeuristics):
 
     def threshold(self, iteration, threshold, hm_masking):
 
+        cqa = casa_tools.quanta
+
         if iteration == 0:
             return '0.0mJy'
         elif iteration == 1:
-            return threshold
+            maxthreshold = self.imaging_params.get('maxthreshold', None)
+            if maxthreshold and threshold and cqa.gt(threshold, maxthreshold):
+                LOG.info(
+                    f'Switching to use the pre-defined threshold upper limit value of {maxthreshold} instead of {threshold}')
+                return maxthreshold
+            else:
+                return threshold
         else:
             # Fallback to circular mask if auto-boxing fails.
             # CAS-10489: old centralregion option needs higher threshold
-            cqa = casa_tools.quanta
             return '%sJy' % (cqa.getvalue(cqa.mul(threshold, 2.0))[0])
 
     def intent(self):
         return 'TARGET'
 
-
-    def weighting(self, specmode: str) -> str:
-        """Determine the weighting scheme."""
-        if specmode in ('mfs', 'cont'):
-            return 'briggs'
+    def stokes(self, intent: str = '', joint_intents: str = '') -> str:
+        if intent == 'POLARIZATION' and joint_intents == 'POLARIZATION':
+            return 'IQUV'
         else:
-            return 'briggsbwtaper'
+            return 'I'
 
-    def perchanweightdensity(self, specmode: str) -> bool:
-        """Determine the perchanweightdensity parameter."""
-        if specmode in ('mfs', 'cont'):
-            return False
+    def reffreq(self, deconvolver: Optional[str] = None, specmode: Optional[str] = None, spwsel: Optional[dict] = None) -> Optional[str]:
+        """PIPE-1838: Tclean reffreq parameter heuristics."""
+
+        if deconvolver != 'mtmfs' or specmode != 'cont':
+            return None
+
+        if spwsel in (None, ''):
+            LOG.attention('Cannot calculate reference frequency for mtmfs cleaning.')
+            return None
+
+        qaTool = casa_tools.quanta
+
+        n_sum = 0.0
+        d_sum = 0.0
+        p = re.compile(r'([\d.]*\s*)(~\s*)([\d.]*\s*)([A-Za-z]*\s*)(;?)')
+        freqRangeFound = False
+        for spwsel_k, spwsel_v in spwsel.items():
+            try:
+                if spwsel_v not in ('', 'NONE'):
+                    freq_ranges, frame = spwsel_v.rsplit(' ', maxsplit=1)
+                    freqRangeFound = True
+                    freq_intervals = p.findall(freq_ranges)
+                    LOG.debug('ALMA reffreq heuristics: spwsel - key:value - %s:%s', spwsel_k, spwsel_v)
+                    for freq_interval in freq_intervals:
+                        f_low = qaTool.quantity(float(freq_interval[0]), freq_interval[3])
+                        f_low_v = float(qaTool.getvalue(qaTool.convert(f_low, 'GHz'))[0])
+                        f_high = qaTool.quantity(float(freq_interval[2]), freq_interval[3])
+                        f_high_v = float(qaTool.getvalue(qaTool.convert(f_high, 'GHz'))[0])
+                        LOG.debug('ALMA reffreq heuristics: aggregating interval: f_low_v / f_high_v: %s / %s GHz', f_low_v, f_high_v)
+                        n_sum += f_high_v**2-f_low_v**2
+                        d_sum += f_high_v-f_low_v
+            except:
+                LOG.attention('Cannot calculate reference frequency for mtmfs cleaning.')
+                return None
+        if not freqRangeFound:
+            LOG.info('No continuum frequency ranges found. No reference frequency calculated.')
+            return None
+        d_sum *= 2
+
+        if d_sum != 0.0:
+            return f'{n_sum/d_sum}GHz'
         else:
-            return True
+            LOG.attentation('Reference frequency calculation led to zero denominator.')
+            return None
 
+    def arrays(self, vislist: Optional[List[str]] = None):
+
+        """Return the array descriptions."""
+
+        if vislist is None:
+            local_vislist = self.vislist
+        else:
+            local_vislist = vislist
+
+        antenna_diameters = self.antenna_diameters(local_vislist)
+        array_descs = []
+        if 12.0 in antenna_diameters:
+            array_descs.append('12m')
+        if 7.0 in antenna_diameters:
+            array_descs.append('7m')
+        return ''.join(array_descs)

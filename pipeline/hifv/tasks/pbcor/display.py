@@ -1,10 +1,7 @@
 import collections
 import os
 
-import matplotlib.pyplot as plt
-import numpy as np
 import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.renderer.logger as logger
 from pipeline.h.tasks.common.displays import sky as sky
 from pipeline.h.tasks.common.displays.imhist import ImageHistDisplay
 from pipeline.infrastructure import casa_tools
@@ -32,7 +29,8 @@ class PbcorimagesSummary(object):
         self.result.residual_stats = {}
         self.result.pbcor_stats = {}
 
-        for basename, pbcor_images in self.result.pbcorimagenames.items():
+        for basename_keep, pbcor_images in self.result.pbcorimagenames.items():
+            basename = basename_keep[0]
             plot_wrappers = []
             for pbcor_imagename in pbcor_images:
 
@@ -64,4 +62,3 @@ class PbcorimagesSummary(object):
             plot_dict[basename] = [p for p in plot_wrappers if p is not None]
 
         return plot_dict
-

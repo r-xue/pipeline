@@ -40,7 +40,7 @@ class WvrgcalflagQAHandler(pqa.QAPlugin):
                 # If a WVR QA score was available, then adopt this as the
                 # final QA score for the task.
                 if wvr_score:
-                    score_object = qacalc.score_wvrgcal(ms_name, result.flaggerresult.dataresult.qa_wvr.overall_score)
+                    score_object = qacalc.score_wvrgcal(ms_name, result.flaggerresult.dataresult)
                     new_origin = pqa.QAOrigin(
                         metric_name='PhaseRmsRatio',
                         metric_score=score_object.origin.metric_score,
@@ -70,7 +70,7 @@ class WvrgcalflagListQAHandler(pqa.QAPlugin):
     """
     QA handler for a list containing WvrgcalflagResults.
     """
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = resultobjects.WvrgcalflagResults
 
     def handle(self, context, result):

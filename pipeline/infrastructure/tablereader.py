@@ -1,44 +1,134 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
+import bisect
 import collections
 import datetime
-import glob
+import functools
 import itertools
 import operator
 import os
 import re
-import xml.etree.ElementTree as ElementTree
-from bisect import bisect_left
-from functools import reduce
+import traceback
+import xml
+from typing import TYPE_CHECKING
 
 import cachetools
-import numpy
+import numpy as np
 
-import pipeline.domain as domain
-import pipeline.domain.measures as measures
-import pipeline.infrastructure.utils as utils
-from . import casa_tools
-from . import logging
+from pipeline import domain, infrastructure
+from pipeline.domain import measures
+from pipeline.infrastructure import casa_tools, utils
 
-LOG = logging.get_logger(__name__)
+if TYPE_CHECKING:
+    from numpy.typing import NDArray
+    from pipeline.domain import Antenna, AntennaArray, MeasurementSet
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
-def find_EVLA_band(frequency, bandlimits=None, BBAND='?4PLSCXUKAQ?'):
-    """identify VLA band"""
+def find_EVLA_band(frequency: float, bandlimits: list[float] | None = None, BBAND: str | None = '?4PLSCXUKAQ?') -> str:
+    """Identify VLA frequency band based on input frequency.
+
+    Determines the appropriate VLA band designation for a given frequency
+    by comparing against predefined frequency limits. Returns 'unknown' if the frequency
+    falls outside defined bands.
+
+    Args:
+        frequency: Input frequency in Hz to classify
+        bandlimits: Custom frequency boundaries in Hz. If None, uses default VLA band limits
+        BBAND: Band designation string where each character represents a band. '?' indicates
+            undefined bands
+
+    Returns:
+        Single character string representing the VLA band designation, or 'unknown' if the
+        frequency cannot be classified
+
+    Example:
+        >>> find_EVLA_band(1.4e9)  # 1.4 GHz L-band
+        'L'
+        >>> find_EVLA_band(100e6)  # 100 MHz, undefined band
+        'unknown'
+    """
     if bandlimits is None:
+        # Default VLA frequency band limits in Hz
         bandlimits = [0.0e6, 150.0e6, 700.0e6, 2.0e9, 4.0e9, 8.0e9, 12.0e9, 18.0e9, 26.5e9, 40.0e9, 56.0e9]
-    i = bisect_left(bandlimits, frequency)
 
-    return BBAND[i]
+    i = bisect.bisect_left(bandlimits, frequency)
+
+    if BBAND[i] == '?':
+        # Band is undefined - log warning and return unknown
+        LOG.warning('Unable to determine VLA band for frequency %.2f MHz', frequency / 1e6)
+        return 'unknown'
+    else:
+        return BBAND[i]
 
 
-def _get_ms_name(ms):
+def _get_groupingid_spectralspec_from_alma_spw_name(spw_name: str) -> tuple[str | None, str | None]:
+    """
+    Parse an ALMA spectral window name to pick out the Grouping ID and the
+    SpectralSpec ID, if present.
+
+    PIPE-1132: introduced support for retrieving SpectralSpec.
+    PIPE-2384: added support for retrieving the Grouping ID.
+    PIPE-2697: refactored to handle older datasets that do not define
+      Grouping ID and/or SpectralSpec.
+
+    Example of full SpW name: X100001#X900000004#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where Grouping ID: X100001; Spectral Spec: X900000004
+
+    Example of SpW names from Cycle 3 - 11: X1398968310#ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where SpectralSpec: X1398968310; no Grouping ID set.
+
+    Example of SpW names from ALMA data before Cycle 3: ALMA_RB_06#BB_1#SW-01#FULL_RES
+    where no Grouping ID or SpectralSpec is set.
+
+    Args:
+        spw_name: Spectral window name string to parse.
+
+    Returns:
+        2-tuple containing Grouping ID and Spectral Spec ID, where each can be
+        None if not found in SpW name.
+    """
+    parts = spw_name.split('#')
+    try:
+        alma_index = next(i for i, part in enumerate(parts) if part.startswith("ALMA"))
+    except StopIteration:
+        # If "ALMA" is not found, consider spw name malformed and return without
+        # Grouping ID or SpectralSpec.
+        return None, None
+
+    # Select the parts preceding "ALMA", and set defaults.
+    metadata_parts = parts[:alma_index]
+    groupingid, spectralspec = None, None
+
+    # If there is only 1 element preceding, this is assumed to be the SpectralSpec.
+    if len(metadata_parts) == 1:
+        spectralspec = metadata_parts[0]
+    # If there are 2 elements preceding, these are assumed to be Grouping ID
+    # followed by SpectralSpec.
+    elif len(metadata_parts) == 2:
+        groupingid, spectralspec = metadata_parts
+    # If there are zero elements preceding, then no Grouping ID or SpectralSpec
+    # were found, so return with defaults of None.
+    # If there are more than 2 elements preceding, then consider the spw name
+    # malformed and return with defaults of None.
+
+    return groupingid, spectralspec
+
+
+def _get_ms_name(ms: MeasurementSet | str) -> str:
     return ms.name if isinstance(ms, domain.MeasurementSet) else ms
 
 
-def _get_ms_basename(ms):
+def _get_ms_basename(ms: MeasurementSet | str) -> str:
     return ms.basename if isinstance(ms, domain.MeasurementSet) else ms
 
 
-def _get_science_goal_value(science_goals, goal_keyword):
+def _get_science_goal_value(
+        science_goals: NDArray[np.str_],
+        goal_keyword: str
+        ) -> str:
     value = None
     for science_goal in science_goals:
         keyword = science_goal.split('=')[0].replace(' ', '')
@@ -52,7 +142,7 @@ def _get_science_goal_value(science_goals, goal_keyword):
     return value
 
 
-class ObservingRunReader(object):
+class ObservingRunReader:
     @staticmethod
     def get_observing_run(ms_files):
         if isinstance(ms_files, str):
@@ -65,7 +155,7 @@ class ObservingRunReader(object):
         return observing_run
 
 
-class MeasurementSetReader(object):
+class MeasurementSetReader:
     @staticmethod
     def get_scans(msmd, ms):
         LOG.debug('Analysing scans in {0}'.format(ms.name))
@@ -75,24 +165,31 @@ class MeasurementSetReader(object):
             antenna1_col = openms.getcol('ANTENNA1')
             antenna2_col = openms.getcol('ANTENNA2')
             data_desc_id_col = openms.getcol('DATA_DESC_ID')
-
-            # get columns and tools needed to create scan times
             time_colkeywords = openms.getcolkeywords('TIME')
-            time_unit = time_colkeywords['QuantumUnits'][0]
-            time_ref = time_colkeywords['MEASINFO']['Ref']    
-            mt = casa_tools.measures
-            qt = casa_tools.quanta
 
-            scans = []
-            statesforscans = msmd.statesforscans()
-            fieldsforscans = msmd.fieldsforscans(asmap=True, arrayid=0, obsid=0)
-            spwsforscans = msmd.spwsforscans()
+        # get columns and tools needed to create scan times
+        time_unit = time_colkeywords['QuantumUnits'][0]
+        time_ref = time_colkeywords['MEASINFO']['Ref']
+        mt = casa_tools.measures
+        qt = casa_tools.quanta
 
-            for scan_id in msmd.scannumbers():
+        # For each Observation ID, retrieve info on scans.
+        scans = []
+
+        data_desc_mask_dict = {}
+        for dd in ms.data_descriptions:
+            data_desc_mask_dict[dd.id] = (data_desc_id_col == dd.id)
+
+        for obs_id in range(msmd.nobservations()):
+            statesforscans = msmd.statesforscans(obsid=obs_id)
+            fieldsforscans = msmd.fieldsforscans(obsid=obs_id, arrayid=0, asmap=True)
+            spwsforscans = msmd.spwsforscans(obsid=obs_id)
+
+            for scan_id in msmd.scannumbers(obsid=obs_id):
                 states = [s for s in ms.states
                           if s.id in statesforscans[str(scan_id)]]
 
-                intents = reduce(lambda s, t: s.union(t.intents), states, set())
+                intents = functools.reduce(lambda s, t: s.union(t.intents), states, set())
 
                 fields = [f for f in ms.fields if f.id in fieldsforscans[str(scan_id)]]
 
@@ -100,12 +197,12 @@ class MeasurementSetReader(object):
                 # by spw
                 # scan_times = msmd.timesforscan(scan_id)
 
-                exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id)
+                exposures = {spw_id: msmd.exposuretime(scan=scan_id, spwid=spw_id, obsid=obs_id)
                              for spw_id in spwsforscans[str(scan_id)]}
 
                 scan_mask = (scan_number_col == scan_id)
 
-                # get the antennas used for this scan 
+                # get the antennas used for this scan
                 LOG.trace('Calculating antennas used for scan %s', scan_id)
                 antenna_ids = set()
                 scan_antenna1 = antenna1_col[scan_mask]
@@ -124,11 +221,11 @@ class MeasurementSetReader(object):
                 scan_times = {}  
                 LOG.trace('Processing scan times for scan %s', scan_id)
                 for dd in data_descriptions:
-                    dd_mask = (scan_number_col == scan_id) & (data_desc_id_col == dd.id)
+                    dd_mask = scan_mask & data_desc_mask_dict[dd.id]
 
                     raw_midpoints = list(time_col[dd_mask])
-                    unique_midpoints = set(raw_midpoints)
-                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit)) for o in unique_midpoints]
+                    epoch_midpoints = [mt.epoch(time_ref, qt.quantity(o, time_unit))
+                                       for o in (np.min(raw_midpoints), np.max(raw_midpoints))]
 
                     scan_times[dd.spw.id] = list(zip(epoch_midpoints, itertools.repeat(exposures[dd.spw.id])))
 
@@ -139,48 +236,78 @@ class MeasurementSetReader(object):
 
                 LOG.trace('{0}'.format(scan))
 
-            return scans
+        return scans
 
     @staticmethod
-    def add_band_to_spws(ms):
+    def add_band_to_spws(ms: domain.MeasurementSet) -> None:
+        """Sets spw.band, which is a string describing a band."""
+        observatory = ms.antenna_array.name.upper()
+
+        # This dict is only populated if the spw's band number cannot be determined from its name for ALMA.
+        alma_receiver_band = {}
+
         for spw in ms.spectral_windows:
             if spw.type == 'WVR':
                 spw.band = 'WVR'
+                LOG.debug("For MS {}, SpW {}, setting band to WVR.".format(ms.name, spw.id))
                 continue
 
-            # Expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
-            m = re.search(r'ALMA_RB_(?P<band>\d+)', spw.name)
-            if m:
-                band_str = m.groupdict()['band']
+            # Determining the band number for ALMA data
+            #
+            # First, try to determine the band number from the spw name
+            # The expected format is something like ALMA_RB_03#BB_1#SW-01#FULL_RES
+            # If this doesn't work and this is ALMA data, try to get the band number from the ASDM_RECEIVER table
+            # If this also fails, then set the band number using a look-up-table.
+            #
+            # See: PIPE-140 or PIPE-1078
+            #
+            alma_band_regex = r'ALMA_RB_(?P<band>\d+)'
+            match_found = re.search(alma_band_regex, spw.name)
+            if match_found:
+                band_str = match_found.groupdict()['band']
                 band_num = int(band_str)
                 spw.band = 'ALMA Band %s' % band_num
+                LOG.debug("For MS {}, SpW {}, setting band to {}, based on the SPW name.".format(ms.name, spw.id, spw.band))
                 continue
+            elif observatory == 'ALMA': 
+                if not alma_receiver_band:
+                    alma_receiver_band = SpectralWindowTable.get_receiver_info(ms, get_band_info=True)
+                if spw.id in alma_receiver_band:
+                    match_receiver_band = re.search(alma_band_regex, alma_receiver_band[spw.id])
+                    if match_receiver_band:
+                        band_str = match_receiver_band.groupdict()['band']
+                        band_num = int(band_str)
+                        spw.band = 'ALMA Band %s' % band_num 
+                        LOG.debug("For MS {}, SpW {}, setting band to {}, based on ASDM_RECEIVER table.".format(ms.name, spw.id, spw.band))
+                        continue
+                else:
+                    LOG.debug("For MS {}, SpW {}, could not find band number information in ALMA_RECEIVER table.".format(ms.name, spw.id))
 
+            # If both fail for ALMA, set the band number as follows:
             spw.band = BandDescriber.get_description(spw.ref_frequency, observatory=ms.antenna_array.name)
+            LOG.debug(
+                'For MS {}, SpW {}, setting band to {}, based on Pipeline internal look-up table.'.format(
+                    ms.name, spw.id, spw.band
+                )
+            )
 
-            # Used EVLA band name from spw instead of frequency range
-            observatory = ms.antenna_array.name.upper()
+            # For VLA/EVLA, we can use the spw2band mapping to get the band name.
             if observatory in ('VLA', 'EVLA'):
                 spw2band = ms.get_vla_spw2band()
-
-                try:
-                    EVLA_band = spw2band[spw.id]
-                except:
-                    LOG.info('Unable to get band from spw id - using reference frequency instead')
-                    freqHz = float(spw.ref_frequency.value)
-                    EVLA_band = find_EVLA_band(freqHz)
-
-                EVLA_band_dict = {'4': '4m (4)',
-                                  'P': '90cm (P)',
-                                  'L': '20cm (L)',
-                                  'S': '13cm (S)',
-                                  'C': '6cm (C)',
-                                  'X': '3cm (X)',
-                                  'U': '2cm (Ku)',
-                                  'K': '1.3cm (K)',
-                                  'A': '1cm (Ka)',
-                                  'Q': '0.7cm (Q)'}
-
+                EVLA_band = spw2band[spw.id]
+                EVLA_band_dict = {
+                    '4': '4m (4)',
+                    'P': '90cm (P)',
+                    'L': '20cm (L)',
+                    'S': '13cm (S)',
+                    'C': '6cm (C)',
+                    'X': '3cm (X)',
+                    'U': '2cm (Ku)',
+                    'K': '1.3cm (K)',
+                    'A': '1cm (Ka)',
+                    'Q': '0.7cm (Q)',
+                    '?': 'unknown',
+                }
                 spw.band = EVLA_band_dict[EVLA_band]
 
     @staticmethod
@@ -188,13 +315,11 @@ class MeasurementSetReader(object):
         ms.spectralspec_spwmap = utils.get_spectralspec_to_spwid_map(ms.spectral_windows)
 
     @staticmethod
-    def add_spectralspec_to_spws(ms):
-        # For ALMA, extract spectral spec from spw name.
+    def add_spectralspec_and_groupingid_to_spws(ms):
+        """Add SpectralSpec and Grouping ID to each SpW for ALMA measurement sets"""
         for spw in ms.spectral_windows:
             if 'ALMA' in spw.name:
-                i = spw.name.find('#')
-                if i != -1:
-                    spw.spectralspec = spw.name[:i]
+                spw.grouping_id, spw.spectralspec = _get_groupingid_spectralspec_from_alma_spw_name(spw.name)
 
     @staticmethod
     def link_intents_to_spws(msmd, ms):
@@ -279,11 +404,11 @@ class MeasurementSetReader(object):
                 LOG.debug("Field "+str(field.id) + " not in spwsforfields dictionary.")
 
     @staticmethod
-    def get_measurement_set(ms_file):
+    def get_measurement_set(ms_file: str) -> domain.MeasurementSet:
         LOG.info('Analysing {0}'.format(ms_file))
         ms = domain.MeasurementSet(ms_file)
 
-        # populate ms properties with results of table readers 
+        # populate ms properties with results of table readers
         with casa_tools.MSMDReader(ms_file) as msmd:
             LOG.info('Populating ms.antenna_array...')
             ms.antenna_array = AntennaTable.get_antenna_array(msmd)
@@ -299,13 +424,16 @@ class MeasurementSetReader(object):
             ms.data_descriptions = RetrieveByIndexContainer(DataDescriptionTable.get_descriptions(msmd, ms))
             LOG.info('Populating ms.polarizations...')
             ms.polarizations = PolarizationTable.get_polarizations(msmd)
+            LOG.info('Populating ms.correlator_name...')
+            ms.correlator_name = MeasurementSetReader._get_correlator_name(ms)
+
             # For now the SBSummary table is ALMA specific
             if 'ALMA' in msmd.observatorynames():
                 sbinfo = SBSummaryTable.get_sbsummary_info(ms, msmd.observatorynames())
 
                 if sbinfo.repSource is None:
-                    LOG.warning('Unable to identify representative target for %s. Will try to fall back to existing'
-                                ' science target sources in the imaging tasks.' % ms.basename)
+                    LOG.attention('Unable to identify representative target for %s. Will try to fall back to existing'
+                                  ' science target sources in the imaging tasks.' % ms.basename)
                 else:
                     if sbinfo.repSource == 'none':
                         LOG.warning('Representative target for %s is set to "none". Will try to fall back to existing'
@@ -314,19 +442,20 @@ class MeasurementSetReader(object):
                     ms.representative_target = (sbinfo.repSource, sbinfo.repFrequency, sbinfo.repBandwidth)
                     ms.representative_window = sbinfo.repWindow
 
-                LOG.info('Populating ms.science_goals ...')
+                LOG.info('Populating ms.observing_modes...')
+                ms.observing_modes = SBSummaryTable.get_observing_modes(ms)
+
+                LOG.info('Populating ms.science_goals...')
                 if sbinfo.minAngResolution is None and sbinfo.maxAngResolution is None:
-                    observing_mode = SBSummaryTable.get_observing_mode(ms)
                     # Only warn if the number of 12m antennas is greater than the number of 7m antennas
                     # and if the observation is not single dish
                     if len([a for a in ms.get_antenna() if a.diameter == 12.0]) > \
                             len([a for a in ms.get_antenna() if a.diameter == 7.0]) \
-                            and 'Standard Single Dish' not in observing_mode:
+                            and 'Standard Single Dish' not in ms.observing_modes:
                         LOG.warning('Undefined angular resolution limits for %s' % ms.basename)
                     ms.science_goals = {'minAcceptableAngResolution': '0.0arcsec',
                                         'maxAcceptableAngResolution': '0.0arcsec'}
                 else:
-                    # LOG.info('Populating ms.science_goals ...')
                     ms.science_goals = {'minAcceptableAngResolution': sbinfo.minAngResolution,
                                         'maxAcceptableAngResolution': sbinfo.maxAngResolution}
 
@@ -345,9 +474,16 @@ class MeasurementSetReader(object):
                 else:
                     ms.science_goals['dynamicRange'] = sbinfo.dynamicRange
 
+                ms.science_goals['spectralDynamicRangeBandWidth'] = sbinfo.spectralDynamicRangeBandWidth
+
                 ms.science_goals['sbName'] = sbinfo.sbName
 
-            LOG.info('Populating ms.array_name ...')
+                # Populate the online ALMA Control Software names
+                LOG.info('Populating ms.acs_software_version and ms.acs_software_build_version...')
+                ms.acs_software_version, ms.acs_software_build_version = \
+                    MeasurementSetReader.get_acs_software_version(ms, msmd)
+
+            LOG.info('Populating ms.array_name...')
             # No MSMD functions to help populating the ASDM_EXECBLOCK table
             ms.array_name = ExecblockTable.get_execblock_info(ms)
 
@@ -363,7 +499,7 @@ class MeasurementSetReader(object):
                     if openms.selectinit(datadescid=dd.id):
                         ms_info = openms.getdata(['axis_info', 'time'])
 
-                        dd.obs_time = numpy.mean(ms_info['time'])
+                        dd.obs_time = np.mean(ms_info['time'])
                         dd.chan_freq = ms_info['axis_info']['freq_axis']['chan_freq'].tolist()
                         dd.corr_axis = ms_info['axis_info']['corr_axis'].tolist()
 
@@ -383,7 +519,7 @@ class MeasurementSetReader(object):
 
         # Update spectral windows in ms with band and spectralspec.
         MeasurementSetReader.add_band_to_spws(ms)
-        MeasurementSetReader.add_spectralspec_to_spws(ms)
+        MeasurementSetReader.add_spectralspec_and_groupingid_to_spws(ms)
 
         # Populate mapping of spectralspecs to spws.
         MeasurementSetReader.add_spectralspec_spwmap(ms)
@@ -404,8 +540,89 @@ class MeasurementSetReader(object):
             data = ms.range([column])
             return list(data.values())[0]
 
+    @staticmethod
+    def _get_correlator_name(ms: domain.MeasurementSet) -> str:
+        """
+        Get correlator name information from the PROCESSOR table in the MS. 
+        
+        The name is set to the value of the SUB_TYPE for the first row with
+        CORRELATOR for its TYPE value. 
 
-class SpectralWindowTable(object):
+        :param ms: the measurements set to get the correlator name for
+        :return: the correlator name
+        """
+        correlator_name = None
+        try:
+            with casa_tools.TableReader(ms.name + '/PROCESSOR') as table:
+                tb1 = table.query("TYPE=='CORRELATOR'")
+                sub_types_col = tb1.getcol('SUB_TYPE')
+                tb1.close()
+
+            if len(sub_types_col) > 0:
+                correlator_name = str(sub_types_col[0])
+            else:
+                msg = "No correlator name could be found for {}".format(ms.basename)
+                LOG.warning(msg)
+
+        except Exception as e:
+            correlator_name = None
+            msg = "Error while populating correlator name for {}, error: {}".format(ms.basename, str(e))
+            LOG.warning(msg)
+
+        return correlator_name
+
+    @staticmethod
+    def get_acs_software_version(ms, msmd) -> tuple[str, str]:
+        """
+        Retrieve the ALMA Common Software version and build version from the ASDM_ANNOTATION table. 
+
+        Returns: 
+            A tuple containing a string with the ACS software version, then a string with 
+            the ACS software build version.
+        """
+        acs_software_version = "Unknown"
+        acs_software_build_version = "Unknown"
+
+        annotation_table = os.path.join(msmd.name(), 'ASDM_ANNOTATION') 
+        try:
+            with casa_tools.TableReader(annotation_table) as table:
+                acs_software_details = table.getcol('details')[0]
+
+                # This value can be "WARNING: No ACS_TAG available" in the ASDM_ANNOTATION table.
+                if "WARNING" in acs_software_details: 
+                    acs_software_version = "Unknown"
+                else: 
+                    acs_software_version = acs_software_details
+
+                acs_software_build_version = table.getcol('details')[1]
+        except: 
+            LOG.info("Unable to read Annotation table information for MS {}".format(_get_ms_basename(ms)))
+
+        return (acs_software_version, acs_software_build_version)
+
+    @staticmethod
+    def get_history(ms_name: str) -> np.ndarray | None:
+        """Retrieve the MS history from the HISTORY table.
+
+        Args:
+            ms_name: Path to the measurement set directory.
+
+        Returns:
+            Numpy array containing history messages, or None if table cannot be read.
+        """
+        try:
+            history_table = os.path.join(ms_name, 'HISTORY')
+            with casa_tools.TableReader(history_table) as ht:
+                msgs = ht.getcol('MESSAGE')
+            return msgs
+        except Exception:
+            LOG.info("Unable to read HISTORY table for MS %s", os.path.basename(ms_name))
+            traceback_msg = traceback.format_exc()
+            LOG.debug(traceback_msg)
+            return None
+
+
+class SpectralWindowTable:
     @staticmethod
     def get_spectral_windows(msmd, ms):
         # map spw ID to spw type
@@ -432,6 +649,12 @@ class SpectralWindowTable(object):
         # Read in information on receiver for current MS.
         receiver_info = SpectralWindowTable.get_receiver_info(ms)
 
+        # Read in information about the SDM_NUM_BIN column for the current ms
+        sdm_num_bins = SpectralWindowTable.get_sdm_num_bin_info(ms, msmd)
+
+        # PIPE-1538: Compute median feed receptor angle.
+        receptor_angle_info = SpectralWindowTable.get_receptor_angle(ms)
+
         spws = []
         for i, spw_name in enumerate(spw_names):
             # get this spw's values from our precalculated lists and dicts
@@ -442,7 +665,7 @@ class SpectralWindowTable(object):
             # to be contained within the spw loop
             mean_freq = msmd.meanfreq(i)
             chan_freqs = msmd.chanfreqs(i)
-            chan_widths = msmd.chanwidths(i)            
+            chan_widths = msmd.chanwidths(i)         
             chan_effective_bws = msmd.chaneffbws(i)
             sideband = msmd.sideband(i)
             # BBC_NO column is optional
@@ -453,18 +676,28 @@ class SpectralWindowTable(object):
                 baseband = msmd.baseband(i)
 
             ref_freq = msmd.reffreq(i)
-            # Read transitions for target spws. Other spws may cause severe
-            # messages because the target source IDs may not have the spw.
-            if i in target_spw_ids:
-                try:  # TRANSITIONS column does not exist in old data
-                    # TODO: Are the transitions of a given spw the same for all
-                    #       target source IDs ?
-                    transitions = msmd.transitions(sourceid=first_target_source_id, spw=i)
-                    if transitions is False:
-                        transitions = ['Unknown']
-                except:
-                    transitions = ['Unknown']
-            else:
+            
+            # Read transitions for target spws.
+
+            # PIPE-2124: Missing of the TRANSITION column (e.g. old data) or lack of (sourceid, spwid) entries
+            # in the SOURCE table might cause dubious "SEVERE" messages. Here we temporarily filter out them and
+            # later replace with generic messages of missing the transition metadata in the MS subtable.
+            transitions = False
+            with infrastructure.logging.log_filtermsg('SOURCE table does not contain a row'):
+                if i in target_spw_ids:
+                    try:
+                        # The msmd.transitions(..) call below can return a boolean value of False or
+                        # a Numpy array with dtype=np.str_ , e.g.,
+                        #   CASA <15>: msmd.transitions(sourceid=2,spw=16)
+                        #   Out[15]: array(['N2H__v_0_J_1_0(ID=3925982)'], dtype='<U26')
+                        # For invalid source/spw combinations, the call could also trigger an exception with a RuntimeError.
+                        # Also see: https://casadocs.readthedocs.io/en/latest/api/tt/casatools.msmetadata.html#casatools.msmetadata.msmetadata.transitions
+                        transitions = msmd.transitions(sourceid=first_target_source_id, spw=i)
+                    except RuntimeError:
+                        pass
+
+            if transitions is False:
+                LOG.info('No transition info available for SOURCE_ID=%s and SPECTRAL_WINDOW_ID=%s', first_target_source_id, i)
                 transitions = ['Unknown']
 
             # Create simple name for spectral window if none was provided.
@@ -478,26 +711,107 @@ class SpectralWindowTable(object):
                 LOG.info("No receiver info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
                 receiver, freq_lo = None, None
 
-            # Store all info in a new SpectralWindow object.
+            # Extract feed receptor angle for current spw.
+            try:
+                median_receptor_angle = receptor_angle_info[i]
+            except KeyError:
+                LOG.info("No feed info available for MS {} spw id {}".format(_get_ms_basename(ms), i))
+                median_receptor_angle = None
+
+            # If the earlier get_sdm_num_bin_info call returned None, need to set sdm_num_bin value to None for each spw
+            if sdm_num_bins is None: 
+                sdm_num_bin = None
+            else: 
+                sdm_num_bin = sdm_num_bins[i]
+
+            # Fetch and add correlation bits information
+            correlation_bits = msmd.corrbit(i)
+
             spw = domain.SpectralWindow(i, spw_name, spw_type, bandwidth, ref_freq, mean_freq, chan_freqs, chan_widths,
                                         chan_effective_bws, sideband, baseband, receiver, freq_lo,
-                                        transitions=transitions)
+                                        transitions=transitions, sdm_num_bin=sdm_num_bin, correlation_bits=correlation_bits,
+                                        median_receptor_angle=median_receptor_angle)
             spws.append(spw)
 
         return spws
 
     @staticmethod
-    def get_receiver_info(ms):
+    def get_receptor_angle(ms):
+        """
+        Extract information about the feed receptor angle from the FEED table's
+        RECEPTOR_ANGLE column, and compute an average value over all antennas
+        for each SpW.
+        Return: a dict in which each MS SpW corresponds to an array of angles,
+        or an empty dict in case of error.
+        """
+        # Get mapping of ASDM spectral window id to MS spectral window id.
+        asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
+
+        # Construct path to FEED table.
+        msname = _get_ms_name(ms)
+        feed_table = os.path.join(msname, 'FEED')
+
+        angle_info = {}
+        try:
+            with casa_tools.TableReader(feed_table) as tb:
+                # Extract the ASDM spw ids column.
+                asdm_spwids = sorted(set(tb.getcol('SPECTRAL_WINDOW_ID')))
+
+                # Go through the table row-by-row, and extract info for each
+                # ASDM spwid encountered:
+                for asdm_spwid in asdm_spwids:
+                    # Get MS spwid corresponding to the current ASDM spwid.
+                    ms_spwid = asdm_to_ms_spw_map[asdm_spwid]
+
+                    # Compute median feed angle, discarding non-linear polarizations.
+                    tsel = tb.query(f"SPECTRAL_WINDOW_ID == {ms_spwid}")
+                    angle = tsel.getcol('RECEPTOR_ANGLE')
+                    pol = tsel.getcol('POLARIZATION_TYPE')
+                    use = np.logical_or(pol == 'X', pol == 'Y')
+                    angle[~use] = np.nan
+                    if not np.all(np.isnan(angle)):
+                        angle_info[ms_spwid] = np.degrees(np.nanmedian(angle, axis=1))
+                    tsel.close()
+        except Exception as ex:
+            LOG.info("Unable to read feed info for MS {}: {}".format(_get_ms_basename(ms), ex))
+
+        return angle_info
+
+    @staticmethod
+    def get_sdm_num_bin_info(ms, msmd):
+        """
+        Extract information about the online spectral averaging from the SPECTRAL_WINDOW
+        table's SDM_NUM_BIN column.
+        
+        :param ms: measurement set to inspect
+        :param msmd: msmetadata (casa_tools.MSMDReader) for the measurement set.
+        :return: list of values for sdm_num_bin
+        """
+        # Read and return the online spectral averaging information if available
+        sdm_num_bin = None
+        if 'ALMA' in msmd.observatorynames() or 'EVLA' in msmd.observatorynames():
+            with casa_tools.TableReader(ms.name + '/SPECTRAL_WINDOW') as table:
+                if 'SDM_NUM_BIN' in table.colnames():
+                    sdm_num_bin = table.getcol('SDM_NUM_BIN')
+                else:
+                    LOG.info(f"SDM_NUM_BIN does not exist in the SPECTRAL_WINDOW Table of MS {_get_ms_basename(ms)}")
+        return sdm_num_bin
+
+    @staticmethod
+    def get_receiver_info(ms, get_band_info=False):
         """
         Extract information about the receiver from the ASDM_RECEIVER table.
-        The following properties are extracted:
+        The following properties are extracted by default:
         * receiver type (e.g.: TSB, DSB, NOSB)
         * local oscillator frequencies
+
+        If get_band_info is set to True, instead, only the frequency 
+        band information is extracted. 
 
         If multiple entries are present for the same ASDM spwid, then keep
 
         :param ms: measurement set to inspect
-        :return: dict of MS spw: (receiver_type, freq_lo)
+        :return: dict of MS spw: (receiver_type, freq_lo) or MS spw: frequency_band
         """
         # Get mapping of ASDM spectral window id to MS spectral window id.
         asdm_to_ms_spw_map = SpectralWindowTable.get_asdm_to_ms_spw_mapping(ms)
@@ -523,16 +837,21 @@ class SpectralWindowTable(object):
                     # Get MS spwid corresponding to the current ASDM spwid.
                     ms_spwid = asdm_to_ms_spw_map[int(asdm_spwid)]
 
-                    # Add the information from the current row if either:
-                    #  a.) no info for the current spwid was stored yet.
-                    #  b.) info was already stored for the current spwid, but
-                    #      this info was not for receiver type of "TSB" or "DSB".
-                    # This will store one entry for each ASDM spwid encountered,
-                    # preferentially the first TSB/DSB row in the table
-                    # corresponding to the spwid, but otherwise the first
-                    # non-TSB/DSB row corresponding to the spwid.
-                    if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
-                        receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
+                    if get_band_info: 
+                        # Add and return frequency band information stored in receiver table 
+                        if ms_spwid not in receiver_info:
+                            receiver_info[ms_spwid] = tb.getcell("frequencyBand", i)
+                    else:
+                        # Add the information from the current row if either:
+                        #  a.) no info for the current spwid was stored yet.
+                        #  b.) info was already stored for the current spwid, but
+                        #      this info was not for receiver type of "TSB" or "DSB".
+                        # This will store one entry for each ASDM spwid encountered,
+                        # preferentially the first TSB/DSB row in the table
+                        # corresponding to the spwid, but otherwise the first
+                        # non-TSB/DSB row corresponding to the spwid.
+                        if ms_spwid not in receiver_info or receiver_info[ms_spwid][0] not in ["TSB", "DSB"]:
+                            receiver_info[ms_spwid] = (tb.getcell("receiverSideband", i), tb.getcell("freqLO", i))
         except:
             LOG.info("Unable to read receiver info for MS {}".format(_get_ms_basename(ms)))
             receiver_info = {}
@@ -549,7 +868,7 @@ class SpectralWindowTable(object):
         """
         ids = []
         try:
-            root_element = ElementTree.parse(xml_path)
+            root_element = xml.etree.ElementTree.parse(xml_path)
 
             for row in root_element.findall('row'):
                 element = row.findtext('spectralWindowId')
@@ -620,7 +939,7 @@ class SpectralWindowTable(object):
         return {k: v for k, v in zip(asdm_ids, spw_spws)}
 
 
-class ObservationTable(object):
+class ObservationTable:
     @staticmethod
     def get_project_info(msmd):
         project_id = msmd.projects()[0]
@@ -645,22 +964,18 @@ class ObservationTable(object):
         return observer, project_id, schedblock_id, execblock_id
 
 
-class AntennaTable(object):
+class AntennaTable:
     @staticmethod
-    def get_antenna_array(msmd):
+    def get_antenna_array(msmd: casa_tools._logging_msmd_cls) -> AntennaArray:
         position = msmd.observatoryposition()            
         names = set(msmd.observatorynames())
-        assert len(names) is 1
+        assert len(names) == 1
         name = names.pop()
-        array = domain.AntennaArray(name, position)
-
-        # .. and add a new Antenna for each row in the ANTENNA table
-        for antenna in AntennaTable.get_antennas(msmd):
-            array.add_antenna(antenna)
-        return array
+        antennas = AntennaTable.get_antennas(msmd)
+        return domain.AntennaArray(name, position, antennas)
 
     @staticmethod
-    def get_antennas(msmd):
+    def get_antennas(msmd: casa_tools._logging_msmd_cls) -> list[Antenna]:
         antenna_table = os.path.join(msmd.name(), 'ANTENNA')
         LOG.trace('Opening ANTENNA table to read ANTENNA.FLAG_ROW')
         with casa_tools.TableReader(antenna_table) as table:
@@ -682,16 +997,8 @@ class AntennaTable(object):
 
         return antennas
 
-    @staticmethod
-    def _create_antenna(antenna_id, name, station, diameter, position, offset, flag):
-        # omit this antenna if it has been flagged
-        if flag is True:
-            return
 
-        return domain.Antenna(antenna_id, name, station, position, offset, diameter)
-
-
-class DataDescriptionTable(object):
+class DataDescriptionTable:
     @staticmethod
     def get_descriptions(msmd, ms):
         spws = ms.spectral_windows
@@ -725,24 +1032,24 @@ class DataDescriptionTable(object):
 
 SBSummaryInfo = collections.namedtuple(
     'SBSummaryInfo', 'repSource repFrequency repBandwidth repWindow minAngResolution maxAngResolution '
-                     'maxAllowedBeamAxialRatio sensitivity dynamicRange sbName')
+                     'maxAllowedBeamAxialRatio sensitivity dynamicRange spectralDynamicRangeBandWidth sbName')
 
 
-class SBSummaryTable(object):
+class SBSummaryTable:
     @staticmethod
     def get_sbsummary_info(ms, obsnames):
         try:
             sbsummary_info = [SBSummaryTable._create_sbsummary_info(*row) for row in SBSummaryTable._read_table(ms)]
             return sbsummary_info[0]
-        except:
+        except Exception as ex:
             if 'ALMA' in obsnames:
-                LOG.warning('Error reading science goals for %s' % ms.basename)
+                LOG.warning('Error reading science goals for %s: %s' % (ms.basename, ex))
             return SBSummaryInfo(repSource=None, repFrequency=None, repBandwidth=None, repWindow=None,
                                  minAngResolution=None, maxAngResolution=None, maxAllowedBeamAxialRatio=None,
-                                 sensitivity=None, dynamicRange=None, sbName=None)
+                                 sensitivity=None, dynamicRange=None, spectralDynamicRangeBandWidth=None, sbName=None)
 
     @staticmethod
-    def get_observing_mode(ms):
+    def get_observing_modes(ms: domain.MeasurementSet) -> list[str]:
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')
         observing_modes = []
@@ -761,11 +1068,11 @@ class SBSummaryTable(object):
 
     @staticmethod
     def _create_sbsummary_info(repSource, repFrequency, repBandwidth, repWindow, minAngResolution, maxAngResolution,
-                               maxAllowedBeamAxialRatio, sensitivity, dynamicRange, sbName):
+                               maxAllowedBeamAxialRatio, sensitivity, dynamicRange, spectralDynamicRangeBandWidth, sbName):
         return SBSummaryInfo(repSource=repSource, repFrequency=repFrequency, repBandwidth=repBandwidth,
                              repWindow=repWindow, minAngResolution=minAngResolution, maxAngResolution=maxAngResolution,
                              maxAllowedBeamAxialRatio=maxAllowedBeamAxialRatio, sensitivity=sensitivity,
-                             dynamicRange=dynamicRange, sbName=sbName)
+                             dynamicRange=dynamicRange, spectralDynamicRangeBandWidth=spectralDynamicRangeBandWidth, sbName=sbName)
 
     @staticmethod
     def _read_table(ms):
@@ -779,12 +1086,13 @@ class SBSummaryTable(object):
         msname = _get_ms_name(ms)
         sbsummary_table = os.path.join(msname, 'ASDM_SBSUMMARY')        
         with casa_tools.TableReader(sbsummary_table) as table:
-            try:
-                scienceGoals = table.getcol('scienceGoal')
-                numScienceGoals = table.getcol('numScienceGoal')
-            except:
-                # LOG.warning('Error reading science goals for %s' % (ms.basename))
-                raise 
+            scienceGoals = table.getcol('scienceGoal')
+            numScienceGoals = table.getcol('numScienceGoal')
+
+            # shouldn't happen in a well-formed XML
+            if len(scienceGoals) != numScienceGoals:
+                LOG.warning(f'{_get_ms_basename(ms)}: number of science goals found in the SB summary'
+                            f' ({len(scienceGoals)}) are fewer than the number that were declared ({numScienceGoals}).')
 
             repSources = []
             repFrequencies = []
@@ -795,6 +1103,7 @@ class SBSummaryTable(object):
             maxAllowedBeamAxialRatios = []
             sensitivities = []
             dynamicRanges = []
+            spectralDynamicRangeBandWidths = []
             sbNames = []
 
             for i in range(table.nrows()):
@@ -879,15 +1188,25 @@ class SBSummaryTable(object):
                     dynamicRange = qa.quantity(0.0)
                 dynamicRanges.append(dynamicRange)
 
+                # Create spectral dynamic range bandwidth goal
+                spectralDynamicRangeBandWidthGoal = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'spectralDynamicRangeBandWidth')
+                if spectralDynamicRangeBandWidthGoal not in (None, 'None', 'none'):
+                    spectralDynamicRangeBandWidth = qa.quantity(spectralDynamicRangeBandWidthGoal)
+                else:
+                    spectralDynamicRangeBandWidth = qa.quantity(0.0)
+                if spectralDynamicRangeBandWidth['value'] <= 0.0 or spectralDynamicRangeBandWidth['unit'] == '':
+                    spectralDynamicRangeBandWidth = None
+                spectralDynamicRangeBandWidths.append(spectralDynamicRangeBandWidth)
+
                 sbName = _get_science_goal_value(scienceGoals[0:numScienceGoals[i], i], 'SBName')
                 sbNames.append(sbName)
 
         rows = list(zip(repSources, repFrequencies, repBandWidths, repWindows, minAngResolutions, maxAngResolutions,
-                        maxAllowedBeamAxialRatios, sensitivities, dynamicRanges, sbNames))
+                        maxAllowedBeamAxialRatios, sensitivities, dynamicRanges, spectralDynamicRangeBandWidths, sbNames))
         return rows
 
 
-class ExecblockTable(object):
+class ExecblockTable:
     @staticmethod
     def get_execblock_info(ms):
         try:
@@ -927,7 +1246,7 @@ class ExecblockTable(object):
         return rows
 
 
-class PolarizationTable(object):
+class PolarizationTable:
     @staticmethod
     def get_polarizations(msmd):
         pol_ids = sorted({int(i) for i in msmd.polidfordatadesc()})
@@ -944,7 +1263,7 @@ class PolarizationTable(object):
         return domain.Polarization(id, num_corr, corr_type, corr_product)
 
 
-class SourceTable(object):
+class SourceTable:
     @staticmethod
     def get_sources(msmd):
         rows = SourceTable._read_table(msmd)
@@ -988,7 +1307,6 @@ class SourceTable(object):
                 table_list.append("")
                 spacings_list.append("")
 
-
         all_sources = list(zip(ids, sourcenames, directions, propermotions, is_eph_objs, table_list, spacings_list))
 
         # Only return sources for which scans are present.
@@ -1003,14 +1321,14 @@ class SourceTable(object):
             # results (AttributeError: 'Field' object has no attribute
             # 'source'). Prevent this by testing all fields for the
             # presence of scans.
-            source_id_to_scans[source_id] = any([len(msmd.scansforfield(field_id)) is not 0
+            source_id_to_scans[source_id] = any([len(msmd.scansforfield(field_id)) != 0
                                                  for field_id in fields_for_source])
 
         return [row for row in all_sources if source_id_to_scans.get(row[0], False)]
 
     @staticmethod
     def _get_eph_sourcenames(msname):
-        ephemeris_tables = glob.glob(msname+'/FIELD/EPHEM*.tab')
+        ephemeris_tables = utils.glob_ordered(msname+'/FIELD/EPHEM*.tab')
 
         eph_sourcenames = []
         avg_spacings = {}
@@ -1023,14 +1341,14 @@ class SourceTable(object):
                 # Add the average spacing in minutes of the MJD column of the ephemeris table (see PIPE-627).
                 if 'MJD' in tb.colnames():
                     mjd = tb.getcol('MJD')
-                    avg_spacings[eph_sourcename] = numpy.diff(mjd).mean()*1440 # Convert fractional day to minutes
+                    avg_spacings[eph_sourcename] = np.diff(mjd).mean()*1440 # Convert fractional day to minutes
                 # Return file names (not whole paths) for the ephemeris tables (see PIPE-627)
                 ephemeris_table_names[eph_sourcename] = os.path.splitext(os.path.basename(ephemeris_table))[0]
 
         return eph_sourcenames, ephemeris_table_names, avg_spacings
 
 
-class StateTable(object):
+class StateTable:
     @staticmethod
     def get_states(msmd):
         state_factory = StateTable.get_state_factory(msmd)
@@ -1050,7 +1368,7 @@ class StateTable(object):
     @staticmethod
     def get_state_factory(msmd):
         names = set(msmd.observatorynames())
-        assert len(names) is 1
+        assert len(names) == 1
         facility = names.pop()
 
         first_scan = min(msmd.scannumbers())
@@ -1073,7 +1391,7 @@ class StateTable(object):
         return domain.state.StateFactory(facility, dt_start)        
 
 
-class FieldTable(object):
+class FieldTable:
     @staticmethod
     def _read_table(msmd):
         num_fields = msmd.nfields()
@@ -1099,7 +1417,7 @@ class FieldTable(object):
 
         # only return sources for which scans are present
         # create a mapping of source id to a boolean of whether any scans are present for that source
-        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) is not 0) for field_id in set(field_ids)}
+        field_id_to_scans = {field_id: (len(msmd.scansforfield(field_id)) != 0) for field_id in set(field_ids)}
 
         return [row for row in all_fields if field_id_to_scans.get(row[0], False)]
 
@@ -1122,8 +1440,8 @@ def _make_range(f_min, f_max):
                                    measures.Frequency(f_max))
 
 
-class BandDescriber(object):
-    alma_bands = {'ALMA Band 1': _make_range(31.3, 45),
+class BandDescriber:
+    alma_bands = {'ALMA Band 1': _make_range(35, 50),
                   'ALMA Band 2': _make_range(67, 90),
                   'ALMA Band 3': _make_range(84, 116),
                   'ALMA Band 4': _make_range(125, 163),

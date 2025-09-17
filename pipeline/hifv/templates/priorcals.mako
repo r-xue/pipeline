@@ -12,11 +12,15 @@ from pipeline.infrastructure.renderer import rendererutils
 using the CASA task <b>gencal</b>.</p>
 
 	<h2>Gain Curves</h2>
-	Gain curve table written to:
 	
 	%for single_result in result:
-	    <p><b>${os.path.basename(single_result.gc_result.inputs['caltable'])}</b></p>
-        %endfor
+	    %if single_result.gc_result:
+	        Gain curve table written to:
+	        <p><b>${os.path.basename(single_result.gc_result.inputs['caltable'])}</b></p>
+	    %else:
+	        No gain curve table written
+	    %endif
+    %endfor
 
 
 <%self:plot_group plot_dict="${opacity_plots}"
@@ -105,31 +109,42 @@ using the CASA task <b>gencal</b>.</p>
                       </table>
             % endif
         %endfor
-        
-	<h2>Requantizer gains</h2>
-	Requantizer gains written to:
+
+    <h2>Requantizer gains</h2>
+    %if single_result.rq_result:
+	    Requantizer gains written to:
 	
-	%for single_result in result:
-	    <p><b>${os.path.basename(single_result.rq_result.inputs['caltable'])}</b></p>
-    %endfor
+	    %for single_result in result:
+	        <p><b>${os.path.basename(single_result.rq_result.inputs['caltable'])}</b></p>
+        %endfor
+    %else:
+        No requantizer gain table written
+    %endif
 
 
     %if single_result.tecmaps_result:
 
-        <h2>TEC Maps</h2>
-	    TEC Caltable written to:
+        %if single_result.tecmaps_result.tec_image and single_result.tecmaps_result.tec_rms_image and tec_plotfile:
 
-	    %for single_result in result:
-	        <p><b>${os.path.basename(single_result.tecmaps_result.inputs['caltable'])}</b></p>
-        %endfor
-        <br>
-        TEC Images written to:
-        %for single_result in result:
-	        <p><b>${single_result.tecmaps_result.tec_image}</b></p>
-	        <p><b>${single_result.tecmaps_result.tec_rms_image}</b></p>
-        %endfor
+            <h2>TEC Maps</h2>
 
-        <img src="${tec_plotfile}">
+            %for single_result in result:
+                %if single_result.tecmaps_result.inputs['apply_tec_correction']:
+                    TEC Caltable written to:
+                    <p><b>${os.path.basename(single_result.tecmaps_result.inputs['caltable'])}</b></p>
+                %endif
+            %endfor
+            <br>
+            TEC Images written to:
+            %for single_result in result:
+                <p><b>${single_result.tecmaps_result.tec_image}</b></p>
+                <p><b>${single_result.tecmaps_result.tec_rms_image}</b></p>
+            %endfor
+
+            %if single_result.tecmaps_result.inputs['show_tec_maps']:
+                <img src="${tec_plotfile}">
+            %endif
+        %endif
 
     %endif
 
@@ -140,14 +155,19 @@ using the CASA task <b>gencal</b>.</p>
         %for single_result in result:
 	        <p><b>${os.path.basename(single_result.sw_result.inputs['caltable'])}</b></p>
         %endfor
-        This table is NOT applied or added to the pipeline context callibrary.
-
-        %for ms in summary_plots.keys():
-
-            <h4>Switched Power Plots:
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowspgain_subpages[ms])}">SwPower SPgain plots</a> |
-                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowtsys_subpages[ms])}">SwPower Tsys plots</a>
-            </h4>
-
+        % if not result.inputs["apply_swpowcal"]:
+            This table is NOT applied or added to the pipeline context callibrary.
+        %endif
+        <h4>Per antenna plots:<br>
+        <ul>
+        %for band in swpowspgain_subpages.keys():
+            %for ms in swpowspgain_subpages[band].keys():
+                <li><b>${band}-band</b>:
+                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowspgain_subpages[band][ms])}">SwPower SPgain plots</a> |
+                <a class="replace" href="${rendererutils.get_relative_url(pcontext.report_dir, dirname, swpowtsys_subpages[band][ms])}">SwPower Tsys plots</a>
+                </li>
+            %endfor
         %endfor
+        </ul>
+        </h4>
     %endif

@@ -6,28 +6,29 @@ import pipeline.infrastructure.utils as utils
 import pipeline.infrastructure as infrastructure
 from pipeline.infrastructure import casa_tasks
 from pipeline.infrastructure import casa_tools
+from pipeline.hifv.heuristics.lib_EVLApipeutils import vla_minbaselineforcal
 from . import uvrange
 
 LOG = infrastructure.get_logger(__name__)
 
 
 def removeRows(caltable, spwids):
-    tb = casa_tools.table()
-    tb.open(caltable, nomodify=False)
-    for spwid in spwids:
-        subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
-        flaggedrows = subtb.rownumbers()
-        if len(flaggedrows) > 0: tb.removerows(flaggedrows)
-        subtb.close()
-    tb.flush()
-    tb.close()
+    """Remove rows from specified spwid from a CASA caltable."""
 
-    tb.open(caltable + '/SPECTRAL_WINDOW', nomodify=False)
-    for spwid in spwids:
-        temparray = tb.getcol('FLAG_ROW')
-        temparray[spwid] = True
-        tb.putcol('FLAG_ROW', temparray)
-    tb.close()
+    with casa_tools.TableReader(caltable, nomodify=False) as tb:
+        for spwid in spwids:
+            subtb = tb.query('SPECTRAL_WINDOW_ID == '+str(spwid))
+            flaggedrows = subtb.rownumbers()
+            if len(flaggedrows) > 0:
+                LOG.debug('removing rows from table '+caltable+' for spw='+str(spwid))
+                tb.removerows(flaggedrows)
+            subtb.close()
+
+    with casa_tools.TableReader(caltable+'/SPECTRAL_WINDOW', nomodify=False) as tb:
+        for spwid in spwids:
+            temparray = tb.getcol('FLAG_ROW')
+            temparray[spwid] = True
+            tb.putcol('FLAG_ROW', temparray)
 
 
 def computeChanFlag(vis, caltable, context):
@@ -112,7 +113,7 @@ def do_bandpass(vis, caltable, context=None, RefAntOutput=None, spw=None, ktypec
     m = context.observing_run.get_ms(vis)
     bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
     bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
-    minBL_for_cal = m.vla_minbaselineforcal()
+    minBL_for_cal = vla_minbaselineforcal()
 
     try:
         setjy_results = context.results[0].read()[0].setjy_results
@@ -181,7 +182,7 @@ def do_bandpassweakbp(vis, caltable, context=None, RefAntOutput=None, spw=None, 
     m = context.observing_run.get_ms(vis)
     bandpass_field_select_string = context.evla['msinfo'][m.name].bandpass_field_select_string
     bandpass_scan_select_string = context.evla['msinfo'][m.name].bandpass_scan_select_string
-    minBL_for_cal = m.vla_minbaselineforcal()
+    minBL_for_cal = vla_minbaselineforcal()
 
     BPGainTables = sorted(context.callibrary.active.get_caltable())
     BPGainTables.append(ktypecaltable)

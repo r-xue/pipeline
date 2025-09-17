@@ -37,8 +37,39 @@ class FindContInputs(vdp.StandardInputs):
         # objects from the inputs' clean_list.
         return copy.deepcopy(self.context.clean_list_pending)
 
+    # docstring and type hints: supplements hif_findcont
     def __init__(self, context, output_dir=None, vis=None, target_list=None, hm_mosweight=None,
                  hm_perchanweightdensity=None, hm_weighting=None, datacolumn=None, parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets specified in the <hifa,hifv>_importdata task.
+                '': use all MeasurementSets in the context
+
+                Examples: 'ngc5921.ms', ['ngc5921a.ms', ngc5921b.ms', 'ngc5921c.ms']
+
+            target_list: Dictionary specifying targets to be imaged; blank will read list from context.
+
+            hm_mosweight: Mosaic weighting. Defaults to '' to enable the automatic heuristics calculation.
+                Can be set to True or False manually.
+
+            hm_perchanweightdensity: Calculate the weight density for each channel independently.
+                Defaults to '' to enable the automatic heuristics calculation. Can be set to True or False manually.
+
+            hm_weighting: Weighting scheme (natural,uniform,briggs,briggsabs[experimental],briggsbwtaper[experimental])
+
+            datacolumn: Data column to image. Only to be used for manual overriding when the automatic choice by data type is not appropriate.
+
+            parallel: Use CASA/tclean built-in parallel imaging when possible.
+                options: 'automatic', 'true', 'false', True, False
+                default: 'automatic'            
+
+        """
         super(FindContInputs, self).__init__()
         self.context = context
         self.output_dir = output_dir
@@ -62,10 +93,15 @@ class FindCont(basetask.StandardTaskTemplate):
         inputs = self.inputs
         context = self.inputs.context
 
+        # Check if this stage has been disabled for VLA (never set for ALMA)
+        if inputs.context.vla_skip_mfs_and_cube_imaging:
+            result = FindContResult({}, {}, '', 0, 0, [], {})
+            return result
+
         # Check for size mitigation errors.
         if 'status' in inputs.context.size_mitigation_parameters and \
                 inputs.context.size_mitigation_parameters['status'] == 'ERROR':
-            result = FindContResult({}, [], 0, 0, 0)
+            result = FindContResult({}, {}, '', 0, 0, [], {})
             result.mitigation_error = True
             return result
 
@@ -89,26 +125,28 @@ class FindCont(basetask.StandardTaskTemplate):
 
             if ms_objects_and_columns == collections.OrderedDict():
                 LOG.error('No data found for continuum finding.')
-                result = FindContResult({}, [], 0, 0, 0)
+                result = FindContResult({}, {}, '', 0, 0, [], {})
                 return result
 
             LOG.info(f'Using data type {str(selected_datatype).split(".")[-1]} for continuum finding.')
             if selected_datatype == DataType.RAW:
-                LOG.warn('Falling back to raw data for continuum finding.')
+                LOG.warning('Falling back to raw data for continuum finding.')
 
             columns = list(ms_objects_and_columns.values())
             if not all(column == columns[0] for column in columns):
-                LOG.warn(f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k,v in ms_objects_and_columns.items())}.')
+                LOG.warning(
+                    f'Data type based column selection changes among MSes: {",".join(f"{k.basename}: {v}" for k, v in ms_objects_and_columns.items())}.')
 
             if datacolumn != '':
-                LOG.info(f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
+                LOG.info(
+                    f'Manual override of datacolumn to {datacolumn}. Data type based datacolumn would have been "{"data" if columns[0] == "DATA" else "corrected"}".')
             else:
                 if columns[0] == 'DATA':
                     datacolumn = 'data'
                 elif columns[0] == 'CORRECTED_DATA':
                     datacolumn = 'corrected'
                 else:
-                    LOG.warn(f'Unknown column name {columns[0]}')
+                    LOG.warning(f'Unknown column name {columns[0]}')
                     datacolumn = ''
 
             inputs.vis = [k.basename for k in ms_objects_and_columns.keys()]
@@ -119,28 +157,32 @@ class FindCont(basetask.StandardTaskTemplate):
         cont_ranges = contfile_handler.read()
 
         result_cont_ranges = {}
+        joint_mask_names = {}
+        momDiffSNRs = {}
+
         num_found = 0
         num_total = 0
         single_range_channel_fractions = []
         for i, target in enumerate(inputs.target_list):
             for spwid in target['spw'].split(','):
                 source_name = utils.dequote(target['field'])
+                spw_name = context.observing_run.virtual_science_spw_ids[int(spwid)]
 
                 # get continuum ranges dict for this source, also setting it if accessed for first time
                 source_continuum_ranges = result_cont_ranges.setdefault(source_name, {})
 
                 # get continuum ranges list for this source and spw, also setting them if accessed for first time
-                cont_ranges_source_spw = cont_ranges['fields'].setdefault(source_name, {}).setdefault(spwid, [])
+                cont_ranges_source_spw = cont_ranges['fields'].setdefault(source_name, {}).setdefault(spwid, {'spwname': spw_name, 'ranges': [], 'flags': []})
 
-                if len(cont_ranges_source_spw) > 0:
+                if len(cont_ranges_source_spw['ranges']) > 0:
                     LOG.info('Using existing selection {!r} for field {!s}, '
-                             'spw {!s}'.format(cont_ranges_source_spw, source_name, spwid))
+                             'spw {!s}'.format(cont_ranges_source_spw['ranges'], source_name, spwid))
                     source_continuum_ranges[spwid] = {
                         'cont_ranges': cont_ranges_source_spw,
                         'plotfile': 'none',
                         'status': 'OLD'
                     }
-                    if cont_ranges_source_spw != ['NONE']:
+                    if cont_ranges_source_spw['ranges'] != ['NONE']:
                         num_found += 1
 
                 else:
@@ -199,11 +241,13 @@ class FindCont(basetask.StandardTaskTemplate):
                     # Use only the current spw ID here !
                     if0, if1, channel_width = image_heuristics.freq_intersection(vislist, target['field'], target['intent'], spwid, frame)
                     if (if0 == -1) or (if1 == -1):
-                        LOG.error('No %d frequency intersect among selected MSs for Field %s '
+                        LOG.error('No %s frequency intersect among selected MSs for Field %s '
                                   'SPW %s' % (frame, target['field'], spwid))
-                        cont_ranges['fields'][source_name][spwid] = ['NONE']
+                        cont_ranges['fields'][source_name][spwid]['spwname'] = spw_name
+                        cont_ranges['fields'][source_name][spwid]['ranges'] = ['NONE']
+                        cont_ranges['fields'][source_name][spwid]['flags'] = []
                         result_cont_ranges[source_name][spwid] = {
-                            'cont_ranges': ['NONE'],
+                            'cont_ranges': cont_ranges['fields'][source_name][spwid],
                             'plotfile': 'none',
                             'status': 'NEW'
                         }
@@ -217,12 +261,12 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['start'] != '':
                         if0 = qaTool.convert(target['start'], 'Hz')['value']
                         if if0 < if0_auto:
-                            LOG.error('Supplied start frequency %s < f_low_native for Field %s '
-                                      'SPW %s' % (target['start'], target['field'], target['spw']))
+                            LOG.error('Supplied start frequency (%s GHz) < f_low_native (%s GHz) for Field %s '
+                                      'SPW %s' % (if0/1e9, if0_auto/1e9, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied start frequency %s' % (target['start']))
 
-                    if target['width'] != '' and target['nbin'] != -1:
+                    if target['width'] != '' and target['nbin'] not in (None, -1):
                         LOG.error('Field %s SPW %s: width and nbin are mutually exclusive' % (target['field'],
                                                                                               target['spw']))
                         continue
@@ -230,25 +274,21 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['width'] != '':
                         channel_width_manual = qaTool.convert(target['width'], 'Hz')['value']
                         if channel_width_manual < channel_width_auto:
-                            LOG.error('User supplied channel width smaller than native value of %s GHz for Field %s '
-                                      'SPW %s' % (channel_width_auto, target['field'], target['spw']))
+                            LOG.error('User supplied channel width (%s GHz) smaller than native value (%s GHz) for Field %s '
+                                      'SPW %s' % (channel_width_manual/1e9, channel_width_auto/1e9, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied width %s' % (target['width']))
                         channel_width = channel_width_manual
                         if channel_width > channel_width_auto:
                             target['nbin'] = int(utils.round_half_up(channel_width / channel_width_auto) + 0.5)
-                    elif target['nbin'] != -1:
+                    elif target['nbin'] not in (None, -1):
                         LOG.info('Applying binning factor %d' % (target['nbin']))
                         channel_width *= target['nbin']
 
-                    # Get spw sideband
+                    # Get real spwid
                     ref_ms = context.observing_run.get_ms(vislist[0])
                     real_spwid = context.observing_run.virtual2real_spw_id(int(spwid), ref_ms)
                     real_spwid_obj = ref_ms.get_spectral_window(real_spwid)
-                    if real_spwid_obj.sideband == '-1':
-                        sideband = 'LSB'
-                    else:
-                        sideband = 'USB'
 
                     if image_heuristics.is_eph_obj(target['field']):
                         # Determine extra channels to skip for ephemeris objects to
@@ -257,7 +297,7 @@ class FindCont(basetask.StandardTaskTemplate):
                         channel_width_freq_TOPO = float(real_spwid_obj.channels[0].getWidth().to_units(measures.FrequencyUnits.HERTZ))
                         freq0 = qaTool.quantity(centre_frequency_TOPO, 'Hz')
                         freq1 = qaTool.quantity(centre_frequency_TOPO + channel_width_freq_TOPO, 'Hz')
-                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s')))
+                        channel_width_velo_TOPO = float(qaTool.getvalue(qaTool.convert(utils.frequency_to_velocity(freq1, freq0), 'km/s'))[0])
                         # Skip 1 km/s
                         extra_skip_channels = int(np.ceil(1.0 / abs(channel_width_velo_TOPO)))
                     else:
@@ -266,8 +306,8 @@ class FindCont(basetask.StandardTaskTemplate):
                     if target['nchan'] not in (None, -1):
                         if1 = if0 + channel_width * target['nchan']
                         if if1 > if1_auto:
-                            LOG.error('Calculated stop frequency %s GHz > f_high_native for Field %s '
-                                      'SPW %s' % (if1, target['field'], target['spw']))
+                            LOG.error('Calculated stop frequency (%s GHz) > f_high_native (%s GHz) for Field %s '
+                                      'SPW %s' % (if1/1e9, if1_auto/1e9, target['field'], target['spw']))
                             continue
                         LOG.info('Using supplied nchan %d' % (target['nchan']))
                         nchan = target['nchan']
@@ -285,7 +325,10 @@ class FindCont(basetask.StandardTaskTemplate):
                         # Thus shift by 0.5 channels if no start is supplied.
                         # Additionally skipping the edge channel (cf. "- 2" above)
                         # means a correction of 1.5 channels.
-                        start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
+                        if target['nbin'] not in (None, -1):
+                            start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width / target['nbin']) / 1e9)
+                        else:
+                            start = '%.10fGHz' % ((if0 + (1.5 + extra_skip_channels) * channel_width) / 1e9)
                     else:
                         start = target['start']
 
@@ -300,12 +343,17 @@ class FindCont(basetask.StandardTaskTemplate):
                     # used in heuristics methods upstream.
                     if image_heuristics.is_eph_obj(target['field']):
                         phasecenter = 'TRACKFIELD'
+                        psf_phasecenter = None
                         # 'REST' does not yet work (see CAS-8965, CAS-9997)
                         #outframe = 'REST'
                         outframe = ''
                         specmode = 'cubesource'
                     else:
                         phasecenter = target['phasecenter']
+                        if gridder == 'mosaic' and target['psf_phasecenter'] != target['phasecenter']:
+                            psf_phasecenter = target['psf_phasecenter']
+                        else:
+                            psf_phasecenter = None
                         outframe = 'LSRK'
                         specmode = 'cube'
 
@@ -335,10 +383,11 @@ class FindCont(basetask.StandardTaskTemplate):
                                             mosweight=mosweight, perchanweightdensity=perchanweightdensity,
                                             pblimit=0.2, niter=0, threshold='0mJy', deconvolver='hogbom',
                                             interactive=False, imsize=target['imsize'], cell=target['cell'],
-                                            phasecenter=phasecenter, stokes='I', weighting=weighting,
-                                            robust=robust, uvtaper=uvtaper, npixels=0, restoration=False,
-                                            restoringbeam=[], pbcor=False, usepointing=usepointing,
-                                            savemodel='none', parallel=parallel)
+                                            phasecenter=phasecenter, psfphasecenter=psf_phasecenter,
+                                            stokes='I', weighting=weighting, robust=robust, uvtaper=uvtaper,
+                                            npixels=0, restoration=False, restoringbeam=[], pbcor=False,
+                                            usepointing=usepointing, savemodel='none', parallel=parallel,
+                                            fullsummary=False)
                     self._executor.execute(job)
 
                     # Try detecting continuum frequency ranges
@@ -354,20 +403,31 @@ class FindCont(basetask.StandardTaskTemplate):
                     if reprBW_mode in ['nbin', 'repr_spw']:
                         # Approximate reprBW with nbin
                         physicalBW_of_1chan = float(real_repr_spw_obj.channels[0].getWidth().convert_to(measures.FrequencyUnits.HERTZ).value)
-                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))/physicalBW_of_1chan + 0.5)
+                        reprBW_nbin = int(qaTool.getvalue(qaTool.convert(repr_target[2], 'Hz'))[0]/physicalBW_of_1chan + 0.5)
                     else:
                         reprBW_nbin = 1
 
                     spw_transitions = ref_ms.get_spectral_window(real_spwid).transitions
                     single_continuum = any(['Single_Continuum' in t for t in spw_transitions])
-                    (cont_range, png, single_range_channel_fraction, warning_strings) = \
+                    # PIPE-1855: use spectralDynamicRangeBandWidth from SBSummary if available
+                    dynrange_bw = ref_ms.science_goals.get('spectralDynamicRangeBandWidth', None)
+
+                    if dynrange_bw is not None:  # None means that a value was not provided, and it should remain None
+                        dynrange_bw = qaTool.tos(dynrange_bw)
+
+                    (cont_ranges_and_flags, png, single_range_channel_fraction, warning_strings, joint_mask_name, momDiffSNR) = \
                         findcont_heuristics.find_continuum(dirty_cube='%s.residual' % findcont_basename,
                                                            pb_cube='%s.pb' % findcont_basename,
                                                            psf_cube='%s.psf' % findcont_basename,
                                                            single_continuum=single_continuum,
                                                            is_eph_obj=image_heuristics.is_eph_obj(target['field']),
                                                            ref_ms_name=ref_ms.name,
-                                                           nbin=reprBW_nbin)
+                                                           nbin=reprBW_nbin,
+                                                           dynrange_bw=dynrange_bw)
+
+                    joint_mask_names[(source_name, spwid)] = joint_mask_name
+                    momDiffSNRs[(source_name, spwid)] = momDiffSNR
+
                     # PIPE-74
                     if single_range_channel_fraction < 0.05:
                         LOG.warning('Only a single narrow range of channels was found for continuum in '
@@ -376,29 +436,33 @@ class FindCont(basetask.StandardTaskTemplate):
 
                     # Internal findContinuum warnings
                     for warning_msg in warning_strings:
-                        LOG.warning('Field {field}, spw {spw}: {warning_msg}'.format(field=target['field'], spw=spwid, warning_msg=warning_msg))
+                        # PIPE-2158: Exclude empty strings
+                        if warning_msg:
+                            LOG.warning('Field {field}, spw {spw}: {warning_msg}'.format(field=target['field'], spw=spwid, warning_msg=warning_msg))
 
                     is_repsource = (repsource_name == target['field']) and (repsource_spwid == spwid)
                     chanfrac = {'fraction'    : single_range_channel_fraction,
                                 'field'       : target['field'],
                                 'spw'         : spwid,
                                 'is_repsource': is_repsource}
+
                     single_range_channel_fractions.append(chanfrac)
 
-                    cont_ranges['fields'][source_name][spwid] = cont_range
+                    cont_ranges['fields'][source_name][spwid].update(cont_ranges_and_flags)
 
                     source_continuum_ranges[spwid] = {
-                        'cont_ranges': cont_range,
+                        'cont_ranges': cont_ranges_and_flags,
+                        'flags': [],
                         'plotfile': png,
                         'status': 'NEW'
                     }
 
-                    if cont_range not in [['NONE'], [''], []]:
+                    if cont_ranges_and_flags['ranges'] not in [['NONE'], [''], []]:
                         num_found += 1
 
                 num_total += 1
 
-        result = FindContResult(result_cont_ranges, cont_ranges, num_found, num_total, single_range_channel_fractions)
+        result = FindContResult(result_cont_ranges, cont_ranges, joint_mask_names, num_found, num_total, single_range_channel_fractions, momDiffSNRs)
 
         return result
 

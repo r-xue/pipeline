@@ -7,7 +7,6 @@ import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.renderer.logger as logger
 import pipeline.infrastructure.utils as utils
 from pipeline.infrastructure import casa_tasks
-from pipeline.infrastructure.renderer.htmlrenderer import is_singledish_ms
 from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure.callibrary import CalTo
 from . import common
@@ -19,7 +18,7 @@ class PlotmsLeaf(object):
     """
     Class to execute plotms and return a plot wrapper. It passes the spw and
     ant arguments through to plotms without further manipulation, creating
-    exactly one plot. 
+    exactly one plot.
     """
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, spw='', ant='', field='', scan='', intent='',
@@ -38,7 +37,7 @@ class PlotmsLeaf(object):
         self._spw = spw
         self._intent = intent
         self._uvrange = uvrange
-        
+
         # TODO
         # This should be revisited when the confusion between correlation and
         # polarisation is ironed out. I'm not convinced that
@@ -71,14 +70,14 @@ class PlotmsLeaf(object):
         if field != '':
             matching = self._ms.get_fields(field)
 
-            if len(matching) is 1:
+            if len(matching) == 1:
                 field_name = matching[0].name
                 field_id = matching[0].id
                 # in case the arg is an ID, check that returned field doesn't
                 # contain a duplicate name
                 matching_by_name = self._ms.get_fields(field_name)
-                if len(matching_by_name) is 1:
-                    # if the argument was the field ID but the field name is 
+                if len(matching_by_name) == 1:
+                    # if the argument was the field ID but the field name is
                     # unique. Therefore, we can use the field name.
                     field = field_name
                     field_label = field_name
@@ -86,7 +85,7 @@ class PlotmsLeaf(object):
                               'appears unique. Using %r as field identifier',
                               field, field_label)
                 else:
-                    # if the argument was the field ID but the field name is 
+                    # if the argument was the field ID but the field name is
                     # not unique, prepend the ID with the field name
                     field_label = '%s (field #%s)' % (field_name, field_id)
                     LOG.trace('One field found for search term %r but name '
@@ -135,7 +134,31 @@ class PlotmsLeaf(object):
         self._plot_args = plot_args
         self._plotfile = self._get_plotfile()
 
+    def _is_null_select(self):
+        """Attempt to identify a null data selection to prevent CASA/plotms grpc-related exceptions.
+
+        Note: this doesn't guarantee to detect all null-selection conditions, but can rule out several known
+        scenarios. See PIPE-1596/PIPE-1259/PIPE-1255.
+        """
+        is_null_select = False
+
+        # reject the case that the spw/scan/intent selection leads to zero scan.
+        if not self._ms.get_scans(spw=self._spw, field=self._field, scan_intent=self._intent):
+            is_null_select = True
+
+        # reject the case that the requested correlation(s) is not in any selected spw, only for VLA
+        corrstring = self._correlation
+        if self._ms.antenna_array.name in ('VLA', 'EVLA') and corrstring not in ('', '*', None):
+            vla_corrlist = self._ms.get_vla_corrlist_from_spw(spw=str(self._spw))
+            if not (set(vla_corrlist) & set(corrstring.split(','))):
+                is_null_select = True
+
+        return is_null_select
+
     def plot(self):
+        """Get the jobrequest and its plot wrapper ready, before the plot is generated."""
+        if self._is_null_select():
+            return []
         task = self._get_plot_task()
         return [(task, self._get_plot_wrapper(task))]
 
@@ -169,7 +192,7 @@ class PlotmsLeaf(object):
         # Maximum filename size for Lustre filesystems is 255 bytes. Mosaics
         # can exceed this limit due to including the names of all the field.
         # Truncate over-long field components while keeping them unique by
-        # replacing them with the hash of the component          
+        # replacing them with the hash of the component
         if len(png) > 251:  # 255 - '.png'
             new_png = '{!s}.png'.format(hash(png))
             LOG.info('Renaming plot to avoid exceeding filesystem limit on filename length.\n'
@@ -189,6 +212,9 @@ class PlotmsLeaf(object):
 
         if self._baseband != '':
             parameters['baseband'] = self._baseband
+
+        if self._correlation != '':
+            parameters['correlation'] = self._correlation
 
         for attr in ['spw', 'ant', 'intent', 'scan']:
             val = getattr(self, '_%s' % attr)
@@ -271,7 +297,7 @@ class BasebandComposite(common.LeafComposite):
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, ant='', field='', intent='', overplot_receivers=False,
                  **kwargs):
-        
+
         ms = context.observing_run.get_ms(calto.vis)
 
         receivers = collections.defaultdict(lambda: utils.OrderedDefaultdict(list))
@@ -285,7 +311,7 @@ class BasebandComposite(common.LeafComposite):
             rx = 'all' if overplot_receivers else spw.band
             receivers[rx][spw.baseband].append(spw.id)
 
-        is_single_receiver = len(receivers) is 1
+        is_single_receiver = len(receivers) == 1
 
         children = []
         if 'spws' in kwargs:
@@ -328,7 +354,7 @@ class AntComposite(common.LeafComposite):
 
     def __init__(self, context, output_dir, calto, xaxis, yaxis, spw='', field='', intent='', **kwargs):
         # set the singledish flag for SD runs
-        self.singledish = is_singledish_ms( context )
+        self.singledish = utils.contains_single_dish(context)
 
         ms = context.observing_run.get_ms(calto.vis)
         antennas = [int(a.id) for a in ms.get_antenna(calto.antenna)]
@@ -377,7 +403,7 @@ class FieldSpwComposite(common.LeafComposite):
         wanted = set(intent.split(','))
         children = []
         # Add override for kwargs
-        if 'field' in kwargs and kwargs['field'] != '': 
+        if 'field' in kwargs and kwargs['field'] != '':
             fields = kwargs['field']
             LOG.debug('Override for %s vs %s plot: fields=%s' % (yaxis, xaxis, fields))
             del kwargs['field']
@@ -493,12 +519,17 @@ class PlotmsFieldSpwComposite(FieldSpwComposite):
     leaf_class = PlotmsSpwComposite
 
 
+class PlotmsFieldBasebandComposite(FieldSpwComposite):
+    leaf_class = PlotmsBasebandComposite
+
+
 class PlotmsSpwAntComposite(SpwAntComposite):
     leaf_class = PlotmsAntComposite
 
 
 class PlotmsFieldSpwAntComposite(FieldSpwAntComposite):
     leaf_class = PlotmsSpwAntComposite
+
 
 class SpwFieldSummaryChart(PlotmsFieldSpwComposite):
     """
@@ -519,6 +550,7 @@ class SpwFieldSummaryChart(PlotmsFieldSpwComposite):
         # request plots per spw, overlaying all antennas
         super().__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field,
                                               **kwargs)
+
 
 class SpwSummaryChart(PlotmsSpwComposite):
     """
@@ -561,7 +593,27 @@ class BasebandSummaryChart(PlotmsBasebandComposite):
         # request plots per spw, overlaying all antennas
         # if field is specified in kwargs, it will override the calto.field
         # selection
-        super(BasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
+        super(BasebandSummaryChart, self).__init__(context, output_dir,
+                                                   calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
+
+
+class FieldBasebandSummaryChart(PlotmsFieldBasebandComposite):
+    """
+    Like BasebandSummaryChart, but creates separate plots for each field
+    """
+
+    def __init__(self, context, output_dir, calto, xaxis, yaxis, intent, **kwargs):
+        # (calto, intent) = _get_summary_args(context, result, intent)
+        LOG.info('%s vs %s plot: %s' % (yaxis, xaxis, calto))
+
+        if 'field' in kwargs:
+            field = kwargs['field']
+            del kwargs['field']
+            LOG.debug('Override for %s vs %s plot: field=%s' % (yaxis, xaxis, field))
+        else:
+            field = calto.field
+
+        super().__init__(context, output_dir, calto, xaxis, yaxis, intent=intent, field=field, **kwargs)
 
 
 class AmpVsUVSummaryChart(SpwSummaryChart):
@@ -748,12 +800,32 @@ class AmpVsFrequencyFieldSummaryChart(SpwFieldSummaryChart):
         plot_args.update(kwargs)
 
         super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
-                                                         intent=intent, **plot_args)
+                         intent=intent, **plot_args)
 
 
-class VLAAmpVsFrequencyBasebandSummaryChart(BasebandSummaryChart):
+class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
     """
-    Create an amplitude vs time plot for each spw, overplotting by antenna.
+    Create an Amp vs Frequency plot for each baseband, overplotting by antenna.
+    """
+
+    def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
+        plot_args = {'ydatacolumn': ydatacolumn,
+                     'avgchannel': '',
+                     'avgtime': '1e8',
+                     'avgscan': True,
+                     'avgantenna': True,
+                     'plotrange': [0, 0, 0, 0],
+                     'correlation': '',
+                     'coloraxis': 'antenna1',
+                     'overwrite': True}
+        plot_args.update(kwargs)
+
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp', intent=intent, **plot_args)
+
+
+class AmpVsFrequencyPerFieldBasebandSummaryChart(FieldBasebandSummaryChart):
+    """
+    Create an amplitude vs time plot for each spw, overplotting by antenna, with separate plots for each field.
     """
 
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
@@ -770,8 +842,8 @@ class VLAAmpVsFrequencyBasebandSummaryChart(BasebandSummaryChart):
         }
         plot_args.update(kwargs)
 
-        super(VLAAmpVsFrequencyBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
-                                                                    intent=intent, **plot_args)
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='amp',
+                         intent=intent, **plot_args)
 
 
 class PhaseVsFrequencyPerSpwSummaryChart(SpwFieldSummaryChart):
@@ -814,12 +886,13 @@ class PhaseVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
                      'overwrite': True}
         plot_args.update(kwargs)
 
-        super(PhaseVsFrequencyPerBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
+        super(PhaseVsFrequencyPerBasebandSummaryChart, self).__init__(
+            context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
 
 
-class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
+class PhaseVsFrequencyPerFieldBasebandSummaryChart(FieldBasebandSummaryChart):
     """
-    Create an Amp vs Frequency plot for each baseband, overplotting by antenna.
+    Create an Phase vs Frequency plot for each baseband, overplotting by antenna, with separate plots for each field.
     """
 
     def __init__(self, context, output_dir, calto, intent='', ydatacolumn='corrected', **kwargs):
@@ -834,7 +907,7 @@ class AmpVsFrequencyPerBasebandSummaryChart(BasebandSummaryChart):
                      'overwrite': True}
         plot_args.update(kwargs)
 
-        super(AmpVsFrequencyPerBasebandSummaryChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='amp', intent=intent, **plot_args)
+        super().__init__(context, output_dir, calto, xaxis='freq', yaxis='phase', intent=intent, **plot_args)
 
 
 class SpwAntDetailChart(PlotmsSpwAntComposite):
@@ -852,7 +925,7 @@ class SpwAntDetailChart(PlotmsSpwAntComposite):
             LOG.debug('Override for %s vs %s plot: field=%s' % (yaxis, xaxis, field))
         else:
             field = calto.field
-        
+
         # request plots per spw, overlaying all antennas
         # if field is specified in kwargs, it will override the calto.field
         # selection
@@ -875,7 +948,7 @@ class FieldSpwAntDetailChart(PlotmsFieldSpwAntComposite):
 
 class AmpVsFrequencyDetailChart(FieldSpwAntDetailChart):
     """
-    Create an amplitude vs frequency plot for each spw and antenna, 
+    Create an amplitude vs frequency plot for each spw and antenna,
     overplotting by field.
     """
 
@@ -967,7 +1040,7 @@ class PhaseVsUVDetailChart(SpwAntDetailChart):
 
 class AmpVsTimeDetailChart(FieldSpwAntDetailChart):
     """
-    Create an amplitude vs time plot for each field, spw and antenna, 
+    Create an amplitude vs time plot for each field, spw and antenna,
     overplotting by correlation.
     """
 
@@ -1015,7 +1088,7 @@ class CAS9154AmpVsTimeDetailChart(SpwAntDetailChart):
 
 class PhaseVsTimeDetailChart(FieldSpwAntDetailChart):
     """
-    Create an phase vs time plot for each field, spw and antenna, 
+    Create an phase vs time plot for each field, spw and antenna,
     overplotting by correlation.
     """
 
@@ -1098,12 +1171,12 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
     """
     Create a real vs time plot for each spw and antenna
     """
-    def __init__(self, 
-                 context: Context, 
-                 output_dir: str, 
-                 calto: CalTo, 
-                 intent: str='', 
-                 ydatacolumn: Optional[str]='corrected', 
+    def __init__(self,
+                 context: Context,
+                 output_dir: str,
+                 calto: CalTo,
+                 intent: str='',
+                 ydatacolumn: Optional[str]='corrected',
                  **kwargs: Optional[Dict]
     ) -> None:
         """
@@ -1132,6 +1205,6 @@ class RealVsFrequencyDetailChart(SpwAntDetailChart):
         plot_args.update(kwargs)
 
         # determine SD or not from context
-        self.singledish = is_singledish_ms( context )
+        self.singledish = utils.contains_single_dish(context)
         super(RealVsFrequencyDetailChart, self).__init__(context, output_dir, calto, xaxis='freq', yaxis='real',
                                                          intent=intent, **plot_args)

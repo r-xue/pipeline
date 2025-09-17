@@ -1,19 +1,32 @@
+from typing import List
+
 import numpy as np
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
+from astropy.time import Time
+
 import pipeline.domain.measures as measures
 import pipeline.infrastructure as infrastructure
+import pipeline.infrastructure.sessionutils as sessionutils
 import pipeline.infrastructure.vdp as vdp
+from pipeline.domain.measurementset import MeasurementSet
+from pipeline.extern.adopted import getMedianPWV
+from pipeline.h.tasks.common import atmutil
 from pipeline.h.tasks.common.arrayflaggerbase import channel_ranges
 from pipeline.h.tasks.flagging import flagdeterbase
-from pipeline.infrastructure import task_registry
+from pipeline.infrastructure import casa_tasks, casa_tools, task_registry
 from pipeline.infrastructure.utils import utils
-from pipeline.infrastructure import casa_tools
 
 __all__ = [
     'FlagDeterALMA',
-    'FlagDeterALMAInputs'
+    'FlagDeterALMAInputs',
+    'FlagDeterALMAResults',
 ]
 
 LOG = infrastructure.get_logger(__name__)
+
+
+class FlagDeterALMAResults(flagdeterbase.FlagDeterBaseResults):
+    pass
 
 
 class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
@@ -27,6 +40,10 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     # PIPE-1028: in hifa_flagdata, flag integrations with only partial
     # polarization products.
     partialpol = vdp.VisDependentProperty(default=True)
+    # PIPE-624: parameters for flagging low transmission.
+    lowtrans = vdp.VisDependentProperty(default=True)
+    mintransnonrepspws = vdp.VisDependentProperty(default=0.1)
+    mintransrepspw = vdp.VisDependentProperty(default=0.05)
     template = vdp.VisDependentProperty(default=True)
 
     # new property for ACA correlator
@@ -36,26 +53,118 @@ class FlagDeterALMAInputs(flagdeterbase.FlagDeterBaseInputs):
     qa0 = vdp.VisDependentProperty(default=True)
     qa2 = vdp.VisDependentProperty(default=True)
 
+    parallel = sessionutils.parallel_inputs_impl(default=False)
+
+    # docstring and type hints: supplements hifa_flagdata
     def __init__(self, context, vis=None, output_dir=None, flagbackup=None, autocorr=None, shadow=None, tolerance=None,
                  scan=None, scannumber=None, intents=None, edgespw=None, fracspw=None, fracspwfps=None, online=None,
-                 partialpol=None, fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None,
-                 qa0=None, qa2=None):
-        super(FlagDeterALMAInputs, self).__init__(
+                 partialpol=None, lowtrans=None, mintransnonrepspws=None, mintransrepspw=None,
+                 fileonline=None, template=None, filetemplate=None, hm_tbuff=None, tbuff=None, qa0=None, qa2=None,
+                 parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: The list of input MeasurementSets. Defaults to the list of
+                MeasurementSets defined in the pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            flagbackup: Back up any pre-existing flags.
+
+            autocorr: Flag autocorrelation data.
+
+            shadow: Flag shadowed antennas.
+
+            tolerance: Amount of antenna shadowing tolerated, in meters. A positive number
+                allows antennas to overlap in projection. A negative number forces antennas
+                apart in projection. Zero implies a distance of radius_1+radius_2 between
+                antenna centers.
+
+            scan: Flag a list of specified scans.
+
+            scannumber: A string containing a comma delimited list of scans to be
+                flagged.
+
+                Example: scannumber='3,5,6'
+
+            intents: A string containing a comma delimited list of intents against
+                which the scans to be flagged are matched.
+
+                Example: intents='`*BANDPASS*`'
+
+            edgespw: Flag the edge spectral window channels.
+
+            fracspw: Fraction of channels to flag at both edges of TDM spectral windows.
+
+            fracspwfps: Fraction of channels to flag at both edges of ACA TDM
+                spectral windows that were created with the earlier (original)
+                implementation of the frequency profile synthesis (FPS) algorithm.
+
+            online: Apply the online flags.
+
+            partialpol: Identify integrations in multi-polarisation data where part
+                of the polarization products are already flagged, and flag the other
+                polarization products in those integrations.
+
+            lowtrans: Flag spectral windows for which a significant fraction of
+                the channels have atmospheric transmission below the
+                threshold (``mintransrepspw``, ``mintransnonrepspws``).
+
+            mintransnonrepspws: This atmospheric transmissivity threshold is used to flag
+                a non-representative science spectral window when more than 60% of
+                its channels have a transmissivity below this level.
+
+            mintransrepspw: This atmospheric transmissivity threshold is used to flag the
+                representative science spectral window when more than 60% of its channels
+                have a transmissivity below this level.
+
+            fileonline: File containing the online flags. These are computed by the
+                h_init or hifa_importdata data tasks. If the online flags files
+                are undefined a name of the form 'msname.flagonline.txt' is assumed.
+
+            template: Apply flagging templates
+
+            filetemplate: The name of a text file that contains the flagging template
+                for RFI, birdies, telluric lines, etc. If the template flags files
+                is undefined a name of the form 'msname.flagtemplate.txt' is assumed.
+
+            hm_tbuff: The heuristic for computing the default time interval padding
+                parameter. The options are 'halfint' and 'manual'. In 'halfint' mode tbuff
+                is set to half the maximum of the median integration time of the science
+                and calibrator target observations. The value of 0.048 seconds is
+                subtracted from the lower time limit to accommodate the behavior of the
+                ALMA Control system.
+
+            tbuff: The time in seconds used to pad flagging command time
+                intervals if ``hm_tbuff`` = 'manual'. The default in
+                manual mode is no flagging.
+
+            qa0: QA0 flags.
+
+            qa2: QA2 flags.
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
+        super().__init__(
             context, vis=vis, output_dir=output_dir, flagbackup=flagbackup, autocorr=autocorr, shadow=shadow,
             tolerance=tolerance, scan=scan, scannumber=scannumber, intents=intents, edgespw=edgespw, fracspw=fracspw,
             fracspwfps=fracspwfps, online=online, fileonline=fileonline, template=template,
-            filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol)
+            filetemplate=filetemplate, hm_tbuff=hm_tbuff, tbuff=tbuff, partialpol=partialpol,
+            lowtrans=lowtrans, mintransnonrepspws=mintransnonrepspws, mintransrepspw=mintransrepspw)
 
         # solution parameters
         self.qa0 = qa0
         self.qa2 = qa2
+        self.parallel = parallel
 
 
-@task_registry.set_equivalent_casa_task('hifa_flagdata')
-@task_registry.set_casa_commands_comment(
-    'Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.'
-)
-class FlagDeterALMA(flagdeterbase.FlagDeterBase):
+class SerialFlagDeterALMA(flagdeterbase.FlagDeterBase):
     Inputs = FlagDeterALMAInputs
 
     # PIPE-425: define allowed bandwidths of ACA spectral windows for which to
@@ -82,11 +191,36 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         1000: measures.Frequency(62.5, measures.FrequencyUnits.MEGAHERTZ),
     }
 
-    def get_fracspw(self, spw):    
+    # PIPE-624: Threshold for fraction of data with low transmission above
+    # which a SpW is flagged for low transmission.
+    _max_frac_low_trans = 0.6
+
+    def prepare(self):
+        # PIPE-1759: this list collects the spws with missing basebands subsequently used to create a QA score
+        self.missing_baseband_spws = []
+
+        # Wrap results from parent in hifa_flagdata specific result to enable
+        # separate QA scoring.
+        results = super().prepare()
+        results = FlagDeterALMAResults(results.summaries, results.flagcmds())
+
+        # PIPE-1759: store the list of spws with missing basebands for a subsequent QA score
+        results.missing_baseband_spws = self.missing_baseband_spws
+
+        # PIPE-933
+        # save deterministic flag state
+        task = casa_tasks.flagmanager(vis=self.inputs.vis, mode='save', versionname="after_deterministic_flagging",
+                                      comment="save deterministic flag state")
+        self._executor.execute(task)
+
+        return results
+
+    def get_fracspw(self, spw):
         # From T. Hunter on PIPE-425: in early ALMA Cycles, the ACA
         # correlator's frequency profile synthesis (fps) algorithm produced TDM
         # spws that had 64 channels in full-polarisation, 124 channels in dual
         # pol, and 248 channels in single-pol.
+        # TODO: find out whether it should be 62 (as in code) or 64 (as per above comment)
         #
         # By comparison, the baseline correlator (BLC) standard values are 128
         # channels for dual pol, and 256 channels for single pol, and in more
@@ -104,7 +238,7 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         # Override the default verifier:
         #  - first run the default verifier
         #  - then run extra test to skip flagging of TDM windows
-        super(FlagDeterALMA, self).verify_spw(spw)
+        super().verify_spw(spw)
 
         # Test whether the spw is TDM or FDM. If it is FDM, then raise a
         # ValueError. From T. Hunter on PIPE-425:
@@ -128,14 +262,27 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         """
         ALMA specific step to identify and flag data where only part of the
         polarization products are flagged.
+
         Returns:
             List of flagging commands.
         """
         return load_partialpols_alma(self.inputs.ms)
 
+    def _get_lowtrans_cmds(self) -> List:
+        """
+        ALMA specific step to identify and flag data with low atmospheric
+        transmission.
+
+        Returns:
+            List of flagging commands.
+        """
+        return lowtrans_alma(self.inputs.ms, mintransrepspw=self.inputs.mintransrepspw,
+                             mintransnonrepspws=self.inputs.mintransnonrepspws,
+                             max_frac_low_trans=self._max_frac_low_trans)
+
     def _get_edgespw_cmds(self):
         # Run default edge channel flagging first.
-        to_flag = super(FlagDeterALMA, self)._get_edgespw_cmds()
+        to_flag = super()._get_edgespw_cmds()
 
         # Loop over the spectral windows, generate a flagging command for each
         # spw in the ms. Calling get_spectral_windows() with no arguments
@@ -166,7 +313,8 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                 # TODO: in CASA 6.1, the correlator type should start to be
                 # propagated from ASDM to MS. Once available, this test could
                 # be future-proofed (w.r.t. possible new correlators) by
-                # explicitly checking whether the spw is an ACA spw.
+                # explicitly checking whether the spw is an ACA spw
+                # (e.g., self.inputs.ms.correlator_name == 'ALMA_ACA')
                 spw_bw_in_mhz = spw.bandwidth.to_units(otherUnits=measures.FrequencyUnits.MEGAHERTZ)
                 if spw_bw_in_mhz in self._aca_edge_flag_thresholds.keys():
                     to_flag.extend(self._get_aca_edgespw_cmds(spw, self._aca_edge_flag_thresholds[spw_bw_in_mhz]))
@@ -230,23 +378,38 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
                   ' that are too close to the baseband edge.'.format(spw.id))
 
         # For the given spectral window, identify the corresponding SQLD
-        # spectral window with TARGET intent, which is representative of the
-        # baseband.
-        bb_spw = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
-                  if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
+        # spectral window(s) with TARGET intent taken in same baseband.
+        bb_spws = [s for s in self.inputs.ms.get_spectral_windows(science_windows_only=False)
+                   if s.baseband == spw.baseband and s.type == 'SQLD' and 'TARGET' in s.intents]
 
-        # If no baseband spw could be identified, log warning and return
-        # with no new flagging commands.
-        if not bb_spw:
-            LOG.warning("{} - Unable to determine baseband range for spw {}, skipping ACA FDM edge flagging."
-                        "".format(self.inputs.ms.basename, spw.id))
+        # If no baseband spw could be identified, add the spw to the list of
+        # missing basebands and return with no new flagging commands.
+        if not bb_spws:
+            self.missing_baseband_spws.append(spw.id)
             return []
+        # If exactly 1 matching baseband spw was found, use that.
+        elif len(bb_spws) == 1:
+            bb_spw = bb_spws[0]
+        # If multiple matches were found within the same baseband, then
+        # attempt to further match against the same spectral tuning
+        # (SpectralSpec, PIPE-1991).
+        else:
+            bb_spws_same_ss = [s for s in bb_spws if s.spectralspec == spw.spectralspec]
+            # If exactly 1 match was found with same SpectralSpec, use that.
+            if len(bb_spws_same_ss) == 1:
+                bb_spw = bb_spws_same_ss[0]
+            # Otherwise, log a warning that no unambiguous match could be found,
+            # and proceed to use first match from original filter.
+            else:
+                bb_spw = bb_spws[0]
+                LOG.warning(f"{self.inputs.ms.basename}: unable to find unambiguous match of baseband SpW for science"
+                            f" SpW {spw.id}, selected first match (SpW {bb_spw.id}).")
 
         # Compute frequency ranges for which any channel that falls within the
         # range should be flagged; these ranges are set by the baseband edges
         # and the provided threshold.
-        bb_edges = [measures.FrequencyRange(bb_spw[0].min_frequency, bb_spw[0].min_frequency + threshold),
-                    measures.FrequencyRange(bb_spw[0].max_frequency - threshold, bb_spw[0].max_frequency)]
+        bb_edges = [measures.FrequencyRange(bb_spw.min_frequency, bb_spw.min_frequency + threshold),
+                    measures.FrequencyRange(bb_spw.max_frequency - threshold, bb_spw.max_frequency)]
 
         # Compute list of channels to flag as those channels that have an
         # overlap with either edge range of the baseband.
@@ -261,11 +424,22 @@ class FlagDeterALMA(flagdeterbase.FlagDeterBase):
         # these to be separated by semi-colon.
         if to_flag:
             chan_to_flag = utils.find_ranges(to_flag).replace(',', ';')
-            LOG.warning('{} - Flagging edge channels for ACA spectral window {}, channel(s) {}, due to proximity'
-                        ' to edge of baseband.'.format(self.inputs.ms.basename, spw.id, chan_to_flag))
+            LOG.attention('{} - Flagging edge channels for ACA spectral window {}, channel(s) {}, due to proximity'
+                          ' to edge of baseband.'.format(self.inputs.ms.basename, spw.id, chan_to_flag))
             to_flag = ['{}:{}'.format(spw.id, chan_to_flag)]
 
         return to_flag
+
+
+@task_registry.set_equivalent_casa_task('hifa_flagdata')
+@task_registry.set_casa_commands_comment(
+    'Flags generated by the online telescope software, by the QA0 process, and manually set by the pipeline user.'
+)
+class FlagDeterALMA(sessionutils.ParallelTemplate):
+    """FlagDeterALMA class for parallelization."""
+
+    Inputs = FlagDeterALMAInputs
+    Task = SerialFlagDeterALMA
 
 
 def load_partialpols_alma(ms):
@@ -454,4 +628,140 @@ def convert_params_to_commands(ms, params, ant_id_map=None):
     return commands
 
 
+def lowtrans_alma(ms: MeasurementSet, mintransrepspw: float, mintransnonrepspws: float,
+                  max_frac_low_trans: float) -> List[str]:
+    """
+    Create flagging commands to flag science spectral windows with low
+    atmospheric transmission (PIPE-624).
 
+    Args:
+        ms: Measurement Set to evaluate.
+        mintransrepspw: Atmospheric transmissivity threshold used to flag
+            the representative science spectral window when fraction of data
+            with low transmissivity exceeds "frac_low_trans".
+        mintransnonrepspws: Atmospheric transmissivity threshold used to flag
+            the non-representative science spectral window(s) when fraction of
+            data with low transmissivity exceeds "frac_low_trans".
+        max_frac_low_trans: Threshold fraction of data with low transmission
+            at-or-above which a SpW is flagged for low transmission.
+
+    Returns:
+        List of flagging commands.
+    """
+    # Initialize flagging commands.
+    commands = []
+
+    # Compute the PWV for current MS. If this PWV value is invalid, then skip
+    # the rest of the heuristic.
+    pwv, _ = getMedianPWV(vis=ms.name)
+    if pwv == 1.0 or np.isnan(pwv) or pwv < 0:
+        LOG.debug(f'Invalid value for PWV ({pwv}) encountered during evaluation of low atmospheric transmission'
+                  f' flagging, no flagging commands generated.')
+        return commands
+
+    # Get list of science scans and science SpWs, and representative SpW.
+    scans = ms.get_scans(scan_intent="TARGET")
+    scispws = ms.get_spectral_windows()
+    _, repr_spwid = ms.get_representative_source_spw()
+
+    # Compute the mean airmass for each science scan.
+    airmass_for_scan = {scan.id: get_airmass_for_alma_scan(scan) for scan in scans}
+
+    # Initializes atmospheric profile for a defined set of atmospheric
+    # parameters from PIPE-624, that are common for all scans and SpWs.
+    myat = casa_tools.atmosphere
+    atmutil.init_atm(myat, altitude=5059.0, humidity=20.0, temperature=273.0, pressure=563.0, max_altitude=48.0,
+                     delta_p=5.0, delta_pm=1.1, h0=1.0, atmtype=atmutil.AtmType.tropical)
+
+    # Evaluate low transmission for each SpW:
+    for spw in scispws:
+        # Set transmission threshold based on whether current SpW is the
+        # representative SpW.
+        thresh_transm = mintransrepspw if spw.id == repr_spwid else mintransnonrepspws
+
+        # Initialize spectral window setting in atmosphere tool for current SpW,
+        # and update atmospheric profile to set PWV (needs to happen after SpW is
+        # initialized).
+        atmutil.init_spw(myat, fcenter=float(spw.mean_frequency.to_units(measures.FrequencyUnits.GIGAHERTZ)),
+                         nchan=spw.num_channels,
+                         resolution=float(spw.bandwidth.to_units(measures.FrequencyUnits.GIGAHERTZ) / spw.num_channels))
+        myqa = casa_tools.quanta
+        myat.setUserWH2O(myqa.quantity(pwv, 'mm'))
+
+        # Get wet and dry opacity from atmospheric profile, for channels of
+        # current SpW.
+        dry_opacity = atmutil.get_dry_opacity(myat)
+        wet_opacity = atmutil.get_wet_opacity(myat)
+
+        # Get transmission spectrum for opacity profiles for current SpW and
+        # airmass of each scan.
+        transm = np.asarray([atmutil.calc_transmission(airmass_for_scan[scan.id], dry_opacity, wet_opacity)
+                             for scan in scans])
+
+        # For collection of transmission spectra for current SpW, assess the
+        # fraction of data points (channels, scans) that fall below the
+        # threshold.
+        n_low_trans = len(np.where(transm < thresh_transm)[0])
+        frac_below_thresh = n_low_trans / transm.size
+
+        # If the fraction of data points below transmission threshold is equal
+        # to or higher than the given (fraction) threshold, then generate a
+        # flagging command to flag the current SpW entirely.
+        if frac_below_thresh >= max_frac_low_trans:
+            LOG.info(f"{ms.basename}, SpW {spw.id}: fraction of data with low transmission = {n_low_trans} /"
+                     f" {transm.size} = {frac_below_thresh:.2f}; this is equal/above the max fraction of"
+                     f" {max_frac_low_trans} therefore this SpW will become flagged.")
+
+            # Add new flagging command for current SpW.
+            command = f"mode='manual' spw='{spw.id}' reason='low_transmission'"
+            commands.append(command)
+        else:
+            LOG.info(
+                f"{ms.basename}, SpW {spw.id}: fraction of data with low transmission = {n_low_trans} / {transm.size} ="
+                f" {frac_below_thresh:.2f}; this is below the max fraction of {max_frac_low_trans}, therefore"
+                f" therefore this SpW will not be flagged.")
+
+    return commands
+
+
+def get_elevation_for_alma_scan(scan, edge):
+    """Get the elevation for the beginning or the end of an ALMA scan.
+
+    Args:
+        scan: Scan object.
+        edge: Selects which edge of the scan, either "start" or "end".
+
+    Returns:
+        Astropy quantity corresponding to the elevation.
+    """
+    alma_site = EarthLocation.from_geocentric(x=2225015.30883296, y=-5440016.41799762, z=-2481631.27428014, unit='m')
+    scan_field = next(iter(scan.fields))
+    coords = SkyCoord(
+        scan_field.mdirection['m0']['value'],  # RA
+        scan_field.mdirection['m1']['value'],  # DEC
+        frame=scan_field.mdirection['refer'].lower(),
+        unit=(scan_field.mdirection['m0']['unit'], scan_field.mdirection['m1']['unit']))
+    if edge == "start":
+        time = Time(scan.start_time['m0']['value'], format='mjd')
+    elif edge == "end":
+        time = Time(scan.end_time['m0']['value'], format='mjd')
+    else:
+        raise RuntimeError('The parameter edge should be either "start" or "end".')
+    coords_altaz = coords.transform_to(AltAz(obstime=time, location=alma_site))
+    return coords_altaz.alt
+
+
+def get_airmass_for_alma_scan(scan):
+    """Compute the airmass corresponding to an ALMA observation scan.
+
+    Args:
+        scan: Scan object.
+
+    Returns:
+        Mean airmass of the scan.
+    """
+    start_elevation = get_elevation_for_alma_scan(scan, "start")
+    end_elevation = get_elevation_for_alma_scan(scan, "end")
+    start_airmass = atmutil.calc_airmass(start_elevation.deg)
+    end_airmass = atmutil.calc_airmass(end_elevation.deg)
+    return (start_airmass + end_airmass)/2.

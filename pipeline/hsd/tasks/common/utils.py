@@ -1,12 +1,14 @@
 """A collection of Single Dish utility methods and classes."""
 import collections
 import contextlib
+import datetime
 import functools
 import os
 import sys
 import time
-from logging import Logger as pyLogger
-from typing import Any, Callable, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
+from typing import Any, Callable, Dict, Generator, Iterable, List, NewType, Optional, Sequence, Union, Tuple
+
+from astropy.time import Time
 
 # Imported for annotation pupose only. Use table in casa_tools in code.
 from casatools import table as casa_table
@@ -17,9 +19,10 @@ import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.logging as logging
 from pipeline.domain import DataTable, Field, MeasurementSet, ObservingRun
 from pipeline.domain.datatable import OnlineFlagIndex
+from pipeline.domain.spectralwindow import match_spw_basename
 from pipeline.infrastructure import Context
 from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure.utils import absolute_path, relative_path
+from pipeline.infrastructure.utils import absolute_path, relative_path, list_to_str
 from . import compress
 
 LOG = infrastructure.get_logger(__name__)
@@ -60,6 +63,45 @@ def require_virtual_spw_id_handling(observing_run: ObservingRun) -> bool:
     """
     return numpy.any([spw.id != observing_run.real2virtual_spw_id(spw.id, ms) for ms in observing_run.measurement_sets
                       for spw in ms.get_spectral_windows(science_windows_only=True)])
+
+
+def convert_spw_virtual2real(context, spw_in: Union[str, int],
+                             mses: List[MeasurementSet] = []) -> Dict[str, str]:
+    """Convert virtual spw selection into real spw selection.
+
+    Real spw selection can be different among MSes. This method returns
+    the dictionary of real spw selections for each MS.
+
+    Args:
+        context: pipeline context
+        spw_in: virtual spw selection string (a comma separated list of
+            virtual spw IDs) or an integer ID
+        mses: list of measurementset domain objects (optional)
+    Returns:
+        real spw selection per MS
+    """
+    spw_out = {}
+    observing_run = context.observing_run
+    ms_list = mses if mses else context.observing_run.measurement_sets
+    if isinstance(spw_in, int):
+        spw_in = str(spw_in)
+    elif not isinstance(spw_in, str):
+        raise TypeError('spw_in must be string or integer.')
+    # construct per MS real SpW ID selection dictionary
+    if len(spw_in) == 0:
+        spw_out = dict((ms.name, '') for ms in ms_list)
+    else:
+        # only supports comma-separated spw id list
+        vspw_list = [int(v) for v in spw_in.split(',')]
+        for ms in ms_list:
+            origin_ms = observing_run.get_ms(ms.origin_ms)
+            spw_list = [
+                observing_run.virtual2real_spw_id(vspw, origin_ms)
+                for vspw in vspw_list
+            ]
+            spw_out[ms.name] = ','.join(map(str, spw_list))
+
+    return spw_out
 
 
 def is_nro(context: Context) -> bool:
@@ -242,6 +284,20 @@ def parseEdge(edge: Union[float, List[float]]) -> Tuple[float, float]:
     return EdgeL, EdgeR
 
 
+def mjd_to_datetime(val: float) -> datetime.datetime:
+    """Convert MJD to datetime instance.
+
+    Args:
+        val: MJD value in day.
+
+    Returns:
+        datetime.datetime: datetime instance
+    """
+    t = Time(val, format='mjd')
+    date_time = t.datetime
+    return date_time
+
+
 def mjd_to_datestring(t: float, unit: str='sec') -> str:
     """
     Convert a given Modified Julian Date (MJD) to a date string.
@@ -266,18 +322,14 @@ def mjd_to_datestring(t: float, unit: str='sec') -> str:
         'Wed Nov 17 00:00:00 1858 UTC'
     """
     if unit in ['sec', 's']:
-        mjd = t
+        # 1 day = 24hour * 60min * 60sec = 86400sec
+        mjd = t / 86400.0
     elif unit in ['day', 'd']:
-        mjd = t * 86400.0
+        mjd = t
     else:
         mjd = 0.0
-    import datetime
-    mjdzero = datetime.datetime(1858, 11, 17, 0, 0, 0)
-    zt = time.gmtime(0.0)
-    timezero = datetime.datetime(zt.tm_year, zt.tm_mon, zt.tm_mday, zt.tm_hour, zt.tm_min, zt.tm_sec)
-    dtd = timezero-mjdzero
-    dtsec = mjd-(float(dtd.days)*86400.0+float(dtd.seconds)+float(dtd.microseconds)*1.0e-6)
-    mjdstr = time.asctime(time.gmtime(dtsec))+' UTC'
+    date_time = mjd_to_datetime(mjd)
+    mjdstr = time.asctime(date_time.timetuple()) + ' UTC'
     return mjdstr
 
 
@@ -466,6 +518,9 @@ def _get_index_list_for_ms(datatable: DataTable, origin_vis_list: List[str],
     """
     Yield row IDs in datatable that matches given selection criteria.
 
+    Note: this method skips DataTable row IDs in which online flag is active
+    in all polarizations
+
     Args:
         datatable: A datatable instance.
         origin_vis_list: A list of origin MeasurementSet (MS) name.
@@ -540,10 +595,11 @@ def get_index_list_for_ms2(datatable_dict: dict, group_desc: dict,
         index_dict[vis] = numpy.asarray(index_dict[vis])
     return index_dict
 
-# TODO (ksugimoto): refactor get_valid_ms_members and get_valid_ms_members2
+
+# TODO (ksugimoto): refactor get_valid_ms_members
 def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                          ant_selection: str, field_selection: str,
-                         spw_selection: str) -> Generator[int, None, None]:
+                         spw_selection: Union[str, dict]) -> Generator[int, None, None]:
     """
     Yield IDs of reduction groups that matches selection criteria.
 
@@ -554,7 +610,9 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
         msname_filter: Names of MeasurementSets to select.
         ant_selection: Antenna selection syntax.
         field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
+        spw_selection: SpW selection syntax. It can be string or dictionary
+                       containing per-MS spw selection string. Keys for the
+                       dictionary should be absolute path to the MS.
 
     Yields:
         IDs of reduction group.
@@ -586,7 +644,16 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
                         if not _field_selection.startswith('"'):
                             _field_selection = '"{}"'.format(field_selection)
                 LOG.debug('field_selection = "{}"'.format(_field_selection))
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
+
+                if isinstance(spw_selection, str):
+                    _spw_selection = spw_selection
+                elif isinstance(spw_selection, dict):
+                    _spw_selection = spw_selection.get(msobj.name, '')
+                else:
+                    _spw_selection = ''
+                LOG.debug(f'spw_selection = {_spw_selection}')
+
+                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=_spw_selection,
                                                    field=_field_selection, baseline=ant_selection)
             except RuntimeError as e:
                 LOG.trace('RuntimeError: {0}'.format(str(e)))
@@ -598,47 +665,6 @@ def get_valid_ms_members(group_desc: dict, msname_filter: List[str],
             if ((len(spwsel) == 0 or spw_id in spwsel) and
                     (len(fieldsel) == 0 or field_id in fieldsel) and
                     (len(antsel) == 0 or ant_id in antsel)):
-                yield member_id
-
-
-def get_valid_ms_members2(group_desc: dict, ms_filter: List[MeasurementSet],
-                          ant_selection: str, field_selection: str,
-                          spw_selection: str) -> Generator[int, None, None]:
-    """
-    Yield IDs of reduction groups that matches selection criteria.
-
-    Args:
-        group_desc: A reduction group dictionary. Keys of the dictionary are
-            group IDs and values are
-            pipeline.domain.singledish.MSReductionGroupDesc instances.
-        ms_filter: A list of Measurementset domain objects.
-        ant_selection: Antenna selection syntax.
-        field_selection: Field selection syntax.
-        spw_selection: SpW selection syntax.
-
-    Yields:
-        IDs of reduction group.
-    """
-    for member_id in range(len(group_desc)):
-        member = group_desc[member_id]
-        spw_id = member.spw_id
-        field_id = member.field_id
-        ant_id = member.antenna_id
-        msobj = member.ms
-        if msobj in ms_filter:
-            try:
-                mssel = casa_tools.ms.msseltoindex(vis=msobj.name, spw=spw_selection,
-                                                   field=field_selection, baseline=ant_selection)
-            except RuntimeError as e:
-                LOG.trace('RuntimeError: {0}'.format(str(e)))
-                LOG.trace('vis="{0}" field_selection: "{1}"'.format(msobj.name, field_selection))
-                continue
-            spwsel = mssel['spw']
-            fieldsel = mssel['field']
-            antsel = mssel['antenna1']
-            if ((spwsel.size == 0 or spw_id in spwsel) and
-                    (fieldsel.size == 0 or field_id in fieldsel) and
-                    (antsel.size == 0 or ant_id in antsel)):
                 yield member_id
 
 
@@ -751,9 +777,9 @@ def make_row_map(src_ms: MeasurementSet, derived_vis: str,
         if v != state_values[0]:
             is_unique_state_set = False
     if is_unique_field_set and is_unique_state_set:
-        taql = 'ANTENNA1 == ANTENNA2 && SCAN_NUMBER IN %s && FIELD_ID IN %s && STATE_ID IN %s' % (scan_numbers, field_values[0], state_values[0])
+        taql = 'ANTENNA1 == ANTENNA2 && SCAN_NUMBER IN %s && FIELD_ID IN %s && STATE_ID IN %s' % (list_to_str(scan_numbers), list_to_str(field_values[0]), list_to_str(state_values[0]))
     else:
-        taql = 'ANTENNA1 == ANTENNA2 && (%s)' % (' || '.join(['(SCAN_NUMBER == %s && FIELD_ID IN %s && STATE_ID IN %s)' % (scan, fields[scan], states[scan]) for scan in scan_numbers]))
+        taql = 'ANTENNA1 == ANTENNA2 && (%s)' % (' || '.join(['(SCAN_NUMBER == %s && FIELD_ID IN %s && STATE_ID IN %s)' % (scan, list_to_str(fields[scan]), list_to_str(states[scan])) for scan in scan_numbers]))
     LOG.trace('taql=\'%s\'' % (taql))
 
     with casa_tools.TableReader(os.path.join(vis0, 'OBSERVATION')) as tb:
@@ -1076,7 +1102,7 @@ def make_spwid_map(srcvis: str, dstvis: str) -> dict:
     map_byname = collections.defaultdict(list)
     for src_spw in src_spws:
         for dst_spw in dst_spws:
-            if src_spw.name == dst_spw.name:
+            if match_spw_basename(src_spw.name, dst_spw.name):
                 map_byname[src_spw].append(dst_spw)
 
     spwid_map = {}
@@ -1269,7 +1295,7 @@ class RGAccumulator(object):
         Args:
             field_id: A field ID.
             antenna_id: An antenna ID.
-            spw_id: A spectral windpw ID.
+            spw_id: A spectral window ID.
             pol_ids: Polarizations.
             grid_table: A grid table.
             channelmap_range: Channel map ranges.

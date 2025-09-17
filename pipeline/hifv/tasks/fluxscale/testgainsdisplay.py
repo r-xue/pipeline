@@ -36,7 +36,7 @@ class testgainsSummaryChart(object):
                          title='testgains Temp table', titlefont=8, xaxisfont=7, yaxisfont=7,
                          showgui=False, plotfile=figfile)
 
-        job.execute(dry_run=False)
+        job.execute()
 
     def get_figfile(self, prefix):
         return os.path.join(self.context.report_dir, 'stage%s' % self.result.stage_number,
@@ -80,11 +80,15 @@ class testgainsPerAntennaChart(object):
         LOG.info("Plotting testgain solutions")
 
         times = []
+        mintime = None
+        maxtime = None
+        plotrange = None
         for bandname, bpdgain_touse in self.result.bpdgain_touse.items():
             with casa_tools.TableReader(bpdgain_touse) as tb:
                 times.extend(tb.getcol('TIME'))
-        mintime = np.min(times)
-        maxtime = np.max(times)
+        if len(times) != 0:
+            mintime = np.min(times)
+            maxtime = np.max(times)
 
         for bandname, bpdgain_tousename in self.result.bpdgain_touse.items():
 
@@ -111,33 +115,32 @@ class testgainsPerAntennaChart(object):
 
                 xconnector = 'step'
 
-                if self.yaxis == 'amp':
+                if self.yaxis == 'amp' and (mintime is not None and maxtime is not None):
                     plotrange = [mintime, maxtime, 0, plotmax]
                     plotsymbol = 'o'
                     xconnector = 'line'
 
-                if self.yaxis == 'phase':
+                if self.yaxis == 'phase' and (mintime is not None and maxtime is not None):
                     plotrange = [mintime, maxtime, -180, 180]
                     plotsymbol = 'o-'
                     xconnector = 'line'
 
+                # Get antenna name
+                domain_antennas = self.ms.get_antenna(antPlot)
+                idents = [a.name if a.name else a.id for a in domain_antennas]
+                antname = ','.join(idents)
+
                 if not os.path.exists(figfile):
                     try:
 
-                        # Get antenna name
-                        antname = antPlot
-                        if antPlot != '':
-                            domain_antennas = self.ms.get_antenna(antPlot)
-                            idents = [a.name if a.name else a.id for a in domain_antennas]
-                            antname = ','.join(idents)
-
                         job = casa_tasks.plotms(vis=bpdgain_tousename, xaxis='time', yaxis=self.yaxis, field='',
-                                         antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
-                                         title='G table: {!s}   Antenna: {!s}   Band: {!s}'.format(bpdgain_tousename, antname, bandname),
-                                         titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
-                                         xconnector=xconnector)
+                                                antenna=antPlot, spw='', timerange='', plotrange=plotrange, coloraxis='',
+                                                title='G table: {!s}   Antenna: {!s}   Band: {!s}'.format(
+                                                    bpdgain_tousename, antname, bandname),
+                                                titlefont=8, xaxisfont=7, yaxisfont=7, showgui=False, plotfile=figfile,
+                                                xconnector=xconnector)
 
-                        job.execute(dry_run=False)
+                        job.execute()
 
                     except Exception as ex:
                         LOG.warning("Unable to plot " + filename + str(ex))

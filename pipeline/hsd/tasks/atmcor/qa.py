@@ -27,7 +27,7 @@ class SDATMCorrectionQAHandler(pqa.QAPlugin):
             context: pipeline context
             result: results instance
         """
-        atmcor_ms_name = result.outcome
+        atmcor_ms_name = result.atmcor_ms_name
         is_outfile_exists = os.path.exists(atmcor_ms_name)
         task_exec_status = result.success
         is_successful = (task_exec_status is True) and (is_outfile_exists is True)
@@ -50,7 +50,7 @@ class SDATMCorrectionQAHandler(pqa.QAPlugin):
 class SDATMCorrectionListQAHandler(pqa.QAPlugin):
     """QA handler for hsd_atmcor stage."""
 
-    result_cls = collections.Iterable
+    result_cls = collections.abc.Iterable
     child_cls = atmcor.SDATMCorrectionResults
 
     def handle(self, context: Context, result: result_cls):

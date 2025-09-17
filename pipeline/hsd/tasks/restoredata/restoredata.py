@@ -11,51 +11,122 @@ import pipeline.h.tasks.restoredata.restoredata as restoredata
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
 import pipeline.infrastructure.vdp as vdp
-from pipeline.infrastructure.launcher import Context
 from pipeline.infrastructure import casa_tools
 from pipeline.infrastructure import task_registry
-from pipeline.hsd.tasks.importdata import SDImportDataResults
-from pipeline.hsd.tasks.applycal import SDApplycalResults
 from .. import applycal
 from ..importdata import importdata as importdata
-from typing import List, Dict # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
+from typing import List, Dict, Optional, TYPE_CHECKING # typing.List/Dict is obsolete in Python 3.9, but we need to use it to support 3.6
+
+if TYPE_CHECKING:
+    from pipeline.hsd.tasks.applycal import SDApplycalResults
+    from pipeline.hsd.tasks.importdata import SDImportDataResults
+    from pipeline.infrastructure.launcher import Context
+
 
 LOG = infrastructure.get_logger(__name__)
+
 
 class SDRestoreDataInputs(restoredata.RestoreDataInputs):
     """SDRestoreDataInputs manages the inputs for the SDRestoreData task."""
 
-    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Antenna Station Receiver Source CalAtmosphere CalWVR')
+    asis = vdp.VisDependentProperty(default='SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow')
     ocorr_mode = vdp.VisDependentProperty(default='ao')
+    hm_rasterscan = vdp.VisDependentProperty(default='time')
 
-    def __init__(self, context, copytoraw=None, products_dir=None, rawdata_dir=None, output_dir=None, session=None,
-                 vis=None, bdfflags=None, lazy=None, asis=None, ocorr_mode=None):
+    # docstring and type hints: supplements hsd_restoredata
+    def __init__(self, context: 'Context', copytoraw: Optional[bool] = None, products_dir: Optional[str] = None,
+                 rawdata_dir: Optional[str] = None, output_dir: Optional[str] = None, session: Optional[str] = None,
+                 vis: List[str] = None, bdfflags: Optional[bool] = None, lazy: Optional[bool] = None,
+                 asis: Optional[str] = None, ocorr_mode: Optional[str] = None, hm_rasterscan: Optional[str] = None):
         """
         Initialise the Inputs, initialising any property values to those given here.
 
         Args:
             context: the pipeline Context state object
-            copytoraw: copy the required data products from products_dir to rawdata_dir
-            products_dir: the directory of archived pipeline products
-            rawdata_dir: the raw data directory for ASDM(s) and products
+
+            copytoraw: Copy calibration and flagging tables from ``products_dir``
+                to ``rawdata_dir`` directory.
+
+                Example: copytoraw=False
+
+                Default: None (equivalent to True)
+
+            products_dir: Name of the data products directory to copy
+                calibration products from.
+                The parameter is effective only when ``copytoraw`` = True.
+                When ``copytoraw`` = False, calibration products in
+                ``rawdata_dir`` will be used.
+
+                Example: products_dir='myproductspath'
+
+                Default: None (equivalent to '../products')
+
+            rawdata_dir: Name of the raw data directory.
+
+                Example: rawdata_dir='myrawdatapath'
+
+                Default: None (equivalent to '../rawdata')
+
             output_dir: the working directory for the restored data
-            session: the  parent session of each vis
-            vis: the ASDMs(s) for which data is to be restored
-            bdfflags: set the BDF flags
-            lazy: use the lazy filler to restore data
-            asis: list of ASDM tables to import as is
+
+            session: List of sessions one per visibility file.
+
+                Example: session=['session_3']
+
+            vis: List of raw visibility data files to be restored.
+                Assumed to be in the directory specified by rawdata_dir.
+
+                Example: vis=['uid___A002_X30a93d_X43e']
+
+            bdfflags: Apply BDF flags on import.
+
+                Example: bdfflags=False
+
+                Default: None (equivalent to True)
+
+            lazy: Use the lazy filler option.
+
+                Example: lazy=True
+
+                Default: None (equivalent to False)
+
+            asis: Creates verbatim copies of the ASDM tables in the output MS.
+                The value given to this option must be a list of table names
+                separated by space characters. Default value, None, is equivalent
+                to the following list.
+
+                    'SBSummary ExecBlock Annotation Antenna Station Receiver Source CalAtmosphere CalWVR SpectralWindow'
+
+                Example: asis='Source Receiver'
+
+            ocorr_mode: Selection of baseline correlation to import.
+                Valid only if input visibility is ASDM. See a document of CASA,
+                casatasks::importasdm, for available options.
+
+                Example: ocorr_mode='ca'
+
+                Default: None (equivalent to 'ao')
+
+            hm_rasterscan: Heuristics method for raster scan analysis.
+                Two analysis modes, time-domain analysis ('time') and
+                direction analysis ('direction'), are available.
+
+                Default: None (equivalent to 'time')
+
         """
         super(SDRestoreDataInputs, self).__init__(context, copytoraw=copytoraw, products_dir=products_dir,
                                                   rawdata_dir=rawdata_dir, output_dir=output_dir, session=session,
                                                   vis=vis, bdfflags=bdfflags, lazy=lazy, asis=asis,
                                                   ocorr_mode=ocorr_mode)
 
+        self.hm_rasterscan = hm_rasterscan
+
 
 class SDRestoreDataResults(restoredata.RestoreDataResults):
     """Results object of SDRestoreData."""
 
-    def __init__(self, importdata_results: SDImportDataResults = None, applycal_results: SDApplycalResults = None, 
-                 flagging_summaries: List[Dict[str,str]] = None):
+    def __init__(self, importdata_results: 'SDImportDataResults', applycal_results: 'SDApplycalResults',
+                 flagging_summaries: List[Dict[str, str]]):
         """
         Initialise the results objects.
 
@@ -66,7 +137,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         """
         super(SDRestoreDataResults, self).__init__(importdata_results, applycal_results, flagging_summaries)
 
-    def merge_with_context(self, context: Context):
+    def merge_with_context(self, context: 'Context'):
         """
         Call same method of superclass and _merge_k2jycal().
 
@@ -82,12 +153,15 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
         else:
             self._merge_k2jycal(context, self.applycal_results)
 
-    def _merge_k2jycal(self, context: Context, applycal_results: SDApplycalResults):
+    def _merge_k2jycal(self, context: 'Context', applycal_results: 'SDApplycalResults'):
         """
-        Merge K to Jy.
+        Merge k2jycal caltable into context.
+
+        Jy/K factors are retrieved from caltables and are attached to
+        measurementset domain object.
 
         Args:
-            conext: the pipeline Context state object
+            context: the pipeline Context state object
             applycal_results: results object of applycal
         """
         for calapp in applycal_results.applied:
@@ -123,7 +197,7 @@ class SDRestoreDataResults(restoredata.RestoreDataResults):
 @task_registry.set_equivalent_casa_task('hsd_restoredata')
 class SDRestoreData(restoredata.RestoreData):
     """Restore flagged and calibrated data produced during a previous pipeline run and archived on disk."""
-    
+
     Inputs = SDRestoreDataInputs
 
     def prepare(self):
@@ -153,10 +227,10 @@ class SDRestoreData(restoredata.RestoreData):
         # SDImportDataInputs operate in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        container = vdp.InputsContainer(importdata.SDImportData, inputs.context, vis=vislist, session=sessionlist,
+        container = vdp.InputsContainer(importdata.SerialSDImportData, inputs.context, vis=vislist, session=sessionlist,
                                         save_flagonline=False, lazy=inputs.lazy, bdfflags=inputs.bdfflags,
-                                        asis=inputs.asis, ocorr_mode=inputs.ocorr_mode)
-        importdata_task = importdata.SDImportData(container)
+                                        asis=inputs.asis, ocorr_mode=inputs.ocorr_mode, hm_rasterscan=inputs.hm_rasterscan)
+        importdata_task = importdata.SerialSDImportData(container)
         return self._executor.execute(importdata_task, merge=True)
 
     def _do_applycal(self):
@@ -165,6 +239,6 @@ class SDRestoreData(restoredata.RestoreData):
         # SDApplyCalInputs operates in the scope of a single measurement set.
         # To operate in the scope of multiple MSes we must use an
         # InputsContainer.
-        container = vdp.InputsContainer(applycal.SDApplycal, inputs.context)
-        applycal_task = applycal.SDApplycal(container)
+        container = vdp.InputsContainer(applycal.SerialSDApplycal, inputs.context)
+        applycal_task = applycal.SerialSDApplycal(container)
         return self._executor.execute(applycal_task, merge=True)

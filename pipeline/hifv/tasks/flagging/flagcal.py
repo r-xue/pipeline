@@ -35,7 +35,20 @@ class FlagcalInputs(vdp.StandardInputs):
     caltable = vdp.VisDependentProperty(default='finalampgaincal.tbl')
     clipminmax = vdp.VisDependentProperty(default=[0.9, 1.1])
 
+    # docstring and type hints: supplements hifv_flagcal
     def __init__(self, context, vis=None, caltable=None, clipminmax=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            vis: List of input visibility data.
+
+            caltable: String name of the caltable.
+
+            clipminmax: Range to use for clipping.
+
+        """
         super(FlagcalInputs, self).__init__()
         self.context = context
         self.vis = vis
@@ -57,8 +70,11 @@ class Flagcal(basetask.StandardTaskTemplate):
         # Check finalcal stage prefixes.
         caltable = self.inputs.caltable
         if not os.path.exists(caltable):
-            caltable = self.inputs.context.results[-2].read()[0].finalampgaincaltable
-
+            m = self.inputs.context.observing_run.get_ms(self.inputs.vis)
+            try:
+                caltable = self.inputs.context.evla['msinfo'][m.name].finalampgaincaltable
+            except AttributeError:
+                LOG.warning("Exception: 'finalampgaincaltable' is not present.")
         flagcal_result = self._do_flagdata(caltable=caltable,
                                            clipminmax=self.inputs.clipminmax)
 

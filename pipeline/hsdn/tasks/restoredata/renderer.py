@@ -1,34 +1,22 @@
-import os
 import collections
+import os
 import shutil
-import itertools
-import operator
 
-import pipeline.domain.measures as measures
-import pipeline.infrastructure
-import pipeline.infrastructure.callibrary as callibrary
-import pipeline.infrastructure.filenamer as filenamer
 import pipeline.infrastructure.logging as logging
 import pipeline.infrastructure.utils as utils
-from pipeline.infrastructure import casa_tools
-from . import csvfilereader
-
 from pipeline.h.tasks.common import flagging_renderer_utils as flagutils
-from pipeline.h.tasks.common.displays import applycal as applycal
-from pipeline.hsd.tasks.common import utils as sdutils
-from pipeline.h.tasks.applycal import renderer as super_renderer
 from pipeline.hsd.tasks.applycal import renderer as sdapplycal
+from pipeline.hsd.tasks.common import utils as sdutils
 
 LOG = logging.get_logger(__name__)
 
 JyperKTRV = collections.namedtuple('JyperKTRV', 'virtualspw msname realspw antenna pol factor')
-JyperKTR  = collections.namedtuple('JyperKTR',  'spw msname antenna pol factor')
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
+JyperKTR  = collections.namedtuple('JyperKTR', 'spw msname antenna pol factor')
 
 
 class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRenderer):
-    def __init__(self, uri='hsdn_restoredata.mako', 
-                 description='Restoredata with scale adjustment between beams for NRO FOREST data.',
+    def __init__(self, uri='hsdn_restoredata.mako',
+                 description='Restoredata with scale adjustment among beams for NRO FOREST data.',
                  always_rerender=False):
         super(T2_4MDetailsNRORestoreDataRenderer, self).__init__(
             uri=uri, description=description, always_rerender=always_rerender)
@@ -39,11 +27,12 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
         ctx_result0 = ctx_result[0]
         ctx_result0_inputs = ctx_result0.inputs
         inputs = {}
-        for key, value in ctx_result0_inputs.items():
-            if 'rawdata_dir' in key or 'products_dir' in key or 'vis' in key or 'output_dir' in key or 'reffile' in key:
-                inputs[key] = value
+        inputs_keys = ('rawdata_dir', 'products_dir', 'vis', 'output_dir', 'reffile', 'hm_rasterscan')
+        for key in inputs_keys:
+            if key in ctx_result0_inputs:
+                inputs[key] = ctx_result0_inputs[key]
         result_inputs = inputs
-        LOG.debug('result_inputs = {0}'.format(result_inputs));
+        LOG.debug('result_inputs = {0}'.format(result_inputs))
         ctx['result'].inputs = result_inputs
         reffile = None
         spw_factors = collections.defaultdict(lambda: [])
@@ -69,7 +58,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                 metadata = ['No Data : No Data']
                 break
             else:
-                LOG.info('os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)));
+                LOG.info('os.path.exists(reffile) = {0}'.format(os.path.exists(reffile)))
                 with open(reffile, 'r') as f:
                     lines = f.readlines()
                 # Count the line numbers for the beginning of metadata part and the end of it.
@@ -111,7 +100,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                         check = elem.split()
                         # The lines without "#" are regarded as all FreeMemo's values.
                         if len(elem) == 0:
-                            LOG.debug('Skipped the blank line of the reffile.');
+                            LOG.debug('Skipped the blank line of the reffile.')
                             continue
                         else:
                             if not ":" in check[0]:
@@ -163,7 +152,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                     spw_band[vspwid] = spw.band
 
                 for ant in ms.get_antenna():
-                    LOG.debug('ant = {0}'.format(ant));
+                    LOG.debug('ant = {0}'.format(ant))
                     ant_name = ant.name
                     corrs = list(map(ddid.get_polarization_label, range(ddid.num_polarizations)))
 
@@ -183,7 +172,7 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
                         if factor is not None:
                             valid_spw_factors[vspwid][corr].append(factor)
             reffile = r.reffile
-            LOG.debug('reffile = {0}'.format(reffile));
+            LOG.debug('reffile = {0}'.format(reffile))
         stage_dir = os.path.join(context.report_dir, 'stage%s' % ampcal_results.stage_number)
 
         # input file to correct relative amplitude
@@ -203,29 +192,29 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
 
         weblog_dir = os.path.join(context.report_dir,
                                   'stage%s' % applycal_results.stage_number)
-        LOG.debug('weblog_dir = {0}'.format(weblog_dir));
+        LOG.debug('weblog_dir = {0}'.format(weblog_dir))
 
-        intents_to_summarise = ['TARGET'] 
+        intents_to_summarise = ['TARGET']
         flag_totals = {}
         for r in applycal_results:
-            LOG.debug('r in applycal_results = {0}'.format(r));
+            LOG.debug('r in applycal_results = {0}'.format(r))
 
             if r.inputs['flagsum'] == True:
                 flag_totals = utils.dict_merge(flag_totals,
                                                flagutils.flags_for_result(
                                                    r, context, intents_to_summarise=intents_to_summarise
-                                               )) 
+                                               ))
         calapps = {}
         for r in applycal_results:
             calapps = utils.dict_merge(calapps,
                                        self.calapps_for_result(r))
-        LOG.debug('calapps = {0}'.format(calapps));
+        LOG.debug('calapps = {0}'.format(calapps))
 
         caltypes = {}
         for r in applycal_results:
             caltypes = utils.dict_merge(caltypes,
                                         self.caltypes_for_result(r))
-        LOG.debug('caltypes = {0}'.format(caltypes));
+        LOG.debug('caltypes = {0}'.format(caltypes))
 
         filesizes = {}
         for r in applycal_results:
@@ -247,12 +236,21 @@ class T2_4MDetailsNRORestoreDataRenderer(sdapplycal.T2_4MDetailsSDApplycalRender
 
         # CAS-5970: add science target plots to the applycal page
         (science_amp_vs_freq_summary_plots, science_amp_vs_freq_subpages, uv_max) = self.create_single_dish_science_plots(context, applycal_results)
+
+        # delete extra entry specific to hsd_applycal
+        science_amp_vs_freq_summary_plots.pop('__hsd_applycal__', None)
+        for vis, plots_per_source in science_amp_vs_freq_summary_plots.items():
+            # NRO data is always single field so just omit field name
+            assert len(plots_per_source) == 1
+            plots = plots_per_source[0][1]
+            science_amp_vs_freq_summary_plots[vis] = plots
+
         ctx.update({
             'science_amp_vs_freq_plots': science_amp_vs_freq_summary_plots,
             'science_amp_vs_freq_subpages': science_amp_vs_freq_subpages,
             'uv_max': uv_max,
         })
-        LOG.debug('ctx = {0}'.format(ctx));
+        LOG.debug('ctx = {0}'.format(ctx))
 
     @staticmethod
     def __get_factor(factor_dict, vis, spwid, ant_name, pol_name):

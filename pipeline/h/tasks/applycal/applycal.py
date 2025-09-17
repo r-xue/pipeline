@@ -18,10 +18,9 @@ from ...heuristics.fieldnames import IntentFieldnames
 
 __all__ = [
     'Applycal',
+    'SerialApplycal',
     'ApplycalInputs',
     'ApplycalResults',
-    'HpcApplycal',
-    'HpcApplycalInputs'
 ]
 
 LOG = infrastructure.get_logger(__name__)
@@ -31,6 +30,9 @@ class ApplycalInputs(vdp.StandardInputs):
     """
     ApplycalInputs defines the inputs for the Applycal pipeline task.
     """
+    # PIPE-1691: hif_applycal is now implicitly a parallel task, but by default
+    # running with parallel=False.
+    parallel = sessionutils.parallel_inputs_impl(default=False)
 
     @vdp.VisDependentProperty
     def antenna(self):
@@ -62,15 +64,68 @@ class ApplycalInputs(vdp.StandardInputs):
     flagdetailedsum = vdp.VisDependentProperty(default=False)
     flagsum = vdp.VisDependentProperty(default=True)
     intent = vdp.VisDependentProperty(default='TARGET,PHASE,BANDPASS,AMPLITUDE,CHECK')
+    parang = vdp.VisDependentProperty(default=False)
 
     @vdp.VisDependentProperty
     def spw(self):
         science_spws = self.ms.get_spectral_windows(with_channels=True)
         return ','.join([str(spw.id) for spw in science_spws])
 
+    # docstring and type hints: supplements h_applycal
     def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None,
-                 parang=None, applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None):
-        super(ApplycalInputs, self).__init__()
+                 parang=None, applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None,
+                 parallel=None):
+        """Initialize Inputs.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+                Defaults to None, which corresponds to the current working directory.
+
+            vis: The list of input MeasurementSets. Defaults to the list of MeasurementSets in the pipeline context.
+                example: ['X227.ms']
+
+            field: A string containing the list of field names or field ids to which the calibration will be applied. Defaults to all fields in the pipeline
+                context.
+                example: '3C279', '3C279, M82'
+
+            spw: The list of spectral windows and channels to which the calibration will be applied. Defaults to all science windows in the pipeline
+                context.
+                example: '17', '11, 15'
+
+            antenna: The selection of antennas to which the calibration will be applied. Defaults to all antennas. Not currently supported.
+
+            intent: A string containing the list of intents against which the selected fields will be matched. Defaults to all supported intents
+                in the pipeline context.
+                example: `'*TARGET*'`
+
+            parang: Apply parallactic angle correction
+
+            applymode: Calibration apply mode
+
+                - 'calflag': calibrate data and apply flags from solutions
+                - 'calflagstrict': (default) same as above except flag spws for which calibration is
+                  unavailable in one or more tables (instead of allowing them to pass
+                  uncalibrated and unflagged)
+                - 'trial': report on flags from solutions, dataset entirely unchanged
+                - 'flagonly': apply flags from solutions only, data not calibrated
+                - 'flagonlystrict': same as above except flag spws for which calibration is
+                  unavailable in one or more tables
+                - 'calonly': calibrate data only, flags from solutions NOT applied
+
+            flagbackup: Backup the flags before the apply
+
+            flagsum: Compute before and after flagging summary statistics
+
+            flagdetailedsum: Compute detailed before and after flagging statistics summaries. Parameter available only when if flagsum is True.
+
+            parallel: Process multiple MeasurementSets in parallel using the casampi parallelization framework.
+                options: 'automatic', 'true', 'false', True, False
+                default: None (equivalent to False)
+
+        """
+        super().__init__()
 
         # pipeline inputs
         self.context = context
@@ -91,10 +146,13 @@ class ApplycalInputs(vdp.StandardInputs):
         self.flagsum = flagsum
         self.flagdetailedsum = flagdetailedsum
 
+        self.parallel = parallel
+
     def to_casa_args(self):
-        casa_args = super(ApplycalInputs, self).to_casa_args()
+        casa_args = super().to_casa_args()
         del casa_args['flagsum']
         del casa_args['flagdetailedsum']
+        del casa_args['parallel']
         return casa_args
 
 
@@ -163,9 +221,7 @@ class ApplycalResults(basetask.Results):
         return s
 
 
-@task_registry.set_equivalent_casa_task('h_applycal')
-@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
-class Applycal(basetask.StandardTaskTemplate):
+class SerialApplycal(basetask.StandardTaskTemplate):
     """
     Applycal executes CASA applycal tasks for the current active context
     state, applying calibrations registered with the pipeline context to the
@@ -180,7 +236,7 @@ class Applycal(basetask.StandardTaskTemplate):
     applied_data_type = DataType.REGCAL_CONTLINE_ALL
 
     def __init__(self, inputs):
-        super(Applycal, self).__init__(inputs)
+        super().__init__(inputs)
 
     def modify_task_args(self, task_args):
         task_args['antenna'] = '*&*'
@@ -332,29 +388,11 @@ def reshape_flagdata_summary(flagdata_result):
 #     return {k: v for k, v in flagsummary.items() if k in fields_to_plot}
 
 
-class HpcApplycalInputs(ApplycalInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, output_dir=None, vis=None, field=None, spw=None, antenna=None, intent=None, parang=None,
-                 applymode=None, flagbackup=None, flagsum=None, flagdetailedsum=None, parallel=None):
-        super(HpcApplycalInputs, self).__init__(context, output_dir=output_dir, vis=vis, field=field, spw=spw,
-                                                antenna=antenna, intent=intent, parang=parang, applymode=applymode,
-                                                flagbackup=flagbackup, flagsum=flagsum, flagdetailedsum=flagdetailedsum)
-        self.parallel = parallel
-
-
-@task_registry.set_equivalent_casa_task('hpc_h_applycal')
-class HpcApplycal(sessionutils.ParallelTemplate):
-    Inputs = HpcApplycalInputs
-    Task = Applycal
-
-    def __init__(self, inputs):
-        super(HpcApplycal, self).__init__(inputs)
-
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error applying calibrations for {!s}'.format(os.path.basename(vis)))
-        return ApplycalResults()
+@task_registry.set_equivalent_casa_task('h_applycal')
+@task_registry.set_casa_commands_comment('Calibrations are applied to the data. Final flagging summaries are computed')
+class Applycal(sessionutils.ParallelTemplate):
+    Inputs = ApplycalInputs
+    Task = SerialApplycal
 
 
 def jobs_without_calapply(merged, inputs, mod_fn):

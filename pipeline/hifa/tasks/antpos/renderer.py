@@ -58,7 +58,7 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
         xyzoffsets_list = make_xyzoffsets_list(single_result.offsets, rep_wavelength)
 
         # No offsets
-        if len(antenna_list) is 0 or len(antenna_list) != len(xyzoffsets_list):
+        if len(antenna_list) == 0 or len(antenna_list) != len(xyzoffsets_list):
             continue
 
         # Loop over the individual antennas and offsets
@@ -67,8 +67,8 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
             xoffset = '%0.2e' % item[1][0]
             yoffset = '%0.2e' % item[1][1]
             zoffset = '%0.2e' % item[1][2]
-            total_offset = '%0.2f' % item[1][3]
-            total_offset_in_wavelengths = '%0.2f' % item[1][4]
+            total_offset = '%0.2e' % item[1][3]
+            total_offset_in_wavelengths = '%0.2e' % item[1][4]
             tr = AntposTR(vis_cell, antname, xoffset, yoffset, zoffset, total_offset, total_offset_in_wavelengths)
             rows.append(tr)
 
@@ -82,7 +82,7 @@ def make_antpos_table(context, results, sort_by=lambda x: getattr(x, 'antenna'),
 
 
 def make_xyzoffsets_list (offsets_list, rep_wavelength):
-    if len(offsets_list) is 0:
+    if len(offsets_list) == 0:
         return []
 
     xyz_list = []

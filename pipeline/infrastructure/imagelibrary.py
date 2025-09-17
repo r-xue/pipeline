@@ -6,7 +6,7 @@ from . import filenamer as fn
 LOG = logging.get_logger(__name__)
 
 
-# This class contains a list ImageItem objects encoded as dictionaries.
+# This class contains a list of ImageItem objects encoded as dictionaries.
 class ImageLibrary(object):
     def __init__(self):
         self._images = []
@@ -68,18 +68,20 @@ class ImageLibrary(object):
 
 
 # This class contains information for image data product
-class ImageItem (object):
-    def __init__(self, imagename, sourcename, spwlist, specmode, sourcetype, multiterm=None, imageplot='',
-                 metadata={}, imaging_params={},
+class ImageItem:
+    def __init__(self, imagename, sourcename, spwlist, specmode, sourcetype, stokes='',
+                 datatype='', multiterm=None, imageplot='', metadata={}, imaging_params={},
                  org_direction=None):
         self.imagename = imagename
         self.sourcename = sourcename
         self.spwlist = spwlist
         self.specmode = specmode
         self.sourcetype = sourcetype
+        self.stokes = stokes
+        self.datatype = datatype
         self.multiterm = multiterm
         self.imageplot = imageplot
-        self._metadata = metadata
+        self.metadata = metadata
         self.imaging_params = imaging_params  # params used to create image. iterations dict w/imaging_params struct
         self.org_direction = org_direction
         self.version = 1

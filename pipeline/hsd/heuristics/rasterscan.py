@@ -9,14 +9,16 @@ observing region.
 Note that it does not check if observing pattern is raster.
 """
 # import standard modules
-from typing import Callable, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 # import 3rd party modules
 import numpy as np
-import scipy
+import numpy.typing as npt
 
 # import pipeline submodules
+from pipeline.domain.measurementset import MeasurementSet
 import pipeline.infrastructure.api as api
+import pipeline.infrastructure.utils.compatibility as compatibility
 import pipeline.infrastructure.logging as logging
 
 LOG = logging.get_logger(__name__)
@@ -46,32 +48,11 @@ class HeuristicsParameter(object):
     # for MAD
     DistanceThresholdFactor = 75
 
+    # Distance threshold factor for raster gap detection
+    RasterGapThresholdFactor = 0.05
 
-def get_func_compute_mad() -> Callable:
-    """Return function to compute median absolute deviation (MAD).
-
-    This absorbs the API difference depending on SciPy version.
-
-    Raises:
-        NotImplementedError: SciPy version is too old (lower than 1.3.0)
-
-    Returns:
-        function: function to compute MAD
-    """
-    # assuming X.Y.Z style version string
-    scipy_version = scipy.version.full_version
-    versioning = map(int, scipy_version.split('.'))
-    major = next(versioning)
-    minor = next(versioning)
-    if major > 1 or (major == 1 and minor >= 5):
-        return lambda x: scipy.stats.median_abs_deviation(x, scale='normal')
-    elif major == 1 and minor >= 3:
-        return scipy.stats.median_absolute_deviation
-    else:
-        raise NotImplementedError('No MAD function available in scipy. Use scipy 1.3 or higher.')
-
-
-compute_mad = get_func_compute_mad()
+    # Threshold for "Round-trip" raster scan detection
+    RoundTripRasterScanThresholdFactor = 0.6
 
 
 def distance(x0: float, y0: float, x1: float, y1: float) -> np.ndarray:
@@ -406,7 +387,12 @@ def find_distance_gap(delta_ra: np.ndarray, delta_dec: np.ndarray) -> np.ndarray
     for i in range(num_loop):
         dist = distance[mask]
         dmed = np.median(dist)
-        # dstd = dist.std()
+        # TODO: replace the following two lines with scipy function call:
+        #
+        # dstd = scipy.stats.median_abs_deviation(dist, scale='normal')
+        #
+        # This should be done after we drop support of CASA py3.6 release.
+        compute_mad = compatibility.get_scipy_function_for_mad()
         dstd = compute_mad(dist)
         distance_threshold = factor * dstd
         tmp = np.abs(distance - dmed) <= distance_threshold
@@ -552,7 +538,67 @@ def get_raster_distance(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[List[i
     return distance_list
 
 
-def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray]) -> np.ndarray:
+class RasterScanHeuristicsResult():
+    """Result class of raster scan analysis."""
+
+    def __init__(self, ms: MeasurementSet):
+        """Initialize an object.
+
+        Args:
+            ms (MeasurementSet): an MeasurementSet object related to the instance.
+        """
+        self.__ms = ms
+        self.__antenna = {}
+    
+    @property
+    def ms(self):
+        return self.__ms
+
+    @property
+    def antenna(self):
+        return self.__antenna
+    
+    def set_result_fail(self, antid: int, spwid: int, fieldid: int):
+        """Set False means raster analysis failure to self.antenna dictionary that is used for getting fail antennas.
+
+        Args:
+            antid (int): An Antenna ID of the result
+            spwid (int): An SpW ID of the result
+            fieldid (int): A field ID of the result
+        """
+        self._set_result(antid, spwid, fieldid, False)
+
+    def _set_result(self, antid: int, spwid: int, fieldid: int, result: bool):
+        """Set boolean that appears the result of raster analysis to self.antenna dictionary that is used for getting fail antennas.
+
+        Args:
+            antid (int): An Antenna ID of the result
+            spwid (int): An SpW ID of the result
+            fieldid (int): A field ID of the result
+            result (bool): result of raster analysis
+        """
+        field = self.antenna.setdefault(antid, {}) \
+                            .setdefault(spwid, {}) \
+                            .setdefault(fieldid, {})
+        field[fieldid] = result
+
+    def get_antennas_rasterscan_failed(self) -> List[str]:
+        """Get antennas which have had some error in raster scan analysis of the self.ms.
+
+        Returns:
+            List[str]: List of antenna names
+        """
+        def _contains_fail(value:Union[str, Dict[str, Dict]]):
+            if isinstance(value, dict):
+                return any(_contains_fail(v) for v in value.values())
+            return value is False
+        
+        antenna_ids = np.unique([k for k, v in self.__antenna.items() if _contains_fail(v)])
+        return sorted([self.ms.antennas[id].name for id in antenna_ids])
+
+
+def find_raster_gap(ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64], dtrow_list: List[npt.NDArray[np.int64]]) \
+        -> npt.NDArray[np.int64]:
     """
     Find gaps between individual raster map.
 
@@ -573,27 +619,47 @@ def find_raster_gap(ra: np.ndarray, dec: np.ndarray, dtrow_list: List[np.ndarray
         dtrow_list: List of np.ndarray holding array indices for ra and dec.
                     Each index array is supposed to represent single raster row.
 
+    Raises:
+        RasterScanHeuristicsFailure:
+            irregular row input or unsupported raster mapping
+
     Returns:
         np.ndarray of index for dtrow_list indicating boundary between raster maps
     """
+    msg = 'Failed to identify gap between raster map iteration.'
+
+    if len(dtrow_list) == 0:
+        raise RasterScanHeuristicsFailure(msg)
+
     distance_list = get_raster_distance(ra, dec, dtrow_list)
     delta_distance = distance_list[1:] - distance_list[:-1]
-    LOG.info('delta_distance = %s', delta_distance)
-    idx = np.where(delta_distance < 0)[0] + 1
-    delta = idx[1:] - idx[:-1]
-    if np.any(delta == 1):
-        # possibly one-way raster mapping which is not supported
-        msg = 'The pattern seems to be raster but is not supported by this heuristics.'
-        LOG.warning(msg)
-        raise RasterScanHeuristicsFailure(msg)
+    threshold = HeuristicsParameter.RasterGapThresholdFactor * np.median(delta_distance)
+    LOG.debug('delta_distance = %s', delta_distance)
+    LOG.debug('threshold = %s', threshold)
+    idx = np.where(delta_distance < threshold)[0] + 1
     raster_gap = np.concatenate([[0], idx, [len(dtrow_list)]])
+    delta = raster_gap[1:] - raster_gap[:-1]
+    LOG.debug('idx = %s, raster_gap = %s', idx, raster_gap)
+    LOG.debug('delta = %s', delta)
+    # check if the direction of raster mapping is one-way (go back to
+    # the start position of previous raster frame) or round-trip
+    # (start from the end position of previous raster frame)
+    # For the latter case, all raster rows in the raster frames taken
+    # along returning direction are separated by the above threshold
+    # so that most of the elements in delta become 1
+    ndelta1 = len(np.where(delta == 1)[0])
+    LOG.debug('ndelta1 = %s', ndelta1)
+    if ndelta1 > HeuristicsParameter.RoundTripRasterScanThresholdFactor * len(raster_gap):
+        # possibly round-trip raster mapping which is not supported
+        raise RasterScanHeuristicsFailure(msg)
     return raster_gap
 
 
 class RasterScanHeuristic(api.Heuristic):
     """Heuristic to analyze raster scan pattern."""
 
-    def calculate(self, ra: np.ndarray, dec: np.ndarray) -> Tuple[List, List]:
+    def calculate(self, ra: npt.NDArray[np.float64], dec: npt.NDArray[np.float64]) \
+                      -> Tuple[List[npt.NDArray[np.int64]], List[npt.NDArray[np.int64]]]:
         """Detect gaps that separate individual raster rows and raster maps.
 
         Detected gaps are transrated into TimeTable and TimeGap described below.
@@ -601,6 +667,11 @@ class RasterScanHeuristic(api.Heuristic):
         Args:
             ra: horizontal position list
             dec: vertical position list
+
+        Raises:
+            RasterScanHeuristicsFailure (raised from find_raster_row() or find_raster_gap()):
+                scan pattern is not likely to be raster scan or
+                irregular row input, or unsupported raster mapping
 
         Returns:
             Two-tuple containing information on group membership

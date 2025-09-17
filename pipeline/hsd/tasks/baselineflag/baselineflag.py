@@ -1,5 +1,6 @@
-import os
 import collections
+import os
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 import pipeline.infrastructure as infrastructure
 import pipeline.infrastructure.basetask as basetask
@@ -18,6 +19,11 @@ from .flagsummary import SDBLFlagSummary
 from .. import common
 from ..common import utils as sdutils
 
+if TYPE_CHECKING:
+    from numbers import Integral
+
+    from pipeline.infrastructure import Context
+
 LOG = infrastructure.get_logger(__name__)
 
 
@@ -25,64 +31,125 @@ class SDBLFlagInputs(vdp.StandardInputs):
     """
     Inputs for single dish flagging
     """
-    def __to_numeric(self, val):
+    def __to_numeric(self, val: Any) -> 'Integral':
+        """Convert any value into numeric.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Numeric value
+        """
         return sdutils.to_numeric(val)
 
-    def __to_bool(self, val):
+    def __to_bool(self, val: Any) -> bool:
+        """Convert any value into boolean.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Boolean value
+        """
         return sdutils.to_bool(val)
 
-    def __to_int(self, val):
+    def __to_int(self, val: Any) -> int:
+        """Convert any value into integer.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Integer value
+        """
         return int(val)
+
+    def __to_list(self, val: Any) -> List[int]:
+        """Convert any value into integer list.
+
+        Utility method for VisDependentProperty.
+
+        Args:
+            val: Any value
+
+        Returns:
+            Integer list
+        """
+        return sdutils.to_list(val)
 
     # Search order of input vis
     processing_data_type = [DataType.ATMCORR,
                             DataType.REGCAL_CONTLINE_ALL, DataType.RAW ]
 
+    parallel = sessionutils.parallel_inputs_impl()
+
+    spw = vdp.VisDependentProperty(default='')
     intent = vdp.VisDependentProperty(default='TARGET')
     iteration = vdp.VisDependentProperty(default=5, fconvert=__to_int)
+    edge = vdp.VisDependentProperty(default=[0, 0], fconvert=__to_list)
     flag_tsys = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
     tsys_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
     flag_prfre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfre_thresh = vdp.VisDependentProperty(default=3.0, fconvert=__to_numeric)
+    prfre_thresh = vdp.VisDependentProperty(default=6.0, fconvert=__to_numeric)
     flag_pofre = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofre_thresh = vdp.VisDependentProperty(default=1.3333, fconvert=__to_numeric)
+    pofre_thresh = vdp.VisDependentProperty(default=2.6666, fconvert=__to_numeric)
     flag_prfr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfr_thresh = vdp.VisDependentProperty(default=4.5, fconvert=__to_numeric)
+    prfr_thresh = vdp.VisDependentProperty(default=9.0, fconvert=__to_numeric)
     flag_pofr = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofr_thresh = vdp.VisDependentProperty(default=4.0, fconvert=__to_numeric)
+    pofr_thresh = vdp.VisDependentProperty(default=8.0, fconvert=__to_numeric)
     flag_prfrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    prfrm_thresh = vdp.VisDependentProperty(default=5.5, fconvert=__to_numeric)
+    prfrm_thresh = vdp.VisDependentProperty(default=11.0, fconvert=__to_numeric)
     prfrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
     flag_pofrm = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
-    pofrm_thresh = vdp.VisDependentProperty(default=5.0, fconvert=__to_numeric)
+    pofrm_thresh = vdp.VisDependentProperty(default=10.0, fconvert=__to_numeric)
     pofrm_nmean = vdp.VisDependentProperty(default=5, fconvert=__to_int)
     plotflag = vdp.VisDependentProperty(default=True, fconvert=__to_bool)
 
     @vdp.VisDependentProperty
-    def infiles(self):
+    def infiles(self) -> Optional[Union[str, List[str]]]:
+        """Name of input MS.
+
+        This is just an alias of vis.
+
+        Returns:
+            MS name or list of MS names.
+        """
         return self.vis
 
     @infiles.convert
-    def infiles(self, value):
+    def infiles(self, value: Optional[Union[str, List[str]]]) -> Optional[Union[str, List[str]]]:
+        """Additional conversion operation on infiles.
+
+        It doesn't apply any conversion. Instead, this ensures
+        synchronization of infiles with vis.
+
+        Args:
+            value: Original value.
+
+        Returns:
+            Converted value.
+        """
         self.vis = value
         return value
 
-    @iteration.convert
-    def iteration(self, value):
-        return int(value)
-
-    edge = vdp.VisDependentProperty(default=[0, 0])
-
-    @edge.convert
-    def edge(self, value):
-        return sdutils.to_list(value)
-
-    @vdp.VisDependentProperty
-    def antenna(self):
-        return ''
+    antenna = vdp.VisDependentProperty(default='')
 
     @antenna.convert
-    def antenna(self, value):
+    def antenna(self, value: Optional[str]) -> str:
+        """Make antenna selection consistent with vis.
+
+        Args:
+            value: Original antenna selection.
+
+        Returns:
+            Updated antenna selection.
+        """
         antennas = self.ms.get_antenna(value)
         # if all antennas are selected, return ''
         if len(antennas) == len(self.ms.antennas):
@@ -92,6 +159,14 @@ class SDBLFlagInputs(vdp.StandardInputs):
 
     @vdp.VisDependentProperty
     def field(self):
+        """Define default field selection.
+
+        Default field selection is constructed from vis
+        and observing intent.
+
+        Returns:
+            Default field selection.
+        """
         # this will give something like '0542+3243,0343+242'
         field_finder = fieldnames.IntentFieldnames()
         intent_fields = field_finder.calculate(self.ms, self.intent)
@@ -103,32 +178,169 @@ class SDBLFlagInputs(vdp.StandardInputs):
         return ','.join(fields)
 
     @vdp.VisDependentProperty
-    def spw(self):
-        science_spws = self.ms.get_spectral_windows(with_channels=True)
-        return ','.join([str(spw.id) for spw in science_spws])
-
-    @vdp.VisDependentProperty
     def pol(self):
-        # filters polarization by self.spw
-        selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(self.spw, with_channels=True)]
+        """Define default polarization selection.
+
+        Default polarization selection is constructed
+        from vis and spw.
+
+        Returns:
+            Default polarization selection.
+        """
+        # need to convert input (virtual) spw into real spw
+        real_spw = sdutils.convert_spw_virtual2real(self.context, self.spw, [self.ms])[self.vis]
+        selected_spwids = [int(spwobj.id) for spwobj in self.ms.get_spectral_windows(real_spw, with_channels=True)]
         pols = set()
         for idx in selected_spwids:
             pols.update(self.ms.get_data_description(spw=idx).corr_axis)
 
         return ','.join(pols)
 
-    def __init__(self, context, output_dir=None,
-                 iteration=None, edge=None, flag_tsys=None, tsys_thresh=None,
-                 flag_prfre=None, prfre_thresh=None,
-                 flag_pofre=None, pofre_thresh=None,
-                 flag_prfr=None, prfr_thresh=None,
-                 flag_pofr=None, pofr_thresh=None,
-                 flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
-                 flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 plotflag=None,
-                 infiles=None, antenna=None, field=None,
-                 spw=None, pol=None):
-        super(SDBLFlagInputs, self).__init__()
+    #  docstring and type hints: supplements hsd_blflag
+    def __init__(self,
+                 context: 'Context',
+                 output_dir: Optional[str] = None,
+                 iteration: Optional[Union[str, int]] = None,
+                 edge: Optional[Union[str, int, List[int]]] = None,
+                 flag_tsys: Optional[Union[str, bool]] = None,
+                 tsys_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfre: Optional[Union[str, bool]] = None,
+                 prfre_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_pofre: Optional[Union[str, bool]] = None,
+                 pofre_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfr: Optional[Union[str, bool]] = None,
+                 prfr_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_pofr: Optional[Union[str, bool]] = None,
+                 pofr_thresh: Optional[Union[str, 'Integral']] = None,
+                 flag_prfrm: Optional[Union[str, bool]] = None,
+                 prfrm_thresh: Optional[Union[str, 'Integral']] = None,
+                 prfrm_nmean: Optional[Union[str, 'Integral']] = None,
+                 flag_pofrm: Optional[Union[str, bool]] = None,
+                 pofrm_thresh: Optional[Union[str, 'Integral']] = None,
+                 pofrm_nmean: Optional[Union[str, 'Integral']] = None,
+                 plotflag: Optional[Union[str, bool]] = None,
+                 infiles: Optional[Union[str, List[str]]] = None,
+                 antenna: Optional[Union[str, List[str]]] = None,
+                 field: Optional[Union[str, List[str]]] = None,
+                 spw: Optional[Union[str, List[str]]] = None,
+                 pol: Optional[Union[str, List[str]]] = None,
+                 parallel: Optional[Union[bool, str]] = None):
+        """Construct SDBLFlagInputs instance.
+
+        Args:
+            context: Pipeline context.
+
+            output_dir: Output directory.
+
+            iteration: Number of iterations to perform sigma clipping
+                to calculate threshold value of flagging.
+
+                Default: None (equivalent to 5.0)
+
+            edge: Number of channels to be dropped from the edge.
+                The value must be a list of integer with length of one or
+                two. If list length is one, same number will be applied
+                both side of the band.
+
+                Example: [10,20], [10]
+
+                Default: None (equivalent to [0, 0])
+
+            flag_tsys: Activate (True) or deactivate (False) Tsys flag.
+                Default is None which is equivalent to True.
+
+            tsys_thresh: Threshold value for Tsys flag.
+                Default is None which sets 3.0 as a threshold.
+
+            flag_prfre: Activate (True) or deactivate (False) flag by
+                expected rms of pre-fit spectra.
+                Default is None which is equivalent to True.
+
+            prfre_thresh: Threshold value for flag by expected rms of
+                pre-fit spectra. Default is None which sets 3.0 to a threshold.
+
+            flag_pofre: Activate (True) or deactivate (False) flag by
+                expected rms of post-fit spectra.
+                Default is None which is equivalent to True.
+
+            pofre_thresh: Threshold value for flag by expected rms of
+                post-fit spectra. Default is None which sets 1.333 to a threshold.
+
+            flag_prfr: Activate (True) or deactivate (False) flag by
+                rms of pre-fit spectra.
+                Default is None which is equivalent to True.
+
+            prfr_thresh: Threshold value for flag by rms of pre-fit spectra.
+                Default is None which sets 4.5 to a threshold.
+
+            flag_pofr: Activate (True) or deactivate (False) flag by
+                rms of post-fit spectra.
+                Default is None which is equivalent to True.
+
+            pofr_thresh: Threshold value for flag by rms of post-fit spectra.
+                Default is None which sets 4.0 to a threshold.
+
+            flag_prfrm: Activate (True) or deactivate (False) flag by
+                running mean of pre-fit spectra.
+                Default is None which is equivalent to True.
+
+            prfrm_thresh: Threshold value for flag by running mean of pre-fit spectra.
+                Default is None which sets 5.5 to a threshold.
+
+            prfrm_nmean: Number of channels for running mean of pre-fit spectra.
+                Default is None which sets 5 channels for running mean.
+
+            flag_pofrm: Activate (True) or deactivate (False) flag by
+                running mean of post-fit spectra.
+                Default is None which is equivalent to True.
+
+            pofrm_thresh: Threshold value for flag by running mean of post-fit spectra.
+                Default is None which sets 5.0 to a threshold.
+
+            pofrm_nmean: Number of channels for running mean of post-fit spectra.
+                Default is None which sets 5 channels for running mean.
+
+            plotflag: True to plot result of data flagging.
+                Default is None which is equivalent to True.
+
+            infiles: ASDM or MS files to be processed. This parameter behaves
+                as data selection parameter. The name specified by infiles must be
+                registered to context before you run hsd_blflag.
+
+                Default: None (process all registered data)
+
+            antenna: Data selection by antenna names or ids.
+
+                Example: 'PM03,PM04', '' (all antennas)
+
+                Default: None (process all antennas)
+
+            field: Data selection by field names or ids.
+
+                Example: '`*Sgr*,M100`', '' (all fields)
+
+                Default: None (process all science fields)
+
+            spw: Data selection by spw ids.
+
+                Example: '3,4' (spw 3 and 4), '' (all spws)
+
+                Default: None (process all science spws)
+
+            pol: Data selection by polarizations.
+
+                Example: 'XX,YY' (correlation XX and YY), '' (all polarizations)
+
+                Default: None (process all polarizations)
+
+            parallel: Execute using CASA HPC functionality, if available.
+
+                Options: 'automatic', 'true', 'false', True, False
+
+                Default: None (equivalent to 'automatic')
+
+        """
+        super().__init__()
 
         # context and vis/infiles must be set first so that properties that require
         # domain objects can be function
@@ -159,6 +371,7 @@ class SDBLFlagInputs(vdp.StandardInputs):
         self.field = field
         self.spw = spw
         self.pol = pol
+        self.parallel = parallel
 
         ### Default Flag rule
         from . import SDFlagRule
@@ -215,11 +428,6 @@ class SDBLFlagResults(common.SingleDishResults):
         return 'none'
 
 
-# @task_registry.set_equivalent_casa_task('hsd_blflag')
-# @task_registry.set_casa_commands_comment(
-#     'Perform row-based flagging based on noise level and quality of spectral baseline subtraction.\n'
-#     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
-# )
 class SerialSDBLFlag(basetask.StandardTaskTemplate):
     """
     Single dish flagging class.
@@ -245,6 +453,8 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         bl_name = match.name if match is not None else cal_name
         in_ant = inputs.antenna
         in_spw = inputs.spw
+        real_spw = sdutils.convert_spw_virtual2real(context, in_spw, [self.inputs.ms])[self.inputs.vis]
+        LOG.trace(f'ms "{self.inputs.ms.basename}" in_spw="{in_spw}" real_spw="{real_spw}"')
         in_field = inputs.field
         in_pol = '' if inputs.pol in ['', '*'] else inputs.pol.split(',')
         clip_niteration = inputs.iteration
@@ -261,7 +471,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
         full_intent = utils.to_CASA_intent(inputs.ms, inputs.intent)
         flagdata_summary_job = casa_tasks.flagdata(vis=bl_name, mode='summary',
                                                    antenna=in_ant, field=in_field,
-                                                   spw=in_spw, intent=full_intent,
+                                                   spw=real_spw, intent=full_intent,
                                                    spwcorr=True, fieldcnt=True,
                                                    name='before')
         stats_before = self._executor.execute(flagdata_summary_job)
@@ -297,7 +507,7 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 continue
 
             # Which group in group_desc list should be processed
-            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, in_spw))
+            member_list = list(common.get_valid_ms_members(group_desc, [cal_name], in_ant, field_sel, real_spw))
             LOG.trace('group %s: member_list=%s' % (group_id, member_list))
 
             # skip this group if valid member list is empty
@@ -370,14 +580,20 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
                 plots.extend( plot_list )
 
         # Calculate flag fraction after operation.
-        # flag summary for By Topic Page
+        # flag summary for By Topic Page (all data in MS are needed)
         flagkwargs = ["spw='{!s}' intent='{}' fieldcnt=True mode='summary' name='AntSpw{:0>3}'".format(spw.id, full_intent, spw.id)
                               for spw in self.inputs.ms.get_spectral_windows()]
+        # add the summary after flagging with data selection
+        flagkwargs.append(f"antenna='{in_ant}' field='{in_field}' spw='{real_spw}' intent='{full_intent}' spwcorr=True fieldcnt=True mode='summary' name='after'")
         detailed_flag_job = casa_tasks.flagdata(vis=bl_name, mode='list', inpfile=flagkwargs, flagbackup=False)
         detailed_flag_result = self._executor.execute(detailed_flag_job)
-        # Statistics for task weblog
-        stats_after = self.__reorganize_flag_stat(detailed_flag_result)
-        stats_after['name'] = 'after'
+        # Pop the summary with data selection.
+        stats_after = None
+        for k, v in detailed_flag_result.items():
+            if v['name'] == 'after':
+                stats_after = detailed_flag_result.pop(k)
+                break
+        assert stats_after is not None
 
         outcome = {'flagdata_summary': [stats_before, stats_after],
                    'summary': flagResult,
@@ -392,112 +608,11 @@ class SerialSDBLFlag(basetask.StandardTaskTemplate):
     def analyse(self, result):
         return result
 
-    def __reorganize_flag_stat(self, in_stat: dict) -> dict:
-        """
-        Reorganize flag statistics dictionary.
-
-        This method reorganizes flag statistics generated by list mode of
-        flagdata task with fieldcnt=True and constructs accumulated flag
-        statistics per source.
-
-        Args:
-            in_stats: flag statistic dictionary by list mode in the form,
-                {'report0': {'sourcename': {'flagged': 0, 'total': 222222,
-                                            'spw': {'9': {'flagged': 0, 'total': 111111},
-                                                            '11': ....},
-                                            'antenna': {....},
-                                                    .... },
-                                .... },
-                'report1': ....}
-                The keys, 'reportN', could be omitted if flagdata command
-                lists only one summary command.
-
-        Returns:
-            Accumulated per source flag statistics dictionary in the form,
-                 {'sourcename': {'flagged': 222, 'total': 777777,
-                                 'spw': {'9': {'flagged': 111, 'total': 444444},
-                                              '11': ....},
-                                'antenna': {....},
-                                     .... },
-                    .... }
-        """
-        out_stat = {'type': 'summary'}
-        ignore_keys = ['name', 'type']
-        sum_keys = ['flagged', 'total']
-
-        # Set into single dictionary report (single spw) if only one dict returned
-        if any([not key.startswith('report') for key in in_stat]) or (not in_stat):
-            in_stat = {'report0': in_stat}
-
-        for rep_summary in in_stat.values(): # per report loop
-            for source, source_summary in rep_summary.items(): # per source loop
-                if source in ignore_keys: continue
-                if not source in out_stat: # source names
-                    out_stat[source] = dict((k, 0) for k in sum_keys)
-                for gtype, summary in source_summary.items(): # group type loop (e.g., spw)
-                    if gtype in sum_keys: # flagged and total
-                        out_stat[source][gtype] += summary
-                        continue
-                    elif gtype not in out_stat[source]:
-                        out_stat[source][gtype] = dict()
-                    for idx, id_val in summary.items(): # per (e.g., spw) ID loop
-                        if idx not in out_stat[source][gtype]:
-                            out_stat[source][gtype][idx] = dict((k, 0) for k in sum_keys)
-                        for k in sum_keys:
-                            out_stat[source][gtype][idx][k] += id_val[k]
-        return out_stat
-
-
-### Tier-0 parallelization
-class HpcSDBLFlagInputs(SDBLFlagInputs):
-    # use common implementation for parallel inputs argument
-    parallel = sessionutils.parallel_inputs_impl()
-
-    def __init__(self, context, output_dir=None,
-                 iteration=None, edge=None,
-                 flag_tsys=None, tsys_thresh=None,
-                 flag_prfre=None, prfre_thresh=None,
-                 flag_pofre=None, pofre_thresh=None,
-                 flag_prfr=None, prfr_thresh=None,
-                 flag_pofr=None, pofr_thresh=None,
-                 flag_prfrm=None, prfrm_thresh=None, prfrm_nmean=None,
-                 flag_pofrm=None, pofrm_thresh=None, pofrm_nmean=None,
-                 plotflag=None,
-                 infiles=None, antenna=None, field=None,
-                 spw=None, pol=None, parallel=None):
-        super(HpcSDBLFlagInputs, self).__init__(
-            context, output_dir=output_dir,
-            iteration=iteration, edge=edge,
-            flag_tsys=flag_tsys, tsys_thresh=tsys_thresh,
-            flag_prfre=flag_prfre, prfre_thresh=prfre_thresh,
-            flag_pofre=flag_pofre, pofre_thresh=pofre_thresh,
-            flag_prfr=flag_prfr, prfr_thresh=prfr_thresh,
-            flag_pofr=flag_pofr, pofr_thresh=pofr_thresh,
-            flag_prfrm=flag_prfrm, prfrm_thresh=prfrm_thresh, prfrm_nmean=prfrm_nmean,
-            flag_pofrm=flag_pofrm, pofrm_thresh=pofrm_thresh, pofrm_nmean=pofrm_nmean,
-            plotflag=plotflag,
-            infiles=infiles, antenna=antenna, field=field, spw=spw, pol=pol)
-        self.parallel = parallel
-
-
 @task_registry.set_equivalent_casa_task('hsd_blflag')
 @task_registry.set_casa_commands_comment(
     'Perform row-based flagging based on noise level and quality of spectral baseline subtraction.\n'
     'This stage performs a pipeline calculation without running any CASA commands to be put in this file.'
 )
-class HpcSDBLFlag(sessionutils.ParallelTemplate):
-    Inputs = HpcSDBLFlagInputs
+class SDBLFlag(sessionutils.ParallelTemplate):
+    Inputs = SDBLFlagInputs
     Task = SerialSDBLFlag
-
-    def __init__(self, inputs):
-        super(HpcSDBLFlag, self).__init__(inputs)
-
-    @basetask.result_finaliser
-    def get_result_for_exception(self, vis, exception):
-        LOG.error('Error operating target flag for {!s}'.format(os.path.basename(vis)))
-        LOG.error('{0}({1})'.format(exception.__class__.__name__, str(exception)))
-        import traceback
-        tb = traceback.format_exc()
-        if tb.startswith('None'):
-            tb = '{0}({1})'.format(exception.__class__.__name__, str(exception))
-        return basetask.FailedTaskResults(self.__class__, exception, tb)

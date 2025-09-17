@@ -11,12 +11,17 @@ class SDImagingResultItem(common.SingleDishResults):
     """
     The class to store result of each image.
     """
-    def __init__(self, task=None, success=None, outcome=None, sensitivity_info=None, theoretical_rms=None):
+    def __init__(self, task=None, success=None, outcome=None, sensitivity_info=None,
+                 theoretical_rms=None, frequency_channel_reversed=False):
         super(SDImagingResultItem, self).__init__(task, success, outcome)
         self.sensitivity_info = sensitivity_info
         self.theoretical_rms = theoretical_rms
+        self.frequency_channel_reversed = frequency_channel_reversed
         # logrecords attribute is mandatory but not created unless Result is returned by execute.
         self.logrecords = []
+        # raster scan heuristics results for QAscore calculation
+        self.rasterscan_heuristics_results_rgap = {}  # {originms : [RasterScanHeuristicsResult]}
+        self.rasterscan_heuristics_results_incomp = {}  # {originms : [RasterScanHeuristicsResult]}
 
     def merge_with_context(self, context):
         super(SDImagingResultItem, self).merge_with_context(context)
@@ -41,9 +46,22 @@ class SDImagingResultItem(common.SingleDishResults):
             if cond:
                 context.sciimlist.add_item(image_item)
 
-    def _outcome_name(self):
-        # return [image.imagename for image in self.outcome]
-        return self.outcome['image'].imagename
+    def _outcome_name(self) -> str:
+        """Return image name as a name of the outcome.
+
+        When created image doesn't have valid pixels, the outcome
+        will be None. In this case, the function returns 'None'.
+        If outcome['image'] is set, it should be an ImageItem object.
+
+        Returns:
+            Name of the outcome.
+        """
+        if isinstance(self.outcome, dict):
+            image_item = self.outcome.get('image', None)
+            assert isinstance(image_item, imagelibrary.ImageItem)
+            return image_item.imagename
+        else:
+            return 'None'
 
 
 class SDImagingResults(basetask.ResultsList):

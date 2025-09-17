@@ -1,49 +1,48 @@
+# Do not evaluate type annotations at definition time.
+from __future__ import annotations
+
 import collections
 import contextlib
 import datetime
+import decimal
+import enum
 import functools
 import itertools
-import math
 import operator
 import os
 import pydoc
 import re
 import shutil
 import sys
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 import mako
-import numpy
+import numpy as np
 import pkg_resources
 
-import pipeline as pipeline
-from pipeline.domain.measurementset import MeasurementSet
-import pipeline.domain.measures as measures
-import pipeline.infrastructure as infrastructure
-import pipeline.infrastructure.basetask as basetask
-import pipeline.infrastructure.displays.pointing as pointing
-import pipeline.infrastructure.displays.summary as summary
-from pipeline.infrastructure.launcher import Context
-import pipeline.infrastructure.logging as logging
-from pipeline import environment
-from pipeline.infrastructure import casa_tools
-from pipeline.infrastructure import task_registry
-from pipeline.infrastructure import utils
-from pipeline.infrastructure.renderer.templates import resources
-from . import qaadapter, rendererutils, weblog
-from .. import eventbus
-from .. import pipelineqa
-from ..eventbus import WebLogStageRenderingStartedEvent, WebLogStageRenderingCompleteEvent, \
-    WebLogStageRenderingAbnormalExitEvent
+import pipeline
+import pipeline.infrastructure.pipelineqa as pqa
+from pipeline import environment, infrastructure
+from pipeline.domain import measures
+from pipeline.infrastructure import basetask, casa_tasks, casa_tools, eventbus, \
+    logging, mpihelpers, task_registry, utils
+from pipeline.infrastructure.displays import pointing, summary
+from pipeline.infrastructure.renderer import qaadapter, templates, weblog
 
-LOG = infrastructure.get_logger(__name__)
+if TYPE_CHECKING:
+    from pipeline.domain import Source
+    from pipeline.domain.measurementset import MeasurementSet
+    from pipeline.infrastructure.launcher import Context
+    from pipeline.infrastructure.renderer import logger
+
+LOG = infrastructure.logging.get_logger(__name__)
 
 
 def get_task_description(result_obj, context, include_stage=True):
     if not isinstance(result_obj, (list, basetask.ResultsList)):
         return get_task_description([result_obj, ], context)
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get description for zero-length results list'
         LOG.error(msg)
         return msg
@@ -153,7 +152,7 @@ def get_task_name(result_obj, include_stage=True):
         if not isinstance(result_obj, (list, basetask.ResultsList)):
             return get_task_name([result_obj, ])
 
-        if len(result_obj) is 0:
+        if len(result_obj) == 0:
             msg = 'Cannot get task name for zero-length results list'
             LOG.error(msg)
             return msg
@@ -193,10 +192,10 @@ def get_task_name(result_obj, include_stage=True):
 
 
 def get_stage_number(result_obj):
-    if not isinstance(result_obj, collections.Iterable):
+    if not isinstance(result_obj, collections.abc.Iterable):
         return get_stage_number([result_obj, ])
 
-    if len(result_obj) is 0:
+    if len(result_obj) == 0:
         msg = 'Cannot get stage number for zero-length results list'
         LOG.error(msg)
         return msg
@@ -210,27 +209,13 @@ def get_plot_dir(context, stage_number):
     return plots_dir
 
 
-def is_singledish_ms(context):
-    # importdata results
-    result0 = context.results[0]
-
-    # if ResultsProxy, read pickled result
-    if isinstance(result0, basetask.ResultsProxy):
-        result0 = result0.read()
-
-    # if RestoreDataResults, get importdata_results
-    if hasattr(result0, 'importdata_results'):
-        result0 = result0.importdata_results[0]
-
-    result_repr = str(result0)
-    return result_repr.find('SDImportDataResults') != -1
-
 def scan_has_intent(scans, intent):
     """Returns True if the list of scans includes a specified intent"""
     for s in scans:
         if intent in s.intents:
             return True
     return False
+
 
 class Session(object):
     def __init__(self, mses=None, name='Unnamed Session'):
@@ -293,7 +278,7 @@ class RendererBase(object):
         if os.path.exists(path) and not cls.rerender(context):
             return
 
-        path_to_resources_pkg = pkg_resources.resource_filename(resources.__name__, '')
+        path_to_resources_pkg = pkg_resources.resource_filename(templates.resources.__name__, '')
         path_to_js = os.path.join(path_to_resources_pkg, 'js', 'pipeline_common.min.js')
         use_minified_js = os.path.exists(path_to_js)
 
@@ -315,7 +300,7 @@ class T1_1Renderer(RendererBase):
     TableRow = collections.namedtuple(
                 'Tablerow', 
                 'ousstatus_entity_id schedblock_id schedblock_name session '
-                'execblock_id ms href filesize ' 
+                'execblock_id ms acs_software_version acs_software_build_version observing_modes href filesize ' 
                 'receivers '
                 'num_antennas beamsize_min beamsize_max '
                 'time_start time_end time_on_source '
@@ -330,8 +315,77 @@ class T1_1Renderer(RendererBase):
                 'baseline_min baseline_max baseline_rms '
                 'merge2_version')
 
-    EnvironmentTableRow = collections.namedtuple('EnvironmentTableRow',
-                                                 'hostname num_mpi_servers num_cores cpu ram os ulimit')
+    class EnvironmentProperty(enum.Enum):
+        """
+        Enumeration of environment properties that describe the host
+        execution environment and resource limits.
+        """
+
+        HOSTNAME = 'Hostname'
+        CPU_TYPE = 'CPU'
+        LOGICAL_CPU_CORES = 'Logical CPU cores'
+        PHYSICAL_CPU_CORES = 'Physical CPU cores'
+        NUM_MPI_SERVERS = "Number of MPI servers"
+        RAM = "RAM"
+        SWAP = "Swap"
+        OS = "OS"
+        ULIMIT_FILES = "Max open file descriptors"
+        ULIMIT_MEM = "Memory usage ulimit"
+        ULIMIT_CPU = "CPU time ulimit in seconds"
+        CASA_CORES = "CASA-reported CPU cores availability"
+        CASA_THREADS = "Max OpenMP threads per CASA instance"
+        CASA_MEMORY = "Memory available to pipeline"
+        CGROUP_NUM_CPUS = "Cgroup CPU allocation"
+        CGROUP_CPU_BANDWIDTH = "Cgroup CPU bandwidth"
+        CGROUP_CPU_WEIGHT = "CPU distribution within cgroup"
+        CGROUP_MEM_LIMIT = "Cgroup memory limit"
+
+        def description(self, ctx):
+            if self is self.CASA_MEMORY:
+                return f'Memory available to {"pipeline" if utils.contains_single_dish(ctx) else "tclean"}'
+            return self.value
+
+    class EnvironmentTable:
+        """
+        Representation of the resource limit table in the weblog.
+
+        Rows in the output table will have the same order as the rows constructor
+        argument.
+
+        @param rows: properties to present in the table
+        @param data: dict of environment properties per host
+        """
+        def __init__(
+                self,
+                ctx: Context,
+                rows: list["T1_1Renderer.EnvironmentProperty"],
+                data: dict["T1_1Renderer.EnvironmentProperty", list[str]]
+            ):
+
+            # 'memory available to pipeline' should not be presented for SD data
+            if utils.contains_single_dish(ctx):
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_MEMORY]
+
+            # getNumCPUs is confusing when run in an MPI context, giving the
+            # number of cores that the process can migrate to rather than
+            # number of cores used by CASA. To avoid confusion, we remove the
+            # CASA cores row completely for MPI runs.
+            if mpihelpers.is_mpi_ready():
+                rows = [r for r in rows if r != T1_1Renderer.EnvironmentProperty.CASA_CORES]
+
+            unmerged_rows = [(prop.description(ctx), *data[prop]) for prop in rows]
+            merged_rows = utils.merge_td_rows(utils.merge_td_columns(unmerged_rows))
+
+            # we want headings in column 1 so need to replace markup
+            # we could also achieve this with CSS but it's easier just to modify the data
+            formatted = ([
+                (row[0].replace('<td>', '<th scope="row">').replace('</td>', '</th>'), *row[1:])
+                for row in merged_rows
+            ])
+
+            self.table_rows = formatted
+            # required to set the colspan property of the table title
+            self.num_columns = len(data[T1_1Renderer.EnvironmentProperty.HOSTNAME]) + 1
 
     @staticmethod
     def get_display_context(context):
@@ -359,8 +413,6 @@ class T1_1Renderer(RendererBase):
         dt = exec_end - exec_start
         exec_duration = datetime.timedelta(days=dt.days, seconds=dt.seconds)
 
-#         qaresults = qaadapter.ResultsToQAAdapter(context.results)
-
         out_fmt = '%Y-%m-%d %H:%M:%S'
 
         # Convert timestamps, if available:
@@ -377,6 +429,10 @@ class T1_1Renderer(RendererBase):
         else:
             pipeline_doclink = None
 
+        pipeline_recipe = context.get_recipe_name()
+        if pipeline_recipe == '':
+            pipeline_recipe = 'N/A'
+
         # Observation Summary (formerly the T1-2 page)
         ms_summary_rows = []
         for ms in get_mses_by_time(context):
@@ -389,26 +445,20 @@ class T1_1Renderer(RendererBase):
             time_end = utils.get_epoch_as_datetime(ms.end_time)
 
             target_scans = [s for s in ms.scans if 'TARGET' in s.intents]
-            if scan_has_intent(target_scans, 'REFERENCE'):
-                # target scans have OFF-source integrations. Need to do harder way.
-                autocorr_only = is_singledish_ms(context)
-                time_on_source =  utils.total_time_on_target_on_source(ms, autocorr_only)
+            is_single_dish_data = utils.contains_single_dish(context)
+            if scan_has_intent(target_scans, 'REFERENCE') or is_single_dish_data:
+                time_on_source = utils.total_time_on_target_on_source(ms, is_single_dish_data)
             else:
                 time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
 
-            baseline_min = ms.antenna_array.min_baseline.length
-            baseline_max = ms.antenna_array.max_baseline.length
+            baseline_min = ms.antenna_array.baseline_min.length
+            baseline_max = ms.antenna_array.baseline_max.length
 
-            # compile a list of primitive numbers representing the baseline 
-            # lengths in metres..
-            bls = [bl.length.to_units(measures.DistanceUnits.METRE)
-                   for bl in ms.antenna_array.baselines]
-            # .. so that we can calculate the RMS baseline length with 
-            # consistent units
-            baseline_rms = math.sqrt(sum(bl**2 for bl in bls)/len(bls))
-            baseline_rms = measures.Distance(baseline_rms,
-                                             units=measures.DistanceUnits.METRE)
+            baseline_rms = measures.Distance(
+                value=np.sqrt(np.mean(np.square(ms.antenna_array.baselines_m))),
+                units=measures.DistanceUnits.METRE
+            )
 
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             receivers = sorted(set(spw.band for spw in science_spws))
@@ -445,6 +495,9 @@ class T1_1Renderer(RendererBase):
                                             session=ms.session,
                                             execblock_id=ms.execblock_id,
                                             ms=ms.basename,
+                                            acs_software_version = ms.acs_software_version,             # None for VLA
+                                            acs_software_build_version = ms.acs_software_build_version, # None for VLA
+                                            observing_modes=ms.observing_modes,
                                             href=href,
                                             filesize=ms.filesize,
                                             receivers=receivers,
@@ -460,13 +513,14 @@ class T1_1Renderer(RendererBase):
 
             ms_summary_rows.append(row)
 
-        execution_mode, environment_rows = T1_1Renderer.get_cluster_tablerows()
+        execution_mode, environment_tables = T1_1Renderer.get_environment_tables(context)
 
         return {
             'pcontext': context,
             'casa_version': environment.casa_version_string,
             'pipeline_revision': pipeline.revision,
             'pipeline_doclink': pipeline_doclink,
+            'pipeline_recipe': pipeline_recipe,
             'obs_start': obs_start_fmt,
             'obs_end': obs_end_fmt,
             'iers_eop_2000_version': iers_eop_2000_version,
@@ -481,48 +535,93 @@ class T1_1Renderer(RendererBase):
             'project_uids': project_uids,
             'schedblock_uids': schedblock_uids,
             'execblock_uids': execblock_uids,
+            'number_of_execblocks': len(context.observing_run.execblock_ids),
             'ous_uid': context.project_structure.ous_entity_id,
             'ousstatus_entity_id': context.project_structure.ousstatus_entity_id,
             'ppr_uid': None,
             'observers': observers,
             'ms_summary_rows': ms_summary_rows,
-            'environment': environment_rows,
+            'environment_tables': environment_tables,
             'execution_mode': execution_mode
         }
 
     @staticmethod
-    def get_cluster_tablerows():
-        environment_rows = []
-        node_environments = {}
-        data = sorted(pipeline.environment.cluster_details, key=operator.itemgetter('hostname'))
-        for k, g in itertools.groupby(data, operator.itemgetter('hostname')):
+    def get_environment_tables(ctx: Context):
+        # alias to make the following code more compact and easier to read
+        props = T1_1Renderer.EnvironmentProperty
+
+        node_environments: dict[str, list[environment.Environment]] = {}
+
+        data = sorted(environment.cluster_details(), key=operator.attrgetter('hostname'))
+        for k, g in itertools.groupby(data, operator.attrgetter('hostname')):
             node_environments[k] = list(g)
 
+        data_rows = collections.defaultdict(list)
         for node, node_envs in node_environments.items():
             if not node_envs:
                 continue
-            mpi_server_envs = [n for n in node_envs if 'MPI Server' in n['role']]
-            num_mpi_servers = len(mpi_server_envs) if mpi_server_envs else 'N/A'
+
             # all hardware on a node has the same value so just take first
             # environment dict
             n = node_envs[0]
-            row = T1_1Renderer.EnvironmentTableRow(
-                # take just the hostname, ignoring domain
-                hostname=node.split('.')[0],
-                cpu=n['cpu'],
-                num_cores=n['num_cores'],
-                num_mpi_servers=num_mpi_servers,
-                ram=str(measures.FileSize(n['ram'], measures.FileSizeUnits.BYTES)),
-                os=n['os'],
-                ulimit=n['ulimit']
+
+            mpi_server_envs = [n for n in node_envs if 'MPI Server' in n.role]
+            num_mpi_servers = len(mpi_server_envs) if mpi_server_envs else 'N/A'
+            data_rows[props.NUM_MPI_SERVERS].append(num_mpi_servers)
+
+            data_rows[props.HOSTNAME].append(node.split('.')[0])
+            data_rows[props.CPU_TYPE].append(n.cpu_type)
+            data_rows[props.LOGICAL_CPU_CORES].append(n.logical_cpu_cores)
+            data_rows[props.PHYSICAL_CPU_CORES].append(n.physical_cpu_cores)
+
+            data_rows[props.RAM].append(str(measures.FileSize(n.ram, measures.FileSizeUnits.BYTES)))
+            try:
+                data_rows[props.SWAP].append(measures.FileSize(n.swap, measures.FileSizeUnits.BYTES))
+            except decimal.InvalidOperation:
+                data_rows[props.SWAP].append('unknown')
+
+            data_rows[props.CGROUP_NUM_CPUS].append(n.cgroup_num_cpus)
+            data_rows[props.CGROUP_CPU_BANDWIDTH].append(n.cgroup_cpu_bandwidth)
+            data_rows[props.CGROUP_CPU_WEIGHT].append(n.cgroup_cpu_weight)
+            try:
+                data_rows[props.CGROUP_MEM_LIMIT].append(measures.FileSize(n.cgroup_mem_limit, measures.FileSizeUnits.BYTES))
+            except decimal.InvalidOperation:
+                data_rows[props.CGROUP_MEM_LIMIT].append('N/A')
+
+            data_rows[props.CASA_CORES].append(n.casa_cores)
+            data_rows[props.CASA_THREADS].append(n.casa_threads)
+            data_rows[props.CASA_MEMORY].append(str(measures.FileSize(n.casa_memory, measures.FileSizeUnits.BYTES)))
+
+            data_rows[props.OS].append(n.host_distribution)
+            data_rows[props.ULIMIT_FILES].append(n.ulimit_files)
+            data_rows[props.ULIMIT_MEM].append(n.ulimit_mem)
+            data_rows[props.ULIMIT_CPU].append(n.ulimit_cpu)
+
+        tables = {
+            "Host information": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
+                rows=[props.HOSTNAME, props.OS, props.NUM_MPI_SERVERS, props.ULIMIT_FILES],
+                data=data_rows
+            ),
+            "CPU resources and limits": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
+                rows=[props.HOSTNAME, props.CPU_TYPE, props.PHYSICAL_CPU_CORES,
+                      props.LOGICAL_CPU_CORES, props.CGROUP_NUM_CPUS,
+                      props.CGROUP_CPU_BANDWIDTH, props.ULIMIT_CPU,
+                      props.CASA_CORES, props.CASA_THREADS],
+                data=data_rows
+            ),
+            "Available memory and limits": T1_1Renderer.EnvironmentTable(
+                ctx=ctx,
+                rows=[props.HOSTNAME, props.RAM, props.SWAP, props.CGROUP_MEM_LIMIT,
+                      props.ULIMIT_MEM, props.CASA_MEMORY],
+                data=data_rows
             )
-            environment_rows.append(row)
-        environment_rows.sort(key=operator.itemgetter(0))
-        environment_rows = utils.merge_td_columns(environment_rows)
+        }
 
-        mode = 'Parallel' if any(['MPI Server' in d['role'] for d in pipeline.environment.cluster_details]) else 'Serial'
+        mode = 'Parallel' if any(['MPI Server' in d.role for d in environment.cluster_details()]) else 'Serial'
 
-        return mode, environment_rows
+        return mode, tables
 
 
 class T1_2Renderer(RendererBase):
@@ -558,18 +657,13 @@ class T1_2Renderer(RendererBase):
             time_on_source = utils.total_time_on_source(target_scans)
             time_on_source = utils.format_timedelta(time_on_source)
 
-            baseline_min = ms.antenna_array.min_baseline.length
-            baseline_max = ms.antenna_array.max_baseline.length
+            baseline_min = ms.antenna_array.baseline_min.length
+            baseline_max = ms.antenna_array.baseline_max.length
 
-            # compile a list of primitive numbers representing the baseline 
-            # lengths in metres..
-            bls = [bl.length.to_units(measures.DistanceUnits.METRE)
-                   for bl in ms.antenna_array.baselines]
-            # .. so that we can calculate the RMS baseline length with 
-            # consistent units
-            baseline_rms = math.sqrt(sum(bl**2 for bl in bls)/len(bls))
-            baseline_rms = measures.Distance(baseline_rms,
-                                             units=measures.DistanceUnits.METRE)
+            baseline_rms = measures.Distance(
+                value=np.sqrt(np.mean(np.square(ms.antenna_array.baselines_m))),
+                units=measures.DistanceUnits.METRE
+            )
 
             science_spws = ms.get_spectral_windows(science_windows_only=True)
             receivers = sorted(set(spw.band for spw in science_spws))
@@ -596,7 +690,7 @@ class T1_2Renderer(RendererBase):
 
 class T1_3MRenderer(RendererBase):
     """
-    T1-3M renderer
+    T1-3M renderer - By Topic page
     """
     output_file = 't1-3.html'
     template = 't1-3m.mako'
@@ -615,12 +709,6 @@ class T1_3MRenderer(RendererBase):
         for result in context.results:
             scores[result.stage_number] = result.qa.representative
             results_list = get_results_by_time(context, result)
-
-            qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-            tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-            qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-            tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
 
             error_msgs = utils.get_logrecords(results_list, logging.ERROR)
             tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
@@ -643,8 +731,12 @@ class T1_3MRenderer(RendererBase):
                         for field in resultitem.flagsummary:
                             # Get the field intents, but only for those that
                             # the pipeline processes. This can be an empty
-                            # list (PIPE-394: POINTING, WVR intents).
-                            intents_list = [f.intents for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,POLANGLE,POLLEAKAGE,CHECK,TARGET')
+                            # list (PIPE-394: POINTING, WVR intents; PIPE-1806:
+                            # DIFFGAIN* intents).
+                            intents_list = [f.intents
+                                            for f in ms.get_fields(intent='BANDPASS,PHASE,AMPLITUDE,POLARIZATION,'
+                                                                          'POLANGLE,POLLEAKAGE,CHECK,TARGET,'
+                                                                          'DIFFGAINREF,DIFFGAINSRC')
                                             if field in f.name]
                             if len(intents_list) == 0:
                                 continue
@@ -682,7 +774,7 @@ class T1_3MRenderer(RendererBase):
 
 class T1_4MRenderer(RendererBase):
     """
-    T1-4M renderer
+    T1-4M renderer - Task Summary
     """
     output_file = 't1-4.html'
     # TODO get template at run-time
@@ -722,7 +814,7 @@ class T1_4MRenderer(RendererBase):
 
 class T2_1Renderer(RendererBase):
     """
-    T2-4M renderer
+    T2-1 renderer - Session Tree
     """
     output_file = 't2-1.html'
     template = 't2-1.mako'
@@ -735,6 +827,9 @@ class T2_1Renderer(RendererBase):
 
 
 class T2_1DetailsRenderer(object):
+    """
+    T2-1Details renderer - Session Details
+    """
     output_file = 't2-1_details.html'
     template = 't2-1_details.mako'
 
@@ -764,9 +859,8 @@ class T2_1DetailsRenderer(object):
 
         if not os.path.exists(listfile):
             LOG.debug('Writing listobs output to %s' % listfile)
-            task = infrastructure.casa_tasks.listobs(vis=ms.name,
-                                                     listfile=listfile)
-            task.execute(dry_run=False)
+            task = casa_tasks.listobs(vis=ms.name, listfile=listfile)
+            task.execute()
 
     @staticmethod
     def get_display_context(context, ms):
@@ -780,6 +874,10 @@ class T2_1DetailsRenderer(object):
         task = summary.FieldVsTimeChart(inputs)
         field_vs_time = task.plot()
 
+        inputs = summary.SpwIdVsFreqChart.Inputs(context, vis=ms.basename)
+        task = summary.SpwIdVsFreqChart(inputs, context)
+        spwid_vs_freq = task.plot()
+
         science_spws = ms.get_spectral_windows(science_windows_only=True)
         all_bands = sorted({spw.band for spw in ms.get_all_spectral_windows()})
         science_bands = sorted({spw.band for spw in science_spws})
@@ -788,8 +886,8 @@ class T2_1DetailsRenderer(object):
 
         calibrators = sorted({source.name for source in ms.sources if 'TARGET' not in source.intents})
 
-        baseline_min = ms.antenna_array.min_baseline.length
-        baseline_max = ms.antenna_array.max_baseline.length
+        baseline_min = ms.antenna_array.baseline_min.length
+        baseline_max = ms.antenna_array.baseline_max.length
 
         num_antennas = len(ms.antennas)
         num_baselines = int(num_antennas * (num_antennas-1) / 2)
@@ -801,16 +899,12 @@ class T2_1DetailsRenderer(object):
 
         time_on_source = utils.total_time_on_source(ms.scans) 
         science_scans = [scan for scan in ms.scans if 'TARGET' in scan.intents]
-        if scan_has_intent(science_scans, 'REFERENCE'):
-            # target scans have OFF-source integrations. Need to do harder way.
-            autocorr_only = is_singledish_ms(context)
-            time_on_science =  utils.total_time_on_target_on_source(ms, autocorr_only)
+        is_single_dish_data = utils.contains_single_dish(context)
+        if scan_has_intent(science_scans, 'REFERENCE') or is_single_dish_data:
+            # target scans have OFF-source integrations or Single Dish Data. Need to do harder way.
+            time_on_science = utils.total_time_on_target_on_source(ms, is_single_dish_data)
         else:
             time_on_science = utils.total_time_on_source(science_scans)
-
-#         dirname = os.path.join(context.report_dir, 
-#                                'session%s' % ms.session,
-#                                ms.basename)
 
         task = summary.WeatherChart(context, ms)
         weather_plot = task.plot()
@@ -825,9 +919,8 @@ class T2_1DetailsRenderer(object):
         el_vs_time_plot = task.plot()
 
         # Get min, max elevation
-        observatory = context.project_summary.telescope
-        el_min = "%.2f" % compute_az_el_for_ms(ms, observatory, min)[1]
-        el_max = "%.2f" % compute_az_el_for_ms(ms, observatory, max)[1]
+        el_min = "%.2f" % ms.compute_az_el_for_ms(min)[1]
+        el_max = "%.2f" % ms.compute_az_el_for_ms(max)[1]
 
         dirname = os.path.join('session%s' % ms.session, ms.basename)
 
@@ -858,7 +951,7 @@ class T2_1DetailsRenderer(object):
 
             vla_basebands = '<tr><th>VLA Bands: Basebands:  Freq range: [spws]</th><td>'+'<br>'.join(vla_basebands)+'</td></tr>'
 
-        if is_singledish_ms(context):
+        if utils.contains_single_dish(context):
             # Single dish specific 
             # to get thumbnail for representative pointing plot
             antenna = ms.antennas[0]
@@ -891,12 +984,13 @@ class T2_1DetailsRenderer(object):
             'time_on_science' : utils.format_timedelta(time_on_science),
             'intent_vs_time'  : intent_vs_time,
             'field_vs_time'   : field_vs_time,
+            'spwid_vs_freq'   : spwid_vs_freq,
             'dirname'         : dirname,
             'weather_plot'    : weather_plot,
             'pwv_plot'        : pwv_plot,
             'azel_plot'       : azel_plot,
             'el_vs_time_plot' : el_vs_time_plot,
-            'is_singledish'   : is_singledish_ms(context),
+            'is_singledish'   : utils.contains_single_dish(context),
             'pointing_plot'   : pointing_plot,
             'el_min'          : el_min,
             'el_max'          : el_max,
@@ -920,14 +1014,14 @@ class T2_1DetailsRenderer(object):
                     fileobj.write(template.render(**display_context))
 
 
-class MetadataRendererBase(RendererBase):
-    @classmethod
-    def rerender(cls, context):
-        # TODO: only rerender when a new ImportData result is queued
-        if cls in DEBUG_CLASSES:
-            LOG.warning('Always rerendering %s' % cls.__name__)
-            return True
-        return False
+# class MetadataRendererBase(RendererBase):
+#     @classmethod
+#     def rerender(cls, context):
+#         # TODO: only rerender when a new ImportData result is queued
+#         if cls in DEBUG_CLASSES:
+#             LOG.warning('Always rerendering %s' % cls.__name__)
+#             return True
+#         return False
 
 
 class T2_2_XRendererBase(object):
@@ -966,43 +1060,78 @@ class T2_2_XRendererBase(object):
 
 
 class T2_2_1Renderer(T2_2_XRendererBase):
-    """
-    T2-2-1 renderer - spatial setup
-    """
+    """T2-2-1 renderer - Spatial Setup."""
+
     output_file = 't2-2-1.html'
     template = 't2-2-1.mako'
 
     @staticmethod
-    def get_display_context(context, ms):
-        mosaics = []
+    def get_display_context(
+        context: Context, ms: MeasurementSet
+    ) -> dict[str, Context | MeasurementSet | list[tuple[Source, list[logger.Plot | None]]]]:
+        pointings = []
         for source in ms.sources:
-            num_pointings = len([f for f in ms.fields 
-                                 if f.source_id == source.id])
-            if num_pointings > 1:
-                task = summary.MosaicChart(context, ms, source)
-                mosaics.append((source, task.plot()))
+            plots = []
+            num_pointings = len([f for f in ms.fields if f.source_id == source.id])
+            if num_pointings < 1 or 'TARGET' not in source.intents:
+                continue
+            else:
+                if num_pointings > 1:
+                    mosaic_plot = summary.MosaicPointingsChart(context, ms, source).plot()
+                    if mosaic_plot:
+                        plots.append(mosaic_plot)
+                if 'ATMOSPHERE' in ms.intents and ms.antenna_array.name == 'ALMA':
+                    tsys_plot = summary.TsysScansChart(context, ms, source).plot()
+                    if tsys_plot:
+                        plots.append(tsys_plot)
+            if plots:
+                pointings.append((source, plots))
 
-        return {'pcontext' : context,
-                'ms'       : ms,
-                'mosaics'  : mosaics}
+        return {'pcontext': context, 'ms': ms, 'pointings': pointings}
 
 
 class T2_2_2Renderer(T2_2_XRendererBase):
     """
-    T2-2-2 renderer
+    T2-2-2 renderer - Spectral Setup
     """
     output_file = 't2-2-2.html'
     template = 't2-2-2.mako'
 
     @staticmethod
     def get_display_context(context, ms):
-        return {'pcontext' : context,
-                'ms'       : ms}
+        """Determine whether to show the Online Spec. Avg. column on the Spectral Setup Details page."""
+
+        ShowColumn = collections.namedtuple('ShowColumn', 'science_windows all_windows')
+        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=False)
+
+        if None not in [spw.sdm_num_bin for spw in ms.get_spectral_windows()]:
+            # PIPE-1572: when None exists in spw.sdm_num_bin, the MS is likely imported by older
+            # CASA/importasdm versions (ver<=5.6.0). We won't modifiy the initialzed setup, which does
+            # not display the Online Spec. Avg. column.
+            if ms.antenna_array.name == 'ALMA':
+                # PIPE-584: Always show the column for ALMA. If it's cycle 2 data, display a '?' in the table.
+                show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+            elif 'VLA' in ms.antenna_array.name:
+                # PIPE-584: For VLA, only display the column if sdm_num_bin > 1 is present for at least one
+                # entry. It is possible for this to differ between the "Science Windows" and the "All Windows" tabs.
+                sdm_num_bins = [spw for spw in ms.get_spectral_windows() if spw.sdm_num_bin > 1]
+                if len(sdm_num_bins) >= 1:
+                    science_sdm_num_bins = [spw for spw in ms.get_spectral_windows(
+                        science_windows_only=True) if spw.sdm_num_bin > 1]
+                    if len(science_sdm_num_bins) >= 1:
+                        show_online_spec_avg_col = ShowColumn(science_windows=True, all_windows=True)
+                    else:
+                        show_online_spec_avg_col = ShowColumn(science_windows=False, all_windows=True)
+
+        return {'pcontext': context,
+                'ms': ms,
+                'show_online_spec_avg_col': show_online_spec_avg_col
+                }
 
 
 class T2_2_3Renderer(T2_2_XRendererBase):
     """
-    T2-2-3 renderer
+    T2-2-3 renderer - Antenna Setup
     """
     output_file = 't2-2-3.html'
     template = 't2-2-3.mako'
@@ -1043,7 +1172,7 @@ class T2_2_3Renderer(T2_2_XRendererBase):
 
 class T2_2_4Renderer(T2_2_XRendererBase):
     """
-    T2-2-4 renderer
+    T2-2-4 renderer - sky setup
     """
     output_file = 't2-2-4.html'
     template = 't2-2-4.mako'
@@ -1078,29 +1207,29 @@ class T2_2_4Renderer(T2_2_XRendererBase):
                 'dirname': dirname}
 
 
-class T2_2_5Renderer(T2_2_XRendererBase):
-    """
-    T2-2-5 renderer - weather page
-    """
-    output_file = 't2-2-5.html'
-    template = 't2-2-5.mako'
+# class T2_2_5Renderer(T2_2_XRendererBase):
+#     """
+#     T2-2-5 renderer - weather page
+#     """
+#     output_file = 't2-2-5.html'
+#     template = 't2-2-5.mako'
 
-    @staticmethod
-    def get_display_context(context, ms):
-        task = summary.WeatherChart(context, ms)
-        weather_plot = task.plot()
-        dirname = os.path.join('session%s' % ms.session,
-                               ms.basename)
+#     @staticmethod
+#     def get_display_context(context, ms):
+#         task = summary.WeatherChart(context, ms)
+#         weather_plot = task.plot()
+#         dirname = os.path.join('session%s' % ms.session,
+#                                ms.basename)
 
-        return {'pcontext'     : context,
-                'ms'           : ms,
-                'weather_plot' : weather_plot,
-                'dirname'      : dirname}
+#         return {'pcontext'     : context,
+#                 'ms'           : ms,
+#                 'weather_plot' : weather_plot,
+#                 'dirname'      : dirname}
 
 
 class T2_2_6Renderer(T2_2_XRendererBase):
     """
-    T2-2-6 renderer - scans page
+    T2-2-6 renderer - Scans Page
     """
     output_file = 't2-2-6.html'
     template = 't2-2-6.mako'
@@ -1152,25 +1281,25 @@ class T2_2_7Renderer(T2_2_XRendererBase):
 
     @classmethod
     def render(cls, context):
-        if is_singledish_ms(context):
-            super(T2_2_7Renderer, cls).render(context)
+        if utils.contains_single_dish(context):
+            super().render(context)
 
     @staticmethod
-    def get_display_context(context:Context, ms: MeasurementSet) -> Dict[str, Any]:
+    def get_display_context(context: Context, ms: MeasurementSet) -> dict[str, Any]:
         """Get display context and plots points
 
         Args:
-            context (Context): pipeline context state object
-            ms (MeasurementSet): an object of Measurement Set
+            context: pipeline context state object
+            ms: an object of Measurement Set
 
         Returns:
-            Dict[str, Any]: display context
+            display context
         """
         target_pointings = []
         whole_pointings = []
         offset_pointings = []
         task = pointing.SingleDishPointingChart(context, ms)
-        if is_singledish_ms(context):
+        if utils.contains_single_dish(context):
             for antenna in ms.antennas:
                 for target, reference in ms.calibration_strategy['field_strategy'].items():
                     LOG.debug('target field id %s / reference field id %s' % (target, reference))
@@ -1230,12 +1359,6 @@ class T2_3_XMBaseRenderer(RendererBase):
 
             # CAS-11344: present results ordered by stage number
             for results_list in sorted(list_of_results_lists, key=operator.attrgetter('stage_number')):
-                qa_errors = filter_qascores(results_list, -0.1, rendererutils.SCORE_THRESHOLD_ERROR)
-                tablerows.extend(qascores_to_tablerows(qa_errors, results_list, 'QA Error'))
-
-                qa_warnings = filter_qascores(results_list, rendererutils.SCORE_THRESHOLD_ERROR, rendererutils.SCORE_THRESHOLD_WARNING)
-                tablerows.extend(qascores_to_tablerows(qa_warnings, results_list, 'QA Warning'))
-
                 error_msgs = utils.get_logrecords(results_list, logging.ERROR)
                 tablerows.extend(logrecords_to_tablerows(error_msgs, results_list, 'Error'))
 
@@ -1292,18 +1415,18 @@ class T2_3_3MRenderer(T2_3_XMBaseRenderer):
         return qaadapter.registry.get_flagging_topic()        
 
 
-class T2_3_4MRenderer(T2_3_XMBaseRenderer):
-    """
-    Renderer for T2-3-4M: the QA line finding section.
-    """
-    # the filename to which output will be directed
-    output_file = 't2-3-4m.html'
-    # the template file for this renderer
-    template = 't2-3-4m.mako'
+# class T2_3_4MRenderer(T2_3_XMBaseRenderer):
+#     """
+#     Renderer for T2-3-4M: the QA line finding section.
+#     """
+#     # the filename to which output will be directed
+#     output_file = 't2-3-4m.html'
+#     # the template file for this renderer
+#     template = 't2-3-4m.mako'
 
-    @classmethod
-    def get_topic(cls):
-        return qaadapter.registry.get_linefinding_topic()        
+#     @classmethod
+#     def get_topic(cls):
+#         return qaadapter.registry.get_linefinding_topic()
 
 
 class T2_3_5MRenderer(T2_3_XMBaseRenderer):
@@ -1336,7 +1459,7 @@ class T2_3_6MRenderer(T2_3_XMBaseRenderer):
 
 class T2_4MRenderer(RendererBase):
     """
-    T2-4M renderer
+    T2-4M renderer - Task Tree
     """
     output_file = 't2-4m.html'
     template = 't2-4m.mako'
@@ -1375,7 +1498,7 @@ class T2_4MRenderer(RendererBase):
 #         for result in context.results:
 #             # we only handle lists of results, so wrap single objects in a
 #             # list if necessary
-#             if not isinstance(result, collections.Iterable):
+#             if not isinstance(result, collections.abc.Iterable):
 #                 result = wrap_in_resultslist(result)
 #             
 #             # split the results in the list into streams, divided by session
@@ -1565,7 +1688,7 @@ class T2_4MDetailsRenderer(object):
         for task_result in context.results:
             # we only handle lists of results, so wrap single objects in a
             # list if necessary
-            if not isinstance(task_result, collections.Iterable):
+            if not isinstance(task_result, collections.abc.Iterable):
                 task_result = wrap_in_resultslist(task_result)
 
             # find the renderer appropriate to the task..
@@ -1644,12 +1767,16 @@ class T2_4MDetailsRenderer(object):
                 LOG.trace('Writing %s output to %s', renderer.__class__.__name__,
                           path)
 
-                event = WebLogStageRenderingStartedEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingStartedEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
                 fileobj.write(renderer.render(context, result))
 
-                event = WebLogStageRenderingCompleteEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingCompleteEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
             except:
@@ -1657,7 +1784,9 @@ class T2_4MDetailsRenderer(object):
                 LOG.debug(mako.exceptions.text_error_template().render())
                 fileobj.write(mako.exceptions.html_error_template().render().decode(sys.stdout.encoding))
 
-                event = WebLogStageRenderingAbnormalExitEvent(context_name=context.name, stage_number=result.stage_number)
+                event = eventbus.WebLogStageRenderingAbnormalExitEvent(
+                    context_name=context.name, stage_number=result.stage_number
+                    )
                 eventbus.send_message(event)
 
 
@@ -1809,7 +1938,7 @@ class WebLogGenerator(object):
             shutil.rmtree(outdir)
 
         # copy all uncompressed non-python resources to output directory
-        src = pkg_resources.resource_filename(resources.__name__, '')
+        src = pkg_resources.resource_filename(templates.resources.__name__, '')
         dst = outdir
         ignore_fn = shutil.ignore_patterns('*.zip', '*.py', '*.pyc', 'CVS*',
                                            '.svn')
@@ -1978,7 +2107,7 @@ class LogCopier(object):
 #
 #        # Task executions are bookended by statements log entries like this:
 #        #
-#        # 2013-02-15 13:55:47 INFO    hif_importdata::::casa+ ##########################################
+#        # 2013-02-15 13:55:47 INFO    hifa_importdata::::casa+ ##########################################
 #        #
 #        # This regex matches this pattern, and therefore the start and end
 #        # sections of the CASA log for this task 
@@ -2016,7 +2145,7 @@ def get_results_by_time(context, resultslist):
     # as this is a ResultsList with important properties attached, results
     # should be sorted in place.
     if hasattr(resultslist, 'sort'):
-        if len(resultslist) is not 1:
+        if len(resultslist) != 1:
             try:
                 # sort the list of results by the MS start time
                 resultslist.sort(key=lambda r: get_ms_start_time_for_result(context, r))
@@ -2048,8 +2177,8 @@ def compute_az_el_to_field(field, epoch, observatory):
     myazel = me.measure(field.mdirection, 'AZELGEO')
     myaz = myazel['m0']['value']
     myel = myazel['m1']['value']
-    myaz = (myaz * 180 / numpy.pi) % 360
-    myel *= 180 / numpy.pi
+    myaz = (myaz * 180 / np.pi) % 360
+    myel *= 180 / np.pi
 
     return [myaz, myel]
 
@@ -2084,15 +2213,15 @@ def cmp(a, b):
 #   qascores_to_tablerow
 #   logrecords_to_tablerows
 #
-def filter_qascores(results_list, lo:float, hi:float) -> List[pipelineqa.QAScore]:
-    all_scores: List[pipelineqa.QAScore] = results_list.qa.pool
-    # suppress scores not intended for the banner, taking care not to suppress
+def filter_qascores(results_list, lo:float, hi:float) -> list[pqa.QAScore]:
+    all_scores: list[pqa.QAScore] = results_list.qa.pool
+    # suppress scores not intended for the weblog, taking care not to suppress
     # legacy scores with a default message destination (=UNSET) so that old
     # tasks continue to render as before
-    banner_scores = rendererutils.scores_with_location(
-        all_scores, [pipelineqa.WebLogLocation.BANNER, pipelineqa.WebLogLocation.UNSET]
+    weblog_scores = pqa.scores_with_location(
+        all_scores, [pqa.WebLogLocation.BANNER, pqa.WebLogLocation.ACCORDION, pqa.WebLogLocation.UNSET]
     )
-    with_score = [s for s in banner_scores if s.score not in ('', 'N/A', None)]
+    with_score = [s for s in weblog_scores if s.score not in ('', 'N/A', None)]
     return [s for s in with_score if lo < s.score <= hi]
 
 
@@ -2111,9 +2240,9 @@ def create_tablerow(results, message: str, msgtype: str, target='') -> MsgTableR
                        target=target)
 
 
-def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
+def qascores_to_tablerows(qascores: list[pqa.QAScore],
                           results,
-                          msgtype: str = 'ERROR') -> List[MsgTableRow]:
+                          msgtype: str = 'ERROR') -> list[MsgTableRow]:
     """
     Convert a list of QAScores to a list of table entries, ready for
     insertion into a Mako template.
@@ -2130,7 +2259,7 @@ def qascores_to_tablerows(qascores: List[pipelineqa.QAScore],
             for qascore in qascores]
 
 
-def logrecords_to_tablerows(records, results, msgtype='ERROR') -> List[MsgTableRow]:
+def logrecords_to_tablerows(records, results, msgtype='ERROR') -> list[MsgTableRow]:
     """
     Convert a list of LogRecords to a list of table entries, ready for
     insertion into a Mako template.

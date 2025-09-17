@@ -1,4 +1,5 @@
 <%!
+import itertools
 import os
 %>
 <html>
@@ -13,7 +14,7 @@ import os
     <h1>Telescope Pointing Details for ${ms.basename}<button class="btn btn-default pull-right" onclick="javascript:window.history.back();">Back</button></h1>
 </div>
 
-<% 
+<%
 def antenna_name(plot):
     return plot.parameters['antenna']
 
@@ -39,8 +40,8 @@ def get_field_name(plot):
 
 <div class="row">
 % if target_pointing is not None and len(target_pointing) > 0:
-    % for plots in zip(target_pointing, whole_pointing):
-        % for plot in plots:
+    % for plots in itertools.zip_longest(target_pointing, whole_pointing):
+        % for plot in [p for p in plots if p is not None]:
             <div class="col-md-6">
                 <a href="${os.path.relpath(plot.abspath, pcontext.report_dir)}"
                     data-fancybox="group_target_pointing"

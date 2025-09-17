@@ -3,6 +3,8 @@ import itertools
 import operator
 import os
 
+import numpy as np
+
 import pipeline.domain.measures as measures
 import pipeline.h.tasks.applycal.renderer as applycal_renderer
 import pipeline.infrastructure
@@ -14,8 +16,6 @@ from pipeline.h.tasks.common.displays import applycal as applycal
 from . import display as plotsummarydisplay
 
 LOG = logging.get_logger(__name__)
-
-FlagTotal = collections.namedtuple('FlagSummary', 'flagged total')
 
 
 class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer):
@@ -41,10 +41,13 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                         self.caltypes_for_result(r))
 
         filesizes = {}
+        baseband_spws = {}  # VLA baseband lookup dictionary
         for r in results_list:
             vis = r.inputs['vis']
             ms = context.observing_run.get_ms(vis)
             filesizes[os.path.basename(vis)] = ms._calc_filesize()
+            baseband_spws[os.path.basename(vis)] = ms.get_vla_baseband_spws(
+                science_windows_only=True, return_select_list=False, warning=False)
 
         # original plot summary plots
         summary_plots = {}
@@ -78,12 +81,16 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for intents in [['PHASE'], ['BANDPASS']]:
             plots = self.create_plots(context,
                                       results_list,
-                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                      applycal.AmpVsFrequencyPerFieldBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
             for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
+                    baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                        baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                    p.parameters['baseband_desc'] = baseband_desc
+                    p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
                     field = m.get_fields(p.parameters['field'])[0]
                     p.parameters['fieldid'] = field.id
@@ -94,12 +101,16 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         for intents in [['PHASE'], ['BANDPASS']]:
             plots = self.create_plots(context,
                                       results_list,
-                                      applycal.PhaseVsFrequencyPerBasebandSummaryChart,
+                                      applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart,
                                       intents, correlation=corrstring)
 
             for vis, vis_plots in plots.items():
                 vis_plots_mod = []
                 for p in vis_plots:
+                    baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                        baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                    p.parameters['baseband_desc'] = baseband_desc
+                    p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                     p.parameters['intent_idx'] = intent_sort_order[','.join(p.parameters['intent'])]
                     field = m.get_fields(p.parameters['field'])[0]
                     p.parameters['fieldid'] = field.id
@@ -123,7 +134,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                          (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
                 plots = self.create_plots(context,
                                           results_list,
-                                          applycal.PhaseVsFrequencyPerBasebandSummaryChart,
+                                          applycal.PhaseVsFrequencyPerFieldBasebandSummaryChart,
                                           intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
                                           avgbaseline=True, avgantenna=False, plotrange=[0, 0, -180, 180])
 
@@ -131,6 +142,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 for vis, vis_plots in plots.items():
                     vis_plots_mod = []
                     for p in vis_plots:
+                        baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                            baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                        p.parameters['baseband_desc'] = baseband_desc
+                        p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                         p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
                         field = m.get_fields(p.parameters['field'])[0]
                         p.parameters['fieldid'] = field.id
@@ -144,7 +159,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                                          (['PHASE'], 'RL,LR'), (['BANDPASS'], 'RL,LR')]:
                 plots = self.create_plots(context,
                                           results_list,
-                                          applycal.AmpVsFrequencyPerBasebandSummaryChart,
+                                          applycal.AmpVsFrequencyPerFieldBasebandSummaryChart,
                                           intents, correlation=correlation, coloraxis='corr', avgtime='1e8',
                                           avgbaseline=True, avgantenna=False, plotrange=[])
 
@@ -152,6 +167,10 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 for vis, vis_plots in plots.items():
                     vis_plots_mod = []
                     for p in vis_plots:
+                        baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                            baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                        p.parameters['baseband_desc'] = baseband_desc
+                        p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
                         p.parameters['intent_idx'] = pol_intent_sort_order[','.join(p.parameters['intent'])]
                         field = m.get_fields(p.parameters['field'])[0]
                         p.parameters['fieldid'] = field.id
@@ -163,7 +182,17 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         else:
             use_pol_plots = False
 
-        (science_amp_vs_freq_summary_plots, uv_max) = self.create_science_plots(context, results_list, correlation=corrstring)
+        science_amp_vs_freq_summary_plots = utils.OrderedDefaultdict(list)
+        (plots, uv_max) = self.create_science_plots(context, results_list, correlation=corrstring)
+        for vis, vis_plots in plots.items():
+            vis_plots_mod = []
+            for p in vis_plots:
+                baseband_desc, baseband_centfreq = self.get_baseband_desc(
+                    baseband_spws[vis], spws_select=p.parameters['spw'].split(','))
+                p.parameters['baseband_desc'] = baseband_desc
+                p.parameters['baseband_centfreq'] = np.mean(baseband_centfreq)
+                vis_plots_mod.append(p)
+            science_amp_vs_freq_summary_plots[vis].extend(vis_plots_mod)
 
         if pipeline.infrastructure.generate_detail_plots(results_list):
             for result in results_list:
@@ -235,15 +264,8 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             # no obvious drop in amplitude with uvdist, then use all the data.
             # A simpler compromise would be to use a uvrange that captures the
             # inner half the data.
-            baselines = sorted(ms.antenna_array.baselines,
-                               key=operator.attrgetter('length'))
-            # take index as midpoint + 1 so we include the midpoint in the
-            # constraint
-            half_baselines = baselines[0:(len(baselines) // 2) + 1]
-            uv_max = half_baselines[-1].length.to_units(measures.DistanceUnits.METRE)
-            uv_range = '<%s' % uv_max
+            max_uvs[vis], uv_range = utils.scale_uv_range(ms)
             LOG.debug('Setting UV range to %s for %s', uv_range, vis)
-            max_uvs[vis] = half_baselines[-1].length
 
             brightest_fields = T2_4MDetailsplotsummaryRenderer.get_brightest_fields(ms)
 
@@ -262,7 +284,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             for field in plotfields:
                 plots = self.science_plots_for_result(context,
                                                       result,
-                                                      applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                                      applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                                       [field.id],
                                                       uv_range, correlation=correlation)
 
@@ -284,7 +306,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 # detail pages; we don't create plots per spw or antenna
                 self.science_plots_for_result(context,
                                               result,
-                                              applycal.VLAAmpVsFrequencyBasebandSummaryChart,
+                                              applycal.AmpVsFrequencyPerBasebandSummaryChart,
                                               fields,
                                               uv_range,
                                               ApplycalAmpVsFreqSciencePlotRenderer, correlation=correlation)
@@ -325,7 +347,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
             # the field is resolved to a list of all field IDs
             overrides['field'] = field
 
-            if plotter_cls.__name__ == 'VLAAmpVsFrequencyBasebandSummaryChart':
+            if plotter_cls.__name__ == 'AmpVsFrequencyPerBasebandSummaryChart':
                 fieldobjs = m.get_fields(intent=intentselection, field_id=field)
                 first_field = fieldobjs[0]
                 source_spwobjlist = list(first_field.valid_spws)
@@ -355,6 +377,36 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         return plots
 
     @staticmethod
+    def get_baseband_desc(baseband_spws, spws_select=[]):
+        """Get the baseband descriptions from a specifield spw list.
+
+        note: derived from a similar implementation in infrastructure.renderer.htmlrenderer.T2_1DetailsRenderer
+        """
+        vla_baseband_desc = []
+        vla_baseband_centfreq = []
+
+        if not baseband_spws:
+            LOG.debug("Baseband name cannot be parsed and will not appear in the weblog.")
+
+        for band in baseband_spws:
+            for baseband in baseband_spws[band]:
+                spws = []
+                minfreqs = []
+                maxfreqs = []
+                for spwitem in baseband_spws[band][baseband]:
+                    if (str([*spwitem][0]) in spws_select) or spws_select == []:
+                        spws.append(str([*spwitem][0]))
+                        minfreqs.append(spwitem[list(spwitem.keys())[0]][0])
+                        maxfreqs.append(spwitem[list(spwitem.keys())[0]][1])
+                if len(spws) > 0:
+                    bbandminfreq = min(minfreqs)
+                    bbandmaxfreq = max(maxfreqs)
+                    vla_baseband_desc.append(band.capitalize()+':'+baseband+':  ' + str(bbandminfreq) + ' to ' +
+                                             str(bbandmaxfreq))
+                    vla_baseband_centfreq.append((bbandminfreq+bbandmaxfreq)/2)
+        return vla_baseband_desc, vla_baseband_centfreq
+
+    @staticmethod
     def get_brightest_fields(ms, intent='TARGET'):
         """
 
@@ -380,7 +432,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
 
             # give the sole science target name if there's only one science target
             # in this ms.
-            if len(fields) is 1:
+            if len(fields) == 1:
                 LOG.info('Only one %s target for Source #%s. Bypassing '
                          'brightest target selection.', intent, source_id)
                 result[source_id] = fields[0]
@@ -417,7 +469,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
                 job_params['field'] = str(field_id)
                 job = casa_tasks.visstat(**job_params)
                 LOG.debug('Calculating statistics for %r (#%s)', field_name, field_id)
-                result = job.execute(dry_run=False)
+                result = job.execute()
 
                 average_flux[(field_id, field_name)] = float(result['CORRECTED']['mean'])
 
@@ -501,7 +553,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # get stats on amp solution of gaintable
         calstat_job = casa_tasks.calstat(caltable=gaintable, axis='amp',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
+        calstat_result = calstat_job.execute()
         stats = calstat_result['CPARAM']
 
         # amp solutions of unity imply phase-only was requested
@@ -513,7 +565,7 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         # same again for phase solution
         calstat_job = casa_tasks.calstat(caltable=gaintable, axis='phase',
                                          datacolumn='CPARAM', useflags=True)
-        calstat_result = calstat_job.execute(dry_run=False)
+        calstat_result = calstat_job.execute()
         stats = calstat_result['CPARAM']
 
         # phase solutions ~ 0 implies amp-only solution
@@ -527,80 +579,6 @@ class T2_4MDetailsplotsummaryRenderer(basetemplates.T2_4MDetailsDefaultRenderer)
         if no_amp_soln and not no_phase_soln:
             return ' (phase only)'
         return ''
-
-    def flags_for_result(self, result, context):
-        ms = context.observing_run.get_ms(result.inputs['vis'])
-        summaries = result.summaries
-
-        by_intent = self.flags_by_intent(ms, summaries)
-        by_spw = self.flags_by_science_spws(ms, summaries)
-
-        return {ms.basename: utils.dict_merge(by_intent, by_spw)}
-
-    def flags_by_intent(self, ms, summaries):
-        # create a dictionary of scans per observing intent, eg. 'PHASE':[1,2,7]
-        intent_scans = {}
-        for intent in ('BANDPASS', 'PHASE', 'AMPLITUDE', 'TARGET'):
-            # convert IDs to strings as they're used as summary dictionary keys
-            intent_scans[intent] = [str(s.id) for s in ms.scans
-                                    if intent in s.intents]
-
-        # while we're looping, get the total flagged by looking in all scans
-        intent_scans['TOTAL'] = [str(s.id) for s in ms.scans]
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            for intent, scan_ids in intent_scans.items():
-                flagcount = 0
-                totalcount = 0
-
-                for i in scan_ids:
-                    # workaround for KeyError exception when summary
-                    # dictionary doesn't contain the scan
-                    if i not in summary['scan']:
-                        continue
-
-                    flagcount += int(summary['scan'][i]['flagged'])
-                    totalcount += int(summary['scan'][i]['total'])
-
-                    if previous_summary:
-                        flagcount -= int(previous_summary['scan'][i]['flagged'])
-
-                ft = FlagTotal(flagcount, totalcount)
-                total[summary['name']][intent] = ft
-
-            previous_summary = summary
-
-        return total
-
-    def flags_by_science_spws(self, ms, summaries):
-        science_spws = ms.get_spectral_windows(science_windows_only=True)
-
-        total = collections.defaultdict(dict)
-
-        previous_summary = None
-        for summary in summaries:
-
-            flagcount = 0
-            totalcount = 0
-
-            for spw in science_spws:
-                spw_id = str(spw.id)
-                flagcount += int(summary['spw'][spw_id]['flagged'])
-                totalcount += int(summary['spw'][spw_id]['total'])
-
-                if previous_summary:
-                    flagcount -= int(previous_summary['spw'][spw_id]['flagged'])
-
-            ft = FlagTotal(flagcount, totalcount)
-            total[summary['name']]['SCIENCE SPWS'] = ft
-
-            previous_summary = summary
-
-        return total
 
 
 class ApplycalAmpVsFreqPlotRenderer(basetemplates.JsonPlotRenderer):

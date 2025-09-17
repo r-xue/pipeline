@@ -10,7 +10,7 @@ import argparse
 import pipeline
 pipeline.initcli()
 
-class NewTask():
+class NewTask:
 
     def __init__(self):
         self.repository_path = os.environ['SCIPIPE_HEURISTICS']
@@ -22,8 +22,8 @@ class NewTask():
                 script_args = argv[idx + 1:]
 
         parser = argparse.ArgumentParser()
-        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifas', 'hifv', or 'hsd'.",
-                            type=str, choices=['h', 'hif', 'hifa', 'hifas', 'hifv', 'hsd'], required=True)
+        parser.add_argument('--package', help="Pipeline package.  One of 'h', 'hif', 'hifa', 'hifv', or 'hsd'.",
+                            type=str, choices=['h', 'hif', 'hifa', 'hifv', 'hsd'], required=True)
         parser.add_argument('--task', help='New task name', type=str, required=True)
         parser.add_argument('--test-ms', dest='vis', help='Test Measurement Set', type=str, required=True)
 
@@ -56,7 +56,7 @@ class NewTask():
             area=area, task=task_name, captask=task_name.capitalize()))
         task = eval('pipeline.{area}.tasks.{task}.{captask}(inputs)'.format(
             area=area, task=task_name, captask=task_name.capitalize()))
-        result = task.execute(dry_run=False)
+        result = task.execute()
         result.accept(context)
         context.save()
 
