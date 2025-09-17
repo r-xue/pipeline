@@ -19,15 +19,16 @@ import os
 import re
 import string
 import sys
-from typing import List, Tuple, Union
 import xml.dom.minidom as minidom
+
+import pipeline.extern.XmlObjectifier as XmlObjectifier
 
 # logger
 logging.basicConfig(level=logging.INFO, stream=sys.stderr)
 LOG = logging.getLogger(os.path.basename(__file__))
 
 # type alias
-DOM = Union[minidom.Document, minidom.Element]
+DOM = minidom.Document | minidom.Element
 
 # special strings for recipe conversion
 INDENT = '        '
@@ -103,7 +104,7 @@ def get_cli_dir(category: str) -> str:
     return cli_dir
 
 
-def get_element(node: DOM, tag_name: str, expect_unique: bool = False) -> Union[DOM, List[DOM]]:
+def get_element(node: DOM, tag_name: str, expect_unique: bool = False) -> DOM | list[DOM]:
     """Get (list of) DOM object whose name matches tag_name.
 
     Args:
@@ -141,7 +142,7 @@ def get_data(node: minidom.Element) -> str:
     return node.firstChild.data
 
 
-def parse_parameter(node: DOM) -> Tuple[str, str]:
+def parse_parameter(node: DOM) -> tuple[str, str]:
     """Parse DOM object corresponding to Parameter tag in procedure xml file.
 
     Args:
@@ -153,104 +154,6 @@ def parse_parameter(node: DOM) -> Tuple[str, str]:
     key_element = get_element(node, 'Keyword', expect_unique=True)
     value_element = get_element(node, 'Value', expect_unique=True)
     return get_data(key_element), get_data(value_element)
-
-
-def get_short_description(tree: DOM) -> str:
-    """Extract task short description.
-
-    Args:
-        tree: DOM object corresponding to task xml file (taskname.xml).
-
-    Returns:
-        Task short description.
-    """
-    node = filter(
-        lambda x: x.parentNode.nodeName == 'task',
-        tree.getElementsByTagName('shortdescription')
-    )
-    short_desc_node = next(node)
-    short_desc = get_data(short_desc_node).strip('\n').strip()
-    return short_desc
-
-
-def get_parameter_type(element: minidom.Element) -> Tuple:
-    """Get parameter type from param tag.
-
-    Args:
-        element: DOM object corresponding to parameter definition (param tag).
-
-    Returns:
-        (primary_type, subtypes) tuple. If primary_type is either 'any' or
-        'variant', subtypes holds the list of allowed types. Otherwise,
-        subtypes is empty and only the type specified by primary_type is
-        allowed.
-    """
-    assert element.hasAttribute('name') and element.hasAttribute('type')
-    primary_type = element.getAttribute('type')
-    subtypes = []
-    if primary_type in ('any', 'variant'):
-        any_tags = element.getElementsByTagName('any') + element.getElementsByTagName('variant')
-        if len(any_tags) == 0:
-            subtype_tags = element.getElementsByTagName('type')
-            subtypes = [t.firstChild.data.strip() for t in subtype_tags]
-        else:
-            attr_names = ['limittype', 'limittypes']
-            tag = any_tags[0]
-            subtypes = ' '.join([tag.getAttribute(name) for name in attr_names]).strip().split()
-
-    type_desc = (primary_type, subtypes)
-    return type_desc
-
-
-def get_param_types(tree: DOM) -> dict:
-    """Extract list of parameters and value types.
-
-    Args:
-        tree: DOM object corresponding to task xml file (taskname.xml).
-
-    Returns:
-        Dictionary holding (param_name_str, param_type_tuple) pair.
-    """
-    node = filter(
-        lambda x: x.parentNode.nodeName == 'input',
-        tree.getElementsByTagName('param')
-    )
-    type_dict = dict(
-        (x.getAttribute('name'), get_parameter_type(x)) for x in node
-    )
-    return type_dict
-
-
-def get_task_property(task_name: str) -> dict:
-    """Get task property from task xml file.
-
-    Args:
-        task_name: Pipeline task name.
-
-    Returns:
-        Pipeline task property, including the comment (taken from
-        the shortdescription tag) and the parameter_types dictionary
-        holding (param_name_str, param_type_tuple) pair where
-        param_type_tuple is a pair of (primary_type, subtypes).
-    """
-    if task_name == 'breakpoint':
-        return {}
-
-    task_category = task_name.split('_')[0]
-    cli_dir = get_cli_dir(task_category)
-    task_xml = os.path.join(cli_dir, f'{task_name}.xml')
-    LOG.debug(f'task_xml is {task_xml}')
-    assert os.path.exists(task_xml)
-    root_element = minidom.parse(task_xml)
-    short_desc = get_short_description(root_element)
-    type_dict = get_param_types(root_element)
-
-    task_property = {
-        'comment': short_desc,
-        'parameter_types': type_dict
-    }
-
-    return task_property
 
 
 def parse_command(node: DOM) -> dict:
@@ -290,7 +193,7 @@ def parse_command(node: DOM) -> dict:
     parameter_elements = get_element(parameter_set_element, 'Parameter')
     parameters = dict(parse_parameter(p) for p in parameter_elements)
     LOG.debug(f'command is {command}')
-    task_property = get_task_property(command)
+    task_property = {}
     LOG.debug(f'parameters are {parameters}')
     task_property['parameter'] = parameters
 
@@ -301,7 +204,7 @@ def parse_command(node: DOM) -> dict:
     return {command: task_property}
 
 
-def parse(procedure_abs_path: str) -> Tuple[str, List[dict]]:
+def parse(procedure_abs_path: str) -> tuple[str, list[dict]]:
     """Parse procedure xml file.
 
     Args:
@@ -317,9 +220,9 @@ def parse(procedure_abs_path: str) -> Tuple[str, List[dict]]:
 
     # ProcedureTitle - will be function name
     title_element = get_element(procedure_element, 'ProcedureTitle', expect_unique=True)
-    func_name = get_data(title_element)
+    recipe_name = get_data(title_element)
 
-    LOG.debug(f'function name is {func_name}')
+    LOG.debug(f'function name is {recipe_name}')
 
     # ProcessingCommand
     command_elements = get_element(procedure_element, 'ProcessingCommand')
@@ -328,7 +231,7 @@ def parse(procedure_abs_path: str) -> Tuple[str, List[dict]]:
     for command in commands:
         LOG.debug(f'{command}')
 
-    return func_name, commands
+    return recipe_name, commands
 
 
 def get_comment(task_name: str, config: dict) -> str:
@@ -389,28 +292,23 @@ def get_execution_command(task_name: str, config: dict) -> str:
     if task_name == 'breakpoint':
         return ''
 
-    # param_types = get_parameter_types(task_name)
-    param_types = config['parameter_types']
-
+    args = ''
     if parameter:
         def construct_arg(key, value):
-            # default value type is string
-            type_dict = param_types.get(key, ('string', []))
-            value_type, value_subtypes = type_dict
+            cast_value = XmlObjectifier.castType(value)
 
-            # TODO: handle variant and any types properly
-            if value_type in ('string', 'variant', 'any'):
+            if isinstance(cast_value, str):
                 arg = f'{key}=\'{value}\''
             else:
                 arg = f'{key}={value}'
             return arg
 
-        args = ', '.join([construct_arg(k, v) for k, v in parameter.items()])
+        args += ', '.join([construct_arg(k, v) for k, v in parameter.items()])
 
     # special handling for importdata task
     is_importdata = 'importdata' in task_name
     if is_importdata:
-        args = f'vis=vislist, {args}'
+        args = 'vis=vislist' + (f', {args}' if args else '')
 
     # construct function call
     command = f'{INDENT}{task_name}({args})'
@@ -458,7 +356,7 @@ def c2p(command: dict) -> str:
     return procedure
 
 
-def to_procedure(commands: List[dict]) -> str:
+def to_procedure(commands: list[dict]) -> str:
     """Convert list of commands to string that represents Python code snippet.
 
     Args:
@@ -470,7 +368,7 @@ def to_procedure(commands: List[dict]) -> str:
     return '\n\n'.join([c2p(command) for command in commands])
 
 
-def export(func_name: str, commands: List[dict], script_name: str, plotlevel_summary: bool = False) -> None:
+def export(func_name: str, commands: list[dict], script_name: str, plotlevel_summary: bool = False) -> None:
     """Export parsed information as a Python script.
 
     Args:
