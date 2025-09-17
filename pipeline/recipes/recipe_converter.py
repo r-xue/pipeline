@@ -21,6 +21,7 @@ import string
 import sys
 import xml.dom.minidom as minidom
 
+import pipeline.cli as cli
 import pipeline.extern.XmlObjectifier as XmlObjectifier
 
 # logger
@@ -201,6 +202,14 @@ def parse_command(node: DOM) -> dict:
     comment_elements = get_element(node, 'Comment')
     note = get_data(comment_elements[0]) if comment_elements else ''
     task_property['note'] = note
+
+    try:
+        docstring = cli.get_pipeline_task_with_name(command).__doc__
+    except Exception:
+        docstring = ''
+
+    comment = docstring.split('\n')[0]
+    task_property['comment'] = comment
 
     return {command: task_property}
 

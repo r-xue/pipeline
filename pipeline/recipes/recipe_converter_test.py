@@ -113,7 +113,7 @@ def test_parse_parameter(xml_string, expected):
             '<Command>h_save</Command>' \
             '<ParameterSet></ParameterSet>' \
             '</ProcessingCommand>',
-            {'h_save': {'note': '', 'parameter': {}}}
+            {'h_save': {'comment': 'not_tested', 'note': '', 'parameter': {}}}
         ),
         # valid Command with default parameters and comment
         (
@@ -122,7 +122,7 @@ def test_parse_parameter(xml_string, expected):
             '<Command>h_save</Command>' \
             '<ParameterSet></ParameterSet>' \
             '</ProcessingCommand>',
-            {'h_save': {'note': 'Save-Pipeline-Context', 'parameter': {}}}
+            {'h_save': {'comment': 'not_tested', 'note': 'Save-Pipeline-Context', 'parameter': {}}}
         ),
         # valid Command with custom parameters
         (
@@ -132,7 +132,7 @@ def test_parse_parameter(xml_string, expected):
             '<Parameter><Keyword>filename</Keyword><Value>output.context</Value></Parameter>' \
             '</ParameterSet>' \
             '</ProcessingCommand>',
-            {'h_save': {'note': '', 'parameter': {'filename': 'output.context'}}}
+            {'h_save': {'comment': 'not_tested', 'note': '', 'parameter': {'filename': 'output.context'}}}
         ),
         # breakpoint
         (
@@ -196,7 +196,7 @@ def test_parse_command(xml_string, expected):
             '<ProcedureTitle>h_test</ProcedureTitle>' \
             '<ProcessingCommand><Command>h_save</Command><ParameterSet></ParameterSet></ProcessingCommand>' \
             '</ProcessingProcedure>',
-            ('h_test', [{'h_save': {'note': 'not_tested', 'parameter': {}}}])
+            ('h_test', [{'h_save': {'comment': 'not_tested', 'note': 'not_tested', 'parameter': {}}}])
         )
     ]
 )
