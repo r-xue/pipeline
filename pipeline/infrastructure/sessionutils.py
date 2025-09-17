@@ -27,7 +27,7 @@ __all__ = [
 ]
 
 if TYPE_CHECKING:
-    from pipeline.domain import MeasurementSet, ObservingRun
+    from pipeline.domain import MeasurementSet
 
 LOG = logging.get_logger(__name__)
 
@@ -201,6 +201,29 @@ class VDPTaskFactory(object):
         if self.__context_path and os.path.exists(self.__context_path):
             os.unlink(self.__context_path)
 
+    def _validate_args(self, task_args):
+        inputs_constructor_fn = getattr(self.__task.Inputs, '__init__')
+        valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
+        LOG.debug('Validated input arguments from %s: ', self.__task.Inputs)
+        LOG.debug('  %s', valid_args)
+
+        if issubclass(self.__task.Inputs, vdp.ModeInputs):
+            # PIPE-2841: add arguments from the underlying active task referenced via ModeInputs,
+            # which might be absent from the constructor task input class signature.
+            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
+            task_inputs_cls = active_mode_task.Inputs
+            inputs_constructor_fn = getattr(task_inputs_cls, '__init__')
+            valid_args_modeinputs = remove_unexpected_args(inputs_constructor_fn, task_args)
+
+            LOG.debug('Validated input arguments from %s (delegated from ModeInputs) ', task_inputs_cls)
+            LOG.debug('  %s', valid_args_modeinputs)
+            valid_args = valid_args | valid_args_modeinputs
+
+        LOG.debug('Validated input arguments for constructing a vdp task from %s: ', self.__task)
+        LOG.debug('  %s', valid_args)
+
+        return valid_args
+
     def get_task(self, vis):
         """
         Create and return a SyncTask or AsyncTask for the job.
@@ -219,17 +242,7 @@ class VDPTaskFactory(object):
         # task, and hence and hence have a different signature. For
         # instance, the session-aware Inputs classes accept a
         # 'parallel' argument, which the non-session tasks do not.
-        task_inputs_cls = self.__task.Inputs
-        valid_args = validate_args(task_inputs_cls, task_args)
-        if issubclass(self.__task.Inputs, vdp.ModeInputs):
-            # PIPE-2841: add arguments from the underlying active task referenced via ModeInputs,
-            # which might be absent from the constructor task input class signature.
-            active_mode_task = self.__task.Inputs._modes[self.__inputs.mode]
-            task_inputs_cls = active_mode_task.Inputs
-            valid_args_modeinputs = validate_args(task_inputs_cls, task_args)
-            valid_args = valid_args | valid_args_modeinputs
-        LOG.debug('valid input arguments for constructing a vdp task from %s: ', self.__task)
-        LOG.debug('  %s', valid_args)
+        valid_args = self._validate_args(task_args)
 
         is_mpi_ready = mpihelpers.is_mpi_ready()
         is_tier0_job = is_mpi_ready
@@ -282,12 +295,6 @@ def remove_unexpected_args(fn, fn_args):
     # LOG.info('Valid: {!s}'.format(x))
 
     return x
-
-
-def validate_args(inputs_cls, task_args):
-    inputs_constructor_fn = getattr(inputs_cls, '__init__')
-    valid_args = remove_unexpected_args(inputs_constructor_fn, task_args)
-    return valid_args
 
 
 def get_spwmap(source_ms: MeasurementSet, target_ms: MeasurementSet) -> dict[int, int]:
