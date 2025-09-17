@@ -37,9 +37,10 @@ import traceback
 
 # Pipeline imports
 import pipeline
+from pipeline.infrastructure import casa_tools
+
 # Make pipeline tasks available in local name space
 pipeline.initcli(locals())
-from pipeline.infrastructure import casa_tools
 
 IMPORT_ONLY = 'Import only'
 
