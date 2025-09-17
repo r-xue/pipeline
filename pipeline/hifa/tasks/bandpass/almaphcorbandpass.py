@@ -521,9 +521,14 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
             # For Band-to-Band datasets, only refine solint based on the TARGET
             # (high frequency) spectral windows that are expected to have the
             # lowest SNRs.
-            LOG.info(f"{inputs.ms.basename} is a Band-to-Band dataset: selecting high-frequency SpWs for solint"
-                     f" refinement.")
-            spwindex = [snr_result.spwids.index(s.id) for s in inputs.ms.get_spectral_windows(intent='TARGET')]
+            LOG.info(
+                '%s is a Band-to-Band dataset: selecting high-frequency SpWs for solint refinement.', inputs.ms.basename
+            )
+            spwindex = [
+                snr_result.spwids.index(s.id)
+                for s in inputs.ms.get_spectral_windows(intent='TARGET')
+                if s.id in snr_result.spwids
+            ]
         else:
             # For all other datasets, restrict the refinement to the SpWs of a
             # single SpectralSpec. Start with retrieving mapping of SpectralSpec
@@ -532,7 +537,9 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
 
             # If there is only 1 SpectralSpec, then use that one.
             if len(spspec_to_spwid) == 1:
-                spwindex = [snr_result.spwids.index(s) for s in next(iter(spspec_to_spwid.values()))]
+                spwindex = [
+                    snr_result.spwids.index(s) for s in next(iter(spspec_to_spwid.values())) if s in snr_result.spwids
+                ]
             # Otherwise, with 2+ SpectralSpec, select which SpectralSpec to use.
             # PIPE-2442: in this case, it is assumed that the representative
             # SpectralSpec to use is the one that has the lowest value of
@@ -542,7 +549,7 @@ class SerialALMAPhcorBandpass(bandpassworker.BandpassWorker):
                 max_snr_spspec = []
                 for spwids in spspec_to_spwid.values():
                     # Get the indices of these SpWs into the SNR result.
-                    spwi = [snr_result.spwids.index(s) for s in spwids]
+                    spwi = [snr_result.spwids.index(s) for s in spwids if s in snr_result.spwids]
 
                     # Identify SNRs for all SpWs in this SpectralSpec. It is
                     # possible for "phintsnrs" in the SNR result to contain None
