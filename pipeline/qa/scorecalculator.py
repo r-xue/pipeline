@@ -552,88 +552,28 @@ def score_diffgaincal_residuals(residuals_info: dict, score_type: str) -> pqa.QA
     """
     def get_expanded_message(dict_use: dict) -> str:
         """Generate expanded QA message for selection of residuals dictionary."""
-        poor_spw = np.array([str(k[0]) for k in dict_use])
-        poor_corr = np.array([str(k[1]) for k in dict_use])
-        poor_ant = np.array([str(k[2]) for k in dict_use])
+        # Group antennas by (spw, corr).
+        spw_corr_to_ants = collections.defaultdict(set)
+        for (spw, corr, ant, _), _ in dict_use.items():
+            spw_corr_to_ants[(str(spw), str(corr))].add(str(ant))
 
-        # loop the spw and start to make a message list
+        # Group (spw, corr) pairs by shared antenna sets.
+        antset_to_spw_corr = collections.defaultdict(list)
+        for (spw, corr), ants in spw_corr_to_ants.items():
+            key = frozenset(ants)
+            antset_to_spw_corr[key].append((spw, corr))
+
+        # Build the full message.
         full_msg = []
-        corr_mess = []
-        spw_mess = []
-        ant_mess = []
+        for antset, spw_corr_list in antset_to_spw_corr.items():
+            spws = sorted({spw for spw, _ in spw_corr_list})
+            corrs = sorted({corr for _, corr in spw_corr_list})
 
-        # basically we want ant lists and to check if these are the same, or not at each level
-        # which then governs what goes into a consolideated message
-        for spwu in np.unique(poor_spw):
-            spw_idx = np.where(poor_spw == spwu)[0]  # all corr and ant with this SpW (spw as str(num) or 'all')
-            ant_hold_spw = []
-            corr_hold = []
+            spw_msg = "all SpWs" if spws == ['all'] else f"SpW {','.join(spws)}"
+            ant_msg = "all antennas" if antset == {'all'} else f"antenna(s) {','.join(sorted(antset))}"
+            corr_msg = f"corr {','.join(corrs)}"
 
-            for corru in np.unique(poor_corr[spw_idx]):
-                ant_hold_corr = []
-                corr_idx = np.where(poor_corr[spw_idx] == corru)[0]  # so this is per corr in the spw, i.e. the ant list
-
-                for corr_idxu in corr_idx:
-                    # append to the antenna list for this corr
-                    ant_hold_corr.append(poor_ant[spw_idx][corr_idxu])
-
-                # so for the corr check if 'all' is in the list, meaning all antenna and set only to that
-                if 'all' in ant_hold_corr:
-                    ant_hold_corr = ['all']
-
-                # now we have an antenna list - join it
-                ant_hold_corr = ','.join(ant_hold_corr)
-
-                # need a statement to see if this is already in the message list for this SpW and Corr - use sets
-                if set([ant_hold_corr]) == set(ant_hold_spw):
-                    # we already have this antenna list for this spw and previous correlation
-                    # so we can append _and_ join the corr_hold for this SpW
-                    corr_hold.append(corru)
-                    corr_hold = [','.join(corr_hold)]
-                else:
-                    # setup the comparions list
-                    # if this is the first loop, then basically there is one list, which will match or not on next loop (i.e. spw and corr)
-                    ant_hold_spw.append(ant_hold_corr)
-                    corr_hold.append(corru)
-
-            # by here at spw level - need to add the messages unless ants are matched
-            # already - expectations, either all spw have all same ants and corr, or otherwise
-
-            # everything is different CHECK SET BEHAVIOUR - only works on first loop, if length is >0 it wont work
-            # and we can otherwise assume not to consolidate spw messages
-            if len(ant_mess) == 0:
-                corr_mess.append(corr_hold)
-                ant_mess.append(ant_hold_spw)
-                spw_mess.append(spwu)
-            # will occur in second round - select first index of ant_mess
-            elif set(ant_mess[0]) == set(
-                    ant_hold_spw):  # again now message is a list of lists, ant_hold_spw is the 'list'
-                # - maybe had to match first index or not matching at all by logic
-                # seems the existing message is the same as the one now coming for the next spw/corr pair
-                # don't need to change the ant_message but append and join the spw_mess
-                spw_mess.append(spwu)
-                spw_mess = [','.join(spw_mess)]
-            else:
-                corr_mess.append(corr_hold)
-                ant_mess.append(ant_hold_spw)
-                spw_mess.append(spwu)
-
-        for spwi in range(len(spw_mess)):
-            # check here actually if we only have 1 spw grouping listed, and if 'all' is in the group, means all triggered the warning
-            if len(spw_mess) == 1 and 'all' in spw_mess[spwi].split(','):  # spwi can only be 0 in the len 1 case
-                # the spw section of the message is rephrased
-                spw_mess_build = 'all SpWs'
-            else:
-                spw_mess_build = f'Spw {spw_mess[spwi]}'
-
-            for anti in range(len(ant_mess[spwi])):
-                # likewise, if len of ant_mess is 1, for the SpW group and is also 'all' - rephase
-                if len(ant_mess[spwi]) == 1 and ant_mess[spwi][anti] == 'all':
-                    ant_mess_build = 'all antennas'
-                else:
-                    ant_mess_build = f'antenna(s) {ant_mess[spwi][anti]}'
-
-                full_msg.append(f' {ant_mess_build}, in {spw_mess_build} corr {corr_mess[spwi][anti]}')
+            full_msg.append(f" {ant_msg}, in {spw_msg} {corr_msg}")
 
         return ','.join(full_msg)
 
