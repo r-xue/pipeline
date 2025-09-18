@@ -138,6 +138,9 @@ master_doc = 'index'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-release
 release = build_version = pipeline.environment.pipeline_revision  # used on the PDF cover
 version = build_version.split('+')[0]
+
+release = '2025.1.0'  # temporarily hard-coded for the PL2025 release
+
 # remove -detached suffix as readthedocs always uses git checkout --force to create a
 # detached state
 build_version_short = build_version.removesuffix('-detached')
@@ -227,16 +230,14 @@ html_baseurl = ''
 # -- Options for LaTeX output ------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    'papersize': 'letterpaper',
-    # The font size ('10pt', '11pt' or '12pt').
-    #
+    'papersize': 'letterpaper', # or 'a4parper'
     'pointsize': '10pt',
-    # Additional stuff for the LaTeX preamble.
-    #
+    # Preamble for custom packages and settings
+    # Sphinx will use this string when it loads the geometry package and we avoid it in preamble.
+    'geometry': r'\usepackage[top=1.0in, bottom=1.0in, left=0.5in, right=0.5in]{geometry}',
     'preamble': r"""
   \usepackage{hyperref}
+  % \usepackage{extsizes} % required to use font sizes other than 10, 11, or 12pt
   \usepackage{longtable}
   \setcounter{tocdepth}{1}
   \protected\def\sphinxcode#1{\textcolor{red}{\texttt{#1}}}
@@ -252,7 +253,7 @@ latex_elements = {
     \if@openright\cleardoublepage\else\clearpage\fi
     \pagenumbering{arabic}% 
     \makeatother
-   }
+    }
 """,
     # Latex figure (float) alignment
     #
@@ -312,7 +313,7 @@ autosummary_generate_overwrite = autosummary_generate
 
 # https://www.sphinx-doc.org/en/master/usage/extensions/autosummary.html#confval-autosummary_ignore_module_all
 autosummary_imported_members = True
-autosummary_ignore_module_all = True
+autosummary_ignore_module_all = False  # respect `__alll__` in autosummary to get clean output
 
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']

@@ -1,4 +1,4 @@
-"""Interferometry Generic Tasks."""
+"""Interferometry Generic Tasks"""
 
 from .hif_analyzealpha import hif_analyzealpha
 from .hif_antpos import hif_antpos
