@@ -51,5 +51,6 @@ html_docs:
 
 pdf_taskdocs:
 	@rm -rf ${BUILDDIR}/latex ${BUILDDIR}/doctrees
+	@rm -rf ${SOURCEDIR}/_autosummary*
 	@make latexpdf
 	@rm -rf casa-*.log ${SOURCEDIR}/casa-*log
