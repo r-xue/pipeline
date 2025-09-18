@@ -216,7 +216,7 @@ html_theme_options = {
 html_favicon = '_static/favicon-16x16.png'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
+# so a file named "default.css" will override the builtin "default.css".
 html_static_path = ['_static']
 html_css_files = ['custom_theme.css']
 
@@ -230,7 +230,7 @@ html_baseurl = ''
 # -- Options for LaTeX output ------------------------------------------
 
 latex_elements = {
-    'papersize': 'letterpaper', # or 'a4parper'
+    'papersize': 'letterpaper',  # or 'a4parper'
     'pointsize': '10pt',
     # Preamble for custom packages and settings
     # Sphinx will use this string when it loads the geometry package and we avoid it in preamble.
@@ -265,7 +265,7 @@ latex_elements = {
 }
 
 # If false, no module index is generated.
-latex_use_modindex = True
+latex_use_modindex = False
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass
@@ -317,6 +317,9 @@ autosummary_ignore_module_all = False  # respect `__alll__` in autosummary to ge
 
 # autodoc_mock_imports = ["pipeline"]
 # autodoc_default_options = ['members']
+
+# disable type hints for the task refernece PDF
+autodoc_typehints = 'none'
 
 autodoc_default_options = {
     # other options
