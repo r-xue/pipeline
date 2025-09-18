@@ -100,7 +100,8 @@ __all__ = ['score_polintents',                                # ALMA specific
            'score_tsysflagcontamination_external_heuristic',
            'score_syspowerdata',
            'score_solint',
-           'score_longsolint']
+           'score_longsolint',
+           'score_flagged_ant_spw']
 
 LOG = infrastructure.logging.get_logger(__name__)
 
@@ -1148,16 +1149,11 @@ def score_total_data_vla_delay(filename, m):
         fpar = tb.getcol('FPARAM')
         delays = np.abs(fpar)  # Units of nanoseconds
         maxdelay = np.max(delays)
-
-    if maxdelay < 200.0:
+    # PIPE-2582: if delays > 15 ns, QA score < 0.5
+    if maxdelay < 15.0:
         score = 1.0
     else:
-        # For each antenna with a delay > 200.0 ns, deduct 0.1 from the score
-        delaydict = countbaddelays(m, filename, 200.0)
-        count = len(delaydict)
-        score = 1.0 - (0.1 * count)
-    if score < 0.0:
-        score = 0.0
+        score = round(max(0.0, 0.49 - 0.01 * (maxdelay - 15)), 2)
 
     # Set score message and origin
     longmsg = 'Max delay is {!s} ns'.format(str(maxdelay))
@@ -1165,7 +1161,7 @@ def score_total_data_vla_delay(filename, m):
 
     origin = pqa.QAOrigin(metric_name='score_total_data_vla_delay',
                           metric_score=score,
-                          metric_units='Delays that exceed 200 ns')
+                          metric_units='Delays that exceed 15 ns')
 
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, vis=os.path.basename(filename), origin=origin)
 
@@ -4687,4 +4683,41 @@ def score_longsolint(context, result) -> List[pqa.QAScore]:
     origin = pqa.QAOrigin(metric_name='score_longsolint',
                           metric_score=score,
                           metric_units='')
+    return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)
+
+@log_qa
+def score_flagged_ant_spw(flag_results:dict) -> pqa.QAScore:
+    """
+        Calcuates score for testBPdcals
+        if > 50% of spws in a baseband on a majority of antennas newly flagged 
+        then score < 0.5
+    """
+    flagged_ants = 0
+    total_ants = len(flag_results['antspw'])
+    for antenna in flag_results['antspw']:
+        flagged_spw_count = 0
+
+        for spwid in flag_results['antspw'][antenna]:
+            spw_flagged = False
+            for polid in flag_results['antspw'][antenna][spwid]:
+                if flag_results['antspw'][antenna][spwid][polid]['flagged'] > 0:
+                    spw_flagged = True
+            if spw_flagged:
+                flagged_spw_count += 1
+
+        # If >50% of SPWs flagged on this antenna
+        if flagged_spw_count > len(flag_results['antspw'][antenna]):
+            flagged_ants += 1
+
+    if flagged_ants > total_ants / 2:
+        score = 0.3
+        longmsg = "More than 50% of spws in a baseband on a majority of antennas newly flagged"
+        shortmsg = "> 50% of spws in baseband flagged"
+    else:
+        score = 1
+        longmsg = "Less than 50% of spws in a baseband on a majority of antennas newly flagged"
+        shortmsg = "< 50% of spws in baseband flagged"
+    origin = pqa.QAOrigin(metric_name='score_flagged_ant_spw',
+                        metric_score=score,
+                        metric_units='')
     return pqa.QAScore(score, longmsg=longmsg, shortmsg=shortmsg, origin=origin)

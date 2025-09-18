@@ -31,12 +31,13 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
             if result.flaggedSolnApplycalbandpass[bandname] and result.flaggedSolnApplycaldelay[bandname]:
                 self._checkKandBsolution(result.flaggedSolnApplycaldelay[bandname], m)
                 self._checkKandBsolution(result.flaggedSolnApplycalbandpass[bandname], m)
-
                 score1 = qacalc.score_total_data_flagged_vla_bandpass(
                     result.bpdgain_touse[bandname], result.flaggedSolnApplycalbandpass[bandname]['antmedian']['fraction'])
                 score2 = qacalc.score_total_data_vla_delay(result.ktypecaltable[bandname], m)
+                score3 = qacalc.score_flagged_ant_spw(result.flaggedSolnApplycaldelay[bandname])
                 scores.append(score1)
                 scores.append(score2)
+                scores.append(score3)
             else:
                 LOG.error('Error with bandpass and/or delay table for band {!s}.'.format(bandname))
                 scores = [pqa.QAScore(0.0, longmsg='No flagging stats about the bandpass table or info in delay table.',
@@ -47,8 +48,6 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
             uniquespwlist = [int(spw) for spw in uniquespw]
             uniquespwlist.sort()
             uniquespwlist = [str(spw) for spw in uniquespwlist]
-            LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                        ''.format(antenna, ','.join(uniquespwlist)))
 
         result.qa.pool.extend(scores)
 
@@ -67,8 +66,6 @@ class semiFinalBPdcalsQAHandler(pqa.QAPlugin):
                 spwcollect = sorted(set(spwcollect))
                 spwcollect = [str(spw) for spw in spwcollect]
                 self.antspw[antenna_names[antenna]].extend(spwcollect)
-                # LOG.warning('Antenna {!s}, spws: {!s} have a flagging fraction of 1.0.'
-                #          ''.format(antenna_names[antenna], ','.join(spwcollect)))
 
         return
 
