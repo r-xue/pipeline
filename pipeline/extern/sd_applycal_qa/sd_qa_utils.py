@@ -507,13 +507,18 @@ def smooth(y: np.ma.core.MaskedArray, box_pts: int):
     else:
         ymasked = y.copy()
 
+    if box_pts < 2:
+        # Smoothing with kernel size < 2 has no effect,
+        # or is invalid.
+        return ymasked
+
     mask = ymasked.mask
     data = ymasked.filled(0)
 
     kernel = np.ones(box_pts) / box_pts
-    smoothed_data = convolve1d(data, kernel, mode = 'reflect')
+    smoothed_data = convolve1d(data, kernel, mode='reflect')
     if np.sum(mask) > 0:
-        smoothed_mask = convolve1d(1.0*mask, kernel, mode = 'reflect')
+        smoothed_mask = convolve1d(1.0*mask, kernel, mode='reflect')
         smoothed_mask = (smoothed_mask > 0.0)
     else:
         smoothed_mask = mask
@@ -675,7 +680,12 @@ def getAtmDataForSPW(fname: str, spw_setup: dict, spw: int, antenna: str, smooth
     smtrec = np.zeros_like(trec)
     for pol in range(npol):
         for i, scan in enumerate(tsys_scanlist):
-            smtrec[pol,:,i] = smooth(trec[pol,:,i], int(smooth_trec_factor*spw_setup[spw]['nchan']))
+            kernel_size = int(smooth_trec_factor * spw_setup[spw]['nchan'])
+            if kernel_size < 2:
+                # No smoothing
+                smtrec[pol, :, i] = trec[pol, :, i]
+            else:
+                smtrec[pol, :, i] = smooth(trec[pol, :, i], kernel_size)
     #Get indices for Tsys scan before and after each science scan
     idx_tsys_scan_low = {}
     idx_tsys_scan_high = {}
