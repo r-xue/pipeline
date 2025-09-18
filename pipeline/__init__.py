@@ -147,17 +147,28 @@ def stop_weblog():
             HTTP_SERVER = None
 
 
-def _find_caller_globals():
-    """Find the globals dictionary of the calling frame."""
+def _find_caller_globals() -> dict[str, Any]:
+    """Finds the globals dictionary of the top-level IPython calling frame.
+
+    This function walks up the call stack to find the frame corresponding to the
+    interactive IPython session. It identifies this frame by checking for the
+    presence of the `get_ipython` function in its global namespace, which is a
+    reliable indicator of an interactive IPython environment (e.g., Jupyter).
+
+    This implementation is adapted from the `find_frame()` function in
+    `casashell/src/scripts/stack_manip`.
+
+    Returns:
+        The globals dictionary of the IPython interactive session frame, or an
+        empty dictionary if no such frame is found.
+    """
     frame = inspect.currentframe()
-    try:
-        caller_frame = frame.f_back
-        if caller_frame:
-            return caller_frame.f_globals
-        else:
-            return {}
-    finally:
-        del frame
+    while frame:
+        # 'get_ipython' is a sentinel for the main interactive session's global scope.
+        if 'get_ipython' in frame.f_globals:
+            return frame.f_globals
+        frame = frame.f_back
+    return {}
 
 
 def _import_module_contents(module_name: str, target_globals: dict[str, Any]) -> bool:
@@ -189,7 +200,7 @@ def _import_module_contents(module_name: str, target_globals: dict[str, Any]) ->
         return True
 
     except ImportError as e:
-        LOG.debug(f"Import error for {module_name}: {e}")
+        LOG.error('Import error for %s: %s', module_name, e)
         return False
 
 
